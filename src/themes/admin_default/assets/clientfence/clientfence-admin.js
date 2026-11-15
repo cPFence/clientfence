@@ -1373,6 +1373,15 @@ window.clientfenceBackupCloudSaved = (result) => {
   if (!(result && result.tested)) window.setTimeout(() => window.location.reload(), 900);
 };
 
+// Fraud check tab of the Orders settings (mod_order_settings_fraud_check): a test shows what the service answered
+// and keeps the typed details; a save reloads to show the saved state.
+window.clientfenceFraudCheckSaved = (result) => {
+  const form = document.querySelector('[data-cf-fraud-check]');
+  if (!form) return;
+  window.ClientFence?.message?.(result && result.tested ? result.tested : form.dataset.savedText, 'success');
+  if (!(result && result.tested)) window.setTimeout(() => window.location.reload(), 900);
+};
+
 // Chat alerts form (mod_clientfence_chat_alerts_panel) and the cloud storage card of the Backups tab: only the
 // fields of the chosen service show and are sent.
 document.querySelectorAll('[data-cf-chat-type]').forEach((type) => {

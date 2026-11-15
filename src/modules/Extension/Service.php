@@ -789,6 +789,8 @@ class Service implements InjectionAwareInterface
         }
         if ($ext === 'mod_client') {
             $kept = [...$kept, ...array_keys(\ClientFence\Mod\Client\Google::DEFAULTS)];
+            // ClientFence core patch: the ID documents tab saves its own form (Client/IdDocuments.php).
+            $kept = [...$kept, ...array_keys(\ClientFence\Mod\Client\IdDocuments::DEFAULTS)];
         }
         if ($ext === 'mod_staff') {
             // The staff IP address rule is saved by Sign-in security (Clientfence/SignInSecurity.php).

@@ -21,6 +21,7 @@ use ClientFence\Mod\Clientfence\Updates;
 use ClientFence\Mod\Clientfence\Whmcs\Import as WhmcsImport;
 use ClientFence\Mod\Clientfence\Whmcs\Run as WhmcsRun;
 use ClientFence\InformationException;
+use ClientFence\Mod\Order\FraudCheck;
 
 class Admin extends \ClientFence\Api\AbstractApi
 {
@@ -535,6 +536,31 @@ class Admin extends \ClientFence\Api\AbstractApi
         SecuritySettings::save($this->getDi(), (array) $data, (int) $this->adminId());
 
         return true;
+    }
+
+    /**
+     * The Fraud check tab of the Orders settings (Order/FraudCheck.php): the service, account, limit and skip rule,
+     * and whether a key is saved (never the key). Super Administrators only.
+     */
+    public function fraud_check_get(): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can change the fraud check.');
+
+        return FraudCheck::forPage();
+    }
+
+    /**
+     * Saves the fraud check: provider (off, maxmind, fraudlabs), account_id, key (empty keeps the saved one), limit,
+     * skip_active. `do` "test" makes one sample call with the typed details instead and answers {tested: what the
+     * service said}; nothing is saved.
+     */
+    public function fraud_check_save($data): array|bool
+    {
+        $this->requireSuperAdmin('Only Super Administrators can change the fraud check.');
+        $test = ($data['do'] ?? '') === 'test';
+        $answer = FraudCheck::save($this->getDi(), (array) $data, $test);
+
+        return $test ? ['tested' => $answer] : true;
     }
 
     /**

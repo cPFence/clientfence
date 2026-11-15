@@ -747,8 +747,10 @@ test('remove wraps client cleanup and flush in one transaction', function (): vo
     $connection->shouldReceive('delete')->once()->with('client_note', ['client_id' => 1])->andReturn(1);
     $connection->shouldReceive('delete')->once()->with('client_group_members', ['client_id' => 1])->andReturn(1);
     $connection->shouldReceive('delete')->once()->with('client_file', ['client_id' => 1])->andReturn(1);
+    $connection->shouldReceive('delete')->once()->with('client_id_document', ['client_id' => 1])->andReturn(1);
     $filesystem = Mockery::mock(Symfony\Component\Filesystem\Filesystem::class);
     $filesystem->shouldReceive('remove')->once()->with(ClientFence\Mod\Client\Files::dir() . '/1');
+    $filesystem->shouldReceive('remove')->once()->with(ClientFence\Mod\Client\IdDocuments::dir() . '/1');
     $di['filesystem'] = $filesystem;
     $query = Mockery::mock(Doctrine\DBAL\Query\QueryBuilder::class);
     $query->shouldReceive('delete')->once()->with('extension_meta')->andReturnSelf();

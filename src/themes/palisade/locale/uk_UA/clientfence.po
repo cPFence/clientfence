@@ -29450,3 +29450,332 @@ msgstr "Цей співробітник може входити за ключа�
 #: src/modules/Client/TwoFactor.php
 msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
 msgstr "Для вашого облікового запису потрібен двофакторний вхід. Увійдіть за допомогою ключа доступу."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid ":name sent an ID document for review"
+msgstr ":name надіслав документ, що посвідчує особу, на перевірку"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Account ID"
+msgstr "Номер облікового запису (Account ID)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "All new clients (who sign up after this is saved)"
+msgstr "Усі нові клієнти (які зареєструються після збереження цього налаштування)"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "Approve or refuse"
+msgstr "Підтвердити або відхилити"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Approve the ID document?"
+msgstr "Підтвердити документ, що посвідчує особу?"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Ask for an ID document from"
+msgstr "Запитувати документ, що посвідчує особу, у"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Back (if it has one)"
+msgstr "Зворот (якщо є)"
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose at least one client group."
+msgstr "Виберіть принаймні одну групу клієнтів."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service to test."
+msgstr "Виберіть сервіс перевірки на шахрайство для тесту."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service."
+msgstr "Виберіть сервіс перевірки на шахрайство."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose the front of your ID document, and its back if it has one."
+msgstr "Виберіть лицьовий бік документа, що посвідчує особу, і зворот, якщо він є."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose who is asked for an ID document."
+msgstr "Виберіть, у кого запитується документ, що посвідчує особу."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients in these groups"
+msgstr "Клієнти з цих груп"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients who are asked upload the front and back of an ID document (JPG, PNG, WebP or PDF) on their ID document page. Staff approve or refuse it on the client's ID documents tab, and the client gets an email either way. Orders of a client asked by the first two rules wait for review until the document is approved; approving it lets them go on. The files are encrypted and only staff can download them."
+msgstr "Клієнти, у яких він запитується, завантажують лицьовий бік і зворот документа, що посвідчує особу (JPG, PNG, WebP або PDF), на своїй сторінці документів. Співробітники підтверджують або відхиляють його на вкладці «Документи, що посвідчують особу» клієнта, і клієнт в обох випадках отримує лист. Замовлення клієнта, у якого документ запитано за першими двома правилами, очікують перевірки, доки документ не буде підтверджено; підтвердження дозволяє їм продовжитися. Файли шифруються, і завантажити їх можуть лише співробітники."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Decision"
+msgstr "Рішення"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Delete the files after the decision"
+msgstr "Видаляти файли після рішення"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Each order a client places in the client area is scored by the service before it is made (staff orders are not checked). An order scoring above the limit waits under Orders > Waiting for review: its invoice cannot be paid until you approve it. The client's email is sent hashed with its domain; card details are never sent. If the service cannot be reached or has no credit left, the order goes through and you get a notification."
+msgstr "Кожне замовлення, яке клієнт оформлює в клієнтській області, оцінюється сервісом до створення (замовлення співробітників не перевіряються). Замовлення з оцінкою вище за межу очікує в розділі Замовлення > Очікує перевірки: його рахунок не можна сплатити, доки ви не підтвердите. Електронну пошту клієнта надсилають у вигляді хеша разом із доменом; дані картки не надсилають ніколи. Якщо сервіс недоступний або на ньому закінчився баланс, замовлення проходить, а ви отримуєте сповіщення."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter a score limit above 0 and below 100, such as 20."
+msgstr "Введіть межу оцінки більшу за 0 і меншу за 100, наприклад 20."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter how many days the files are kept after the decision (0 to 3650)."
+msgstr "Введіть, скільки днів зберігати файли після рішення (від 0 до 3650)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the MaxMind account ID (a number)."
+msgstr "Введіть ID облікового запису MaxMind (число)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the licence key or API key."
+msgstr "Введіть ліцензійний ключ або ключ API."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter the reason the client will read (up to 255 characters)."
+msgstr "Введіть причину, яку прочитає клієнт (до 255 символів)."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Files and text"
+msgstr "Файли й текст"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Fraud check"
+msgstr "Перевірка на шахрайство"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Fraud check could not run"
+msgstr "Перевірку на шахрайство не вдалося виконати"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check on new orders"
+msgstr "Перевірка нових замовлень на шахрайство"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check service"
+msgstr "Сервіс перевірки на шахрайство"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "From 0 to 100; 20 is the usual limit. The service's own rules that say review or reject also hold the order."
+msgstr "Від 0 до 100; звичайна межа — 20. Власні правила сервісу, що наказують перевірити або відхилити, теж затримують замовлення."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Front"
+msgstr "Лицьовий бік"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Hold orders scoring above"
+msgstr "Затримувати замовлення з оцінкою вище за"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "ID document"
+msgstr "Документ, що посвідчує особу"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "ID document sent"
+msgstr "Документ, що посвідчує особу, надіслано"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_tab.html.twig
+msgid "ID documents"
+msgstr "Документи, що посвідчують особу"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Licence key or API key"
+msgstr "Ліцензійний ключ або ключ API (Licence key or API key)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "MaxMind charges each check; FraudLabs Pro has a free plan of 500 checks a month. A check is kept for an hour, so a second try of the same order is not charged again."
+msgstr "MaxMind бере плату за кожну перевірку; FraudLabs Pro має безкоштовний тариф на 500 перевірок на місяць. Перевірка зберігається годину, тож повторна спроба того самого замовлення не оплачується знову."
+
+#: src/modules/Client/IdDocuments.php src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "No ID document is needed for your account."
+msgstr "Для вашого облікового запису документ, що посвідчує особу, не потрібен."
+
+#: src/modules/Client/IdDocuments.php
+msgid "No ID document of this client is waiting for a decision."
+msgstr "Жоден документ цього клієнта не очікує рішення."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Nobody (off)"
+msgstr "Ніхто (вимк.)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Only Super Administrators can change the fraud check."
+msgstr "Лише суперадміністратори можуть змінювати перевірку на шахрайство."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Only clients whose order another check holds (fraud check, hosting network)"
+msgstr "Лише клієнти, чиє замовлення затримує інша перевірка (на шахрайство, хостинг-мережа)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Please send a new one from your client area:"
+msgstr "Надішліть новий зі своєї клієнтської області:"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Please send a new one."
+msgstr "Надішліть новий."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Please upload an ID document to verify your account."
+msgstr "Завантажте документ, що посвідчує особу, щоб підтвердити обліковий запис."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Reason for refusing (the client reads it)"
+msgstr "Причина відмови (її читає клієнт)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Reason: :reason"
+msgstr "Причина: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Refused"
+msgstr "Відхилено"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Send the ID document"
+msgstr "Надіслати документ, що посвідчує особу"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Shown on the ID document page: which documents you accept and why you ask. Markdown is allowed."
+msgstr "Показується на сторінці документів: які документи ви приймаєте та навіщо запитуєте. Дозволено Markdown."
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Skip clients who already have an active order"
+msgstr "Пропускати клієнтів, які вже мають активне замовлення"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Test the connection"
+msgstr "Перевірити з'єднання"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Text shown to clients"
+msgstr "Текст для клієнтів"
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Thank you: we have checked your ID document and approved it. An order that waited only for it now goes on, and you get its usual emails."
+msgstr "Дякуємо: ми перевірили й підтвердили ваш документ, що посвідчує особу. Замовлення, яке чекало лише на нього, тепер продовжується, і ви отримаєте звичайні листи щодо нього."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be decrypted."
+msgstr "Не вдалося розшифрувати документ, що посвідчує особу."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be read."
+msgstr "Не вдалося прочитати документ, що посвідчує особу."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be stored."
+msgstr "Не вдалося зберегти документ, що посвідчує особу."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays."
+msgstr "Документи, надіслані цим клієнтом. Файли зберігаються в зашифрованому вигляді й видаляються через задану кількість днів після рішення; рішення залишається."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The client gets an email, and their orders that wait only for it go on."
+msgstr "Клієнт отримує лист, а його замовлення, що чекали лише на це, продовжуються."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file could not be uploaded. Please try again."
+msgstr "Не вдалося завантажити файл. Спробуйте ще раз."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file must be a JPG, PNG or WebP image or a PDF."
+msgstr "Файл має бути зображенням JPG, PNG або WebP чи PDF."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
+msgstr "Перевірку на шахрайство (:provider) не вдалося виконати, тому замовлення проходять без перевірки: :error"
+
+#: src/modules/Order/FraudCheck.php
+msgid "The licence key or API key is not valid."
+msgstr "Ліцензійний ключ або ключ API недійсний."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "The record of the decision is kept."
+msgstr "Запис про рішення зберігається."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service answered: score :score, credit left: :credit."
+msgstr "Сервіс відповів: оцінка :score, залишок балансу: :credit."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service did not answer: :error"
+msgstr "Сервіс не відповів: :error"
+
+#: src/modules/Client/IdDocuments.php
+msgid "The text for clients can have up to 5000 characters."
+msgstr "Текст для клієнтів може містити до 5000 символів."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "This client has not sent an ID document."
+msgstr "Цей клієнт не надсилав документ, що посвідчує особу."
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "This order waits for review"
+msgstr "Це замовлення очікує перевірки"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Upload a photo or scan of your ID document: its front and, if it has one, its back. JPG, PNG, WebP or PDF, up to :size MB each. Only our staff can see it, and we delete it after our decision."
+msgstr "Завантажте фото або скан документа, що посвідчує особу: лицьовий бік і, якщо є, зворот. JPG, PNG, WebP або PDF, до :size МБ кожен. Бачити його можуть лише наші співробітники, і ми видаляємо його після рішення."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/themes/palisade/html/mod_order_product.html.twig
+msgid "Upload an ID document"
+msgstr "Завантажити документ, що посвідчує особу"
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Upload an ID document to complete your order."
+msgstr "Завантажте документ, що посвідчує особу, щоб завершити замовлення."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Used with \"Clients in these groups\"."
+msgstr "Використовується разом із «Клієнти з цих груп»."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "We are checking your ID document and will email you when it is done."
+msgstr "Ми перевіряємо ваш документ, що посвідчує особу, і надішлемо лист, коли закінчимо."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "We have checked your ID document and could not accept it."
+msgstr "Ми перевірили ваш документ, що посвідчує особу, і не змогли його прийняти."
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We need an ID document from you before your order starts. Upload it now; we email you when it is approved."
+msgstr "Нам потрібен ваш документ, що посвідчує особу, перш ніж замовлення почнеться. Завантажте його зараз; ми надішлемо лист після підтвердження."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Who is asked"
+msgstr "У кого запитується"
+
+#: src/modules/Client/IdDocuments.php
+msgid "You sent several files in the last hour. Please try again later."
+msgstr "За останню годину ви надіслали кілька файлів. Спробуйте пізніше."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Your ID document is being checked. We will email you when it is done."
+msgstr "Ваш документ, що посвідчує особу, перевіряється. Ми надішлемо лист, коли закінчимо."
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Your ID document was approved"
+msgstr "Ваш документ, що посвідчує особу, підтверджено"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Your ID document was approved. Thank you."
+msgstr "Ваш документ, що посвідчує особу, підтверджено. Дякуємо."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Your ID document was not accepted"
+msgstr "Ваш документ, що посвідчує особу, не прийнято"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Your last ID document was refused: :reason"
+msgstr "Ваш останній документ, що посвідчує особу, відхилено: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "file deleted"
+msgstr "файл видалено"

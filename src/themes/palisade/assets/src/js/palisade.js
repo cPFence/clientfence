@@ -407,6 +407,19 @@ document.addEventListener('DOMContentLoaded', () => {
     import('./ticketfiles.js').then((module) => module.default());
   }
 
+  // ClientFence: the ID document page (/identity, IdDocuments.php): both files go in one request, then the page shows the status.
+  document.querySelectorAll('form[data-cf-identity]').forEach((form) => form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    api('client', 'client/id_document_send', new FormData(form))
+      .then(() => window.location.reload())
+      .catch((error) => {
+        ClientFence.message(errorText(error), 'error');
+        button.disabled = false;
+      });
+  }));
+
   // Print buttons (the CSP blocks inline handlers).
   document.querySelectorAll('[data-bf-print]').forEach((el) => el.addEventListener('click', () => window.print()));
   // The dashboard's Support PIN stays hidden until the client asks to see it.

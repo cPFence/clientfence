@@ -49,6 +49,8 @@ class AppClient extends \ClientFence\App
             'licence' => 'servicelicense',
             // ClientFence core patch: the client's Affiliates page (Client/Affiliates).
             'affiliates' => 'client',
+            // ClientFence core patch: the client's ID document page (Client/IdDocuments.php).
+            'identity' => 'client',
         ][$this->mod] ?? null;
         if ($pageModule !== null) {
             $this->di['mod']($pageModule)->registerClientRoutes($this);

@@ -1,0 +1,46 @@
+{# ClientFence, the ID document page (/identity, Client/IdDocuments.php; the account owner and owner links): what
+   staff ask, the status of the last document sent (waiting, approved, refused with the reason) and, while one is
+   needed, the upload of its front and back (palisade.js sends both in one request). `identity` comes from
+   client_id_document_status. #}
+{% extends "layout_default.html.twig" %}
+{% set active_menu = 'profile' %}
+
+{% block meta_title %}{{ 'ID document'|trans }}{% endblock %}
+{% block page_header %}{{ 'ID document'|trans }}{% endblock %}
+{% block body_class %}clientfence-identity{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'ID document'|trans }}</li>{% endblock %}
+
+{% block content %}
+    {% set latest = identity.latest %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h1 class="h3">{{ 'ID document'|trans }}</h1>
+            {% if identity.text %}<div class="mb-3">{{ identity.text|markdown_to_html }}</div>{% endif %}
+            {% if latest and latest.status == 'approved' %}
+                <div class="alert alert-success mb-0" role="status">{{ 'Your ID document was approved. Thank you.'|trans }}</div>
+            {% elseif latest and latest.status == 'waiting' %}
+                <div class="alert alert-info mb-0" role="status">{{ 'We are checking your ID document and will email you when it is done.'|trans }}</div>
+            {% elseif not identity.required %}
+                <p class="text-secondary mb-0">{{ 'No ID document is needed for your account.'|trans }}</p>
+            {% else %}
+                {% if latest and latest.status == 'refused' %}
+                    <div class="alert alert-danger" role="alert">{{ 'Your last ID document was refused: :reason'|trans({ ':reason': latest.reason }) }} {{ 'Please send a new one.'|trans }}</div>
+                {% endif %}
+                <p>{{ 'Upload a photo or scan of your ID document: its front and, if it has one, its back. JPG, PNG, WebP or PDF, up to :size MB each. Only our staff can see it, and we delete it after our decision.'|trans({ ':size': identity.max_mb }) }}</p>
+                <form method="post" data-cf-identity enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="cf-identity-front">{{ 'Front'|trans }}</label>
+                            <input class="form-control" type="file" id="cf-identity-front" name="front" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="cf-identity-back">{{ 'Back (if it has one)'|trans }}</label>
+                            <input class="form-control" type="file" id="cf-identity-back" name="back" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-3" type="submit">{{ 'Send the ID document'|trans }}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

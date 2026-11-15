@@ -101,6 +101,8 @@ final class Users
             'support_pin' => '*', 'support_pin_new' => 'profile',
             // The affiliate account (Affiliates/); joining and payout requests are for the owner and owner links only.
             'affiliate_get' => 'affiliates', 'affiliate_referrals' => 'affiliates', 'affiliate_entries' => 'affiliates',
+            // The ID document status (IdDocuments.php): the dashboard and order banners; sending it is the owner's.
+            'id_document_status' => '*',
             // users_* (the Users page) are not listed: the owner and owner links only.
         ],
         'email' => ['get_list' => 'emails', 'get' => 'emails', 'resend' => 'emails', 'delete' => 'emails'],
@@ -190,6 +192,8 @@ final class Users
         'users' => 'owner',
         'contacts' => 'contacts',
         'affiliates' => 'affiliates',
+        // The ID document page (IdDocuments.php).
+        'identity' => 'owner',
     ];
 
     /** Profile fields every user sees (the account's name); the rest needs `profile`, the balance `invoices`. */

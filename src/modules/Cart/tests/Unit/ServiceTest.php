@@ -736,6 +736,8 @@ test('checkoutCart returns array with expected keys', function (): void {
     $di['logger'] = new Tests\Helpers\TestLogger();
     $di['request'] = new Request();
     $di['mod_service'] = $di->protect(fn () => $productService);
+    // ClientFence: ID documents off (Client/IdDocuments.php); the fraud check is off in config.php.
+    $di['mod_config'] = $di->protect(fn (): array => []);
 
     $serviceMock->setDi($di);
     $result = $serviceMock->checkoutCart($cart, $client);

@@ -29840,3 +29840,332 @@ msgstr "Tämä henkilökunnan jäsen voi kirjautua pääsyavaimilla (:count). Po
 #: src/modules/Client/TwoFactor.php
 msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
 msgstr "Tilisi vaatii kaksivaiheisen kirjautumisen. Kirjaudu sisään pääsyavaimellasi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid ":name sent an ID document for review"
+msgstr ":name lähetti henkilöllisyystodistuksen tarkistettavaksi"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Account ID"
+msgstr "Tilin tunnus (Account ID)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "All new clients (who sign up after this is saved)"
+msgstr "Kaikki uudet asiakkaat (jotka rekisteröityvät tämän tallentamisen jälkeen)"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "Approve or refuse"
+msgstr "Hyväksy tai hylkää"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Approve the ID document?"
+msgstr "Hyväksytäänkö henkilöllisyystodistus?"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Ask for an ID document from"
+msgstr "Pyydä henkilöllisyystodistus ryhmältä"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Back (if it has one)"
+msgstr "Kääntöpuoli (jos on)"
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose at least one client group."
+msgstr "Valitse vähintään yksi asiakasryhmä."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service to test."
+msgstr "Valitse testattava petostarkistuspalvelu."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service."
+msgstr "Valitse petostarkistuspalvelu."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose the front of your ID document, and its back if it has one."
+msgstr "Valitse henkilöllisyystodistuksesi etupuoli ja kääntöpuoli, jos sellainen on."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose who is asked for an ID document."
+msgstr "Valitse, keneltä henkilöllisyystodistus pyydetään."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients in these groups"
+msgstr "Näiden ryhmien asiakkaat"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients who are asked upload the front and back of an ID document (JPG, PNG, WebP or PDF) on their ID document page. Staff approve or refuse it on the client's ID documents tab, and the client gets an email either way. Orders of a client asked by the first two rules wait for review until the document is approved; approving it lets them go on. The files are encrypted and only staff can download them."
+msgstr "Asiakkaat, joilta sitä pyydetään, lähettävät henkilöllisyystodistuksen etu- ja kääntöpuolen (JPG, PNG, WebP tai PDF) omalla henkilöllisyystodistussivullaan. Henkilökunta hyväksyy tai hylkää sen asiakkaan Henkilöllisyystodistukset-välilehdellä, ja asiakas saa molemmissa tapauksissa sähköpostin. Kahden ensimmäisen säännön perusteella pyydetyn asiakkaan tilaukset odottavat tarkistusta, kunnes asiakirja on hyväksytty; hyväksyminen päästää ne etenemään. Tiedostot on salattu, ja vain henkilökunta voi ladata ne."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Decision"
+msgstr "Päätös"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Delete the files after the decision"
+msgstr "Poista tiedostot päätöksen jälkeen"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Each order a client places in the client area is scored by the service before it is made (staff orders are not checked). An order scoring above the limit waits under Orders > Waiting for review: its invoice cannot be paid until you approve it. The client's email is sent hashed with its domain; card details are never sent. If the service cannot be reached or has no credit left, the order goes through and you get a notification."
+msgstr "Jokainen asiakkaan asiakasalueella tekemä tilaus pisteytetään palvelussa ennen sen luomista (henkilökunnan tilauksia ei tarkisteta). Rajan ylittävän pistemäärän saanut tilaus odottaa kohdassa Tilaukset > Odottaa tarkistusta: sen laskua ei voi maksaa ennen kuin hyväksyt sen. Asiakkaan sähköposti lähetetään tiivisteenä verkkotunnuksen kanssa; korttitietoja ei koskaan lähetetä. Jos palvelua ei tavoiteta tai sen hyvitys on loppu, tilaus menee läpi ja saat ilmoituksen."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter a score limit above 0 and below 100, such as 20."
+msgstr "Anna pisteraja, joka on yli 0 ja alle 100, esimerkiksi 20."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter how many days the files are kept after the decision (0 to 3650)."
+msgstr "Anna, kuinka monta päivää tiedostoja säilytetään päätöksen jälkeen (0–3650)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the MaxMind account ID (a number)."
+msgstr "Anna MaxMind-tilin tunnus (numero)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the licence key or API key."
+msgstr "Anna lisenssiavain tai API-avain."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter the reason the client will read (up to 255 characters)."
+msgstr "Anna syy, jonka asiakas lukee (enintään 255 merkkiä)."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Files and text"
+msgstr "Tiedostot ja teksti"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Fraud check"
+msgstr "Petostarkistus"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Fraud check could not run"
+msgstr "Petostarkistusta ei voitu suorittaa"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check on new orders"
+msgstr "Uusien tilausten petostarkistus"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check service"
+msgstr "Petostarkistuspalvelu"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "From 0 to 100; 20 is the usual limit. The service's own rules that say review or reject also hold the order."
+msgstr "0–100; tavallinen raja on 20. Myös palvelun omat säännöt, jotka sanovat tarkista tai hylkää, pidättävät tilauksen."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Front"
+msgstr "Etupuoli"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Hold orders scoring above"
+msgstr "Pidätä tilaukset, joiden pistemäärä on yli"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "ID document"
+msgstr "Henkilöllisyystodistus"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "ID document sent"
+msgstr "Henkilöllisyystodistus lähetetty"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_tab.html.twig
+msgid "ID documents"
+msgstr "Henkilöllisyystodistukset"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Licence key or API key"
+msgstr "Lisenssiavain tai API-avain (Licence key or API key)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "MaxMind charges each check; FraudLabs Pro has a free plan of 500 checks a month. A check is kept for an hour, so a second try of the same order is not charged again."
+msgstr "MaxMind veloittaa jokaisesta tarkistuksesta; FraudLabs Prolla on ilmainen paketti 500 tarkistukselle kuukaudessa. Tarkistus säilytetään tunnin, joten saman tilauksen toinen yritys ei veloitu uudelleen."
+
+#: src/modules/Client/IdDocuments.php src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "No ID document is needed for your account."
+msgstr "Tilillesi ei tarvita henkilöllisyystodistusta."
+
+#: src/modules/Client/IdDocuments.php
+msgid "No ID document of this client is waiting for a decision."
+msgstr "Mikään tämän asiakkaan henkilöllisyystodistus ei odota päätöstä."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Nobody (off)"
+msgstr "Ei kukaan (pois)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Only Super Administrators can change the fraud check."
+msgstr "Vain pääylläpitäjät voivat muuttaa petostarkistusta."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Only clients whose order another check holds (fraud check, hosting network)"
+msgstr "Vain asiakkaat, joiden tilauksen jokin toinen tarkistus pidättää (petostarkistus, hosting-verkko)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Please send a new one from your client area:"
+msgstr "Lähetä uusi asiakasalueeltasi:"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Please send a new one."
+msgstr "Lähetä uusi."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Please upload an ID document to verify your account."
+msgstr "Lähetä henkilöllisyystodistus tilisi vahvistamiseksi."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Reason for refusing (the client reads it)"
+msgstr "Hylkäyksen syy (asiakas lukee sen)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Reason: :reason"
+msgstr "Syy: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Refused"
+msgstr "Hylätty"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Send the ID document"
+msgstr "Lähetä henkilöllisyystodistus"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Shown on the ID document page: which documents you accept and why you ask. Markdown is allowed."
+msgstr "Näytetään henkilöllisyystodistussivulla: mitä asiakirjoja hyväksyt ja miksi pyydät niitä. Markdown on sallittu."
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Skip clients who already have an active order"
+msgstr "Ohita asiakkaat, joilla on jo aktiivinen tilaus"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Test the connection"
+msgstr "Testaa yhteys"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Text shown to clients"
+msgstr "Asiakkaille näytettävä teksti"
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Thank you: we have checked your ID document and approved it. An order that waited only for it now goes on, and you get its usual emails."
+msgstr "Kiitos: olemme tarkistaneet henkilöllisyystodistuksesi ja hyväksyneet sen. Tilaus, joka odotti vain sitä, etenee nyt, ja saat siitä tavalliset sähköpostit."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be decrypted."
+msgstr "Henkilöllisyystodistuksen salausta ei voitu purkaa."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be read."
+msgstr "Henkilöllisyystodistusta ei voitu lukea."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be stored."
+msgstr "Henkilöllisyystodistusta ei voitu tallentaa."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays."
+msgstr "Tämän asiakkaan lähettämät henkilöllisyystodistukset. Tiedostot säilytetään salattuina ja poistetaan asetetun päivämäärän jälkeen päätöksestä; päätös säilyy."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The client gets an email, and their orders that wait only for it go on."
+msgstr "Asiakas saa sähköpostin, ja hänen tilauksensa, jotka odottavat vain sitä, etenevät."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file could not be uploaded. Please try again."
+msgstr "Tiedostoa ei voitu lähettää. Yritä uudelleen."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file must be a JPG, PNG or WebP image or a PDF."
+msgstr "Tiedoston on oltava JPG-, PNG- tai WebP-kuva tai PDF."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
+msgstr "Petostarkistusta (:provider) ei voitu suorittaa, joten tilaukset menevät läpi tarkistamatta: :error"
+
+#: src/modules/Order/FraudCheck.php
+msgid "The licence key or API key is not valid."
+msgstr "Lisenssiavain tai API-avain ei kelpaa."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "The record of the decision is kept."
+msgstr "Päätöksen tallenne säilytetään."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service answered: score :score, credit left: :credit."
+msgstr "Palvelu vastasi: pistemäärä :score, hyvitystä jäljellä: :credit."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service did not answer: :error"
+msgstr "Palvelu ei vastannut: :error"
+
+#: src/modules/Client/IdDocuments.php
+msgid "The text for clients can have up to 5000 characters."
+msgstr "Asiakkaille tarkoitettu teksti voi olla enintään 5000 merkkiä."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "This client has not sent an ID document."
+msgstr "Tämä asiakas ei ole lähettänyt henkilöllisyystodistusta."
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "This order waits for review"
+msgstr "Tämä tilaus odottaa tarkistusta"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Upload a photo or scan of your ID document: its front and, if it has one, its back. JPG, PNG, WebP or PDF, up to :size MB each. Only our staff can see it, and we delete it after our decision."
+msgstr "Lähetä valokuva tai skannaus henkilöllisyystodistuksestasi: sen etupuoli ja, jos sellainen on, kääntöpuoli. JPG, PNG, WebP tai PDF, enintään :size Mt kukin. Vain henkilökuntamme näkee sen, ja poistamme sen päätöksen jälkeen."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/themes/palisade/html/mod_order_product.html.twig
+msgid "Upload an ID document"
+msgstr "Lähetä henkilöllisyystodistus"
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Upload an ID document to complete your order."
+msgstr "Lähetä henkilöllisyystodistus tilauksesi viimeistelemiseksi."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Used with \"Clients in these groups\"."
+msgstr "Käytetään kohdan ”Näiden ryhmien asiakkaat” kanssa."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "We are checking your ID document and will email you when it is done."
+msgstr "Tarkistamme henkilöllisyystodistustasi ja lähetämme sähköpostin, kun se on valmis."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "We have checked your ID document and could not accept it."
+msgstr "Olemme tarkistaneet henkilöllisyystodistuksesi emmekä voineet hyväksyä sitä."
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We need an ID document from you before your order starts. Upload it now; we email you when it is approved."
+msgstr "Tarvitsemme henkilöllisyystodistuksesi ennen tilauksesi alkua. Lähetä se nyt; lähetämme sähköpostin, kun se on hyväksytty."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Who is asked"
+msgstr "Keneltä pyydetään"
+
+#: src/modules/Client/IdDocuments.php
+msgid "You sent several files in the last hour. Please try again later."
+msgstr "Lähetit useita tiedostoja viimeisen tunnin aikana. Yritä myöhemmin uudelleen."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Your ID document is being checked. We will email you when it is done."
+msgstr "Henkilöllisyystodistustasi tarkistetaan. Lähetämme sähköpostin, kun se on valmis."
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Your ID document was approved"
+msgstr "Henkilöllisyystodistuksesi hyväksyttiin"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Your ID document was approved. Thank you."
+msgstr "Henkilöllisyystodistuksesi hyväksyttiin. Kiitos."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Your ID document was not accepted"
+msgstr "Henkilöllisyystodistustasi ei hyväksytty"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Your last ID document was refused: :reason"
+msgstr "Viimeisin henkilöllisyystodistuksesi hylättiin: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "file deleted"
+msgstr "tiedosto poistettu"

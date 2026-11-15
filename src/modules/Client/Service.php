@@ -1132,6 +1132,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             // ClientFence core patch: the client's group list (Client/Groups.php).
             $connection->delete('client_group_members', ['client_id' => $clientId]);
             Files::forgetClient($connection, $clientId, $this->di['filesystem']);
+            // ClientFence core patch: the client's ID documents go with it (IdDocuments.php).
+            IdDocuments::forgetClient($connection, $clientId, $this->di['filesystem']);
             // ClientFence core patch: affiliate records of the client (Client/Affiliates/Affiliates.php).
             Affiliates\Affiliates::clientRemoved($connection, $clientId);
 
@@ -1336,6 +1338,11 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             // ClientFence core patch: the client page's Affiliate tab (Affiliates/).
             ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_affiliate_tab'],
             ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_affiliate_pane'],
+            // ClientFence core patch: the client page's ID documents tab and the client's banners (IdDocuments.php).
+            ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_id_documents_tab'],
+            ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_id_documents_pane'],
+            ['slot' => 'client.index.dashboard.content.before', 'template' => 'mod_client_id_document_banner'],
+            ['slot' => 'client.order.manage.content.start', 'template' => 'mod_client_id_document_banner'],
             ['slot' => 'client.page.login.form.after', 'template' => 'mod_client_google_button'],
             ['slot' => 'client.page.signup.form.after', 'template' => 'mod_client_google_signup_button'],
         ];
@@ -1360,6 +1367,13 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
     public static function onBeforeAdminCronRun(\ClientFence\Event $event): void
     {
         $di = $event->getDi();
+
+        // ClientFence core patch: ID document files go the set number of days after the decision (IdDocuments.php).
+        try {
+            IdDocuments::prune($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Client: removing old ID document files failed: %s', $e->getMessage());
+        }
 
         try {
             $cutoff = new \DateTime('-900 seconds');

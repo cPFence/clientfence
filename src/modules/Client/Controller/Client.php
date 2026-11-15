@@ -45,6 +45,8 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/contacts', 'get_contacts', [], static::class);
         // ClientFence core patch: the Affiliates page (Client/Affiliates).
         $app->get('/affiliates', 'get_affiliates', [], static::class);
+        // ClientFence core patch: the ID document page (IdDocuments.php).
+        $app->get('/identity', 'get_identity', [], static::class);
         $app->get('/profile', 'get_user_profile', [], static::class);
         $app->get('/two-factor', 'get_twofactor', [], static::class);
         $app->get('/two-factor/code', 'get_twofactor_code', [], static::class);
@@ -202,6 +204,16 @@ class Client implements \ClientFence\InjectionAwareInterface
         $this->di['is_client_logged'];
 
         return $app->render('mod_client_affiliates_page', ['affiliate_page' => $this->di['api_client']->client_affiliate_get()]);
+    }
+
+    /**
+     * The ID document page: what staff ask, the latest one sent and its status, the upload (IdDocuments.php; owner only).
+     */
+    public function get_identity(\ClientFence\App $app): string
+    {
+        $this->di['is_client_logged'];
+
+        return $app->render('mod_client_identity_page', ['identity' => $this->di['api_client']->client_id_document_status()]);
     }
 
     /**

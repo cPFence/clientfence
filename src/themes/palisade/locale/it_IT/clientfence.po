@@ -28475,3 +28475,332 @@ msgstr "Questo membro dello staff può accedere con le passkey (:count). Rimuovi
 #: src/modules/Client/TwoFactor.php
 msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
 msgstr "Il tuo account richiede l'accesso a due fattori. Accedi con la tua passkey."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid ":name sent an ID document for review"
+msgstr ":name ha inviato un documento d'identità per la revisione"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Account ID"
+msgstr "ID account (Account ID)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "All new clients (who sign up after this is saved)"
+msgstr "Tutti i nuovi clienti (che si registrano dopo il salvataggio)"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "Approve or refuse"
+msgstr "Approva o rifiuta"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Approve the ID document?"
+msgstr "Approvare il documento d'identità?"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Ask for an ID document from"
+msgstr "Richiedi un documento d'identità a"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Back (if it has one)"
+msgstr "Retro (se presente)"
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose at least one client group."
+msgstr "Scegli almeno un gruppo di clienti."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service to test."
+msgstr "Scegli il servizio di controllo antifrode da testare."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service."
+msgstr "Scegli il servizio di controllo antifrode."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose the front of your ID document, and its back if it has one."
+msgstr "Scegli il fronte del tuo documento d'identità e il retro se presente."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose who is asked for an ID document."
+msgstr "Scegli a chi viene richiesto un documento d'identità."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients in these groups"
+msgstr "Clienti di questi gruppi"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients who are asked upload the front and back of an ID document (JPG, PNG, WebP or PDF) on their ID document page. Staff approve or refuse it on the client's ID documents tab, and the client gets an email either way. Orders of a client asked by the first two rules wait for review until the document is approved; approving it lets them go on. The files are encrypted and only staff can download them."
+msgstr "I clienti a cui viene richiesto caricano il fronte e il retro di un documento d'identità (JPG, PNG, WebP o PDF) nella loro pagina dei documenti d'identità. Lo staff lo approva o lo rifiuta nella scheda Documenti d'identità del cliente e il cliente riceve un'e-mail in entrambi i casi. Gli ordini di un cliente a cui viene richiesto dalle prime due regole restano in attesa di revisione finché il documento non è approvato; approvarlo li lascia proseguire. I file sono cifrati e solo lo staff può scaricarli."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Decision"
+msgstr "Decisione"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Delete the files after the decision"
+msgstr "Elimina i file dopo la decisione"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Each order a client places in the client area is scored by the service before it is made (staff orders are not checked). An order scoring above the limit waits under Orders > Waiting for review: its invoice cannot be paid until you approve it. The client's email is sent hashed with its domain; card details are never sent. If the service cannot be reached or has no credit left, the order goes through and you get a notification."
+msgstr "Ogni ordine che un cliente effettua nell'area clienti riceve un punteggio dal servizio prima di essere creato (gli ordini dello staff non vengono controllati). Un ordine con punteggio superiore al limite attende in Ordini > In attesa di revisione: la sua fattura non può essere pagata finché non lo approvi. L'e-mail del cliente viene inviata sotto forma di hash con il suo dominio; i dati della carta non vengono mai inviati. Se il servizio non è raggiungibile o non ha più credito, l'ordine prosegue e ricevi una notifica."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter a score limit above 0 and below 100, such as 20."
+msgstr "Inserisci un limite di punteggio superiore a 0 e inferiore a 100, ad esempio 20."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter how many days the files are kept after the decision (0 to 3650)."
+msgstr "Inserisci per quanti giorni i file vengono conservati dopo la decisione (da 0 a 3650)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the MaxMind account ID (a number)."
+msgstr "Inserisci l'ID account MaxMind (un numero)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the licence key or API key."
+msgstr "Inserisci la chiave di licenza o la chiave API."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter the reason the client will read (up to 255 characters)."
+msgstr "Inserisci il motivo che leggerà il cliente (fino a 255 caratteri)."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Files and text"
+msgstr "File e testo"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Fraud check"
+msgstr "Controllo antifrode"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Fraud check could not run"
+msgstr "Impossibile eseguire il controllo antifrode"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check on new orders"
+msgstr "Controllo antifrode sui nuovi ordini"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check service"
+msgstr "Servizio di controllo antifrode"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "From 0 to 100; 20 is the usual limit. The service's own rules that say review or reject also hold the order."
+msgstr "Da 0 a 100; 20 è il limite abituale. Anche le regole proprie del servizio che indicano revisione o rifiuto trattengono l'ordine."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Front"
+msgstr "Fronte"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Hold orders scoring above"
+msgstr "Sospendi gli ordini con punteggio superiore a"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "ID document"
+msgstr "Documento d'identità"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "ID document sent"
+msgstr "Documento d'identità inviato"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_tab.html.twig
+msgid "ID documents"
+msgstr "Documenti d'identità"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Licence key or API key"
+msgstr "Chiave di licenza o chiave API (Licence key or API key)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "MaxMind charges each check; FraudLabs Pro has a free plan of 500 checks a month. A check is kept for an hour, so a second try of the same order is not charged again."
+msgstr "MaxMind addebita ogni controllo; FraudLabs Pro ha un piano gratuito di 500 controlli al mese. Un controllo viene conservato per un'ora, quindi un secondo tentativo dello stesso ordine non viene riaddebitato."
+
+#: src/modules/Client/IdDocuments.php src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "No ID document is needed for your account."
+msgstr "Per il tuo account non serve alcun documento d'identità."
+
+#: src/modules/Client/IdDocuments.php
+msgid "No ID document of this client is waiting for a decision."
+msgstr "Nessun documento d'identità di questo cliente attende una decisione."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Nobody (off)"
+msgstr "Nessuno (disattivato)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Only Super Administrators can change the fraud check."
+msgstr "Solo i super amministratori possono modificare il controllo antifrode."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Only clients whose order another check holds (fraud check, hosting network)"
+msgstr "Solo i clienti il cui ordine è sospeso da un altro controllo (antifrode, rete di hosting)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Please send a new one from your client area:"
+msgstr "Invia un nuovo documento dalla tua area clienti:"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Please send a new one."
+msgstr "Invia un nuovo documento."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Please upload an ID document to verify your account."
+msgstr "Carica un documento d'identità per verificare il tuo account."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Reason for refusing (the client reads it)"
+msgstr "Motivo del rifiuto (lo legge il cliente)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Reason: :reason"
+msgstr "Motivo: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Refused"
+msgstr "Rifiutato"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Send the ID document"
+msgstr "Invia il documento d'identità"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Shown on the ID document page: which documents you accept and why you ask. Markdown is allowed."
+msgstr "Mostrato nella pagina dei documenti d'identità: quali documenti accetti e perché li richiedi. Markdown consentito."
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Skip clients who already have an active order"
+msgstr "Salta i clienti che hanno già un ordine attivo"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Test the connection"
+msgstr "Testa la connessione"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Text shown to clients"
+msgstr "Testo mostrato ai clienti"
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Thank you: we have checked your ID document and approved it. An order that waited only for it now goes on, and you get its usual emails."
+msgstr "Grazie: abbiamo controllato il tuo documento d'identità e lo abbiamo approvato. Un ordine che attendeva solo questo ora prosegue e ricevi le sue e-mail abituali."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be decrypted."
+msgstr "Impossibile decifrare il documento d'identità."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be read."
+msgstr "Impossibile leggere il documento d'identità."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be stored."
+msgstr "Impossibile salvare il documento d'identità."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays."
+msgstr "I documenti d'identità inviati da questo cliente. I file sono conservati cifrati ed eliminati dopo il numero di giorni impostato dalla decisione; la decisione resta."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The client gets an email, and their orders that wait only for it go on."
+msgstr "Il cliente riceve un'e-mail e i suoi ordini che attendono solo questo proseguono."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file could not be uploaded. Please try again."
+msgstr "Impossibile caricare il file. Riprova."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file must be a JPG, PNG or WebP image or a PDF."
+msgstr "Il file deve essere un'immagine JPG, PNG o WebP oppure un PDF."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
+msgstr "Impossibile eseguire il controllo antifrode (:provider), quindi gli ordini proseguono senza controllo: :error"
+
+#: src/modules/Order/FraudCheck.php
+msgid "The licence key or API key is not valid."
+msgstr "La chiave di licenza o la chiave API non è valida."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "The record of the decision is kept."
+msgstr "La registrazione della decisione viene conservata."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service answered: score :score, credit left: :credit."
+msgstr "Il servizio ha risposto: punteggio :score, credito rimasto: :credit."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service did not answer: :error"
+msgstr "Il servizio non ha risposto: :error"
+
+#: src/modules/Client/IdDocuments.php
+msgid "The text for clients can have up to 5000 characters."
+msgstr "Il testo per i clienti può avere fino a 5000 caratteri."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "This client has not sent an ID document."
+msgstr "Questo cliente non ha inviato un documento d'identità."
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "This order waits for review"
+msgstr "Questo ordine è in attesa di revisione"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Upload a photo or scan of your ID document: its front and, if it has one, its back. JPG, PNG, WebP or PDF, up to :size MB each. Only our staff can see it, and we delete it after our decision."
+msgstr "Carica una foto o una scansione del tuo documento d'identità: il fronte e, se presente, il retro. JPG, PNG, WebP o PDF, fino a :size MB ciascuno. Solo il nostro staff può vederlo e lo eliminiamo dopo la nostra decisione."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/themes/palisade/html/mod_order_product.html.twig
+msgid "Upload an ID document"
+msgstr "Carica un documento d'identità"
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Upload an ID document to complete your order."
+msgstr "Carica un documento d'identità per completare il tuo ordine."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Used with \"Clients in these groups\"."
+msgstr "Usato con «Clienti di questi gruppi»."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "We are checking your ID document and will email you when it is done."
+msgstr "Stiamo controllando il tuo documento d'identità e ti invieremo un'e-mail al termine."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "We have checked your ID document and could not accept it."
+msgstr "Abbiamo controllato il tuo documento d'identità e non abbiamo potuto accettarlo."
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We need an ID document from you before your order starts. Upload it now; we email you when it is approved."
+msgstr "Abbiamo bisogno di un tuo documento d'identità prima che il tuo ordine parta. Caricalo ora; ti inviamo un'e-mail quando viene approvato."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Who is asked"
+msgstr "A chi viene richiesto"
+
+#: src/modules/Client/IdDocuments.php
+msgid "You sent several files in the last hour. Please try again later."
+msgstr "Hai inviato diversi file nell'ultima ora. Riprova più tardi."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Your ID document is being checked. We will email you when it is done."
+msgstr "Il tuo documento d'identità è in fase di controllo. Ti invieremo un'e-mail al termine."
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Your ID document was approved"
+msgstr "Il tuo documento d'identità è stato approvato"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Your ID document was approved. Thank you."
+msgstr "Il tuo documento d'identità è stato approvato. Grazie."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Your ID document was not accepted"
+msgstr "Il tuo documento d'identità non è stato accettato"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Your last ID document was refused: :reason"
+msgstr "Il tuo ultimo documento d'identità è stato rifiutato: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "file deleted"
+msgstr "file eliminato"

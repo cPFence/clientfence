@@ -29414,3 +29414,332 @@ msgstr "Nhân viên này có thể đăng nhập bằng khóa truy cập (:count
 #: src/modules/Client/TwoFactor.php
 msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
 msgstr "Tài khoản của bạn yêu cầu đăng nhập hai yếu tố. Vui lòng đăng nhập bằng khóa truy cập của bạn."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid ":name sent an ID document for review"
+msgstr ":name đã gửi giấy tờ tùy thân để xem xét"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Account ID"
+msgstr "ID tài khoản (Account ID)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "All new clients (who sign up after this is saved)"
+msgstr "Tất cả khách hàng mới (đăng ký sau khi lưu thiết lập này)"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "Approve or refuse"
+msgstr "Phê duyệt hoặc từ chối"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Approve the ID document?"
+msgstr "Phê duyệt giấy tờ tùy thân?"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Ask for an ID document from"
+msgstr "Yêu cầu giấy tờ tùy thân từ"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Back (if it has one)"
+msgstr "Mặt sau (nếu có)"
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose at least one client group."
+msgstr "Chọn ít nhất một nhóm khách hàng."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service to test."
+msgstr "Chọn dịch vụ kiểm tra gian lận để thử."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service."
+msgstr "Chọn dịch vụ kiểm tra gian lận."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose the front of your ID document, and its back if it has one."
+msgstr "Chọn mặt trước của giấy tờ tùy thân và mặt sau nếu có."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose who is asked for an ID document."
+msgstr "Chọn ai bị yêu cầu giấy tờ tùy thân."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients in these groups"
+msgstr "Khách hàng trong các nhóm này"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients who are asked upload the front and back of an ID document (JPG, PNG, WebP or PDF) on their ID document page. Staff approve or refuse it on the client's ID documents tab, and the client gets an email either way. Orders of a client asked by the first two rules wait for review until the document is approved; approving it lets them go on. The files are encrypted and only staff can download them."
+msgstr "Khách hàng bị yêu cầu sẽ tải lên mặt trước và mặt sau của giấy tờ tùy thân (JPG, PNG, WebP hoặc PDF) tại trang giấy tờ tùy thân của họ. Nhân viên phê duyệt hoặc từ chối trên tab Giấy tờ tùy thân của khách hàng, và khách hàng nhận email trong cả hai trường hợp. Đơn hàng của khách hàng bị yêu cầu theo hai quy tắc đầu tiên chờ xem xét cho đến khi giấy tờ được phê duyệt; phê duyệt cho phép chúng tiếp tục. Các tệp được mã hóa và chỉ nhân viên mới tải xuống được."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Decision"
+msgstr "Quyết định"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Delete the files after the decision"
+msgstr "Xóa các tệp sau quyết định"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Each order a client places in the client area is scored by the service before it is made (staff orders are not checked). An order scoring above the limit waits under Orders > Waiting for review: its invoice cannot be paid until you approve it. The client's email is sent hashed with its domain; card details are never sent. If the service cannot be reached or has no credit left, the order goes through and you get a notification."
+msgstr "Mỗi đơn hàng khách hàng đặt trong khu vực khách hàng được dịch vụ chấm điểm trước khi tạo (đơn hàng của nhân viên không bị kiểm tra). Đơn hàng có điểm cao hơn giới hạn chờ trong Đơn hàng > Đang chờ xem xét: hóa đơn của nó không thể thanh toán cho đến khi bạn phê duyệt. Email của khách hàng được gửi dưới dạng băm cùng với tên miền; dữ liệu thẻ không bao giờ được gửi. Nếu không liên hệ được dịch vụ hoặc hết tín dụng, đơn hàng vẫn đi qua và bạn nhận được thông báo."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter a score limit above 0 and below 100, such as 20."
+msgstr "Nhập giới hạn điểm lớn hơn 0 và nhỏ hơn 100, chẳng hạn 20."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter how many days the files are kept after the decision (0 to 3650)."
+msgstr "Nhập số ngày giữ các tệp sau quyết định (0 đến 3650)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the MaxMind account ID (a number)."
+msgstr "Nhập ID tài khoản MaxMind (một số)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the licence key or API key."
+msgstr "Nhập khóa giấy phép hoặc khóa API."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter the reason the client will read (up to 255 characters)."
+msgstr "Nhập lý do khách hàng sẽ đọc (tối đa 255 ký tự)."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Files and text"
+msgstr "Tệp và văn bản"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Fraud check"
+msgstr "Kiểm tra gian lận"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Fraud check could not run"
+msgstr "Không thể chạy kiểm tra gian lận"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check on new orders"
+msgstr "Kiểm tra gian lận đơn hàng mới"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check service"
+msgstr "Dịch vụ kiểm tra gian lận"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "From 0 to 100; 20 is the usual limit. The service's own rules that say review or reject also hold the order."
+msgstr "Từ 0 đến 100; giới hạn thông thường là 20. Các quy tắc riêng của dịch vụ yêu cầu xem xét hoặc từ chối cũng giữ lại đơn hàng."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Front"
+msgstr "Mặt trước"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Hold orders scoring above"
+msgstr "Giữ các đơn hàng có điểm cao hơn"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "ID document"
+msgstr "Giấy tờ tùy thân"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "ID document sent"
+msgstr "Đã gửi giấy tờ tùy thân"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_tab.html.twig
+msgid "ID documents"
+msgstr "Giấy tờ tùy thân"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Licence key or API key"
+msgstr "Khóa giấy phép hoặc khóa API (Licence key or API key)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "MaxMind charges each check; FraudLabs Pro has a free plan of 500 checks a month. A check is kept for an hour, so a second try of the same order is not charged again."
+msgstr "MaxMind tính phí mỗi lần kiểm tra; FraudLabs Pro có gói miễn phí 500 lần kiểm tra mỗi tháng. Một lần kiểm tra được giữ trong một giờ, nên lần thử thứ hai của cùng đơn hàng không bị tính phí lại."
+
+#: src/modules/Client/IdDocuments.php src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "No ID document is needed for your account."
+msgstr "Tài khoản của bạn không cần giấy tờ tùy thân."
+
+#: src/modules/Client/IdDocuments.php
+msgid "No ID document of this client is waiting for a decision."
+msgstr "Không có giấy tờ tùy thân nào của khách hàng này đang chờ quyết định."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Nobody (off)"
+msgstr "Không ai (tắt)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Only Super Administrators can change the fraud check."
+msgstr "Chỉ Quản trị viên cấp cao mới có thể thay đổi kiểm tra gian lận."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Only clients whose order another check holds (fraud check, hosting network)"
+msgstr "Chỉ những khách hàng có đơn hàng bị kiểm tra khác giữ lại (kiểm tra gian lận, mạng hosting)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Please send a new one from your client area:"
+msgstr "Vui lòng gửi giấy tờ mới từ khu vực khách hàng của bạn:"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Please send a new one."
+msgstr "Vui lòng gửi giấy tờ mới."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Please upload an ID document to verify your account."
+msgstr "Vui lòng tải lên giấy tờ tùy thân để xác minh tài khoản."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Reason for refusing (the client reads it)"
+msgstr "Lý do từ chối (khách hàng đọc được)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Reason: :reason"
+msgstr "Lý do: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Refused"
+msgstr "Đã từ chối"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Send the ID document"
+msgstr "Gửi giấy tờ tùy thân"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Shown on the ID document page: which documents you accept and why you ask. Markdown is allowed."
+msgstr "Hiển thị trên trang giấy tờ tùy thân: bạn chấp nhận giấy tờ nào và vì sao yêu cầu. Cho phép dùng Markdown."
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Skip clients who already have an active order"
+msgstr "Bỏ qua khách hàng đã có đơn hàng đang hoạt động"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Test the connection"
+msgstr "Kiểm tra kết nối"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Text shown to clients"
+msgstr "Văn bản hiển thị cho khách hàng"
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Thank you: we have checked your ID document and approved it. An order that waited only for it now goes on, and you get its usual emails."
+msgstr "Cảm ơn bạn: chúng tôi đã kiểm tra và phê duyệt giấy tờ tùy thân của bạn. Đơn hàng chỉ chờ giấy tờ này nay được tiếp tục, và bạn nhận các email thông thường của nó."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be decrypted."
+msgstr "Không thể giải mã giấy tờ tùy thân."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be read."
+msgstr "Không thể đọc giấy tờ tùy thân."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be stored."
+msgstr "Không thể lưu giấy tờ tùy thân."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays."
+msgstr "Các giấy tờ tùy thân khách hàng này đã gửi. Các tệp được giữ ở dạng mã hóa và xóa sau số ngày đã đặt kể từ quyết định; quyết định vẫn được giữ."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The client gets an email, and their orders that wait only for it go on."
+msgstr "Khách hàng nhận email, và các đơn hàng chỉ chờ điều này được tiếp tục."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file could not be uploaded. Please try again."
+msgstr "Không thể tải tệp lên. Vui lòng thử lại."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file must be a JPG, PNG or WebP image or a PDF."
+msgstr "Tệp phải là ảnh JPG, PNG hoặc WebP hoặc PDF."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
+msgstr "Không thể chạy kiểm tra gian lận (:provider), nên đơn hàng đi qua mà không được kiểm tra: :error"
+
+#: src/modules/Order/FraudCheck.php
+msgid "The licence key or API key is not valid."
+msgstr "Khóa giấy phép hoặc khóa API không hợp lệ."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "The record of the decision is kept."
+msgstr "Bản ghi quyết định được giữ lại."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service answered: score :score, credit left: :credit."
+msgstr "Dịch vụ đã trả lời: điểm :score, tín dụng còn lại: :credit."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service did not answer: :error"
+msgstr "Dịch vụ không trả lời: :error"
+
+#: src/modules/Client/IdDocuments.php
+msgid "The text for clients can have up to 5000 characters."
+msgstr "Văn bản dành cho khách hàng có thể dài tới 5000 ký tự."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "This client has not sent an ID document."
+msgstr "Khách hàng này chưa gửi giấy tờ tùy thân."
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "This order waits for review"
+msgstr "Đơn hàng này đang chờ xem xét"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Upload a photo or scan of your ID document: its front and, if it has one, its back. JPG, PNG, WebP or PDF, up to :size MB each. Only our staff can see it, and we delete it after our decision."
+msgstr "Tải lên ảnh chụp hoặc bản quét giấy tờ tùy thân của bạn: mặt trước và, nếu có, mặt sau. JPG, PNG, WebP hoặc PDF, mỗi tệp tối đa :size MB. Chỉ nhân viên của chúng tôi xem được và chúng tôi xóa sau khi quyết định."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/themes/palisade/html/mod_order_product.html.twig
+msgid "Upload an ID document"
+msgstr "Tải lên giấy tờ tùy thân"
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Upload an ID document to complete your order."
+msgstr "Tải lên giấy tờ tùy thân để hoàn tất đơn hàng của bạn."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Used with \"Clients in these groups\"."
+msgstr "Dùng cùng với \"Khách hàng trong các nhóm này\"."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "We are checking your ID document and will email you when it is done."
+msgstr "Chúng tôi đang kiểm tra giấy tờ tùy thân của bạn và sẽ gửi email khi xong."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "We have checked your ID document and could not accept it."
+msgstr "Chúng tôi đã kiểm tra giấy tờ tùy thân của bạn và không thể chấp nhận."
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We need an ID document from you before your order starts. Upload it now; we email you when it is approved."
+msgstr "Chúng tôi cần giấy tờ tùy thân của bạn trước khi đơn hàng bắt đầu. Hãy tải lên ngay; chúng tôi gửi email khi được phê duyệt."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Who is asked"
+msgstr "Ai bị yêu cầu"
+
+#: src/modules/Client/IdDocuments.php
+msgid "You sent several files in the last hour. Please try again later."
+msgstr "Bạn đã gửi nhiều tệp trong giờ qua. Vui lòng thử lại sau."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Your ID document is being checked. We will email you when it is done."
+msgstr "Giấy tờ tùy thân của bạn đang được kiểm tra. Chúng tôi sẽ gửi email khi xong."
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Your ID document was approved"
+msgstr "Giấy tờ tùy thân của bạn đã được phê duyệt"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Your ID document was approved. Thank you."
+msgstr "Giấy tờ tùy thân của bạn đã được phê duyệt. Cảm ơn bạn."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Your ID document was not accepted"
+msgstr "Giấy tờ tùy thân của bạn không được chấp nhận"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Your last ID document was refused: :reason"
+msgstr "Giấy tờ tùy thân gần nhất của bạn đã bị từ chối: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "file deleted"
+msgstr "tệp đã xóa"

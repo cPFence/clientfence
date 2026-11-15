@@ -39,6 +39,8 @@ final class SettingsIndex
         'currency' => 'exchange rate money',
         'client' => 'sign-up signup registration register',
         'client#tab-affiliates' => 'affiliate affiliates referral referrals commission payout partner',
+        'client#tab-id-documents' => 'ID identity verification verify passport KYC document',
+        'order#tab-fraud-check' => 'fraud MaxMind minFraud FraudLabs risk score',
     ];
 
     /**

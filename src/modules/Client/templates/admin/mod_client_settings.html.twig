@@ -47,6 +47,10 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" href="#tab-affiliates" data-bs-toggle="tab" role="tab">{{ 'Affiliates'|trans }}</a>
                 </li>
+                {# ClientFence core patch: the ID documents settings (Client/IdDocuments.php), in their own form below. #}
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#tab-id-documents" data-bs-toggle="tab" role="tab">{{ 'ID documents'|trans }}</a>
+                </li>
             </ul>
             <form method="post" action="{{ 'extension/config_save'|api_url }}" {{ fb_api_form({message: 'Configuration Updated'|trans}) }}>
                 <input type="hidden" name="ext" value="mod_client">
@@ -197,6 +201,7 @@
                 </div>
             </form>
             {{ include('mod_client_settings_affiliates.html.twig') }}
+            {{ include('mod_client_settings_id_documents.html.twig') }}
         </div>
     </div>
     {# ClientFence: Google sign-in (Client/Google.php), saved on its own. #}

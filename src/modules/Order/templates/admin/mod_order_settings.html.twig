@@ -29,6 +29,19 @@
                 <p class="card-subtitle">{{ 'Control renewal-date logic, addon visibility, suspension reasons, and automated cancellation behavior.'|trans }}</p>
             </div>
         </div>
+        {# ClientFence core patch: the Fraud check tab (Order/FraudCheck.php), saved by its own form. #}
+        <div class="card-body pt-3 pb-0">
+            <ul class="nav nav-pills mb-3" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" href="#tab-index" data-bs-toggle="tab" role="tab">{{ 'General'|trans }}</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#tab-fraud-check" data-bs-toggle="tab" role="tab">{{ 'Fraud check'|trans }}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content border-top">
+        <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
         <form method="post" action="{{ 'extension/config_save'|api_url }}" {{ fb_api_form({message: 'Settings Updated'|trans}) }}>
             <div class="card-body">
                 <div class="alert alert-info" role="alert">
@@ -175,6 +188,9 @@
                 <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
             </div>
         </form>
+        </div>
+        {{ include('mod_order_settings_fraud_check.html.twig') }}
+        </div>
     </div>
     {# ClientFence: the store, saved on its own (Clientfence\Service::SETTINGS). #}
     {{ include('mod_clientfence_settings_store.html.twig') }}

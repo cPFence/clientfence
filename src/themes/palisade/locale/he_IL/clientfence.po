@@ -33076,3 +33076,332 @@ msgstr "איש הצוות הזה יכול להתחבר עם מפתחות גיש�
 #: src/modules/Client/TwoFactor.php
 msgid "Your account requires two-factor sign-in. Please sign in with your passkey."
 msgstr "החשבון שלכם דורש כניסה באמצעות אימות דו-שלבי. אנא התחברו עם מפתח הגישה שלכם."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Notifications.php
+msgid ":name sent an ID document for review"
+msgstr ":name שלח מסמך זיהוי לבדיקה"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Account ID"
+msgstr "מזהה חשבון (Account ID)"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "All new clients (who sign up after this is saved)"
+msgstr "כל הלקוחות החדשים (שנרשמים לאחר שמירת ההגדרה)"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "Approve or refuse"
+msgstr "אישור או דחייה"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Approve the ID document?"
+msgstr "לאשר את מסמך הזיהוי?"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Ask for an ID document from"
+msgstr "בקשת מסמך זיהוי מ"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Back (if it has one)"
+msgstr "גב (אם יש)"
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose at least one client group."
+msgstr "בחרו לפחות קבוצת לקוחות אחת."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service to test."
+msgstr "בחרו את שירות בדיקת ההונאה לבדיקה."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Choose the fraud check service."
+msgstr "בחרו את שירות בדיקת ההונאה."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose the front of your ID document, and its back if it has one."
+msgstr "בחרו את החזית של מסמך הזיהוי שלכם ואת הגב אם יש."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Choose who is asked for an ID document."
+msgstr "בחרו ממי מבקשים מסמך זיהוי."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients in these groups"
+msgstr "לקוחות בקבוצות אלה"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Clients who are asked upload the front and back of an ID document (JPG, PNG, WebP or PDF) on their ID document page. Staff approve or refuse it on the client's ID documents tab, and the client gets an email either way. Orders of a client asked by the first two rules wait for review until the document is approved; approving it lets them go on. The files are encrypted and only staff can download them."
+msgstr "לקוחות שמבקשים מהם מעלים את החזית והגב של מסמך זיהוי (JPG, PNG, WebP או PDF) בעמוד מסמכי הזיהוי שלהם. אנשי הצוות מאשרים או דוחים אותו בלשונית מסמכי זיהוי של הלקוח, והלקוח מקבל דוא\"ל בשני המקרים. הזמנות של לקוח שמבקשים ממנו לפי שני הכללים הראשונים ממתינות לבדיקה עד שהמסמך יאושר; אישורו מאפשר להן להמשיך. הקבצים מוצפנים ורק אנשי צוות יכולים להוריד אותם."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Decision"
+msgstr "החלטה"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Delete the files after the decision"
+msgstr "מחיקת הקבצים לאחר ההחלטה"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Each order a client places in the client area is scored by the service before it is made (staff orders are not checked). An order scoring above the limit waits under Orders > Waiting for review: its invoice cannot be paid until you approve it. The client's email is sent hashed with its domain; card details are never sent. If the service cannot be reached or has no credit left, the order goes through and you get a notification."
+msgstr "כל הזמנה שלקוח מבצע באזור הלקוחות מקבלת ציון מהשירות לפני שהיא נוצרת (הזמנות של אנשי צוות אינן נבדקות). הזמנה עם ציון מעל הסף ממתינה ב-הזמנות > ממתין לבדיקה: את החשבונית שלה אי אפשר לשלם עד שתאשרו. הדוא\"ל של הלקוח נשלח מגובב יחד עם הדומיין שלו; פרטי כרטיס אינם נשלחים לעולם. אם אי אפשר להגיע לשירות או שאין לו קרדיט, ההזמנה עוברת ואתם מקבלים התראה."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter a score limit above 0 and below 100, such as 20."
+msgstr "הזינו סף ציון הגדול מ-0 וקטן מ-100, למשל 20."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter how many days the files are kept after the decision (0 to 3650)."
+msgstr "הזינו כמה ימים הקבצים נשמרים לאחר ההחלטה (0 עד 3650)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the MaxMind account ID (a number)."
+msgstr "הזינו את מזהה חשבון MaxMind (מספר)."
+
+#: src/modules/Order/FraudCheck.php
+msgid "Enter the licence key or API key."
+msgstr "הזינו את מפתח הרישיון או מפתח ה-API."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Enter the reason the client will read (up to 255 characters)."
+msgstr "הזינו את הסיבה שהלקוח יקרא (עד 255 תווים)."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Files and text"
+msgstr "קבצים וטקסט"
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
+msgid "Fraud check"
+msgstr "בדיקת הונאה"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Fraud check could not run"
+msgstr "בדיקת ההונאה לא הצליחה לרוץ"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check on new orders"
+msgstr "בדיקת הונאה בהזמנות חדשות"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Fraud check service"
+msgstr "שירות בדיקת הונאה"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "From 0 to 100; 20 is the usual limit. The service's own rules that say review or reject also hold the order."
+msgstr "מ-0 עד 100; הסף הרגיל הוא 20. גם הכללים של השירות עצמו שקובעים בדיקה או דחייה משהים את ההזמנה."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Front"
+msgstr "חזית"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Hold orders scoring above"
+msgstr "השהיית הזמנות עם ציון מעל"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
+msgid "ID document"
+msgstr "מסמך זיהוי"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "ID document sent"
+msgstr "מסמך הזיהוי נשלח"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig src/modules/Client/templates/admin/widgets/mod_client_id_documents_tab.html.twig
+msgid "ID documents"
+msgstr "מסמכי זיהוי"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Licence key or API key"
+msgstr "מפתח רישיון או מפתח API (Licence key or API key)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "MaxMind charges each check; FraudLabs Pro has a free plan of 500 checks a month. A check is kept for an hour, so a second try of the same order is not charged again."
+msgstr "MaxMind גובה על כל בדיקה; ל-FraudLabs Pro יש תוכנית חינם של 500 בדיקות בחודש. בדיקה נשמרת שעה, ולכן ניסיון שני של אותה הזמנה אינו מחויב שוב."
+
+#: src/modules/Client/IdDocuments.php src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "No ID document is needed for your account."
+msgstr "אין צורך במסמך זיהוי עבור החשבון שלכם."
+
+#: src/modules/Client/IdDocuments.php
+msgid "No ID document of this client is waiting for a decision."
+msgstr "אף מסמך זיהוי של לקוח זה אינו ממתין להחלטה."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Nobody (off)"
+msgstr "אף אחד (כבוי)"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Only Super Administrators can change the fraud check."
+msgstr "רק מנהלי מערכת ראשיים יכולים לשנות את בדיקת ההונאה."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Only clients whose order another check holds (fraud check, hosting network)"
+msgstr "רק לקוחות שההזמנה שלהם מושהית על ידי בדיקה אחרת (בדיקת הונאה, רשת אחסון)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Please send a new one from your client area:"
+msgstr "אנא שלחו חדש מאזור הלקוחות שלכם:"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Please send a new one."
+msgstr "אנא שלחו חדש."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Please upload an ID document to verify your account."
+msgstr "אנא העלו מסמך זיהוי כדי לאמת את החשבון שלכם."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Reason for refusing (the client reads it)"
+msgstr "סיבת הדחייה (הלקוח קורא אותה)"
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Reason: :reason"
+msgstr "סיבה: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "Refused"
+msgstr "נדחה"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Send the ID document"
+msgstr "שליחת מסמך הזיהוי"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Shown on the ID document page: which documents you accept and why you ask. Markdown is allowed."
+msgstr "מוצג בעמוד מסמכי הזיהוי: אילו מסמכים אתם מקבלים ולמה אתם מבקשים אותם. מותר Markdown."
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Skip clients who already have an active order"
+msgstr "דילוג על לקוחות שכבר יש להם הזמנה פעילה"
+
+#: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
+msgid "Test the connection"
+msgstr "בדיקת החיבור"
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Text shown to clients"
+msgstr "טקסט שמוצג ללקוחות"
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Thank you: we have checked your ID document and approved it. An order that waited only for it now goes on, and you get its usual emails."
+msgstr "תודה: בדקנו את מסמך הזיהוי שלכם ואישרנו אותו. הזמנה שחיכתה רק לו ממשיכה עכשיו, ואתם מקבלים את הודעות הדוא\"ל הרגילות שלה."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be decrypted."
+msgstr "לא ניתן היה לפענח את מסמך הזיהוי."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be read."
+msgstr "לא ניתן היה לקרוא את מסמך הזיהוי."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The ID document could not be stored."
+msgstr "לא ניתן היה לשמור את מסמך הזיהוי."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays."
+msgstr "מסמכי הזיהוי שהלקוח הזה שלח. הקבצים נשמרים מוצפנים ונמחקים כמספר הימים שהוגדר לאחר ההחלטה; ההחלטה נשארת."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "The client gets an email, and their orders that wait only for it go on."
+msgstr "הלקוח מקבל דוא\"ל, וההזמנות שלו שממתינות רק לכך ממשיכות."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file could not be uploaded. Please try again."
+msgstr "לא ניתן היה להעלות את הקובץ. נסו שוב."
+
+#: src/modules/Client/IdDocuments.php
+msgid "The file must be a JPG, PNG or WebP image or a PDF."
+msgstr "הקובץ חייב להיות תמונת JPG, PNG או WebP או PDF."
+
+#: src/modules/Clientfence/Notifications.php
+msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
+msgstr "בדיקת ההונאה (:provider) לא הצליחה לרוץ, ולכן הזמנות עוברות ללא בדיקה: :error"
+
+#: src/modules/Order/FraudCheck.php
+msgid "The licence key or API key is not valid."
+msgstr "מפתח הרישיון או מפתח ה-API אינו תקף."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "The record of the decision is kept."
+msgstr "רישום ההחלטה נשמר."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service answered: score :score, credit left: :credit."
+msgstr "השירות ענה: ציון :score, קרדיט שנותר: :credit."
+
+#: src/modules/Order/FraudCheck.php
+msgid "The service did not answer: :error"
+msgstr "השירות לא ענה: :error"
+
+#: src/modules/Client/IdDocuments.php
+msgid "The text for clients can have up to 5000 characters."
+msgstr "הטקסט ללקוחות יכול להכיל עד 5000 תווים."
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "This client has not sent an ID document."
+msgstr "לקוח זה לא שלח מסמך זיהוי."
+
+#: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig
+msgid "This order waits for review"
+msgstr "הזמנה זו ממתינה לבדיקה"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Upload a photo or scan of your ID document: its front and, if it has one, its back. JPG, PNG, WebP or PDF, up to :size MB each. Only our staff can see it, and we delete it after our decision."
+msgstr "העלו תמונה או סריקה של מסמך הזיהוי שלכם: החזית ואם יש גם הגב. JPG, PNG, WebP או PDF, עד :size MB כל אחד. רק אנשי הצוות שלנו יכולים לראות אותו, ואנו מוחקים אותו לאחר ההחלטה."
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/themes/palisade/html/mod_order_product.html.twig
+msgid "Upload an ID document"
+msgstr "העלאת מסמך זיהוי"
+
+#: src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Upload an ID document to complete your order."
+msgstr "העלו מסמך זיהוי כדי להשלים את ההזמנה שלכם."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Used with \"Clients in these groups\"."
+msgstr "משמש עם \"לקוחות בקבוצות אלה\"."
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "We are checking your ID document and will email you when it is done."
+msgstr "אנו בודקים את מסמך הזיהוי שלכם ונשלח לכם דוא\"ל בסיום."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "We have checked your ID document and could not accept it."
+msgstr "בדקנו את מסמך הזיהוי שלכם ולא יכולנו לקבל אותו."
+
+#: src/themes/palisade/html/mod_order_product.html.twig
+msgid "We need an ID document from you before your order starts. Upload it now; we email you when it is approved."
+msgstr "אנו זקוקים למסמך זיהוי מכם לפני שההזמנה שלכם מתחילה. העלו אותו עכשיו; נשלח לכם דוא\"ל כשיאושר."
+
+#: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
+msgid "Who is asked"
+msgstr "ממי מבקשים"
+
+#: src/modules/Client/IdDocuments.php
+msgid "You sent several files in the last hour. Please try again later."
+msgstr "שלחתם כמה קבצים בשעה האחרונה. נסו שוב מאוחר יותר."
+
+#: src/modules/Client/IdDocuments.php
+msgid "Your ID document is being checked. We will email you when it is done."
+msgstr "מסמך הזיהוי שלכם נבדק. נשלח לכם דוא\"ל בסיום."
+
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig
+msgid "Your ID document was approved"
+msgstr "מסמך הזיהוי שלכם אושר"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig
+msgid "Your ID document was approved. Thank you."
+msgstr "מסמך הזיהוי שלכם אושר. תודה."
+
+#: src/modules/Client/templates/email/mod_client_id_document_refused.html.twig
+msgid "Your ID document was not accepted"
+msgstr "מסמך הזיהוי שלכם לא התקבל"
+
+#: src/modules/Client/templates/client/mod_client_identity_page.html.twig src/modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig
+msgid "Your last ID document was refused: :reason"
+msgstr "מסמך הזיהוי האחרון שלכם נדחה: :reason"
+
+#: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
+msgid "file deleted"
+msgstr "הקובץ נמחק"

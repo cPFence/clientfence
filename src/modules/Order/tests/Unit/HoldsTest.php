@@ -176,3 +176,27 @@ test('approving a free checkout counts its reserved promo uses as used', functio
         ->and($db->fetchOne('SELECT committed_at FROM promo_redemption WHERE id = 1'))->not->toBeNull()
         ->and($calls['activateOrder'])->toBe([3]);
 });
+
+test('one checkout held by several checks is one hold: the first reason, the others in the note', function (): void {
+    expect(Holds::combine(null, null, null))->toBeNull()
+        ->and(Holds::combine(null, ['reason' => 'fraud', 'note' => 'MaxMind 45 / 20'], ['reason' => 'id_document', 'note' => '']))->toBe(['reason' => 'fraud', 'note' => 'MaxMind 45 / 20 [id_document]'])
+        ->and(Holds::combine(['reason' => 'network', 'note' => 'HETZNER-AS (AS24940)'], ['reason' => 'fraud', 'note' => 'MaxMind 45 / 20'], null))->toBe(['reason' => 'network', 'note' => 'HETZNER-AS (AS24940) [fraud] MaxMind 45 / 20']);
+});
+
+test('an approved ID document releases only the checkouts that wait for nothing else', function (): void {
+    // ClientFence: Client/IdDocuments.php; order 3 waits only for the ID, order 4 also for its network.
+    $db = holdsDb();
+    $calls = [];
+    $di = holdsContainer($db, $calls);
+    $db->executeStatement('CREATE TABLE promo_redemption (id INTEGER PRIMARY KEY, client_order_id INTEGER, invoice_id INTEGER, status TEXT, committed_at TEXT, updated_at TEXT)');
+    foreach ([3, 4] as $id) {
+        $db->insert('client_order', ['id' => $id, 'client_id' => 9, 'product_id' => 1, 'title' => 'Order ' . $id, 'status' => 'pending_setup']);
+    }
+    Holds::add($db, [3], 9, null, Holds::REASON_ID_DOCUMENT, '');
+    $db->insert('client_order_hold', ['client_order_id' => 4, 'client_id' => 9, 'invoice_id' => null, 'reason' => 'network', 'note' => 'HETZNER-AS (AS24940) [id_document]', 'status' => 'held', 'created_at' => '2026-11-01 10:00:00', 'updated_at' => '2026-11-01 10:00:00']);
+
+    ClientFence\Mod\Client\IdDocuments::releaseHolds($di, 9, 3);
+
+    expect($db->fetchAllKeyValue('SELECT client_order_id, status FROM client_order_hold ORDER BY client_order_id'))->toBe([1 => 'held', 2 => 'held', 3 => 'approved', 4 => 'held'])
+        ->and($calls['activateOrder'])->toBe([3]);
+});

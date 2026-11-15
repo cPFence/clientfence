@@ -25,6 +25,7 @@ function privacyDb(): Connection
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, amount REAL, description TEXT, created_at TEXT)',
         'CREATE TABLE client_note (id INTEGER PRIMARY KEY, client_id INTEGER, admin_id INTEGER, note TEXT, pinned INTEGER, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_file (id INTEGER PRIMARY KEY, client_id INTEGER, admin_id INTEGER, name TEXT, stored_name TEXT, size INTEGER, mime TEXT, created_at TEXT)',
+        'CREATE TABLE client_id_document (id INTEGER PRIMARY KEY, client_id INTEGER, name TEXT, stored_name TEXT, status TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY, client_id INTEGER, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, currency TEXT, subject TEXT, stage TEXT, valid_until TEXT, customer_notes TEXT, admin_notes TEXT, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT)',
         'CREATE TABLE service_domain (id INTEGER PRIMARY KEY, client_id INTEGER, sld TEXT, tld TEXT, ns1 TEXT, ns2 TEXT, ns3 TEXT, ns4 TEXT, period INTEGER, privacy INTEGER, transfer_code TEXT, contact_email TEXT, contact_company TEXT, contact_first_name TEXT, contact_last_name TEXT, contact_address1 TEXT, contact_address2 TEXT, contact_city TEXT, contact_state TEXT, contact_postcode TEXT, contact_country TEXT, contact_phone_cc TEXT, contact_phone TEXT, registered_at TEXT, expires_at TEXT)',
@@ -71,6 +72,7 @@ function privacyDi(Connection $db, array $config = ['privacy_tools' => '1', 'mar
     $di['dbal'] = $db;
     $filesystem = Mockery::mock(Symfony\Component\Filesystem\Filesystem::class);
     $filesystem->shouldReceive('remove')->with(ClientFence\Mod\Client\Files::dir() . '/7');
+    $filesystem->shouldReceive('remove')->with(ClientFence\Mod\Client\IdDocuments::dir() . '/7');
     $di['filesystem'] = $filesystem;
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getConnection')->andReturn($db);
@@ -140,6 +142,7 @@ test('anonymizing erases the person and keeps the money records', function (): v
     $db = privacyDb();
     $db->insert('client_note', ['client_id' => 7, 'note' => 'Private note']);
     $db->insert('client_file', ['client_id' => 7, 'name' => 'contract.pdf']);
+    $db->insert('client_id_document', ['client_id' => 7, 'name' => 'passport.jpg', 'status' => 'approved']);
     $db->insert('support_ticket_secret', ['ticket_id' => 9, 'kind' => 'server', 'label' => 'SSH alice.client.test', 'data' => 'encrypted-credentials', 'created_at' => date('Y-m-d H:i:s')]);
     $db->insert('support_ticket_secret_event', ['ticket_id' => 9, 'secret_label' => 'SSH alice.client.test', 'action' => 'opened', 'admin_id' => 1, 'created_at' => date('Y-m-d H:i:s')]);
     Privacy::anonymize(privacyDi($db), 7, 1);
@@ -169,7 +172,7 @@ test('anonymizing erases the person and keeps the money records', function (): v
         ->and($db->fetchFirstColumn('SELECT DISTINCT content FROM support_ticket_message'))->toBe(['[Removed: the client was anonymized.]'])
         ->and($db->fetchOne('SELECT subject FROM support_ticket'))->toBe('Ticket (removed)')
         ->and($db->fetchOne('SELECT note FROM support_ticket_note'))->toBe('[Removed: the client was anonymized.]');
-    foreach (['activity_client_history', 'activity_client_email', 'extension_meta', 'support_ticket_secret', 'support_ticket_secret_event'] as $table) {
+    foreach (['activity_client_history', 'activity_client_email', 'extension_meta', 'support_ticket_secret', 'support_ticket_secret_event', 'client_id_document'] as $table) {
         expect((int) $db->fetchOne("SELECT COUNT(*) FROM $table"))->toBe(0);
     }
     // Another client is untouched; a second run is refused.

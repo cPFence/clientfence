@@ -70,6 +70,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/client/privacy-export/:id', 'get_privacy_export', ['id' => '[0-9]+'], static::class);
         // ClientFence core patch: private client documents are streamed only after staff authorization.
         $app->get('/client/file/:id', 'get_file', ['id' => '[0-9]+'], static::class);
+        // ClientFence core patch: ID documents are decrypted only for staff who may open the client (IdDocuments.php).
+        $app->get('/client/id-document/:id', 'get_id_document', ['id' => '[0-9]+'], static::class);
     }
 
     public function get_index(\ClientFence\App $app): string
@@ -158,5 +160,13 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $this->di['mod_service']('staff')->checkPermissionsAndThrowException('client', 'view');
 
         return \ClientFence\Mod\Client\Files::download($this->di, (int) $id);
+    }
+
+    public function get_id_document(\ClientFence\App $app, $id): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $this->di['is_admin_logged'];
+        $this->di['mod_service']('staff')->checkPermissionsAndThrowException('client', 'view');
+
+        return \ClientFence\Mod\Client\IdDocuments::download($this->di, (int) $id);
     }
 }

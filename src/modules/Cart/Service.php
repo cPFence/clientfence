@@ -899,7 +899,17 @@ class Service implements InjectionAwareInterface
         );
 
         // ClientFence core patch: an order from a hosting network may wait for staff review (Antispam/Networks.php, Order/Holds.php).
-        $hold = \ClientFence\Mod\Antispam\Networks::hold($this->di, (string) $this->di['request']->getClientIp(), $this->clientId($client));
+        // ClientFence core patch: so may one the fraud check scores high (Order/FraudCheck.php, called before any lock) or one waiting for an ID document (Client/IdDocuments.php).
+        $ip = (string) $this->di['request']->getClientIp();
+        $hold = \ClientFence\Mod\Order\Holds::combine(
+            \ClientFence\Mod\Antispam\Networks::hold($this->di, $ip, $this->clientId($client)),
+            \ClientFence\Mod\Order\FraudCheck::hold($this->di, $this->clientId($client), $ip, function () use ($cart, $client): array {
+                $ca = $this->toApiArray($cart, false, $client);
+
+                return [(float) $ca['total'], (string) $ca['currency']['code']];
+            }),
+            \ClientFence\Mod\Client\IdDocuments::hold($this->di, $this->clientId($client)),
+        );
 
         // ClientFence core patch: the client's credit lock is held until the orders are committed and the
         // cart is gone, so a double submit finds an empty cart and two checkouts cannot spend the same credit.
@@ -933,7 +943,8 @@ class Service implements InjectionAwareInterface
         if ($hold !== null) {
             \ClientFence\Mod\Order\Holds::notify($this->di, (int) $order->getId(), (string) $order->getTitle());
 
-            return $result + ['held' => true];
+            // ClientFence core patch: the checkout page then asks for the ID document (Client/IdDocuments.php).
+            return $result + ['held' => true, 'id_document' => \ClientFence\Mod\Client\IdDocuments::needed($this->di, $this->clientId($client))];
         }
 
         // invoice may not be created if total is 0

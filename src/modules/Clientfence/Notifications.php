@@ -212,6 +212,9 @@ final class Notifications
             'cancel_request' => __trans('Cancellation requested for order #:id: :title', $v),
             // ClientFence: orders held for review (Order/Holds.php).
             'order_held' => __trans('Order #:id waits for review: :title', $v),
+            // ClientFence: the fraud check could not run (Order/FraudCheck.php) and ID documents (Client/IdDocuments.php).
+            'fraud_check_failed' => __trans('The fraud check (:provider) could not run, so orders go through unchecked: :error', $v),
+            'id_document_sent' => __trans(':name sent an ID document for review', $v),
             'ip_request' => __trans('IP address change requested for order #:id: :title', $v),
             // ClientFence: per-unit licences (Servicelicense/Units.php).
             'usage_held' => __trans('A big drop in the reported units of order #:id waits for approval: :title', $v),
@@ -264,6 +267,8 @@ final class Notifications
                 'client_signup' => __trans('New client'),
                 'cancel_request' => __trans('Cancellation request'),
                 'order_held' => __trans('Order waits for review'),
+                'fraud_check_failed' => __trans('Fraud check could not run'),
+                'id_document_sent' => __trans('ID document sent'),
                 'ip_request' => __trans('IP address change request'),
                 'action_failed' => __trans('Failed action'),
                 'usage_held' => __trans('Drop in reported units waits for approval'),

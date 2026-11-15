@@ -1,0 +1,9 @@
+{# The ID documents tab of the admin client page (slot admin.client.manage.tabs, ClientFence core patch "client page
+   widget slots"); its content is mod_client_id_documents_pane. Shown while ID documents are on, or when the client
+   has sent one. Client/IdDocuments.php. #}
+{% set id_documents = admin.client_id_document_list({ client_id: client.id }) %}
+{% if id_documents.on or id_documents.documents %}
+<li class="nav-item" role="presentation">
+    <a class="nav-link" href="#tab-clientfence-id-documents" data-bs-toggle="tab" role="tab">{{ 'ID documents'|trans }}{% if id_documents.documents|filter(d => d.status == 'waiting') %} <span class="badge bg-red text-white ms-1">!</span>{% endif %}</a>
+</li>
+{% endif %}

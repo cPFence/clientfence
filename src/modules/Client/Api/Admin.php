@@ -31,6 +31,7 @@ use ClientFence\Mod\Client\Affiliates\Link;
 use ClientFence\Mod\Client\Affiliates\Payouts;
 use ClientFence\Mod\Client\Contacts;
 use ClientFence\Mod\Client\Google;
+use ClientFence\Mod\Client\IdDocuments;
 use ClientFence\Mod\Client\Passkeys;
 use ClientFence\Mod\Client\SupportPin;
 use ClientFence\Mod\Client\TwoFactor;
@@ -744,6 +745,55 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('client', 'edit_profile');
         \ClientFence\Mod\Client\Files::delete($this->getDi(), (int) $data['id']);
+
+        return true;
+    }
+
+    /**
+     * ClientFence core patch: ID documents (Client/IdDocuments.php). The ID documents tab of the client page: whether
+     * the feature is on and the client's documents, newest first.
+     */
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function id_document_list($data): array
+    {
+        $this->checkPermissions('client', 'view');
+        $di = $this->getDi();
+
+        // Off reads no table; the tab and its pane share one read per page.
+        if (IdDocuments::settings($di)['rule'] === IdDocuments::OFF) {
+            return ['on' => false, 'documents' => []];
+        }
+
+        return \ClientFence\RequestCache::remember($di, 'id_documents.' . (int) $data['client_id'], static fn (): array => ['on' => true, 'documents' => IdDocuments::listFor($di, (int) $data['client_id'])]);
+    }
+
+    /** Approves the client's waiting ID document: its checkouts that wait only for it go on, and the client gets an email. */
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function id_document_approve($data): bool
+    {
+        $this->staffChange();
+        // Approving releases held orders and issues their invoices, as Orders > Waiting for review does.
+        $this->checkPermissions('order', 'manage');
+        IdDocuments::approve($this->getDi(), (int) $data['client_id'], $this->adminId());
+
+        return true;
+    }
+
+    /** Refuses the client's waiting ID document with the `reason` the client reads in an email. */
+    #[RequiredParams(['client_id' => 'Client ID is missing'])]
+    public function id_document_refuse($data): bool
+    {
+        $this->staffChange();
+        IdDocuments::refuse($this->getDi(), (int) $data['client_id'], $this->adminId(), (string) ($data['reason'] ?? ''));
+
+        return true;
+    }
+
+    /** Saves the ID documents tab of the Client settings: id_documents (off, new, groups, held), id_documents_groups, id_documents_days, id_documents_text. */
+    public function id_document_settings_save($data): bool
+    {
+        $this->manageSettings('client');
+        IdDocuments::saveSettings($this->getDi(), is_array($data) ? $data : []);
 
         return true;
     }

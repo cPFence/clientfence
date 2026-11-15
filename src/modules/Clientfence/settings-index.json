@@ -199,6 +199,12 @@
     },
     {
         "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "tab",
+        "label": "ID documents"
+    },
+    {
+        "mod": "client",
         "tab": "tab-index",
         "kind": "section",
         "label": "Signup Controls"
@@ -352,6 +358,42 @@
         "tab": "tab-affiliates",
         "kind": "field",
         "label": "Cookie Days"
+    },
+    {
+        "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "section",
+        "label": "Who is asked"
+    },
+    {
+        "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "field",
+        "label": "Ask for an ID document from"
+    },
+    {
+        "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "field",
+        "label": "Client groups"
+    },
+    {
+        "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "section",
+        "label": "Files and text"
+    },
+    {
+        "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "field",
+        "label": "Delete the files after the decision"
+    },
+    {
+        "mod": "client",
+        "tab": "tab-id-documents",
+        "kind": "field",
+        "label": "Text shown to clients"
     },
     {
         "mod": "client",
@@ -1057,141 +1099,189 @@
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
+        "kind": "tab",
+        "label": "General"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "tab",
+        "label": "Fraud check"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-index",
         "kind": "section",
         "label": "Renewal Logic"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Next date is counted from last order expiration date"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Next date is counted from renewal (payment) date"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Next date is counted from last expiration date or renewal date whichever is greater"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "section",
         "label": "Renewal Day"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Keep the day the service started, on the last day of shorter months (31 January, 28 February, 31 March)"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Add calendar months, as WHMCS does (31 January + 1 month = 3 March, then the 3rd)"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "section",
         "label": "Order Visibility"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Show Addon Orders in Orders List"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "section",
         "label": "Suspension and Cancellation"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Suspend After Due Date"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Auto Suspend Reason"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Auto Cancellation Policy"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Cancel After Suspension"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Required Suspension Reason"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Suspension Reasons"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Cancellation Requests"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "section",
         "label": "Unpaid Orders"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Auto Removal Policy"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Remove After"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "section",
         "label": "Upgrades and Downgrades"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Upgrades"
     },
     {
         "mod": "order",
-        "tab": "",
+        "tab": "tab-index",
         "kind": "field",
         "label": "Downgrades"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "section",
+        "label": "Fraud check on new orders"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "field",
+        "label": "Fraud check service"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "field",
+        "label": "Hold orders scoring above"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "field",
+        "label": "Account ID"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "field",
+        "label": "Licence key or API key"
+    },
+    {
+        "mod": "order",
+        "tab": "tab-fraud-check",
+        "kind": "field",
+        "label": "Skip clients who already have an active order"
     },
     {
         "mod": "order",

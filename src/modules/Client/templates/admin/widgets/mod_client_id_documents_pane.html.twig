@@ -1,0 +1,69 @@
+{# The ID documents tab content of the admin client page (slot admin.client.manage.panes; the tab is
+   mod_client_id_documents_tab). Staff who can open the client see and download the documents; staff with the
+   client "edit profile" and the order "manage" permissions approve or refuse the waiting one (the client gets an
+   email). Approving lets the client's orders that wait only for it go on. Client/IdDocuments.php. #}
+{% set id_documents = admin.client_id_document_list({ client_id: client.id }) %}
+{% if id_documents.on or id_documents.documents %}
+{% set can_decide = has_permission('client', 'edit_profile') and has_permission('order', 'manage') %}
+{% set statuses = { 'waiting': 'Waiting for review'|trans, 'approved': 'Approved'|trans, 'refused': 'Refused'|trans } %}
+{% set waiting = id_documents.documents|filter(d => d.status == 'waiting') %}
+<div class="tab-pane fade" id="tab-clientfence-id-documents" role="tabpanel">
+    {% embed 'partial_admin_related_section.html.twig' with {
+        title: 'ID documents'|trans,
+        subtitle: 'The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays.'|trans,
+        card_class: 'm-3'
+    } %}
+        {% block section_action %}
+            {% if can_decide and waiting %}
+                <a class="btn btn-primary" {{ fb_api_link({ href: 'client/id_document_approve'|api_url(query: { client_id: client.id }), modal: { type: 'confirm', title: 'Approve the ID document?'|trans, content: 'The client gets an email, and their orders that wait only for it go on.'|trans }, reload: true }) }}>{{ 'Approve'|trans }}</a>
+            {% endif %}
+        {% endblock %}
+        {% block section_content %}
+            {% if can_decide and waiting %}
+                <form class="card-body border-bottom d-flex flex-wrap align-items-end gap-2" method="post" action="{{ 'client/id_document_refuse'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                    <input type="hidden" name="client_id" value="{{ client.id }}">
+                    <div class="flex-grow-1">
+                        <label class="form-label" for="cf-id-refuse-reason">{{ 'Reason for refusing (the client reads it)'|trans }}</label>
+                        <input class="form-control" type="text" id="cf-id-refuse-reason" name="reason" maxlength="255" required>
+                    </div>
+                    <button class="btn btn-outline-danger" type="submit">{{ 'Refuse'|trans }}</button>
+                </form>
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Sent'|trans }}</th>
+                            <th>{{ 'File'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                            <th>{{ 'Decision'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for document in id_documents.documents %}
+                            <tr>
+                                <td class="text-nowrap">{{ document.created_at|format_datetime }}</td>
+                                <td>
+                                    {% if document.has_file %}
+                                        <a href="{{ ('client/id-document/' ~ document.id)|url }}" dir="auto">{{ document.name }}</a>
+                                    {% else %}
+                                        <span class="text-secondary" dir="auto">{{ document.name }}</span> <span class="text-secondary small">({{ 'file deleted'|trans }})</span>
+                                    {% endif %}
+                                    <div class="text-secondary small">{{ (document.size / 1048576)|number_format(2) }} MB</div>
+                                </td>
+                                <td><span class="badge {{ document.status == 'approved' ? 'bg-green-lt' : (document.status == 'refused' ? 'bg-red-lt' : 'bg-yellow-lt') }}">{{ statuses[document.status]|default(document.status) }}</span></td>
+                                <td class="text-wrap">
+                                    {% if document.decided_at %}{{ document.decided_at|format_datetime }}{% if document.admin_name %}, {{ document.admin_name }}{% endif %}{% endif %}
+                                    {% if document.reason %}<div class="text-secondary small">{{ document.reason }}</div>{% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td class="text-secondary" colspan="4">{{ 'This client has not sent an ID document.'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+</div>
+{% endif %}

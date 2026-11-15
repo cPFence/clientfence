@@ -288,6 +288,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'client_order_hold',
         // Passkeys (Client/Passkeys.php).
         'client_passkey',
+        // ClientFence core patch: ID documents of clients (Client/IdDocuments.php).
+        'client_id_document',
     ];
 
     /**

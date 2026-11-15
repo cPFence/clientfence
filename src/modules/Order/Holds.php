@@ -13,7 +13,9 @@ use Doctrine\DBAL\Connection;
 
 /**
  * ClientFence: orders that wait for staff review (WHMCS's Fraud status), shared by the checks that hold an
- * order: hosting networks (CF-119, Antispam/Networks.php), later the fraud check and ID documents.
+ * order: hosting networks (CF-119, Antispam/Networks.php), the fraud check (CF-116, FraudCheck.php) and ID documents
+ * (CF-124, Client/IdDocuments.php). A checkout held by several checks is one hold: the first check's reason, the
+ * others in the note (combine()).
  *
  * A held checkout's orders stay in Pending setup and its invoice stays a draft (clients cannot see or pay
  * it, no reminders, no credit taken, nothing set up). They wait in Orders > Waiting for review, and staff
@@ -27,6 +29,8 @@ final class Holds
     public const TABLE = 'client_order_hold';
 
     public const REASON_NETWORK = 'network';
+    public const REASON_FRAUD = 'fraud';
+    public const REASON_ID_DOCUMENT = 'id_document';
 
     public const STATUS_HELD = 'held';
     public const STATUS_APPROVED = 'approved';
@@ -42,6 +46,37 @@ final class Holds
                 'note' => mb_substr($note, 0, 255), 'status' => self::STATUS_HELD, 'created_at' => $now, 'updated_at' => $now,
             ]);
         }
+    }
+
+    /**
+     * The checks' answers (Networks::hold(), FraudCheck::hold(), IdDocuments::hold()) as one hold, or null: the first
+     * reason, and the others after the note as "[reason] note", so approving an ID document releases only a checkout
+     * that waits for nothing else.
+     *
+     * @param array{reason: string, note: string}|null ...$holds
+     *
+     * @return array{reason: string, note: string}|null
+     */
+    public static function combine(?array ...$holds): ?array
+    {
+        $holds = array_values(array_filter($holds));
+        if ($holds === []) {
+            return null;
+        }
+        $note = $holds[0]['note'];
+        foreach (array_slice($holds, 1) as $other) {
+            $note = trim($note . ' [' . $other['reason'] . '] ' . $other['note']);
+        }
+
+        return ['reason' => $holds[0]['reason'], 'note' => $note];
+    }
+
+    /** The order page: the order's hold while it waits, or null. */
+    public static function forOrder(\Pimple\Container $di, int $orderId): ?array
+    {
+        $hold = self::db($di)->fetchAssociative('SELECT id, reason, note, created_at FROM ' . self::TABLE . ' WHERE client_order_id = ? AND status = ?', [$orderId, self::STATUS_HELD]);
+
+        return $hold === false ? null : $hold;
     }
 
     /** After the checkout: staff hear of it in the bell (and chat alerts). */

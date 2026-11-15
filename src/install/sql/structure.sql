@@ -1931,6 +1931,8 @@ CREATE TABLE `client_order_hold` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `clie
 
 -- ClientFence core patch: passkeys (Client/Passkeys.php).
 CREATE TABLE `client_passkey` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `kind` varchar(10) NOT NULL, `subject_id` bigint(20) NOT NULL, `credential_id` varbinary(512) NOT NULL, `public_key` text NOT NULL, `alg` int(11) NOT NULL, `sign_count` bigint(20) NOT NULL DEFAULT 0, `name` varchar(100) NOT NULL, `user_handle` varbinary(64) NOT NULL, `created_at` datetime NOT NULL, `last_used_at` datetime DEFAULT NULL, PRIMARY KEY (`id`), UNIQUE KEY `credential_id` (`credential_id`), KEY `login` (`kind`, `subject_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ClientFence core patch: ID documents of clients (Client/IdDocuments.php).
+CREATE TABLE `client_id_document` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_id` bigint(20) NOT NULL, `name` varchar(128) NOT NULL, `stored_name` varchar(32) DEFAULT NULL, `mime` varchar(50) NOT NULL, `size` int(11) NOT NULL, `status` varchar(20) NOT NULL DEFAULT 'waiting', `reason` varchar(255) DEFAULT NULL, `admin_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, `decided_at` datetime DEFAULT NULL, PRIMARY KEY (`id`), KEY `client` (`client_id`, `status`), KEY `decided` (`status`, `decided_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

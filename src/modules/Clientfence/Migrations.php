@@ -38,6 +38,7 @@ final class Migrations
         12 => 'm12SignInHistory',
         13 => 'm13OrderHolds',
         14 => 'm14Passkeys',
+        15 => 'm15IdDocuments',
     ];
 
     public static function latest(): int
@@ -257,6 +258,14 @@ final class Migrations
     {
         if (!$di['dbal']->createSchemaManager()->tablesExist(['client_passkey'])) {
             $di['dbal']->executeStatement(Service::tables()['client_passkey']);
+        }
+    }
+
+    /** 15: ClientFence core patch: client_id_document, the ID documents of clients (Client/IdDocuments.php). */
+    private static function m15IdDocuments(\Pimple\Container $di): void
+    {
+        if (!$di['dbal']->createSchemaManager()->tablesExist(['client_id_document'])) {
+            $di['dbal']->executeStatement(Service::tables()['client_id_document']);
         }
     }
 }

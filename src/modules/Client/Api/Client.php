@@ -475,6 +475,24 @@ class Client extends \ClientFence\Api\AbstractApi
         return $affiliate !== false ? (int) $affiliate['id'] : throw new InformationException('The affiliate program is not available.');
     }
 
+    /**
+     * ClientFence core patch: ID documents (Client/IdDocuments.php): whether one is asked of the account, the latest
+     * one sent and the orders that wait. Every user may read it (the dashboard banner); sending is the owner's.
+     */
+    public function id_document_status(): array
+    {
+        return \ClientFence\Mod\Client\IdDocuments::status($this->getDi(), $this->onClientId());
+    }
+
+    /** Sends the ID document: the files `front` and, if it has one, `back` (the account owner and owner links only). */
+    public function id_document_send(): bool
+    {
+        $files = $this->getDi()['request']->files;
+        \ClientFence\Mod\Client\IdDocuments::send($this->getDi(), $this->onClientId(), [$files->get('front'), $files->get('back')]);
+
+        return true;
+    }
+
     /** ClientFence: asks staff to delete the account (a ticket); returns the ticket id. */
     public function privacy_request_deletion(): int
     {

@@ -6333,6 +6333,74 @@
     },
     {
         "file": "install/sql/content.sql",
-        "done": "ClientFence core patch: fresh installs include the passkeys migration."
+        "done": "ClientFence core patch: fresh installs include the passkeys and ID documents migrations."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: so may one the fraud check scores high (Order/FraudCheck.php, called before any lock) or one waiting for an ID document (Client/IdDocuments.php)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: the checkout page then asks for the ID document (Client/IdDocuments.php)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: the ID documents tab saves its own form (Client/IdDocuments.php)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: ID documents (Client/IdDocuments.php). The ID documents tab of the client page: whether"
+    },
+    {
+        "file": "modules/Client/Api/Client.php",
+        "done": "ClientFence core patch: ID documents (Client/IdDocuments.php): whether one is asked of the account, the latest"
+    },
+    {
+        "file": "modules/Client/Controller/Client.php",
+        "done": "ClientFence core patch: the ID document page (IdDocuments.php)."
+    },
+    {
+        "file": "modules/Client/Controller/Admin.php",
+        "done": "ClientFence core patch: ID documents are decrypted only for staff who may open the client (IdDocuments.php)."
+    },
+    {
+        "file": "library/ClientFence/AppClient.php",
+        "done": "ClientFence core patch: the client's ID document page (Client/IdDocuments.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the client's ID documents go with it (IdDocuments.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the client page's ID documents tab and the client's banners (IdDocuments.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: ID document files go the set number of days after the decision (IdDocuments.php)."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence: the order's hold while it waits for review (`id`: the order), for the order page; null when none."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the order waits for review (Order/Holds.php): why, with the fraud score if any."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
+        "done": "ClientFence core patch: the Fraud check tab (Order/FraudCheck.php), saved by its own form."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_index.html.twig",
+        "done": "ClientFence: a checkout held by several checks names the others in its note as [reason] (Order\\Holds::combine())."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "ClientFence core patch: the ID documents settings (Client/IdDocuments.php), in their own form below."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: ID documents of clients (Client/IdDocuments.php)."
     }
 ]

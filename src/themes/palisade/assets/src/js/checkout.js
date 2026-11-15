@@ -547,6 +547,9 @@ export default function initCheckout(root) {
       }
       if (result?.invoice_hash) {
         showDone(fill(t.doneManual, { method: method?.dataset.title ?? '' }), t.doneInvoice, `${data.urls.invoice}/${result.invoice_hash}`, true);
+      } else if (result?.id_document) {
+        // ClientFence: the order waits for the client's ID document (Client/IdDocuments.php).
+        showDone(t.doneIdDocument, t.doneIdButton, data.urls.identity, true);
       } else if (result?.held) {
         // ClientFence: the order waits for staff review (Order/Holds.php); its invoice comes after approval.
         showDone(t.doneHeld, t.doneService, `${data.urls.service}/${result.order_id ?? ''}`, false);

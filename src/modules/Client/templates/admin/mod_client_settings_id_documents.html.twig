@@ -1,0 +1,54 @@
+{# ClientFence: the ID documents tab of the Client settings page (Client/IdDocuments.php, CF-124). Its own form, outside
+   the page's main form, saved by client/id_document_settings_save into mod_client (`params` is that config). #}
+{% set id_rule = params.id_documents|default('off') %}
+{% set id_groups = params.id_documents_groups|default([]) %}
+<div class="tab-content">
+    <form class="tab-pane fade" id="tab-id-documents" role="tabpanel" method="post" action="{{ 'client/id_document_settings_save'|api_url }}" {{ fb_api_form({ message: 'Configuration Updated'|trans }) }}>
+        <div class="card-body">
+            <div class="alert alert-info" role="alert">
+                <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Clients who are asked upload the front and back of an ID document (JPG, PNG, WebP or PDF) on their ID document page. Staff approve or refuse it on the client\'s ID documents tab, and the client gets an email either way. Orders of a client asked by the first two rules wait for review until the document is approved; approving it lets them go on. The files are encrypted and only staff can download them.'|trans }}
+            </div>
+            <div class="row row-cards">
+                <div class="col-12 col-xl-6">
+                    <section class="card card-sm h-100">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">{{ 'Who is asked'|trans }}</h4>
+                            <label class="form-label" for="id_documents">{{ 'Ask for an ID document from'|trans }}</label>
+                            <select class="form-select" id="id_documents" name="id_documents">
+                                {% for value, label in { 'off': 'Nobody (off)'|trans, 'new': 'All new clients (who sign up after this is saved)'|trans, 'groups': 'Clients in these groups'|trans, 'held': 'Only clients whose order another check holds (fraud check, hosting network)'|trans } %}
+                                    <option value="{{ value }}"{% if id_rule == value %} selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="form-label mt-3" for="id_documents_groups">{{ 'Client groups'|trans }}</label>
+                            <select class="form-select" id="id_documents_groups" name="id_documents_groups[]" multiple size="5">
+                                {% for id, title in admin.client_group_get_pairs %}
+                                    <option value="{{ id }}"{% if id in id_groups %} selected{% endif %}>{{ title }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-hint">{{ 'Used with "Clients in these groups".'|trans }}</small>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-12 col-xl-6">
+                    <section class="card card-sm h-100">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">{{ 'Files and text'|trans }}</h4>
+                            <label class="form-label" for="id_documents_days">{{ 'Delete the files after the decision'|trans }}</label>
+                            <div class="input-group">
+                                <input class="form-control" type="number" id="id_documents_days" name="id_documents_days" min="0" max="3650" step="1" value="{{ params.id_documents_days|default(30) }}">
+                                <span class="input-group-text">{{ 'days'|trans }}</span>
+                            </div>
+                            <small class="form-hint">{{ 'The record of the decision is kept.'|trans }}</small>
+                            <label class="form-label mt-3" for="id_documents_text">{{ 'Text shown to clients'|trans }}</label>
+                            <textarea class="form-control" id="id_documents_text" name="id_documents_text" rows="4" maxlength="5000">{{ params.id_documents_text|default('') }}</textarea>
+                            <small class="form-hint">{{ 'Shown on the ID document page: which documents you accept and why you ask. Markdown is allowed.'|trans }}</small>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
+        </div>
+    </form>
+</div>

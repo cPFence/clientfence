@@ -39,6 +39,8 @@
 {{ include('mod_order_failed_notice.html.twig') }}
 {# ClientFence core patch: the order's waiting cancellation request. #}
 {{ include('mod_order_cancel_request_notice.html.twig') }}
+{# ClientFence core patch: the order waits for review (Order/Holds.php): why, with the fraud score if any. #}
+{{ include('mod_order_hold_notice.html.twig') }}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
     title: order.title,
     subtitle: 'Review order details, manage billing configuration, and inspect related service activity.'|trans

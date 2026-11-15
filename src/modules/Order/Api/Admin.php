@@ -807,6 +807,15 @@ class Admin extends \ClientFence\Api\AbstractApi
         return \ClientFence\Mod\Order\Holds::heldList($this->getDi());
     }
 
+    /** ClientFence: the order's hold while it waits for review (`id`: the order), for the order page; null when none. */
+    #[RequiredParams(['id' => 'Order ID was not passed'])]
+    public function hold_get($data): ?array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\Holds::forOrder($this->getDi(), (int) $data['id']);
+    }
+
     /** ClientFence: approves a held order and the others of its checkout: the invoice is issued and setup carries on. */
     #[RequiredParams(['id' => 'Hold ID was not passed'])]
     public function hold_approve($data): bool

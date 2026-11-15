@@ -40,7 +40,7 @@ test('authorized users reach their own calls in the client module', function ():
         ->and(Users::CALLS['client'])->not->toHaveKey('users_get_list');
 });
 
-test('the client module shows the staff Users, Contacts and Affiliate tabs and the Google buttons', function (): void {
+test('the client module shows the staff Users, Contacts, Affiliate and ID documents tabs, the ID banners and the Google buttons', function (): void {
     expect((new Service())->getWidgets())->toBe([
         ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_users_tab'],
         ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_users_pane'],
@@ -48,6 +48,10 @@ test('the client module shows the staff Users, Contacts and Affiliate tabs and t
         ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_contacts_pane'],
         ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_affiliate_tab'],
         ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_affiliate_pane'],
+        ['slot' => 'admin.client.manage.tabs', 'template' => 'mod_client_id_documents_tab'],
+        ['slot' => 'admin.client.manage.panes', 'template' => 'mod_client_id_documents_pane'],
+        ['slot' => 'client.index.dashboard.content.before', 'template' => 'mod_client_id_document_banner'],
+        ['slot' => 'client.order.manage.content.start', 'template' => 'mod_client_id_document_banner'],
         ['slot' => 'client.page.login.form.after', 'template' => 'mod_client_google_button'],
         ['slot' => 'client.page.signup.form.after', 'template' => 'mod_client_google_signup_button'],
     ]);

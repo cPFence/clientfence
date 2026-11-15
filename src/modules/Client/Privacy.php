@@ -140,6 +140,7 @@ final class Privacy
         $db->transactional(static function (Connection $db) use ($di, $clientId, $email, $oldEmail, $now, $tickets): void {
             $db->delete('client_note', ['client_id' => $clientId]);
             Files::forgetClient($db, $clientId, $di['filesystem']);
+            IdDocuments::forgetClient($db, $clientId, $di['filesystem']);
             $erase = ['billing_email', 'salt', 'gender', 'birthday', 'phone_cc', 'phone', 'company', 'company_vat', 'company_number', 'address_1', 'address_2', 'city', 'state', 'postcode', 'notes', 'ip', 'api_token', 'referred_by', 'aid', 'auth_type'];
             for ($i = 1; $i <= 20; ++$i) {
                 $erase[] = 'custom_' . $i;

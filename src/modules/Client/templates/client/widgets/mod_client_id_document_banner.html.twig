@@ -1,0 +1,15 @@
+{# ClientFence: the ID document banner (slots client.index.dashboard.content.before and client.order.manage.content.start,
+   Client/IdDocuments.php): while the account is asked for an ID document and has none waiting or approved. On an
+   order page only for an order that waits for review. #}
+{% if client is defined and client %}
+    {% set identity = client.client_id_document_status %}
+    {% if identity.needed and (order is not defined or order.id in identity.held) %}
+        <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2 mb-4" role="alert">
+            <div class="flex-grow-1">
+                {% if identity.held %}{{ 'Upload an ID document to complete your order.'|trans }}{% else %}{{ 'Please upload an ID document to verify your account.'|trans }}{% endif %}
+                {% if identity.latest and identity.latest.status == 'refused' %}<div class="small">{{ 'Your last ID document was refused: :reason'|trans({ ':reason': identity.latest.reason }) }}</div>{% endif %}
+            </div>
+            <a class="btn btn-warning" href="{{ 'identity'|url }}">{{ 'Upload an ID document'|trans }}</a>
+        </div>
+    {% endif %}
+{% endif %}
