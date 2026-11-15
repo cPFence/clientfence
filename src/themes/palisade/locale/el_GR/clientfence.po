@@ -29910,3 +29910,52 @@ msgstr "Συνεδρίες προσωπικού: κάθε κλήση API των 
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Χρόνος (ms)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Προσθέστε χρήματα ώστε τα παραστατικά και οι ανανεώσεις σας να πληρώνονται από το υπόλοιπό σας. Μπορείτε να αλλάξετε ή να απενεργοποιήσετε αυτήν την ειδοποίηση στη σελίδα Πορτοφόλι."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Ποσό ειδοποίησης"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Κάτω από :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Οι πελάτες επιλέγουν ένα ποσό στη σελίδα Πορτοφόλι και λαμβάνουν ένα email όταν το υπόλοιπό τους πέσει κάτω από αυτό."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "Στείλτε μου email όταν το υπόλοιπό μου πέσει κάτω από"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Εισαγάγετε ποσό πάνω από 0 και κάτω από :max."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Να μπορούν οι πελάτες να ορίζουν ειδοποίηση χαμηλού υπολοίπου"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Ειδοποίηση χαμηλού υπολοίπου"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Οι ειδοποιήσεις χαμηλού υπολοίπου δεν είναι διαθέσιμες."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "Το υπόλοιπο του λογαριασμού σας είναι :balance, κάτω από το ποσό ειδοποίησης :threshold που ορίσατε."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Το υπόλοιπό σας είναι χαμηλό"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Το υπόλοιπό σας :balance είναι κάτω από το ποσό ειδοποίησης :threshold που ορίσατε"

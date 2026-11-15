@@ -2006,6 +2006,10 @@ msgstr ""
 msgid "Add file"
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr ""
+
 #: src/modules/Invoice/ServiceInvoiceItem.php
 msgid "Add funds to account"
 msgstr ""
@@ -2436,6 +2440,10 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Clientfence/Health.php
 msgid "Alert"
+msgstr ""
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
@@ -4200,6 +4208,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Being imported"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
 msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_tld_price_changes.html.twig
@@ -6292,6 +6304,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Clients can’t see the store or order. Staff can still create orders for them in the admin area."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
@@ -9378,6 +9394,10 @@ msgstr ""
 msgid "Email me a PIN instead"
 msgstr ""
 
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr ""
+
 #: src/modules/Email/Repository/ActivityClientEmailRepository.php
 msgid "Email not found"
 msgstr ""
@@ -9884,6 +9904,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "Enter an amount"
+msgstr ""
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
@@ -11902,7 +11926,7 @@ msgstr ""
 msgid "Hello %staff_member_name%,"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/modules/Order/templates/email/mod_order_hold_approved.html.twig …
+#: src/modules/Client/templates/email/mod_client_id_document_approved.html.twig src/modules/Client/templates/email/mod_client_id_document_refused.html.twig src/modules/Client/templates/email/mod_client_low_balance.html.twig …
 msgid "Hello :name,"
 msgstr ""
 
@@ -14155,6 +14179,10 @@ msgid "Let clients rate staff replies"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Letter"
 msgstr ""
 
@@ -14604,6 +14632,14 @@ msgstr ""
 
 #: src/modules/Support/NetworkIssues.php src/modules/Support/TicketPriority.php src/modules/Support/templates/admin/mod_support_ticket_priority.html.twig
 msgid "Low"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr ""
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -30647,7 +30683,7 @@ msgstr ""
 msgid "Waiting in the email queue"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_balance.html.twig src/themes/palisade/html/mod_client_balance.html.twig src/themes/palisade/html/partial_menu.html.twig
+#: src/modules/Client/templates/client/mod_client_balance.html.twig src/modules/Client/templates/email/mod_client_low_balance.html.twig src/themes/palisade/html/mod_client_balance.html.twig …
 msgid "Wallet"
 msgstr ""
 
@@ -31871,6 +31907,10 @@ msgstr ""
 msgid "Your account already has a password. You can change it on your profile page."
 msgstr ""
 
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr ""
+
 #: src/modules/Client/Google.php
 msgid "Your account could not be made right now. Please try again later or contact support."
 msgstr ""
@@ -31969,6 +32009,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_cart_index.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Your balance covers this order, so it is paid from your balance."
+msgstr ""
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig

@@ -21,6 +21,7 @@ use ClientFence\InformationException;
 use ClientFence\PaginationOptions;
 use ClientFence\Mod\Client\Affiliates\Affiliates;
 use ClientFence\Mod\Client\Affiliates\Payouts;
+use ClientFence\Mod\Client\BalanceAlert;
 use ClientFence\Mod\Client\Google;
 use ClientFence\Mod\Client\Passkeys;
 use ClientFence\Mod\Client\TwoFactor;
@@ -401,6 +402,27 @@ class Client extends \ClientFence\Api\AbstractApi
         }
         $on = \ClientFence\Tools::normalizeBoolean($data['marketing'] ?? true, true);
         \ClientFence\Mod\Client\Privacy::setOptOut($this->getDi(), (int) $this->getIdentity()->id, !$on, 'profile');
+
+        return true;
+    }
+
+    /** ClientFence core patch: the low balance alert on the Wallet page (BalanceAlert.php); null while staff have it off. */
+    public function balance_alert_get(): ?array
+    {
+        if (!BalanceAlert::on($this->getDi())) {
+            return null;
+        }
+
+        return ['threshold' => BalanceAlert::threshold($this->getDi(), $this->onClientId())];
+    }
+
+    /** Turns the account's low balance alert off (`enabled` 0) or on below `amount`, in the account's currency. */
+    public function balance_alert_save($data): bool
+    {
+        if (!BalanceAlert::on($this->getDi())) {
+            throw new InformationException('Low balance alerts are not available.');
+        }
+        BalanceAlert::save($this->getDi(), $this->onClientId(), \ClientFence\Tools::normalizeBoolean($data['enabled'] ?? false), $data['amount'] ?? null);
 
         return true;
     }

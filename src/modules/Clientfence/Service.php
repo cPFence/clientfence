@@ -292,6 +292,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'client_id_document',
         // ClientFence core patch: the API request log (Activity/ApiLog.php).
         'activity_api',
+        // ClientFence core patch: low balance alerts (Client/BalanceAlert.php).
+        'client_balance_alert',
     ];
 
     /**
@@ -705,6 +707,12 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
             \ClientFence\Mod\Order\CancelRequests::run($di);
         } catch (\Throwable $e) {
             $di['logger']->error('ClientFence: cancellation requests failed: %s', $e->getMessage());
+        }
+        try {
+            // Off: no query (Client/BalanceAlert.php).
+            \ClientFence\Mod\Client\BalanceAlert::run($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('ClientFence: low balance alerts failed: %s', $e->getMessage());
         }
         try {
             Notifications::daily($di);

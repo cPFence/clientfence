@@ -27776,3 +27776,52 @@ msgstr "Сессии сотрудников: каждый вызов API со с
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Время (мс)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Пополните баланс, чтобы счета и продления можно было оплатить с вашего баланса. Вы можете изменить или отключить это уведомление на странице «Кошелёк»."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Сумма уведомления"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Ниже :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Клиенты выбирают сумму на странице «Кошелёк» и получают одно письмо, когда их баланс опускается ниже неё."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "Присылайте мне письмо, когда мой баланс опустится ниже"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Введите сумму больше 0 и меньше :max."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Разрешить клиентам настраивать уведомление о низком балансе"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Уведомление о низком балансе"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Уведомления о низком балансе недоступны."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "Баланс вашего счёта — :balance, ниже заданной вами суммы уведомления :threshold."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Ваш баланс низкий"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Ваш баланс :balance ниже заданной вами суммы уведомления :threshold"

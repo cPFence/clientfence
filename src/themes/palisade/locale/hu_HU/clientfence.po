@@ -29811,3 +29811,52 @@ msgstr "Munkatársi munkamenetek: az adminisztrációs oldalak minden API-hívá
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Idő (ms)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Töltse fel az egyenlegét, hogy a számlái és megújításai az egyenlegből fizethetők legyenek. Ezt az értesítést a Pénztárca oldalon módosíthatja vagy kapcsolhatja ki."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Értesítési összeg"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Ez alatt: :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Az ügyfelek a Pénztárca oldalon választanak egy összeget, és egy e-mailt kapnak, amikor az egyenlegük ez alá esik."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "E-mailt kérek, ha az egyenlegem ez alá esik:"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Adjon meg 0-nál nagyobb és :max-nál kisebb összeget."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Az ügyfelek beállíthassanak alacsony egyenleg értesítést"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Alacsony egyenleg értesítés"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Az alacsony egyenleg értesítések nem érhetők el."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "A fiókja egyenlege :balance, ami a Ön által beállított :threshold értesítési összeg alatt van."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Az egyenlege alacsony"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Az Ön :balance egyenlege a beállított :threshold értesítési összeg alatt van"

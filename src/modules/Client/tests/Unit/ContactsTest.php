@@ -53,6 +53,8 @@ test('each client email has a kind, and sign-in links, codes and staff mail are 
     ['mod_invoice_quote', 'invoice'],
     ['mod_order_price_changed', 'invoice'],
     ['mod_order_subscription_stopped', 'invoice'],
+    // The low balance alert goes to billing contacts, as the invoices do.
+    ['mod_client_low_balance', 'invoice'],
     ['mod_servicedomain_renewed', 'domain'],
     ['mod_servicehosting_activated', 'product'],
     ['mod_servicelicense_suspended', 'product'],

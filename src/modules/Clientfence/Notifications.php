@@ -247,6 +247,8 @@ final class Notifications
             'network_issue' => __trans('Network issue: :title', $v),
             'upgrade_done' => __trans(':title was changed', $v),
             'credit_added' => __trans(':amount was added to your account credit', $v),
+            // ClientFence: the low balance alert (Client/BalanceAlert.php).
+            'balance_low' => __trans('Your balance of :balance is below your alert amount of :threshold', $v),
             'ip_request_approved' => __trans('Your IP address change for :title was approved', $v),
             'ip_request_refused' => __trans('Your IP address change for :title was refused', $v),
             default => __trans('Notification'),

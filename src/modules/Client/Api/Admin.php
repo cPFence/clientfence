@@ -29,6 +29,7 @@ use Symfony\Component\Intl\Locales;
 use ClientFence\Mod\Client\Affiliates\Affiliates;
 use ClientFence\Mod\Client\Affiliates\Link;
 use ClientFence\Mod\Client\Affiliates\Payouts;
+use ClientFence\Mod\Client\BalanceAlert;
 use ClientFence\Mod\Client\Contacts;
 use ClientFence\Mod\Client\Google;
 use ClientFence\Mod\Client\IdDocuments;
@@ -705,6 +706,18 @@ class Admin extends \ClientFence\Api\AbstractApi
         \ClientFence\Mod\Client\Notes::delete($this->getDi(), (int) $data['id']);
 
         return true;
+    }
+
+    // ClientFence core patch: the client's low balance alert, read-only on the client page (BalanceAlert.php); null while off.
+    #[RequiredParams(['id' => 'Client ID is missing'])]
+    public function balance_alert_get($data): ?array
+    {
+        $this->checkPermissions('client', 'view');
+        if (!BalanceAlert::on($this->getDi())) {
+            return null;
+        }
+
+        return ['threshold' => BalanceAlert::threshold($this->getDi(), (int) $data['id'])];
     }
 
     // ClientFence core patch: staff read the client's Support PIN (SupportPin.php) and make a new one.

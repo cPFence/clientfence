@@ -200,6 +200,8 @@ $paths = [
     'modules/Client/templates/client/widgets/mod_client_id_document_banner.html.twig',
     'modules/Client/templates/email/mod_client_id_document_approved.html.twig',
     'modules/Client/templates/email/mod_client_id_document_refused.html.twig',
+    'modules/Client/BalanceAlert.php',
+    'modules/Client/templates/email/mod_client_low_balance.html.twig',
     'modules/Antispam/Banned.php',
     'modules/Antispam/Networks.php',
     'library/ClientFence/GeoIP/Databases/hosting-asn.txt',

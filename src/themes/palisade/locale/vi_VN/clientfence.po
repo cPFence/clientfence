@@ -29820,3 +29820,52 @@ msgstr "Phiên của nhân viên: mọi lệnh gọi API của các trang quản
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Thời gian (ms)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Hãy nạp tiền để hóa đơn và gia hạn của bạn có thể được thanh toán từ số dư. Bạn có thể thay đổi hoặc tắt cảnh báo này trên trang Ví tiền."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Số tiền cảnh báo"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Dưới :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Khách hàng chọn một số tiền trên trang Ví tiền và nhận một email khi số dư của họ xuống dưới mức đó."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "Gửi email cho tôi khi số dư của tôi xuống dưới"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Nhập số tiền lớn hơn 0 và nhỏ hơn :max."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Cho phép khách hàng đặt cảnh báo số dư thấp"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Cảnh báo số dư thấp"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Cảnh báo số dư thấp không khả dụng."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "Số dư tài khoản của bạn là :balance, thấp hơn số tiền cảnh báo :threshold mà bạn đã đặt."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Số dư của bạn đang thấp"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Số dư :balance của bạn thấp hơn số tiền cảnh báo :threshold"

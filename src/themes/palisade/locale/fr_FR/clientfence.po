@@ -29258,3 +29258,52 @@ msgstr "Sessions du personnel : chaque appel d'API des pages d'administration (b
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Durée (ms)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Ajoutez des fonds pour que vos factures et renouvellements puissent être payés avec votre solde. Vous pouvez modifier ou désactiver cette alerte sur la page Portefeuille."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Montant de l'alerte"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Sous :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Les clients choisissent un montant sur la page Portefeuille et reçoivent un e-mail lorsque leur solde passe sous ce montant."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "M'envoyer un e-mail quand mon solde passe sous"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Saisissez un montant supérieur à 0 et inférieur à :max."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Laisser les clients définir une alerte de solde bas"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Alerte de solde bas"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Les alertes de solde bas ne sont pas disponibles."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "Le solde de votre compte est de :balance, inférieur au montant d'alerte de :threshold que vous avez défini."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Votre solde est bas"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Votre solde de :balance est inférieur à votre montant d'alerte de :threshold"

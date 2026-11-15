@@ -158,6 +158,14 @@
                                             <td>-</td>
                                         {% endif %}
                                     </tr>
+                                    {# ClientFence core patch: the client's low balance alert, read-only, while staff allow it (Client/BalanceAlert.php). #}
+                                    {% set balance_alert = admin.client_balance_alert_get({ id: client.id }) %}
+                                    {% if balance_alert %}
+                                    <tr>
+                                        <td class="text-end">{{ 'Low balance alert'|trans }}</td>
+                                        <td>{{ balance_alert.threshold is null ? 'Off'|trans : 'Below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(client.currency ?? default_currency) }) }}</td>
+                                    </tr>
+                                    {% endif %}
                                     {% if client.notes %}
                                     <tr>
                                         <td class="text-end">{{ 'Notes'|trans }}</td>

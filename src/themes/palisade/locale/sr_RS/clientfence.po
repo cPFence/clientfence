@@ -29806,3 +29806,52 @@ msgstr "Sesije osoblja: svaki API poziv administrativnih stranica (mnogo redova)
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Vreme (ms)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Dodajte sredstva da bi se vaši računi i obnove mogli platiti sa vašeg stanja. Ovo obaveštenje možete promeniti ili isključiti na stranici Prepaid kredit."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Iznos obaveštenja"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Ispod :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Klijenti biraju iznos na stranici Prepaid kredit i dobijaju jednu e-poruku kada im stanje padne ispod njega."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "Pošalji mi e-poruku kada moje stanje padne ispod"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Unesite iznos iznad 0 i ispod :max."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Dozvoli klijentima da podese obaveštenje o niskom stanju"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Obaveštenje o niskom stanju"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Obaveštenja o niskom stanju nisu dostupna."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "Stanje vašeg naloga je :balance, ispod iznosa obaveštenja :threshold koji ste postavili."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Vaše stanje je nisko"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Vaše stanje od :balance je ispod iznosa obaveštenja :threshold"

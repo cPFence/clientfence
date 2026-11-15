@@ -30246,3 +30246,52 @@ msgstr "Henkilökunnan istunnot: jokainen ylläpitosivujen tekemä API-kutsu (pa
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig
 msgid "Time (ms)"
 msgstr "Aika (ms)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Add funds so your invoices and renewals can be paid from your balance. You can change or turn off this alert on the Wallet page."
+msgstr "Lisää varoja, jotta laskusi ja uusintasi voidaan maksaa saldostasi. Voit muuttaa tai poistaa tämän ilmoituksen käytöstä Lompakko-sivulla."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Alert amount"
+msgstr "Ilmoituksen summa"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Below :amount"
+msgstr "Alle :amount"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Clients choose an amount on the Wallet page and get one email when their balance falls below it."
+msgstr "Asiakkaat valitsevat summan Lompakko-sivulla ja saavat yhden sähköpostin, kun heidän saldonsa laskee sen alle."
+
+#: src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Email me when my balance falls below"
+msgstr "Lähetä minulle sähköposti, kun saldoni laskee alle"
+
+#: src/modules/Client/BalanceAlert.php
+msgid "Enter an amount above 0 and below :max."
+msgstr "Anna summa, joka on yli 0 ja alle :max."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
+msgid "Let clients set a low balance alert"
+msgstr "Anna asiakkaiden asettaa alhaisen saldon ilmoitus"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+msgid "Low balance alert"
+msgstr "Alhaisen saldon ilmoitus"
+
+#: src/modules/Client/Api/Client.php
+msgid "Low balance alerts are not available."
+msgstr "Alhaisen saldon ilmoitukset eivät ole käytettävissä."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your account balance is :balance, below the alert amount of :threshold you set."
+msgstr "Tilisi saldo on :balance, alle asettamasi ilmoitussumman :threshold."
+
+#: src/modules/Client/templates/email/mod_client_low_balance.html.twig
+msgid "Your balance is low"
+msgstr "Saldosi on alhainen"
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Your balance of :balance is below your alert amount of :threshold"
+msgstr "Saldosi :balance on alle asettamasi ilmoitussumman :threshold"

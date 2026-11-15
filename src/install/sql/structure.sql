@@ -1935,6 +1935,8 @@ CREATE TABLE `client_passkey` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `kind` v
 CREATE TABLE `client_id_document` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `client_id` bigint(20) NOT NULL, `name` varchar(128) NOT NULL, `stored_name` varchar(32) DEFAULT NULL, `mime` varchar(50) NOT NULL, `size` int(11) NOT NULL, `status` varchar(20) NOT NULL DEFAULT 'waiting', `reason` varchar(255) DEFAULT NULL, `admin_id` bigint(20) DEFAULT NULL, `created_at` datetime NOT NULL, `decided_at` datetime DEFAULT NULL, PRIMARY KEY (`id`), KEY `client` (`client_id`, `status`), KEY `decided` (`status`, `decided_at`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- ClientFence core patch: the API request log (Activity/ApiLog.php).
 CREATE TABLE `activity_api` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `source` varchar(16) NOT NULL, `method` varchar(8) NOT NULL, `api_call` varchar(191) NOT NULL, `admin_id` bigint(20) DEFAULT NULL, `client_id` bigint(20) DEFAULT NULL, `ip` varchar(45) DEFAULT NULL, `status` smallint(6) NOT NULL, `result` varchar(255) NOT NULL, `duration_ms` int(11) NOT NULL DEFAULT 0, `params` text, `created_at` datetime NOT NULL, PRIMARY KEY (`id`), KEY `created_at` (`created_at`), KEY `admin_id` (`admin_id`), KEY `client_id` (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- ClientFence core patch: low balance alerts (Client/BalanceAlert.php).
+CREATE TABLE `client_balance_alert` (`client_id` bigint(20) NOT NULL, `threshold` decimal(18,2) NOT NULL, `currency` varchar(10) DEFAULT NULL, `alerted_at` datetime DEFAULT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

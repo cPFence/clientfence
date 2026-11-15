@@ -87,6 +87,8 @@ final class Users
         'cart' => ['checkout' => 'orders'],
         'client' => [
             'balance_get_list' => 'invoices', 'balance_get_total' => ['invoices', 'orders'], 'is_taxable' => '*',
+            // The low balance alert on the Wallet page (BalanceAlert.php): the Wallet's permission.
+            'balance_alert_get' => 'invoices', 'balance_alert_save' => 'invoices',
             'user_session' => '*', 'user_switch' => '*', 'user_profile_update' => '*', 'user_password_change' => '*',
             // A user's own two-factor sign-in (TwoFactor.php), not the account's.
             'twofactor_status' => '*', 'twofactor_setup' => '*', 'twofactor_enable' => '*', 'twofactor_disable' => '*',
@@ -1241,6 +1243,7 @@ final class Users
             Google::forgetLogin($db, 'client', $clientId);
             TicketFiles::forgetClient($db, $clientId);
             Contacts::forgetClient($db, $clientId);
+            BalanceAlert::forgetClient($db, $clientId);
         } catch (\Throwable) {
             // No tables yet: nothing to remove.
             return;

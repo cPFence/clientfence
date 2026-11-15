@@ -40,6 +40,7 @@ final class Migrations
         14 => 'm14Passkeys',
         15 => 'm15IdDocuments',
         16 => 'm16ApiLog',
+        17 => 'm17BalanceAlert',
     ];
 
     public static function latest(): int
@@ -275,6 +276,14 @@ final class Migrations
     {
         if (!$di['dbal']->createSchemaManager()->tablesExist(['activity_api'])) {
             $di['dbal']->executeStatement(Service::tables()['activity_api']);
+        }
+    }
+
+    /** 17: ClientFence core patch: client_balance_alert, the clients' low balance alerts (Client/BalanceAlert.php). */
+    private static function m17BalanceAlert(\Pimple\Container $di): void
+    {
+        if (!$di['dbal']->createSchemaManager()->tablesExist(['client_balance_alert'])) {
+            $di['dbal']->executeStatement(Service::tables()['client_balance_alert']);
         }
     }
 }
