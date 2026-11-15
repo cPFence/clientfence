@@ -20,7 +20,7 @@ A security release. Every new feature is off until you turn it on, and does no e
 
 ### Changed
 
-- The Database Backups tab is now called Backups (System → Settings → System) and also holds the cloud storage settings.
+- The Database Backups tab is now called Backups (System → Settings → System): an overview of every destination with its last result, Back up now with a choice of destinations, one tab per destination with setup steps for each service, and the cloud storage settings.
 - The Blocked IP List accepts IP ranges and wildcards, and also applies at checkout.
 - Clients get an email when two-factor sign-in is switched on for their account.
 - Stored payment gateway notices keep only the request headers and basic details, not the server's settings.
