@@ -1610,6 +1610,14 @@ msgstr ""
 msgid "Accounting program"
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Accounting sync gave up on a record"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Accounting sync paused"
+msgstr ""
+
 #: src/themes/palisade/html/mod_page_login.html.twig src/themes/palisade/html/mod_page_signup.html.twig
 msgid "Accounts are created by our team. Need help? Email"
 msgstr ""
@@ -2344,6 +2352,10 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig
 msgid "Alert and above"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Alerts"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig …
@@ -3242,7 +3254,7 @@ msgstr ""
 msgid "An update finalization is already pending. Complete finalization before starting another update."
 msgstr ""
 
-#: src/modules/Notification/templates/admin/mod_notification_index.html.twig src/themes/admin_default/html/partial_menu_top.html.twig
+#: src/modules/Clientfence/Notifications.php src/modules/Notification/templates/admin/mod_notification_index.html.twig src/themes/admin_default/html/partial_menu_top.html.twig
 msgid "Announcement"
 msgstr ""
 
@@ -4070,7 +4082,7 @@ msgstr ""
 msgid "Billed weekly"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig …
+#: src/modules/Clientfence/Notifications.php src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php …
 msgid "Billing"
 msgstr ""
 
@@ -4212,6 +4224,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
 msgid "Bonus deposit"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Bot token"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
@@ -4526,7 +4542,7 @@ msgstr ""
 msgid "Cancellation is scheduled at the payment gateway. Select a different status only to override the synchronized state."
 msgstr ""
 
-#: src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
+#: src/modules/Clientfence/Notifications.php src/modules/Staff/templates/email/mod_staff_order_cancel_request.html.twig
 msgid "Cancellation request"
 msgstr ""
 
@@ -4950,6 +4966,14 @@ msgstr ""
 msgid "Charity"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Chat ID"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Chat alerts"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Check"
 msgstr ""
@@ -5072,6 +5096,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_steps.html.twig
 msgid "Choose"
+msgstr ""
+
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "Choose Slack, Discord or Telegram."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -5776,6 +5804,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "Client replied to ticket #:id: :subject"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Client reply on a ticket"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -7602,6 +7634,10 @@ msgstr ""
 msgid "Database and configuration patches are being applied. Keep this tab open until the request completes."
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Database backup failed"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Database backups"
 msgstr ""
@@ -7962,6 +7998,10 @@ msgstr ""
 msgid "Delete the Server"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Delete this chat destination?"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Delete this file?"
 msgstr ""
@@ -8000,6 +8040,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_login_history.html.twig
 msgid "Deleted staff member"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Deleted."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
@@ -8374,6 +8418,14 @@ msgstr ""
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update Technical, Billing and Admin contacts for this service. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain expires at the registrar before its due date"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Domain expiring"
+msgstr ""
+
 #: src/modules/Servicehosting/Service.php
 msgid "Domain extension is invalid."
 msgstr ""
@@ -8519,6 +8571,10 @@ msgid "Domain transfer code is: "
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
+msgid "Domain transfer completed"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
 msgid "Domain transfer completed: :domain"
 msgstr ""
 
@@ -8640,6 +8696,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Drop in percent"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Drop in reported units waits for approval"
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig …
@@ -8800,6 +8860,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Edit Server Details"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Edit destination: :name"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -8990,6 +9054,10 @@ msgstr ""
 msgid "Email import cannot read the mailbox of :helpdesk"
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Email import failed"
+msgstr ""
+
 #: src/modules/Support/Controller/Admin.php src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Email import log"
 msgstr ""
@@ -9132,6 +9200,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Emails can only answer existing tickets; new tickets are opened in the client area. Senders of other emails are told so."
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Emails could not be sent"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -9426,6 +9498,10 @@ msgstr ""
 msgid "Enter a message of up to 2000 characters."
 msgstr ""
 
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "Enter a name of up to 100 characters."
+msgstr ""
+
 #: src/modules/Support/TicketSecrets.php
 msgid "Enter a password or an SSH key."
 msgstr ""
@@ -9586,6 +9662,10 @@ msgstr ""
 msgid "Enter the SMTP server name."
 msgstr ""
 
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "Enter the Telegram chat ID: a number, or @ and the channel name."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Import.php
 msgid "Enter the Upmind API token."
 msgstr ""
@@ -9596,6 +9676,10 @@ msgstr ""
 
 #: src/modules/Client/Affiliates/Payouts.php
 msgid "Enter the amount to pay out."
+msgstr ""
+
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "Enter the bot token BotFather gave you, such as 123456:ABC-DEF."
 msgstr ""
 
 #: src/modules/Clientfence/Setup.php
@@ -10140,6 +10224,10 @@ msgstr ""
 
 #: src/themes/admin_default/html/macro_functions.html.twig src/themes/palisade/html/macro_functions.html.twig
 msgid "Failed Setup"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Failed action"
 msgstr ""
 
 #: src/modules/Order/Api/Admin.php
@@ -10788,6 +10876,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "From :start until disabled"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "From BotFather. Kept encrypted and never shown again."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -11943,6 +12035,10 @@ msgid "IP address change refused: %title%"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
+msgid "IP address change request"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
 msgid "IP address change requested for order #:id: :title"
 msgstr ""
 
@@ -12858,6 +12954,10 @@ msgstr ""
 msgid "Invoice numbers, due days and tax rules."
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Invoice paid"
+msgstr ""
+
 #: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
 msgid "Invoice refund"
 msgstr ""
@@ -13316,6 +13416,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "Last emailed %date% to %count% clients."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Last error"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig
@@ -13991,7 +14095,15 @@ msgid "Low"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
+msgid "Low feedback score"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
 msgid "Low feedback score on ticket #:id"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Low reply rating"
 msgstr ""
 
 #: src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
@@ -15026,6 +15138,10 @@ msgstr ""
 msgid "Missing manifest file for the :mod module."
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "Missing usage report"
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid "Missing: :list (clientfence-security-headers.php)."
 msgstr ""
@@ -15638,6 +15754,10 @@ msgstr ""
 msgid "New backup code"
 msgstr ""
 
+#: src/modules/Clientfence/Notifications.php
+msgid "New client"
+msgstr ""
+
 #: src/modules/Staff/templates/email/mod_staff_client_signup.html.twig
 msgid "New client signed up"
 msgstr ""
@@ -15648,6 +15768,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "New clients"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "New destination"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -15688,6 +15812,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig src/modules/Product/templates/admin/mod_product_option_group.html.twig
 msgid "New option group"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "New order"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -15750,7 +15878,7 @@ msgstr ""
 msgid "New subject (optional)"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
+#: src/modules/Clientfence/Notifications.php src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "New ticket"
 msgstr ""
 
@@ -15980,6 +16108,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "No charge."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "No chat destinations yet."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
@@ -17154,6 +17286,10 @@ msgstr ""
 msgid "Only the first :count rows are shown. Narrow the filters to see the rest."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Only the ticked alerts are sent here."
+msgstr ""
+
 #: src/modules/Support/TicketMerge.php
 msgid "Only tickets of the same client, or guest tickets from the same email address, can be merged."
 msgstr ""
@@ -17666,7 +17802,7 @@ msgstr ""
 msgid "Order summary"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/Notifications.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Orders"
 msgstr ""
 
@@ -18648,6 +18784,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "Payment amount does not match the expected invoice total. Expected :expected, received :received."
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "Payment failed"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
@@ -20062,7 +20202,7 @@ msgstr ""
 msgid "Quote Reply"
 msgstr ""
 
-#: src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
+#: src/modules/Clientfence/Notifications.php src/modules/Staff/templates/email/mod_staff_quote_answered.html.twig
 msgid "Quote accepted"
 msgstr ""
 
@@ -21734,6 +21874,10 @@ msgstr ""
 msgid "Sales account"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Sales channel"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Same"
 msgstr ""
@@ -21966,6 +22110,10 @@ msgstr ""
 msgid "Saved"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Saved (:hint); leave empty to keep it"
+msgstr ""
+
 #: src/modules/Invoice/Api/Client.php src/modules/Invoice/Controller/Client.php
 msgid "Saved PayPal accounts are not available."
 msgstr ""
@@ -22010,7 +22158,7 @@ msgstr ""
 msgid "Saved with Mollie"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig …
 msgid "Saved."
 msgstr ""
 
@@ -22462,7 +22610,7 @@ msgstr ""
 msgid "Send password reset"
 msgstr ""
 
-#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Send test"
 msgstr ""
 
@@ -22544,6 +22692,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Sends the alerts of the staff bell to Slack, Discord or Telegram: the alert and a link to its page, right after it happens. Each destination gets the alerts ticked for it."
 msgstr ""
 
 #: src/modules/Redirect/manifest.json
@@ -23370,6 +23522,10 @@ msgstr ""
 msgid "Skipped (opted out)"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Slack: an incoming webhook (https://hooks.slack.com/...). Discord: a channel webhook (https://discord.com/api/webhooks/...). Kept encrypted and never shown again."
+msgstr ""
+
 #: src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
 msgid "Slot"
 msgstr ""
@@ -23942,7 +24098,7 @@ msgstr ""
 msgid "Super Administrator is the root group. New groups are created below the selected parent."
 msgstr ""
 
-#: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Support/Controller/Admin.php …
+#: src/modules/Clientfence/Notifications.php src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_manage.html.twig …
 msgid "Support"
 msgstr ""
 
@@ -24122,7 +24278,7 @@ msgstr ""
 msgid "Syntax Error"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Clientfence/Notifications.php src/modules/Email/templates/admin/mod_email_template.html.twig …
 msgid "System"
 msgstr ""
 
@@ -24152,6 +24308,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "System health"
+msgstr ""
+
+#: src/modules/Clientfence/Notifications.php
+msgid "System health needs attention"
 msgstr ""
 
 #: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig
@@ -24480,6 +24640,14 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Test environment (sandbox)"
+msgstr ""
+
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "Test message from ClientFence"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Test message sent."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -25371,6 +25539,10 @@ msgstr ""
 msgid "The greeting must be text."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "The group or channel the bot posts to: its number, or @ and the channel name. Add the bot to it first."
+msgstr ""
+
 #: src/modules/Invoice/Receipts.php
 msgid "The help desk for payment receipts was not found."
 msgstr ""
@@ -26047,6 +26219,10 @@ msgstr ""
 msgid "The test client opted out of marketing email."
 msgstr ""
 
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "The test message was not sent: :error"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "The transfer authorization code is required."
 msgstr ""
@@ -26121,6 +26297,10 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The web server cannot write :file, which this release replaces or adds (:count such files in all). Fix their owner or permissions and try again; nothing was changed."
+msgstr ""
+
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "The webhook URL must start with :prefix"
 msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
@@ -26373,6 +26553,10 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "This change is not available for this service."
+msgstr ""
+
+#: src/modules/Clientfence/ChatAlerts.php
+msgid "This chat destination no longer exists."
 msgstr ""
 
 #: src/modules/Client/Privacy.php
@@ -27155,7 +27339,7 @@ msgstr ""
 msgid "Ticket content required"
 msgstr ""
 
-#: src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
+#: src/modules/Clientfence/Notifications.php src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
 msgid "Ticket escalated"
 msgstr ""
 
@@ -27815,7 +27999,7 @@ msgstr ""
 msgid "Two-factor sign-in, saved cards and other stored payment methods. Stripe cards can be found again with \"Find saved cards in Stripe\"."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig …
 msgid "Type"
 msgstr ""
 
@@ -29557,6 +29741,10 @@ msgstr ""
 
 #: src/modules/Support/templates/email/mod_support_network_issue.html.twig
 msgid "We would like to keep you informed about our network: %status_title% (%priority_title% priority)."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
+msgid "Webhook URL"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
