@@ -38,9 +38,9 @@
 {% block content %}
 <div class="card">
     <div class="card-header">
+        {# ClientFence core patch: no filler subtitle (CF-135 redesign). #}
         <div>
             <h3 class="card-title">{{ 'System Activity'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Review staff, client, and guest activity across the platform with detailed filtering.'|trans }}</p>
         </div>
         {# ClientFence core patch: the API request log is the second tab (Activity/ApiLog.php). #}
         <div class="card-actions">
@@ -195,16 +195,17 @@
             <tr>
                 <td class="text-nowrap">{{ event.id }}</td>
                 <td class="d-none d-lg-table-cell">
+                    {# ClientFence core patch: initials avatars instead of the drawn identicons (CF-135 redesign). #}
                     {% if event.client_id %}
                     <a href='{{ "client/manage/#{event.client_id}"|url }}'>
-                        {{ avatar(event.client.email|default(''), 20, 'avatar avatar-sm d-none d-md-inline-block') }}
+                        <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ event.client.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>
                     </a>
                     {% elseif event.staff_id %}
                     <a href='{{ "staff/manage/#{event.staff_id}"|url }}'>
-                        {{ avatar(event.staff.email|default(''), 24, 'avatar avatar-sm d-none d-md-inline-block') }}
+                        <span class="cf-avatar cf-avatar-sm cf-avatar-staff" aria-hidden="true">{{ event.staff.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>
                     </a>
                     {% else %}
-                    {{ avatar('guest@example.com', 24, 'avatar avatar-sm d-none d-md-inline-block') }}
+                    <span class="cf-avatar cf-avatar-sm cf-avatar-none" aria-hidden="true"><svg class="icon"><use href="#{{ event.ip ? 'bf-world' : 'server' }}" /></svg></span>
                     {% endif %}
                 </td>
                 <td>

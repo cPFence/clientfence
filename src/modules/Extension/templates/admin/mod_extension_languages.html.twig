@@ -15,9 +15,9 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
+            {# ClientFence core patch: no filler subtitle (CF-135 redesign). #}
             <div>
                 <h3 class="card-title">{{ 'Translations'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage installed translations and discover new language packs.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -66,8 +66,9 @@
                                             {% else %}
                                                 {% set background = 'danger' %}
                                             {% endif %}
-                                            <div class="progress" style="height: 15px;">
-                                                <div class="progress-bar bg-{{ background }}" role="progressbar" style="width: {{ progress }}%" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
+                                            {# ClientFence core patch: the completion bar sized by classes instead of inline styles (CF-135 redesign). #}
+                                            <div class="progress cf-lang-progress">
+                                                <div class="progress-bar bg-{{ background }} bf-w-{{ min(100, (progress / 5)|round(0, 'floor') * 5) }}" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
                                             </div>
                                         </td>
                                         <td class="w-1">{{ lang.locale }}</td>
@@ -122,8 +123,9 @@
                                             {% else %}
                                                 {% set background = 'danger' %}
                                             {% endif %}
-                                            <div class="progress" style="height: 15px;">
-                                                <div class="progress-bar bg-{{ background }}" role="progressbar" style="width: {{ progress }}%" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
+                                            {# ClientFence core patch: the completion bar sized by classes instead of inline styles (CF-135 redesign). #}
+                                            <div class="progress cf-lang-progress">
+                                                <div class="progress-bar bg-{{ background }} bf-w-{{ min(100, (progress / 5)|round(0, 'floor') * 5) }}" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
                                             </div>
                                         </td>
                                         <td class="w-1">{{ lang.locale }}</td>

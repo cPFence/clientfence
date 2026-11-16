@@ -9,9 +9,9 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
+            {# ClientFence core patch: no filler subtitle or tab intros (CF-135 redesign). #}
             <div>
                 <h3 class="card-title">{{ 'Extensions'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage installed extensions, browse the extension directory, and review integration information.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -33,11 +33,6 @@
                 </div>
                 <div class="tab-content border-top">
                     <div class="tab-pane fade active show" id="tab-index" role="tabpanel">
-                        <div class="card-body border-bottom py-3">
-                            <div class="text-secondary">
-                                {{ 'Installed and available extensions are listed here. Use the action icons to activate, deactivate, uninstall, or configure each module.'|trans }}
-                            </div>
-                        </div>
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter table-striped sortable">
                                 <thead>
@@ -49,20 +44,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                {# ClientFence core patch: icon tiles and an Active or Inactive chip, no inline styles (CF-135 redesign). #}
                                 {% for ext in admin.extension_get_list %}
                                     <tr>
                                         <td>
                                             {% set icon_filename = ext.icon_url|split('/')|last %}
                                             {% if (icon_filename != 'cog.svg') and (icon_filename|split('.')|last == 'svg' and ext.icon_path|default(false)) %}
-                                                <div class="text-primary" style="width:24px;height:24px;">
-                                                    {{ source (ext.icon_path, ignore_missing = true) }}
-                                                </div>
+                                                <span class="bf-tile cf-tile-teal">{{ source (ext.icon_path, ignore_missing = true) }}</span>
                                             {% else %}
-                                                <img src="{{ ext.icon_url|default('assets/icons/cog.svg') }}" alt="{{ ext.name }}" style="width:32px;height:32px;">
+                                                <span class="bf-tile cf-tile-teal"><img src="{{ ext.icon_url|default('assets/icons/cog.svg') }}" alt="{{ ext.name }}"></span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <strong>{{ ext.name|trans }}</strong> {{ ext.version }}<br>
+                                            <strong>{{ ext.name|trans }}</strong> <span class="text-secondary">{{ ext.version }}</span>
+                                            {% if ext.type == 'mod' %}<span class="bf-chip ms-1{{ ext.status == 'installed' ? ' bf-tone-ok' }}">{{ ext.status == 'installed' ? 'Active'|trans : 'Inactive'|trans }}</span>{% endif %}<br>
                                             <span>by <a href="{{ ext.author_url }}" target="_blank">{{ ext.author }}</a></span>
                                         </td>
                                         <td>
@@ -152,9 +147,6 @@
 
                     {% if can_manage_hooks %}
                     <div class="tab-pane fade" id="tab-hooks" role="tabpanel">
-                        <div class="card-body border-bottom py-3">
-                            <p class="text-secondary mb-0">{{ 'Registered hooks let extensions integrate with key lifecycle events throughout ClientFence.'|trans }}</p>
-                        </div>
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter table-striped text-nowrap">
                                 <thead>

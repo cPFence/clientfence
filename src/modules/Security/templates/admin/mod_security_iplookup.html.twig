@@ -7,9 +7,9 @@
 {% block content %}
 <div class="card">
     <div class="card-header">
+        {# ClientFence core patch: no filler subtitle (CF-135 redesign). #}
         <div>
             <h3 class="card-title">{{ 'IP Lookup'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Lookup IP addresses and review country and ASN ownership details.'|trans }}</p>
         </div>
     </div>
     <div class="card-body">
@@ -49,8 +49,9 @@
                         <td>{{ record.asn.asnOrg|default('Unknown'|trans) }}</td>
                     </tr>
                     {% else %}
+                    {# ClientFence core patch: the empty list's text under the shared tray icon (CF-135 redesign). #}
                     <tr class="ip-lookup-empty-state">
-                        <td class="text-secondary" colspan="4">{{ 'Enter an IP address above to review its country and ASN details.'|trans }}</td>
+                        <td class="text-muted" colspan="4">{{ 'Enter an IP address above to review its country and ASN details.'|trans }}</td>
                     </tr>
                     {% endif %}
                 </tbody>

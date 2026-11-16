@@ -2,7 +2,10 @@
 <div class="card">
     <div class="card-header">
         <div>
-            <h3 class="card-title">{{ 'Maintenance mode'|trans }}</h3>
+            <h3 class="card-title">{{ 'Maintenance mode'|trans }}
+                {# ClientFence core patch: the saved state as a chip next to the title (CF-135 redesign). #}
+                <span class="bf-chip ms-2{{ maintenance.enabled ? ' bf-tone-warn' }}">{{ maintenance.enabled ? 'On'|trans : 'Off'|trans }}</span>
+            </h3>
             <p class="card-subtitle">{{ 'While it is on, visitors and clients see the maintenance page (or go to the redirect address) and the API answers that the system is undergoing maintenance. The admin area stays open, and signed-in staff still see the client area. System updates turn it on by themselves while they run.'|trans }}</p>
         </div>
     </div>

@@ -38,9 +38,9 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 w-100">
+                        {# ClientFence core patch: no filler subtitle (CF-135 redesign). #}
                         <div>
                             <h3 class="card-title">{{ 'ClientFence Updates'|trans }}</h3>
-                            <p class="card-subtitle">{{ isPreviewBranch ? 'Install preview builds and review update status.'|trans : 'Review release notes, check for updates, and install available platform updates.'|trans }}</p>
                         </div>
                         {% if isPreviewBranch %}
                             <span class="badge badge-outline text-warning">{{ 'Preview Branch'|trans }}</span>
@@ -50,7 +50,8 @@
                 <div class="card-body">
                     {% if not isPreviewBranch %}
                         {# ClientFence: the installed version and the newest release, as cards. #}
-                        <div class="row row-cards mb-3">
+                        {# ClientFence core patch: a new release's card glows in the brand colours (CF-135 redesign). #}
+                        <div class="row row-cards mb-3 cf-update-versions">
                             <div class="col-sm-6">
                                 <div class="card card-sm h-100">
                                     <div class="card-body">
@@ -288,9 +289,9 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 w-100">
+                        {# ClientFence core patch: no filler subtitle on the patches card (CF-135 redesign). #}
                         <div>
                             <h3 class="card-title">{{ 'Database & Configuration Patches'|trans }}</h3>
-                            <p class="card-subtitle">{{ 'Keep database structure and settings aligned with the installed ClientFence version.'|trans }}</p>
                         </div>
                         <span class="badge {{ behindOnPatches ? 'badge-outline text-warning' : 'badge-outline text-success' }}">{{ behindOnPatches ? 'Pending'|trans : 'Up to Date'|trans }}</span>
                     </div>

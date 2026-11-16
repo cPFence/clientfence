@@ -23,10 +23,10 @@
             </thead>
             <tbody>
                 {% for item in chat.destinations %}
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <td>{{ types[item.type] }}</td>
-                        <td>{% if item.enabled %}<span class="badge bg-green-lt">{{ 'On'|trans }}</span>{% else %}<span class="badge bg-secondary-lt">{{ 'Off'|trans }}</span>{% endif %}</td>
+                    <tr{% if item.error %} class="cf-row-bad"{% endif %}>
+                        <td class="bf-strong">{{ item.name }}</td>
+                        <td><span class="bf-chip">{{ types[item.type] }}</span></td>
+                        <td><span class="bf-chip{{ item.enabled ? ' bf-tone-ok' }}">{{ item.enabled ? 'On'|trans : 'Off'|trans }}</span></td>
                         <td class="text-end">{{ item.kinds|length }}</td>
                         <td class="text-wrap">{% if item.error %}<span class="text-danger">{{ item.error }}</span> <span class="text-secondary">({{ item.error_at|format_datetime }})</span>{% else %}<span class="text-secondary">-</span>{% endif %}</td>
                         <td class="text-nowrap">
@@ -38,7 +38,7 @@
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="6" class="text-secondary">{{ 'No chat destinations yet.'|trans }}</td></tr>
+                    <tr><td colspan="6" class="text-muted">{{ 'No chat destinations yet.'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
