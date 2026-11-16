@@ -42,15 +42,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {# ClientFence core patch: staff with initials, the average with a meter, scores tinted by how good they are, empty lists under the tray icon (CF-135 redesign). #}
                         {% for row in report.ratings %}
                             <tr>
-                                <td>{{ row.name }}</td>
+                                <td><span class="cf-avatar cf-avatar-sm me-2" aria-hidden="true">{{ row.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>{{ row.name }}</td>
                                 <td class="text-end">{{ row.total }}</td>
-                                <td class="text-end"><strong>{{ row.average|format_number({ fraction_digit: 2 }) }}</strong> / 5</td>
+                                <td class="text-end"><strong>{{ row.average|format_number({ fraction_digit: 2 }) }}</strong> / 5<progress class="cf-meter d-block ms-auto" value="{{ row.average }}" max="5" aria-hidden="true"></progress></td>
                                 {% for n in 5..1 %}<td class="text-end text-secondary">{{ row.stars[n] }}</td>{% endfor %}
                             </tr>
                         {% else %}
-                            <tr><td colspan="8" class="text-secondary">{{ 'No reply was rated in this period.'|trans }}</td></tr>
+                            <tr><td colspan="8" class="text-muted">{{ 'No reply was rated in this period.'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -72,12 +73,12 @@
                     <tbody>
                         {% for row in report.feedback %}
                             <tr>
-                                <td>{{ row.name }}</td>
+                                <td><span class="cf-avatar cf-avatar-sm me-2" aria-hidden="true">{{ row.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>{{ row.name }}</td>
                                 <td class="text-end">{{ row.total }}</td>
-                                <td class="text-end"><strong>{{ row.average|format_number({ fraction_digit: 2 }) }}</strong> / 10</td>
+                                <td class="text-end"><strong>{{ row.average|format_number({ fraction_digit: 2 }) }}</strong> / 10<progress class="cf-meter d-block ms-auto" value="{{ row.average }}" max="10" aria-hidden="true"></progress></td>
                             </tr>
                         {% else %}
-                            <tr><td colspan="3" class="text-secondary">{{ 'No feedback was given in this period.'|trans }}</td></tr>
+                            <tr><td colspan="3" class="text-muted">{{ 'No feedback was given in this period.'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -103,13 +104,13 @@
                 {% for row in report.comments %}
                     <tr>
                         <td class="text-nowrap text-secondary">{{ row.created_at|date('Y-m-d') }}</td>
-                        <td class="text-nowrap"><a href="{{ 'support/ticket'|url }}/{{ row.ticket_id }}#ticket-feedback">#{{ row.ticket_id }}</a> {{ row.subject|truncate(40) }}</td>
+                        <td class="text-nowrap"><a href="{{ 'support/ticket'|url }}/{{ row.ticket_id }}#ticket-feedback"><bdi>#{{ row.ticket_id }}</bdi></a> {{ row.subject|truncate(40) }}</td>
                         <td class="text-nowrap">{{ row.name ?: 'Support in general'|trans }}</td>
-                        <td class="text-end text-nowrap">{% if row.rating is not null %}{{ row.rating }}/10{% else %}-{% endif %}</td>
+                        <td class="text-end text-nowrap">{% if row.rating is not null %}<span class="badge {{ row.rating >= 8 ? 'bg-green-lt' : (row.rating >= 5 ? 'bg-yellow-lt' : 'bg-red-lt') }}">{{ row.rating }}/10</span>{% else %}-{% endif %}</td>
                         <td class="text-wrap" dir="auto">{{ row.comments|nl2br }}</td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="5" class="text-secondary">{{ 'No comments in this period.'|trans }}</td></tr>
+                    <tr><td colspan="5" class="text-muted">{{ 'No comments in this period.'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

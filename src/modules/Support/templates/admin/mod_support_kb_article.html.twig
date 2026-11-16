@@ -33,17 +33,18 @@
     <form method="post" action="{{ 'support/kb_article_update'|api_url }}" {{ fb_api_form({ message: 'Article Updated'|trans }) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
             title: post.title,
-            subtitle: 'Update the article content, category, and visibility for the knowledge base.'|trans,
             body_class: 'pt-4',
             footer_align: 'between'
         } %}
             {% import 'macro_functions.html.twig' as mf %}
             {% block form_content %}
-                <div class="d-flex flex-wrap gap-3 text-muted small mb-3">
-                    <span>{{ 'Created'|trans }}: {% if post.created_at %}{{ '%time% ago'|trans({ '%time%': post.created_at|timeago }) }}{% else %}-{% endif %}</span>
-                    <span>{{ 'Updated'|trans }}: {% if post.updated_at %}{{ '%time% ago'|trans({ '%time%': post.updated_at|timeago }) }}{% else %}-{% endif %}</span>
+                {# ClientFence core patch: status and dates as chips under the title, without the filler subtitle (CF-135 redesign). #}
+                <div class="cf-inv-chips align-items-center mb-4">
+                    {{ mf.status_badge(post.status, 'post') }}
+                    <span class="bf-chip">{{ 'Created'|trans }}: {% if post.created_at %}{{ '%time% ago'|trans({ '%time%': post.created_at|timeago }) }}{% else %}-{% endif %}</span>
+                    <span class="bf-chip">{{ 'Updated'|trans }}: {% if post.updated_at %}{{ '%time% ago'|trans({ '%time%': post.updated_at|timeago }) }}{% else %}-{% endif %}</span>
                     {% if post.status == 'active' %}
-                        <a href='{{ "support/kb/#{post.category.slug}/#{post.slug}"|url(area: 'client') }}' target="_blank" rel="noreferrer">{{ 'View public article'|trans }}</a>
+                        <a class="ms-1" href='{{ "support/kb/#{post.category.slug}/#{post.slug}"|url(area: 'client') }}' target="_blank" rel="noreferrer">{{ 'View public article'|trans }}</a>
                     {% endif %}
                 </div>
                 <div class="row g-3">

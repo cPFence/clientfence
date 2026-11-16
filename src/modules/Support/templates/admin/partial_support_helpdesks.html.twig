@@ -17,8 +17,9 @@
         {% for helpdesk in admin.support_helpdesk_get_list({ 'per_page': 50, 'page': request.page }|merge(request)).list %}
             <tr>
                 <td>{{ loop.index }}</td>
+                {# ClientFence core patch: each help desk with its tile, an empty list under the tray icon (CF-135 redesign). #}
                 <td>
-                    <a href='{{ "support/helpdesk/#{helpdesk.id}"|url }}'>{{ helpdesk.name }}</a>
+                    <a class="cf-tile-link" href='{{ "support/helpdesk/#{helpdesk.id}"|url }}'><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#headset" /></svg></span><span>{{ helpdesk.name }}</span></a>
                     {# ClientFence core patch: help desks hidden from clients (Support/HiddenHelpdesks.php). #}
                     {% if helpdesk.hidden ?? false %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden from clients'|trans }}</span>{% endif %}
                 </td>
@@ -41,7 +42,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5" class="text-center text-muted py-3">{{ 'The list is empty'|trans }}</td>
+                <td colspan="5" class="text-muted">{{ 'The list is empty'|trans }}</td>
             </tr>
         {% endfor %}
         </tbody>

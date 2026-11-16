@@ -44,8 +44,9 @@
                             <tr>
                                 <td class="text-nowrap">{{ document.created_at|format_datetime }}</td>
                                 <td>
+                                    {# ClientFence core patch: the file with its tile, an empty list under the tray icon (CF-135 redesign). #}
                                     {% if document.has_file %}
-                                        <a href="{{ ('client/id-document/' ~ document.id)|url }}" dir="auto">{{ document.name }}</a>
+                                        <a class="cf-tile-link" href="{{ ('client/id-document/' ~ document.id)|url }}"><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#download" /></svg></span><span dir="auto">{{ document.name }}</span></a>
                                     {% else %}
                                         <span class="text-secondary" dir="auto">{{ document.name }}</span> <span class="text-secondary small">({{ 'file deleted'|trans }})</span>
                                     {% endif %}
@@ -58,7 +59,7 @@
                                 </td>
                             </tr>
                         {% else %}
-                            <tr><td class="text-secondary" colspan="4">{{ 'This client has not sent an ID document.'|trans }}</td></tr>
+                            <tr><td class="text-muted" colspan="4">{{ 'This client has not sent an ID document.'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

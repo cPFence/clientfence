@@ -5,11 +5,12 @@
 {% block meta_title %}{{ 'Two-factor sign-in'|trans }}{% endblock %}
 
 {% block content %}
+{# ClientFence core patch: the explanation is the sign-in card's subtitle, as on the other sign-in screens (CF-135 redesign). #}
 {% embed 'partial_admin_auth_card.html.twig' with {
-    title: 'Two-factor sign-in'|trans
+    title: 'Two-factor sign-in'|trans,
+    subtitle: 'Enter the 6-digit code from your authenticator app, or your backup code.'|trans
 } %}
     {% block auth_form %}
-                <p class="text-secondary">{{ 'Enter the 6-digit code from your authenticator app, or your backup code.'|trans }}</p>
                 <form method="post" action="{{ 'staff/login_code'|api_url(role: 'guest') }}" {{ fb_api_form({redirect: redirect_uri|default('/')|url}) }} autocomplete="off">
                     <div class="mb-3">
                         <label class="form-label" for="inputCode">{{ 'Code'|trans }}</label>

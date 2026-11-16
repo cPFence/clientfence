@@ -46,7 +46,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Knowledge Base'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage knowledge base articles and organize content into categories.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -118,12 +117,13 @@
                                    {% if active_tab == 'articles' %}
                                        {% set posts = admin.support_kb_article_get_list({ 'per_page': 25, 'page': request.page }|merge(request)) %}
                                        {% for i, post in posts.list %}
+                                       {# ClientFence core patch: each article with its tile and the category as a chip, without the filler subtitle (CF-135 redesign). #}
                                        <tr>
                                             <td>
-                                                <a href='{{ "support/kb/article/#{post.id}"|url }}'>{{ post.title }}</a>
+                                                <a class="cf-tile-link" href='{{ "support/kb/article/#{post.id}"|url }}'><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#notes" /></svg></span><span>{{ post.title }}</span></a>
                                             </td>
                                             <td>
-                                                <a href='{{ "support/kb/category/#{post.category.id}"|url }}'>{{ post.category.title }}</a>
+                                                <a class="badge bg-azure-lt" href='{{ "support/kb/category/#{post.category.id}"|url }}'>{{ post.category.title }}</a>
                                             </td>
                                             <td>{{ mf.status_badge(post.status, 'post') }}</td>
                                             <td class="text-center">{{ post.views }}</td>
@@ -185,8 +185,9 @@
                                         {% set active_count = category.articles|filter(article => article.status == 'active')|length %}
                                         {% set draft_count = category.articles|filter(article => article.status == 'draft')|length %}
                                      <tr>
+                                         {# ClientFence core patch: each category with its tile (CF-135 redesign). #}
                                          <td>
-                                             <a href='{{ "support/kb/category/#{category.id}"|url }}'>{{ category.title }}</a>
+                                             <a class="cf-tile-link" href='{{ "support/kb/category/#{category.id}"|url }}'><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#help" /></svg></span><span>{{ category.title }}</span></a>
                                              {# ClientFence core patch: categories hidden from clients (Support/HiddenKbCategories.php). #}
                                              {% if category.hidden ?? false %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden from clients'|trans }}</span>{% endif %}
                                              <div class="text-muted small">{{ '%active% active, %draft% draft'|trans({ '%active%': active_count, '%draft%': draft_count }) }}</div>

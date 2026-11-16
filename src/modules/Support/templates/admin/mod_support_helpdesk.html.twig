@@ -26,17 +26,28 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ helpdesk.name }}</h3>
-            <p class="card-subtitle">{{ 'Helpdesk name will be visible for clients when submitting a new ticket.'|trans }}</p>
+{# ClientFence core patch: the help desk reads first: name, email and chips, then the facts; the settings form below in one card, without the filler subtitles (CF-135 redesign). #}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#headset" /></svg></span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ helpdesk.name }}</span>
+                <span class="text-secondary text-break" dir="ltr">{{ helpdesk.email }}</span>
+                {% if helpdesk.hidden ?? false %}
+                <div class="cf-inv-chips mt-1"><span class="badge bg-secondary-lt">{{ 'Hidden from clients'|trans }}</span></div>
+                {% endif %}
+            </div>
         </div>
+        <dl class="cf-facts">
+            <div><dt>{{ 'Close Tickets After'|trans }}</dt><dd><bdi>{{ helpdesk.close_after }}</bdi> {{ 'hour(s)'|trans }}</dd></div>
+            <div><dt>{{ 'Tickets Can Be Reopened?'|trans }}</dt><dd>{{ helpdesk.can_reopen ? 'Yes'|trans : 'No'|trans }}</dd></div>
+        </dl>
     </div>
+</div>
     <form method="post" action="{{ 'support/helpdesk_update'|api_url }}" {{ fb_api_form({ message: 'Helpdesk Updated'|trans }) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
             title: 'Helpdesk Settings'|trans,
-            subtitle: 'Configure the inbox identity, auto-close timing, and whether tickets can be reopened.'|trans,
             body_class: 'pt-4'
         } %}
             {% block form_content %}
@@ -127,7 +138,6 @@
             {% endblock %}
         {% endembed %}
     </form>
-</div>
 {# ClientFence core patch: the help desk's mailbox for ticket email import (staff who manage help desks). #}
 {% if admin.system_is_allowed({ 'mod': 'support', 'f': 'manage_helpdesk' }) %}
 {{ include('mod_support_helpdesk_mail.html.twig') }}

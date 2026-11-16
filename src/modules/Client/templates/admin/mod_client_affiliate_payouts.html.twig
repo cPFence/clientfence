@@ -20,7 +20,8 @@
                 <tr>
                     <td class="text-nowrap">{{ payout.created_at|format_date }}</td>
                     {% if show_client %}
-                        <td><a href="{{ ('client/manage/' ~ payout.client_id)|url }}#tab-clientfence-affiliate">{{ payout.first_name }} {{ payout.last_name }}</a>{% if payout.company %}<div class="small text-secondary">{{ payout.company }}</div>{% endif %}</td>
+                        {# ClientFence core patch: the affiliate with initials, an empty list under the tray icon (CF-135 redesign). #}
+                        <td><div class="d-flex align-items-center gap-2"><span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (payout.first_name|first ~ payout.last_name|first)|upper }}</span><div><a href="{{ ('client/manage/' ~ payout.client_id)|url }}#tab-clientfence-affiliate">{{ payout.first_name }} {{ payout.last_name }}</a>{% if payout.company %}<div class="small text-secondary">{{ payout.company }}</div>{% endif %}</div></div></td>
                     {% endif %}
                     <td class="text-nowrap fw-medium">{{ payout.amount|format_currency(payout.currency) }}</td>
                     <td class="text-break">{{ payout.details|nl2br }}</td>
@@ -48,7 +49,7 @@
                     {% endif %}
                 </tr>
             {% else %}
-                <tr><td class="text-secondary" colspan="6">{{ 'No payout requests.'|trans }}</td></tr>
+                <tr><td class="text-muted" colspan="6">{{ 'No payout requests.'|trans }}</td></tr>
             {% endfor %}
         </tbody>
     </table>

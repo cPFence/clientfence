@@ -61,7 +61,8 @@
                         <td class="text-secondary">{{ issue.emailed_at ? 'To %count% clients'|trans({ '%count%': issue.emailed_count }) : '-' }}</td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="8" class="text-secondary">{{ 'No issues here.'|trans }}</td></tr>
+                    {# ClientFence core patch: an empty list under the tray icon (CF-135 redesign). #}
+                    <tr><td colspan="8" class="text-muted">{{ 'No issues here.'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

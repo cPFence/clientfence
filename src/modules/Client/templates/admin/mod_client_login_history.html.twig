@@ -15,7 +15,6 @@
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Client Login History'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Review successful client logins, related IP addresses, and origin countries.'|trans }}</p>
         </div>
     </div>
 
@@ -109,9 +108,10 @@
             {% for i, event in history.list %}
             <tr>
                 <td>{{ event.id }}</td>
+                {# ClientFence core patch: initials avatars instead of the drawn identicons, an empty list under the tray icon (CF-135 redesign). #}
                 <td>
                     <a href='{{ "client/manage/#{event.client.id}"|url }}'>
-                        {{ avatar(event.client.email, 24, 'avatar avatar-xs d-none d-md-inline-block') }}
+                        <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (event.client.first_name|first ~ event.client.last_name|first)|upper }}</span>
                     </a>
                 </td>
                 <td>
@@ -148,7 +148,7 @@
             </tr>
             {% else %}
             <tr>
-                <td class="text-muted text-center py-3" colspan="8">{{ 'The list is empty'|trans }}</td>
+                <td class="text-muted" colspan="8">{{ 'The list is empty'|trans }}</td>
             </tr>
             {% endfor %}
             </tbody>

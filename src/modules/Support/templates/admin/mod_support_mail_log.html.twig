@@ -67,8 +67,9 @@
                     <td class="text-break">{{ entry.subject }}</td>
                     <td>
                         <span class="badge {{ entry.imported ? 'bg-success-lt' : (entry.status starts with 'rejected' or entry.status == 'failed' ? 'bg-danger-lt' : 'bg-warning-lt') }}">{{ status_names[entry.status]|default(entry.status) }}</span>
+                        {# ClientFence core patch: the ticket number kept whole in right-to-left languages, an empty log under the tray icon (CF-135 redesign). #}
                         {% if entry.ticket_id %}
-                            <a href="{{ 'support/ticket'|url }}/{{ entry.ticket_id }}">#{{ entry.ticket_id }}</a>
+                            <a href="{{ 'support/ticket'|url }}/{{ entry.ticket_id }}"><bdi>#{{ entry.ticket_id }}</bdi></a>
                         {% endif %}
                         {% if entry.note %}<div class="text-muted small">{{ entry.note }}</div>{% endif %}
                     </td>
@@ -81,7 +82,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td class="text-muted text-center py-3" colspan="6">{{ 'No emails were read yet.'|trans }}</td>
+                    <td class="text-muted" colspan="6">{{ 'No emails were read yet.'|trans }}</td>
                 </tr>
             {% endfor %}
             </tbody>
