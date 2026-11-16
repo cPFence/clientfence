@@ -442,7 +442,8 @@
         });
     });
 
-    if (PRODUCTS.length) addProduct(PRODUCTS[0].id); else render();
+    {# ClientFence core patch (CF-141): the order starts empty, as in WHMCS: staff add each product or domain. #}
+    render();
     syncOptions();
 })();
 </script>

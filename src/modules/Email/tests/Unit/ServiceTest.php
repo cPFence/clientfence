@@ -166,7 +166,7 @@ test('ActivityClientEmail toApiArray returns sanitized API array', function (): 
         'sender' => $sender,
         'recipients' => $recipients,
         'subject' => $subject,
-        'content_html' => ClientFence\Tools::sanitizeContent($content_html),
+        'content_html' => ClientFence\Tools::sanitizeContent($content_html, true, true),
         'content_text' => $content_text,
         'has_attachment' => false,
         'created_at' => $created->format('Y-m-d H:i:s'),

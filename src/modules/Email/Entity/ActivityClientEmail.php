@@ -72,7 +72,8 @@ class ActivityClientEmail implements ApiArrayInterface, TimestampInterface
             'sender' => $this->sender,
             'recipients' => $this->recipients,
             'subject' => $this->subject,
-            'content_html' => Tools::sanitizeContent($this->contentHtml ?? ''),
+            // ClientFence core patch (CF-143): keeps the email's inline styles (every view shows it in a sandboxed frame).
+            'content_html' => Tools::sanitizeContent($this->contentHtml ?? '', true, true),
             'content_text' => $this->contentText,
             'has_attachment' => $this->attachmentName !== null,
             'created_at' => $this->getCreatedAt()?->format('Y-m-d H:i:s'),

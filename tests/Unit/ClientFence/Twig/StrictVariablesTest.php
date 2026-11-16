@@ -120,7 +120,9 @@ test('order new only lists periods the product is actually priced for', function
     expect($html)
         ->toContain('&quot;code&quot;&#x3A;&quot;1Y&quot;')
         ->not->toContain('&quot;code&quot;&#x3A;&quot;4Y&quot;')
-        ->not->toContain('&quot;code&quot;&#x3A;&quot;5Y&quot;');
+        ->not->toContain('&quot;code&quot;&#x3A;&quot;5Y&quot;')
+        // CF-141: the order starts with no product.
+        ->not->toContain('addProduct(PRODUCTS[0].id)');
 });
 
 /*
