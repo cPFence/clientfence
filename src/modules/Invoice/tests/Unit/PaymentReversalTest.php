@@ -21,13 +21,13 @@ function reversalDb(): Doctrine\DBAL\Connection
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, gateway_id INTEGER, amount TEXT, status TEXT, txn_status TEXT, ipn TEXT, note TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, invoice_item_id INTEGER UNIQUE, amount REAL, description TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id INTEGER, task TEXT, status TEXT, period TEXT, charged INTEGER DEFAULT 0, attempts INTEGER DEFAULT 0, updated_at TEXT)',
-        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, product_id INTEGER, status TEXT, period TEXT, expires_at TEXT, activated_at TEXT, config TEXT, unpaid_invoice_id INTEGER, updated_at TEXT)',
+        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, product_id INTEGER, service_type TEXT, status TEXT, period TEXT, expires_at TEXT, activated_at TEXT, config TEXT, unpaid_invoice_id INTEGER, updated_at TEXT)',
         'CREATE TABLE product (id INTEGER PRIMARY KEY, setup TEXT)',
         'CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)',
         'CREATE TABLE promo_redemption (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, committed_at TEXT)',
         'CREATE TABLE extension_meta (id INTEGER PRIMARY KEY, client_id INTEGER, extension TEXT, rel_type TEXT, rel_id TEXT, meta_key TEXT, meta_value TEXT, created_at TEXT, updated_at TEXT)',
-        'CREATE TABLE invoice_accounting_sync (id INTEGER PRIMARY KEY, program TEXT, entity TEXT, local_id INTEGER, status TEXT, last_error TEXT, updated_at TEXT)',
-        'CREATE TABLE client_affiliate_entry (id INTEGER PRIMARY KEY, affiliate_id INTEGER, invoice_id INTEGER, type TEXT, status TEXT)',
+        'CREATE TABLE invoice_accounting_sync (id INTEGER PRIMARY KEY, program TEXT, entity TEXT, local_id INTEGER, status TEXT, remote_id TEXT, last_error TEXT, updated_at TEXT)',
+        'CREATE TABLE client_affiliate_entry (id INTEGER PRIMARY KEY, affiliate_id INTEGER, invoice_id INTEGER, type TEXT, status TEXT, note TEXT, updated_at TEXT)',
     ] as $sql) {
         $db->executeStatement($sql);
     }
@@ -104,6 +104,13 @@ test('a payment staff marked paid by mistake is reversed: unpaid again, credit b
     $db->insert('promo_redemption', ['id' => 1, 'invoice_id' => 10, 'status' => 'committed', 'committed_at' => '2026-11-10 10:00:00']);
     $db->insert('invoice_accounting_sync', ['id' => 1, 'program' => 'xero', 'entity' => 'payment', 'local_id' => 10, 'status' => 'sent']);
     $db->insert('invoice_accounting_sync', ['id' => 2, 'program' => 'quickbooks', 'entity' => 'payment', 'local_id' => 10, 'status' => 'failed']);
+    // The overpayment of transaction #2 sent as credit, one only noted (nothing at the program), and the payment of an earlier
+    // reversal still waiting for staff at FreeAgent.
+    $db->insert('invoice_accounting_sync', ['id' => 3, 'program' => 'xero', 'entity' => 'surplus', 'local_id' => 2, 'status' => 'sent', 'remote_id' => 'CN-1']);
+    $db->insert('invoice_accounting_sync', ['id' => 4, 'program' => 'quickbooks', 'entity' => 'surplus', 'local_id' => 2, 'status' => 'sent']);
+    $db->insert('invoice_accounting_sync', ['id' => 5, 'program' => 'freeagent', 'entity' => 'payment', 'local_id' => 10, 'status' => 'stopped', 'last_error' => 'earlier']);
+    // A commission of the payment (already cancelled): it leaves the invoice so paying it again earns again.
+    $db->insert('client_affiliate_entry', ['id' => 1, 'affiliate_id' => 3, 'invoice_id' => 10, 'type' => 'commission', 'status' => 'cancelled']);
     $order6 = new Model_ClientOrder();
     $orders = Mockery::mock(OrderService::class)->makePartial();
     $orders->shouldReceive('suspendFromOrder')->once()->with($order6, 'Payment reversed')->andReturnTrue();
@@ -130,6 +137,10 @@ test('a payment staff marked paid by mistake is reversed: unpaid again, credit b
         // A payment already at Xero stops there for staff; one not sent yet is dropped.
         ->and($db->fetchAssociative('SELECT status, last_error FROM invoice_accounting_sync WHERE id = 1'))->toBe(['status' => 'stopped', 'last_error' => 'The payment was reversed here: delete it at Xero by hand, then choose Send again.'])
         ->and($db->fetchOne('SELECT COUNT(*) FROM invoice_accounting_sync WHERE id = 2'))->toEqual(0)
+        ->and($db->fetchAssociative('SELECT status, last_error FROM invoice_accounting_sync WHERE id = 3'))->toBe(['status' => 'stopped', 'last_error' => 'The payment was reversed here: delete it at Xero by hand.'])
+        ->and($db->fetchFirstColumn('SELECT id FROM invoice_accounting_sync WHERE id IN (4, 5)'))->toEqual([5])
+        ->and($db->fetchOne('SELECT last_error FROM invoice_accounting_sync WHERE id = 5'))->toBe('earlier')
+        ->and($db->fetchAssociative('SELECT invoice_id, note FROM client_affiliate_entry WHERE id = 1'))->toBe(['invoice_id' => null, 'note' => 'Payment reversed'])
         ->and($db->fetchOne('SELECT notes FROM invoice WHERE id = 10'))->toContain('Payment of 100.00 USD reversed by staff. Transactions marked reversed: #2. Account credit given back: 25.00. Due dates moved back: order #5 due 2027-01-31.');
 
     // The activity log line: staff (added by the logger), invoice, amount.
@@ -204,6 +215,11 @@ test('a payment that is not only staff money, or that more happened to since, is
     'a credit note' => [fn ($db) => $db->update('invoice', ['status' => 'refunded', 'paid_at' => '2026-11-10 10:00:00'], ['id' => 10]), 'Only the payment of a paid invoice'],
     'unpaid' => [fn ($db) => $db->update('invoice', ['status' => 'unpaid', 'paid_at' => null], ['id' => 10]), 'Only the payment of a paid invoice'],
     'partly refunded' => [fn ($db) => $db->update('invoice', ['refund' => 10], ['id' => 10]), 'partly refunded'],
+    'a domain renewal it paid for' => [function ($db): void {
+        reversalTx($db, 2, 100.0, true);
+        $db->insert('client_order', ['id' => 9, 'product_id' => 1, 'service_type' => 'domain', 'status' => 'active', 'config' => '{}']);
+        $db->insert('invoice_item', ['invoice_id' => 10, 'type' => 'order', 'rel_id' => 9, 'task' => 'renew', 'status' => 'executed', 'period' => '1Y']);
+    }, 'renewed a domain'],
     'an upgrade it applied' => [fn ($db) => $db->insert('invoice_item', ['invoice_id' => 10, 'type' => 'hook_call', 'status' => 'executed']), 'changed a service'],
     'a downgrade credit since' => [function ($db): void {
         $db->insert('invoice_item', ['invoice_id' => 10, 'type' => 'order', 'rel_id' => 5, 'task' => 'renew', 'status' => 'executed']);

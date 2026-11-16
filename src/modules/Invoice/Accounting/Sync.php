@@ -309,21 +309,29 @@ final class Sync
     }
 
     /**
-     * CF-144: a payment staff reversed (Invoice/PaymentReversal.php). One already at the program stays there (no call here
-     * removes a payment), so its record stops with what to do and the invoice waits until staff choose Send again; one not
-     * sent yet is dropped.
+     * CF-144: a payment staff reversed (Invoice/PaymentReversal.php), with its transactions. One already at the program (the
+     * payment, or the overpayment of a transaction sent as credit) stays there (no call here removes a payment), so its record
+     * stops with what to do and the invoice waits until staff choose Send again; one not sent yet is dropped.
      */
-    public static function paymentReversed(\Pimple\Container $di, int $invoiceId): void
+    public static function paymentReversed(\Pimple\Container $di, int $invoiceId, array $transactionIds): void
     {
         $db = $di['dbal'];
-        foreach ($db->fetchAllAssociative('SELECT id, program, status FROM ' . self::TABLE . " WHERE entity = 'payment' AND local_id = ?", [$invoiceId]) as $row) {
-            if ($row['status'] !== 'sent') {
-                $db->delete(self::TABLE, ['id' => (int) $row['id']]);
+        $ids = implode(',', array_map('intval', $transactionIds)) ?: '0';
+        foreach ($db->fetchAllAssociative('SELECT id, program, entity, status, remote_id FROM ' . self::TABLE . " WHERE (entity = 'payment' AND local_id = ?) OR (entity = 'surplus' AND local_id IN ({$ids}))", [$invoiceId]) as $row) {
+            $there = $row['status'] === 'sent' && ($row['entity'] === 'payment' || $row['remote_id'] !== null);
+            if (!$there) {
+                // A record a previous reversal stopped keeps its warning.
+                if ($row['status'] !== 'stopped') {
+                    $db->delete(self::TABLE, ['id' => (int) $row['id']]);
+                }
 
                 continue;
             }
             $label = isset(self::PROGRAMS[$row['program']]) ? self::PROGRAMS[$row['program']]::label() : (string) $row['program'];
-            $db->update(self::TABLE, ['status' => 'stopped', 'last_error' => __trans('The payment was reversed here: delete it at :program by hand, then choose Send again.', [':program' => $label]), 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $row['id']]);
+            $error = $row['entity'] === 'payment'
+                ? __trans('The payment was reversed here: delete it at :program by hand, then choose Send again.', [':program' => $label])
+                : __trans('The payment was reversed here: delete it at :program by hand.', [':program' => $label]);
+            $db->update(self::TABLE, ['status' => 'stopped', 'last_error' => $error, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $row['id']]);
         }
     }
 

@@ -25,6 +25,9 @@ use ClientFence\Tools;
  */
 final class Commissions
 {
+    /** The note of a commission Reverse payment took off its invoice. */
+    public const PAYMENT_REVERSED = 'Payment reversed';
+
     private const STATE = 'affiliates_daily';
     /** How far back the daily job looks for paid invoices whose commission was not written. */
     private const LOOKBACK_DAYS = 7;
@@ -214,7 +217,11 @@ final class Commissions
         $affiliate = $db->fetchAssociative('SELECT a.*, c.currency FROM client_affiliate a JOIN client c ON c.id = a.client_id WHERE a.id = ?', [$referral['affiliate_id']]);
         $product = $db->fetchOne('SELECT p.config FROM client_order o JOIN product p ON p.id = o.product_id WHERE o.id = ?', [$orderId]);
         $rule = self::rule($settings, $affiliate, json_decode((string) $product, true) ?: []);
-        if ($rule === null || ($rule[2] && $db->fetchOne("SELECT 1 FROM client_affiliate_entry WHERE client_order_id = ? AND type = 'commission'", [$orderId]) !== false)) {
+        // A commission staff took off its invoice with Reverse payment (Invoice/PaymentReversal.php) no longer holds the one-time rule.
+        if ($rule === null || ($rule[2] && $db->fetchOne(
+            "SELECT 1 FROM client_affiliate_entry WHERE client_order_id = ? AND type = 'commission' AND NOT (invoice_id IS NULL AND COALESCE(note, '') = ?)",
+            [$orderId, self::PAYMENT_REVERSED],
+        ) !== false)) {
             return;
         }
         $base = round((float) $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND type IN ('order', 'custom')", [$invoice['id'], (string) $orderId]), 2);

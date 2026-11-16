@@ -6,7 +6,8 @@ declare(strict_types=1);
  * ClientFence (CF-144): "Reverse payment" undoes a payment staff recorded by mistake (a bank transfer that never arrived),
  * as WHMCS's Mark Unpaid with the payment transaction deleted, and also gives back what that payment moved. Only when no
  * gateway money is behind the invoice: every processed transaction on it was recorded by staff (Mark as Paid, or a staff
- * transaction on a Custom method), so nothing is sent anywhere. A gateway payment still needs Refund.
+ * transaction on a Custom method), so nothing is sent anywhere. A gateway payment still needs Refund, and so does a payment
+ * that renewed a domain at its registrar (paying again would renew it twice).
  *
  * What a payment leaves, and what the reversal does with it:
  * - the invoice's balance rows (client_balance type invoice, rel_id the invoice): the debits that paid it (its lines, account
@@ -18,7 +19,8 @@ declare(strict_types=1);
  *   their service's day); a service the payment set up is suspended (its activation line lifts it when paid again);
  * - affiliate commissions are reversed, promotion uses reserved again, the credit applied to the invoice freed, the orders
  *   point to the invoice as their unpaid one, and the credit batch leaves it (staff took that payment back);
- * - the accounting sync (Accounting/Sync.php paymentReversed()) stops a payment it already sent, for staff to delete there.
+ * - the accounting sync (Accounting/Sync.php paymentReversed()) stops a payment (or an overpayment) it already sent, for staff
+ *   to delete there.
  */
 
 namespace ClientFence\Mod\Invoice;
@@ -56,6 +58,9 @@ final class PaymentReversal
             $now = date('Y-m-d H:i:s');
 
             Commissions::reverse($di, $id);
+            // Their history stays, off the invoice, so paying it again earns the commission again (one per invoice and order,
+            // and the one-time rule skips rows with this note; an imported note is kept and still holds it).
+            $db->executeStatement("UPDATE client_affiliate_entry SET invoice_id = NULL, note = COALESCE(note, ?), updated_at = ? WHERE invoice_id = ? AND type = 'commission'", [Commissions::PAYMENT_REVERSED, $now, $id]);
             $plan['moved'] = $di['mod_service']('Invoice')->moveRenewalsBack($invoice);
             $activated = array_map('intval', $db->fetchFirstColumn(
                 "SELECT o.id FROM invoice_item ii JOIN client_order o ON o.id = ii.rel_id JOIN product p ON p.id = o.product_id
@@ -93,7 +98,7 @@ final class PaymentReversal
             $invoice->notes = $invoice->notes . $now . ': ' . $note . '       ' . PHP_EOL;
             $invoice->updated_at = $now;
             $db->update('invoice', ['status' => $invoice->status, 'paid_at' => null, 'base_income' => null, 'base_refund' => null, 'notes' => $invoice->notes, 'updated_at' => $now], ['id' => $id]);
-            Sync::paymentReversed($di, $id);
+            Sync::paymentReversed($di, $id, array_column($plan['staff'], 'id'));
 
             return [$plan, $activated];
         }));
@@ -143,6 +148,13 @@ final class PaymentReversal
         }
         if ($db->fetchOne('SELECT 1 FROM invoice_item WHERE invoice_id = ? AND type = ? AND status = ?', [$id, \Model_InvoiceItem::TYPE_HOOK_CALL, \Model_InvoiceItem::STATUS_EXECUTED]) !== false) {
             throw new InformationException('This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead.');
+        }
+        // Paying it again would renew the domain at the registrar a second time (bought twice for one payment).
+        if ($db->fetchOne(
+            "SELECT 1 FROM invoice_item ii JOIN client_order o ON o.id = ii.rel_id WHERE ii.invoice_id = ? AND ii.type = 'order' AND ii.task = ? AND ii.status = ? AND o.service_type = 'domain'",
+            [$id, \Model_InvoiceItem::TASK_RENEW, \Model_InvoiceItem::STATUS_EXECUTED],
+        ) !== false) {
+            throw new InformationException('This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead.');
         }
         // A downgrade after it gave credit out of what this payment paid for (as Service::refundPartLocked()).
         if ($db->fetchOne(

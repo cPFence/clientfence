@@ -210,6 +210,35 @@ test('a one-time commission is paid on the order\'s first paid invoice only; a r
     expect((int) $db->fetchOne("SELECT COUNT(*) FROM client_affiliate_entry WHERE type = 'commission'"))->toBe($rows);
 })->with(['one-time' => [true, 1], 'recurring' => [false, 2]]);
 
+test('a one-time commission Reverse payment took off its invoice is earned again; one staff cancelled or a refund reversed is not (CF-144)', function (string $clearing, string $how, bool $again): void {
+    $db = affiliateDb();
+    $di = affiliateDi($db, ['affiliate_onetime' => '1', 'affiliate_clearing_days' => $clearing]);
+    affiliateReferring($di);
+    affiliatePaidInvoice($db, 100);
+    affiliatePaidInvoice($db, 101);
+    Commissions::onPaid($di, 100);
+
+    if ($how === 'staff') {
+        $db->update('client_affiliate_entry', ['status' => 'cancelled'], ['invoice_id' => 100]);
+    } elseif ($how === 'imported') {
+        // An imported commission without an invoice or a note.
+        $db->update('client_affiliate_entry', ['invoice_id' => null, 'note' => null], ['invoice_id' => 100]);
+    } else {
+        Commissions::reverse($di, 100);
+        // What Invoice\PaymentReversal does after it.
+        $how === 'reversed' && $db->executeStatement("UPDATE client_affiliate_entry SET invoice_id = NULL, note = COALESCE(note, ?) WHERE invoice_id = 100 AND type = 'commission'", [Commissions::PAYMENT_REVERSED]);
+    }
+    Commissions::onPaid($di, 101);
+
+    expect(affiliateCommission($db, 101) !== false)->toBe($again);
+})->with([
+    'reversed, pending' => ['30', 'reversed', true],
+    'reversed, cleared' => ['0', 'reversed', true],
+    'cancelled by staff' => ['30', 'staff', false],
+    'refunded' => ['0', 'refund', false],
+    'imported without invoice or note' => ['30', 'imported', false],
+]);
+
 test('a full refund reverses the commission once, also when refunds are handled by hand', function (): void {
     $db = affiliateDb();
     $di = affiliateDi($db, ['affiliate_clearing_days' => '0']);
