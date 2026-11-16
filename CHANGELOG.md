@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.0.56 (2026-11-16)
+
+A new look for the admin and client areas, and new billing features.
+
+### Added
+
+- **Reverse payment:** undo a payment staff recorded by mistake on a paid invoice (for example a bank transfer that never arrived). The invoice is unpaid again, credit it used comes back, renewals move back and a service it set up is suspended. Gateway payments still use Refund. ([#38](https://github.com/cPFence/clientfence/issues/38))
+- **Prorata billing:** a product can renew all its services on one day of the month (Prorata Date), with a Charge Next Month day. The first invoice charges the days up to that date; add-ons follow their service's date. The WHMCS import brings over a product's Prorata Billing settings. ([#33](https://github.com/cPFence/clientfence/issues/33))
+- **Bulk domain check:** clients check one name across up to 20 extensions at once and add several domains to the cart. Staff can pin up to 8 extensions that are ticked first. The embedded domain checker does the same. ([#29](https://github.com/cPFence/clientfence/issues/29))
+- **Logo for emails:** a separate logo for emails, for example one with its own background so it stays clear in dark mode.
+- **Taxed lines on staff invoices:** a new Tax setting, "Tax lines staff add to invoices", starts new invoice lines as taxed when the client pays tax.
+- **CAPTCHA off from the console:** `php console.php clientfence:signin-security-off --captcha` turns CAPTCHA Protection off when a wrong key locks staff out.
+
+### Changed
+
+- **New look:** the admin area, the client area, the emails, the invoice PDF and the print view have a modern redesign, with dark mode, right-to-left languages and phones covered. Built-in emails you never edited get the new look on their own. Built-in emails you edited keep your text: Regenerate Built-in Templates (System → Settings → Email, Bulk Actions) replaces them with the new look. Language versions you added and your own templates stay as they are.
+- Hosting plans go from the store straight to the checkout page, where the client chooses the domain. Domains on their own still go through the cart.
+- A promo code never takes away a free domain: each line gets the larger of the code's discount and the free domain.
+- The checkout places an order only at the total it shows: when an automatic promotion changes the total, it shows the new total first.
+- With "Prices include tax" on, a price staff type on a taxed invoice line includes the tax, as order and renewal lines do.
+- The import plan lists the clients with the most credit first, so a wrong imported balance is easy to spot.
+
+### Fixed
+
+- Add New Order no longer adds the first product on its own. ([#35](https://github.com/cPFence/clientfence/issues/35))
+- The admin back-to-top button no longer covers the version number. ([#36](https://github.com/cPFence/clientfence/issues/36))
+- Email history shows emails with their styling. ([#39](https://github.com/cPFence/clientfence/issues/39))
+- The store no longer shows a free billing cycle as a saving.
+
 ## 1.0.55 (2026-11-16)
 
 A security release. Every new feature is off until you turn it on, and does no extra work while it is off. A new security page explains each feature: https://clientfence.com/security/
