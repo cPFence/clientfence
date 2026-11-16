@@ -2,30 +2,31 @@
 {# ClientFence core patch (ext serviceapikey): the key with copy and regenerate, its usage and allowed IPs, without page reloads. #}
 {% import 'macro_functions.html.twig' as mf %}
 
+{# ClientFence core patch: the key reads first in a summary card: status, copy and regenerate, then its use as facts (CF-135 redesign). #}
 <div class="card-body">
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
-        <div>
-            <h3 class="card-title mb-1">{{ 'API Key'|trans }} {{ mf.status_badge(order.status, 'order') }}</h3>
-            <p class="text-secondary mb-0">{{ 'Review the current key and adjust how this service generates replacement API keys.'|trans }}</p>
-        </div>
-        <a class="btn btn-outline-danger" href="{{ 'serviceapikey/reset'|api_url(query: { 'order_id': order.id }) }}"
-            {{ fb_api_link({modal: {type: 'confirm', title: 'Regenerate API key?'|trans, content: 'The old key stops working at once. Programs that use it need the new key.'|trans, button: 'Regenerate'|trans, buttonColor: 'danger'}, callback: 'cfApiKeyRegenerated'}) }}>
-            <svg class="icon"><use href="#refresh" /></svg>
-            <span>{{ 'Regenerate'|trans }}</span>
-        </a>
-    </div>
-    <div class="input-group mb-3">
-        <input type="text" class="form-control font-monospace" id="cf-apikey-value" value="{{ service.api_key }}" readonly dir="ltr" aria-label="{{ 'API Key'|trans }}">
-        <button class="btn" type="button" id="cf-apikey-copy">{{ 'Copy'|trans }}</button>
-    </div>
-    <div class="datagrid">
-        <div class="datagrid-item">
-            <div class="datagrid-title">{{ 'Last used'|trans }}</div>
-            <div class="datagrid-content">{{ service.last_used_at ? service.last_used_at|format_datetime : 'Never'|trans }}</div>
-        </div>
-        <div class="datagrid-item">
-            <div class="datagrid-title">{{ 'Times used'|trans }}</div>
-            <div class="datagrid-content">{{ service.use_count }}</div>
+    <div class="card mb-0">
+        <div class="cf-inv cf-dom">
+            <div class="cf-inv-hero">
+                <div class="cf-client-name">{{ 'API Key'|trans }}</div>
+                <div class="cf-inv-chips align-items-center">
+                    {{ mf.status_badge(order.status, 'order') }}
+                    <a class="btn btn-sm btn-outline-danger" href="{{ 'serviceapikey/reset'|api_url(query: { 'order_id': order.id }) }}"
+                        {{ fb_api_link({modal: {type: 'confirm', title: 'Regenerate API key?'|trans, content: 'The old key stops working at once. Programs that use it need the new key.'|trans, button: 'Regenerate'|trans, buttonColor: 'danger'}, callback: 'cfApiKeyRegenerated'}) }}>
+                        <svg class="icon"><use href="#refresh" /></svg>
+                        <span>{{ 'Regenerate'|trans }}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="cf-inv-note">
+                <div class="input-group">
+                    <input type="text" class="form-control font-monospace" id="cf-apikey-value" value="{{ service.api_key }}" readonly dir="ltr" aria-label="{{ 'API Key'|trans }}">
+                    <button class="btn" type="button" id="cf-apikey-copy">{{ 'Copy'|trans }}</button>
+                </div>
+            </div>
+            <dl class="cf-facts">
+                <div><dt>{{ 'Last used'|trans }}</dt><dd>{{ service.last_used_at ? service.last_used_at|format_datetime : 'Never'|trans }}</dd></div>
+                <div><dt>{{ 'Times used'|trans }}</dt><dd class="cf-fact-num">{{ service.use_count }}</dd></div>
+            </dl>
         </div>
     </div>
 </div>
@@ -61,7 +62,7 @@
 <div class="card-body">
     <form method="post" action="{{ 'serviceapikey/update'|api_url }}" {{ fb_api_form({message: 'API Key Updated'|trans}) }}>
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'API Key Configuration'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Changing the generation options will not automatically regenerate the current API key. Use the reset action if you want the live key replaced.'|trans }}</p>
             </div>
@@ -73,10 +74,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Formatting'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Control whether the generated key uses dash separators and how each segment is cased.'|trans }}</p>
             </div>
@@ -109,10 +108,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Custom Parameters'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Define additional values your application can retrieve from the API for this key, such as plan-specific limits or feature flags.'|trans }}</p>
             </div>

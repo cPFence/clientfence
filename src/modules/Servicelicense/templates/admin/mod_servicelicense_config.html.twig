@@ -3,10 +3,11 @@
 
 {% set config = product.config|default({}) %}
 
+{# ClientFence core patch: the sections start under ruled headings as on the product and order pages (CF-135 redesign). #}
 <div class="card-body">
     <form method="post" action="{{ 'product/update_config'|api_url }}" {{ fb_api_form({message: 'License Settings Updated'|trans}) }}>
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head border-0 pt-0">
                 <h3 class="card-title mb-1">{{ 'License Settings'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Configure how license keys are generated for this product and which validation rules should apply to issued licenses.'|trans }}</p>
             </div>
@@ -26,10 +27,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Validation Rules'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Choose which environment checks clients must satisfy when validating a license.'|trans }}</p>
             </div>
@@ -89,11 +88,9 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         {# ClientFence core patch: WHMCS Licensing Addon checks (WhmcsCheck.php). #}
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'WHMCS Licensing Addon Checks'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format.'|trans }}</p>
             </div>
@@ -115,11 +112,9 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         {# ClientFence core patch: per-unit billing of licences (Units.php). #}
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Price per Unit'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'For software that reports a count (for example websites): with per-unit billing on for a licence, its price becomes the count times the unit price a month, at least the minimum, from each report.'|trans }}</p>
             </div>
@@ -213,11 +208,9 @@
             {% endif %}
         </div>
 
-        <hr class="my-4" />
-
         {# ClientFence core patch: client IP self-service limits of licences (IpSeats, CF-56). #}
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Client IP Addresses'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Let clients add and remove the IP addresses of their licence within these limits.'|trans }}</p>
             </div>
@@ -269,10 +262,10 @@
         </div>
     </form>
 
-    <hr class="my-4" />
-
-    <div>
-        <h3 class="card-title mb-2">{{ 'License Plugins'|trans }}</h3>
+    <div class="mt-5">
+        <div class="mb-3 cf-section-head">
+            <h3 class="card-title mb-0">{{ 'License Plugins'|trans }}</h3>
+        </div>
         <p>{{ 'You can create your own license generation plugins for ClientFence. Follow these steps to add a new one:'|trans }}</p>
         <ul>
             <li>{{ 'A license plugin is a PHP class named'|trans }} <strong>License_PluginName</strong> {{ 'that must include a'|trans }} <code>generate</code> {{ 'method.'|trans }}</li>

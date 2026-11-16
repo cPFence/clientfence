@@ -1,8 +1,9 @@
+{# ClientFence core patch: the sections start under ruled headings as on the product and order pages (CF-135 redesign). #}
 <div class="card-body">
     {% set config = product.config|default({}) %}
     <div class="mb-5">
         <form method="post" action="{{ 'servicedownloadable/config_save'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans}) }}>
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head border-0 pt-0">
                 <h3 class="card-title mb-1">{{ 'Download Settings'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Choose whether existing orders should automatically reference the latest uploaded file for this product.'|trans }}</p>
             </div>
@@ -28,10 +29,8 @@
         </form>
     </div>
 
-    <hr class="my-4" />
-
     <div>
-        <div class="mb-3">
+        <div class="mb-3 cf-section-head">
             <h3 class="card-title mb-1">{{ 'Product File'|trans }}</h3>
             <p class="text-secondary mb-0">{{ 'Upload the file customers will receive when ordering this downloadable product.'|trans }}</p>
         </div>

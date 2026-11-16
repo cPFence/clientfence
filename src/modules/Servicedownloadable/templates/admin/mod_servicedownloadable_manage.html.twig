@@ -1,29 +1,23 @@
+{% import 'macro_functions.html.twig' as mf %}
+{# ClientFence core patch: the order's file reads first: its name and status, then where it is and how often it was downloaded (CF-135 redesign). #}
 <div class="card-body">
-    <div class="mb-3">
-        <h3 class="card-title mb-1">{{ 'File Information'|trans }}</h3>
-        <p class="text-secondary mb-0">{{ 'Review the file currently assigned to this order and upload a replacement when needed.'|trans }}</p>
+    <div class="card mb-4">
+        <div class="cf-inv cf-dom">
+            <div class="cf-inv-hero">
+                <div class="min-w-0">
+                    <div class="cf-client-name"><bdi>{{ service.filename|default('-') }}</bdi></div>
+                    <div class="text-secondary">{{ 'File Information'|trans }}</div>
+                </div>
+                <div class="cf-inv-chips">{{ mf.status_badge(order.status, 'order') }}</div>
+            </div>
+            <dl class="cf-facts">
+                <div><dt>{{ 'Location'|trans }}</dt><dd><bdi>{{ service.path|default('-') }}</bdi></dd></div>
+                <div><dt>{{ 'Downloads'|trans }}</dt><dd class="cf-fact-num">{{ service.downloads|default(0) }}</dd></div>
+            </dl>
+        </div>
     </div>
 
-    <table class="table card-table table-vcenter table-striped text-nowrap">
-        <tbody>
-            <tr class="noborder">
-                <td>{{ 'Filename'|trans }}:</td>
-                <td>{{ service.filename }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Location'|trans }}:</td>
-                <td>{{ service.path }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Downloads'|trans }}:</td>
-                <td>{{ service.downloads }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <hr class="my-4" />
-
-    <div class="mb-3">
+    <div class="mb-3 cf-section-head border-0 pt-0">
         <h3 class="card-title mb-1">{{ 'Upload New File for This Order'|trans }}</h3>
         <p class="text-secondary mb-0">{{ 'Use this function to replace the existing order file. The client will be able to download the new file from the client area.'|trans }}</p>
     </div>

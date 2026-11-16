@@ -21,11 +21,32 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-3 d-flex flex-column gap-3">
+{# ClientFence core patch: the plan reads first: its name, then each limit as a fact; the forms follow (CF-135 redesign). #}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ hp.name }}</span>
+                <span class="text-secondary">{{ 'Hosting Plan'|trans }}</span>
+            </div>
+        </div>
+        <dl class="cf-facts">
+            <div><dt>{{ 'Disk Quota'|trans }}</dt><dd class="cf-fact-num">{{ hp.quota == 'unlimited' ? 'Unlimited'|trans : hp.quota ~ ' MB' }}</dd></div>
+            <div><dt>{{ 'Bandwidth'|trans }}</dt><dd class="cf-fact-num">{{ hp.bandwidth == 'unlimited' ? 'Unlimited'|trans : hp.bandwidth ~ ' MB' }}</dd></div>
+            <div><dt>{{ 'Maximum Addon Domains'|trans }}</dt><dd>{{ hp.max_addon }}</dd></div>
+            <div><dt>{{ 'Maximum FTP Accounts'|trans }}</dt><dd>{{ hp.max_ftp }}</dd></div>
+            <div><dt>{{ 'Maximum Databases'|trans }}</dt><dd>{{ hp.max_sql }}</dd></div>
+            <div><dt>{{ 'Maximum Email Accounts'|trans }}</dt><dd>{{ hp.max_pop }}</dd></div>
+            <div><dt>{{ 'Maximum Subdomains'|trans }}</dt><dd>{{ hp.max_sub }}</dd></div>
+            <div><dt>{{ 'Maximum Parked Domains'|trans }}</dt><dd>{{ hp.max_park }}</dd></div>
+        </dl>
+    </div>
+</div>
+<div class="d-flex flex-column gap-3">
     <form method="post" action="{{ 'servicehosting/hp_update'|api_url }}" {{ fb_api_form({message: 'Hosting Plan Updated'|trans}) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
-            title: hp.name,
-            subtitle: 'Configure resource limits, manager-specific parameters, and extra provisioning fields for this hosting plan.'|trans,
+            title: 'Plan Details'|trans,
             card_class: 'mb-0'
         } %}
             {% block form_content %}
@@ -75,7 +96,7 @@
                 </div>
 
                 {% if hp.config|length > 0 %}
-                    <div class="d-flex flex-column gap-1 mt-4 mb-4">
+                    <div class="d-flex flex-column gap-1 mt-4 mb-4 cf-section-head">
                         <h6 class="card-title mb-0">{{ 'Server Manager Specific Parameters'|trans }}</h6>
                         <p class="text-secondary mb-0">{{ 'Review adapter-specific values that are sent to the active hosting server manager for this plan.'|trans }}</p>
                     </div>
