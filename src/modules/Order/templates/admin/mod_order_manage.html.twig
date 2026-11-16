@@ -107,7 +107,7 @@
                                 </div>
                                 <div class="cf-inv-chips">
                                     {{ mf.status_badge(order.status, 'order') }}
-                                    <span class="badge bg-secondary-lt" title="{{ 'Product type'|trans }}">{{ order.service_type }}</span>
+                                    <span class="badge bg-secondary-lt" title="{{ 'Product type'|trans }}">{{ has_permission('product', 'view') ? admin.product_get_types[order.service_type]|default(order.service_type) : order.service_type }}</span>
                                     {% if order.expires_at and order.status != 'canceled' %}
                                         {% if date(order.expires_at) < date() %}
                                             <span class="badge bg-red-lt">{{ 'Expired'|trans }} · {{ order.expires_at|timeago }} {{ 'ago'|trans }}</span>
