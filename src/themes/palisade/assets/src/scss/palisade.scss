@@ -4396,10 +4396,9 @@ body::before {
   color: var(--bs-secondary-color); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
 }
 .table > tbody > tr > * { transition: background-color .25s; }
-.table-hover > tbody > tr:hover > *, .table > tbody > tr:hover > * {
-  --bs-table-bg-state: transparent;
-  background-image: linear-gradient(90deg, rgba(var(--pal-accent-rgb), .08), transparent 80%);
-}
+// Row hover: one flat tint over the whole row (WiseCP's table hover).
+.table-hover > tbody > tr:hover > *, .table > tbody > tr:hover > * { --bs-table-bg-state: rgba(51, 79, 97, .07); }
+:where([data-bs-theme="dark"]) :is(.table-hover, .table) > tbody > tr:hover > * { --bs-table-bg-state: rgba(230, 238, 243, .06); }
 .btn { transition: transform .2s var(--pal-ease), box-shadow .25s, background-color .25s, border-color .25s; }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0) scale(.98); }
@@ -5135,7 +5134,7 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   .table td { text-align: end; }
   .table td:first-child { text-align: start; color: var(--bf-ink-2); }
   .table tr:last-child td { border-bottom: 0; }
-  .table > tbody > tr:hover > * { background-image: none; }
+  .table > tbody > tr:hover > * { --bs-table-bg-state: transparent; }
 }
 .cf-print-total td { font-size: 1.0625rem; }
 @media print {

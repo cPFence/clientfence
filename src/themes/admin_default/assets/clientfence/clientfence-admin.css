@@ -1024,11 +1024,9 @@ a.bf-file-name:hover .icon { color: inherit; }
   color: var(--bf-muted); font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
 }
 .bf-body .table > tbody > tr { transition: background-color .25s; }
-.bf-body .table > tbody > tr:hover > * {
-  --tblr-table-bg-state: transparent;
-  background-image: linear-gradient(90deg, color-mix(in srgb, var(--bf-teal) 8%, transparent), transparent 80%);
-}
-[dir="rtl"] .bf-body .table > tbody > tr:hover > * { background-image: linear-gradient(270deg, color-mix(in srgb, var(--bf-teal) 8%, transparent), transparent 80%); }
+/* Row hover: one flat tint over the whole row (WiseCP's table hover). */
+.bf-body .table > tbody > tr:hover > * { --tblr-table-bg-state: rgba(51, 79, 97, .07); }
+:where([data-bs-theme="dark"]) .bf-body .table > tbody > tr:hover > * { --tblr-table-bg-state: rgba(230, 238, 243, .06); }
 
 /* Buttons: a navy-to-teal primary with a soft glow, a small press. */
 .bf-shell .btn { transition: transform .2s var(--bf-ease), box-shadow .25s, background-color .25s, border-color .25s; }
