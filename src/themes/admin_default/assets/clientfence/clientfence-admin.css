@@ -950,27 +950,39 @@ a.bf-file-name:hover .icon { color: inherit; }
 /* translate and scale, not transform: Popper positions the menu with an inline transform. */
 @keyframes bf-pop { from { opacity: 0; translate: 0 -6px; scale: .98; } to { opacity: 1; translate: none; scale: none; } }
 
-/* Sidebar: WiseCP-style glass. A near-black slate lightly tinted with the brand, one glow in the top corner, a 12px
-   blur; the page shows through (75% in dark mode, 90% on the light page so it does not turn grey). The
-   oklch(from …) version sits in @supports: with var() inside, an unsupported browser would drop the whole background
-   at computed time instead of keeping the plain one. */
+/* Sidebar: WiseCP's rail. Light mode: a solid deep rail (the brand mixed into near-black navy), as WiseCP does; glass
+   on a light page turned grey. Dark mode: glass, a near-black slate lightly tinted with the brand at 75% with a 12px
+   blur. One glow in the top corner in both. The oklch(from …) values are set only in @supports: with var() inside,
+   an unsupported browser would drop the whole background at computed time instead of keeping the plain values. */
 .bf-sidebar {
-  --bf-rail-a: 90%; --bf-rail-glow-at: 0 0;
-  --bf-rail-brand: var(--pal-brand, #0e5a7a); --bf-rail-accent: var(--pal-accent, #14a39a);
+  --bf-rail-brand: var(--pal-brand, #0e5a7a); --bf-rail-accent: var(--pal-accent, #14a39a); --bf-rail-glow-at: 0 0;
+  --bf-rail-top: color-mix(in srgb, var(--bf-rail-brand) 30%, #0b1220);
+  --bf-rail-bottom: color-mix(in srgb, var(--bf-rail-brand) 22%, #070d16);
+  --bf-rail-glow-1: color-mix(in srgb, var(--bf-rail-brand) 70%, transparent);
+  --bf-rail-glow-2: color-mix(in srgb, var(--bf-rail-accent) 30%, transparent);
+  --bf-rail-blur: none;
   background:
-    radial-gradient(240px 150px at var(--bf-rail-glow-at), color-mix(in srgb, var(--bf-rail-brand) 70%, transparent), color-mix(in srgb, var(--bf-rail-accent) 30%, transparent) 55%, transparent 100%),
-    linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--bf-rail-brand) 16%, #151d27) var(--bf-rail-a), transparent), color-mix(in srgb, color-mix(in srgb, var(--bf-rail-brand) 14%, #101720) var(--bf-rail-a), transparent));
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    radial-gradient(240px 150px at var(--bf-rail-glow-at), var(--bf-rail-glow-1), var(--bf-rail-glow-2) 55%, transparent 100%),
+    linear-gradient(180deg, var(--bf-rail-top) 0%, var(--bf-rail-bottom) 100%);
+  -webkit-backdrop-filter: var(--bf-rail-blur); backdrop-filter: var(--bf-rail-blur);
   border-inline-end: 1px solid rgba(221, 233, 245, .09);
+}
+[data-bs-theme="dark"] .bf-sidebar {
+  --bf-rail-top: color-mix(in srgb, color-mix(in srgb, var(--bf-rail-brand) 16%, #151d27) 75%, transparent);
+  --bf-rail-bottom: color-mix(in srgb, color-mix(in srgb, var(--bf-rail-brand) 14%, #101720) 75%, transparent);
+  --bf-rail-blur: blur(12px);
 }
 @supports (color: oklch(from red min(l, .5) min(c, .05) h)) {
   .bf-sidebar {
-    background:
-      radial-gradient(240px 150px at var(--bf-rail-glow-at), color-mix(in srgb, oklch(from var(--bf-rail-brand) max(.45, min(l, .55)) c h) 70%, transparent), color-mix(in srgb, oklch(from var(--bf-rail-accent) max(.45, min(l, .55)) c h) 30%, transparent) 55%, transparent 100%),
-      linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .42) min(c, .045) h) 16%, #151d27) var(--bf-rail-a), transparent), color-mix(in srgb, color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .42) min(c, .045) h) 14%, #101720) var(--bf-rail-a), transparent));
+    --bf-rail-top: color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .45) c h) 30%, #0b1220);
+    --bf-rail-glow-1: color-mix(in srgb, oklch(from var(--bf-rail-brand) max(.45, min(l, .55)) c h) 70%, transparent);
+    --bf-rail-glow-2: color-mix(in srgb, oklch(from var(--bf-rail-accent) max(.45, min(l, .55)) c h) 30%, transparent);
+  }
+  [data-bs-theme="dark"] .bf-sidebar {
+    --bf-rail-top: color-mix(in srgb, color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .42) min(c, .045) h) 16%, #151d27) 75%, transparent);
+    --bf-rail-bottom: color-mix(in srgb, color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .42) min(c, .045) h) 14%, #101720) 75%, transparent);
   }
 }
-[data-bs-theme="dark"] .bf-sidebar { --bf-rail-a: 75%; }
 [dir="rtl"] .bf-sidebar { --bf-rail-glow-at: 100% 0; }
 .bf-item, .bf-sub { transition: background .25s, color .25s; }
 .bf-item.is-active {
