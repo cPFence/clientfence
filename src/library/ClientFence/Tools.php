@@ -423,10 +423,11 @@ class Tools
      *
      * @param string $content   The content to sanitize. If empty, returns an empty string.
      * @param bool   $allowHtml Whether to allow safe HTML tags (default: true for rich content)
+     * @param bool   $keepStyles Whether to keep inline `style` attributes (sent emails, shown in a sandboxed frame)
      *
      * @return string Sanitized content safe for output
      */
-    public static function sanitizeContent(string $content = '', bool $allowHtml = true): string
+    public static function sanitizeContent(string $content = '', bool $allowHtml = true, bool $keepStyles = false): string
     {
         if (empty($content)) {
             return '';
@@ -447,6 +448,10 @@ class Tools
             ->allowElement('code')
             ->allowElement('pre')
             ->allowLinkSchemes(['http', 'https', 'mailto', 'tel']);
+        if ($keepStyles) {
+            // ClientFence core patch (CF-143): emails are styled inline; without it the email history shows them unstyled.
+            $config = $config->allowAttribute('style', '*');
+        }
 
         $sanitizer = new \Symfony\Component\HtmlSanitizer\HtmlSanitizer($config);
 

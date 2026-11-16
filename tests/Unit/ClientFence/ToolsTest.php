@@ -28,6 +28,15 @@ test('sanitize content', function (string $input, string $expected, bool $allowS
     expect($result)->toEqual($expected);
 })->with('sanitizeContentProvider');
 
+test('sanitize content keeps inline styles only when asked (CF-143)', function (): void {
+    $email = '<table><tr><td style="padding:24px; color:#334155;"><a href="javascript:alert(1)" style="color:red">x</a><script>alert(2)</script></td></tr></table>';
+
+    expect(ClientFence\Tools::sanitizeContent($email))->not->toContain('style=')
+        ->and(ClientFence\Tools::sanitizeContent($email, true, true))->toContain('style="padding:24px; color:#334155;"')
+        ->not->toContain('javascript')
+        ->not->toContain('script>');
+});
+
 test('sanitize content removes null bytes', function (): void {
     $input = "Hello\0World";
     $result = ClientFence\Tools::sanitizeContent($input, false);
