@@ -37,13 +37,14 @@
     {% set report = admin.massmailer_report({ id: msg.id }) %}
     <div class="row g-3" id="mm-report" data-id="{{ msg.id }}">
         <div class="col-12">
+            {# ClientFence core patch: the delivery counts in their status colours (CF-135 redesign). #}
             <div class="row row-cards">
                 {% for key, label in { sent: 'Sent'|trans, queued: 'Waiting in the email queue'|trans, failed: 'Failed'|trans, skipped: 'Skipped (opted out)'|trans } %}
                     <div class="col-6 col-lg-3">
                         <div class="card card-sm">
                             <div class="card-body">
                                 <div class="text-secondary">{{ label }}</div>
-                                <div class="h1 mb-0">{{ report.counts[key] }}</div>
+                                <div class="h1 mb-0{% if report.counts[key] > 0 %} {{ { sent: 'cf-tone-ok', failed: 'cf-tone-bad' }[key] ?? '' }}{% endif %}">{{ report.counts[key] }}</div>
                             </div>
                         </div>
                     </div>
@@ -248,7 +249,8 @@
                             <p class="card-subtitle" id="mm-opted" hidden></p>
                         </div>
                     </div>
-                    <div class="list-group list-group-flush overflow-auto" style="max-height: 28rem" id="mm-receivers"></div>
+                    {# ClientFence core patch: the recipient list sized by a class instead of an inline style (CF-135 redesign). #}
+                    <div class="list-group list-group-flush overflow-auto cf-mm-receivers" id="mm-receivers"></div>
                 </div>
             </div>
         </section>

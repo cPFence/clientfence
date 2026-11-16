@@ -31,17 +31,45 @@
     ] },
     'email': { 'icon': 'mail', 'label': 'Email'|trans, 'schedule': ['Daily, up to :mb MB'|trans({ ':mb': backups.max_email_mb })] },
 } %}
-<div class="card">
+{# Each destination's last result (result and at as the table shows them) and its state for the summary and the row
+   tint: off, none (on, no backup yet), running, ok or bad. A cloud destination is bad when its database or files copy
+   failed, running while one runs (for under 6 hours), ok when one succeeded. #}
+{% set states = {} %}
+{% for key in rows|keys %}
+    {% if key == 'cloud' %}
+        {% set runs = [cloud.status.db ?? null, cloud.status.files ?? null]|filter(r => r)|map(r => (r.running ?? false) and date(r.ran_at) > date('-6 hours') ? 'running' : (r.ok ? 'ok' : 'bad')) %}
+        {% set state = not cloud.enabled and not cloud.status ? 'off' : ('bad' in runs ? 'bad' : ('running' in runs ? 'running' : ('ok' in runs ? 'ok' : 'none'))) %}
+        {% set states = states|merge({ (key): { 'state': state } }) %}
+    {% else %}
+        {# A failed dump stands for each method that was on. #}
+        {% set result = status ? (status.results[key] ?? (on[key] ? (status.results.dump ?? null) : null)) : null %}
+        {% set at = status ? (status.results_at[key] ?? status.ran_at) : null %}
+        {% set state = on[key] and db_running and at == db_latest ? 'running' : (result == 'ok' ? 'ok' : (result ? 'bad' : (on[key] ? 'none' : 'off'))) %}
+        {% set states = states|merge({ (key): { 'state': state, 'result': result, 'at': at } }) %}
+    {% endif %}
+{% endfor %}
+{% set counts = { 'ok': 0, 'bad': 0 } %}
+{% for item in states|filter(i => i.state in ['ok', 'bad']) %}{% set counts = counts|merge({ (item.state): counts[item.state] + 1 }) %}{% endfor %}
+{% set last = max([db_latest, cloud.status.db.ran_at ?? null, cloud.status.files.ran_at ?? null]|filter(v => v)|merge([''])) %}
+<div class="card cf-bk">
     <div class="card-header flex-wrap gap-2">
         <div>
             <h3 class="card-title">{{ 'Backups'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Where your backups go and how the last ones went.'|trans }}</p>
         </div>
         <div class="card-actions d-flex flex-wrap gap-2">
             <a class="btn btn-outline-secondary" href="{{ 'clientfence/backups/download'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Download a backup'|trans }}</a>
             {% if any_on %}
                 <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#bk-run">{{ 'Back up now'|trans }}</button>
             {% endif %}
+        </div>
+    </div>
+    <div class="cf-bk-summary">
+        <div class="bf-health-count{% if counts.ok %} bf-tone-ok{% endif %}"><span class="bf-h bf-health-number">{{ counts.ok }}</span><span class="bf-small">{{ 'OK'|trans }}</span></div>
+        <div class="bf-health-count{% if counts.bad %} bf-tone-bad{% endif %}"><span class="bf-h bf-health-number">{{ counts.bad }}</span><span class="bf-small">{{ 'Failed'|trans }}</span></div>
+        <div class="bf-health-count"><span class="bf-h bf-health-number">{{ on|filter(v => not v)|length }}</span><span class="bf-small">{{ 'Off'|trans }}</span></div>
+        <div class="bf-health-count cf-bk-last">
+            <span class="bf-strong">{{ last ? last|format_datetime : 'No backup yet'|trans }}</span>
+            <span class="bf-small">{% if last %}{{ 'Last run :time ago'|trans({ ':time': last|timeago }) }}{% else %}{{ 'Last backup'|trans }}{% endif %}</span>
         </div>
     </div>
     <div class="table-responsive">
@@ -51,7 +79,7 @@
             </thead>
             <tbody>
                 {% for key, row in rows %}
-                    <tr class="cursor-pointer" data-cf-backup-goto="{{ key }}">
+                    <tr class="cursor-pointer cf-bk-{{ states[key].state }}" data-cf-backup-goto="{{ key }}">
                         <td>
                             <div class="d-flex align-items-center">
                                 <svg class="icon me-2 text-secondary" aria-hidden="true"><use href="#{{ row.icon }}" /></svg>
@@ -80,10 +108,9 @@
                                     {% endfor %}
                                 {% endif %}
                             {% else %}
-                                {# A failed dump stands for each method that was on. #}
-                                {% set result = status ? (status.results[key] ?? (on[key] ? (status.results.dump ?? null) : null)) : null %}
-                                {% set at = status ? (status.results_at[key] ?? status.ran_at) : null %}
-                                {% if on[key] and db_running and at == db_latest %}
+                                {% set result = states[key].result %}
+                                {% set at = states[key].at %}
+                                {% if states[key].state == 'running' %}
                                     <span class="text-info">{{ 'Running (started :time)'|trans({ ':time': at|format_datetime }) }}</span>
                                 {% elseif result == 'ok' %}
                                     {{ at|format_datetime }}{% if at == db_latest %}, {{ (status.bytes / 1048576)|number_format(2) }} MB{% endif %}
@@ -96,7 +123,7 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        <td><span class="badge {{ on[key] ? 'bg-success-lt' : 'bg-secondary-lt' }}">{{ on[key] ? 'On'|trans : 'Off'|trans }}</span></td>
+                        <td><span class="bf-chip{{ on[key] ? ' bf-tone-ok' }}">{{ on[key] ? 'On'|trans : 'Off'|trans }}</span></td>
                         <td class="text-end"><a href="#bk-destinations">{{ 'Settings'|trans }}</a></td>
                     </tr>
                 {% endfor %}

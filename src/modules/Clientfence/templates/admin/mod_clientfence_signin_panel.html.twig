@@ -6,6 +6,23 @@
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
    clientfenceSigninSaved (clientfence-admin.js) shows the PIN field and the form is saved again. #}
 {% set countries_names = signin.all_countries %}
+{# The saved state of each protection first, as a facts grid (CF-135). #}
+{% set who = { 'off': 'Off'|trans, 'staff': 'Staff only'|trans, 'clients': 'Clients only'|trans, 'both': 'Staff and clients'|trans, 'all': 'All clients'|trans, 'groups': 'Chosen client groups'|trans } %}
+<div class="card mb-3 cf-signin-sum">
+    <dl class="cf-facts">
+        {% for fact in [
+            { 'label': 'Email PIN at sign-in'|trans, 'on': signin.pin != 'off', 'value': who[signin.pin] ?? signin.pin },
+            { 'label': 'Two-factor sign-in for clients'|trans, 'on': signin.twofactor != 'off', 'value': who[signin.twofactor] ?? signin.twofactor },
+            { 'label': 'Passkeys'|trans, 'on': signin.passkeys != 'off', 'value': who[signin.passkeys] ?? signin.passkeys },
+            { 'label': 'Sign-in history'|trans, 'on': signin.history },
+            { 'label': 'Staff sign-in from these IP addresses only'|trans, 'on': signin.ips_on },
+            { 'label': 'Staff password reset'|trans, 'on': signin.staff_reset },
+            { 'label': 'Staff sign-in from chosen countries only'|trans, 'on': signin.countries_on },
+        ] %}
+            <div><dt>{{ fact.label }}</dt><dd><span class="bf-chip{{ fact.on ? ' bf-tone-ok' }}">{{ fact.value ?? (fact.on ? 'On'|trans : 'Off'|trans) }}</span></dd></div>
+        {% endfor %}
+    </dl>
+</div>
 <form method="post" action="{{ 'clientfence/signin_security_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceSigninSaved' }) }}
       data-cf-signin-form data-saved-text="{{ 'Sign-in security saved.'|trans }}" data-sent-text="{{ 'We emailed you a PIN: enter it and save again.'|trans }}">
     <div class="card">

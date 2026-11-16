@@ -5,7 +5,8 @@
 {% block content %}
 <div class="page page-center">
     <div class="container-tight py-4">
-        <div class="empty">
+        {# ClientFence core patch: the error on a glass card, its code in the brand gradient (CF-135 redesign). #}
+        <div class="empty cf-error">
             <h1 class="empty-header">{% if exception.getCode == 0 %}500{% else %}{{ exception.getCode }}{% endif %}</h1>
             <p class="empty-title">{{ 'Oops... You just found an error page'|trans }}</p>
             <p class="empty-subtitle text-muted">{{ exception.getMessage }}</p>

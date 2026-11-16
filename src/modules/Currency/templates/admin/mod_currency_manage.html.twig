@@ -26,13 +26,21 @@
 
 {% block content %}
 <div class="card">
+    {# ClientFence core patch: the currency reads first: its code, name and Default or manual rate chips (CF-135 redesign). #}
+    <div class="cf-inv-hero cf-cur-hero">
+        <div>
+            <div class="cf-label">{{ 'Edit Currency Information'|trans }}</div>
+            <div class="cf-inv-figure" dir="ltr">{{ currency.code }}</div>
+            <div class="text-secondary">{{ currency.code|currency_name }}</div>
+        </div>
+        <div class="cf-inv-chips">
+            {% if currency.default %}<span class="bf-chip bf-tone-ok">{{ 'Default'|trans }}</span>{% endif %}
+            {% if currency.is_rate_manual|default(false) %}<span class="bf-chip">{{ 'Manual rate override'|trans }}</span>{% endif %}
+        </div>
+    </div>
     {% if can_edit_currency %}
     <form method="post" action="{{ 'currency/update'|api_url }}" {{ fb_api_form({message: 'Currency Updated'|trans}) }}>
         <div class="card-body">
-            <div class="mb-3">
-                <h3 class="card-title mb-1">{{ 'Edit Currency Information'|trans }}</h3>
-                <p class="text-secondary mb-0">{{ currency.code }} ({{ currency.code|currency_name }})</p>
-            </div>
             <input type="hidden" name="code" value="{{ currency.code }}">
             <div class="row g-3">
                 <div class="col-lg-6">

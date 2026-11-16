@@ -5,32 +5,21 @@
 {% if not admin.system_is_allowed({ 'mod': 'stats' }) and admin.system_is_allowed({ 'mod': 'support', 'f': 'view' }) and guest.support_tickets_enabled %}
     {% set ticketStatuses = admin.support_ticket_get_statuses %}
     {% set openTickets = admin.support_ticket_get_list({ 'status': 'open', 'per_page': 10, 'page': 1 }) %}
+    {# The ticket counts as the dashboard's key figure cards (CF-135): label, a tinted icon tile and the count. #}
     {% set ticketCards = [
-        { status: 'open', label: 'Waiting for Staff Reply'|trans, icon: 'headset', color: 'bg-warning' },
-        { status: 'on_hold', label: 'On Hold'|trans, icon: 'player-pause', color: 'bg-blue' },
-        { status: 'closed', label: 'Closed'|trans, icon: 'circle-check', color: 'bg-green' },
+        { status: 'open', label: 'Waiting for Staff Reply'|trans, icon: 'headset', tone: 'bf-tone-warn' },
+        { status: 'on_hold', label: 'On Hold'|trans, icon: 'player-pause', tone: 'cf-tile-blue' },
+        { status: 'closed', label: 'Closed'|trans, icon: 'circle-check', tone: 'bf-tone-ok' },
     ] %}
     {% for card in ticketCards %}
         <div class="col-sm-6 col-lg-4">
-            <a href="{{ 'support'|url(query: { 'status': card.status }) }}" class="card card-sm h-100">
-                <div class="card-body d-flex align-items-center h-100">
-                    {% if card.status == 'open' and ticketStatuses.open|default(0) > 0 %}
-                        <div class="ribbon ribbon-top bg-red">{{ ticketStatuses.open }}</div>
-                    {% endif %}
-                    <div class="row align-items-center w-100">
-                        <div class="col-auto">
-                            <span class="{{ card.color }} text-white avatar">
-                                <svg class="icon">
-                                    <use href="#{{ card.icon }}" />
-                                </svg>
-                            </span>
-                        </div>
-                        <div class="col">
-                            <div class="font-weight-medium">{{ attribute(ticketStatuses, card.status)|default(0) }} {{ 'Tickets'|trans }}</div>
-                            <div class="text-muted">{{ card.label }}</div>
-                        </div>
-                    </div>
-                </div>
+            <a href="{{ 'support'|url(query: { 'status': card.status }) }}" class="bf-card bf-kpi cf-support-kpi">
+                <span class="bf-kpi-head">
+                    <span class="bf-muted bf-small">{{ card.label }}</span>
+                    <span class="bf-tile {{ card.tone }}" aria-hidden="true"><svg class="icon"><use href="#{{ card.icon }}" /></svg></span>
+                </span>
+                <span class="bf-h bf-kpi-value" dir="ltr" data-bf-count>{{ attribute(ticketStatuses, card.status)|default(0) }}</span>
+                <span class="bf-kpi-foot"><span class="bf-muted bf-small">{{ 'Tickets'|trans }}</span></span>
             </a>
         </div>
     {% endfor %}
@@ -59,14 +48,14 @@
                     <tbody>
                     {% for ticket in openTickets.list %}
                         <tr>
-                            <td><a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>#{{ ticket.id }} - {{ ticket.subject|truncate(50) }} ({{ ticket.replies }})</a></td>
+                            <td><a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'><bdi>#{{ ticket.id }}</bdi> - {{ ticket.subject|truncate(50) }} ({{ ticket.replies }})</a></td>
                             <td>{{ ticket.author.name|default('-') }}</td>
                             <td>{{ ticket.helpdesk.name|default('-') }}</td>
                             <td class="text-muted">{{ ticket.updated_at|timeago }} {{ 'ago'|trans }}</td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td class="text-muted text-center" colspan="4">{{ 'No tickets are waiting for a reply.'|trans }}</td>
+                            <td class="text-muted" colspan="4">{{ 'No tickets are waiting for a reply.'|trans }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

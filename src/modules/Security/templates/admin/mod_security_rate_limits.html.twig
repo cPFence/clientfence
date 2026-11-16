@@ -13,9 +13,9 @@
 {% block content %}
 <div class="card">
     <div class="card-header">
+        {# ClientFence core patch: no filler subtitle (CF-135 redesign). #}
         <div>
             <h3 class="card-title">{{ 'Rate Limits'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Review IP addresses that are currently rate-limited and reset counters when legitimate users are blocked.'|trans }}</p>
         </div>
         {% if can_manage_rate_limits %}
             <div class="card-actions">
@@ -129,8 +129,9 @@
                         {% endif %}
                     </tr>
                 {% else %}
+                    {# ClientFence core patch: the empty list's text under the shared tray icon (CF-135 redesign). #}
                     <tr>
-                        <td class="text-center text-secondary py-4" colspan="{{ can_manage_rate_limits ? 5 : 4 }}">{{ 'No rate-limited IP counters were found.'|trans }}</td>
+                        <td class="text-muted" colspan="{{ can_manage_rate_limits ? 5 : 4 }}">{{ 'No rate-limited IP counters were found.'|trans }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

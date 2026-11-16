@@ -1445,4 +1445,106 @@ a.bf-file-name:hover .icon { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .bf-auth-brand::before, .bf-auth-brand::after, .bf-auth-card { animation: none; }
   .bf-body :is(.ticket-message, [data-clientfence-staff-files]) .bf-file:not(.is-removed) { transition: none; }
+
+/* ---- CF-135 part 4: admin operations ---- */
+/* ClientFence panels (health, backups, sign-in) and the support dashboard: glass over the glow. No backdrop-filter:
+   the backups card holds the Back up now modal. */
+.bf-health > .bf-card { background: var(--bf-glass); animation: bf-rise .55s var(--bf-ease) backwards; }
+.bf-health > .bf-card:nth-child(2) { animation-delay: 60ms; }
+.bf-health > .bf-card:nth-child(n+3) { animation-delay: 120ms; }
+.bf-health > .bf-health-head { background: radial-gradient(420px 180px at 0% 0%, color-mix(in srgb, var(--bf-teal) 12%, transparent), transparent 70%), var(--bf-glass); }
+[dir="rtl"] .bf-health > .bf-health-head { background: radial-gradient(420px 180px at 100% 0%, color-mix(in srgb, var(--bf-teal) 12%, transparent), transparent 70%), var(--bf-glass); }
+button.bf-health-count { transition: translate .25s var(--bf-ease), box-shadow .25s; }
+button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px currentColor; }
+.bf-health .bf-row:has(> .bf-tone-bad) { background: color-mix(in srgb, var(--bf-bad) 5%, transparent); }
+.bf-health .bf-row:has(> .bf-tone-warn) { background: color-mix(in srgb, var(--bf-warn) 5%, transparent); }
+
+/* Backups: the summary (OK, failed, off, last run) above the destinations; a destination's row carries its state
+   on its leading edge, a failed one is tinted. */
+.cf-bk-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; padding: 16px 20px; border-bottom: 1px solid color-mix(in srgb, var(--bf-line) 70%, transparent); }
+.cf-bk-summary > .bf-health-count:not([class*="bf-tone-"]) { background: var(--bf-surface-2); color: var(--bf-muted); }
+.cf-bk-summary > .bf-health-count:not([class*="bf-tone-"]) .bf-health-number { color: var(--bf-ink); }
+.cf-bk-last { justify-content: center; }
+.cf-bk-last > .bf-strong { color: var(--bf-ink); font-size: 15px; }
+.cf-bk tr[class*="cf-bk-"] > td:first-child { border-inline-start: 3px solid transparent; }
+.cf-bk tr.cf-bk-ok > td:first-child { border-inline-start-color: var(--bf-ok); }
+.cf-bk tr.cf-bk-running > td:first-child { border-inline-start-color: var(--bf-teal); }
+.cf-bk tr.cf-bk-bad > td:first-child { border-inline-start-color: var(--bf-bad); }
+.cf-bk tr.cf-bk-bad > *, .bf-body tr.cf-row-bad > * { --tblr-table-bg-state: color-mix(in srgb, var(--bf-bad) 7%, transparent); }
+
+/* Sign-in security: the state of each protection as a facts grid of chips. */
+.cf-signin-sum .cf-facts { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); border-top: 0; }
+.cf-signin-sum { background-image: radial-gradient(380px 160px at 100% 0%, color-mix(in srgb, var(--bf-teal) 10%, transparent), transparent 70%); }
+[dir="rtl"] .cf-signin-sum { background-image: radial-gradient(380px 160px at 0% 0%, color-mix(in srgb, var(--bf-teal) 10%, transparent), transparent 70%); }
+
+/* Migration: the systems to move from as pill choices. */
+#clientfence-migration .btn-group { gap: 6px; }
+#clientfence-migration .btn-group > .btn { margin: 0; border-radius: 999px !important; padding-inline: 16px; }
+#clientfence-migration .btn-check:checked + .btn { border-color: color-mix(in srgb, var(--bf-brand) 45%, transparent); background: var(--bf-soft); color: var(--bf-soft-ink); box-shadow: none; }
+
+/* Setup wizard: the step pane as glass over the wizard's glow. */
+.cf-setup .cf-setup-pane { background: var(--bf-glass); border-color: color-mix(in srgb, var(--bf-line) 85%, transparent); }
+
+/* Support dashboard (staff without statistics): the ticket counts as key figure cards with a small tile. */
+.cf-support-kpi { flex: 1 1 auto; width: 100%; }
+.cf-support-kpi .bf-tile { width: 32px; height: 32px; border-radius: 9px; }
+.cf-support-kpi .bf-tile .icon { width: 18px; height: 18px; }
+
+/* Activity: initials for clients, a violet shade for staff, an icon for visitors and the system. */
+.cf-avatar-staff { background: linear-gradient(135deg, color-mix(in srgb, var(--bf-violet) 22%, transparent), color-mix(in srgb, var(--bf-brand) 14%, transparent)); color: var(--bf-violet); }
+.cf-avatar-none { background: var(--bf-surface-2); color: var(--bf-muted); }
+.cf-avatar-none .icon { width: 16px; height: 16px; }
+
+/* Extensions and translations: icon tiles, rounded completion bars. */
+#tab-index td > .bf-tile { width: 36px; height: 36px; }
+.cf-lang-progress { min-width: 120px; height: 16px; border-radius: 999px; }
+.cf-lang-progress .progress-bar { border-radius: inherit; font-size: 11px; font-weight: 600; }
+
+/* One currency: the code first on a soft glow. */
+.cf-cur-hero {
+  padding-top: 20px; border-bottom: 1px solid color-mix(in srgb, var(--bf-line) 70%, transparent);
+  border-start-start-radius: 13px; border-start-end-radius: 13px;
+  background: radial-gradient(420px 170px at 0% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%);
+}
+[dir="rtl"] .cf-cur-hero { background: radial-gradient(420px 170px at 100% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%); }
+
+/* Mass mail: the recipient list scrolls inside its card. */
+.cf-mm-receivers { max-height: 28rem; }
+
+/* Empty lists (news, mass mail, announcements, custom pages): the icon in a soft gradient disc. */
+:is(#news-empty, #massmailer-empty, #announcement-empty, #custom-page-empty) .empty-icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 22%, transparent), color-mix(in srgb, var(--bf-brand) 16%, transparent));
+  color: var(--bf-teal);
+}
+
+/* System update: a new release's card glows in the brand colours. */
+.cf-update-versions .card.border-primary {
+  border-color: color-mix(in srgb, var(--bf-brand) 45%, transparent) !important;
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 10%, transparent), color-mix(in srgb, var(--bf-brand) 8%, transparent));
+  box-shadow: 0 16px 34px -18px color-mix(in srgb, var(--bf-brand) 55%, transparent);
+}
+.cf-update-versions .avatar { border-radius: 12px; }
+.card-title > .bf-chip { vertical-align: middle; }
+
+/* Error page and update finalizing (sign-in frame): the glow behind, the error on a glass card. */
+.bf-auth-page:has(> .page-center) {
+  background:
+    radial-gradient(640px 440px at 92% -4%, var(--bf-glow-1), transparent 70%) fixed,
+    radial-gradient(560px 420px at 8% 104%, var(--bf-glow-2), transparent 70%) fixed,
+    var(--bf-bg);
+}
+.cf-error {
+  padding: 40px 24px; border: 1px solid color-mix(in srgb, var(--bf-line) 85%, transparent); border-radius: 18px;
+  background: var(--bf-glass); box-shadow: var(--bf-shadow); animation: bf-rise .55s var(--bf-ease) backwards;
+}
+.cf-error .empty-header {
+  background: linear-gradient(135deg, var(--bf-brand), var(--bf-teal)); -webkit-background-clip: text; background-clip: text;
+  color: transparent; font-family: var(--bf-font-h); font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-health > .bf-card, .cf-error { animation: none; }
+  button.bf-health-count { transition: none; }
+  button.bf-health-count:hover { translate: none; }
 }

@@ -8,16 +8,13 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
+            {# ClientFence core patch: no filler subtitle or intro (CF-135 redesign). #}
             <div>
                 <h3 class="card-title">{{ 'Security Dashboard'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Run built-in security checks and review the current status of key platform safeguards.'|trans }}</p>
             </div>
             <div class="card-actions">
                 <a class="btn btn-primary btn-3" href="{{ 'security/run_checks'|api_url }}" {{ fb_api_link({callback: 'setResults'}) }}>{{ "Run All Checks"|trans }}</a>
             </div>
-        </div>
-        <div class="card-body border-top border-bottom py-3">
-            <p class="text-secondary mb-0">{{ 'Run all checks for a full snapshot, or execute individual checks while investigating one specific area.'|trans }}</p>
         </div>
         <div class="table-responsive">
             <table class="table card-table table-vcenter sortable">
@@ -32,12 +29,11 @@
                 <tbody>
                     {% for check in admin.security_list_checks() %}
                     <tr>
-                        <td scope="row">{{ check.name }}</td>
-                        <td scope="row">{{ check.description }}</td>
+                        {# ClientFence core patch: the result as a status chip and its message, without the boxed panel (CF-135 redesign). #}
+                        <td scope="row" class="bf-strong">{{ check.name }}</td>
+                        <td scope="row" class="text-secondary">{{ check.description }}</td>
                         <td id="{{ check.id }}" scope="row">
-                            <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded border text-secondary bg-body-tertiary">
-                                <span class="badge bg-secondary-lt text-secondary">{{ 'Not Run'|trans }}</span>
-                            </div>
+                            <span class="badge bg-secondary-lt">{{ 'Not Run'|trans }}</span>
                         </td>
                         <td class="text-end" scope="row">
                             <a class="btn btn-outline-secondary btn-sm text-nowrap" href="{{ 'security/run_check'|api_url(query: { 'id': check.id, 'throw': true }) }}" {{ fb_api_link({callback: 'setResult'}) }}>{{ 'Run Check'|trans }}</a>
@@ -76,7 +72,7 @@
         }
 
         existingDiv.innerHTML = `
-            <div class="d-flex flex-column gap-2 rounded border p-3 bg-body-tertiary">
+            <div class="d-flex flex-column gap-1">
                 <div><span class="badge ${badgeClass}">${label}</span></div>
             </div>
         `;
