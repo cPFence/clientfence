@@ -22,6 +22,8 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+<a class="bf-linkbtn" href="{{ 'hosting'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>
 {# ClientFence core patch: the account reads first like the service page: name, status and plan, the next renewal as a pill (amber within 14 days), then the actions (CF-135 redesign). #}
 <div class="clientfence-hosting-hero cf-svc-hero card mb-4">
     <div class="card-body">

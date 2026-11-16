@@ -11,6 +11,8 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+<a class="bf-linkbtn" href="{{ 'support/kb'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>
 {# ClientFence core patch: a short hero with the category, then its articles in a glass card (CF-135 redesign). #}
 <header class="bf-store-head cf-pub-head mb-4">
     <h1>{{ category.title }}</h1>

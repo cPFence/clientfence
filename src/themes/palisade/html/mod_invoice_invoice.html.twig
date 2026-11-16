@@ -58,7 +58,7 @@
         tooBig: 'The receipt must be smaller than 5 MB.'|trans,
     }|json_encode|raw }}</script>
 
-    {% if client %}<a class="bf-linkbtn" href="{{ 'invoice'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'All invoices'|trans }}</a>{% endif %}
+    {% if client %}<a class="bf-linkbtn" href="{{ 'invoice'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>{% endif %}
     {# ClientFence core patch: the summary reads first: the balance due (the total once settled) in its status colour, red and "Overdue" past the due date, then the number, status and dates (CF-135 redesign). #}
     {% set late = unpaid and not pending and invoice.due_at|trim and invoice.due_at|date('U') < 'now'|date('U') %}
     {% if late %}{% set status_chip = ['bf-chip-bad', 'Overdue'|trans] %}{% endif %}

@@ -613,7 +613,7 @@
             {# ClientFence core patch: paging on every list tab, each tab with its own page parameters (orders_page, tickets_page...). #}
             {% set ordersPage = request.orders_page matches '/^[1-9]\\d*$/' ? request.orders_page : 1 %}
             {% set ordersPerPage = request.orders_per_page in [10, 25, 50, 100] ? request.orders_per_page : 25 %}
-            {% set orders = admin.order_get_list({ 'per_page': ordersPerPage, 'page': ordersPage, 'client_id': client.id }) %}
+            {% set orders = admin.order_get_list({ 'per_page': ordersPerPage, 'page': ordersPage, 'client_id': client.id, 'active_first': 1 }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Client Orders'|trans,
                 subtitle: 'Review the client’s active and historical orders, or create a new order directly for this client.'|trans,

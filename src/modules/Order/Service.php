@@ -1078,7 +1078,8 @@ class Service implements InjectionAwareInterface
         if (!empty($where)) {
             $query = $query . ' WHERE ' . implode(' AND ', $where);
         }
-        $query .= ' ORDER BY co.id DESC';
+        // ClientFence core patch: one client's services list the active ones first when asked (active_first: client area and the admin client page).
+        $query .= $client_id && !empty($data['active_first']) ? " ORDER BY co.status = 'active' DESC, co.id DESC" : ' ORDER BY co.id DESC';
 
         return [$query, $bindings];
     }

@@ -4429,20 +4429,20 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .cf-pay-hero {
   --cf-tone-rgb: var(--bs-secondary-rgb);
   --cf-tone-ink: var(--bf-ink-2);
-  display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; padding: 1.5rem;
+  display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1.5rem; padding: 1rem 1.25rem;
   border-color: rgba(var(--cf-tone-rgb), .3);
   background-image: linear-gradient(110deg, rgba(var(--cf-tone-rgb), .14), transparent 65%);
   box-shadow: 0 18px 40px -26px rgba(var(--cf-tone-rgb), .7);
   &.is-warn { --cf-tone-rgb: var(--bs-warning-rgb); --cf-tone-ink: var(--bs-warning-text-emphasis); }
   &.is-bad { --cf-tone-rgb: var(--bs-danger-rgb); --cf-tone-ink: var(--bs-danger-text-emphasis); }
   &.is-ok { --cf-tone-rgb: var(--bs-success-rgb); --cf-tone-ink: var(--bs-success-text-emphasis); }
-  @include media-breakpoint-down(md) { padding: 1.125rem; }
+  @include media-breakpoint-down(md) { padding: .875rem 1rem; }
 }
 .cf-pay-hero-text { display: flex; flex: 1 1 18rem; flex-direction: column; gap: .375rem; min-width: 0; }
 .cf-pay-hero-figure {
   display: flex; flex-direction: column; align-items: flex-end; gap: .125rem;
-  span { color: var(--bf-muted); font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-  strong { font-family: $headings-font-family; font-size: clamp(1.875rem, 7vw, 2.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--cf-tone-ink); }
+  > span { color: var(--bf-muted); font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  strong { font-family: $headings-font-family; font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--cf-tone-ink); }
   @include media-breakpoint-down(sm) { align-items: flex-start; }
 }
 .bf-chip-bad { background: rgba(var(--bs-danger-rgb), .12); color: var(--bs-danger-text-emphasis); }
@@ -4532,6 +4532,22 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .cf-svc-status { grid-area: status; justify-self: start; }
 :is(.cf-svc-row, .cf-svc-figure) .cf-label { color: var(--bs-secondary-color); font-size: .7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 .cf-svc-list > nav { padding: 1rem 1.25rem; border-top: 1px solid var(--bs-border-color); }
+// Status cards over the services list (mod_order_list): small filters, one click on, a second click off.
+.cf-filter-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem;
+  @include media-breakpoint-down(md) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cf-filter-card { flex-direction: row; align-items: center; justify-content: space-between; gap: .5rem; padding: .625rem .875rem;
+  color: var(--bs-body-color); text-decoration: none; transition: border-color .15s, box-shadow .15s;
+  &::before { content: ""; flex: none; width: .5rem; height: .5rem; border-radius: 50%; background: var(--cf-dot, var(--bs-secondary-color)); }
+  &:hover { color: var(--bs-body-color); border-color: rgba(var(--pal-accent-rgb), .45); }
+  &.active { border-color: rgb(var(--pal-accent-rgb)); box-shadow: 0 0 0 3px rgba(var(--pal-accent-rgb), .18); } }
+.cf-filter-active { --cf-dot: var(--bs-success); }
+.cf-filter-pending_setup { --cf-dot: var(--bs-warning); }
+.cf-filter-suspended { --cf-dot: var(--bs-danger); }
+.cf-filter-cards-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cf-filter-tk-open { --cf-dot: var(--bs-info); }
+.cf-filter-tk-on_hold { --cf-dot: var(--bs-warning); }
+.cf-filter-label { flex: 1; min-width: 0; overflow: hidden; color: var(--bs-secondary-color); font-size: .8rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.cf-filter-count { color: var(--bs-emphasis-color); font-size: 1.125rem; font-weight: 700; }
 
 // The service page (mod_order_manage): a summary card with a glow, the price as the key figure, the next renewal
 // as a pill (amber within 14 days), the service's own actions, then the facts. No overflow, filter or transform
@@ -4604,16 +4620,8 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 }
 
 // ---- CF-135 part 3: client support and account
-// Ticket list (mod_support_tickets): three counts first (an answered ticket waits for the client, so that tile
-// is amber), then the table; an answered ticket carries an amber edge at its row start.
-.cf-tk-stats .stat-card {
-  @include media-breakpoint-down(sm) {
-    padding: .875rem;
-    .stat-icon { display: none; }
-    .stat-value { font-size: 1.35rem; }
-  }
-}
-.cf-tk-stats .stat-card.is-alert { border-color: rgba(var(--bs-warning-rgb), .4); }
+// Ticket list (mod_support_tickets): status filter cards first (.cf-filter-cards; answered waits for the client, so
+// its dot is amber), then the table; an answered ticket carries an amber edge at its row start.
 .cf-tk-table {
   > tbody > tr.is-answered > :first-child { box-shadow: inset 3px 0 0 rgba(var(--bs-warning-rgb), .85); }
   > tbody > tr.is-answered .cf-tk-subject { font-weight: 700; }
@@ -4663,8 +4671,10 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 }
 
 // Wallet (mod_client_balance): the balance as the key figure (.cf-pay-hero tones), the activity rows tinted on hover.
+// The icon sits beside the title and hint, so the hero stays one short band.
+.cf-wallet-hero .cf-pay-hero-text { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .125rem .875rem; }
 .cf-wallet-icon {
-  display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-bottom: .25rem;
+  display: inline-flex; grid-row: span 2; align-items: center; justify-content: center; width: 40px; height: 40px;
   border-radius: $border-radius; background: rgba(var(--cf-tone-rgb), .16); color: var(--cf-tone-ink);
 }
 .cf-wallet-hero:not(.is-ok, .is-bad) .cf-wallet-icon { background: rgba(var(--pal-accent-rgb), .14); color: var(--pal-accent); }
@@ -4895,17 +4905,17 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 // Public pages (knowledge base, news, contact, network status, custom and legal pages): a short hero in the
 // store's glass and glows (the knowledge base home uses the store's search hero), then glass cards.
 .cf-pub-head {
-  max-width: none; padding: 1.75rem 1.5rem;
-  border: 1px solid rgba(var(--pal-accent-rgb), .22); border-radius: 1.25rem;
+  max-width: none; gap: .25rem; padding: 1rem 1.25rem;
+  border: 1px solid rgba(var(--pal-accent-rgb), .22); border-radius: 1rem;
   background:
     radial-gradient(420px 220px at 100% 0, rgba(var(--pal-accent-rgb), .22), transparent 70%),
     radial-gradient(380px 220px at 0 100%, rgba(var(--pal-brand-rgb), .16), transparent 70%),
     var(--pal-glass);
   box-shadow: 0 24px 50px -34px rgba(var(--pal-brand-rgb), .6);
   animation: pal-rise .55s var(--pal-ease) backwards;
-  h1 { font-size: clamp(1.5rem, 5vw, 2rem); overflow-wrap: anywhere; }
-  p:not(.cf-pub-meta) { font-size: 1rem; }
-  @include media-breakpoint-down(md) { padding: 1.25rem 1.125rem; }
+  h1 { font-size: clamp(1.375rem, 4vw, 1.625rem); overflow-wrap: anywhere; }
+  p:not(.cf-pub-meta) { font-size: .9375rem; }
+  @include media-breakpoint-down(md) { padding: .875rem 1rem; }
 }
 .cf-pub-title { margin: 0 0 1rem; font-size: 1.0625rem; font-weight: 600; }
 .cf-pub-meta {

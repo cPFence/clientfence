@@ -1545,6 +1545,19 @@ test('getSearchQuery keeps client scope when action required filter is used', fu
     expect($bindings['client_id'])->toBe(42);
 });
 
+test('getSearchQuery lists one client\'s active services first when asked', function (array $data, string $order): void {
+    $svc = new Service();
+    $svc->setDi(container());
+
+    [$query] = $svc->getSearchQuery($data);
+
+    expect($query)->toEndWith($order);
+})->with([
+    'one client, active first' => [['client_id' => 42, 'active_first' => 1], " ORDER BY co.status = 'active' DESC, co.id DESC"],
+    'one client, newest first' => [['client_id' => 42], ' ORDER BY co.id DESC'],
+    'every client' => [['active_first' => 1], ' ORDER BY co.id DESC'],
+]);
+
 test('createOrder throws when no order currency is set', function (): void {
     $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class);
 

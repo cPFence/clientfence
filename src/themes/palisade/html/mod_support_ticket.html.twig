@@ -26,6 +26,8 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+<a class="bf-linkbtn" href="{{ (is_guest_ticket ? 'support/contact-us' : 'support')|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>
     {# ClientFence core patch: a summary card first (subject, status, help desk, urgency and dates, Reply and Close), then the conversation as a thread with the client's and staff messages on their own sides (CF-135 redesign). #}
     <div class="card cf-svc-hero cf-tk-hero mb-4">
         <div class="card-body">

@@ -17,6 +17,8 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+<a class="bf-linkbtn" href="{{ "support/kb/#{article.category.slug}"|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>
 {% set related_articles = guest.support_kb_article_get_list({ 'kb_article_category_id': article.category.id, 'per_page': 6 }).list|filter(related_article => related_article.id != article.id)|slice(0, 5) %}
 {# ClientFence core patch: the article title in a short hero, the article and the help panel as glass cards, the category and related articles beside them (CF-135 redesign). #}
 <header class="bf-store-head cf-pub-head mb-4">

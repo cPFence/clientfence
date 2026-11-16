@@ -11,6 +11,8 @@
 
 {% block body_class %}invoice-statement{% endblock %}
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+<a class="bf-linkbtn" href="{{ 'invoice'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>
 {% set currency = statement.currency %}
 {% macro amount(value, currency) %}<span dir="ltr">{{ value|format_currency(currency, {}, 'en_US') }}</span>{% endmacro %}
 {% import _self as m %}

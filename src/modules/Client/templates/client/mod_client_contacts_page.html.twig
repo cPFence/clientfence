@@ -106,7 +106,7 @@
         <p class="bf-hint mb-0">{{ 'People who get a copy of this account\'s emails, such as your accountant for invoices. Contacts do not sign in; to give someone a sign-in, invite them as a user.'|trans }}</p>
     </div>
     {% if not full %}
-        <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-contact-add" aria-controls="clientfence-contact-add" aria-expanded="{{ contacts_page.contacts is empty ? 'true' : 'false' }}">
+        <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-contact-add" aria-controls="clientfence-contact-add" aria-expanded="false">
             <svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>{{ 'Add contact'|trans }}
         </button>
     {% endif %}
@@ -117,7 +117,7 @@
 {% endif %}
 
 {% if not full %}
-    <div class="collapse{{ contacts_page.contacts is empty ? ' show' : '' }} mb-4" id="clientfence-contact-add">
+    <div class="collapse mb-4" id="clientfence-contact-add">
         <div class="card">
             <div class="card-header"><h2>{{ 'Add contact'|trans }}</h2></div>
             <div class="card-body">

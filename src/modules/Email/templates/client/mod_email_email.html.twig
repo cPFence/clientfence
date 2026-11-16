@@ -9,6 +9,8 @@
 {% endblock %}
 {% block body_class %}email-email{% endblock %}
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+<a class="bf-linkbtn" href="{{ 'email'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>
 <div class="row">
 <div class="col-md-12 card">
         <div class="card-body">

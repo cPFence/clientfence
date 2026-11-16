@@ -16,6 +16,8 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: a Back link to the list this page belongs to. #}
+{% if quote.mine %}<a class="bf-linkbtn" href="{{ 'invoice/quotes'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>{% endif %}
 {% macro amount(value, currency) %}<span dir="ltr">{{ value|format_currency(currency, {}, 'en_US') }}</span>{% endmacro %}
 {% import _self as m %}
 {% set link = ('quote/' ~ quote.hash)|url %}

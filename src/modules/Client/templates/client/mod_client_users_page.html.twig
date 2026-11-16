@@ -40,7 +40,7 @@
         <h1 class="bf-page-title">{{ 'Users'|trans }}</h1>
         <p class="bf-hint mb-0">{{ 'Give other people their own sign-in to this account and choose what each of them can do.'|trans }}</p>
     </div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-invite" aria-controls="clientfence-invite" aria-expanded="{{ users_page.users is empty and users_page.invites is empty ? 'true' : 'false' }}">
+    <button type="button" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#clientfence-invite" aria-controls="clientfence-invite" aria-expanded="false">
         <svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>{{ 'Invite user'|trans }}
     </button>
 </div>
@@ -49,7 +49,7 @@
     <div class="alert alert-success" role="status" data-clientfence-done="{{ request.done }}">{{ done[request.done] }}</div>
 {% endif %}
 
-<div class="collapse{{ users_page.users is empty and users_page.invites is empty ? ' show' : '' }} mb-4" id="clientfence-invite">
+<div class="collapse mb-4" id="clientfence-invite">
     <div class="card">
         <div class="card-header"><h2>{{ 'Invite user'|trans }}</h2></div>
         <div class="card-body">
