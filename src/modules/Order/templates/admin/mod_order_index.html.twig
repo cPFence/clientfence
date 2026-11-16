@@ -213,6 +213,7 @@
                     </form>
                 </section>
                 <div class="table-responsive">
+                    {# ClientFence core patch: initials avatars instead of the drawn identicons, amounts right-aligned (CF-135 redesign). #}
                     <table class="table card-table table-vcenter table-striped text-nowrap sortable">
                         <thead>
                             <tr>
@@ -224,7 +225,7 @@
                                 <th>{{ 'Name'|trans }}</th>
                                 <th>{{ 'Title'|trans }}</th>
                                 <th class="text-center">{{ 'Period'|trans }}</th>
-                                <th class="text-center">{{ 'Amount'|trans }}</th>
+                                <th class="text-end">{{ 'Amount'|trans }}</th>
                                 <th>{{ 'Status'|trans }}</th>
                                 <th class="w-1 no-sort"></th>
                             </tr>
@@ -239,7 +240,7 @@
                                 <td><a href='{{ "order/manage/#{order.id}"|url }}'>#{{ order.id }}</a></td>
                                 <td>
                                     <a href='{{ "client/manage/#{order.client_id}"|url }}'>
-                                        {{ avatar(order.client.email, 24, 'avatar avatar-xs') }}
+                                        <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (order.client.first_name|first ~ order.client.last_name|first)|upper }}</span>
                                     </a>
                                 </td>
                                 <td>
@@ -249,7 +250,7 @@
                                     <a href='{{ "order/manage/#{order.id}"|url }}'>{{ order.title }}</a>
                                 </td>
                                 <td class="text-center">{{ order.period|period_title }}</td>
-                                <td class="text-center">{{ order.total|format_currency(order.currency ?? default_currency) }}</td>
+                                <td class="text-end">{{ order.total|format_currency(order.currency ?? default_currency) }}</td>
                                 <td>{{ mf.status_badge(order.status, 'order') }}{% if order.auto_suspend_off|default(false) %} <span class="badge text-bg-warning">{{ 'Auto-suspend off'|trans }}{% if order.meta.auto_suspend_until|default('') %} {{ 'until'|trans }} {{ order.meta.auto_suspend_until|format_date }}{% endif %}</span>{% endif %}</td>
                                 <td>
                                     <a class="btn btn-icon" href='{{ "order/manage/#{order.id}"|url }}'>

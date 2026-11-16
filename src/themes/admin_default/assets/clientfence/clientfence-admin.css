@@ -1092,3 +1092,71 @@ a.bf-file-name:hover .icon { color: inherit; }
   .bf-shell .btn, .bf-body .card, .bf-sidebar, html.bf-collapsed .bf-sidebar, .bf-shell::after { transition: none; }
   .bf-shell .btn:hover, .bf-body .card-sm:hover, .bf-body .bf-lift:hover { transform: none; }
 }
+
+/* ---- CF-135 part 2: admin lists ---- */
+/* Lists (clients, invoices, orders, tickets, transactions): the counter cards become pill status tabs
+   with their counts in one glass bar; clientfence-admin.js still filters in place and marks .is-on. */
+.bf-body .filter-panel-summary {
+  display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--bf-line) 85%, transparent); border-radius: 14px;
+  background: var(--bf-glass); box-shadow: var(--bf-shadow);
+}
+.bf-body .filter-panel-summary > [class*="col-"] { flex: 0 0 auto; width: auto; max-width: none; margin: 0; padding: 0; }
+.bf-body .filter-panel-summary .card-sm { border-color: transparent; border-radius: 999px; background: transparent; box-shadow: none; }
+.bf-body .filter-panel-summary .card-sm:hover { transform: none; border-color: transparent; background: color-mix(in srgb, var(--bf-teal) 10%, transparent); box-shadow: none; }
+.bf-body .filter-panel-summary .card-sm.is-on { border-color: color-mix(in srgb, var(--bf-brand) 45%, transparent); background: var(--bf-soft); box-shadow: none; }
+.bf-body .filter-panel-summary .card-sm .card-body { padding-block: 5px; padding-inline: 14px 5px; }
+.bf-body .filter-panel-summary .card-sm .row { flex-wrap: nowrap; align-items: center; gap: 8px; margin: 0; }
+.bf-body .filter-panel-summary .card-sm .row > * { flex: 0 0 auto; width: auto; padding: 0; }
+.bf-body .filter-panel-summary .card-sm .col-auto { order: 2; }
+.bf-body .filter-panel-summary .card-sm .avatar {
+  min-width: 26px; height: 24px; padding: 0 8px; border-radius: 999px;
+  font-family: var(--bf-font); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.bf-body .filter-panel-summary .card-sm .font-weight-medium { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.bf-body .filter-panel-summary .card-sm.is-on .font-weight-medium { color: var(--bf-soft-ink); }
+
+/* Search: a rounded field with a soft glow; the filter panel a tinted glass box with pill status choices. */
+.bf-body .search-input-group { border-radius: 999px; }
+.bf-body .search-input-group > :first-child { border-start-start-radius: 999px; border-end-start-radius: 999px; padding-inline-start: 14px; }
+.bf-body .search-input-group > :last-child { border-start-end-radius: 999px; border-end-end-radius: 999px; padding-inline-end: 14px; }
+.bf-body .search-input-group:focus-within { box-shadow: 0 0 0 4px color-mix(in srgb, var(--bf-teal) 14%, transparent); }
+.bf-body #page-search-filters > form {
+  --tblr-bg-opacity: .6;
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--bf-teal) 6%, transparent), transparent 70%);
+}
+.bf-body #page-search-filters .btn-check + .btn { border-radius: 999px; padding-inline: 14px; }
+.bf-body #page-search-filters .btn-check:checked + .btn { border-color: color-mix(in srgb, var(--bf-brand) 45%, transparent); background: var(--bf-soft); color: var(--bf-soft-ink); box-shadow: none; }
+
+/* Rows: initials avatars, amounts in even figures. */
+.cf-avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+.bf-body .table > tbody > tr > td.text-end { font-variant-numeric: tabular-nums; }
+
+/* An empty list: the list's own text under a soft tray icon. */
+.bf-body .table > tbody > tr:only-child > td[colspan].text-muted:only-child { position: relative; padding-block: 88px 36px; text-align: center; font-weight: 500; }
+.bf-body .table > tbody > tr:only-child > td[colspan].text-muted:only-child::before {
+  content: ""; position: absolute; top: 28px; left: 50%; translate: -50% 0; width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 22%, transparent), color-mix(in srgb, var(--bf-brand) 16%, transparent));
+}
+.bf-body .table > tbody > tr:only-child > td[colspan].text-muted:only-child::after {
+  content: ""; position: absolute; top: 40px; left: 50%; translate: -50% 0; width: 24px; height: 24px; background: var(--bf-teal);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='16' height='16' rx='2'/%3E%3Cpath d='M4 13h3l3 3h4l3-3h3'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='16' height='16' rx='2'/%3E%3Cpath d='M4 13h3l3 3h4l3-3h3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Rows ticked for a bulk action: tinted, and the footer with the bulk buttons sticks to the bottom
+   of the screen as a raised bar. No backdrop-filter: the footer holds the page-size menu. */
+.bf-body .table > tbody > tr:has(> td > input.batch-delete-checkbox:checked) > * { --tblr-table-bg-state: color-mix(in srgb, var(--bf-teal) 9%, transparent); }
+.bf-body .card:has(input.batch-delete-checkbox:checked) .card-footer {
+  position: sticky; inset-block-end: 0; z-index: 3; border-radius: 0 0 14px 14px;
+  border-top-color: color-mix(in srgb, var(--bf-brand) 30%, var(--bf-line));
+  background: color-mix(in srgb, var(--bf-surface) 94%, transparent);
+  box-shadow: 0 -12px 28px -16px color-mix(in srgb, var(--bf-brand) 45%, transparent);
+  animation: cf-bulk-in .3s var(--bf-ease) backwards;
+}
+.bf-body .card:has(input.batch-delete-checkbox:checked) .bf-bulk-label { color: var(--bf-brand); font-weight: 600; }
+[data-bs-theme="dark"] .bf-body .card:has(input.batch-delete-checkbox:checked) .bf-bulk-label { color: var(--bf-soft-ink); }
+@keyframes cf-bulk-in { from { opacity: .4; translate: 0 8px; } to { opacity: 1; translate: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .bf-body .card:has(input.batch-delete-checkbox:checked) .card-footer { animation: none; }
+}

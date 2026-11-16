@@ -261,6 +261,7 @@
                 {{ include('mod_support_tickets_bulk.html.twig') }}
             </div>
             <div class="table-responsive">
+            {# ClientFence core patch: initials avatars instead of the drawn identicons (CF-135 redesign). #}
             <table class="table card-table table-vcenter table-striped sortable">
                 <thead>
                     <tr>
@@ -280,6 +281,7 @@
                     {% set tickets = admin.support_ticket_get_list({ 'per_page': 25, 'page': request.page, 'deep': 0, 'include_first': 0 }|merge(request)) %}
                     {% for i, ticket in tickets.list %}
                     <tr class="priority_{{ ticket.priority|default(100) }}">
+                        {% set bf_initials = ticket.author.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper %}
                         <td>
                             <input class="form-check-input m-0 align-middle batch-delete-checkbox" type="checkbox" data-item-id="{{ ticket.id }}">
                         </td>
@@ -287,7 +289,7 @@
                             {% if ticket.author.role|default('') == 'client' %}
                                 <div class="d-flex py-1 align-items-center">
                                     <a href='{{ "client/manage/#{ticket.author.id}"|url }}'>
-                                        {{ avatar(ticket.author.email, 40, 'avatar me-2') }}
+                                        <span class="cf-avatar cf-avatar-sm me-2" aria-hidden="true">{{ bf_initials }}</span>
                                     </a>
                                     <div class="flex-fill">
                                         <div class="font-weight-medium">
@@ -298,7 +300,7 @@
                                 </div>
                             {% else %}
                                 <div class="d-flex py-1 align-items-center">
-                                    {{ avatar(ticket.author.email, 40, 'avatar me-2') }}
+                                    <span class="cf-avatar cf-avatar-sm me-2" aria-hidden="true">{{ bf_initials }}</span>
                                     <div class="flex-fill">
                                         <div class="font-weight-medium">
                                             {{ ticket.author.name }}
