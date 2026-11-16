@@ -133,6 +133,13 @@
                                             <span class="form-check-label">{{ 'Prices include tax'|trans }}</span>
                                         </label>
                                         <div class="form-hint">{{ 'Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net).'|trans }}</div>
+                                        {# ClientFence core patch: new lines staff add start taxed, as WHMCS Taxed Items for custom invoices (Invoice\Controller\Admin::get_invoice()). #}
+                                        <input type="hidden" name="tax_staff_lines" value="0">
+                                        <label class="form-check form-switch form-switch-2 mt-3">
+                                            <input class="form-check-input" id="tax_staff_lines" type="checkbox" name="tax_staff_lines" value="1"{% if params.tax_staff_lines|default(false) %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'Tax lines staff add to invoices'|trans }}</span>
+                                        </label>
+                                        <div class="form-hint">{{ 'A new line staff add on an invoice starts with Taxed ticked when the client pays tax. Staff can untick it.'|trans }}</div>
                                         {# ClientFence: the EU VAT reverse charge (Invoice/EuVat.php). #}
                                         <h4 class="mt-4">{{ 'EU VAT'|trans }}</h4>
                                         <input type="hidden" name="eu_vat_check" value="0">

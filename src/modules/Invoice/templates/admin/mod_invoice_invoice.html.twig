@@ -413,7 +413,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <input class="form-check-input m-0 align-middle" type="checkbox" name="new_item[taxed]" value="1">
+                                    <input class="form-check-input m-0 align-middle" type="checkbox" name="new_item[taxed]" value="1"{% if tax_new_line|default(false) %} checked{% endif %}>
                                 </td>
                                 <td></td>
                             </tr>

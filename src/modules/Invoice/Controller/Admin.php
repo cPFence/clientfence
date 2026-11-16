@@ -160,8 +160,11 @@ class Admin implements \ClientFence\InjectionAwareInterface
     {
         $api = $this->di['api_admin'];
         $invoice = $api->invoice_get(['id' => $id]);
+        // ClientFence core patch: the new line starts taxed when "Tax lines staff add" is on and the client pays tax (WHMCS Taxed Items).
+        $client = $this->di['db']->load('Client', $invoice['client_id']);
+        $taxNewLine = $client !== null && $this->di['mod_service']('system')->getParamValue('tax_staff_lines', false) && $this->di['mod_service']('client')->isClientTaxable($client);
 
-        return $app->render('mod_invoice_invoice', ['invoice' => $invoice]);
+        return $app->render('mod_invoice_invoice', ['invoice' => $invoice, 'tax_new_line' => $taxNewLine]);
     }
 
     public function get_transaction(\ClientFence\App $app, $id): string
