@@ -2,6 +2,7 @@
    main form (forms cannot nest), saved as the system params affiliate_* (Affiliates::settings()). Amounts are in the
    default currency; each affiliate's are converted to its currency. #}
 {% set affiliate_settings = admin.client_affiliate_settings %}
+{# ClientFence core patch: the program's state as a chip by its heading and a Save row that stays in view (CF-135 redesign). #}
 <div class="tab-content">
     <form class="tab-pane fade" id="tab-affiliates" role="tabpanel" method="post" action="{{ 'system/update_params'|api_url }}" {{ fb_api_form({message: 'Configuration Updated'|trans}) }}>
         <div class="card-body">
@@ -12,7 +13,7 @@
                 <div class="col-12 col-xl-6">
                     <section class="card card-sm h-100">
                         <div class="card-body">
-                            <h4 class="card-title mb-2">{{ 'Affiliate Program'|trans }}</h4>
+                            <h4 class="card-title mb-2">{{ 'Affiliate Program'|trans }} <span class="bf-chip{% if affiliate_settings.enabled %} bf-tone-ok{% endif %}">{{ affiliate_settings.enabled ? 'On'|trans : 'Off'|trans }}</span></h4>
                             <p class="text-secondary mb-3">{{ 'Clients find the program on the Affiliates page of the client area. Staff can make any client an affiliate on the client\'s Affiliate tab.'|trans }}</p>
                             <div class="d-flex flex-column gap-3">
                                 <input type="hidden" name="affiliate_enabled" value="0">
@@ -105,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-footer text-end">
+        <div class="card-footer text-end cf-set-save">
             <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
         </div>
     </form>

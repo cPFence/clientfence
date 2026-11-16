@@ -1592,4 +1592,43 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
 
 @media (prefers-reduced-motion: reduce) {
   .cf-choices > .form-check { transition: none; }
+
+/* ---- CF-135 part 5: clients, support and hosting settings ---- */
+/* Save rows of the settings forms (Clients, Support, Network Status, escalation rules, form builder and the ClientFence
+   blocks) stay in view at the bottom of the screen on frosted glass while the form is longer than the screen. */
+.bf-body form .cf-set-save, .bf-body .cf-set .clientfence-settings-actions {
+  position: sticky; inset-block-end: 0; z-index: 2;
+  border-top: 1px solid color-mix(in srgb, var(--bf-line) 80%, transparent);
+  background: color-mix(in srgb, var(--bf-surface) 82%, transparent);
+  box-shadow: 0 -12px 28px -20px color-mix(in srgb, var(--bf-brand) 40%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(150%); backdrop-filter: blur(12px) saturate(150%);
+}
+.card.cf-set > form > .clientfence-settings-actions:last-child { border-end-start-radius: 13px; border-end-end-radius: 13px; }
+
+/* ClientFence settings blocks (Google sign-in, ticket attachments, email import, hosting panels and plans): headings with
+   the navy-to-teal bar of the settings pages, a chip for the saved state, rows that tint on hover. */
+.cf-set .clientfence-settings-intro > h3, .cf-set .clientfence-setting > h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cf-set .clientfence-settings-intro > h3::before, .cf-set .clientfence-setting > h4::before {
+  content: ""; flex: none; width: 4px; height: 1em; border-radius: 4px;
+  background: linear-gradient(180deg, var(--bf-brand), var(--bf-teal));
+}
+.cf-set .clientfence-setting { transition: background-color .25s; }
+.cf-set .clientfence-setting-row:hover { background-color: color-mix(in srgb, var(--bf-teal) 4%, transparent); }
+
+/* Hosting panels: each panel's tile, name and state on one line, its option on a tinted box. */
+.cf-set-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cf-set .clientfence-panel-option {
+  border-color: color-mix(in srgb, var(--bf-teal) 25%, var(--bf-line)); border-radius: 12px;
+  background: color-mix(in srgb, var(--bf-teal) 5%, transparent); transition: opacity .25s;
+}
+
+/* Lists inside settings (escalation rules, panel plans): a tinted, rounded frame. */
+.cf-set-list { border: 1px solid color-mix(in srgb, var(--bf-line) 85%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--bf-teal) 3%, transparent); }
+.cf-set-list > .table { margin-bottom: 0; }
+
+/* Form builder: the field types as dashed pill add buttons. */
+.bf-body .widget #fields > .btn { border-style: dashed; border-radius: 999px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-set .clientfence-setting, .cf-set .clientfence-panel-option { transition: none; }
 }

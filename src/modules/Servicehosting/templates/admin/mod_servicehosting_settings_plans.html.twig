@@ -12,7 +12,8 @@
 	{% endif %}
 {% endfor %}
 {% if plan_servers is not empty %}
-	<div class="clientfence-settings border-top" id="hosting-plans-from-panel" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	{# ClientFence core patch: the accent-bar heading, the panel plans in a tinted list, a Save row that stays in view (CF-135 redesign). #}
+	<div class="clientfence-settings cf-set border-top" id="hosting-plans-from-panel" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 		<div class="clientfence-settings-intro">
 			<h3>{{ 'Hosting plans from the panel'|trans }}</h3>
 			<p>{{ 'The plans of a panel server become hosting plans with the same name and limits, linked by the panel plan ID (custom value plan_id). Hosting plans that already match a panel plan are left unchanged unless you choose to update them.'|trans }}</p>
@@ -36,7 +37,7 @@
 			</div>
 		</div>
 		<div id="hosting-plans-results" hidden>
-			<div class="table-responsive">
+			<div class="table-responsive cf-set-list mx-4 my-3">
 				<table class="table table-vcenter card-table">
 					<thead>
 						<tr>
