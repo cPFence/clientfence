@@ -113,6 +113,9 @@
         {{ 'Unpaid'|trans }}
     {% elseif status == 'Refunded' %}
         {{ 'Refunded'|trans }}
+    {# ClientFence core patch (CF-144): a staff payment undone with Reverse payment. #}
+    {% elseif status == 'Reversed' %}
+        {{ 'Reversed'|trans }}
     {% elseif status == 'Approved' %}
         {{ 'Approved'|trans }}
     {% elseif status == 'Processed' %}

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Invoice\Api;
 
+use ClientFence\Mod\Invoice\PaymentReversal;
 use ClientFence\Mod\Invoice\Receipts;
 use ClientFence\Mod\Invoice\SavedCards;
 use ClientFence\InformationException;
@@ -69,6 +70,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         $invoice = $this->getService()->toApiArray($model, true, $this->getIdentity());
         // ClientFence core patch: the client's free credit, for Apply Credit on the invoice page.
         $invoice['client_credit'] = $model->client_id ? $this->getService()->getFreeCredit((int) $model->client_id) : 0.0;
+        // ClientFence core patch (CF-144): whether Reverse payment applies (a payment staff recorded, nothing since).
+        $invoice['payment_reversible'] = $model->status === \Model_Invoice::STATUS_PAID && PaymentReversal::allowed($this->getDi(), $model);
 
         return $invoice;
     }
@@ -142,6 +145,26 @@ class Admin extends \ClientFence\Api\AbstractApi
         $model = $this->_getInvoice($data);
 
         return $this->getService()->approveInvoice($model, $data);
+    }
+
+    /**
+     * ClientFence core patch (CF-144): undo a payment staff recorded by mistake (a bank transfer that never arrived): the
+     * invoice is unpaid again, the credit the payment used or added goes back, its renewals move back and a service it set
+     * up is suspended (Invoice/PaymentReversal.php). A gateway payment needs Refund.
+     *
+     * @return bool
+     */
+    #[RequiredParams(['id' => 'Invoice ID is missing'])]
+    public function reverse_payment($data): bool
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+        $invoice = $this->_getInvoice($data);
+        // Taking back the credit an Add funds invoice added needs the permission crediting it did (markPaid()).
+        if ($this->getService()->isInvoiceTypeDeposit($invoice)) {
+            $this->checkPermissions('client', 'manage_balance');
+        }
+
+        return PaymentReversal::reverse($this->getDi(), $invoice);
     }
 
     /**
@@ -1187,18 +1210,23 @@ class Admin extends \ClientFence\Api\AbstractApi
     #[RequiredParams(['ids' => 'IDs were not passed'])]
     public function batch_cancel($data): array
     {
-        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => $invoice->status === \Model_Invoice::STATUS_UNPAID
-            ? $this->update(['id' => $invoice->id, 'status' => \Model_Invoice::STATUS_CANCELED])
-            : throw new \ClientFence\InformationException('Only unpaid invoices can be cancelled.'));
+        // ClientFence core patch (CF-144): a paid one is skipped with the way to undo its payment.
+        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => match ($invoice->status) {
+            \Model_Invoice::STATUS_UNPAID => $this->update(['id' => $invoice->id, 'status' => \Model_Invoice::STATUS_CANCELED]),
+            \Model_Invoice::STATUS_PAID => throw new InformationException('A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice.'),
+            default => throw new InformationException('Only unpaid invoices can be cancelled.'),
+        });
     }
 
     /** Cancelled invoices become unpaid again (see batch_mark_paid()). */
     #[RequiredParams(['ids' => 'IDs were not passed'])]
     public function batch_mark_unpaid($data): array
     {
-        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => $invoice->status === \Model_Invoice::STATUS_CANCELED
-            ? $this->update(['id' => $invoice->id, 'status' => \Model_Invoice::STATUS_UNPAID])
-            : throw new \ClientFence\InformationException('Only cancelled invoices can be marked unpaid.'));
+        return $this->batchEach($data['ids'], fn (\Model_Invoice $invoice): bool => match ($invoice->status) {
+            \Model_Invoice::STATUS_CANCELED => $this->update(['id' => $invoice->id, 'status' => \Model_Invoice::STATUS_UNPAID]),
+            \Model_Invoice::STATUS_PAID => throw new InformationException('A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice.'),
+            default => throw new InformationException('Only cancelled invoices can be marked unpaid.'),
+        });
     }
 
     /** The payment reminder of each unpaid issued invoice (see batch_mark_paid()). */

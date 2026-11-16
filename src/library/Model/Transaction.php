@@ -15,4 +15,6 @@ class Model_Transaction extends RedBeanPHP\SimpleModel
     final public const string STATUS_PROCESSING = 'processing';
     final public const string STATUS_PROCESSED = 'processed';
     final public const string STATUS_ERROR = 'error';
+    // ClientFence core patch (CF-144): a staff payment undone with Reverse payment (Invoice/PaymentReversal.php); kept, never counted.
+    final public const string STATUS_REVERSED = 'reversed';
 }

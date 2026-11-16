@@ -2210,6 +2210,10 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: Manage uses the recorded payments of a partly paid invoice it sets to Paid (the rest is written off).
         $credited = $markPaid ? $this->getAmountPaid($model) : 0.0;
         if ($newStatus !== $previousStatus && ($this->isBooked($model) || $newStatus === \Model_Invoice::STATUS_REFUNDED)) {
+            // ClientFence core patch (CF-144): a payment recorded by mistake is undone with Reverse payment (PaymentReversal.php).
+            if ($previousStatus === \Model_Invoice::STATUS_PAID && $newStatus !== \Model_Invoice::STATUS_REFUNDED) {
+                throw new InformationException('A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice.');
+            }
             throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
         }
         // ClientFence core patch (QA r10 C-6): the issue and paid dates of a paid invoice are booked too (moved, they changed
@@ -2438,7 +2442,6 @@ class Service implements InjectionAwareInterface
      */
     public function chargeback(\Model_Invoice $invoice, float $amount, string $text): string
     {
-        $db = $this->di['dbal'];
         try {
             $full = abs($amount - $this->getTotalWithTax($invoice)) < 0.01;
             // ClientFence core patch: a chargeback takes back all the invoice's affiliate commissions (Client/Affiliates/Commissions.php).
@@ -2450,10 +2453,21 @@ class Service implements InjectionAwareInterface
 
             return $text . ' Not refunded here: ' . $e->getMessage();
         }
-        $moved = [];
         // A part taken back leaves the rest paying for the period: staff settle the service by hand.
-        $items = $full ? $db->fetchAllAssociative("SELECT rel_id, period FROM invoice_item WHERE invoice_id = ? AND type = 'order' AND task = ? AND status = 'executed'", [(int) $invoice->id, \Model_InvoiceItem::TASK_RENEW]) : [];
-        foreach ($items as $item) {
+        $moved = $full ? $this->moveRenewalsBack($invoice) : [];
+        $text .= $moved === [] ? ($full ? '' : ' Part of the payment was taken back: due dates not moved, check the services.') : ' Due dates moved back: ' . implode(', ', $moved) . '.';
+        $this->addNote($invoice, $text);
+        $this->di['logger']->warning('Invoice #%s: %s', $invoice->id, $text);
+
+        return $text;
+    }
+
+    /** ClientFence core patch (CF-144): the services the invoice renewed go back by their period (a chargeback, a reversed payment); ["order #5 due 2026-12-31", ...]. */
+    public function moveRenewalsBack(\Model_Invoice $invoice): array
+    {
+        $db = $this->di['dbal'];
+        $moved = [];
+        foreach ($db->fetchAllAssociative("SELECT rel_id, period FROM invoice_item WHERE invoice_id = ? AND type = 'order' AND task = ? AND status = 'executed'", [(int) $invoice->id, \Model_InvoiceItem::TASK_RENEW]) as $item) {
             $order = $db->fetchAssociative('SELECT id, expires_at, period, activated_at, config FROM client_order WHERE id = ?', [(int) $item['rel_id']]);
             $code = (string) ($item['period'] ?: ($order['period'] ?? ''));
             if ($order === false || empty($order['expires_at']) || $code === '') {
@@ -2466,11 +2480,8 @@ class Service implements InjectionAwareInterface
             $db->update('client_order', ['expires_at' => $expires, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order['id']]);
             $moved[] = sprintf('order #%d due %s', $order['id'], substr($expires, 0, 10));
         }
-        $text .= $moved === [] ? ($full ? '' : ' Part of the payment was taken back: due dates not moved, check the services.') : ' Due dates moved back: ' . implode(', ', $moved) . '.';
-        $this->addNote($invoice, $text);
-        $this->di['logger']->warning('Invoice #%s: %s', $invoice->id, $text);
 
-        return $text;
+        return $moved;
     }
 
     /** ClientFence: a paid or refunded invoice has its payment and income booked, so its amount is fixed. */
@@ -2545,6 +2556,10 @@ class Service implements InjectionAwareInterface
     {
         // ClientFence core patch: a paid or refunded invoice stays (its payment and income would be left pointing at nothing).
         if ($this->isBooked($model)) {
+            // ClientFence core patch (CF-144): a paid one points to Reverse payment too.
+            if ($model->status === \Model_Invoice::STATUS_PAID) {
+                throw new InformationException('A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice.');
+            }
             throw new InformationException('A paid or refunded invoice cannot be deleted. Refund it instead.');
         }
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminInvoiceDelete', 'params' => ['id' => $model->id]]);

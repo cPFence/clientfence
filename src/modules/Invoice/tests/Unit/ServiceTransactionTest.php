@@ -415,6 +415,25 @@ test('preProcessTransaction marks error on a generic exception', function (): vo
         ->and($transactionModel->error)->toBe('Unexpected DB error');
 });
 
+// CF-144: a payment staff reversed is a record only: "Process" would credit money that never came, and is refused
+// without turning it into an error transaction (those can be processed).
+test('preProcessTransaction refuses a reversed payment and leaves it reversed', function (): void {
+    $transactionModel = new Model_Transaction();
+    $transactionModel->loadBean(new Tests\Helpers\DummyBean());
+    $transactionModel->id = 5;
+    $transactionModel->status = Model_Transaction::STATUS_REVERSED;
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldNotReceive('store');
+    $di = container();
+    $di['db'] = $dbMock;
+    $service = Mockery::mock(ServiceTransaction::class)->makePartial();
+    $service->shouldNotReceive('processTransaction');
+    $service->setDi($di);
+
+    expect(fn () => $service->preProcessTransaction($transactionModel))->toThrow(ClientFence\InformationException::class, 'reversed')
+        ->and($transactionModel->status)->toBe(Model_Transaction::STATUS_REVERSED);
+});
+
 test('claimForProcessing includes error status in claim query', function (): void {
     $service = new ServiceTransaction();
 

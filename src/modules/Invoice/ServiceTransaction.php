@@ -461,6 +461,8 @@ class ServiceTransaction implements InjectionAwareInterface
             \Model_Transaction::STATUS_PROCESSING => 'Processing',
             \Model_Transaction::STATUS_PROCESSED => 'Processed',
             \Model_Transaction::STATUS_ERROR => 'Error',
+            // ClientFence core patch (CF-144): staff payments undone with Reverse payment.
+            \Model_Transaction::STATUS_REVERSED => 'Reversed',
         ];
     }
 
@@ -472,6 +474,7 @@ class ServiceTransaction implements InjectionAwareInterface
             \Model_Transaction::STATUS_PROCESSING => 'Processing',
             \Model_Transaction::STATUS_PROCESSED => 'Processed',
             \Model_Transaction::STATUS_ERROR => 'Error',
+            \Model_Transaction::STATUS_REVERSED => 'Reversed',
         ];
     }
 
@@ -551,6 +554,11 @@ class ServiceTransaction implements InjectionAwareInterface
 
     public function preProcessTransaction(\Model_Transaction $model): bool
     {
+        // ClientFence core patch (CF-144): a reversed payment stays a record of the mistake: "Process" credited money that never
+        // came (checked before the try: an error status would make it processable).
+        if ($model->status === \Model_Transaction::STATUS_REVERSED) {
+            throw new \ClientFence\InformationException('This payment was reversed and is kept as a record only. Record a new payment instead.');
+        }
         try {
             // Processing failures throw, so reaching the return below means
             // the transaction was handled successfully regardless of what

@@ -231,6 +231,34 @@ test('marking a deposit invoice as paid requires the balance permission', functi
         ->toThrow(ClientFence\InformationException::class, 'client balance');
 });
 
+// CF-144: Reverse payment is behind Mark as Paid's permissions: taking back an Add funds invoice's credit needs the balance one.
+test('reversing the payment of a deposit invoice requires the balance permission', function (): void {
+    $api = apiEndpoint(new Admin());
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('isInvoiceTypeDeposit')->once()->andReturn(true);
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->status = Model_Invoice::STATUS_PAID;
+    $staffServiceMock = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')->once()->with('invoice', 'manage_invoices', null, Mockery::any())->andReturn(true);
+    $staffServiceMock->shouldReceive('checkPermissionsAndThrowException')->once()->with('client', 'manage_balance', null, Mockery::any())
+        ->andThrow(new ClientFence\InformationException('You do not have permission to manage the client balance', [], 403));
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->andReturn($invoiceModel);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldNotReceive('transactional');
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $serviceMock, 'staff' => $staffServiceMock]));
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect(fn (): bool => $api->reverse_payment(['id' => 1]))->toThrow(ClientFence\InformationException::class, 'client balance')
+        ->and($invoiceModel->status)->toBe(Model_Invoice::STATUS_PAID);
+});
+
 test('prepares an invoice', function (): void {
     $api = apiEndpoint(new Admin());
     $data = [
@@ -1466,10 +1494,12 @@ test('the With Selected actions run each invoice through its single action and l
     $service->shouldReceive('deleteInvoiceByAdmin')->andReturnUsing(fn (Model_Invoice $invoice): bool => $invoice->id === 2 ? throw new ClientFence\InformationException('A paid or refunded invoice cannot be deleted. Refund it instead.') : true);
     $api->setService($service);
     $api->shouldReceive('send_reminder')->once()->with(['id' => 1])->andReturnTrue();
+    // CF-144: a paid invoice is skipped with the way to undo its payment, not a pointer to another action that refuses it.
+    $paid = 'A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice.';
 
     expect($api->batch_mark_paid(['ids' => ['1', 2, 9, 1]]))->toBe(['done' => [1], 'skipped' => [2 => 'Payment gateway not found', 9 => 'Invoice was not found']])
-        ->and($api->batch_cancel(['ids' => [1, 2, 3]]))->toBe(['done' => [1], 'skipped' => [2 => 'Only unpaid invoices can be cancelled.', 3 => 'Only unpaid invoices can be cancelled.']])
-        ->and($api->batch_mark_unpaid(['ids' => [1, 3]]))->toBe(['done' => [3], 'skipped' => [1 => 'Only cancelled invoices can be marked unpaid.']])
+        ->and($api->batch_cancel(['ids' => [1, 2, 3]]))->toBe(['done' => [1], 'skipped' => [2 => $paid, 3 => 'Only unpaid invoices can be cancelled.']])
+        ->and($api->batch_mark_unpaid(['ids' => [1, 2, 3]]))->toBe(['done' => [3], 'skipped' => [1 => 'Only cancelled invoices can be marked unpaid.', 2 => $paid]])
         ->and($api->batch_send_reminder(['ids' => [1, 2, 4]]))->toBe(['done' => [1], 'skipped' => [2 => 'Only unpaid issued invoices get a reminder.', 4 => 'Only unpaid issued invoices get a reminder.']])
         ->and($api->batch_delete(['ids' => [1, 2, 3]]))->toBe(['done' => [1, 3], 'skipped' => [2 => 'A paid or refunded invoice cannot be deleted. Refund it instead.']])
         ->and($updates)->toBe([['id' => 1, 'status' => 'canceled'], ['id' => 3, 'status' => 'unpaid']]);

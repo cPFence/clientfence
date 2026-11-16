@@ -185,6 +185,35 @@ test('a paid renewal lifts the suspension and renews the order', function (): vo
     $serviceMock->executeTask($invoiceItemModel);
 });
 
+// CF-144: a service suspended when its first payment was reversed comes back when the invoice is paid again (not set up twice).
+test('a paid activation lifts the suspension a reversed payment left', function (): void {
+    $invoiceItemModel = new Model_InvoiceItem();
+    $invoiceItemModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceItemModel->type = Model_InvoiceItem::TYPE_ORDER;
+    $invoiceItemModel->task = Model_InvoiceItem::TASK_ACTIVATE;
+    $invoiceItemModel->status = Model_InvoiceItem::STATUS_PENDING_SETUP;
+
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->status = Model_ClientOrder::STATUS_SUSPENDED;
+
+    $serviceMock = Mockery::mock(ServiceInvoiceItem::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderId')->andReturn(22);
+    $serviceMock->shouldReceive('markAsExecuted')->once();
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('load')->with('ClientOrder', 22)->andReturn($order);
+    $orderService = Mockery::mock();
+    $orderService->shouldReceive('unsuspendFromOrder')->once()->with($order);
+    $orderService->shouldNotReceive('activateOrder');
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderService);
+    $serviceMock->setDi($di);
+
+    $serviceMock->executeTask($invoiceItemModel);
+});
+
 test('executes task for hook call type', function (): void {
     $service = new ServiceInvoiceItem();
     $invoiceItemModel = new Model_InvoiceItem();

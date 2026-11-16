@@ -235,6 +235,35 @@
                         </div>
                         {% endif %}
 
+                        {# ClientFence core patch (CF-144): undo a payment staff recorded by mistake (Invoice/PaymentReversal.php); a gateway payment needs Refund. #}
+                        {% if invoice.payment_reversible|default(false) %}
+                        <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reversePaymentModal">
+                            <svg class="icon" width="24" height="24">
+                                <use href="#arrow-left" />
+                            </svg>
+                            <span>{{ 'Reverse payment'|trans }}</span>
+                        </a>
+                        <div class="modal fade" id="reversePaymentModal" tabindex="-1" aria-labelledby="reversePaymentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form class="modal-content" method="post" action="{{ 'invoice/reverse_payment'|api_url }}" {{ fb_api_form({reload: true}) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="reversePaymentModalLabel">{{ 'Reverse payment?'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body d-flex flex-column gap-3 text-start">
+                                <input type="hidden" name="id" value="{{ invoice.id }}">
+                                <p class="mb-0">{{ 'Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere.'|trans }}</p>
+                                <p class="mb-0">{{ 'The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid.'|trans({ ':amount': invoice.total|format_currency(invoice.currency ?? default_currency) }) }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</a>
+                                <input type="submit" class="btn btn-danger" value="{{ 'Reverse payment'|trans }}">
+                            </div>
+                            </form>
+                        </div>
+                        </div>
+                        {% endif %}
+
                         {% if invoice.status == 'paid' %}
                         {# ClientFence core patch: WHMCS refunds: an amount (all or part) and, optionally, to the client's credit. #}
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#refundModal">
