@@ -4715,4 +4715,72 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cf-thanks { animation: none; }
+
+// ---- CF-135 part 3: client sign-in, sign-up and product order
+// Sign-in pages (every sign-in style): glows drifting in the side panel, the form on a frosted glass card
+// over a soft glow. Only the card and the glow box get blur and isolation: the top bar's language menu
+// sits outside them.
+.auth-brand {
+  isolation: isolate;
+  &::before, &::after {
+    content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none;
+    filter: blur(60px); animation: cf-drift 18s ease-in-out infinite alternate;
+  }
+  &::before { top: -120px; inset-inline-end: -100px; width: 420px; height: 320px; background: radial-gradient(circle, rgba(var(--pal-accent-rgb), .55), transparent 70%); }
+  &::after { bottom: -140px; inset-inline-start: -60px; width: 380px; height: 340px; background: radial-gradient(circle, rgba(var(--pal-brand-rgb), .6), transparent 70%); animation-delay: -9s; }
+  &.is-light::before, &.is-light::after { opacity: .35; }
+}
+@keyframes cf-drift { from { translate: 0 0; scale: 1; } to { translate: -40px 30px; scale: 1.08; } }
+.auth-body {
+  position: relative; isolation: isolate;
+  &::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; width: min(520px, 100%); height: 60%; margin: auto;
+    border-radius: 50%; pointer-events: none; filter: blur(50px); opacity: .5;
+    background: radial-gradient(circle at 30% 40%, rgba(var(--pal-accent-rgb), .55), transparent 65%), radial-gradient(circle at 70% 65%, rgba(var(--pal-brand-rgb), .5), transparent 65%);
+  }
+}
+.auth-card {
+  max-width: 452px; padding: 2rem;
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 75%, transparent); border-radius: 1.25rem;
+  background: var(--pal-glass); -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 30px 60px -32px rgba(var(--pal-brand-rgb), .55);
+  animation: pal-rise .55s var(--pal-ease) backwards;
+  @include media-breakpoint-down(sm) { padding: 1.5rem 1.125rem; }
+  .form-control:focus, .form-select:focus { border-color: rgba(var(--pal-accent-rgb), .6); box-shadow: 0 0 0 .25rem rgba(var(--pal-accent-rgb), .16); }
+}
+// Product order (one-page checkout): the plan first in a tinted card with its icon, its billing cycles in
+// one even row like the store's (sideways on a phone), the options only when there are any, and the
+// add-ons as tiles that light up when switched on, like the payment method cards.
+.cf-order-plan {
+  border-color: rgba(var(--pal-accent-rgb), .28);
+  background-image: linear-gradient(115deg, rgba(var(--pal-accent-rgb), .1), transparent 55%);
+  > .bf-label { margin-bottom: -.5rem; }
+}
+.cf-order-plan-name {
+  display: flex; align-items: center; gap: .75rem; min-width: 0;
+  h2 { font-size: 1.25rem; font-weight: 700; overflow-wrap: anywhere; }
+}
+.cf-order-options:not(:has([data-cf-options])) { display: none; }
+.bf-checkout [data-bf-cycles] {
+  flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+  background: var(--pal-glass); border: 1px solid var(--bs-border-color);
+  &::-webkit-scrollbar { display: none; }
+  // From three cycles a phone fades the end, a hint that more sit past the edge.
+  @include media-breakpoint-down(md) { &:has(> :nth-child(3)) { mask-image: linear-gradient(90deg, #000 78%, transparent); } }
+  @include media-breakpoint-down(md) { [dir="rtl"] &:has(> :nth-child(3)) { mask-image: linear-gradient(270deg, #000 78%, transparent); } }
+  .bf-seg-item { flex: 1 0 auto; min-width: 104px; min-height: 54px; gap: 2px; padding: 8px 14px; white-space: nowrap; transition: background-color .25s, color .25s, box-shadow .25s; }
+}
+.cf-order-addons .bf-addon {
+  padding: .875rem 1rem; border: 1px solid var(--bf-line); border-radius: 14px;
+  transition: border-color .25s, background-color .25s, box-shadow .25s;
+  &:hover { border-color: rgba(var(--pal-accent-rgb), .55); }
+  &:has([data-addon-toggle][aria-checked="true"]) {
+    border-color: rgba(var(--pal-accent-rgb), .55);
+    background: linear-gradient(110deg, rgba(var(--pal-accent-rgb), .13), rgba(var(--pal-brand-rgb), .05) 70%);
+    box-shadow: 0 14px 30px -20px rgba(var(--pal-brand-rgb), .8);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-brand::before, .auth-brand::after, .auth-card { animation: none; }
+  .bf-checkout [data-bf-cycles] .bf-seg-item, .cf-order-addons .bf-addon { transition: none; }
 }

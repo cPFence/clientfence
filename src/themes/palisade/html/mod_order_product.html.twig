@@ -151,12 +151,17 @@
             <a class="bf-linkbtn" href="{{ 'order'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back to the store'|trans }}</a>
             <h1 class="bf-page-title">{{ 'Checkout'|trans }}</h1>
 
-            <section class="card bf-card bf-section" aria-labelledby="bf-h-plan">
+            {# ClientFence core patch: the plan reads first (icon, name, the billing cycles in one row as on the store, then its options); add-ons in their own section as tiles (CF-135 redesign). #}
+            <section class="card bf-card bf-section cf-order-plan" aria-labelledby="bf-h-plan">
                 <div class="bf-section-head">
-                    <h2 id="bf-h-plan">{{ product.title }}</h2>
+                    <div class="cf-order-plan-name">
+                        <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#apps"/></svg></span>
+                        <h2 id="bf-h-plan">{{ product.title }}</h2>
+                    </div>
                     <a class="bf-linkbtn" href="{{ 'order'|url }}">{{ 'Change'|trans }}</a>
                 </div>
                 {% if prices|length > 0 %}
+                    <span class="bf-label" aria-hidden="true">{{ 'Billing cycle'|trans }}</span>
                     <div class="bf-seg" role="group" aria-label="{{ 'Billing cycle'|trans }}" data-bf-cycles>
                         {% for code in prices|keys %}
                             <button type="button" class="bf-seg-item{{ code == period ? ' is-on' : '' }}" aria-pressed="{{ code == period ? 'true' : 'false' }}" data-cycle="{{ code }}">
@@ -179,9 +184,14 @@
                     </div>
                 {% endif %}
                 {# ClientFence: configurable options (Product/Options.php), priced by checkout.js. #}
-                <div class="bf-divided">{{ include('mod_product_options_form.html.twig', { 'product_id': product.id, 'currency': cart_currency }) }}</div>
+                <div class="bf-divided cf-order-options">{{ include('mod_product_options_form.html.twig', { 'product_id': product.id, 'currency': cart_currency }) }}</div>
+            </section>
+
+            {% if addons %}
+            <section class="card bf-card bf-section cf-order-addons" aria-labelledby="bf-h-addons">
+                <h2 id="bf-h-addons">{{ 'Addons & Extras'|trans }}</h2>
                 {% for addon in addons %}
-                    <div class="bf-addon bf-divided" data-bf-addon="{{ addon.id }}">
+                    <div class="bf-addon" data-bf-addon="{{ addon.id }}">
                         <div class="bf-addon-main">
                             <button type="button" class="bf-toggle" role="switch" aria-checked="false" aria-labelledby="bf-addon-{{ addon.id }}" data-addon-toggle><span></span></button>
                             <div class="bf-addon-text">
@@ -199,6 +209,7 @@
                     </div>
                 {% endfor %}
             </section>
+            {% endif %}
 
             {% if form and form.fields|default([])|length > 0 %}
                 <section class="card bf-card bf-section" aria-labelledby="bf-h-details">
