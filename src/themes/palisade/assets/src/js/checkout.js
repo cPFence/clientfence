@@ -37,6 +37,7 @@ export default function initCheckout(root) {
     accountReady: false, // the account was made, but the sign-up did not sign in
     busy: false,
     planInCart: false, // Apply put this plan in the cart (and emptied it)
+    choice: 0, // counts changes of choice, so an Apply that answers after one is dropped
   };
 
   const recurrent = product.type === 'recurrent';
@@ -241,7 +242,7 @@ export default function initCheckout(root) {
     const promoLine = $('[data-bf-promo-line]');
     promoLine.hidden = !state.promo;
     if (state.promo) {
-      $('[data-bf-promo-label]').textContent = fill(t.promo, { code: state.promo.code });
+      $('[data-bf-promo-label]').textContent = state.promo.code ? fill(t.promo, { code: state.promo.code }) : t.discount;
       $('[data-bf-promo-amount]').textContent = `−${money(state.promo.discount * rate)}`;
     }
     const total = withTax(due);
@@ -269,8 +270,9 @@ export default function initCheckout(root) {
     } else {
       then.hidden = true;
     }
-    $('[data-bf-promo]').hidden = !!state.promo;
-    $('[data-bf-promo-remove]').hidden = !state.promo;
+    // An automatic promotion cannot be removed; a typed code takes its place (Cart\Service::autoPromo()).
+    $('[data-bf-promo]').hidden = !!state.promo && !state.promo.auto;
+    $('[data-bf-promo-remove]').hidden = !state.promo || state.promo.auto;
 
     // Payment: nothing to pay, paid from the balance, or a payment method.
     const free = total <= 0;
@@ -380,7 +382,10 @@ export default function initCheckout(root) {
   // A change of choice after a promo code was applied: the cart is filled again at Pay, so the
   // code has to be applied again to see its effect.
   const choiceChanged = () => {
-    if (state.promo) {
+    state.choice += 1;
+    if (state.promo?.auto) {
+      state.promo = null;
+    } else if (state.promo) {
       $('[data-bf-promo-input]').value = state.promo.code;
       state.promo = null;
       const msg = $('[data-bf-promo-msg]');
@@ -445,6 +450,16 @@ export default function initCheckout(root) {
     msg.hidden = !text;
   };
 
+  /** The summary from the cart's own totals (in the default currency): a typed code, or the cart's automatic promotion. */
+  const promoFromCart = (cart, code, auto = false) => {
+    // CF-146: a free domain the code does not beat stays the domain's own (promo_line false), not the code's discount.
+    const kept = (cart.items ?? []).filter((item) => item.promo_line === false).reduce((sum, item) => sum + Number(item.discount ?? 0), 0);
+    // A recurring promo also comes off each renewal: the order keeps the price part of the discount (the full
+    // period's, not a prorated first charge's). CF-146: not a domain's discount (the domain renews on its own).
+    const renewDiscount = cart.promo_recurring ? (cart.items ?? []).filter((item) => item.type !== 'domain').reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
+    return { code, auto, discount: Number(cart.discount) - kept, total: Number(cart.total), renewDiscount, keepFree: kept > 0 };
+  };
+
   async function applyPromo() {
     const code = $('[data-bf-promo-input]').value.trim();
     if (!code) {
@@ -461,24 +476,22 @@ export default function initCheckout(root) {
     }
     promoMessage('');
     setBusy(true);
+    const choice = state.choice;
     try {
       await api('guest', 'cart/add_item', cartItem());
       state.planInCart = true;
       data.cartCount = 0;
       await api('guest', 'cart/apply_promo', { promocode: code });
       const cart = await api('guest', 'cart/get');
-      // CF-146: a free domain the code does not beat stays the domain's own (promo_line false), not the code's discount.
-      const kept = (cart.items ?? []).filter((item) => item.promo_line === false).reduce((sum, item) => sum + Number(item.discount ?? 0), 0);
-      const discount = Number(cart.discount) - kept;
-      if (!(discount > 0)) {
+      // CF-146: the domain section stays usable meanwhile; the cart priced the old choice.
+      if (choice !== state.choice) {
+        throw new Error(t.promoAgain);
+      }
+      const promo = promoFromCart(cart, code);
+      if (!(promo.discount > 0)) {
         throw new Error(t.promoInvalid);
       }
-      // The cart's totals are in the default currency, like the product prices.
-      // A recurring promo also comes off each renewal: the order keeps the price part of the discount (the full
-      // period's, not a prorated first charge's).
-      // CF-146: not a domain's discount (the domain renews on its own).
-      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).filter((item) => item.type !== 'domain').reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
-      state.promo = { code, discount, total: Number(cart.total), renewDiscount, keepFree: kept > 0 };
+      state.promo = promo;
     } catch (error) {
       state.promo = null;
       promoMessage(errorText(error));
@@ -559,7 +572,7 @@ export default function initCheckout(root) {
     try {
       // After Apply the cart holds this plan alone (perhaps with old choices): replace it, not add a second.
       await api('guest', 'cart/add_item', state.planInCart ? cartItem() : { ...cartItem(), multiple: 1 });
-      if (state.promo) {
+      if (state.promo && !state.promo.auto) {
         await api('guest', 'cart/apply_promo', { promocode: state.promo.code });
       }
       window.location.assign(data.urls.cart);
@@ -617,8 +630,19 @@ export default function initCheckout(root) {
       }
       const promo = state.promo;
       await api('guest', 'cart/add_item', cartItem());
-      if (promo) {
+      state.planInCart = true;
+      data.cartCount = 0;
+      if (promo && !promo.auto) {
         await api('guest', 'cart/apply_promo', { promocode: promo.code });
+      }
+      // CF-146: the order is charged only at the total shown. The cart can differ (an automatic promotion, which the
+      // page cannot price): show the cart's totals and let the client select the button again.
+      const cart = await api('guest', 'cart/get');
+      if (Math.abs(Number(cart.total) - (promo ? promo.total : compute(state.cycle).due / rate)) > 0.004) {
+        state.promo = promoFromCart(cart, cart.promocode ?? cart.auto_promo ?? '', !cart.promocode);
+        setBusy(false);
+        ClientFence.message(fill(t.totalChanged, { amount: money(withTax(state.promo.total * rate)) }), 'info');
+        return;
       }
       const now = compute(state.cycle);
       const due = withTax(promo ? promo.total * rate : now.due);

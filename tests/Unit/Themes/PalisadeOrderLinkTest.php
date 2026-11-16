@@ -36,7 +36,7 @@ final class PalisadeOrderLinkGuestStub
  * @param string               $type   the product type: a domain product has its own order form, configured on the page and paid on the cart page
  * @param array<string, mixed> $config the product's public config
  */
-function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = []): string
+function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = [], ?array $cart = null): string
 {
     $loader = new ChainLoader([
         new ArrayLoader([
@@ -80,7 +80,7 @@ function renderPalisadeOrderLink(string $template, array $query, string $type = 
             'system_default_country' => 'US',
             'cart_get_currency' => ['code' => 'USD', 'conversion_rate' => 1],
             'cart_count' => 0,
-            'cart_get' => ['promocode' => null, 'subtotal' => 0, 'discount' => 0, 'total' => 0, 'items' => [
+            'cart_get' => $cart ?? ['promocode' => null, 'subtotal' => 0, 'discount' => 0, 'total' => 0, 'items' => [
                 ['id' => 1, 'product_id' => 7, 'title' => 'Trial', 'type' => 'hosting', 'period' => '1Y', 'quantity' => 1, 'setup_price' => 0, 'discount_setup' => 0, 'total' => 0, 'discount_price' => 0],
             ]],
             'invoice_payment_methods' => [],
@@ -180,4 +180,18 @@ test('a hosting plan is ordered on the checkout with its domain section; a domai
     expect(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'domain'))->toContain('data-redirect="/cart"')->not->toContain('data-bf-checkout-data')
         ->and($other)->not->toContain('data-cf-hosting-domain')
         ->and(palisadeOrderLinkData($other)['product']['freeDomain'])->toBeNull();
+});
+
+test('a promo link reapplies its code without asking only over the plan and its own domain (CF-146)', function (): void {
+    $plan = ['id' => 1, 'product_id' => 7, 'type' => 'hosting', 'domain' => ['action' => 'register', 'register_sld' => 'mine', 'register_tld' => '.com']];
+    $ownDomain = ['id' => 2, 'product_id' => 3, 'type' => 'domain', 'register_sld' => 'mine', 'register_tld' => '.com'];
+    $cart = fn (array $items): array => ['promocode' => 'FREETRIAL', 'items' => $items];
+    $redo = fn (array $items): bool => palisadeOrderLinkData(renderPalisadeOrderLink('mod_order_product.html.twig', ['promo' => 'FREETRIAL'], 'hosting', [], $cart($items)))['linkRedo'];
+
+    expect($redo([$plan, $ownDomain]))->toBeTrue()
+        // A domain the client added on its own would be emptied with the cart: the link asks first.
+        ->and($redo([$plan, $ownDomain, ['id' => 3, 'product_id' => 3, 'type' => 'domain']]))->toBeFalse()
+        ->and($redo([['domain' => ['action' => 'owndomain']] + $plan, $ownDomain]))->toBeFalse()
+        // The plan's own domain was removed and another one added: not the plan's, so the link asks first.
+        ->and($redo([$plan, ['register_sld' => 'other'] + $ownDomain]))->toBeFalse();
 });

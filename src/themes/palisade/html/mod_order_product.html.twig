@@ -72,10 +72,13 @@
     }]) %}
 {% endfor %}
 {# ClientFence core patch: the cart holds only this plan with the link's code (applied here before a sign-in or a reload): the link applies it again without asking. #}
-{# CF-146: a hosting plan's domain is a cart item of its own, put there with the plan. #}
+{# CF-146: a hosting plan's registered or transferred domain is a cart item of its own, put there with the plan (and only that one). #}
 {% set link_cart = link_promo ? guest.cart_get : {} %}
 {% set link_items = link_cart.items|default([])|filter(i => i.type|default('') != 'domain') %}
-{% set link_redo = link_promo and link_items|length == 1 and (link_items|first).product_id == product.id and link_cart.promocode|default('')|upper == link_promo|upper %}
+{% set link_domain = (link_items|first).domain|default({}) %}
+{% set link_action = link_domain.action|default('') in ['register', 'transfer'] ? link_domain.action : '' %}
+{% set link_own = link_action ? link_cart.items|filter(i => i.type|default('') == 'domain' and i[link_action ~ '_sld']|default('') == link_domain[link_action ~ '_sld']|default('') and i[link_action ~ '_tld']|default('') == link_domain[link_action ~ '_tld']|default(''))|length : 0 %}
+{% set link_redo = link_promo and link_items|length == 1 and link_own == (link_action ? 1 : 0) and link_cart.items|length == 1 + link_own and (link_items|first).product_id == product.id and link_cart.promocode|default('')|upper == link_promo|upper %}
 {# ClientFence: data.tax is the tax the invoice adds, so "Due today" is what the invoice asks for. #}
 {# ClientFence core patch (CF-145): product.prorata is a prorata product's first period per cycle (factor of the price, first due date). #}
 {% set data = {
@@ -122,6 +125,7 @@
         notOffered: 'Not offered for this billing cycle'|trans,
         setup: 'Setup fee'|trans,
         promo: 'Promo code :code'|trans,
+        discount: 'Discount'|trans,
         then: 'Then :amount :per, from :date.'|trans,
         lines: ':count lines'|trans,
         line: '1 line'|trans,
@@ -138,6 +142,7 @@
         hintFree: 'Nothing to pay today.'|trans,
         promoInvalid: 'This code cannot be used for this order.'|trans,
         promoAgain: 'Your choice changed: apply the code again.'|trans,
+        totalChanged: 'The total is now :amount. Check the summary, then select the button again.'|trans,
         doneManual: 'Your invoice is ready: pay it by :method and send us the receipt.'|trans,
         doneBalance: 'It was paid from your balance.'|trans,
         doneFree: 'There is nothing to pay.'|trans,
