@@ -466,7 +466,7 @@ msgid_plural ":count hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/themes/palisade/html/mod_index_dashboard.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
 msgid ":count in total"
 msgstr ""
 
@@ -2162,7 +2162,7 @@ msgstr ""
 msgid "Additional Settings"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Product/templates/admin/mod_product_addon_manage.html.twig
 msgid "Addon"
 msgstr ""
 
@@ -2198,7 +2198,7 @@ msgstr ""
 msgid "Addons"
 msgstr ""
 
-#: src/modules/Order/templates/client/mod_order_addons.html.twig
+#: src/modules/Order/templates/client/mod_order_addons.html.twig src/themes/palisade/html/mod_order_product.html.twig
 msgid "Addons & Extras"
 msgstr ""
 
@@ -3922,7 +3922,7 @@ msgstr ""
 msgid "Auto-suspend off"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Automatic"
 msgstr ""
 
@@ -4134,7 +4134,7 @@ msgstr ""
 msgid "Balance"
 msgstr ""
 
-#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_invoice.html.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/palisade/html/mod_invoice_index.html.twig …
 msgid "Balance due"
 msgstr ""
 
@@ -4958,7 +4958,7 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_kb_index.html.twig
+#: src/modules/Product/templates/admin/mod_product_category.html.twig src/modules/Support/templates/admin/mod_support_kb_index.html.twig
 msgid "Category Details"
 msgstr ""
 
@@ -5692,6 +5692,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Choose the value shown before the form recipient changes this field."
+msgstr ""
+
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicedomain/Api/Guest.php src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
+msgid "Choose up to :count extensions."
 msgstr ""
 
 #: src/modules/Clientfence/SecuritySettings.php
@@ -6442,7 +6446,7 @@ msgstr ""
 msgid "Close tickets?"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig …
 msgid "Closed"
 msgstr ""
 
@@ -6606,7 +6610,7 @@ msgstr ""
 msgid "Company Credentials"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
+#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Company Details"
 msgstr ""
 
@@ -6890,7 +6894,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_new_form.html.twig
+#: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Contact Details"
 msgstr ""
 
@@ -8642,7 +8646,7 @@ msgstr ""
 msgid "Does not renew"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Product/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig …
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Product/Service.php src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
 msgid "Domain"
 msgstr ""
 
@@ -8746,10 +8750,6 @@ msgstr ""
 msgid "Domain Secret"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
-msgid "Domain Service Details"
-msgstr ""
-
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_order.html.twig
 msgid "Domain TLD"
 msgstr ""
@@ -8814,11 +8814,7 @@ msgstr ""
 msgid "Domain extensions"
 msgstr ""
 
-#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
-msgid "Domain is available"
-msgstr ""
-
-#: src/modules/Servicedomain/Api/Guest.php
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicedomain/Api/Guest.php src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
 msgid "Domain is not available."
 msgstr ""
 
@@ -10574,7 +10570,7 @@ msgstr ""
 msgid "Expand menu"
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig …
+#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig …
 msgid "Expired"
 msgstr ""
 
@@ -10638,7 +10634,7 @@ msgstr ""
 msgid "Export orders"
 msgstr ""
 
-#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig
+#: src/modules/Extension/templates/admin/mod_extension_index.html.twig
 msgid "Extension"
 msgstr ""
 
@@ -10678,7 +10674,7 @@ msgstr ""
 msgid "Extension type was not passed"
 msgstr ""
 
-#: src/modules/Extension/Controller/Admin.php src/modules/Extension/manifest.json src/modules/Extension/templates/admin/mod_extension_index.html.twig …
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Extension/Controller/Admin.php src/modules/Extension/manifest.json …
 msgid "Extensions"
 msgstr ""
 
@@ -11350,7 +11346,7 @@ msgstr ""
 msgid "Fraud check service"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/themes/admin_default/html/partial_pricing.html.twig src/themes/palisade/html/mod_order_index.html.twig …
+#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig …
 msgid "Free"
 msgstr ""
 
@@ -11410,11 +11406,11 @@ msgstr ""
 msgid "From :min to :max per top-up."
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_promos.html.twig
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "From :start until :end"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_promos.html.twig
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "From :start until disabled"
 msgstr ""
 
@@ -12134,7 +12130,7 @@ msgstr ""
 msgid "Hestia Control Panel"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig src/modules/Product/templates/admin/mod_product_option_group.html.twig
+#: src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig …
 msgid "Hidden"
 msgstr ""
 
@@ -12982,7 +12978,7 @@ msgstr ""
 msgid "In your default currency; other currencies at the exchange rates."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig …
 msgid "Inactive"
 msgstr ""
 
@@ -14130,7 +14126,7 @@ msgstr ""
 msgid "Last update check:"
 msgstr ""
 
-#: src/themes/palisade/html/mod_support_network_status.html.twig
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/themes/palisade/html/mod_support_network_status.html.twig src/themes/palisade/html/mod_support_ticket.html.twig
 msgid "Last updated"
 msgstr ""
 
@@ -15022,10 +15018,6 @@ msgstr ""
 msgid "Manage System Settings"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
-msgid "Manage TLD pricing, registrars, extension installs, and default nameserver settings."
-msgstr ""
-
 #: src/modules/Servicedomain/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Manage TLDs"
 msgstr ""
@@ -15154,10 +15146,6 @@ msgstr ""
 msgid "Manage installed payment gateways, add new adapters, and install supported gateways from the extension directory."
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
-msgid "Manage installed registrars and configure the providers available for domain operations."
-msgstr ""
-
 #: src/modules/Extension/templates/admin/mod_extension_languages.html.twig
 msgid "Manage installed translations and discover new language packs."
 msgstr ""
@@ -15206,28 +15194,12 @@ msgstr ""
 msgid "Manage pricing, registrar assignment, and registration availability for this top-level domain."
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_addons.html.twig
-msgid "Manage product addons and create optional extras for existing products."
-msgstr ""
-
 #: src/modules/Product/Service.php
 msgid "Manage product categories"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_manage.html.twig
-msgid "Manage product settings, service configuration, related addons, and upgrade paths."
-msgstr ""
-
 #: src/modules/Product/Service.php
 msgid "Manage products"
-msgstr ""
-
-#: src/modules/Product/templates/admin/mod_product_index.html.twig
-msgid "Manage products, prepare new offerings, and organize product categories."
-msgstr ""
-
-#: src/modules/Product/templates/admin/mod_product_promos.html.twig
-msgid "Manage promotional discounts and create new offers for products and client groups."
 msgstr ""
 
 #: src/modules/Product/Service.php
@@ -15294,16 +15266,8 @@ msgstr ""
 msgid "Manage the order"
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
-msgid "Manage the staff profile, groups, and password for this administrator account."
-msgstr ""
-
 #: src/modules/Theme/Service.php
 msgid "Manage themes"
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_group.html.twig
-msgid "Manage this staff group details, permissions, and members."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_manage.html.twig
@@ -15328,10 +15292,6 @@ msgstr ""
 
 #: src/themes/palisade/html/partials/auth_shell.html.twig
 msgid "Manage your services, invoices and support tickets in one place."
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
-msgid "Manage your staff profile details, update your password, and rotate your API key."
 msgstr ""
 
 #: src/modules/Servicecustom/templates/admin/mod_servicecustom_manage.html.twig
@@ -15980,6 +15940,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
+msgstr ""
+
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
+msgid "More extensions"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
@@ -17758,7 +17722,7 @@ msgstr ""
 msgid "One IP address per line"
 msgstr ""
 
-#: src/themes/admin_default/html/partial_pricing.html.twig
+#: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig src/themes/admin_default/html/partial_pricing.html.twig
 msgid "One Time"
 msgstr ""
 
@@ -18144,10 +18108,6 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/layout_default.html.twig src/themes/palisade/html/layout_default.html.twig
 msgid "Open menu"
-msgstr ""
-
-#: src/modules/System/templates/admin/mod_system_index.html.twig
-msgid "Open module-level configuration screens for billing, support, localization, themes, and other system features."
 msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig
@@ -18558,7 +18518,7 @@ msgstr ""
 msgid "Order not found"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "Order now"
 msgstr ""
 
@@ -20022,8 +19982,16 @@ msgstr ""
 msgid "Pin on the dashboard until"
 msgstr ""
 
+#: src/modules/Servicedomain/Service.php
+msgid "Pin up to :count TLDs."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig …
 msgid "Pinned"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Pinned TLDs"
 msgstr ""
 
 #: src/modules/Client/Api/Admin.php
@@ -20738,7 +20706,7 @@ msgstr ""
 msgid "Product pricing could not be determined."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Servicehosting/Api/Guest.php
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig src/modules/Servicehosting/Api/Guest.php
 msgid "Product type"
 msgstr ""
 
@@ -21662,7 +21630,7 @@ msgstr ""
 msgid "Registered hooks let extensions integrate with key lifecycle events throughout ClientFence."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
 msgid "Registered on"
 msgstr ""
 
@@ -22544,10 +22512,6 @@ msgstr ""
 
 #: src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
 msgid "Review registered widget slots and the modules that populate them across the admin and client themes."
-msgstr ""
-
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
-msgid "Review registrar status, nameservers, and core registration data for this domain service."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -23954,10 +23918,6 @@ msgstr ""
 msgid "Set default nameservers that will be used for new domain registrations if a client does not provide their own nameservers during checkout."
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
-msgid "Set domain pricing, control allowed operations, and assign a registrar for each top level domain."
-msgstr ""
-
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Set priority"
 msgstr ""
@@ -24078,7 +24038,7 @@ msgstr ""
 msgid "Setup ID was not passed"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_currency_prices.html.twig src/themes/admin_default/html/partial_pricing.html.twig
+#: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig src/modules/Product/templates/admin/mod_product_currency_prices.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig …
 msgid "Setup Price"
 msgstr ""
 
@@ -24638,7 +24598,7 @@ msgstr ""
 msgid "Staff Group Updated"
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
+#: src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "Staff ID"
 msgstr ""
 
@@ -28251,6 +28211,10 @@ msgstr ""
 msgid "This request comes from %remote%. The address used for the visitor: %client%."
 msgstr ""
 
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "This search has expired. Search again."
+msgstr ""
+
 #: src/modules/Support/TicketSecrets.php
 msgid "This secret is too large."
 msgstr ""
@@ -29011,7 +28975,7 @@ msgstr ""
 msgid "Transactions Received"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig …
+#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_order.html.twig …
 msgid "Transfer"
 msgstr ""
 
@@ -29723,6 +29687,10 @@ msgstr ""
 msgid "Unverified sender"
 msgstr ""
 
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Up to :count TLDs on sale, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig src/themes/palisade/html/partials/ticket_upload.html.twig
 msgid "Up to :count files, :size MB each: :types."
 msgstr ""
@@ -29911,10 +29879,6 @@ msgstr ""
 msgid "Update profile"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig
-msgid "Update the addon title, availability, activation timing, and pricing."
-msgstr ""
-
 #: src/modules/Support/templates/admin/mod_support_kb_article.html.twig
 msgid "Update the article content, category, and visibility for the knowledge base."
 msgstr ""
@@ -29925,10 +29889,6 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_kb_category.html.twig
 msgid "Update the category details used to organize knowledge base articles."
-msgstr ""
-
-#: src/modules/Product/templates/admin/mod_product_category.html.twig
-msgid "Update the category title, icon, and description shown on the products area."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig
@@ -31743,7 +31703,7 @@ msgstr ""
 msgid "You have :count products already."
 msgstr ""
 
-#: src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/themes/palisade/html/mod_index_dashboard.html.twig src/themes/palisade/html/mod_invoice_index.html.twig
 msgid "You have :count unpaid invoice(s)."
 msgstr ""
 
@@ -32683,7 +32643,7 @@ msgstr ""
 msgid "day"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
 msgid "day(s)"
 msgstr ""
 
@@ -32899,7 +32859,7 @@ msgstr ""
 msgid "no unpaid invoices"
 msgstr ""
 
-#: src/modules/Product/templates/admin/mod_product_promos.html.twig
+#: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
 msgstr ""
 
