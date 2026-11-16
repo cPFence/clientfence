@@ -4602,3 +4602,45 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   .cf-ds-row, .cf-ds-wait { animation: none; }
   .cf-ds-tld { transition: none; }
 }
+
+// ---- CF-135 part 3: client billing lists and domain page
+// Invoice list (mod_invoice_index): the summary uses the invoice page's .cf-pay-hero; an overdue row carries a red
+// edge (rtlcss mirrors the inset shadow).
+.cf-inv-list tr:has(.bf-chip-bad) > td:first-child { box-shadow: inset 3px 0 0 var(--bs-danger); }
+.cf-inv-list .table > tbody > tr > td { vertical-align: middle; }
+// Quote page (mod_invoice_quote): the facts in a quiet band, the accept panel with the accent edge of the pay panel.
+.cf-quote-facts { padding-inline: 1rem; border-radius: 14px; background: var(--bf-soft); grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.cf-quote-facts .bf-fact { border-bottom: 0; }
+.cf-quote-answer {
+  border-inline-start: 3px solid var(--pal-accent);
+  background: linear-gradient(110deg, rgba(var(--pal-accent-rgb), .09), transparent 70%);
+}
+// Thank-you page (mod_invoice_thankyou): the confirmation centred in a panel with a green glow.
+.cf-thanks {
+  align-items: center; margin-top: 1.5rem; padding: 2.5rem 1.5rem; text-align: center;
+  border: 1px solid rgba(var(--bs-success-rgb), .28); border-radius: 1.25rem;
+  background:
+    radial-gradient(420px 220px at 50% 0, rgba(var(--bs-success-rgb), .18), transparent 70%),
+    var(--pal-glass);
+  box-shadow: 0 28px 60px -34px rgba(var(--bs-success-rgb), .8);
+  animation: pal-rise .55s var(--pal-ease) backwards;
+  .bf-done-actions { justify-content: center; }
+  @include media-breakpoint-down(sm) { padding: 2rem 1rem; }
+}
+// Domain card (mod_servicedomain_manage): each section opens with an icon tile; lock and privacy as two tinted
+// panels side by side (stacked on a phone). No transform or filter here: the actions open confirm dialogs.
+.cf-dom-head {
+  display: flex; align-items: flex-start; gap: .875rem; margin-bottom: 1.25rem;
+  .clientfence-hosting-tile-icon { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, rgba(var(--pal-accent-rgb), .18), rgba(var(--pal-brand-rgb), .12)); color: var(--pal-accent); }
+  > div { min-width: 0; }
+}
+.cf-dom-grid { display: grid; gap: 1rem; @include media-breakpoint-up(md) { grid-template-columns: 1fr 1fr; } }
+.cf-dom-block {
+  display: flex; flex-direction: column; align-items: flex-start; padding: 1.25rem;
+  border: 1px solid var(--bs-border-color); border-radius: 14px;
+  background: linear-gradient(160deg, rgba(var(--pal-accent-rgb), .07), transparent 60%);
+  > .btn { margin-top: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cf-thanks { animation: none; }
+}
