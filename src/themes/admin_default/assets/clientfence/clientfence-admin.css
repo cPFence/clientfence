@@ -1554,3 +1554,87 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
   button.bf-health-count { transition: none; }
   button.bf-health-count:hover { translate: none; }
 }
+
+/* ---- CF-135 part 5: system settings ---- */
+/* Settings pages (System, Security, Email, Anti-spam, Activity, Cron, SEO, Themes): each section of a form is a soft
+   glass panel inside the page card with a teal glow in its corner, rising in when its tab opens; every section
+   heading carries the navy-to-teal mark. No backdrop-filter or kept transform: tabs hold the backups modal. */
+.cf-sys-sec {
+  margin: 16px; border: 1px solid color-mix(in srgb, var(--bf-line) 80%, transparent); border-radius: 14px;
+  background: radial-gradient(360px 140px at 0% 0%, color-mix(in srgb, var(--bf-teal) 7%, transparent), transparent 70%), color-mix(in srgb, var(--bf-surface) 60%, transparent);
+  animation: bf-rise .5s var(--bf-ease) backwards;
+}
+[dir="rtl"] .cf-sys-sec { background: radial-gradient(360px 140px at 100% 0%, color-mix(in srgb, var(--bf-teal) 7%, transparent), transparent 70%), color-mix(in srgb, var(--bf-surface) 60%, transparent); }
+.cf-sys-sec + .cf-sys-sec { margin-top: 0; animation-delay: 60ms; }
+.cf-sys-sec + .cf-sys-sec + .cf-sys-sec { animation-delay: 120ms; }
+.cf-sys-sec:has(> .table-responsive) { overflow: hidden; }
+@media (max-width: 575.98px) { .cf-sys-sec { margin-inline: 8px; } }
+/* Chips wrap on phones instead of pushing the page sideways. */
+.cf-sys .bf-chip { white-space: normal; }
+.cf-sys h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cf-sys h4::before { content: ""; flex: none; width: 4px; height: 1em; border-radius: 4px; background: linear-gradient(180deg, var(--bf-brand), var(--bf-teal)); }
+/* Facts (About, cron state, IndexNow) as label-and-value cells inside a panel. */
+.cf-sys-facts { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0 24px; border-top: 0; }
+.cf-sys-facts > div { padding: 8px 0; border-bottom: 0; }
+/* Choices (cache backend, email transport) as pills, the chosen one tinted. */
+:is(#cache-driver, #mailer) > .form-check {
+  margin: 0; padding-block: 8px; padding-inline: 2.75rem 16px;
+  border: 1px solid var(--bf-line); border-radius: 999px; background: var(--bf-surface);
+  transition: border-color .25s, background-color .25s;
+}
+:is(#cache-driver, #mailer) > .form-check:hover { border-color: color-mix(in srgb, var(--bf-teal) 45%, var(--bf-line)); }
+:is(#cache-driver, #mailer) > .form-check:has(> :checked) { border-color: color-mix(in srgb, var(--bf-brand) 40%, transparent); background: var(--bf-soft); color: var(--bf-soft-ink); }
+/* Enabled modules (About) in columns, one on phones. */
+.cf-sys-modules { column-count: 3; column-gap: 2rem; }
+.cf-sys-modules > * { break-inside: avoid; }
+@media (max-width: 991.98px) { .cf-sys-modules { column-count: 2; } }
+@media (max-width: 575.98px) { .cf-sys-modules { column-count: 1; } }
+/* Themes: the current theme's row tinted teal. */
+.bf-body .table > tbody > tr.cf-sys-current > * { --tblr-table-bg-state: color-mix(in srgb, var(--bf-teal) 8%, transparent); }
+/* Redirects: the empty list's icon in the soft disc; a switched-off redirect's path and target muted. */
+#redirect-empty .empty-icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 22%, transparent), color-mix(in srgb, var(--bf-brand) 16%, transparent));
+  color: var(--bf-teal);
+}
+#redirect-rows > tr:has([data-action="toggle"]:not(:checked)) > td:nth-child(-n+3) { opacity: .55; }
+
+/* ClientFence sections on the settings pages (store, receipts, accounting, cards, ticket files, email import, Google
+   sign-in, hosting panels and plans; moved here from mod_clientfence_settings_style): each setting a row, what it is
+   at the start and its control at the end (one column on phones), the heading with the section mark, the actions in
+   a teal-tinted row. */
+.clientfence-settings-intro { padding: 1.25rem 1.5rem 0; }
+.clientfence-settings-intro h3 { display: flex; align-items: center; gap: 8px; margin-bottom: .25rem; }
+.clientfence-settings-intro h3::before { content: ""; flex: none; width: 4px; height: 1em; border-radius: 4px; background: linear-gradient(180deg, var(--bf-brand), var(--bf-teal)); }
+.clientfence-settings-intro p { color: var(--bf-muted); margin-bottom: 0; max-width: 60rem; }
+.clientfence-setting { padding: 1.25rem 1.5rem; border-bottom: 1px solid color-mix(in srgb, var(--bf-line) 70%, transparent); transition: opacity .25s; }
+.clientfence-setting:last-child { border-bottom: 0; }
+.clientfence-setting-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: .75rem 2rem; align-items: start; }
+@media (max-width: 767.98px) { .clientfence-setting-row { grid-template-columns: minmax(0, 1fr); } }
+.clientfence-setting.is-muted { opacity: .5; }
+.clientfence-setting .form-label { margin-bottom: .25rem; font-weight: 600; }
+.clientfence-setting-hint { color: var(--bf-muted); font-size: .8125rem; }
+.clientfence-settings-actions {
+  display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; padding: 1rem 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--bf-line) 70%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bf-teal) 6%, transparent), color-mix(in srgb, var(--bf-teal) 2%, transparent));
+}
+.clientfence-settings-group + .clientfence-settings-group { border-top: 1px solid var(--bf-line); }
+.clientfence-store-preview {
+  padding: 1rem; border: 1px dashed color-mix(in srgb, var(--bf-teal) 40%, var(--bf-line)); border-radius: 12px;
+  background: radial-gradient(280px 120px at 0% 0%, color-mix(in srgb, var(--bf-teal) 8%, transparent), transparent 70%);
+}
+[dir="rtl"] .clientfence-store-preview { background: radial-gradient(280px 120px at 100% 0%, color-mix(in srgb, var(--bf-teal) 8%, transparent), transparent 70%); }
+.clientfence-panel-option { margin-top: 1rem; padding: 1rem; border: 1px solid var(--bf-line); border-radius: 12px; background: color-mix(in srgb, var(--bf-surface) 60%, transparent); transition: opacity .25s; }
+.clientfence-panel-option.is-off { opacity: .55; }
+.clientfence-panel-option ul { margin: .5rem 0 0; padding-inline-start: 1.25rem; }
+.clientfence-settings .form-selectgroup-label { text-align: start; }
+.clientfence-push { margin-inline-end: auto; }
+.clientfence-off { margin-inline-end: .25rem; }
+.clientfence-settings .btn { gap: .375rem; }
+.clientfence-settings .btn .icon { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-sys-sec { animation: none; }
+  :is(#cache-driver, #mailer) > .form-check, .clientfence-setting, .clientfence-panel-option { transition: none; }
+}

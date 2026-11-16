@@ -80,12 +80,10 @@
     {% set params = can_manage_settings ? admin.extension_config_get({ 'ext': 'mod_email' }) : {} %}
     {# ClientFence core patch: chat alerts as a tab here (Clientfence ChatAlerts.php; Super Administrators, ClientFence on). #}
     {% set cf_chat = guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access ? admin.clientfence_chat_alerts_get : null %}
-    <div class="card">
+    {# ClientFence core patch: the settings sections as panels (cf-sys, cf-sys-sec), no filler subtitles (CF-135 redesign). #}
+    <div class="card cf-sys">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Email'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage email templates, queued messages, and delivery settings for outgoing mail.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Email'|trans }}</h3>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
                     <ul class="nav nav-pills mb-3 px-3" role="tablist">
@@ -359,9 +357,10 @@
                             </div>
                         </form>
                     </section>
-                    <div class="ms-1 mt-1 mb-1">
-                        <p>{{ 'ClientFence queues emails to have them be sent via cron in the background. Here you may find the list of queued emails and how many times the system has tried to send them.'|trans }}</p>
-                        <p>{{ 'Emails that have been sent or that failed to be sent will not be listed here.'|trans }}</p>
+                    {# ClientFence core patch: the queue's explanation as muted help text (CF-135 redesign). #}
+                    <div class="card-body py-3 text-secondary small">
+                        <p class="mb-1">{{ 'ClientFence queues emails to have them be sent via cron in the background. Here you may find the list of queued emails and how many times the system has tried to send them.'|trans }}</p>
+                        <p class="mb-0">{{ 'Emails that have been sent or that failed to be sent will not be listed here.'|trans }}</p>
                     </div>
                     <div class="table-responsive">
                         <table class="table card-table table-vcenter table-striped text-nowrap sortable">
@@ -431,13 +430,12 @@
                 {% if can_manage_settings %}
                 <div class="tab-pane fade{% if active_tab == 'email' %} show active{% endif %}" id="tab-email" role="tabpanel">
                     <form method="post" action="{{ 'extension/config_save'|api_url }}" {{ fb_api_form({ message: 'Email Settings Updated'|trans}) }}>
-                        <div class="card-body">
+                        <div class="card-body cf-sys-sec">
                             <div class="alert alert-info" role="alert">
                                 <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'ClientFence sends email using Sendmail by default, or you can configure SMTP, SendGrid, or a custom Symfony mailer DSN.'|trans }}
                             </div>
 
-                            <h4 class="card-title mb-2">{{ 'Sender Identity'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Control the default sender name and sender email used for outgoing messages.'|trans }}</p>
+                            <h4 class="card-title mb-3">{{ 'Sender Identity'|trans }}</h4>
                             <div class="row g-3">
                                 <div class="col-lg-6">
                                     <label class="form-label" for="email-from-name">{{ 'From Name'|trans }}</label>
@@ -467,9 +465,8 @@
                             </div>
                         </div>
 
-                        <div class="card-body border-top">
-                            <h4 class="card-title mb-2">{{ 'Queue Options'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Control how many messages are processed per cron run, how long delivery may run, and when failed deliveries should be abandoned.'|trans }}</p>
+                        <div class="card-body cf-sys-sec">
+                            <h4 class="card-title mb-3">{{ 'Queue Options'|trans }}</h4>
                             <div class="row g-3">
                                 <div class="col-lg-4">
                                     <label class="form-label" for="queue-once">{{ 'Send Emails Per Cron Run'|trans }}</label>
@@ -489,9 +486,8 @@
                             </div>
                         </div>
 
-                        <div class="card-body border-top">
-                            <h4 class="card-title mb-2">{{ 'Transport and Logging'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Choose how outgoing email is delivered and whether sent emails should be stored in the database.'|trans }}</p>
+                        <div class="card-body cf-sys-sec">
+                            <h4 class="card-title mb-3">{{ 'Transport and Logging'|trans }}</h4>
 
                             <label class="form-check form-switch form-switch-2 mb-4">
                                 <input class="form-check-input" type="checkbox" name="log_enabled" value="1" {% if params.log_enabled|default(false) %}checked{% endif %}>

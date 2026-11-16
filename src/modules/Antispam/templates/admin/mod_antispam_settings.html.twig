@@ -22,12 +22,10 @@
 
 {% block content %}
     {% set params = admin.extension_config_get({ ext: 'mod_antispam' }) %}
-    <div class="card">
+    {# ClientFence core patch: the section mark on each protection (cf-sys), no filler subtitle (CF-135 redesign). #}
+    <div class="card cf-sys">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Anti-Spam Settings'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Configure anti-spam checks for signups, contact forms, public tickets, and automated abuse protection.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Anti-Spam Settings'|trans }}</h3>
         </div>
 
         <form method="post" action="{{ 'extension/config_save'|api_url(role: 'admin') }}" {{ fb_api_form({message: 'Configuration Updated'|trans}) }}>

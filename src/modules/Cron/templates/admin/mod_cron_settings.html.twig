@@ -25,51 +25,30 @@
     {% set params = admin.extension_config_get({ 'ext': 'mod_cron' }) %}
     {% set guest_cron = params.guest_cron|default(false) %}
     {% set cron_hash = params.cron_hash|default('') %}
-    <div class="card">
+    {# ClientFence core patch: the cron state as a facts grid with the last run as a chip in the colour of System Health's check (CF-135 redesign). #}
+    <div class="card cf-sys">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Cron Settings'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Review cron status, confirm your schedule, and control whether the guest cron endpoint is available.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Cron Settings'|trans }}</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body cf-sys-sec">
             <div class="alert alert-info" role="alert">
-                <strong class="me-1">{{ 'Recommended Schedule:'|trans }}</strong><code>*/5 * * * * php {{ cron.cron_path }}</code>
+                <strong class="me-1">{{ 'Recommended Schedule:'|trans }}</strong><code dir="ltr">*/5 * * * * php {{ cron.cron_path }}</code>
             </div>
-
-            <div class="row row-cards">
-                <div class="col-xl-3 col-md-6">
-                    <section class="card card-sm h-100">
-                        <div class="card-body">
-                            <div class="text-secondary small mb-1">{{ 'Timezone'|trans }}</div>
-                            <div class="fw-semibold">{{ 'now'|format_date(pattern='zzz') }}</div>
-                        </div>
-                    </section>
+            <dl class="cf-facts cf-sys-facts mb-0">
+                <div><dt>{{ 'Timezone'|trans }}</dt><dd>{{ 'now'|format_date(pattern='zzz') }}</dd></div>
+                <div><dt>{{ 'Time on Server'|trans }}</dt><dd>{{ 'now'|format_datetime }}</dd></div>
+                <div class="cf-facts-wide">
+                    <dt>{{ 'Last Scheduled Execution'|trans }}</dt>
+                    {% if cron.last_cron_exec %}
+                        {% set cron_age = 'now'|date('U') - cron.last_cron_exec|date('U') %}
+                        <dd>{{ cron.last_cron_exec|format_datetime }} <span class="bf-chip ms-1 {{ cron_age <= 900 ? 'bf-tone-ok' : (cron_age <= 7200 ? 'bf-tone-warn' : 'bf-tone-bad') }}">{{ cron.last_cron_exec|timeago }} {{ 'ago'|trans }}</span></dd>
+                    {% else %}
+                        <dd><span class="bf-chip bf-tone-bad">{{ 'Scheduled tasks were never executed'|trans }}</span></dd>
+                    {% endif %}
                 </div>
-                <div class="col-xl-3 col-md-6">
-                    <section class="card card-sm h-100">
-                        <div class="card-body">
-                            <div class="text-secondary small mb-1">{{ 'Time on Server'|trans }}</div>
-                            <div class="fw-semibold">{{ 'now'|format_datetime }}</div>
-                        </div>
-                    </section>
-                </div>
-                <div class="col-xl-6">
-                    <section class="card card-sm h-100">
-                        <div class="card-body">
-                            <div class="text-secondary small mb-1">{{ 'Last Scheduled Execution'|trans }}</div>
-                            {% if cron.last_cron_exec %}
-                                <div class="fw-semibold">{{ cron.last_cron_exec|format_datetime }}</div>
-                                <div class="text-secondary">{{ cron.last_cron_exec|timeago }} {{ 'ago'|trans }}</div>
-                            {% else %}
-                                <div class="fw-semibold">{{ 'Scheduled tasks were never executed'|trans }}</div>
-                            {% endif %}
-                        </div>
-                    </section>
-                </div>
-            </div>
+            </dl>
         </div>
-        <div class="card-body border-top">
+        <div class="card-body cf-sys-sec">
             <form id="guest-cron-form" method="post" action="{{ 'cron/save_settings'|api_url }}" {{ fb_api_form({message: 'Configuration Updated'|trans, reload: true}) }}>
                 <input type="hidden" name="ext" value="mod_cron">
                 <div class="d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-3 mb-3">

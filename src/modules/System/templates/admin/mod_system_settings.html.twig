@@ -40,12 +40,10 @@
     {# ClientFence core patch: maintenance mode as WHMCS (System Api maintenance_get/maintenance_update). #}
     {% set bf_maintenance = has_permission('system', 'manage_settings') ? admin.system_maintenance_get : null %}
     {# ClientFence core patch: sign-in security moved to Security > Settings; old #tab-signin links land there (clientfence-admin.js). #}
-    <div class="card" data-cf-moved-tabs="{{ { 'tab-signin': 'extension/settings/security'|url ~ '#tab-signin' }|json_encode }}">
+    {# ClientFence core patch: each section a panel (cf-sys, cf-sys-sec), no filler subtitles (CF-135 redesign). #}
+    <div class="card cf-sys" data-cf-moved-tabs="{{ { 'tab-signin': 'extension/settings/security'|url ~ '#tab-signin' }|json_encode }}">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'System Settings'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage company information, localization, system maintenance, and environment-level controls.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'System Settings'|trans }}</h3>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
             <ul class="nav nav-pills mb-3 px-3" role="tablist">
@@ -100,13 +98,12 @@
             <div class="tab-content border-top">
                 <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
                     <form method="post" action="{{ 'system/update_params'|api_url }}" {{ fb_api_form({ message: 'Company Updated'|trans}) }}>
-                        <div class="card-body">
+                        <div class="card-body cf-sys-sec">
                             <div class="alert alert-info" role="alert">
                                 <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'These settings define the company details shown throughout invoices, public pages, and client-facing documents.'|trans }}
                             </div>
 
-                            <h4 class="card-title mb-2">{{ 'Contact and Branding'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Set the primary contact details and branding assets used across the system.'|trans }}</p>
+                            <h4 class="card-title mb-3">{{ 'Contact and Branding'|trans }}</h4>
                             <div class="row g-3">
                                 <div class="col-lg-6">
                                     <label class="form-label" for="company_name">{{ 'Name'|trans }}</label>
@@ -161,9 +158,8 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="card-body border-top">
-                            <h4 class="card-title mb-2">{{ 'Registration and Banking'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Store company identifiers and optional bank details for use on invoices and documents.'|trans }}</p>
+                        <div class="card-body cf-sys-sec">
+                            <h4 class="card-title mb-3">{{ 'Registration and Banking'|trans }}</h4>
                             <div class="row g-3">
                                 <div class="col-lg-6">
                                     <label class="form-label" for="company_number">{{ 'Company Number'|trans }}</label>
@@ -205,9 +201,8 @@
                                 <small class="form-hint">{{ 'Enabling this hides some information from the company guest API endpoint, including address, phone number, email, VAT number, and more.'|trans }}</small>
                             </div>
                         </div>
-                        <div class="card-body border-top">
-                            <h4 class="card-title mb-2">{{ 'Signature'|trans }}</h4>
-                            <p class="text-secondary mb-3">{{ 'Set a default company signature for use in documents and communications.'|trans }}</p>
+                        <div class="card-body cf-sys-sec">
+                            <h4 class="card-title mb-3">{{ 'Signature'|trans }}</h4>
                             <textarea class="form-control" name="company_signature" rows="3">{{ params.company_signature|default('') }}</textarea>
                         </div>
                         <div class="card-footer text-end">
@@ -218,7 +213,7 @@
 
                 <div class="tab-pane fade" id="company-legal" role="tabpanel">
                     <form method="post" action="{{ 'system/update_params'|api_url }}" {{ fb_api_form({ message: 'Company Updated'|trans}) }}>
-                        <div class="card-body">
+                        <div class="card-body cf-sys-sec">
                             <div class="alert alert-info" role="alert">
                                 <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'These text blocks appear on legal and informational pages and may also be referenced from other client-facing areas.'|trans }}
                             </div>
@@ -243,7 +238,7 @@
 
                 <div class="tab-pane fade" id="tab-localization" role="tabpanel">
                     <form method="post" action="{{ 'system/update_localization_settings'|api_url }}" {{ fb_api_form({ message: 'Localization settings updated'|trans }) }}>
-                        <div class="card-body">
+                        <div class="card-body cf-sys-sec">
                             <div class="alert alert-info" role="alert">
                                 <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Localization controls the default language shown to guests and whether browser language detection should override it before a user chooses a preference.'|trans }}
                             </div>
@@ -278,14 +273,15 @@
                 <div class="tab-pane fade" id="tab-countries" role="tabpanel">
                     <form method="post" action="{{ 'extension/config_save'|api_url }}" {{ fb_api_form({ message: 'Countries Updated'|trans}) }}>
                         <input type="hidden" name="ext" value="mod_system">
-                        <div class="card-body">
+                        <div class="card-body cf-sys-sec">
 {% set default_countries = country_names()|map((name, code) => code ~ '=' ~ name)|join('\n') %}
                             <div class="alert alert-info" role="alert">
                                 <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'This list controls which countries appear in signup and profile forms, and which one is preselected for new users.'|trans }}
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="default_country">{{ 'Default Country for New Users'|trans }}</label>
-                                <div class="col-12 col-xl-6 ps-0">
+                            {# ClientFence core patch: the default country and the list in the field grid (CF-135 redesign). #}
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="default_country">{{ 'Default Country for New Users'|trans }}</label>
                                     <select class="form-select" id="default_country" name="default_country">
                                         <option value="" {% if new_params.default_country is not defined or new_params.default_country == '' %}selected{% endif %}>
                                             {{ 'No Default Country'|trans }}
@@ -300,10 +296,11 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="col-12">
+                                    <label class="form-label" for="countries">{{ 'List of Countries'|trans }}</label>
+                                    <textarea class="form-control" id="countries" name="countries" rows="25" placeholder="US=United States">{{ new_params.countries|default(default_countries) }}</textarea>
+                                </div>
                             </div>
-
-                            <label class="form-label" for="countries">{{ 'List of Countries'|trans }}</label>
-                            <textarea class="form-control col-12 col-xl-8" id="countries" name="countries" rows="25" placeholder="US=United States">{{ new_params.countries|default(default_countries) }}</textarea>
                         </div>
                         <div class="card-footer text-end">
                             <button class="btn btn-primary" type="submit">{{ 'Update Settings'|trans }}</button>
@@ -312,7 +309,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="tab-cache" role="tabpanel">
-                    <div class="card-body">
+                    <div class="card-body cf-sys-sec">
                         <h4 class="card-title mb-2">{{ 'Cache Backend'|trans }}</h4>
                         <p class="text-secondary">{{ 'Choose the backend used for the application cache, rate limiter, and Doctrine ORM cache. Redis and Memcached require the corresponding PHP extension to be installed on the server.'|trans }}</p>
                         {# ClientFence core patch: only Super Administrators change the cache backend (cached settings hold decrypted secrets). #}
@@ -424,7 +421,7 @@
                         </form>
                     </div>
 
-                    <div class="card-body d-flex align-items-center justify-content-between gap-3 border-top">
+                    <div class="card-body cf-sys-sec d-flex flex-wrap align-items-center justify-content-between gap-3">
                         <div>
                             <h4 class="card-title mb-2">{{ 'Cache Control'|trans }}</h4>
                             <p class="text-secondary mb-0">{{ 'Clear compiled templates and cached system state when you need configuration or theme changes to take effect immediately.'|trans }}</p>
@@ -438,26 +435,15 @@
                 </div>
 
                 <div class="tab-pane fade" id="tab-about" role="tabpanel">
-                    <div class="card-body">
+                    <div class="card-body cf-sys-sec">
                         <h4 class="card-title mb-3">{{ 'About ClientFence'|trans }}</h4>
-                        <div class="datagrid">
-                            <div class="datagrid-item">
-                                <div class="datagrid-title">{{ 'ClientFence version'|trans }}</div>
-                                <div class="datagrid-content">{{ ClientFenceVersion }}</div>
-                            </div>
-                            <div class="datagrid-item">
-                                <div class="datagrid-title">{{ 'PHP version'|trans }}</div>
-                                <div class="datagrid-content">{{ constant('PHP_VERSION') }}</div>
-                            </div>
-                            <div class="datagrid-item">
-                                <div class="datagrid-title">{{ 'Instance ID'|trans }}</div>
-                                <div class="datagrid-content">{{ admin.system_instance_id }}</div>
-                            </div>
-                            <div class="datagrid-item">
-                                <div class="datagrid-title">{{ 'License'|trans }}</div>
-                                <div class="datagrid-content"><a href="https://github.com/cPFence/clientfence/blob/main/LICENSE" target="_blank">Apache 2.0</a></div>
-                            </div>
-                        </div>
+                        {# ClientFence core patch: the facts grid, the module list in columns by class (CF-135 redesign). #}
+                        <dl class="cf-facts cf-sys-facts">
+                            <div><dt>{{ 'ClientFence version'|trans }}</dt><dd><bdi>{{ ClientFenceVersion }}</bdi></dd></div>
+                            <div><dt>{{ 'PHP version'|trans }}</dt><dd><bdi>{{ constant('PHP_VERSION') }}</bdi></dd></div>
+                            <div><dt>{{ 'Instance ID'|trans }}</dt><dd class="font-monospace text-break"><bdi>{{ admin.system_instance_id }}</bdi></dd></div>
+                            <div><dt>{{ 'License'|trans }}</dt><dd><a href="https://github.com/cPFence/clientfence/blob/main/LICENSE" target="_blank">Apache 2.0</a></dd></div>
+                        </dl>
 
                         <div class="accordion mt-4" id="accordion-default">
                             <div class="accordion-item">
@@ -474,7 +460,7 @@
                                 <div id="collapse-1-default" class="accordion-collapse collapse" data-bs-parent="#accordion-default">
                                     <div class="accordion-body">
                                         <div class="container">
-                                            <div style="column-count: 3; column-gap: 2rem;">
+                                            <div class="cf-sys-modules">
                                                 {% set modules = admin.extension_get_list({ 'active': true }) %}
                                                 {% for module in modules %}
                                                 <div class="border rounded px-3 py-2 mb-2 d-flex justify-content-between align-items-center">
@@ -540,34 +526,33 @@
                 {% endif %}
 
                 <div class="tab-pane fade" id="network-interface" role="tabpanel">
-                    <div class="card-body">
+                    <div class="card-body cf-sys-sec">
                         <h4 class="card-title mb-3">{{ 'Network Interface'|trans }}</h4>
                         <div class="alert alert-info" role="alert" id="external-ip">
                             <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ "Checking external IP..."|trans }}
                         </div>
                         {% if can_manage_network_interface %}
                             <form method="post" action="{{ 'system/set_interface_ip'|api_url }}" {{ fb_api_form({ callback: 'onAfterInterfaceSet'}) }}>
-                                <p>{{ 'If your server has multiple network interfaces, you may select the default one for ClientFence to use when making requests here.'|trans }}</p>
+                                <p class="text-secondary">{{ 'If your server has multiple network interfaces, you may select the default one for ClientFence to use when making requests here.'|trans }}</p>
 
-                                <div class="col-12 col-lg-3">
-                                    <label for="interface">{{ 'Select the Default Network Interface:'|trans }}</label>
-                                    <select class="form-select" name="interface" id="interface">
-                                        <option value="0">{{ 'None (Default PHP Behavior)'|trans }}</option>
-                                    </select>
+                                {# ClientFence core patch: the interface fields in the field grid, the hint under its field (CF-135 redesign). #}
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <label class="d-block mb-2 fw-medium" for="interface">{{ 'Select the Default Network Interface:'|trans }}</label>
+                                        <select class="form-select" name="interface" id="interface">
+                                            <option value="0">{{ 'None (Default PHP Behavior)'|trans }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="d-block mb-2 fw-medium" for="custom_interface">{{'Enter a Custom Interface to Use:'|trans }}</label>
+                                        <input class="form-control" type="text" name="custom_interface" id="custom_interface" dir="ltr">
+                                        <small class="form-hint">{{ "If the dropdown menu doesn't have the appropriate network interface, please enter the IP address or name (e.g., eth0) of the correct one above."|trans }}</small>
+                                    </div>
                                 </div>
 
-                                <br>
-
-                                <div class="col-12 col-lg-3">
-                                    <label for="custom_interface">{{'Enter a Custom Interface to Use:'|trans }}</label>
-                                    <input class="form-control mt-1" type="text" name="custom_interface" id="custom_interface">
+                                <div class="text-end mt-3">
+                                    <input type="submit" class="btn btn-primary" value="{{ 'Update'|trans }}">
                                 </div>
-                                <span class="text-muted">
-                                    {{ "If the dropdown menu doesn't have the appropriate network interface, please enter the IP address or name (e.g., eth0) of the correct one above."|trans }}
-                                </span>
-                                <br>
-
-                                <input type="submit" class="btn btn-primary mt-1" value="{{ 'Update'|trans }}">
                             </form>
                         {% else %}
                             <div class="alert alert-warning" role="alert">

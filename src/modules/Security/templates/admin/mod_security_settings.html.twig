@@ -9,12 +9,10 @@
 
 {% block content %}
 {% set cf_super = guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access %}
-<div class="card">
+{# ClientFence core patch: each section a panel (cf-sys, cf-sys-sec) with the section mark, no filler subtitle (CF-135 redesign). #}
+<div class="card cf-sys">
     <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'Security settings'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Sign-in rules, proxies, access lists and sessions.'|trans }}</p>
-        </div>
+        <h3 class="card-title">{{ 'Security settings'|trans }}</h3>
     </div>
     {% if not cf_super %}
         <div class="card-body">
@@ -52,8 +50,11 @@
             <div class="tab-pane fade" id="tab-proxies" role="tabpanel">
                 <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Proxy settings saved.'|trans }) }}>
                     <input type="hidden" name="section" value="proxies">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ 'Trusted proxies'|trans }}</h3>
+                    <div class="card-body cf-sys-sec">
+                        <h4 class="card-title">{{ 'Trusted proxies'|trans }}
+                            {# ClientFence core patch: the saved state as a chip by the title, the Cloudflare count as a chip (CF-135 redesign). #}
+                            <span class="bf-chip ms-2{{ sec.proxies_on ? ' bf-tone-ok' }}">{{ sec.proxies_on ? 'On'|trans : 'Off'|trans }}</span>
+                        </h4>
                         <p class="text-secondary">{{ 'When visitors reach the portal through a proxy such as Cloudflare, every request comes from the proxy. Trust its addresses so the visitor address is read from the header it sends: sign-in rules, rate limits and logs then see the real visitor. Trust only addresses that are really your proxy, never a whole network.'|trans }}</p>
                         <div class="alert alert-info" role="alert">
                             {{ 'This request comes from %remote%. The address used for the visitor: %client%.'|trans({ '%remote%': sec.remote_addr, '%client%': sec.client_ip }) }}
@@ -67,7 +68,7 @@
                         <textarea class="form-control font-monospace" id="cf-sec-proxies" name="proxies" rows="8" dir="ltr" data-cf-proxy-list>{{ sec.proxies|join("\n") }}</textarea>
                         <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
                             <button type="button" class="btn btn-sm" data-cf-add-cloudflare="{{ sec.cloudflare|json_encode }}">{{ 'Add Cloudflare ranges'|trans }}</button>
-                            <span class="text-secondary small">{{ 'Cloudflare ranges in the list: %count% of %total%.'|trans({ '%count%': sec.cloudflare_listed, '%total%': sec.cloudflare|length }) }}</span>
+                            <span class="bf-chip{{ sec.cloudflare_listed == sec.cloudflare|length ? ' bf-tone-ok' }}">{{ 'Cloudflare ranges in the list: %count% of %total%.'|trans({ '%count%': sec.cloudflare_listed, '%total%': sec.cloudflare|length }) }}</span>
                         </div>
                         <label class="form-label mt-3" for="cf-sec-headers">{{ 'Header the proxy sends'|trans }}</label>
                         <select class="form-select" id="cf-sec-headers" name="headers">
@@ -81,10 +82,10 @@
                     </div>
                 </form>
                 {# ClientFence: sign-ups and orders from hosting and VPN networks (CF-119, Antispam/Networks.php). #}
-                <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" class="border-top" {{ fb_api_form({ message: 'Network settings saved.'|trans }) }}>
+                <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Network settings saved.'|trans }) }}>
                     <input type="hidden" name="section" value="networks">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ 'Hosting and VPN networks'|trans }}</h3>
+                    <div class="card-body cf-sys-sec">
+                        <h4 class="card-title">{{ 'Hosting and VPN networks'|trans }}</h4>
                         <p class="text-secondary">{{ 'Sign-ups and orders from hosting, data-centre and VPN networks are often fraud. Hold for review: the order waits under Orders > Waiting for review, its invoice cannot be paid until you approve it. Block: the sign-up or order is refused. Hosting customers often order from a server or office VPN, so Hold for review is the safer choice. To let one client through, allow it on their client page.'|trans }}</p>
                         <label class="form-label" for="cf-sec-network-mode">{{ 'Sign-ups and orders from hosting networks'|trans }}</label>
                         <select class="form-select" id="cf-sec-network-mode" name="mode">
@@ -114,14 +115,14 @@
             <div class="tab-pane fade" id="tab-access" role="tabpanel">
                 <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Access lists saved.'|trans }) }}>
                     <input type="hidden" name="section" value="access">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ 'Never rate limited'|trans }}</h3>
+                    <div class="card-body cf-sys-sec">
+                        <h4 class="card-title">{{ 'Never rate limited'|trans }}</h4>
                         <p class="text-secondary">{{ 'Requests from these addresses skip every rate limit (sign-in tries, password resets, API calls). Use it for your own fixed addresses, such as a monitoring server.'|trans }}</p>
                         <label class="form-label" for="cf-sec-whitelist">{{ 'Addresses and ranges, one per line'|trans }}</label>
                         <textarea class="form-control font-monospace" id="cf-sec-whitelist" name="whitelist" rows="4" dir="ltr">{{ sec.whitelist|join("\n") }}</textarea>
                     </div>
-                    <div class="card-body border-top">
-                        <h3 class="card-title">{{ 'API keys from these addresses only'|trans }}</h3>
+                    <div class="card-body cf-sys-sec">
+                        <h4 class="card-title">{{ 'API keys from these addresses only'|trans }}</h4>
                         <p class="text-secondary">{{ 'Requests signed with an API key from any other address are refused. Empty: API keys work from anywhere. The admin and client pages are not affected.'|trans }}</p>
                         <label class="form-label" for="cf-sec-api-ips">{{ 'API addresses and ranges, one per line'|trans }}</label>
                         <textarea class="form-control font-monospace" id="cf-sec-api-ips" name="api_ips" rows="4" dir="ltr">{{ sec.api_ips|join("\n") }}</textarea>
@@ -135,8 +136,8 @@
             <div class="tab-pane fade" id="tab-sessions" role="tabpanel">
                 <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'Session settings saved.'|trans }) }}>
                     <input type="hidden" name="section" value="sessions">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ 'Same browser check'|trans }}</h3>
+                    <div class="card-body cf-sys-sec">
+                        <h4 class="card-title">{{ 'Same browser check'|trans }}</h4>
                         <p class="text-secondary">{{ 'Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason.'|trans }}</p>
                         <input type="hidden" name="fingerprint" value="0">
                         <label class="form-check form-switch mb-0">
@@ -154,8 +155,8 @@
             <div class="tab-pane fade" id="tab-apilog" role="tabpanel">
                 <form method="post" action="{{ 'clientfence/security_settings_save'|api_url }}" {{ fb_api_form({ message: 'API log settings saved.'|trans }) }}>
                     <input type="hidden" name="section" value="apilog">
-                    <div class="card-body">
-                        <h3 class="card-title">{{ 'API request log'|trans }}</h3>
+                    <div class="card-body cf-sys-sec">
+                        <h4 class="card-title">{{ 'API request log'|trans }}</h4>
                         <p class="text-secondary">{{ 'Keeps a line for each request of the kinds ticked here: when, who, the API call, the address, the result, how long it took and the request details with passwords, keys, tokens and card numbers hidden. The answer is never kept. Staff who may view the activity log find it under Activity > System Activity > API log. Nothing is kept while every kind is off.'|trans }}</p>
                         {% for source, label in { 'api_key': 'Staff API keys'|trans, 'webhook': 'Payment gateway notices (webhooks)'|trans, 'staff': 'Staff sessions: every API call the admin pages make (many lines)'|trans, 'client': 'Client and guest changes: their API calls that change something, not reads'|trans } %}
                             <input type="hidden" name="{{ source }}" value="0">
