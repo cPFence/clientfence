@@ -1434,8 +1434,9 @@ class Service implements InjectionAwareInterface
                     'items' => array_map(static fn (array $i): array => [
                         'title' => $i['title'], 'quantity' => $i['quantity'], 'period' => $i['period'] ?? null,
                         'price' => $i['price'] * $rate, 'total' => $i['total'] * $rate, 'setup_price' => $i['setup_price'] * $rate, 'discount' => $i['discount'] * $rate,
-                        // ClientFence core patch (CF-145): a first period to a set due date, then the full price.
-                        'due' => empty($i['addon_due']) ? null : substr((string) $i['addon_due'], 0, 10), 'recurring_price' => $i['recurring_price'] * $rate,
+                        // ClientFence core patch (CF-145): a first period to a set due date, then the renewal (a recurring promotion's discount off).
+                        'due' => empty($i['addon_due']) ? null : substr((string) $i['addon_due'], 0, 10),
+                        'renewal' => ($i['recurring_price'] * $i['quantity'] - ($cart['promo_recurring'] ? $i['recurring_discount'] : 0)) * $rate,
                     ], $cart['items']),
                     'promocode' => $cart['promocode'] ?? $cart['auto_promo'],
                     'subtotal' => $cart['subtotal'] * $rate,

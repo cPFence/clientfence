@@ -205,3 +205,19 @@ test('an upgrade of a prorata service measures its period from the prorata day',
         ->and(Proration::quote(10, '1M', '2027-04-30 10:00:00', 20, '1M', '2027-04-15 11:00:00', 10, $anchor, true))
         ->toMatchArray(['period_start' => '2027-03-31', 'days_total' => 30, 'days_left' => 15, 'credit' => 5.0, 'charge' => 10.0, 'amount' => 5.0]);
 });
+
+test('a prorata service\'s days before its period count at their own month, as they were charged (CF-145)', function (): void {
+    // 310 a month on the 1st, ordered 25 January with the next month: charged 310 x (7/31 + 1) = 380.00 to 1 March.
+    $quote = Proration::quote(310, '1M', '2027-03-01 00:00:00', 1, '1M', '2027-01-25 00:00:00', null, '2027-02-01', false, 1);
+
+    expect($quote)->toMatchArray(['period_start' => '2027-02-01', 'days_total' => 28, 'days_left' => 35, 'credit' => 380.00, 'charge' => 1.23, 'amount' => -378.77, 'kind' => 'downgrade'])
+        // Without the prorata walk February's days value the 35 at 310/28: 387.50, more than was paid.
+        ->and(Proration::quote(310, '1M', '2027-03-01 00:00:00', 1, '1M', '2027-01-25 00:00:00', null, '2027-02-01')['credit'])->toBe(387.5);
+});
+
+test('a prorata service on day 31 keeps its day walking back past a short month (CF-145)', function (): void {
+    // 280 a month on the 31st, ordered 10 February with the next month: charged 280 x (18/28 + 1) = 460.00 to 31 March.
+    expect(Proration::prorataPeriodsLeft('2027-03-31 00:00:00', '2027-02-10 00:00:00', '1M', 31))->toEqualWithDelta(1 + 18 / 28, 1e-9)
+        ->and(Proration::quote(280, '1M', '2027-03-31 00:00:00', 140, '1M', '2027-02-10 00:00:00', null, '2027-02-28', false, 31))
+        ->toMatchArray(['credit' => 460.00, 'charge' => 230.00, 'amount' => -230.00]);
+});

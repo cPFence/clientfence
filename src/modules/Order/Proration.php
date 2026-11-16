@@ -15,7 +15,8 @@ use ClientFence\InformationException;
  * ending 31 March started on 28 or 29 February; see shift()). Days count by calendar date, so the
  * time of day never matters.
  *
- * - Unused credit: the order's price × days left ÷ days in the period.
+ * - Unused credit: the order's price × days left ÷ days in the period (a prorata service's days before the
+ *   period at their own period's length).
  * - Same billing cycle: the new price for the days left, minus the credit; the expiry date stays.
  * - Another billing cycle: the new price for a whole new cycle, minus the credit; the new cycle
  *   starts today (the expiry date becomes today + the new cycle).
@@ -38,7 +39,7 @@ final class Proration
     /**
      * @return array{kind: string, same_cycle: bool, days_total: int, days_left: int, credit: float, charge: float, amount: float, period_start: string, expires_at: string, new_expires_at: string}
      */
-    public static function quote(float $oldPrice, string $oldPeriod, string $expiresAt, float $newPrice, string $newPeriod, string $now, ?float $currentProductNewCyclePrice = null, ?string $anchor = null, bool $keepDay = false): array
+    public static function quote(float $oldPrice, string $oldPeriod, string $expiresAt, float $newPrice, string $newPeriod, string $now, ?float $currentProductNewCyclePrice = null, ?string $anchor = null, bool $keepDay = false, int $prorataDay = 0): array
     {
         if ($oldPrice < 0 || $newPrice < 0 || !is_finite($oldPrice) || !is_finite($newPrice) || ($currentProductNewCyclePrice !== null && ($currentProductNewCyclePrice < 0 || !is_finite($currentProductNewCyclePrice)))) {
             throw new InformationException('Prices cannot be negative.');
@@ -53,10 +54,13 @@ final class Proration
         // Not capped: an order paid more than one period ahead is credited for every day left.
         $daysLeft = max(0, self::daysBetween($today, $expiry));
 
+        // CF-145: a prorata service counts its periods on its prorata day, each at its own length (prorataPeriodsLeft()); others
+        // per day of the current period (Upgrades::recurringTotal() spreads a first-period promotion so).
+        $periods = $prorataDay > 0 ? self::prorataPeriodsLeft($expiresAt, $now, $oldPeriod, $prorataDay) : $daysLeft / $daysTotal;
         $sameCycle = $oldQty === $newQty && $oldUnit === $newUnit;
-        $credit = self::money($oldPrice * $daysLeft / $daysTotal);
+        $credit = self::money($oldPrice * $periods);
         if ($sameCycle) {
-            $charge = self::money($newPrice * $daysLeft / $daysTotal);
+            $charge = self::money($newPrice * $periods);
             $newExpires = self::format(self::at($expiresAt));
         } else {
             $charge = self::money($newPrice);
@@ -157,6 +161,23 @@ final class Proration
         }
 
         return ['factor' => $factor, 'due' => $due->format('Y-m-d') . self::at($now)->format(' H:i:s'), 'days' => $days, 'days_total' => $total];
+    }
+
+    /**
+     * CF-145: the periods a prorata service has left at $now, each counted at its own length on the prorata day (its first part
+     * too, charged with the next period or paid ahead), as prorata() charged them: credit at the price never exceeds what was paid.
+     */
+    public static function prorataPeriodsLeft(string $expiresAt, string $now, string $period, int $day): float
+    {
+        $today = self::day($now, 'current date');
+        $periods = 0.0;
+        for ($end = self::day($expiresAt, 'expiry date'); $today < $end; $end = $from) {
+            $from = self::periodStart($end, $period, $day);
+            $length = max(1, self::daysBetween($from, $end));
+            $periods += min(self::daysBetween($today, $end), $length) / $length;
+        }
+
+        return $periods;
     }
 
     /** CF-145: the start of a prorata service's billing period that ends on $expiry: one period back, on the prorata day. */

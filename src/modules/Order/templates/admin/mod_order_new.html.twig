@@ -331,7 +331,7 @@
         const fee = !$('invoice').checked ? 0 : (credit ? q.fee_with_credit : q.fee);
         $('cf-lines').innerHTML = q.items.map((l) => `<li><span class="fw-medium">${esc(l.title)}${l.quantity > 1 ? ' × ' + esc(l.quantity) : ''}</span>
             <span class="cf-order-amount">${esc(money(l.total + l.setup_price))}</span>
-            <small class="text-secondary">${[l.period ? PERIODS[l.period] || l.period : '', l.due ? fill(text.to, { date: l.due }) + ', ' + text.then + ' ' + money(l.recurring_price) : '', l.setup_price ? text.setup + ' ' + money(l.setup_price) : '', l.discount ? '−' + money(l.discount) : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`).join('');
+            <small class="text-secondary">${[l.period ? PERIODS[l.period] || l.period : '', l.due ? fill(text.to, { date: l.due }) + ', ' + text.then + ' ' + money(l.renewal) : '', l.setup_price ? text.setup + ' ' + money(l.setup_price) : '', l.discount ? '−' + money(l.discount) : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`).join('');
         const row = (label, value, cls = '') => `<dt class="fw-normal text-secondary">${esc(label)}</dt><dd class="cf-order-amount ${cls}">${esc(value)}</dd>`;
         $('cf-totals').innerHTML = [
             row(text.subtotal, money(q.subtotal)),

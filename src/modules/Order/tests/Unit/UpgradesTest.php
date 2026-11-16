@@ -1752,6 +1752,37 @@ test('a first-period promotion credits the first period at what was paid, the fu
     'renewed early, day kept' => [['activate', 'renew'], false, -58.06, '2027-01-31 12:00:00', '2027-03-31 12:00:00', 'keep'],
 ]);
 
+test('a prorata service with a first-period promotion renewed early is credited what was paid (CF-145)', function (): void {
+    $db = upgradesDb();
+    foreach (['activated_at TEXT', 'promo_id INTEGER', 'promo_recurring INTEGER'] as $column) {
+        $db->executeStatement('ALTER TABLE client_order ADD COLUMN ' . $column);
+    }
+    $di = upgradesContainer($db, ['renewal_day' => 'calendar']);
+    // 45 a month on the 1st, half off the first period: ordered 15 February, 14 of February's 28 days for (45 - 22.50) x 0.5
+    // = 11.25, then renewed to 1 April at 45: 56.25 paid for 1.5 periods.
+    $db->update('client_order', ['expires_at' => '2027-04-01 12:00:00', 'activated_at' => '2027-02-15 12:00:00', 'promo_id' => 7, 'promo_recurring' => 0, 'discount' => 22.5,
+        'config' => json_encode(['prorata_day' => 1, 'addon_due' => '2027-03-01 12:00:00'])], ['id' => 3]);
+    $db->executeStatement('DELETE FROM invoice_item WHERE rel_id = ?', ['3']);
+    foreach (['activate', 'renew'] as $i => $task) {
+        $db->insert('invoice', ['id' => 901 + $i, 'client_id' => 5, 'status' => 'paid']);
+        $db->insert('invoice_item', ['invoice_id' => 901 + $i, 'type' => 'order', 'task' => $task, 'rel_id' => '3', 'price' => 45, 'quantity' => 1]);
+    }
+
+    // 56.25 back, less Starter's 5 x 1.5.
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1M', '2027-02-15 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -48.75]);
+});
+
+test('a prorata service a cycle change moved off its day is credited per day again (CF-145)', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    // A day-31 monthly Pro changed to yearly on 15 April: 300 paid to 15 April 2028, the day kept in its config.
+    $db->update('client_order', ['period' => '1Y', 'price' => 300, 'expires_at' => '2028-04-15 12:00:00', 'config' => json_encode(['prorata_day' => 31])], ['id' => 3]);
+    $db->update('invoice_item', ['price' => 300], ['invoice_id' => 9003]);
+
+    // The whole year back (300), less Starter's 48: not 1 + 15/365 periods off the 31st.
+    expect(Upgrades::request($di, upgradesOrder($di, 3), 1, '1Y', '2027-04-15 13:00:00'))->toMatchArray(['status' => 'applied', 'amount' => -252.0]);
+});
+
 test('a plan change of a service refunded or repriced after its last payment goes to staff', function (array $invoice, float $price, bool $changeSince, bool $blocked, bool $inclusive = false, ?float $changedTo = null, ?string $changeInvoice = null, ?float $optionsFrom = null): void {
     $db = upgradesDb();
     $di = upgradesContainer($db, [], ['inclusive' => $inclusive]);
