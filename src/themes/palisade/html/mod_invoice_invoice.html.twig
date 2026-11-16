@@ -59,15 +59,24 @@
     }|json_encode|raw }}</script>
 
     {% if client %}<a class="bf-linkbtn" href="{{ 'invoice'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'All invoices'|trans }}</a>{% endif %}
-    <div class="bf-page-head">
-        <div>
-            <h1 class="bf-page-title">{{ doc_title }} #{{ nr }}</h1>
+    {# ClientFence core patch: the summary reads first: the balance due (the total once settled) in its status colour, red and "Overdue" past the due date, then the number, status and dates (CF-135 redesign). #}
+    {% set late = unpaid and not pending and invoice.due_at|trim and invoice.due_at|date('U') < 'now'|date('U') %}
+    {% if late %}{% set status_chip = ['bf-chip-bad', 'Overdue'|trans] %}{% endif %}
+    <section class="card bf-card cf-pay-hero{{ late ? ' is-bad' : (unpaid and not pending ? ' is-warn' : (invoice.status == 'paid' ? ' is-ok' : '')) }}">
+        <div class="cf-pay-hero-text">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <h1 class="bf-page-title">{{ doc_title }} <bdi>#{{ nr }}</bdi></h1>
+                <span class="bf-chip {{ status_chip[0] }}" data-bf-status>{{ status_chip[1] }}</span>
+            </div>
             <span class="bf-hint">
                 {{ 'Issued :date'|trans({ ':date': invoice.created_at|format_date }) }}{% if invoice.due_at|trim %} · {{ 'Due :date'|trans({ ':date': invoice.due_at|format_date }) }}{% endif %}{% if invoice.paid_at|trim %} · {{ 'Paid :date'|trans({ ':date': invoice.paid_at|format_date }) }}{% endif %}
             </span>
         </div>
-        <span class="bf-chip {{ status_chip[0] }}" data-bf-status>{{ status_chip[1] }}</span>
-    </div>
+        <div class="cf-pay-hero-figure">
+            <span>{{ unpaid ? 'Balance due'|trans : 'Total'|trans }}</span>
+            <strong>{{ sm.money(due, currency) }}</strong>
+        </div>
+    </section>
 
     <div class="bf-checkout-grid">
         <div class="bf-checkout-main">

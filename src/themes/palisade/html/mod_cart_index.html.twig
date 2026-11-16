@@ -10,10 +10,8 @@
 
 {% block meta_title %}{{ 'Cart'|trans }}{% endblock %}
 {% block body_class %}bf-cart-page{% endblock %}
-{% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{{ 'order'|url }}">{{ 'Store'|trans }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ 'Cart'|trans }}</li>
-{% endblock %}
+{# ClientFence core patch: the order steps (Choose, Checkout, Done) in the top bar, as on the store and one-page checkout (CF-135 redesign). #}
+{% block topbar_nav %}{{ include('partials/order_steps.html.twig', { step: 2 }) }}{% endblock %}
 
 {% block content %}
 {% set cart = guest.cart_get %}
