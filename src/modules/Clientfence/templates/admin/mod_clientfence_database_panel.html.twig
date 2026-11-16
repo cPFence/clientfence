@@ -1,0 +1,46 @@
+{# ClientFence: the "Database" tab of System > Settings > System (CF-150, as WHMCS's Database Status and
+   System Cleanup; DatabaseMaintenance.php). The tables by size with their free space, "Optimize tables"
+   (OPTIMIZE TABLE for the tables with free space) and "Run clean-up now" (the cron clean-ups at once).
+   Super Administrators only; `tables` is clientfence/db_tables. #}
+{% set total = tables|reduce((sum, t) => sum + t.size, 0) %}
+{% set free = tables|reduce((sum, t) => sum + t.free, 0) %}
+<div class="card">
+    <div class="card-header flex-wrap gap-2">
+        <div>
+            <h3 class="card-title">{{ 'Database'|trans }}</h3>
+        </div>
+        <div class="card-actions d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-secondary" href="{{ 'clientfence/db_cleanup'|api_url }}"
+               {{ fb_api_link({ modal: { type: 'confirm', title: 'Run the clean-up now?'|trans, content: 'Deletes now what the retention settings would delete on the next cron runs: old activity, sign-in and email log entries, old API and email import log entries and old ticket files.'|trans }, timeoutMs: 600000, timeoutMessage: 'This is taking a while. The server keeps working on it: reload this page in a few minutes to see the result.'|trans, message: 'Clean-up done.'|trans, reload: true }) }}>{{ 'Run clean-up now'|trans }}</a>
+            <a class="btn btn-primary" href="{{ 'clientfence/db_optimize'|api_url }}"
+               {{ fb_api_link({ modal: { type: 'confirm', title: 'Optimize the tables?'|trans, content: 'Rebuilds each table with free space, one at a time, to give the space of deleted rows back. A big table can take a while and is briefly locked; run it at a quiet time.'|trans }, timeoutMs: 600000, timeoutMessage: 'This is taking a while. The server keeps working on it: reload this page in a few minutes to see the result.'|trans, message: 'Tables optimized.'|trans, reload: true }) }}>{{ 'Optimize tables'|trans }}</a>
+        </div>
+    </div>
+    <div class="cf-bk-summary">
+        <div class="bf-health-count"><span class="bf-h bf-health-number">{{ total|file_size }}</span><span class="bf-small">{{ 'Database size'|trans }}</span></div>
+        <div class="bf-health-count"><span class="bf-h bf-health-number">{{ tables|length }}</span><span class="bf-small">{{ 'Tables'|trans }}</span></div>
+        <div class="bf-health-count"><span class="bf-h bf-health-number">{{ free|file_size }}</span><span class="bf-small">{{ 'Free space'|trans }}</span></div>
+    </div>
+    <div class="card-body py-2">
+        <p class="text-secondary small mb-0">{{ 'How long logs and ticket files are kept is set in the Activity and Support settings.'|trans }}
+            <a href="{{ 'extension/settings/activity'|url }}">{{ 'Activity settings'|trans }}</a> ·
+            <a href="{{ 'extension/settings/support'|url }}">{{ 'Support settings'|trans }}</a></p>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr><th>{{ 'Table'|trans }}</th><th class="text-end">{{ 'Rows (about)'|trans }}</th><th class="text-end">{{ 'Size'|trans }}</th><th class="text-end">{{ 'Free space'|trans }}</th></tr>
+            </thead>
+            <tbody>
+                {% for table in tables %}
+                    <tr>
+                        <td class="font-monospace">{{ table.name }}</td>
+                        <td class="text-end">{{ table.rows|number_format(0) }}</td>
+                        <td class="text-end">{{ table.size|file_size }}</td>
+                        <td class="text-end">{{ table.free ? table.free|file_size : '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

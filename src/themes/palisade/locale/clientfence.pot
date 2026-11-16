@@ -474,7 +474,7 @@ msgid_plural ":count hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/themes/palisade/html/mod_index_dashboard.html.twig src/themes/palisade/html/mod_support_tickets.html.twig
+#: src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid ":count in total"
 msgstr ""
 
@@ -1860,6 +1860,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Activity log"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Activity settings"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig
@@ -5854,6 +5858,10 @@ msgstr ""
 msgid "City"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Clean-up done."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig
 msgid "Clear"
 msgstr ""
@@ -7922,7 +7930,7 @@ msgstr ""
 msgid "Dashes do not count toward the API key length, but generated keys must include them to remain valid."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Database"
 msgstr ""
 
@@ -7984,6 +7992,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Database patches are small migrations that update ClientFence database tables and settings after the application files change."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Database size"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -8392,6 +8404,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Deleted."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Deletes now what the retention settings would delete on the next cron runs: old activity, sign-in and email log entries, old API and email import log entries and old ticket files."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -11410,6 +11426,10 @@ msgstr ""
 msgid "Free orders:"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Free space"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Free subdomain"
 msgstr ""
@@ -12468,6 +12488,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
 msgid "How long a visit through an affiliate link counts (the clientfence_aff cookie; the last link clicked wins)."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "How long logs and ticket files are kept is set in the Activity and Support settings."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
@@ -18182,6 +18206,14 @@ msgstr ""
 msgid "Operator"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Optimize tables"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Optimize the tables?"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_option_group.html.twig
 msgid "Option"
 msgstr ""
@@ -21262,6 +21294,10 @@ msgstr ""
 msgid "Reason: :reason"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Rebuilds each table with free space, one at a time, to give the space of deleted rows back. A big table can take a while and is briefly locked; run it at a quiet time."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Recalculate the price from the new product"
 msgstr ""
@@ -22554,6 +22590,10 @@ msgstr ""
 msgid "Rows"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Rows (about)"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
 msgid "Rule Details"
 msgstr ""
@@ -22574,12 +22614,20 @@ msgstr ""
 msgid "Run checks now"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Run clean-up now"
+msgstr ""
+
 #: src/modules/Cron/Service.php
 msgid "Run cron jobs"
 msgstr ""
 
 #: src/modules/Security/Service.php
 msgid "Run security checks"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Run the clean-up now?"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -24422,7 +24470,7 @@ msgstr ""
 msgid "Sitemap"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
 msgid "Size"
 msgstr ""
 
@@ -25082,6 +25130,10 @@ msgstr ""
 msgid "Support in general"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Support settings"
+msgstr ""
+
 #: src/themes/admin_default/html/partial_menu_top.html.twig
 msgid "Support ticket"
 msgstr ""
@@ -25366,8 +25418,16 @@ msgstr ""
 msgid "TLDs and prices"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Table"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Tables"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "Tables optimized."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -27579,6 +27639,10 @@ msgstr ""
 msgid "These settings define the company details shown throughout invoices, public pages, and client-facing documents."
 msgstr ""
 
+#: src/modules/Clientfence/DatabaseMaintenance.php
+msgid "These tables could not be optimized: :tables. The other tables were optimized."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "These text blocks appear on legal and informational pages and may also be referenced from other client-facing areas."
 msgstr ""
@@ -27933,6 +27997,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/Service.php
 msgid "This is not an IP address or range: :ip"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
+msgid "This is taking a while. The server keeps working on it: reload this page in a few minutes to see the result."
 msgstr ""
 
 #: src/modules/Client/Users.php

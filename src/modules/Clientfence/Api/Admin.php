@@ -9,6 +9,7 @@ use ClientFence\Mod\Clientfence\CloudBackups;
 use ClientFence\Mod\Clientfence\Branding;
 use ClientFence\Mod\Clientfence\ChatAlerts;
 use ClientFence\Mod\Clientfence\CspReports;
+use ClientFence\Mod\Clientfence\DatabaseMaintenance;
 use ClientFence\Mod\Clientfence\Customized;
 use ClientFence\Mod\Clientfence\Health;
 use ClientFence\Mod\Clientfence\Notifications;
@@ -491,6 +492,30 @@ class Admin extends \ClientFence\Api\AbstractApi
     public function backup_access(): bool
     {
         return $this->canArrangeDashboard();
+    }
+
+    /** The "Database" tab of System settings (DatabaseMaintenance): this database's tables, biggest first. Super Administrators only. */
+    public function db_tables(): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage the database.');
+
+        return DatabaseMaintenance::tables($this->getDi());
+    }
+
+    /** OPTIMIZE TABLE for each table with free space, one at a time; returns how many were optimized. */
+    public function db_optimize(): int
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage the database.');
+
+        return DatabaseMaintenance::optimize($this->getDi());
+    }
+
+    /** Runs the cron clean-ups now with the retention settings as they are; returns how many ticket files went. */
+    public function db_cleanup(): int
+    {
+        $this->requireSuperAdmin('Only Super Administrators can manage the database.');
+
+        return DatabaseMaintenance::cleanUp($this->getDi());
     }
 
     /**

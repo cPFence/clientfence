@@ -27,6 +27,7 @@ final class SettingsIndex
         'security#tab-apilog' => 'API log request log audit trail webhook IPN callback gateway notice',
         'system#tab-cache' => 'Redis Memcached flush clear',
         'system#tab-backups' => 'backup dump SFTP FTP S3 cloud R2 B2 Wasabi Bunny Google Drive OneDrive',
+        'system#tab-database' => 'database tables size optimize clean-up cleanup prune logs',
         'system#tab-health' => 'health status check problems',
         'system#tab-licences' => 'license licence ban',
         'system#tab-whmcs' => 'import migrate migration Upmind Blesta ClientExec',

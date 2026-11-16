@@ -33,6 +33,8 @@
     {% set bf_backups = guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access ? admin.clientfence_backup_get : null %}
     {# ClientFence core patch: the WHMCS import as a tab here (Clientfence Whmcs/Import.php; Super Administrators, ClientFence on). #}
     {% set bf_whmcs = bf_backups ? admin.clientfence_whmcs_import_get : null %}
+    {# ClientFence core patch: table sizes, optimize and clean-up as a Database tab here (Clientfence DatabaseMaintenance.php; Super Administrators, ClientFence on). #}
+    {% set bf_database = bf_backups ? admin.clientfence_db_tables : null %}
     {# ClientFence core patch: system health as a tab here (Clientfence Health.php; System settings permission, ClientFence on). #}
     {% set bf_health = guest.extension_is_on({ 'mod': 'clientfence' }) and has_permission('system', 'manage_settings') ? admin.clientfence_health_page : null %}
     {# ClientFence core patch: the licence check log and bans as a tab here (Servicelicense CheckLog.php, Bans.php; licence managers). #}
@@ -75,6 +77,11 @@
                 {% if bf_backups %}
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" href="#tab-backups" data-bs-toggle="tab" role="tab">{{ 'Backups'|trans }}</a>
+                </li>
+                {% endif %}
+                {% if bf_database is not null %}
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#tab-database" data-bs-toggle="tab" role="tab">{{ 'Database'|trans }}</a>
                 </li>
                 {% endif %}
                 {% if bf_licences %}
@@ -497,6 +504,14 @@
                 <div class="tab-pane fade" id="tab-backups" role="tabpanel">
                     <div class="card-body">
                         {% include 'mod_clientfence_backups_panel.html.twig' with { 'backups': bf_backups } %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if bf_database is not null %}
+                <div class="tab-pane fade" id="tab-database" role="tabpanel">
+                    <div class="card-body">
+                        {% include 'mod_clientfence_database_panel.html.twig' with { 'tables': bf_database } %}
                     </div>
                 </div>
                 {% endif %}

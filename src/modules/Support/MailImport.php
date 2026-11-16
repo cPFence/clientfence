@@ -1021,8 +1021,8 @@ final class MailImport
         }
     }
 
-    /** Removes log entries older than the "keep the log" setting. */
-    private static function prune(\Pimple\Container $di): void
+    /** Removes log entries older than the "keep the log" setting (also from the Database tab, DatabaseMaintenance). */
+    public static function prune(\Pimple\Container $di): void
     {
         $days = max(1, (int) self::settings($di)['mail_log_days']);
         self::db($di)->executeStatement('DELETE FROM ' . self::LOG_TABLE . ' WHERE created_at < ?', [date('Y-m-d H:i:s', time() - $days * 86400)]);
