@@ -1014,6 +1014,12 @@ a.bf-file-name:hover .icon { color: inherit; }
   border-color: transparent; box-shadow: 0 6px 18px -8px var(--bf-brand);
 }
 .bf-shell .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--bf-teal); }
+/* Dark mode: primary buttons keep the client area's deep brand gradient (the lighter dark --bf-brand is for text and links). */
+[data-bs-theme="dark"] .bf-shell :is(.btn-primary, .btn-primary:hover, .btn-primary:focus) {
+  background-image: linear-gradient(135deg, var(--pal-brand, #0e5a7a), color-mix(in srgb, var(--pal-accent, #14a39a) 80%, var(--pal-brand, #0e5a7a)));
+  box-shadow: 0 6px 18px -8px var(--pal-brand, #0e5a7a);
+}
+[data-bs-theme="dark"] .bf-shell .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--pal-accent, #14a39a); }
 .bf-shell .btn-success { background-image: linear-gradient(135deg, #14a39a, #1bb7a0); border-color: transparent; }
 
 /* Tabs: the active one underlined in navy to teal. */
