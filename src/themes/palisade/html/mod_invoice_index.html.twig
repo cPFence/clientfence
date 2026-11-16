@@ -33,7 +33,32 @@
                     <a class="btn btn-outline-secondary" href="{{ 'invoice/statement'|url }}">{{ 'Account statement'|trans }}</a>
                 </div>
             </div>
-            <div class="card mb-4">
+            {# ClientFence core patch: the summary reads first: the unpaid count and the balance due per currency, amber, red once one is overdue; each row shows its status as a chip (CF-135 redesign). #}
+            {% if unpaid_invoices.total %}
+                {% set all_unpaid = client.invoice_get_list({"status":"unpaid", "per_page":100}) %}
+                {% set due = {} %}
+                {% set late = false %}
+                {% for invoice in all_unpaid.list %}
+                    {% set due = due|merge({ (invoice.currency ?? default_currency): due[invoice.currency ?? default_currency]|default(0) + invoice.balance_due }) %}
+                    {% set late = late or (not invoice.pending_payment|default(null) and invoice.due_at and invoice.due_at|date('U') < 'now'|date('U')) %}
+                {% endfor %}
+                <section class="card bf-card cf-pay-hero mb-4 {{ late ? 'is-bad' : 'is-warn' }}">
+                    <div class="cf-pay-hero-text">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <strong>{{ 'You have :count unpaid invoice(s).'|trans({ ':count': unpaid_invoices.total }) }}</strong>
+                            <span class="bf-chip {{ late ? 'bf-chip-bad' : 'bf-chip-warn' }}">{{ late ? 'Overdue'|trans : 'Unpaid'|trans }}</span>
+                        </div>
+                    </div>
+                    {# Only a complete sum: past 100 unpaid invoices the count stands alone. #}
+                    {% if all_unpaid.list|length == all_unpaid.total %}
+                        <div class="cf-pay-hero-figure">
+                            <span>{{ 'Balance due'|trans }}</span>
+                            {% for currency, amount in due %}<strong>{{ amount|format_currency(currency) }}</strong>{% endfor %}
+                        </div>
+                    {% endif %}
+                </section>
+            {% endif %}
+            <div class="card mb-4 cf-inv-list">
                 <div class="card-body">
                     <nav>
                         <div class="nav nav-tabs" id="invoice-tab" role="tablist">
@@ -60,23 +85,27 @@
                                     <th>{{ 'Title'|trans }}</th>
                                     <th>{{ 'Invoice Date'|trans }}</th>
                                     <th>{{ 'Due Date'|trans }}</th>
+                                    <th>{{ 'Status'|trans }}</th>
                                     <th>{{ 'Total'|trans }}</th>
                                     <th>{{ 'Actions'|trans }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for i, invoice in unpaid_invoices.list %}
+                                    {% set pending = invoice.pending_payment|default(null) %}
+                                    {% set row_late = not pending and invoice.due_at and invoice.due_at|date('U') < 'now'|date('U') %}
                                     <tr>
-                                        <td>{{ 'Invoice'|trans }} #{{ invoice.serie_nr }}</td>
+                                        <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td>{{ invoice.due_at|format_date }}</td>
-                                        <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
+                                        <td><span class="bf-chip {{ pending ? 'bf-chip-muted' : (row_late ? 'bf-chip-bad' : 'bf-chip-warn') }}">{{ pending ? 'Payment pending'|trans : (row_late ? 'Overdue'|trans : 'Unpaid'|trans) }}</span></td>
+                                        <td><strong>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</strong></td>
                                         <td>{% if invoice.pending_payment|default(null) %}<a class="btn btn-sm btn-outline-secondary" href='{{ "invoice/#{invoice.hash}"|url }}'>{{ 'Payment pending'|trans }}</a>{% else %}<a class="btn btn-sm btn-success" href='{{ "invoice/#{invoice.hash}"|url }}'>{{ 'Pay'|trans }}</a>{% endif %}
                                         </td>
                                     </tr>
                                 {% else %}
                                     <tr>
-                                        <td colspan="5" class="empty-state">{{ 'The list is empty'|trans }}</td>
+                                        <td colspan="6" class="empty-state">{{ 'The list is empty'|trans }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -91,6 +120,7 @@
                                     <th>{{ 'Title'|trans }}</th>
                                     <th>{{ 'Invoice Date'|trans }}</th>
                                     <th>{{ 'Paid Date'|trans }}</th>
+                                    <th>{{ 'Status'|trans }}</th>
                                     <th>{{ 'Total'|trans }}</th>
                                     <th>{{ 'Actions'|trans }}</th>
                                 </tr>
@@ -98,15 +128,16 @@
                                 <tbody>
                                 {% for i, invoice in paid_invoices.list %}
                                     <tr>
-                                        <td>{{ 'Invoice'|trans }} #{{ invoice.serie_nr }}</td>
+                                        <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td>{{ invoice.paid_at|format_date }}</td>
-                                        <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
+                                        <td><span class="bf-chip bf-chip-ok">{{ 'Paid'|trans }}</span></td>
+                                        <td><strong>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</strong></td>
                                         <td><a href='{{ "invoice/#{invoice.hash}"|url }}' class="btn btn-outline-secondary btn-sm">{{ 'View'|trans }}</a></td>
                                     </tr>
                                 {% else %}
                                     <tr>
-                                        <td colspan="7" class="empty-state">{{ 'The list is empty'|trans }}</td>
+                                        <td colspan="6" class="empty-state">{{ 'The list is empty'|trans }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -128,10 +159,10 @@
                                 <tbody>
                                 {% for i, invoice in closed_invoices.list %}
                                     <tr>
-                                        <td>{{ 'Invoice'|trans }} #{{ invoice.serie_nr }}</td>
+                                        <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td><span class="bf-chip bf-chip-muted" data-bf-status>{{ invoice.status == 'refunded' ? 'Refunded'|trans : 'Canceled'|trans }}</span></td>
-                                        <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
+                                        <td><strong>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</strong></td>
                                         <td><a href='{{ "invoice/#{invoice.hash}"|url }}' class="btn btn-outline-secondary btn-sm">{{ 'View'|trans }}</a></td>
                                     </tr>
                                 {% else %}

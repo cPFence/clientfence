@@ -9,7 +9,8 @@
 {% block body_class %}bf-thankyou-page{% endblock %}
 
 {% block content %}
-<section class="bf-done">
+{# ClientFence core patch: a clear success state: the confirmation in a panel with a green glow, centred (CF-135 redesign). #}
+<section class="bf-done cf-thanks">
     <span class="bf-done-icon" aria-hidden="true"><svg class="icon"><use href="#check"/></svg></span>
     <h1>{{ 'Thank you for your payment.'|trans }}</h1>
     <p>{{ 'Your payment was sent. The invoice is marked paid as soon as the payment is confirmed, which can take a few minutes.'|trans }}</p>

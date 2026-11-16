@@ -25,13 +25,21 @@
     : (quote.stage == 'dead' ? ['bf-chip-muted', 'Withdrawn'|trans]
     : (quote.expired ? ['bf-chip-muted', 'Expired'|trans] : ['bf-chip-warn', 'Awaiting your answer'|trans]))) %}
 {% set has_discount = quote.items|filter(item => item.discount > 0)|length > 0 %}
-<div class="bf-page-head mb-4">
-    <div>
-        <h1 class="bf-page-title">{{ 'Quote #:id'|trans({ ':id': quote.id }) }} <span class="bf-chip {{ chip[0] }} align-middle">{{ chip[1] }}</span></h1>
+{# ClientFence core patch: the summary reads first, as on the invoice page: number, status and subject, the total in the status colour (amber awaiting an answer, green accepted), the PDF, then the recipient and dates as facts (CF-135 redesign). #}
+<section class="card bf-card cf-pay-hero mb-4{{ can_answer ? ' is-warn' : (quote.stage == 'accepted' ? ' is-ok' : '') }}">
+    <div class="cf-pay-hero-text">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <h1 class="bf-page-title">{{ 'Quote #:id'|trans({ ':id': quote.id }) }}</h1>
+            <span class="bf-chip {{ chip[0] }}">{{ chip[1] }}</span>
+        </div>
         <span class="bf-hint" dir="auto">{{ quote.subject }}</span>
+        <div><a class="btn btn-outline-primary btn-sm" href="{{ (link ~ '/pdf') }}">{{ 'Download PDF'|trans }}</a></div>
     </div>
-    <a class="btn btn-outline-primary" href="{{ (link ~ '/pdf') }}">{{ 'Download PDF'|trans }}</a>
-</div>
+    <div class="cf-pay-hero-figure">
+        <span>{{ 'Total'|trans }}</span>
+        <strong dir="ltr">{{ quote.total|format_currency(quote.currency, {}, 'en_US') }}</strong>
+    </div>
+</section>
 <div class="card mb-4">
     <div class="card-body">
         {% if quote.stage == 'accepted' %}
@@ -51,24 +59,18 @@
             <div class="alert alert-warning" role="status">{{ 'This quote expired on :date. Please contact us for a new one.'|trans({ ':date': quote.valid_until|format_date }) }}</div>
         {% endif %}
 
-        <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <div class="small text-muted">{{ 'For'|trans }}</div>
-                <div dir="auto">
+        <dl class="bf-facts bf-facts-inset cf-quote-facts mb-3">
+            <div class="bf-fact">
+                <dt>{{ 'For'|trans }}</dt>
+                <dd class="d-block" dir="auto">
                     {% if quote.recipient.company %}<strong>{{ quote.recipient.company }}</strong><br>{% endif %}
                     {{ quote.recipient.name }}<br>
                     <span dir="ltr">{{ quote.recipient.email }}</span>
-                </div>
+                </dd>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="small text-muted">{{ 'Date'|trans }}</div>
-                <div>{{ quote.created_at|format_date }}</div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="small text-muted">{{ 'Valid until'|trans }}</div>
-                <div>{{ quote.valid_until ? quote.valid_until|format_date : '-' }}</div>
-            </div>
-        </div>
+            <div class="bf-fact"><dt>{{ 'Date'|trans }}</dt><dd>{{ quote.created_at|format_date }}</dd></div>
+            <div class="bf-fact"><dt>{{ 'Valid until'|trans }}</dt><dd>{{ quote.valid_until ? quote.valid_until|format_date : '-' }}</dd></div>
+        </dl>
 
         {% if quote.proposal %}
             <div class="mb-3" dir="auto">{{ quote.proposal|nl2br }}</div>
@@ -123,7 +125,7 @@
         {% endif %}
     </div>
     {% if can_answer %}
-        <div class="card-footer py-3">
+        <div class="card-footer py-3 cf-quote-answer">
             <form method="post" action="{{ 'invoice/quote_accept'|api_url(role: 'guest') }}" {{ fb_api_form({ redirect: link }) }}>
                 <input type="hidden" name="hash" value="{{ quote.hash }}">
                 <div class="form-check mb-2">
@@ -137,7 +139,7 @@
                         {{ 'When you accept, we make the invoice and email it to you.'|trans }}
                     {% endif %}
                 </p>
-                <button type="submit" class="btn btn-primary">{{ 'Accept the quote'|trans }}</button>
+                <button type="submit" class="btn btn-primary bf-btn-lg">{{ 'Accept the quote'|trans }}</button>
             </form>
             <details class="mt-3">
                 <summary class="small text-muted">{{ 'Decline this quote'|trans }}</summary>
