@@ -947,17 +947,28 @@ a.bf-file-name:hover .icon { color: inherit; }
 /* translate and scale, not transform: Popper positions the menu with an inline transform. */
 @keyframes bf-pop { from { opacity: 0; translate: 0 -6px; scale: .98; } to { opacity: 1; translate: none; scale: none; } }
 
-/* Sidebar: dark glass (the page shows through, blurred) with two soft glows, a tinted active item. Less see-through on
-   the light page, which would wash the navy out. */
-[data-bs-theme="dark"] .bf-sidebar { --bf-side-glass: 80%; }
+/* Sidebar: WiseCP-style glass. A near-black slate lightly tinted with the brand, one glow in the top corner, a 12px
+   blur; the page shows through (75% in dark mode, 90% on the light page so it does not turn grey). The
+   oklch(from …) version sits in @supports: with var() inside, an unsupported browser would drop the whole background
+   at computed time instead of keeping the plain one. */
 .bf-sidebar {
+  --bf-rail-a: 90%; --bf-rail-glow-at: 0 0;
+  --bf-rail-brand: var(--pal-brand, #0e5a7a); --bf-rail-accent: var(--pal-accent, #14a39a);
   background:
-    radial-gradient(260px 220px at 0% 0%, rgba(31, 168, 156, .30), transparent 70%),
-    radial-gradient(260px 260px at 0% 92%, rgba(47, 111, 179, .26), transparent 70%),
-    linear-gradient(180deg, color-mix(in srgb, var(--bf-side) var(--bf-side-glass, 92%), transparent), color-mix(in srgb, var(--bf-side) calc(var(--bf-side-glass, 92%) - 10%), rgba(23, 64, 90, .7)));
-  -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%);
-  border-inline-end: 1px solid rgba(255, 255, 255, .06);
+    radial-gradient(240px 150px at var(--bf-rail-glow-at), color-mix(in srgb, var(--bf-rail-brand) 70%, transparent), color-mix(in srgb, var(--bf-rail-accent) 30%, transparent) 55%, transparent 100%),
+    linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--bf-rail-brand) 16%, #151d27) var(--bf-rail-a), transparent), color-mix(in srgb, color-mix(in srgb, var(--bf-rail-brand) 14%, #101720) var(--bf-rail-a), transparent));
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-inline-end: 1px solid rgba(221, 233, 245, .09);
 }
+@supports (color: oklch(from red min(l, .5) min(c, .05) h)) {
+  .bf-sidebar {
+    background:
+      radial-gradient(240px 150px at var(--bf-rail-glow-at), color-mix(in srgb, oklch(from var(--bf-rail-brand) max(.45, min(l, .55)) c h) 70%, transparent), color-mix(in srgb, oklch(from var(--bf-rail-accent) max(.45, min(l, .55)) c h) 30%, transparent) 55%, transparent 100%),
+      linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .42) min(c, .045) h) 16%, #151d27) var(--bf-rail-a), transparent), color-mix(in srgb, color-mix(in srgb, oklch(from var(--bf-rail-brand) min(l, .42) min(c, .045) h) 14%, #101720) var(--bf-rail-a), transparent));
+  }
+}
+[data-bs-theme="dark"] .bf-sidebar { --bf-rail-a: 75%; }
+[dir="rtl"] .bf-sidebar { --bf-rail-glow-at: 100% 0; }
 .bf-item, .bf-sub { transition: background .25s, color .25s; }
 .bf-item.is-active {
   background: linear-gradient(90deg, rgba(31, 168, 156, .30), rgba(47, 143, 209, .10));
