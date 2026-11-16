@@ -335,6 +335,18 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch (CF-139): pins up to 8 TLDs on sale for the domain search (WHMCS Spotlight TLDs).
+     *
+     * @param array $data tlds: a list, or names separated by spaces or commas; empty unpins all
+     */
+    public function tld_pinned_update($data): bool
+    {
+        $this->checkPermissions('servicedomain', 'manage_tlds');
+
+        return $this->getService()->pinnedTldsUpdate($data['tlds'] ?? []);
+    }
+
+    /**
      * Get paginated registrars list.
      *
      * @return array

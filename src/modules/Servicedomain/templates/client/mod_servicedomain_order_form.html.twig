@@ -16,52 +16,76 @@
     </nav>
     <div class="tab-content">
         {% if tlds is not empty %}
-            <div class="tab-pane show active" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab" tabindex="0">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <label class="form-label">{{ 'Register a new domain'|trans }}</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            <div class="input-group" style="max-width: 500px;">
-                                <input class="form-control form-control-sm" type="text" name="register_sld"
-                                    value="{{ request.register_sld }}"
-                                    placeholder="{{ 'Enter new domain name to register'|trans }}">
-                                <select class="form-select form-select-sm" name="register_tld" style="width: 30%; max-width: 120px;">
-                                    {% for tld in tlds %}
-                                        <option value="{{ tld.tld }}" label="{{ tld.tld }}">{{ tld.tld }}</option>
-                                    {% endfor %}
-                                </select>
+            {# ClientFence core patch (CF-139): one name across the ticked TLDs (up to 20), the staff-pinned ones ticked first
+               (WHMCS Spotlight TLDs), results per TLD as they arrive and the chosen domains added to the cart together
+               (themes/palisade/assets/src/js/domain-search.js). ?tld= ticks one more TLD; ?tlds= (the embedded checker)
+               ticks exactly those and searches at once. #}
+            {% set pinned = guest.servicedomain_pinned_tlds %}
+            {% set top = pinned ?: [(tlds|first).tld] %}
+            {% set wanted = request.tlds is iterable or not request.tlds ? [] : request.tlds|split(',') %}
+            {% set ticked = wanted ?: top|merge(request.tld is iterable or not request.tld ? [] : [request.tld]) %}
+            {% set rest = tlds|filter(t => t.tld not in top) %}
+            <div class="tab-pane show active" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab" tabindex="0" data-cf-domain-search>
+                <script nonce="{{ csp_nonce }}" type="application/json" data-cf-domain-search-data>{{ {
+                    max: 20,
+                    auto: wanted is not empty,
+                    currency: guest.cart_get_currency.code,
+                    rate: guest.cart_get_currency.conversion_rate,
+                    texts: {
+                        available: 'Available'|trans,
+                        taken: 'Domain is not available.'|trans,
+                        unknown: 'Unknown'|trans,
+                        year: ' Year @ '|trans,
+                        years: ' Years @ '|trans,
+                    },
+                }|json_encode|raw }}</script>
+                <label class="form-label" for="cf-ds-sld">{{ 'Register a new domain'|trans }}</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <input class="form-control form-control-sm cf-ds-sld" type="text" id="cf-ds-sld" name="register_sld" dir="ltr" autocomplete="off"
+                        value="{{ request.register_sld }}" placeholder="{{ 'Enter new domain name to register'|trans }}">
+                    <button class="btn btn-sm btn-dark" type="button" data-cf-ds-check>{{ 'Check'|trans }}</button>
+                </div>
+                <fieldset class="cf-ds-tlds" aria-describedby="cf-ds-max">
+                    <legend class="visually-hidden">{{ 'Extensions'|trans }}</legend>
+                    {% for name in top %}
+                        <label class="cf-ds-tld"><input class="form-check-input" type="checkbox" value="{{ name }}" data-cf-ds-tld{% if name in ticked %} checked{% endif %}> <span dir="ltr">{{ name }}</span></label>
+                    {% endfor %}
+                    {% if rest is not empty %}
+                        <details class="cf-ds-more"{% if rest|filter(t => t.tld in ticked) is not empty %} open{% endif %}>
+                            <summary>{{ 'More extensions'|trans }}</summary>
+                            <div class="cf-ds-more-list">
+                                {% for tld in rest %}
+                                    <label class="cf-ds-tld"><input class="form-check-input" type="checkbox" value="{{ tld.tld }}" data-cf-ds-tld{% if tld.tld in ticked %} checked{% endif %}> <span dir="ltr">{{ tld.tld }}</span></label>
+                                {% endfor %}
                             </div>
-                            <button class="btn btn-sm btn-dark" type="button" id="domain-check">{{ 'Check'|trans }}</button>
+                        </details>
+                    {% endif %}
+                    <div class="form-hint" id="cf-ds-max">{{ 'Choose up to :count extensions.'|trans({':count': 20}) }}</div>
+                </fieldset>
+                <ul class="cf-ds-results list-unstyled" data-cf-ds-results aria-live="polite" hidden></ul>
+                <div class="onAfterDomainCheck" style="display:none;">
+                    <div class="form-check form-switch my-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="nameserversCb">
+                        <label class="form-check-label text-sm" for="nameserversCb">
+                            {{ 'I want to use my nameservers'|trans }}
+                        </label>
+                    </div>
+                    <div id="nameservers" class="flex-column row" hidden>
+                        <div class="mb-2 col-md-6">
+                            <input class="form-control form-control-sm" type="text" name="ns1" value="" placeholder="{{ 'Nameserver 1'|trans }}"/>
+                        </div>
+                        <div class="mb-2 col-md-6">
+                            <input class="form-control form-control-sm" type="text" name="ns2" value="" placeholder="{{ 'Nameserver 2'|trans }}"/>
+                        </div>
+                        <div class="mb-2 col-md-6">
+                            <input class="form-control form-control-sm" type="text" name="ns3" value="" placeholder="{{ 'Nameserver 3'|trans }}"/>
+                        </div>
+                        <div class="mb-2 col-md-6">
+                            <input class="form-control form-control-sm" type="text" name="ns4" value="" placeholder="{{ 'Nameserver 4'|trans }}"/>
                         </div>
                     </div>
-                    <div class="c">
-                        <div class="onAfterDomainCheck" style="display:none;">
-                            <label class="mt-2">
-                                <select class="form-select form-select-sm" name="register_years" id="registration-years"></select>
-                            </label>
-                            <br/>
-                            <div class="form-check form-switch my-3">
-                                <input class="form-check-input" type="checkbox" role="switch" id="nameserversCb">
-                                <label class="form-check-label text-sm" for="nameserversCb">
-                                    {{ 'I want to use my nameservers'|trans }}
-                                </label>
-                            </div>
-                            <div id="nameservers" class="flex-column row" style="display:none;">
-                                <div class="mb-2 col-md-6">
-                                    <input class="form-control form-control-sm" type="text" name="ns1" value="" placeholder="{{ 'Nameserver 1'|trans }}"/>
-                                </div>
-                                <div class="mb-2 col-md-6">
-                                    <input class="form-control form-control-sm" type="text" name="ns2" value="" placeholder="{{ 'Nameserver 2'|trans }}"/>
-                                </div>
-                                <div class="mb-2 col-md-6">
-                                    <input class="form-control form-control-sm" type="text" name="ns3" value="" placeholder="{{ 'Nameserver 3'|trans }}"/>
-                                </div>
-                                <div class="mb-2 col-md-6">
-                                    <input class="form-control form-control-sm" type="text" name="ns4" value="" placeholder="{{ 'Nameserver 4'|trans }}"/>
-                                </div>
-                            </div>
-                            {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain_fields', tld_select: 'register_tld'}) }}
-                        </div>
+                    <div class="cf-ds-fields">
+                        {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain_fields', tld_select: 'register_tld'}) }}
                     </div>
                 </div>
             </div>
@@ -218,81 +242,7 @@
             });
         }
 
-        const domainCheck = document.getElementById('domain-check');
-        if (domainCheck) {
-            domainCheck.addEventListener('click', function (event) {
-                const sld = document.querySelector('input[name="register_sld"]').value.toLowerCase();
-                const tld = document.querySelector('select[name="register_tld"]').value.toLowerCase();
-                const domain = sld + tld;
-                document.getElementById('domain-action').value = 'register';
-                ClientFenceDomainCaptcha.post(
-                    'servicedomain/check',
-                    {sld: sld, tld: tld},
-                    function (result) {
-                        setPricing(tld);
-                        const domainNameEl = document.getElementById('domain-name');
-                        if (domainNameEl) domainNameEl.textContent = domain;
-                        const onAfterDomainCheck = document.querySelector('.onAfterDomainCheck');
-                        if (onAfterDomainCheck) fadeIn(onAfterDomainCheck);
-
-                        const registerOrderButton = document.querySelector('#register .order-button');
-                        if (registerOrderButton) registerOrderButton.style.display = '';
-                    },
-                );
-
-                return false;
-            });
-        }
-
-        function setPricing(tld) {
-            ClientFence.api.guest.post(
-                'servicedomain/pricing',
-                {tld: tld},
-                function (result) {
-                    const yearsSelect = document.getElementById('registration-years');
-                    if (!yearsSelect) return;
-                    yearsSelect.innerHTML = '';
-
-                    const regPrice = Number(result.price_registration);
-                    let renewPrice = Number(result.price_renew);
-
-                    if (result.price_renew === null || typeof result.price_renew === 'undefined' || isNaN(renewPrice)) {
-                        renewPrice = regPrice;
-                    }
-
-                    const yearLabel = "{{ ' Year @ '|trans }}";
-                    const yearsLabel = "{{ ' Years @ '|trans }}";
-
-                    // Use the TLD's explicit period list when configured; otherwise fall
-                    // back to a range starting at its minimum registration period.
-                    let allowedYears = Array.isArray(result.periods) && result.periods.length ? result.periods : null;
-                    if (!allowedYears) {
-                        const minYears = Number(result.min_years) > 0 ? Number(result.min_years) : 1;
-                        allowedYears = [];
-                        for (let i = minYears; i < minYears + 5; i++) {
-                            allowedYears.push(i);
-                        }
-                    }
-
-                    allowedYears.forEach(function (i) {
-                        const totalPrice = (i === 1) ? regPrice : regPrice + (i - 1) * renewPrice;
-                        const priceFormatted = formatCurrency(
-                            totalPrice,
-                            {{ currency.conversion_rate }},
-                            "{{ currency.code }}",
-                            1
-                        );
-
-                        yearsSelect.append(
-                            new Option(i + (i === 1 ? yearLabel : yearsLabel) + priceFormatted, i)
-                        );
-                    });
-
-                    configNext.style.display = '';
-                    configNext.disabled = false;
-                },
-            );
-        }
+        // ClientFence core patch (CF-139): the register search and its prices are in domain-search.js.
 
         function setTransferPricing(tld) {
             ClientFence.api.guest.post(
@@ -313,17 +263,6 @@
 
         const tldParam = urlParams.get('tld');
         if (tldParam) {
-            const registerTldSelect = document.querySelector('select[name="register_tld"]');
-            if (registerTldSelect) {
-                for (let i = 0; i < registerTldSelect.options.length; i++) {
-                    if (registerTldSelect.options[i].value === tldParam) {
-                        registerTldSelect.selectedIndex = i;
-                        // ClientFence core patch: shows the chosen TLD's domain fields (mod_servicedomain_domain_fields).
-                        registerTldSelect.dispatchEvent(new Event('change'));
-                        break;
-                    }
-                }
-            }
             const transferTldSelect = document.querySelector('select[name="transfer_tld"]');
             if (transferTldSelect) {
                 for (let i = 0; i < transferTldSelect.options.length; i++) {

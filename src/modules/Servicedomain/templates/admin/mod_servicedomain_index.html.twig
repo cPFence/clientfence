@@ -66,6 +66,19 @@
                                     <button class="btn" type="submit">{{ 'Search'|trans }}</button>
                                 </div>
                             </form>
+                            {# ClientFence core patch (CF-139): the pinned TLDs, ticked first in the client domain searches (WHMCS Spotlight TLDs). #}
+                            <form method="post" action="{{ 'servicedomain/tld_pinned_update'|api_url }}" class="mb-3" {{ fb_api_form({message: 'Saved.'|trans}) }}>
+                                <label class="form-label" for="cf-pinned-tlds">{{ 'Pinned TLDs'|trans }}</label>
+                                <div class="row g-2">
+                                    <div class="col-sm-8 col-lg-4">
+                                        <input class="form-control" type="text" id="cf-pinned-tlds" name="tlds" value="{{ guest.servicedomain_pinned_tlds|join(' ') }}" placeholder=".com .net .org" dir="ltr" autocomplete="off" aria-describedby="cf-pinned-tlds-hint">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+                                    </div>
+                                </div>
+                                <div class="form-hint" id="cf-pinned-tlds-hint">{{ 'Up to :count TLDs on sale, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker.'|trans({':count': 8}) }}</div>
+                            </form>
                         </div>
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter table-striped text-nowrap sortable">

@@ -6514,5 +6514,37 @@
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
         "done": "ClientFence core patch: the service reads first: title and status, its price and next renewal, the actions, then the facts as a grid in place of the four tiles (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Servicedomain/Api/Guest.php",
+        "done": "ClientFence core patch (CF-139): one name across up to 20 TLDs (WHMCS Spotlight TLDs). A new search"
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch (CF-139): pins up to 8 TLDs on sale for the domain search (WHMCS Spotlight TLDs)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch (CF-139): saves the pinned TLDs, up to 8 TLDs on sale (a list, or names separated by spaces or commas)."
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (CF-139): the pinned TLDs belong to the TLD permission (Servicedomain tld_pinned_update)."
+    },
+    {
+        "file": "library/ClientFence/Security/RateLimiter.php",
+        "done": "ClientFence core patch (CF-139): the next batches of a bulk domain search, 3 per counted lookup (20 TLDs, 5 a call)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig",
+        "done": "ClientFence core patch (CF-139): the pinned TLDs, ticked first in the client domain searches (WHMCS Spotlight TLDs)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig",
+        "done": "ClientFence core patch (CF-139): the register search and its prices are in domain-search.js."
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_domainchecker.html.twig",
+        "done": "ClientFence core patch (CF-139): one name across the ticked TLDs (up to 20, the staff-pinned ones ticked first),"
     }
 ]
