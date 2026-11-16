@@ -5694,6 +5694,10 @@ msgstr ""
 msgid "Choose the value shown before the form recipient changes this field."
 msgstr ""
 
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicedomain/Api/Guest.php src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
+msgid "Choose up to :count extensions."
+msgstr ""
+
 #: src/modules/Clientfence/SecuritySettings.php
 msgid "Choose what happens to sign-ups and orders from hosting networks."
 msgstr ""
@@ -8814,11 +8818,7 @@ msgstr ""
 msgid "Domain extensions"
 msgstr ""
 
-#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
-msgid "Domain is available"
-msgstr ""
-
-#: src/modules/Servicedomain/Api/Guest.php
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicedomain/Api/Guest.php src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
 msgid "Domain is not available."
 msgstr ""
 
@@ -10638,7 +10638,7 @@ msgstr ""
 msgid "Export orders"
 msgstr ""
 
-#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig
+#: src/modules/Extension/templates/admin/mod_extension_index.html.twig
 msgid "Extension"
 msgstr ""
 
@@ -10678,7 +10678,7 @@ msgstr ""
 msgid "Extension type was not passed"
 msgstr ""
 
-#: src/modules/Extension/Controller/Admin.php src/modules/Extension/manifest.json src/modules/Extension/templates/admin/mod_extension_index.html.twig …
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Extension/Controller/Admin.php src/modules/Extension/manifest.json …
 msgid "Extensions"
 msgstr ""
 
@@ -15982,6 +15982,10 @@ msgstr ""
 msgid "More can be set in Security → Settings. Locked out? On the server run: php console.php clientfence:signin-security-off"
 msgstr ""
 
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig
+msgid "More extensions"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
 msgid "More from one address are blocked, which stops loops with auto-responders."
 msgstr ""
@@ -18558,7 +18562,7 @@ msgstr ""
 msgid "Order not found"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "Order now"
 msgstr ""
 
@@ -20022,8 +20026,16 @@ msgstr ""
 msgid "Pin on the dashboard until"
 msgstr ""
 
+#: src/modules/Servicedomain/Service.php
+msgid "Pin up to :count TLDs."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig …
 msgid "Pinned"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Pinned TLDs"
 msgstr ""
 
 #: src/modules/Client/Api/Admin.php
@@ -28251,6 +28263,10 @@ msgstr ""
 msgid "This request comes from %remote%. The address used for the visitor: %client%."
 msgstr ""
 
+#: src/modules/Servicedomain/Api/Guest.php
+msgid "This search has expired. Search again."
+msgstr ""
+
 #: src/modules/Support/TicketSecrets.php
 msgid "This secret is too large."
 msgstr ""
@@ -29721,6 +29737,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "Unverified sender"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig src/themes/palisade/html/partials/ticket_upload.html.twig

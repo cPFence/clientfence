@@ -95,6 +95,22 @@ test('a closed store offers a client no add-ons for their service and refuses th
         ->toThrow(ClientFence\InformationException::class, 'The store is not available.');
 });
 
+test('a closed store refuses the bulk domain check and shows no pinned TLDs (CF-139)', function (): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);
+    $di['session'] = new class {
+        public function get(string $key): mixed
+        {
+            return null;
+        }
+    };
+    $di['request'] = Request::create('/order/domain-checker');
+
+    expect(fn () => Service::storeGate($di, 'guest', 'servicedomain', 'check_bulk', new stdClass(), ['sld' => 'example', 'tlds' => ['.com']]))
+        ->toThrow(ClientFence\InformationException::class, 'The store is not available.')
+        ->and(Service::storeGate($di, 'guest', 'servicedomain', 'pinned_tlds', new stdClass(), []))->toBe(['result' => []]);
+});
+
 test('a closed store lists its TLDs on admin pages to signed-in staff only', function (string $path, bool $staff, ?array $answer): void {
     $di = container();
     $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);
