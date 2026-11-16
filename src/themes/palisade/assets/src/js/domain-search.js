@@ -88,6 +88,9 @@ export default function initDomainSearch(root) {
   };
 
   const search = async () => {
+    if (button.disabled) {
+      return; // a search is running (Enter while it loads)
+    }
     const typed = input.value.trim().toLowerCase();
     const dot = typed.indexOf('.');
     sld = dot === -1 ? typed : typed.slice(0, dot);

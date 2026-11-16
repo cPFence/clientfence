@@ -168,7 +168,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
                 // its Category list through it (an empty list cleared the category on save).
             ],
             'cart' => ['add_item' => 'closed', 'apply_promo' => 'closed'],
-            'servicedomain' => ['tlds' => 'list', 'pricing' => 'closed', 'check' => 'closed', 'can_be_transferred' => 'closed'],
+            'servicedomain' => ['tlds' => 'list', 'pinned_tlds' => 'list', 'pricing' => 'closed', 'check' => 'closed', 'check_bulk' => 'closed', 'can_be_transferred' => 'closed'],
             'servicehosting' => ['free_tlds' => 'list'],
         ],
         // Not order_upgradables: it only fills the "Request Upgrade" ticket of an existing order.

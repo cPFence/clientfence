@@ -88,6 +88,10 @@
             margin-inline-start: auto;
         }
 
+        a.embed-button[hidden] {
+            display: none;
+        }
+
         a.embed-button {
             display: inline-block;
             width: auto;
@@ -147,6 +151,7 @@
         const currency = {{ { code: currency.code, rate: currency.conversion_rate }|json_encode|raw }};
         const url = {{ 'servicedomain/check_bulk'|api_url(role='guest')|json_encode|raw }};
         let sld = '';
+        let run = 0; // the newest search: answers of an older one are dropped
 
         const money = (amount) => {
             const total = Number(amount) * Number(currency.rate);
@@ -201,6 +206,7 @@
         list.addEventListener('change', update);
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
+            const mine = ++run;
             const typed = this.elements.sld.value.trim().toLowerCase();
             const dot = typed.indexOf('.');
             sld = dot === -1 ? typed : typed.slice(0, dot);
@@ -222,11 +228,17 @@
                     params.append(key, value);
                 }
                 let answer = await post(params).finally(() => ClientFenceDomainCaptcha.after());
+                if (mine !== run) {
+                    return;
+                }
                 list.hidden = false;
                 answer.results.forEach(addRow);
                 update();
                 while (answer.search) {
                     answer = await post(new URLSearchParams({ search: answer.search }));
+                    if (mine !== run) {
+                        return;
+                    }
                     answer.results.forEach(addRow);
                     update();
                 }
