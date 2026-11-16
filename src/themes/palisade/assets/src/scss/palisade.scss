@@ -11,15 +11,15 @@
 @font-face { font-family: "Jakarta"; font-style: normal; font-weight: 800; font-display: swap; src: url("../fonts/jakarta-800.woff2") format("woff2"); }
 
 // ---- Brand
-$navy-950: #060a12;
-$navy-900: #0a111d;
-$navy-850: #0c1422;
-$navy-800: #101a2b;
-$navy-700: #1a2740;
-$navy-600: #283a58;
-$brand: #2672e3;
-$brand-deep: #0e48a6;
-$accent: #5b9dff;
+$navy-950: #05131c;
+$navy-900: #0a1821;
+$navy-850: #0c2738;
+$navy-800: #10222f;
+$navy-700: #1c3445;
+$navy-600: #2a4a5e;
+$brand: #0e5a7a;
+$brand-deep: #0a4862;
+$accent: #14a39a;
 
 // ---- Bootstrap configuration
 $primary: $brand;
@@ -42,10 +42,10 @@ $h6-font-size: .9375rem;
 $font-size-base: .9375rem;
 $line-height-base: 1.55;
 
-$body-bg: #f4f6fb;
-$body-color: #1b2433;
-$body-secondary-color: #5b6779;
-$border-color: #e3e8f0;
+$body-bg: #f2f6f8;
+$body-color: #14212b;
+$body-secondary-color: #566778;
+$border-color: #e2e9ee;
 $link-decoration: none;
 $link-hover-decoration: underline;
 
@@ -93,7 +93,7 @@ $body-secondary-bg-dark: $navy-800;
 $border-color-dark: $navy-700;
 $primary-text-emphasis-dark: $accent;
 $link-color-dark: $accent;
-$link-hover-color-dark: #8bbaff;
+$link-hover-color-dark: #8fd9cf;
 
 @import "bootstrap/scss/bootstrap";
 
@@ -4274,4 +4274,149 @@ a.list-group-item {
     align-items: center;
     gap: .5rem;
   }
+}
+
+// ---- Modern look (CF-135): ambient glow behind the pages (in the brand and accent colours, so a brand
+// colour chosen in the admin carries through), glass top bar and surfaces, tints on the menu, tables and
+// components, and motion. Surfaces stay plain backgrounds where a modal or a fixed menu could sit inside
+// them: backdrop-filter makes an element the containing block of its fixed children.
+:root {
+  --pal-glass: rgba(255, 255, 255, .78);
+  --pal-ease: cubic-bezier(.2, .8, .2, 1);
+  --pal-glow-1: rgba(var(--pal-accent-rgb), .28);
+  --pal-glow-2: rgba(var(--pal-brand-rgb), .20);
+}
+[data-bs-theme="dark"] {
+  --pal-glass: rgba(16, 34, 47, .74);
+  --pal-glow-1: rgba(var(--pal-accent-rgb), .22);
+  --pal-glow-2: rgba(var(--pal-brand-rgb), .30);
+}
+body { isolation: isolate; }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(640px 440px at 92% -4%, var(--pal-glow-1), transparent 70%),
+    radial-gradient(560px 420px at 18% 104%, var(--pal-glow-2), transparent 70%);
+}
+.app-sidebar, .sidebar-panel {
+  @include media-breakpoint-up(lg) {
+    background:
+      radial-gradient(260px 220px at 0% 0%, rgba(var(--pal-accent-rgb), .36), transparent 70%),
+      radial-gradient(260px 260px at 0% 92%, rgba(var(--pal-brand-rgb), .45), transparent 70%),
+      linear-gradient(180deg, var(--bf-sidebar-bg), color-mix(in srgb, var(--bf-sidebar-bg) 82%, #17405a));
+  }
+}
+.card, .stat-card { background-color: var(--pal-glass); transition: transform .35s var(--pal-ease), box-shadow .35s var(--pal-ease), border-color .35s; }
+.stat-card:hover, .stat-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(var(--pal-accent-rgb), .45);
+  box-shadow: 0 14px 32px -14px rgba(var(--pal-brand-rgb), .45);
+}
+.table > thead > tr > th {
+  background: linear-gradient(90deg, rgba(var(--pal-accent-rgb), .09), rgba(var(--pal-brand-rgb), .06));
+  color: var(--bs-secondary-color); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase;
+}
+.table > tbody > tr > * { transition: background-color .25s; }
+.table-hover > tbody > tr:hover > *, .table > tbody > tr:hover > * {
+  --bs-table-bg-state: transparent;
+  background-image: linear-gradient(90deg, rgba(var(--pal-accent-rgb), .08), transparent 80%);
+}
+.btn { transition: transform .2s var(--pal-ease), box-shadow .25s, background-color .25s, border-color .25s; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn-primary, .btn-primary:hover, .btn-primary:focus {
+  background-image: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand)));
+  border-color: transparent; box-shadow: 0 6px 18px -8px var(--pal-brand);
+}
+.btn-primary:hover { box-shadow: 0 10px 26px -8px var(--pal-accent); }
+.badge { border: 1px solid color-mix(in srgb, currentColor 20%, transparent); border-radius: 999px; }
+.nav-tabs .nav-link.active { border-color: transparent; background: linear-gradient(90deg, var(--pal-brand), var(--pal-accent)) bottom / 100% 2px no-repeat; }
+.dropdown-menu { background-color: var(--pal-glass); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); box-shadow: 0 30px 60px -20px rgba(4, 20, 30, .30); }
+.dropdown-menu.show { animation: pal-pop .28s var(--pal-ease) backwards; }
+// Solid status badges and alerts become soft chips and tinted panels in their colour.
+.badge:is(.text-bg-success, .bg-success) { background: rgba(var(--bs-success-rgb), .12) !important; color: var(--bs-success-text-emphasis) !important; }
+.badge:is(.text-bg-warning, .bg-warning) { background: rgba(var(--bs-warning-rgb), .14) !important; color: var(--bs-warning-text-emphasis) !important; }
+.badge:is(.text-bg-danger, .bg-danger) { background: rgba(var(--bs-danger-rgb), .12) !important; color: var(--bs-danger-text-emphasis) !important; }
+.badge:is(.text-bg-info, .bg-info, .text-bg-primary, .bg-primary) { background: rgba(var(--pal-brand-rgb), .10) !important; color: var(--bs-primary-text-emphasis) !important; }
+.badge:is(.text-bg-secondary, .bg-secondary) { background: var(--bs-secondary-bg) !important; color: var(--bs-secondary-color) !important; }
+.btn-success, .btn-success:hover, .btn-success:focus { background-image: linear-gradient(135deg, #14a39a, #1bb7a0); border-color: transparent; box-shadow: 0 6px 18px -8px #14a39a; }
+.alert { border-radius: $border-radius-lg; border-inline-start-width: 3px; }
+.alert-warning { background: linear-gradient(110deg, rgba(var(--bs-warning-rgb), .14), rgba(var(--bs-warning-rgb), .04) 70%); }
+.alert-danger { background: linear-gradient(110deg, rgba(var(--bs-danger-rgb), .12), rgba(var(--bs-danger-rgb), .03) 70%); }
+.alert-info, .alert-primary { background: linear-gradient(110deg, rgba(var(--pal-brand-rgb), .10), rgba(var(--pal-brand-rgb), .03) 70%); }
+.alert-success { background: linear-gradient(110deg, rgba(var(--bs-success-rgb), .12), rgba(var(--bs-success-rgb), .03) 70%); }
+// translate and scale, not transform: Popper positions the menu with an inline transform.
+@keyframes pal-pop { from { opacity: 0; translate: 0 -6px; scale: .98; } to { opacity: 1; translate: none; scale: none; } }
+// Client dashboard: the unpaid invoice first, a tinted panel with its amount and Pay; red once overdue.
+.cf-due {
+  --cf-due-rgb: var(--bs-warning-rgb);
+  display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; margin-bottom: 1.5rem; padding: 1rem 1.25rem;
+  border: 1px solid rgba(var(--cf-due-rgb), .35); border-radius: $border-radius-lg;
+  background: linear-gradient(110deg, rgba(var(--cf-due-rgb), .16), var(--pal-glass) 65%);
+  box-shadow: 0 14px 32px -18px rgba(var(--cf-due-rgb), .6);
+  animation: pal-rise .55s var(--pal-ease) backwards;
+}
+.cf-due.is-late { --cf-due-rgb: var(--bs-danger-rgb); }
+.cf-due-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: $border-radius; background: rgba(var(--cf-due-rgb), .16); color: rgb(var(--cf-due-rgb)); }
+.cf-due-text { flex: 1 1 12rem; min-width: 0; }
+.cf-due-amount { font-family: $headings-font-family; font-size: 1.6rem; font-weight: 800; }
+.cf-due.is-late .cf-due-amount { color: var(--bs-danger-text-emphasis); }
+.stat-card.is-alert { background-image: linear-gradient(110deg, rgba(var(--bs-warning-rgb), .12), transparent 65%); }
+// Store billing cycles: one even row (it scrolls sideways on a phone instead of wrapping), the saving as
+// a quiet line under each label so every item has the same height.
+.bf-store-bar .bf-seg-cycles {
+  flex: 0 1 auto; flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  background: var(--pal-glass); border: 1px solid var(--bs-border-color);
+  &::-webkit-scrollbar { display: none; }
+  // On a phone the end fades out, a hint that more cycles sit past the edge.
+  @include media-breakpoint-down(md) { mask-image: linear-gradient(90deg, #000 78%, transparent); }
+  @include media-breakpoint-down(md) { [dir="rtl"] & { mask-image: linear-gradient(270deg, #000 78%, transparent); } }
+  .bf-seg-item { flex: 0 0 auto; min-width: 104px; min-height: 54px; gap: 2px; padding: 8px 14px; white-space: nowrap; transition: background-color .25s, color .25s, box-shadow .25s; }
+  .bf-seg-item.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); color: #fff; box-shadow: 0 6px 16px -8px var(--pal-brand); }
+  .bf-save { padding: 0; background: none; color: var(--bs-success-text-emphasis); font-size: .72rem; font-weight: 600; }
+  .bf-seg-item.is-on .bf-save { color: rgba(255, 255, 255, .85); }
+}
+.bf-tab.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); border-color: transparent; color: #fff; }
+// Store hero (with a domain product on sale): a deep panel with glows, the domain search and TLD prices.
+.bf-store-head.has-search {
+  max-width: none; align-items: center; gap: .625rem; padding: 2.75rem 1.5rem 2.25rem; overflow: hidden;
+  border-radius: 1.25rem; color: #fff; text-align: center;
+  background:
+    radial-gradient(460px 280px at 88% -10%, rgba(var(--pal-accent-rgb), .5), transparent 70%),
+    radial-gradient(460px 320px at 8% 115%, rgba(var(--pal-brand-rgb), .75), transparent 70%),
+    linear-gradient(135deg, $navy-900, $navy-850);
+  box-shadow: 0 30px 60px -32px rgba(var(--pal-brand-rgb), .8);
+  animation: pal-rise .55s var(--pal-ease) backwards;
+  h1 { color: #fff; font-size: 2.25rem; }
+  p { color: rgba(255, 255, 255, .72); }
+}
+.bf-domain-search {
+  display: flex; flex-wrap: wrap; gap: .375rem; width: 100%; max-width: 640px; margin-top: .875rem; padding: .375rem;
+  border: 1px solid rgba(255, 255, 255, .18); border-radius: 1rem; background: rgba(255, 255, 255, .09);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  .form-control, .form-select { min-height: 46px; border: 0; background-color: transparent; color: #fff; box-shadow: none; }
+  .form-control { flex: 1 1 12rem; }
+  .form-control::placeholder { color: rgba(255, 255, 255, .6); }
+  .form-select { flex: 0 0 auto; width: auto; --bs-form-select-bg-img: #{escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>"))}; }
+  .form-select option { background-color: var(--bs-body-bg); color: var(--bs-body-color); }
+  .btn { display: inline-flex; align-items: center; gap: .375rem; min-height: 46px; padding-inline: 1.25rem; border-radius: .75rem; }
+  @include media-breakpoint-down(sm) { .btn { flex-grow: 1; justify-content: center; } }
+}
+.bf-tlds {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-top: .375rem;
+  a { padding: .375rem .75rem; border: 1px solid rgba(255, 255, 255, .14); border-radius: 999px; background: rgba(255, 255, 255, .06); color: #fff; font-weight: 600; font-size: .875rem; text-decoration: none; transition: background-color .25s, transform .25s var(--pal-ease); }
+  a:hover { background: rgba(255, 255, 255, .14); transform: translateY(-1px); }
+  em { margin-inline-start: .25rem; font-style: normal; font-weight: 500; color: $link-hover-color-dark; }
+}
+@keyframes pal-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+// Fill backwards only: a kept transform would trap modals in the card and cancel the hover lift.
+main .card, main .stat-card { animation: pal-rise .55s var(--pal-ease) backwards; }
+main .row > :nth-child(2) > :is(.card, .stat-card) { animation-delay: 50ms; }
+main .row > :nth-child(3) > :is(.card, .stat-card) { animation-delay: 100ms; }
+main .row > :nth-child(4) > :is(.card, .stat-card) { animation-delay: 150ms; }
+main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
+@media (prefers-reduced-motion: reduce) {
+  main .card, main .stat-card, .dropdown-menu.show, .cf-due, .bf-store-head { animation: none; }
+  .btn, .card, .stat-card { transition: none; }
+  .btn:hover, .stat-card:hover { transform: none; }
 }

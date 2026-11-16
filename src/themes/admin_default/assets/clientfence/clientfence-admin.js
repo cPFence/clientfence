@@ -660,6 +660,40 @@ if (summary) {
   mark();
 }
 
+// ---- Count-up of the dashboard key figures: the digits of the server's own text run up from 0 and
+// keep its separators and currency, so every locale's format stays exact; the last frame is that text.
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('[data-bf-count]').forEach((el) => {
+    const text = el.textContent;
+    const match = text.match(/\d(?:[\d.,'\s\u00a0\u202f]*\d)?/);
+    if (!match) return;
+    const number = match[0];
+    const digits = number.replace(/\D/g, '');
+    // Leading zeros are hidden, but never the last whole digit or the decimals ("0.00" stays).
+    const keep = ((number.match(/[.,](\d{1,2})$/) || ['', ''])[1].length) + 1;
+    const start = performance.now();
+    const frame = (now) => {
+      const k = Math.min(1, (now - start) / 900);
+      const value = String(Math.round(Number(digits) * (1 - (1 - k) ** 3))).padStart(digits.length, '0');
+      let i = 0;
+      let shown = false;
+      let out = '';
+      for (const ch of number) {
+        if (/\d/.test(ch)) {
+          shown ||= value[i] !== '0' || digits.length - i <= keep;
+          if (shown) out += value[i];
+          i++;
+        } else if (shown) {
+          out += ch;
+        }
+      }
+      el.textContent = k < 1 ? text.slice(0, match.index) + out + text.slice(match.index + number.length) : text;
+      if (k < 1) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+}
+
 // ---- Dashboard chart (FOSSBilling's own chart helper): a figure (income, or the counts of the
 // Statistics table) over Today, 7, 30 or 90 days. Income comes with the page; another figure is
 // fetched once when picked: 90 days from FOSSBilling's stats_get_*, whose last 30 and 7 points

@@ -67,7 +67,7 @@ export default function initStore(root) {
       let best = 0;
       cards.filter((card) => !card.hidden && card.dataset.once === undefined && card.dataset.fixed === undefined).forEach((card) => {
         const prices = pricesOf(card);
-        if (prices['1M'] > 0 && prices[code] !== undefined && MONTHS[code] > 1) {
+        if (prices['1M'] > 0 && prices[code] > 0 && MONTHS[code] > 1) { // a free cycle is not a saving to advertise
           best = Math.max(best, Math.round((1 - prices[code] / (prices['1M'] * MONTHS[code])) * 100));
         }
       });

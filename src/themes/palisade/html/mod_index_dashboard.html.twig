@@ -88,13 +88,30 @@
         </script>
     {% endif %}
 
+    {# ClientFence core patch: the unpaid invoice reads first: one invoice shows its amount, due date and Pay (CF-135 redesign). #}
     {% if dashboard.invoices is not null and dashboard.invoices.unpaid > 0 %}
-        <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
-            <span class="d-inline-flex align-items-center gap-2">
-                <svg class="icon" aria-hidden="true"><use href="#alert-triangle"/></svg>
-                {{ 'You have :count unpaid invoice(s).'|trans({ ':count': dashboard.invoices.unpaid }) }}
-            </span>
-            <a class="btn btn-sm btn-warning" href="{{ 'invoice'|url }}">{{ 'View invoices'|trans }}</a>
+        {% set due_invoice = dashboard.invoices.unpaid == 1 ? client.invoice_get_list({ 'status': 'unpaid', 'per_page': 1 }).list|first : null %}
+        {% set due_late = due_invoice and due_invoice.due_at and due_invoice.due_at|date('U') < 'now'|date('U') %}
+        <div class="cf-due{% if due_late %} is-late{% endif %}" role="alert">
+            <span class="cf-due-icon"><svg class="icon" aria-hidden="true"><use href="#alert-triangle"/></svg></span>
+            {% if due_invoice %}
+                <div class="cf-due-text">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <strong>{{ 'Invoice'|trans }} <bdi>#{{ due_invoice.serie_nr }}</bdi></strong>
+                        <span class="badge {{ due_late ? 'text-bg-danger' : 'text-bg-warning' }}">{{ due_late ? 'Overdue'|trans : 'Unpaid'|trans }}</span>
+                    </div>
+                    {% if due_invoice.due_at %}<div class="small text-muted">{{ 'Due Date'|trans }} {{ due_invoice.due_at|format_date }}</div>{% endif %}
+                </div>
+                <div class="cf-due-amount">{{ due_invoice.balance_due|format_currency(due_invoice.currency ?? default_currency) }}</div>
+                {% if due_invoice.pending_payment|default(null) %}
+                    <a class="btn btn-outline-secondary" href="{{ "invoice/#{due_invoice.hash}"|url }}">{{ 'Payment pending'|trans }}</a>
+                {% else %}
+                    <a class="btn btn-primary" href="{{ "invoice/#{due_invoice.hash}"|url }}">{{ 'Pay now'|trans }}</a>
+                {% endif %}
+            {% else %}
+                <div class="cf-due-text"><strong>{{ 'You have :count unpaid invoice(s).'|trans({ ':count': dashboard.invoices.unpaid }) }}</strong></div>
+                <a class="btn btn-primary" href="{{ 'invoice'|url }}">{{ 'View invoices'|trans }}</a>
+            {% endif %}
         </div>
     {% endif %}
 

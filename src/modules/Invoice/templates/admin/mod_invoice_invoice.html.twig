@@ -25,7 +25,6 @@
 {% block content %}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
     title: 'Invoice'|trans ~ ' ' ~ invoice.serie ~ ("%05s"|format(invoice.nr)),
-    subtitle: 'Review billing details, update invoice content, and adjust stored purchase records.'|trans,
     outer_card_class: 'mb-3'
 } %}
     {% block detail_tabs %}
@@ -52,101 +51,74 @@
             <div class="px-3 py-3 d-flex flex-column gap-3">
                 {% embed 'partial_admin_summary_card.html.twig' with {
                     title: 'Invoice Summary'|trans,
-                    subtitle: 'Review billing totals, client attribution, due dates, and the current invoice state.'|trans,
                     centered_actions: true
                 } %}
                     {% import 'macro_functions.html.twig' as mf %}
                     {% block summary_content %}
-                        <table class="table card-table table-vcenter cf-summary">
-                            <tbody>
-                                <tr>
-                                    <td class="w-50 text-end">{{ 'ID'|trans }}</td>
-                                    <td>#{{ invoice.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Number'|trans }}</td>
-                                    <td>{{ invoice.serie }}{{ "%05s"|format(invoice.nr) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Client'|trans }}</td>
-                                    <td>
-                                        {% if invoice.client %}
+                        {# ClientFence core patch: the summary reads first: the amount in its status colour, the status chips, the client, then the facts (CF-135 redesign). #}
+                        {% set cur = invoice.currency ?? default_currency %}
+                        {% set overdue = invoice.status == 'unpaid' and invoice.due_at and date(invoice.due_at) < date() %}
+                        {% set tone = overdue ? 'bad' : (invoice.status == 'unpaid' ? 'warn' : (invoice.status == 'paid' ? 'ok' : 'muted')) %}
+                        <div class="cf-inv">
+                            <div class="cf-inv-hero">
+                                <div>
+                                    <div class="cf-inv-figure cf-tone-{{ tone }}">{{ (invoice.status == 'unpaid' ? invoice.balance_due|default(invoice.total) : invoice.total)|format_currency(cur) }}</div>
+                                    <div class="text-secondary">{{ invoice.status == 'unpaid' ? 'Balance due'|trans : 'Total'|trans }}{% if invoice.paid_at %} · {{ 'Date Paid'|trans }} {{ invoice.paid_at|format_date }}{% endif %}</div>
+                                </div>
+                                <div class="cf-inv-chips">
+                                    {{ mf.status_badge(invoice.status, 'invoice') }}
+                                    {% if overdue %}<span class="badge bg-red-lt">{{ 'Overdue'|trans }} · {{ invoice.due_at|timeago }}</span>{% endif %}
+                                    {# ClientFence core patch: a bank debit still clearing (Invoice/PendingPayments.php). #}
+                                    {% if invoice.pending_payment|default(null) %}
+                                        <span class="badge bg-info-lt">{{ 'Payment pending'|trans }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if invoice.pending_payment|default(null) %}
+                                <div class="cf-inv-note text-secondary small">{{ 'A bank payment of :amount from :date is clearing.'|trans({':amount': invoice.pending_payment.amount|format_currency(invoice.pending_payment.currency|upper), ':date': invoice.pending_payment.created_at|format_date}) }}</div>
+                            {% endif %}
+                            <div class="cf-inv-client">
+                                {% if invoice.client %}
+                                    <span class="cf-avatar" aria-hidden="true">{{ (invoice.client.first_name|first ~ invoice.client.last_name|first)|upper }}</span>
+                                    <div class="cf-inv-who">
                                         <a href='{{ "client/manage/#{invoice.client.id}"|url }}'>{{ invoice.client.first_name }} {{ invoice.client.last_name }}</a>
-                                        {% else %}
-                                        {{ 'Deleted client'|trans }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Status'|trans }}</td>
-                                    <td>{{ mf.status_badge(invoice.status, 'invoice') }}
-                                        {# ClientFence core patch: a bank debit still clearing (Invoice/PendingPayments.php). #}
-                                        {% if invoice.pending_payment|default(null) %}
-                                            <span class="badge bg-info-lt">{{ 'Payment pending'|trans }}</span>
-                                            <div class="text-secondary small">{{ 'A bank payment of :amount from :date is clearing.'|trans({':amount': invoice.pending_payment.amount|format_currency(invoice.pending_payment.currency|upper), ':date': invoice.pending_payment.created_at|format_date}) }}</div>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% if invoice.tax %}
-                                <tr>
-                                    <td class="text-end">{{ invoice.taxname }} {{ invoice.taxrate }}%</td>
-                                    <td>{{ invoice.tax|format_currency(invoice.currency ?? default_currency) }}</td>
-                                </tr>
+                                        {% if invoice.client.company|default('') %}<span class="text-secondary">{{ invoice.client.company }}</span>{% endif %}
+                                        <span class="text-secondary small">{{ invoice.client.email }}</span>
+                                    </div>
+                                {% else %}
+                                    <span class="cf-avatar" aria-hidden="true">?</span>
+                                    <div class="cf-inv-who text-secondary">{{ 'Deleted client'|trans }}</div>
                                 {% endif %}
-                                <tr>
-                                    <td class="text-end">{{ 'Total'|trans }}</td>
-                                    <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
-                                </tr>
+                            </div>
+                            <dl class="cf-facts">
+                                <div><dt>{{ 'Number'|trans }}</dt><dd>{{ invoice.serie }}{{ "%05s"|format(invoice.nr) }} <span class="text-secondary">#{{ invoice.id }}</span></dd></div>
+                                <div><dt>{{ 'Date Created'|trans }}</dt><dd>{{ invoice.created_at|format_datetime }}</dd></div>
+                                <div><dt>{{ 'Date Due'|trans }}</dt><dd>{{ invoice.due_at|format_datetime }}</dd></div>
+                                <div><dt>{{ 'Date Paid'|trans }}</dt><dd>{% if invoice.paid_at %}{{ invoice.paid_at|format_datetime }}{% else %}-{% endif %}</dd></div>
+                                <div><dt>{{ 'Last Reminded'|trans }}</dt><dd>{% if invoice.reminded_at %}<span title="{{ invoice.reminded_at|format_datetime }}">{{ invoice.reminded_at|timeago }} {{ 'ago'|trans }}</span>{% else %}-{% endif %}</dd></div>
+                                <div><dt>{{ 'Currency'|trans }}</dt><dd>{{ invoice.currency|currency_name }}</dd></div>
+                                <div><dt>{{ 'Total'|trans }}</dt><dd>{{ invoice.total|format_currency(cur) }}</dd></div>
+                                {% if invoice.tax %}
+                                <div><dt>{{ invoice.taxname }} {{ invoice.taxrate }}%</dt><dd>{{ invoice.tax|format_currency(cur) }}</dd></div>
+                                {% endif %}
                                 {% if invoice.refund|default(0) > 0 %}
-                                <tr>
-                                    <td class="text-end">{{ 'Refunded'|trans }}</td>
-                                    <td>{{ invoice.refund|format_currency(invoice.currency ?? default_currency) }}</td>
-                                </tr>
+                                <div><dt>{{ 'Refunded'|trans }}</dt><dd>{{ invoice.refund|format_currency(cur) }}</dd></div>
                                 {% endif %}
                                 {% if invoice.status == 'unpaid' and invoice.amount_paid > 0 %}
-                                <tr>
-                                    <td class="text-end">{{ 'Amount paid'|trans }}</td>
-                                    <td>
-                                        {{ invoice.amount_paid|format_currency(invoice.currency ?? default_currency) }}
-                                        {% if invoice.credit_applied > 0 %}
-                                            ({{ 'credit :amount'|trans({ ':amount': invoice.credit_applied|format_currency(invoice.currency ?? default_currency) }) }},
-                                            <a {{ fb_api_link({href: 'invoice/remove_credit'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Remove the credit applied to this invoice?'|trans}, reload: true}) }}>{{ 'Remove credit'|trans }}</a>)
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Balance due'|trans }}</td>
-                                    <td><strong>{{ invoice.balance_due|format_currency(invoice.currency ?? default_currency) }}</strong></td>
-                                </tr>
+                                <div><dt>{{ 'Amount paid'|trans }}</dt><dd>
+                                    {{ invoice.amount_paid|format_currency(cur) }}
+                                    {% if invoice.credit_applied > 0 %}
+                                        ({{ 'credit :amount'|trans({ ':amount': invoice.credit_applied|format_currency(cur) }) }},
+                                        <a {{ fb_api_link({href: 'invoice/remove_credit'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Remove the credit applied to this invoice?'|trans}, reload: true}) }}>{{ 'Remove credit'|trans }}</a>)
+                                    {% endif %}
+                                </dd></div>
+                                <div><dt>{{ 'Balance due'|trans }}</dt><dd><strong>{{ invoice.balance_due|format_currency(cur) }}</strong></dd></div>
                                 {% endif %}
-                                <tr>
-                                    <td class="text-end">{{ 'Currency'|trans }}</td>
-                                    <td>{{ invoice.currency|currency_name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Date Created'|trans }}</td>
-                                    <td>{{ invoice.created_at|format_datetime }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Date Due'|trans }}</td>
-                                    <td>{{ invoice.due_at|format_datetime }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Date Paid'|trans }}</td>
-                                    <td>{% if invoice.paid_at %}{{ invoice.paid_at|format_datetime }}{% else %}-{% endif %}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Last Reminded'|trans }}</td>
-                                    {% if invoice.reminded_at %}<td title={{ invoice.reminded_at|format_datetime }}>{{ invoice.reminded_at|timeago }} {{ 'ago'|trans }}</td>{% else %}<td>-</td>{% endif %}
-                                </tr>
-                                {% if invoice.notes %}
-                                <tr>
-                                    <td class="text-end">{{ 'Notes'|trans }}</td>
-                                    <td>{{ (invoice.notes ?? '')|markdown_to_html }}</td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                            </dl>
+                            {% if invoice.notes %}
+                                <div class="cf-inv-notes"><div class="cf-label">{{ 'Notes'|trans }}</div>{{ (invoice.notes ?? '')|markdown_to_html }}</div>
+                            {% endif %}
+                        </div>
                     {% endblock %}
 
                     {% block summary_actions %}
@@ -353,7 +325,6 @@
 
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Invoice Items'|trans,
-                subtitle: 'Review line items, pricing, taxation, and approval-ready billing content for this invoice.'|trans,
                 card_class: 'mb-3'
             } %}
                 {% block section_content %}

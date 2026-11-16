@@ -44,6 +44,7 @@ function renderPalisadeNews(string $template, PalisadeNewsStub $guest): string
     foreach (['format_date', 'format_datetime', 'markdown_to_html', 'timeago'] as $filter) {
         $twig->addFilter(new TwigFilter($filter, static fn (?string $value): string => (string) $value));
     }
+    $twig->addFilter(new TwigFilter('format_currency', static fn (mixed $amount, ?string $currency = null): string => (string) $amount));
     $twig->addFilter(new TwigFilter('truncate', static fn (?string $text, int $length): string => mb_substr((string) $text, 0, $length)));
     $twig->addFilter(new TwigFilter('api_url', static fn (string $path): string => '/api/client/' . $path));
     $twig->addFunction(new TwigFunction('render_widgets', static fn (): string => ''));

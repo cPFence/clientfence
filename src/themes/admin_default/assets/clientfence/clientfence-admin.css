@@ -15,21 +15,21 @@
 @font-face { font-family: "IBM Plex Sans Arabic"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/ibm-plex-sans-arabic-600.woff2") format("woff2"); unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
 
 :root {
-  --bf-brand: #2672e3;
-  --bf-brand-hover: #1d62c9;
-  --bf-bg: #f4f6fb;
+  --bf-brand: #0e5a7a;
+  --bf-brand-hover: #0a4862;
+  --bf-bg: #f2f6f8;
   --bf-surface: #ffffff;
-  --bf-surface-2: #f7f9fc;
-  --bf-line: #e3e8f0;
-  --bf-ink: #1b2433;
-  --bf-muted: #566275;
-  --bf-soft: #eaf1fd;
-  --bf-soft-ink: #0e48a6;
-  --bf-side: #0a111d;
-  --bf-side-ink: #d5ddea;
-  --bf-side-muted: #8a96aa;
-  --bf-side-hover: #131e31;
-  --bf-side-active: #1d2b45;
+  --bf-surface-2: #f5f8fa;
+  --bf-line: #e2e9ee;
+  --bf-ink: #14212b;
+  --bf-muted: #566778;
+  --bf-soft: #e2f2f1;
+  --bf-soft-ink: #0b5470;
+  --bf-side: #0c2738;
+  --bf-side-ink: #d9e7ee;
+  --bf-side-muted: #8fb0c2;
+  --bf-side-hover: rgba(255, 255, 255, .07);
+  --bf-side-active: rgba(31, 168, 156, .22);
   --bf-ok: #15803d;
   --bf-ok-soft: #e8f6ee;
   --bf-warn: #b45309;
@@ -38,9 +38,18 @@
   --bf-bad-soft: #fdecec;
   --bf-violet: #6d28d9;
   --bf-violet-soft: #f2edfd;
-  --bf-teal: #0f766e;
-  --bf-teal-soft: #e7f5f3;
-  --bf-shadow: 0 1px 2px rgba(16, 26, 43, .06);
+  --bf-teal: #0f8f86;
+  --bf-teal-soft: #e2f4f2;
+  --bf-shadow: 0 1px 2px rgba(16, 40, 60, .04), 0 4px 16px rgba(16, 40, 60, .05);
+  --bf-glass: rgba(255, 255, 255, .78);
+  --bf-glow-1: rgba(64, 199, 186, .30);
+  --bf-glow-2: rgba(110, 165, 230, .26);
+  --bf-glow-3: rgba(150, 135, 240, .12);
+  --bf-ease: cubic-bezier(.2, .8, .2, 1);
+  --tblr-primary: var(--bf-brand);
+  --tblr-primary-rgb: 14, 90, 122;
+  --tblr-link-color: var(--bf-brand);
+  --tblr-link-color-rgb: 14, 90, 122;
   --bf-side-w: 264px;
   --bf-font: "Geist", "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --bf-font-h: "Jakarta", "IBM Plex Sans Arabic", "Geist", system-ui, sans-serif;
@@ -48,20 +57,20 @@
 }
 
 [data-bs-theme="dark"] {
-  --bf-brand: #3b82f6;
-  --bf-brand-hover: #5b9dff;
-  --bf-bg: #070b13;
-  --bf-surface: #0d1524;
-  --bf-surface-2: #111b2d;
-  --bf-line: #1d2b44;
-  --bf-ink: #e6ebf3;
-  --bf-muted: #9eaabd;
-  --bf-soft: #132745;
-  --bf-soft-ink: #9cc2ff;
-  --bf-side: #05080f;
-  --bf-side-muted: #7f8ba0;
-  --bf-side-hover: #101a2b;
-  --bf-side-active: #1a2740;
+  --bf-brand: #3d9cc4;
+  --bf-brand-hover: #5fb4d8;
+  --bf-bg: #0a1821;
+  --bf-surface: #10222f;
+  --bf-surface-2: #132938;
+  --bf-line: #1c3445;
+  --bf-ink: #e6eef3;
+  --bf-muted: #9db0bd;
+  --bf-soft: #123a3c;
+  --bf-soft-ink: #7fd6cc;
+  --bf-side: #071a26;
+  --bf-side-muted: #7d9cad;
+  --bf-side-hover: rgba(255, 255, 255, .06);
+  --bf-side-active: rgba(31, 168, 156, .20);
   --bf-ok: #4ade80;
   --bf-ok-soft: #0f2a1c;
   --bf-warn: #fbbf24;
@@ -71,8 +80,14 @@
   --bf-violet: #a78bfa;
   --bf-violet-soft: #221a3d;
   --bf-teal: #2dd4bf;
-  --bf-teal-soft: #0c2a28;
+  --bf-teal-soft: #0f2f30;
   --bf-shadow: none;
+  --bf-glass: rgba(16, 34, 47, .74);
+  --bf-glow-1: rgba(15, 143, 134, .26);
+  --bf-glow-2: rgba(31, 95, 154, .28);
+  --bf-glow-3: rgba(75, 63, 154, .16);
+  --tblr-primary-rgb: 61, 156, 196;
+  --tblr-link-color-rgb: 61, 156, 196;
 }
 
 /* Tabler's dark colours are neutral grey (cards, dropdowns, modals, forms and tables on the navy shell looked dated
@@ -882,4 +897,198 @@ a.bf-file-name:hover .icon { color: inherit; }
   .cf-toast.showing { transform: none; }
   .cf-toast-bar { display: none; }
   .bf-top, .bf-top-progress { transition: none; }
+}
+
+/* ---- Modern look (CF-135): ambient glow behind the pages, glass surfaces, tints on menus, tables and
+   components, and motion. Surfaces stay plain backgrounds (no backdrop-filter) where a modal or a
+   fixed menu could sit inside them: backdrop-filter and filter make an element the containing block
+   of its fixed children. */
+/* The glow is the frame's own fixed background: a layer behind it would need a stacking context, and that
+   would put the in-page modals under Bootstrap's backdrop. */
+.bf-shell {
+  position: relative;
+  background:
+    radial-gradient(640px 440px at 92% -4%, var(--bf-glow-1), transparent 70%) fixed,
+    radial-gradient(560px 420px at 22% 104%, var(--bf-glow-2), transparent 70%) fixed,
+    radial-gradient(420px 320px at 58% 46%, var(--bf-glow-3), transparent 70%) fixed,
+    var(--bf-bg);
+}
+.bf-main { background: transparent; }
+/* One blur layer for the page behind the opened menu (collapsed sidebar on hover) or a header menu. */
+.bf-shell::after {
+  content: ""; position: fixed; inset: 0; z-index: 1025; pointer-events: none; opacity: 0;
+  background: color-mix(in srgb, var(--bf-bg) 30%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: opacity .3s var(--bf-ease);
+}
+.bf-shell:has(.bf-header .dropdown-menu.show)::after { opacity: 1; z-index: 1015; }
+
+/* Header: glass over the glow. */
+.bf-header {
+  background: color-mix(in srgb, var(--bf-surface) 72%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(150%); backdrop-filter: blur(14px) saturate(150%);
+  border-bottom-color: color-mix(in srgb, var(--bf-line) 70%, transparent);
+}
+.bf-search { border-radius: 999px; background: var(--bf-glass); transition: border-color .2s, box-shadow .2s; }
+.bf-search:hover { box-shadow: 0 0 0 4px color-mix(in srgb, var(--bf-teal) 14%, transparent); }
+.bf-header .bf-icon-btn:hover, .bf-header .bf-icon-btn[aria-expanded="true"] { background: color-mix(in srgb, var(--bf-teal) 14%, transparent); color: var(--bf-brand); }
+[data-bs-theme="dark"] .bf-header .bf-icon-btn:hover, [data-bs-theme="dark"] .bf-header .bf-icon-btn[aria-expanded="true"] { color: var(--bf-soft-ink); }
+.bf-initials { background: linear-gradient(135deg, var(--bf-brand), var(--bf-teal)); }
+.bf-header .dropdown-menu, .bf-bell-menu {
+  border-radius: 16px; border: 1px solid var(--bf-line);
+  background: var(--bf-glass); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: 0 30px 60px -20px rgba(4, 20, 30, .35);
+}
+.bf-header .dropdown-menu.show { animation: bf-pop .28s var(--bf-ease) backwards; }
+/* translate and scale, not transform: Popper positions the menu with an inline transform. */
+@keyframes bf-pop { from { opacity: 0; translate: 0 -6px; scale: .98; } to { opacity: 1; translate: none; scale: none; } }
+
+/* Sidebar: navy with two soft glows, a tinted active item. */
+.bf-sidebar {
+  background:
+    radial-gradient(260px 220px at 0% 0%, rgba(31, 168, 156, .38), transparent 70%),
+    radial-gradient(260px 260px at 0% 92%, rgba(47, 111, 179, .32), transparent 70%),
+    linear-gradient(180deg, var(--bf-side), color-mix(in srgb, var(--bf-side) 82%, #17405a));
+}
+.bf-item, .bf-sub { transition: background .25s, color .25s; }
+.bf-item.is-active {
+  background: linear-gradient(90deg, rgba(31, 168, 156, .30), rgba(47, 143, 209, .10));
+}
+[dir="rtl"] .bf-item.is-active { background: linear-gradient(270deg, rgba(31, 168, 156, .30), rgba(47, 143, 209, .10)); }
+.bf-badge { background: linear-gradient(135deg, #e0435b, #c92a4a); box-shadow: 0 0 0 2px color-mix(in srgb, var(--bf-side) 70%, transparent); }
+@media (min-width: 992px) {
+  /* Collapsed: the icon rail opens over the page on hover, the page blurs behind it. */
+  html.bf-collapsed .bf-sidebar { transition: width .35s var(--bf-ease) .12s, box-shadow .35s; }
+  html.bf-collapsed .bf-sidebar:hover { width: 264px; box-shadow: 24px 0 70px rgba(4, 16, 24, .35); }
+  [dir="rtl"] html.bf-collapsed .bf-sidebar:hover, html[dir="rtl"].bf-collapsed .bf-sidebar:hover { box-shadow: -24px 0 70px rgba(4, 16, 24, .35); }
+  html.bf-collapsed .bf-sidebar:hover .bf-label,
+  html.bf-collapsed .bf-sidebar:hover .bf-brand-tag { display: revert; }
+  html.bf-collapsed .bf-sidebar:hover .bf-group[open] > .bf-subnav { display: flex; }
+  html.bf-collapsed .bf-sidebar:hover .bf-item { justify-content: flex-start; padding: 0 12px; }
+  html.bf-collapsed .bf-sidebar:hover .bf-badge { position: static; min-width: 22px; height: 22px; padding: 0 7px; font-size: 12px; }
+  html.bf-collapsed .bf-sidebar:hover .bf-nav-title { height: auto; margin: 0; padding: 16px 12px 6px; background: none; }
+  html.bf-collapsed .bf-sidebar:hover .bf-brand { justify-content: flex-start; padding: 0 8px 12px; }
+  html.bf-collapsed .bf-sidebar:hover .bf-brand-logo { width: auto; object-fit: contain; }
+  html.bf-collapsed .bf-shell:has(> .bf-sidebar:hover)::after { opacity: 1; }
+}
+
+/* Cards: a translucent surface over the glow, rounder, a soft lift on the small figure cards. */
+.bf-body .card {
+  --tblr-card-bg: var(--bf-glass);
+  border-radius: 14px; border-color: color-mix(in srgb, var(--bf-line) 85%, transparent); box-shadow: var(--bf-shadow);
+  transition: transform .35s var(--bf-ease), box-shadow .35s var(--bf-ease), border-color .35s;
+}
+.bf-body .card-sm:hover, .bf-body .bf-lift:hover {
+  transform: translateY(-2px); border-color: color-mix(in srgb, var(--bf-teal) 35%, var(--bf-line));
+  box-shadow: 0 14px 32px -14px color-mix(in srgb, var(--bf-brand) 40%, transparent);
+}
+.bf-body .card-header { border-bottom-color: color-mix(in srgb, var(--bf-line) 70%, transparent); }
+
+/* Tables: a tinted header row and a tinted hover. */
+.bf-body .table > thead > tr > th, .bf-body .table > thead > tr > td {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bf-teal) 9%, var(--bf-surface)), color-mix(in srgb, var(--bf-brand) 6%, var(--bf-surface)));
+  color: var(--bf-muted); font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+}
+.bf-body .table > tbody > tr { transition: background-color .25s; }
+.bf-body .table > tbody > tr:hover > * {
+  --tblr-table-bg-state: transparent;
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--bf-teal) 8%, transparent), transparent 80%);
+}
+[dir="rtl"] .bf-body .table > tbody > tr:hover > * { background-image: linear-gradient(270deg, color-mix(in srgb, var(--bf-teal) 8%, transparent), transparent 80%); }
+
+/* Buttons: a navy-to-teal primary with a soft glow, a small press. */
+.bf-shell .btn { transition: transform .2s var(--bf-ease), box-shadow .25s, background-color .25s, border-color .25s; }
+.bf-shell .btn:hover { transform: translateY(-1px); }
+.bf-shell .btn:active { transform: translateY(0) scale(.98); }
+.bf-shell .btn-primary, .bf-shell .btn-primary:hover, .bf-shell .btn-primary:focus {
+  background-image: linear-gradient(135deg, var(--bf-brand), color-mix(in srgb, var(--bf-teal) 80%, var(--bf-brand)));
+  border-color: transparent; box-shadow: 0 6px 18px -8px var(--bf-brand);
+}
+.bf-shell .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--bf-teal); }
+.bf-shell .btn-success { background-image: linear-gradient(135deg, #14a39a, #1bb7a0); border-color: transparent; }
+
+/* Tabs: the active one underlined in navy to teal. */
+.bf-body .nav-tabs .nav-link { transition: color .25s, border-color .25s; }
+.bf-body .nav-tabs .nav-link.active { border-color: transparent; background: linear-gradient(90deg, var(--bf-brand), var(--bf-teal)) bottom / 100% 2px no-repeat; }
+
+/* Badges and status chips: a tinted border in their own colour. */
+.bf-body .badge { border: 1px solid color-mix(in srgb, currentColor 20%, transparent); border-radius: 999px; font-weight: 600; }
+
+/* Solid status badges (status_badge in macro_functions and the pages) become soft chips in their colour. */
+.bf-shell .badge:is(.text-bg-success, .bg-success, .bg-green) { background: var(--bf-ok-soft) !important; color: var(--bf-ok) !important; }
+.bf-shell .badge:is(.text-bg-warning, .bg-warning, .bg-yellow, .bg-orange) { background: var(--bf-warn-soft) !important; color: var(--bf-warn) !important; }
+.bf-shell .badge:is(.text-bg-danger, .bg-danger, .bg-red) { background: var(--bf-bad-soft) !important; color: var(--bf-bad) !important; }
+.bf-shell .badge:is(.text-bg-info, .text-bg-primary, .bg-primary, .bg-blue, .bg-info) { background: var(--bf-soft) !important; color: var(--bf-soft-ink) !important; }
+.bf-shell .badge:is(.text-bg-secondary, .bg-secondary, .bg-gray, .bg-default) { background: var(--bf-surface-2) !important; color: var(--bf-muted) !important; border-color: var(--bf-line); }
+
+/* Summary-first record pages (invoice, client): the figure in its status colour, chips, the person,
+   then the facts as a grid of label and value. */
+.cf-inv { display: flex; flex-direction: column; }
+.cf-inv-hero { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 4px 20px 18px; }
+.cf-inv-figure { font-family: var(--bf-font-h); font-size: 32px; font-weight: 800; line-height: 1.1; letter-spacing: -.01em; }
+.cf-tone-bad { color: var(--bf-bad); } .cf-tone-warn { color: var(--bf-warn); } .cf-tone-ok { color: var(--bf-ok); } .cf-tone-muted { color: var(--bf-ink); }
+.cf-inv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cf-inv-note { padding: 0 20px 14px; }
+.cf-inv-client { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-top: 1px solid var(--bf-line); }
+.cf-inv-who { display: flex; flex-direction: column; min-width: 0; }
+.cf-inv-who a { font-weight: 600; font-size: 15px; }
+.cf-avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 22%, transparent), color-mix(in srgb, var(--bf-brand) 18%, transparent));
+  color: var(--bf-brand); font-family: var(--bf-font-h); font-weight: 700; font-size: 15px;
+}
+[data-bs-theme="dark"] .cf-avatar { color: var(--bf-soft-ink); }
+.cf-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); margin: 0; border-top: 1px solid var(--bf-line); }
+.cf-facts > div { padding: 14px 20px; border-bottom: 1px solid color-mix(in srgb, var(--bf-line) 60%, transparent); }
+.cf-facts dt, .cf-label { margin-bottom: 4px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--bf-muted); }
+.cf-facts dd { margin: 0; font-weight: 500; }
+.cf-inv-notes { padding: 14px 20px; }
+.cf-inv-notes p:last-child { margin-bottom: 0; }
+.cf-client-hero { border-top: 0; padding-top: 4px; }
+.cf-avatar-lg { width: 64px; height: 64px; font-size: 20px; }
+.cf-client-name { font-family: var(--bf-font-h); font-size: 20px; font-weight: 700; }
+.cf-facts-wide { grid-column: 1 / -1; }
+/* Invoice totals under the items: quiet rows, the total larger. */
+.bf-body .table tfoot td:is(.currency, .text-end) { padding: 8px 20px; border: 0; text-align: end; color: var(--bf-muted); font-weight: 500 !important; background: transparent; }
+.bf-body .table tfoot tr:first-child td:is(.currency, .text-end) { padding-top: 16px; border-top: 1px solid var(--bf-line); }
+.bf-body .table tfoot tr:last-child td:is(.currency, .text-end) { padding-bottom: 18px; color: var(--bf-ink); font-family: var(--bf-font-h); font-size: 18px; font-weight: 800 !important; }
+.bf-body .table:has(> tfoot) { border-bottom: 0; }
+
+/* Dashboard: glass cards, key figures that lift with a drawn 30-day trend line, attention rows tinted by tone. */
+.bf-dash .bf-card { background: var(--bf-glass); }
+.bf-kpi { padding-bottom: 0; transition: transform .25s var(--bf-ease), box-shadow .25s var(--bf-ease), border-color .25s; }
+.bf-kpi:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -16px rgba(var(--tblr-primary-rgb), .45); }
+.bf-kpi-value { font-variant-numeric: tabular-nums; }
+.bf-kpi > :last-child:not(.bf-spark) { margin-bottom: 18px; }
+.bf-spark { display: block; width: calc(100% + 40px); height: 46px; margin: 0 -20px; border-radius: 0 0 13px 13px; overflow: hidden; }
+.bf-spark polygon { fill: var(--bf-teal-soft); opacity: .8; }
+.bf-spark polyline { fill: none; stroke: var(--bf-teal); stroke-width: 2; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: bf-draw 1.4s var(--bf-ease) .3s forwards; }
+@keyframes bf-draw { to { stroke-dashoffset: 0; } }
+.bf-attention a.bf-row { --bf-row-tint: transparent; background: linear-gradient(90deg, var(--bf-row-tint), transparent 65%); transition: background-color .2s, padding .25s var(--bf-ease); }
+[dir="rtl"] .bf-attention a.bf-row { background: linear-gradient(270deg, var(--bf-row-tint), transparent 65%); }
+.bf-attention a.bf-row:has(> .bf-tone-bad) { --bf-row-tint: color-mix(in srgb, var(--bf-bad) 10%, transparent); }
+.bf-attention a.bf-row:has(> .bf-tone-warn) { --bf-row-tint: color-mix(in srgb, var(--bf-warn) 10%, transparent); }
+.bf-attention a.bf-row:hover { background-color: var(--bf-surface-2); padding-inline-start: 26px; }
+.bf-kpis > :nth-child(2) { animation-delay: 60ms; }
+.bf-kpis > :nth-child(3) { animation-delay: 120ms; }
+.bf-kpis > :nth-child(4) { animation-delay: 180ms; }
+.bf-dash > section:not(.bf-kpis), .bf-kpi { animation: bf-rise .55s var(--bf-ease) backwards; }
+
+/* Motion: cards rise in one after another when a page opens. Fill backwards only: a transform kept after the
+   animation would make each card a stacking context, trapping its modals, and would cancel the hover lift. */
+@keyframes bf-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.bf-body .card { animation: bf-rise .55s var(--bf-ease) backwards; }
+.bf-body .row > :nth-child(2) > .card { animation-delay: 50ms; }
+.bf-body .row > :nth-child(3) > .card { animation-delay: 100ms; }
+.bf-body .row > :nth-child(4) > .card { animation-delay: 150ms; }
+.bf-body .row > :nth-child(5) > .card { animation-delay: 200ms; }
+.bf-body .row > :nth-child(6) > .card { animation-delay: 250ms; }
+.bf-body .row > :nth-child(n+7) > .card { animation-delay: 300ms; }
+@media (prefers-reduced-motion: reduce) {
+  .bf-body .card, .bf-header .dropdown-menu.show, .bf-dash > section:not(.bf-kpis), .bf-kpi { animation: none; }
+  .bf-spark polyline { animation: none; stroke-dashoffset: 0; }
+  .bf-kpi, .bf-attention a.bf-row { transition: none; }
+  .bf-kpi:hover { transform: none; }
+  .bf-shell .btn, .bf-body .card, .bf-sidebar, html.bf-collapsed .bf-sidebar, .bf-shell::after { transition: none; }
+  .bf-shell .btn:hover, .bf-body .card-sm:hover, .bf-body .bf-lift:hover { transform: none; }
 }

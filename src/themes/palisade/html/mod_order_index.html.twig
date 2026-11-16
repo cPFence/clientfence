@@ -55,9 +55,29 @@
         showFewer: 'Show fewer features'|trans,
     }|json_encode|raw }}</script>
 
-    <header class="bf-store-head">
+    {# The store header as a hero; with a domain product on sale it holds a domain search, which opens that
+       product's order form with the name and TLD filled in (the form reads register_sld and tld). #}
+    {% set domain_product = categories|reduce((all, c) => all|merge(c.products), [])|filter(p => p.type == 'domain')|first %}
+    {% set tlds = domain_product ? guest.serviceDomain_tlds({ allow_register: 1 }) : [] %}
+    <header class="bf-store-head{% if tlds is not empty %} has-search{% endif %}">
         <h1>{{ store.title|trim ?: 'Store'|trans }}</h1>
         {% if store.subtitle|trim %}<p>{{ store.subtitle }}</p>{% endif %}
+        {% if tlds is not empty %}
+            {% set domain_href = ('order/' ~ (domain_product.slug ?: domain_product.id))|url %}
+            <form class="bf-domain-search" method="get" action="{{ domain_href }}" role="search">
+                <label class="visually-hidden" for="bf-domain-sld">{{ 'Register a new domain'|trans }}</label>
+                <input class="form-control" type="text" id="bf-domain-sld" name="register_sld" required pattern="[^.\s]+" autocomplete="off" placeholder="{{ 'Enter new domain name to register'|trans }}">
+                <select class="form-select" name="tld" dir="ltr" aria-label="{{ 'Register a new domain'|trans }}">
+                    {% for tld in tlds %}<option value="{{ tld.tld }}">{{ tld.tld }}</option>{% endfor %}
+                </select>
+                <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#search"/></svg>{{ 'Search'|trans }}</button>
+            </form>
+            <div class="bf-tlds">
+                {% for tld in tlds|slice(0, 6) %}
+                    <a href="{{ domain_href }}?tld={{ tld.tld|url_encode }}"><span dir="ltr">{{ tld.tld }}</span> <em>{{ sm.money(tld.price_registration * cart_currency.conversion_rate, cart_currency.code) }}</em></a>
+                {% endfor %}
+            </div>
+        {% endif %}
     </header>
 
     {% if categories is empty %}

@@ -2620,15 +2620,7 @@
         "done": "<h2 class=\"mb-1\">{{ 'Manage'|trans }} {{ service.domain }}</h2>"
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
-        "done": "cf-summary"
-    },
-    {
         "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
-        "done": "cf-summary"
-    },
-    {
-        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
         "done": "cf-summary"
     },
     {
@@ -6478,5 +6470,17 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_tax.html.twig",
         "done": "ClientFence core patch: new lines staff add start taxed, as WHMCS Taxed Items for custom invoices (Invoice\\Controller\\Admin::get_invoice())."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the summary reads first: the amount in its status colour, the status chips, the client, then the facts (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the client reads first: name, company and status chips, then the facts as a grid (CF-135 redesign)."
+    },
+    {
+        "file": "themes/palisade/html/mod_index_dashboard.html.twig",
+        "done": "ClientFence core patch: the unpaid invoice reads first: one invoice shows its amount, due date and Pay (CF-135 redesign)."
     }
 ]

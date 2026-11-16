@@ -39,8 +39,7 @@
 
 {% block content %}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
-    title: client.first_name ~ ' ' ~ client.last_name,
-    subtitle: 'Manage the client profile, billing records, support history, and account activity.'|trans
+    title: client.first_name ~ ' ' ~ client.last_name
 } %}
     {% block detail_tabs %}
                     <li class="nav-item" role="presentation">
@@ -97,124 +96,66 @@
             <div class="card-body position-relative">
                 {% embed 'partial_admin_summary_card.html.twig' with {
                     title: 'Client Summary'|trans,
-                    subtitle: 'Review the account identity, status, billing profile, and core contact details for this client.'|trans,
                     centered_actions: true,
                     body_class: 'position-relative'
                 } %}
                     {% import 'macro_functions.html.twig' as mf %}
-                    {% block summary_header_aside %}
-                        {{ avatar(client.email, 112, 'avatar avatar-xl avatar-rounded shadow d-none d-sm-flex') }}
-                    {% endblock %}
 
                     {% block summary_content %}
-                        <div class="table-responsive">
-                            <table class="table card-table table-vcenter cf-summary">
-                                <tbody>
-                                    <tr>
-                                        <td class="w-50 text-end">{{ 'Client ID'|trans }}</td>
-                                        <td>{{ client.id }}</td>
-                                    </tr>
-                                    {# ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php). #}
-                                    <tr>
-                                        <td class="text-end">{{ 'Support PIN'|trans }}</td>
-                                        <td><span class="font-monospace">{{ admin.client_support_pin({ id: client.id }) }}</span>{% if can_edit_profile %} <a class="ms-2" href="{{ 'client/support_pin_new'|api_url(query: { id: client.id }) }}" {{ fb_api_link({ modal: { type: 'confirm', title: 'Make a new Support PIN?'|trans, content: 'The current PIN stops working.'|trans }, reload: true }) }}>{{ 'New PIN'|trans }}</a>{% endif %}</td>
-                                    </tr>
-                                    {% if client.aid %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Custom Client ID'|trans }}</td>
-                                        <td>{{ client.aid }}</td>
-                                    </tr>
+                        {# ClientFence core patch: the client reads first: name, company and status chips, then the facts as a grid (CF-135 redesign). #}
+                        {% set since = date(client.created_at).diff(date()) %}
+                        {% set months = since.y * 12 + since.m %}
+                        {% set balance_alert = admin.client_balance_alert_get({ id: client.id }) %}
+                        <div class="cf-inv">
+                            <div class="cf-inv-client cf-client-hero">
+                                <span class="cf-avatar cf-avatar-lg" aria-hidden="true">{{ (client.first_name|first ~ client.last_name|first)|upper }}</span>
+                                <div class="cf-inv-who">
+                                    <span class="cf-client-name">{{ client.first_name }} {{ client.last_name }}</span>
+                                    {% if client.company %}<span class="text-secondary">{{ client.company }}</span>{% endif %}
+                                    <div class="cf-inv-chips mt-1">
+                                        {{ mf.status_badge(client.status, 'client') }}
+                                        <span class="badge {{ client.email_approved ? 'bg-green-lt' : 'bg-yellow-lt' }}">{{ client.email_approved ? 'Verified'|trans : 'Not verified'|trans }}</span>
+                                        {% if client.group %}<span class="badge bg-secondary-lt">{{ client.group }}</span>{% endif %}
+                                        <span class="badge bg-azure-lt">{{ 'Client for'|trans }} {{ months < 1 ? 'Less than a month'|trans : (months == 1 ? '1 month'|trans : '%count% months'|trans({ '%count%': months })) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <dl class="cf-facts">
+                                <div><dt>{{ 'Email'|trans }}</dt><dd class="text-break">{{ client.email }}</dd></div>
+                                <div><dt>{{ 'Client ID'|trans }}</dt><dd>{{ client.id }}{% if client.aid %} <span class="text-secondary">· {{ 'Custom Client ID'|trans }} {{ client.aid }}</span>{% endif %}</dd></div>
+                                {# ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php). #}
+                                <div><dt>{{ 'Support PIN'|trans }}</dt><dd><span class="font-monospace">{{ admin.client_support_pin({ id: client.id }) }}</span>{% if can_edit_profile %} <a class="ms-2" href="{{ 'client/support_pin_new'|api_url(query: { id: client.id }) }}" {{ fb_api_link({ modal: { type: 'confirm', title: 'Make a new Support PIN?'|trans, content: 'The current PIN stops working.'|trans }, reload: true }) }}>{{ 'New PIN'|trans }}</a>{% endif %}</dd></div>
+                                <div><dt>{{ 'Currency'|trans }}</dt><dd>{{ client.currency ? (client.currency|currency_name) : '-' }}</dd></div>
+                                {# ClientFence core patch: an Add Funds shortcut next to the balance (opens the Credit Balance tab). #}
+                                <div><dt>{{ 'Balance'|trans }}</dt><dd>{% if client.currency is not null %}{{ client.balance|format_currency(client.currency ?? default_currency) }}{% if can_manage_balance %} <a class="ms-2" href="#tab-balance" role="button" data-tab-jump>{{ 'Add Funds'|trans }}</a>{% endif %}{% else %}-{% endif %}</dd></div>
+                                {# ClientFence core patch: the client's low balance alert, read-only, while staff allow it (Client/BalanceAlert.php). #}
+                                {% if balance_alert %}
+                                <div><dt>{{ 'Low balance alert'|trans }}</dt><dd>{{ balance_alert.threshold is null ? 'Off'|trans : 'Below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(client.currency ?? default_currency) }) }}</dd></div>
+                                {% endif %}
+                                {# ClientFence core patch: the last sign-in's address (imported clients have no sign-up IP), the email check and the client's age. #}
+                                <div><dt>IP</dt><dd>{% if client.last_login_ip %}{{ mf.ip_lookup_link(client.last_login_ip) }}{% if client.last_login_at %} <span class="text-secondary">{{ client.last_login_at|format_datetime }}</span>{% endif %}{% else %}{{ 'Never signed in'|trans }}{% endif %}</dd></div>
+                                <div><dt>{{ 'Registered on'|trans }}</dt><dd>{{ client.created_at|format_date }}</dd></div>
+                                <div class="cf-facts-wide"><dt>{{ 'Address'|trans }}</dt><dd>
+                                    {% if client.country is not empty %}
+                                        <span class="flag flag-country-{{ client.country|lower }}" title="{{ client.country|country_name }}"></span>
+                                        {{ client.country|country_name }} {{ client.state }} {{ client.address_1 }} {{ client.address_2 }} {{ client.city }} {{ client.postcode }}
+                                    {% else %}
+                                        -
                                     {% endif %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Name'|trans }}</td>
-                                        <td>{{ client.first_name }} {{ client.last_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Company'|trans }}</td>
-                                        <td>{{ client.company|default('-') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Email'|trans }}</td>
-                                        <td>{{ client.email }} <span class="badge {{ client.email_approved ? 'bg-green-lt' : 'bg-yellow-lt' }} ms-1">{{ client.email_approved ? 'Verified'|trans : 'Not verified'|trans }}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Status'|trans }}</td>
-                                        <td>{{ mf.status_badge(client.status, 'client') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Group'|trans }}</td>
-                                        <td>{{ client.group|default('-') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Currency'|trans }}</td>
-                                        <td>{{ client.currency ? (client.currency|currency_name) : '-' }}</td>
-                                    </tr>
-                                    {# ClientFence core patch: an Add Funds shortcut next to the balance (opens the Credit Balance tab). #}
-                                    <tr>
-                                        <td class="text-end">{{ 'Balance'|trans }}</td>
-                                        {% if client.currency is not null %}
-                                            <td>{{ client.balance|format_currency(client.currency ?? default_currency) }}{% if can_manage_balance %} <a class="ms-2" href="#tab-balance" role="button" data-tab-jump>{{ 'Add Funds'|trans }}</a>{% endif %}</td>
-                                        {% else %}
-                                            <td>-</td>
-                                        {% endif %}
-                                    </tr>
-                                    {# ClientFence core patch: the client's low balance alert, read-only, while staff allow it (Client/BalanceAlert.php). #}
-                                    {% set balance_alert = admin.client_balance_alert_get({ id: client.id }) %}
-                                    {% if balance_alert %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Low balance alert'|trans }}</td>
-                                        <td>{{ balance_alert.threshold is null ? 'Off'|trans : 'Below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(client.currency ?? default_currency) }) }}</td>
-                                    </tr>
+                                </dd></div>
+                                {% if can_manage_api_keys %}
+                                <div class="cf-facts-wide"><dt>{{ 'API Key'|trans }}</dt><dd class="text-break font-monospace small">{{ client.api_token|default('-') }}</dd></div>
+                                {% endif %}
+                            </dl>
+                            {% if client.notes %}
+                                <div class="cf-inv-notes"><div class="cf-label">{{ 'Notes'|trans }}</div>
+                                    {% if has_profile_edit_actions %}
+                                        <a href="#tab-profile" role="button" data-tab-jump>{{ client.notes }}</a>
+                                    {% else %}
+                                        {{ client.notes }}
                                     {% endif %}
-                                    {% if client.notes %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Notes'|trans }}</td>
-                                        <td>
-                                            <svg class="icon">
-                                                <use href="#notes" />
-                                            </svg>
-                                            {% if has_profile_edit_actions %}
-                                                <a href="#tab-profile" role="button" data-tab-jump>{{ client.notes }}</a>
-                                            {% else %}
-                                                {{ client.notes }}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endif %}
-                                    <tr>
-                                        <td class="text-end">IP</td>
-                                        {# ClientFence core patch: the last sign-in's address (imported clients have no sign-up IP), the email check and the client's age. #}
-                                        <td>{% if client.last_login_ip %}{{ mf.ip_lookup_link(client.last_login_ip) }}{% if client.last_login_at %} <span class="text-secondary">{{ client.last_login_at|format_datetime }}</span>{% endif %}{% else %}{{ 'Never signed in'|trans }}{% endif %}</td>
-                                    </tr>
-                                    {% if can_manage_api_keys %}
-                                    <tr>
-                                        <td class="text-end">{{ 'API Key'|trans }}</td>
-                                        <td>{{ client.api_token|default('-') }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Address'|trans }}</td>
-                                        <td>
-                                            {% if client.country is not empty %}
-                                                <span class="flag flag-country-{{ client.country|lower }}" title="{{ client.country|country_name }}"></span>
-                                                {{ client.country|country_name }} {{ client.state }} {{ client.address_1 }} {{ client.address_2 }} {{ client.city }} {{ client.postcode }}
-                                            {% else %}
-                                                -
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Registered on'|trans }}</td>
-                                        <td>{{ client.created_at|format_date }}</td>
-                                    </tr>
-                                    {% set since = date(client.created_at).diff(date()) %}
-                                    {% set months = since.y * 12 + since.m %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Client for'|trans }}</td>
-                                        <td>{{ months < 1 ? 'Less than a month'|trans : (months == 1 ? '1 month'|trans : '%count% months'|trans({ '%count%': months })) }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                </div>
+                            {% endif %}
                         </div>
                     {% endblock %}
 

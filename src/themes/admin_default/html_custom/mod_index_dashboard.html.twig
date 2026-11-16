@@ -14,6 +14,9 @@
 {% macro ip_link(ip) %}{% if ip matches '/^[0-9A-Fa-f:.]{2,45}$/' %}<a class="bf-ip" href="https://whatismyipaddress.com/ip/{{ ip }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" dir="ltr" title="{{ 'Look up :ip'|trans({ ':ip': ip }) }}">{{ ip }}</a>{% else %}<span dir="ltr">{{ ip|default('Unknown'|trans) }}</span>{% endif %}{% endmacro %}
 
 {# A client's name links to the client, for staff who may view clients. #}
+{# A 30-day trend line (FOSSBilling stats points [time, value]), drawn as SVG so it needs no script. #}
+{% macro spark(points) %}{% if points|length > 1 %}{% set top = max(points|map(p => p[1] + 0)) %}{% set pts = [] %}{% for p in points %}{% set pts = pts|merge([(loop.index0 * 200 / (points|length - 1))|round(1) ~ ',' ~ (40 - (top > 0 ? p[1] / top * 32 : 0))|round(1)]) %}{% endfor %}<svg class="bf-spark" viewBox="0 0 200 46" preserveAspectRatio="none" aria-hidden="true"><polygon points="{{ pts|join(' ') }} 200,46 0,46" /><polyline points="{{ pts|join(' ') }}" pathLength="100" /></svg>{% endif %}{% endmacro %}
+
 {% macro client_link(id, name, allowed) %}{% if allowed and id %}<a class="bf-name-link" href="{{ ('client/manage/' ~ id)|url }}">{{ name|default('Unknown'|trans) }}</a>{% else %}{{ name|default('Unknown'|trans) }}{% endif %}{% endmacro %}
 
 {% block content %}
@@ -214,15 +217,16 @@
            companion figure (clientfence_dashboard_totals): active clients, orders pending setup, the
            unpaid amount and the monthly recurring revenue. #}
         {% set all_time = admin.clientfence_dashboard_totals %}
+        {% set last30 = { 'date_from': '-30 days'|date('Y-m-d'), 'date_to': '+1 day'|date('Y-m-d') } %}
         {% set kpis = [
             { 'label': 'Income this month'|trans, 'value': income.this_month|format_currency(currency.code), 'now': income.this_month, 'last': income.last_month, 'last_text': income.last_month|format_currency(currency.code), 'url': 'invoice'|url(query: { 'status': 'paid' }),
-              'total': income.total|format_currency(currency.code), 'extra': all_time ? all_time.mrr|format_currency(currency.code) : '', 'extra_label': 'MRR', 'tip': true },
+              'total': income.total|format_currency(currency.code), 'extra': all_time ? all_time.mrr|format_currency(currency.code) : '', 'extra_label': 'MRR', 'tip': true, 'spark': admin.stats_get_income(last30) },
             { 'label': 'New clients'|trans, 'value': stats.clients_this_month, 'now': stats.clients_this_month, 'last': stats.clients_last_month, 'last_text': stats.clients_last_month, 'url': 'client'|url,
-              'total': stats.clients_total|number_format(0), 'extra': all_time ? all_time.active_clients|number_format(0) : '', 'extra_label': 'active'|trans },
+              'total': stats.clients_total|number_format(0), 'extra': all_time ? all_time.active_clients|number_format(0) : '', 'extra_label': 'active'|trans, 'spark': admin.stats_get_clients(last30) },
             { 'label': 'New orders'|trans, 'value': stats.orders_this_month, 'now': stats.orders_this_month, 'last': stats.orders_last_month, 'last_text': stats.orders_last_month, 'url': 'order'|url,
-              'total': stats.orders_total|number_format(0), 'extra': all_time ? all_time.pending_orders|number_format(0) : '', 'extra_label': 'pending'|trans },
+              'total': stats.orders_total|number_format(0), 'extra': all_time ? all_time.pending_orders|number_format(0) : '', 'extra_label': 'pending'|trans, 'spark': admin.stats_get_orders(last30) },
             { 'label': 'New invoices'|trans, 'value': stats.invoices_this_month, 'now': stats.invoices_this_month, 'last': stats.invoices_last_month, 'last_text': stats.invoices_last_month, 'url': 'invoice'|url,
-              'total': stats.invoices_total|number_format(0), 'extra': all_time ? all_time.unpaid|format_currency(currency.code) : '', 'extra_label': 'unpaid'|trans }
+              'total': stats.invoices_total|number_format(0), 'extra': all_time ? all_time.unpaid|format_currency(currency.code) : '', 'extra_label': 'unpaid'|trans, 'spark': admin.stats_get_invoices(last30) }
         ] %}
     <section class="bf-kpis" aria-label="{{ 'Key figures'|trans }}">
         {% for kpi in kpis %}
@@ -232,7 +236,7 @@
                     <span class="bf-muted bf-small">{{ kpi.label }}</span>
                     <svg class="icon bf-flip bf-muted" aria-hidden="true"><use href="#bf-arrow-up-right" /></svg>
                 </span>
-                <span class="bf-h bf-kpi-value" dir="ltr">{{ kpi.value }}</span>
+                <span class="bf-h bf-kpi-value" dir="ltr" data-bf-count>{{ kpi.value }}</span>
                 <span class="bf-kpi-foot">
                     {% if diff > 0 %}
                         <span class="bf-chip bf-tone-ok" dir="ltr">{{ kpi.last > 0 ? '+' ~ ((diff / kpi.last) * 100)|round ~ '%' : 'New'|trans }}</span>
@@ -253,6 +257,7 @@
                     {% else %}{{ kpi.extra_label }}{% endif %}</span>
                     {% endif %}
                 </span>
+                {{ bf.spark(kpi.spark) }}
             </a>
         {% endfor %}
     </section>
