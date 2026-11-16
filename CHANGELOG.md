@@ -12,6 +12,9 @@ A new look for the admin and client areas, and new billing features.
 - **Logo for emails:** a separate logo for emails, for example one with its own background so it stays clear in dark mode.
 - **Taxed lines on staff invoices:** a new Tax setting, "Tax lines staff add to invoices", starts new invoice lines as taxed when the client pays tax.
 - **CAPTCHA off from the console:** `php console.php clientfence:signin-security-off --captcha` turns CAPTCHA Protection off when a wrong key locks staff out.
+- **Client Overview:** the admin client page opens on an Overview with key figures, billing, a trust score for staff, services, support, recent services and invoices, notes, files and emails.
+- Suspend all, Unsuspend all and Cancel all services of a client from its Overview; each service goes through its own action, as on its order page.
+- Send a client the welcome email or one of your own templates from its Overview.
 
 ### Changed
 
@@ -21,6 +24,9 @@ A new look for the admin and client areas, and new billing features.
 - The checkout places an order only at the total it shows: when an automatic promotion changes the total, it shows the new total first.
 - With "Prices include tax" on, a price staff type on a taxed invoice line includes the tax, as order and renewal lines do.
 - The import plan lists the clients with the most credit first, so a wrong imported balance is easy to spot.
+- Profile and Edit on the client page are one Profile tab with General, Security, Cards and Custom fields.
+- Every client page tab has paging and a records selector, including Users, Contacts, ID documents and Affiliate.
+- Admin lists show the records selector at the start and the page numbers at the end, on every list.
 
 ### Fixed
 
@@ -29,6 +35,8 @@ A new look for the admin and client areas, and new billing features.
 - Email history shows emails with their styling. ([#39](https://github.com/cPFence/clientfence/issues/39))
 - The store no longer shows a free billing cycle as a saving.
 
+- System Health no longer says the database backup is kept only on this server when cloud storage keeps a copy.
+- The empty-list icon no longer covers its text, and the Security sign-in summary rows line up.
 ## 1.0.55 (2026-11-16)
 
 A security release. Every new feature is off until you turn it on, and does no extra work while it is off. A new security page explains each feature: https://clientfence.com/security/
