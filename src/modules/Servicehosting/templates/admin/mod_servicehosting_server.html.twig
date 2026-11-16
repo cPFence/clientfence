@@ -22,17 +22,47 @@
 
 {% block content %}
 {% set tlsVerify = server.config.tls_verify is defined ? server.config.tls_verify : true %}
-<div class="card">
-    <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ server.name }}</h3>
-            <p class="card-subtitle">{{ 'Manage connection details, provisioning settings, and nameserver defaults for this hosting server.'|trans }}</p>
+{# ClientFence core patch: the server reads first: name, status and panel chips, the panel and connection test buttons, then its key facts; the form follows under ruled section headings (CF-135 redesign). #}
+{% set manager = admin.servicehosting_manager_get_pairs[server.manager]|default({}) %}
+{% set nameservers = [server.ns1, server.ns2, server.ns3, server.ns4]|filter(ns => ns) %}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#server" /></svg></span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ server.name }}</span>
+                {% if server.hostname %}<span class="text-secondary"><bdi>{{ server.hostname }}</bdi></span>{% endif %}
+                <div class="cf-inv-chips mt-1">
+                    <span class="badge {{ server.active ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ server.active ? 'Active'|trans : 'Inactive'|trans }}</span>
+                    <span class="badge bg-azure-lt" title="{{ 'Server Manager'|trans }}">{{ manager.label|default(server.manager) }}</span>
+                </div>
+            </div>
+            <div class="ms-auto d-flex flex-wrap gap-2">
+                <a class="btn" href="{{ server.cpanel_url }}" target="_blank">
+                    <svg class="icon"><use href="#settings" /></svg>
+                    <span>{{ 'Log Into the Control Panel'|trans }}</span>
+                </a>
+                <a class="btn" href="{{ 'servicehosting/server_test_connection'|api_url(query: { 'id': server.id }) }}" {{ fb_api_link({message: 'Server Connected'|trans}) }}>
+                    <svg class="icon"><use href="#wifi" /></svg>
+                    <span>{{ 'Test Connection'|trans }}</span>
+                </a>
+            </div>
         </div>
+        <dl class="cf-facts">
+            <div><dt>{{ 'IP'|trans }}</dt><dd><bdi class="font-monospace">{{ server.ip }}</bdi></dd></div>
+            <div><dt>{{ 'Connection Port'|trans }}</dt><dd>{{ server.port|default('-') }}</dd></div>
+            <div><dt>{{ 'Use Secure Connection'|trans }}</dt><dd>{{ server.secure ? 'Yes'|trans : 'No'|trans }}</dd></div>
+            <div><dt>{{ 'Verify TLS Certificate'|trans }}</dt><dd>{{ tlsVerify ? 'Yes'|trans : 'No'|trans }}</dd></div>
+            <div><dt>{{ 'Assigned IP Addresses'|trans }}</dt><dd>{{ server.assigned_ips|length }}</dd></div>
+            <div><dt>{{ 'Nameservers'|trans }}</dt><dd>{% for ns in nameservers %}<div><bdi>{{ ns }}</bdi></div>{% else %}-{% endfor %}</dd></div>
+        </dl>
     </div>
+</div>
+<div class="card">
     <div class="card-body">
         <form method="post" action="{{ 'servicehosting/server_update'|api_url }}" id="server-update" {{ fb_api_form({message: 'Server Updated'|trans}) }}>
             <div class="mb-5">
-                <div class="mb-3">
+                <div class="mb-3 cf-section-head border-0 pt-0">
                     <h4 class="card-title mb-1">{{ 'Server Details'|trans }}</h4>
                     <p class="text-secondary mb-0">{{ 'Basic identification and network details used when provisioning accounts on this server.'|trans }}</p>
                 </div>
@@ -69,10 +99,8 @@
                 </div>
             </div>
 
-            <hr class="my-4" />
-
             <div class="mb-5">
-                <div class="mb-3">
+                <div class="mb-3 cf-section-head">
                     <h4 class="card-title mb-1">{{ 'Connection Settings'|trans }}</h4>
                     <p class="text-secondary mb-0">{{ 'Choose the control panel adapter and provide the credentials used for API communication. Saved credentials are never displayed again — submit a new value to rotate them.'|trans }}</p>
                 </div>
@@ -129,10 +157,8 @@
                 </div>
             </div>
 
-            <hr class="my-4" />
-
             <div class="mb-5">
-                <div class="mb-3">
+                <div class="mb-3 cf-section-head">
                     <h4 class="card-title mb-1">{{ 'Optional Configuration'|trans }}</h4>
                     <p class="text-secondary mb-0">{{ 'Use these values when your control panel supports account prefixes or other optional provisioning defaults.'|trans }}</p>
                 </div>
@@ -145,10 +171,8 @@
                 </div>
             </div>
 
-            <hr class="my-4" />
-
             <div class="mb-4">
-                <div class="mb-3">
+                <div class="mb-3 cf-section-head">
                     <h4 class="card-title mb-1">{{ 'Nameservers'|trans }}</h4>
                     <p class="text-secondary mb-0">{{ 'Set the default nameservers that will be suggested for domains provisioned on this server.'|trans }}</p>
                 </div>

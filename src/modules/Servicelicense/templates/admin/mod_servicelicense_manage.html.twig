@@ -1,31 +1,34 @@
 {% set service = admin.order_service({ 'id': order.id }) %}
 {% if service %}
 
-<div class="card-body overflow-auto">
-    <div class="mb-3">
-        <h3 class="card-title mb-1">{{ 'Details'|trans }}</h3>
-        <p class="text-secondary mb-0">{{ 'Review the current license, plugin, and recent validation activity for this order.'|trans }}</p>
+{% import 'macro_functions.html.twig' as mf %}
+{# ClientFence core patch: the licence reads first: its key, plugin, status and the checks it validates, then the facts; the forms follow under ruled headings (CF-135 redesign). #}
+<div class="card-body">
+    <div class="card mb-0">
+        <div class="cf-inv cf-dom">
+            <div class="cf-inv-hero">
+                <div class="min-w-0">
+                    <div class="cf-client-name font-monospace" title="{{ 'Key'|trans }}"><bdi>{{ service.license_key }}</bdi></div>
+                    <div class="text-secondary">{{ 'Plugin'|trans }}: {{ service.plugin }}</div>
+                </div>
+                <div class="cf-inv-chips">
+                    {{ mf.status_badge(order.status, 'order') }}
+                    {% for flag, label in { validate_ip: 'Validate IP', validate_host: 'Validate Host', validate_path: 'Validate Path', validate_version: 'Validate Version' } %}
+                        {% if attribute(service, flag)|default(false) %}<span class="bf-chip bf-tone-ok">{{ label|trans }}</span>{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <dl class="cf-facts">
+                <div><dt>{{ 'Plugin'|trans }}</dt><dd>{{ service.plugin }}</dd></div>
+                <div><dt>{{ 'Last ping'|trans }}</dt><dd>{% if service.pinged_at %}{{ service.pinged_at|format_date }} <span class="text-secondary">({{ service.pinged_at|timeago }} {{ 'ago'|trans }})</span>{% else %}-{% endif %}</dd></div>
+            </dl>
+        </div>
+        <div class="card-footer text-center">
+            <div class="btn-list justify-content-center">
+                {{ order_actions|default('') }}
+            </div>
+        </div>
     </div>
-    <table class="table card-table table-vcenter table-striped text-nowrap">
-        <tbody>
-            <tr>
-                <td class="text-end">{{ 'Key'|trans }}:</td>
-                <td>{{ service.license_key }}</td>
-            </tr>
-            <tr>
-                <td class="text-end">{{ 'Plugin'|trans }}:</td>
-                <td>{{ service.plugin }}</td>
-            </tr>
-            <tr>
-                <td class="text-end">{{ 'Last ping'|trans }}:</td>
-                <td>{% if service.pinged_at %}{{ service.pinged_at|format_date }} ({{ service.pinged_at|timeago }} {{ 'ago'|trans }}){% else %}-{% endif %}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
-    {{ order_actions|default('') }}
 </div>
 
 {# ClientFence core patch: the client IP addresses, their changes and a request waiting for approval (IpSeats, CF-56). #}
@@ -35,7 +38,7 @@
 {% if service.units is defined and (service.units.priced or service.units.billing) %}
 {% set units = service.units %}
 <div class="card-body border-top">
-    <div class="mb-3">
+    <div class="mb-3 cf-section-head border-0 pt-0">
         <h3 class="card-title mb-1">{{ 'Price per Unit'|trans }}</h3>
         {% if units.priced %}<p class="text-secondary mb-0">{{ 'With per-unit billing on, each usage report sets the order price: the count times :price a month, at least :minimum.'|trans({':price': units.unit_price|format_currency(default_currency), ':minimum': (units.minimum ?? 0)|format_currency(default_currency)}) }}</p>{% endif %}
     </div>
@@ -88,7 +91,7 @@
 <div class="card-body">
     <form method="post" action="{{ 'servicelicense/update'|api_url }}" {{ fb_api_form({message: 'License Updated'|trans}) }}>
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'License Configuration'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Update the generated license key and the plugin used to validate it.'|trans }}</p>
             </div>
@@ -104,10 +107,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'License Validation Rules'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Define which environments are valid for this license and list the specific allowed values for each enabled rule.'|trans }}</p>
             </div>
@@ -185,7 +186,7 @@
 {% if has_permission('servicelicense', 'manage') %}
 {% set checks = admin.servicelicense_check_log({ 'order_id': order.id }) %}
 <div class="card-body border-top">
-    <div class="mb-3">
+    <div class="mb-3 cf-section-head border-0 pt-0">
         <h3 class="card-title mb-1">{{ 'Recent checks'|trans }}</h3>
         <p class="text-secondary mb-0">{{ 'The latest checks of this licence key, newest first. How long they are kept and banned domains or IP addresses are set in System Settings > Licences.'|trans }}</p>
     </div>

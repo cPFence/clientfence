@@ -26,11 +26,29 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-3">
+{# ClientFence core patch: the registrar reads first: its name, adapter and test mode, with its TLDs and prices; the form follows (CF-135 redesign). #}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true">{{ registrar.title|first|upper }}</span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ registrar.title }}</span>
+                {% if registrar.label|default('') and registrar.label != registrar.title %}<span class="text-secondary">{{ registrar.label }}</span>{% endif %}
+                <div class="cf-inv-chips mt-1">
+                    <span class="badge {{ registrar.test_mode ? 'bg-yellow-lt' : 'bg-green-lt' }}">{{ 'Test Mode'|trans }}: {{ registrar.test_mode ? 'Yes'|trans : 'No'|trans }}</span>
+                </div>
+            </div>
+            <a class="btn ms-auto" href='{{ "servicedomain/registrar/#{registrar.id}/prices"|url }}'>
+                <svg class="icon"><use href="#currency-dollar" /></svg>
+                <span>{{ 'TLDs and prices'|trans }}</span>
+            </a>
+        </div>
+    </div>
+</div>
+<div>
     <form method="post" action="{{ 'servicedomain/registrar_update'|api_url }}" {{ fb_api_form({message: 'Registrar Updated'|trans}) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
-            title: registrar.title,
-            subtitle: 'Configure test mode, display title, and adapter-specific settings for this registrar.'|trans,
+            title: 'Details'|trans,
             card_class: 'mb-0'
         } %}
             {% import 'macro_functions.html.twig' as mf %}
@@ -56,7 +74,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <div class="d-flex flex-column gap-1 mb-4">
+                    <div class="d-flex flex-column gap-1 mb-4 cf-section-head">
                         <h6 class="card-title mb-0">{{ 'Adapter Settings'|trans }}</h6>
                         <p class="text-secondary mb-0">{{ 'Provide the credentials and connection details required by this registrar adapter.'|trans }}</p>
                     </div>

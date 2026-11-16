@@ -2,10 +2,11 @@
 
 {% set config = product.config|default({}) %}
 
+{# ClientFence core patch: the sections start under ruled headings as on the product page, the plan and server lists show tiles and stay inside the screen on phones (CF-135 redesign). #}
 <div class="card-body">
     <form method="post" action="{{ 'product/update_config'|api_url }}" {{ fb_api_form({message: 'Hosting Settings Updated'|trans}) }} id="hosting-settings-form">
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head border-0 pt-0">
                 <h3 class="card-title mb-1">{{ 'Hosting Settings'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Choose the server, hosting plan, and reseller behavior that will be used when provisioning this product.'|trans }}</p>
             </div>
@@ -49,10 +50,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Domain Configuration'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Select which domain options are available to customers when ordering this product.'|trans }}</p>
             </div>
@@ -126,10 +125,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Free Domain Options'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Choose when a free domain should be offered and which TLDs and billing periods qualify.'|trans }}</p>
             </div>
@@ -219,10 +216,8 @@
         </div>
     </form>
 
-    <hr>
-
-    <div class="d-flex align-items-center mb-3">
-        <h3 class="mb-0">{{ 'Hosting Plans'|trans }}</h3>
+    <div class="d-flex align-items-center mt-5 mb-3 cf-section-head">
+        <h3 class="card-title mb-0">{{ 'Hosting Plans'|trans }}</h3>
         <a href="{{ 'servicehosting#tab-new-plan'|url }}" class="ms-auto btn btn-primary">
             <svg class="icon me-2">
                 <use href="#plus" />
@@ -230,6 +225,7 @@
             {{ 'New Hosting Plan'|trans }}
         </a>
     </div>
+    <div class="table-responsive">
     <table class="table card-table table-vcenter table-striped text-nowrap">
         <thead>
             <tr>
@@ -241,7 +237,10 @@
             {% for id, plan in admin.servicehosting_hp_get_pairs %}
                 <tr>
                     <td>
-                        <a href='{{ "servicehosting/plan/#{id}"|url }}'>{{ plan }}</a>
+                        <a class="cf-tile-link" href='{{ "servicehosting/plan/#{id}"|url }}'>
+                            <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+                            <span>{{ plan }}</span>
+                        </a>
                     </td>
                     <td>
                         <a class="btn btn-icon" href='{{ "servicehosting/plan/#{id}"|url }}'>
@@ -258,11 +257,10 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 
-    <hr>
-
-    <div class="d-flex align-items-center mb-3">
-        <h3 class="mb-0">{{ 'Servers'|trans }}</h3>
+    <div class="d-flex align-items-center mt-5 mb-3 cf-section-head">
+        <h3 class="card-title mb-0">{{ 'Servers'|trans }}</h3>
         <a href="{{ 'servicehosting'|url }}#tab-new-server" class="ms-auto btn btn-primary">
             <svg class="icon me-2">
                 <use href="#plus" />
@@ -270,6 +268,7 @@
             {{ 'New Server'|trans }}
         </a>
     </div>
+    <div class="table-responsive">
     <table class="table card-table table-vcenter table-striped text-nowrap">
         <thead>
             <tr>
@@ -281,7 +280,10 @@
             {% for id, server in admin.servicehosting_server_get_pairs %}
                 <tr>
                     <td>
-                        <a href='{{ "servicehosting/server/#{id}"|url }}'>{{ server }}</a>
+                        <a class="cf-tile-link" href='{{ "servicehosting/server/#{id}"|url }}'>
+                            <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#server" /></svg></span>
+                            <span>{{ server }}</span>
+                        </a>
                     </td>
                     <td>
                         <a class="btn btn-icon" href='{{ "servicehosting/server/#{id}"|url }}'>
@@ -298,6 +300,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 
 <script nonce="{{ csp_nonce }}">

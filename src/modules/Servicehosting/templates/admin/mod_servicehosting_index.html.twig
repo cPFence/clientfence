@@ -27,10 +27,7 @@
     {% set hosting_panels = admin.servicehosting_panels_get_list %}
     <div class="card">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Hosting Plans and Servers'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage hosting servers, hosting plans, and the provisioning details used by your products.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Hosting Plans and Servers'|trans }}</h3>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
             <div class="card border-0 shadow-none rounded-0">
@@ -56,6 +53,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
+                            {# ClientFence core patch: each server and plan with its tile, the panel as a chip (CF-135 redesign). #}
                             <table class="table card-table table-vcenter table-striped text-nowrap sortable">
                                 <thead>
                                     <tr>
@@ -73,10 +71,13 @@
                                     <tr>
                                         <td>{{ server.id }}</td>
                                         <td>
-                                            <a href='{{ "servicehosting/server/#{server.id}"|url }}'>{{ server.name }}</a>
+                                            <a class="cf-tile-link" href='{{ "servicehosting/server/#{server.id}"|url }}'>
+                                                <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#server" /></svg></span>
+                                                <span>{{ server.name }}</span>
+                                            </a>
                                         </td>
-                                        <td>{{ server.ip }}</td>
-                                        <td>{{ mf.status_name(server.manager) }}</td>
+                                        <td><bdi class="font-monospace">{{ server.ip }}</bdi></td>
+                                        <td><span class="bf-chip">{{ mf.status_name(server.manager) }}</span></td>
                                         <td>{{ mf.boolean_badge(server.active, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                         <td>
                                             <a class="btn btn-icon" href="{{ server.cpanel_url }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'Log Into the Control Panel'|trans }}" target="_blank">
@@ -139,7 +140,10 @@
                                     <tr>
                                         <td>{{ hp.id }}</td>
                                         <td>
-                                            <a href='{{ "servicehosting/plan/#{hp.id}"|url }}'>{{ hp.name }}</a>
+                                            <a class="cf-tile-link" href='{{ "servicehosting/plan/#{hp.id}"|url }}'>
+                                                <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+                                                <span>{{ hp.name }}</span>
+                                            </a>
                                         </td>
                                         <td>{{ hp.max_addon }}</td>
                                         <td>{% if hp.quota == 'unlimited' %}{{ 'Unlimited'|trans }}{% else %}{{ hp.quota }} <span class="text-body-secondary">MB</span>{% endif %}</td>

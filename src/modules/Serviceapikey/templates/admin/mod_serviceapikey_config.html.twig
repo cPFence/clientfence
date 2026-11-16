@@ -1,8 +1,9 @@
 {# ClientFence core patch (QA launch L-01): new API key products have no saved capitalization setting. #}
+{# ClientFence core patch: the sections start under ruled headings as on the product and order pages (CF-135 redesign). #}
 <div class="card-body">
     <form method="post" action="{{ 'product/update_config'|api_url }}" {{ fb_api_form({message: 'API Key Settings Updated'|trans}) }}>
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head border-0 pt-0">
                 <h3 class="card-title mb-1">{{ 'API Key Settings'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Control how API keys are generated for this product, including length, formatting, and any custom parameters your application expects.'|trans }}</p>
             </div>
@@ -15,10 +16,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-5">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Formatting'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Choose whether generated keys are split with dashes and how each segment should be cased.'|trans }}</p>
             </div>
@@ -53,11 +52,9 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         {# ClientFence core patch: client IP self-service limits of API keys (IpSeats, CF-56). #}
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Client IP Addresses'|trans }}</h3>
                 <p class="text-secondary mb-0">{{ 'Let clients add and remove the IP addresses of their key within these limits.'|trans }}</p>
             </div>
@@ -103,10 +100,8 @@
             </div>
         </div>
 
-        <hr class="my-4" />
-
         <div class="mb-4">
-            <div class="mb-3">
+            <div class="mb-3 cf-section-head">
                 <h3 class="card-title mb-1">{{ 'Custom Parameters'|trans }}</h3>
                 <p class="text-secondary mb-1">{{ 'Add custom key/value pairs that your application can request through the ClientFence API, for example to set limits or feature flags for each API key.'|trans }}</p>
                 <p class="text-secondary mb-0">{{ 'ClientFence removes the "custom_" prefix when returning these values through the API. For example, "custom_monthlyLimit" becomes "monthlyLimit".'|trans }}</p>

@@ -24,11 +24,38 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: the TLD reads first: its name, sale and operation chips, registrar and prices as facts; the form follows (CF-135 redesign). #}
+{% set cur = guest.currency_get.code %}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <div class="cf-inv-who">
+                <span class="cf-client-name"><bdi>{{ tld.tld }}</bdi></span>
+                <div class="cf-inv-chips mt-1">
+                    <span class="badge {{ tld.active ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ tld.active ? 'Active'|trans : 'Inactive'|trans }}</span>
+                    <span class="bf-chip{% if tld.allow_register %} bf-tone-ok{% endif %}">{{ 'Allow register:'|trans }} {{ tld.allow_register ? 'Yes'|trans : 'No'|trans }}</span>
+                    <span class="bf-chip{% if tld.allow_transfer %} bf-tone-ok{% endif %}">{{ 'Allow transfer:'|trans }} {{ tld.allow_transfer ? 'Yes'|trans : 'No'|trans }}</span>
+                    {% if tld.price_locked %}<span class="badge bg-secondary-lt">{{ 'Keep my price'|trans }}</span>{% endif %}
+                </div>
+            </div>
+            <div class="cf-hero-price">
+                <div class="cf-inv-figure">{{ tld.price_registration|format_currency(cur) }}</div>
+                <div class="text-secondary">{{ 'Registration Price'|trans }}</div>
+            </div>
+        </div>
+        <dl class="cf-facts">
+            <div><dt>{{ 'Registrar'|trans }}</dt><dd>{% if tld.registrar.title %}<a href='{{ "servicedomain/registrar/#{tld.registrar.id}"|url }}'>{{ tld.registrar.title }}</a>{% else %}-{% endif %}</dd></div>
+            <div><dt>{{ 'Renewal Price'|trans }}</dt><dd>{{ tld.price_renew|format_currency(cur) }}</dd></div>
+            <div><dt>{{ 'Transfer Price'|trans }}</dt><dd>{{ tld.price_transfer|format_currency(cur) }}</dd></div>
+            <div><dt>{{ 'Minimum Years of Registration'|trans }}</dt><dd>{{ tld.min_years }}</dd></div>
+            {% if tld.periods %}<div><dt>{{ 'Allowed Registration Periods (years)'|trans }}</dt><dd><bdi>{{ tld.periods|join(', ') }}</bdi></dd></div>{% endif %}
+        </dl>
+    </div>
+</div>
 <div class="card">
     <form method="post" action="{{ 'servicedomain/tld_update'|api_url }}" {{ fb_api_form({message: 'Top Level Domain Settings Updated'|trans}) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
-            title: tld.tld,
-            subtitle: 'Manage pricing, registrar assignment, and registration availability for this top-level domain.'|trans,
+            title: 'Details'|trans,
             body_class: 'pt-4'
         } %}
             {% block form_content %}
