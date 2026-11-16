@@ -3870,7 +3870,7 @@ msgstr ""
 msgid "Authentication Required"
 msgstr ""
 
-#: src/modules/Notification/templates/admin/mod_notification_index.html.twig src/modules/Support/templates/admin/mod_support_ticket.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig
+#: src/modules/Notification/templates/admin/mod_notification_index.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig
 msgid "Author"
 msgstr ""
 
@@ -10566,7 +10566,7 @@ msgstr ""
 msgid "Expand menu"
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_index.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quotes.html.twig …
+#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/themes/palisade/html/mod_invoice_quote.html.twig …
 msgid "Expired"
 msgstr ""
 
@@ -18346,10 +18346,6 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_manage.html.twig
-msgid "Order #:id"
-msgstr ""
-
 #: src/modules/Clientfence/Notifications.php
 msgid "Order #:id waits for review: :title"
 msgstr ""
@@ -18414,7 +18410,7 @@ msgstr ""
 msgid "Order History"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/client/mod_order_list.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig
+#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Support/templates/admin/mod_support_tickets.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Order ID"
 msgstr ""
 
@@ -18470,7 +18466,7 @@ msgstr ""
 msgid "Order Promo Code"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig
+#: src/modules/Order/templates/client/mod_order_manage.html.twig
 msgid "Order Status"
 msgstr ""
 
@@ -20726,7 +20722,7 @@ msgstr ""
 msgid "Product pricing could not be determined."
 msgstr ""
 
-#: src/modules/Servicehosting/Api/Guest.php
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Servicehosting/Api/Guest.php
 msgid "Product type"
 msgstr ""
 
@@ -20742,7 +20738,7 @@ msgstr ""
 msgid "Product, domain and option prices are the prices the client pays: invoices show their net price and the tax in it. A client exempt from tax pays the net price. Lines staff type on an invoice stay as typed (net)."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_list.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/admin_default/html/partial_dashboard_product_sales_card.html.twig
 msgid "Product/Service"
 msgstr ""
 
@@ -22494,10 +22490,6 @@ msgstr ""
 msgid "Review and send"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig
-msgid "Review core order, billing, and lifecycle details before taking action on this order."
-msgstr ""
-
 #: src/modules/Cron/templates/admin/mod_cron_settings.html.twig
 msgid "Review cron status, confirm your schedule, and control whether the guest cron endpoint is available."
 msgstr ""
@@ -22516,10 +22508,6 @@ msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_client_order.html.twig
 msgid "Review order"
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig
-msgid "Review order details, manage billing configuration, and inspect related service activity."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
@@ -22570,10 +22558,6 @@ msgstr ""
 msgid "Review support conversations linked to this order and open the relevant ticket details."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "Review the client, helpdesk, status, and any linked task or order context for this ticket."
-msgstr ""
-
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Review the client’s active and historical orders, or create a new order directly for this client."
 msgstr ""
@@ -22612,10 +22596,6 @@ msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
 msgid "Review the ticket"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "Review the ticket, manage its status, track internal notes, and inspect related client conversations."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
@@ -26649,10 +26629,6 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_ticket.html.twig
-msgid "The full message history, oldest first."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
