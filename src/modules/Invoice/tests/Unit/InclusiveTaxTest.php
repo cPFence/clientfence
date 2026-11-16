@@ -88,3 +88,40 @@ test('a full refund copies the cents negated and gives back exactly what was pai
         ->and(Service::taxOf(0.0, 19.0, 0.01))->toBe(0.0)
         ->and(Service::taxOf(10.0, 0.0, 0.01))->toBe(0.0);
 });
+
+test('a price staff type on a taxed line includes the tax and the total is the typed price (CF-137)', function (float $rate, array $typed, array $nets, float $adjust): void {
+    [$service, $db, $invoice] = inclusiveTaxInvoice(true, true, $rate, $rate);
+    $db->executeStatement('DELETE FROM invoice_item');
+    $netOf = new ReflectionMethod($service, 'staffLineNet');
+    $typedGross = [];
+    foreach ($typed as $price) {
+        $line = $netOf->invoke($service, ['price' => $price, 'taxed' => 1], $rate);
+        $db->insert('invoice_item', ['invoice_id' => 1, 'type' => 'custom', 'price' => $line['price'], 'taxed' => 1]);
+        $typedGross[(int) $db->lastInsertId()] = $price;
+    }
+
+    $cents = (new ReflectionMethod($service, 'inclusiveCents'))->invoke($service, $invoice, $typedGross);
+
+    $net = round((float) $db->fetchOne('SELECT SUM(price) FROM invoice_item'), 2);
+    expect(array_map('floatval', $db->fetchFirstColumn('SELECT price FROM invoice_item ORDER BY id')))->toBe($nets)
+        ->and($cents)->toBe($adjust)
+        ->and(round($net + Service::taxOf($net, $rate, $cents), 2))->toBe(round(array_sum($typed), 2))
+        ->and($netOf->invoke($service, ['price' => '120', 'taxed' => 0], $rate)['price'])->toBe('120');
+})->with([
+    '120.00 at 20%' => [20.0, ['120'], [100.0], 0.0],
+    '9.99 at 20% (no 2-decimal net)' => [20.0, ['9.99'], [8.33], -0.01],
+    '15.00 at 19% twice' => [19.0, ['15', '15'], [12.61, 12.61], -0.01],
+]);
+
+test('a taxed line saved as the form shows it keeps its net price (CF-137)', function (float $rate): void {
+    [$service] = inclusiveTaxInvoice(true, true, $rate, $rate);
+    $netOf = new ReflectionMethod($service, 'staffLineNet');
+    for ($cents = 1; $cents <= 50000; ++$cents) {
+        $net = round($cents / 100, 2);
+        $shown = number_format(round($net * (100 + $rate) / 100, 2), 2, '.', '');
+        if ($netOf->invoke($service, ['price' => $shown, 'taxed' => 1], $rate)['price'] !== $net) {
+            throw new RuntimeException("net {$net} at {$rate}% comes back changed");
+        }
+    }
+    expect(true)->toBeTrue();
+})->with([5.0, 7.5, 19.0, 20.0, 21.0, 25.0]);

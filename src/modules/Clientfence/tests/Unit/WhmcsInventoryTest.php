@@ -19,7 +19,7 @@ function whmcsFixture(string $version = '9.0.4-release.1'): Connection
     foreach ([
         'CREATE TABLE tblconfiguration (setting TEXT, value TEXT)',
         'CREATE TABLE tblcurrencies (id INTEGER PRIMARY KEY, code TEXT)',
-        'CREATE TABLE tblclients (id INTEGER PRIMARY KEY, status TEXT, currency INTEGER, credit REAL)',
+        'CREATE TABLE tblclients (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT, email TEXT, status TEXT, currency INTEGER, credit REAL)',
         'CREATE TABLE tblinvoices (id INTEGER PRIMARY KEY, userid INTEGER, total REAL, status TEXT, paymentmethod TEXT)',
         'CREATE TABLE tblproducts (id INTEGER PRIMARY KEY, type TEXT, servertype TEXT)',
         'CREATE TABLE tblhosting (id INTEGER PRIMARY KEY, packageid INTEGER, domainstatus TEXT, paymentmethod TEXT)',
@@ -38,7 +38,7 @@ function whmcsFixture(string $version = '9.0.4-release.1'): Connection
     $db->insert('tblcurrencies', ['id' => 1, 'code' => 'USD']);
     $db->insert('tblcurrencies', ['id' => 2, 'code' => 'EGP']);
     foreach ([[1, 'Active', 1, 10.5], [2, 'Active', 1, 0], [3, 'Inactive', 2, 100], [4, 'Closed', 1, 0]] as [$id, $status, $currency, $credit]) {
-        $db->insert('tblclients', ['id' => $id, 'status' => $status, 'currency' => $currency, 'credit' => $credit]);
+        $db->insert('tblclients', ['id' => $id, 'firstname' => 'Client', 'lastname' => (string) $id, 'email' => "c{$id}@example.com", 'status' => $status, 'currency' => $currency, 'credit' => $credit]);
     }
     foreach ([[1, 20, 'Paid', 'paypal'], [1, 5.25, 'Unpaid', 'paypal'], [2, 30, 'Paid', 'banktransfer'], [3, 900, 'Unpaid', 'banktransfer'], [4, 7, 'Cancelled', 'paypal']] as [$client, $total, $status, $gateway]) {
         $db->insert('tblinvoices', ['userid' => $client, 'total' => $total, 'status' => $status, 'paymentmethod' => $gateway]);
@@ -77,6 +77,11 @@ test('the plan counts each area with its statuses, and the money per currency', 
         ->and($plan['money'])->toBe([
             ['currency' => 'USD', 'unpaid_invoices' => 5.25, 'client_credit' => 10.5, 'paid_invoices' => 50.0],
             ['currency' => 'EGP', 'unpaid_invoices' => 900.0, 'client_credit' => 100.0, 'paid_invoices' => 0.0],
+        ])
+        // CF-136: the clients with credit, highest first, so a wrong imported balance shows before the import.
+        ->and($plan['credit_clients'])->toBe([
+            ['id' => 3, 'name' => 'Client 3', 'email' => 'c3@example.com', 'currency' => 'EGP', 'credit' => 100.0],
+            ['id' => 1, 'name' => 'Client 1', 'email' => 'c1@example.com', 'currency' => 'USD', 'credit' => 10.5],
         ]);
 });
 

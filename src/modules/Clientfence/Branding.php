@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * setup wizard's branding step, Setup.php).
  *
  * - Uploads are checked, re-encoded as PNG (so nothing but pixels is kept) and saved under
- *   public/uploads/brand with a random name; company_logo, company_logo_dark and company_favicon
+ *   public/uploads/brand with a random name; company_logo, company_logo_dark, company_logo_email and company_favicon
  *   point to them.
  * - A brand color other than the default writes a small stylesheet (public/uploads/brand/brand-*.css)
  *   that both themes load: it sets the client theme's --pal-* variables, Bootstrap's primary
@@ -32,6 +32,7 @@ final class Branding
     public const array ASSETS = [
         'logo' => ['param' => 'company_logo', 'width' => 1200, 'height' => 400],
         'logo_dark' => ['param' => 'company_logo_dark', 'width' => 1200, 'height' => 400],
+        'logo_email' => ['param' => 'company_logo_email', 'width' => 1200, 'height' => 400],
         'icon' => ['param' => 'company_favicon', 'width' => 512, 'height' => 512],
     ];
     public const int MAX_BYTES = 2 * 1024 * 1024;

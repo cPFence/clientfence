@@ -1193,8 +1193,16 @@ class Service implements InjectionAwareInterface
 
         if (isset($data['items']) && is_array($data['items'])) {
             $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
+            $typedGross = [];
             foreach ($data['items'] as $d) {
-                $invoiceItemService->addNew($model, $d);
+                // ClientFence core patch (CF-137): lines staff type include the tax when prices do, as on the invoice form.
+                $staff = !empty($data['staff_lines']) && is_array($d) && $this->pricesIncludeTax();
+                $itemId = $invoiceItemService->addNew($model, $staff ? $this->staffLineNet($d, (float) $model->taxrate) : $d);
+                $typedGross[$itemId] = $staff ? ($d['price'] ?? null) : null;
+            }
+            if (!empty($data['staff_lines'])) {
+                $model->tax_adjust = $this->inclusiveCents($model, $typedGross);
+                $this->di['db']->store($model);
             }
         }
         // ClientFence core patch: catalog prices that include tax (the cart's lines; WHMCS Inclusive Tax).
@@ -2170,6 +2178,22 @@ class Service implements InjectionAwareInterface
     private function updateInvoiceLocked(\Model_Invoice $model, array $data): bool
     {
         $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
+        // ClientFence core patch (CF-137): with prices that include tax, a price typed on a taxed line includes the tax, as
+        // at checkout (WHMCS Inclusive Tax); before the amount check, so a line saved as shown is unchanged.
+        $typedGross = [];
+        if ($this->pricesIncludeTax()) {
+            $rate = (float) ($data['taxrate'] ?? $model->taxrate);
+            if (isset($data['new_item']) && is_array($data['new_item'])) {
+                $typedGross['new'] = $data['new_item']['price'] ?? null;
+                $data['new_item'] = $this->staffLineNet($data['new_item'], $rate);
+            }
+            foreach ($data['items'] ?? [] as $id => $d) {
+                if (is_array($d)) {
+                    $typedGross[$id] = $d['price'] ?? null;
+                    $data['items'][$id] = $this->staffLineNet($d, $rate);
+                }
+            }
+        }
         $previousStatus = $model->status;
         $amountChanged = $this->changesAmount($model, $data);
         if ($this->isBooked($model) && $amountChanged) {
@@ -2254,12 +2278,6 @@ class Service implements InjectionAwareInterface
         }
         $model->taxrate = $data['taxrate'] ?? (empty($model->taxrate) ? null : $model->taxrate);
         $model->taxname = $data['taxname'] ?? (empty($model->taxname) ? null : $model->taxname);
-        // ClientFence core patch: lines and rates staff type are net, so the inclusive rounding cents no longer apply.
-        // shortcut: when lines change (here, or an order's lines are deleted) the cents are dropped and the total can be a cent off the
-        // shown price; lines added or deleted through the item API keep them. Recompute from stored gross prices if that matters.
-        if ($amountChanged) {
-            $model->tax_adjust = 0.0;
-        }
         $model->approved = (int) ($data['approved'] ?? (empty($model->approved) ? null : $model->approved));
         $model->notes = $data['notes'] ?? (empty($model->notes) ? null : $model->notes);
 
@@ -2270,7 +2288,7 @@ class Service implements InjectionAwareInterface
 
         $ni = $data['new_item'] ?? [];
         if (isset($ni['title']) && !empty($ni['title'])) {
-            $invoiceItemService->addNew($model, $ni);
+            $typedGross[$invoiceItemService->addNew($model, $ni)] = $typedGross['new'] ?? null;
         }
 
         $items = $data['items'] ?? [];
@@ -2280,6 +2298,13 @@ class Service implements InjectionAwareInterface
             if ($item instanceof \Model_InvoiceItem && (int) $item->invoice_id === (int) $model->id) {
                 $invoiceItemService->update($item, $d);
             }
+        }
+        // ClientFence core patch (CF-137): the cents that make a tax-inclusive total the prices staff typed, as at checkout.
+        // shortcut: a price with no 2-decimal net (9.99 at 20%) shows on the form as the gross of its net (10.00) and
+        // counts that way when a later save changes the amount, a cent off; a line deleted through the item API keeps
+        // the old cents until the next save. Store the typed gross per line if a cent matters there.
+        if ($amountChanged) {
+            $model->tax_adjust = $this->inclusiveCents($model, $typedGross);
         }
 
         $model->updated_at = date('Y-m-d H:i:s');
@@ -2370,6 +2395,41 @@ class Service implements InjectionAwareInterface
         $net = round((float) $db->fetchOne($taxedSql, $args), 2);
         $invoice->tax_adjust = $taxRate > 0 && $gross != 0 ? round($gross - $net - round($net * $taxRate / 100, 2), 2) : 0.0;
         $db->update('invoice', ['tax_adjust' => $invoice->tax_adjust], ['id' => (int) $invoice->id]);
+    }
+
+    /** ClientFence (CF-137): the net price of a taxed line staff typed with the tax in it (rate in percent). */
+    private function staffLineNet(array $line, float $rate): array
+    {
+        if ($rate > 0 && !empty($line['taxed']) && isset($line['price']) && is_numeric($line['price'])) {
+            $line['price'] = round((float) $line['price'] * 100 / (100 + $rate), 2);
+        }
+
+        return $line;
+    }
+
+    /**
+     * ClientFence (CF-137): the cents that make a tax-inclusive invoice total the gross prices of its taxed lines, as
+     * applyInclusiveTax(): the price staff typed for a line ($typedGross by line id), else the gross its net gives back.
+     *
+     * @param array<int|string, mixed> $typedGross
+     */
+    private function inclusiveCents(\Model_Invoice $invoice, array $typedGross = []): float
+    {
+        $rate = (float) $invoice->taxrate;
+        if ($rate <= 0 || !$this->pricesIncludeTax()) {
+            return 0.0;
+        }
+        $lines = $this->di['dbal']->fetchAllAssociative('SELECT id, price, quantity FROM invoice_item WHERE invoice_id = ? AND type <> ? AND taxed = 1', [(int) $invoice->id, \Model_InvoiceItem::TYPE_DEPOSIT]);
+        $net = 0.0;
+        $gross = 0.0;
+        foreach ($lines as $line) {
+            $typed = $typedGross[$line['id']] ?? null;
+            $net += (float) $line['price'] * (float) $line['quantity'];
+            $gross += (is_numeric($typed) ? round((float) $typed, 2) : round((float) $line['price'] * (100 + $rate) / 100, 2)) * (float) $line['quantity'];
+        }
+        $net = round($net, 2);
+
+        return $net != 0 ? round(round($gross, 2) - $net - round($net * $rate / 100, 2), 2) : 0.0;
     }
 
     /**

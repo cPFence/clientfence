@@ -123,7 +123,8 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $client = $this->getDi()['db']->getExistingModelById('Client', $data['client_id'], 'Client not found');
 
-        $invoice = $this->getService()->prepareInvoice($client, $data);
+        // ClientFence core patch (CF-137): the lines are staff's, so with prices that include tax their prices do too.
+        $invoice = $this->getService()->prepareInvoice($client, ['staff_lines' => true, 'prices_include_tax' => false] + $data);
 
         return $invoice->id;
     }

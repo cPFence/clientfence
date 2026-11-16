@@ -115,7 +115,7 @@
                 <div class="cf-brand-grid">
                     <div class="cf-brand-controls">
                         <h2 class="cf-setup-h2">{{ 'Logos'|trans }}</h2>
-                        {% include 'mod_clientfence_brand_drops.html.twig' with { urls: { logo: setup.logo_url, logo_dark: setup.logo_dark_url, icon: setup.icon_url } } %}
+                        {% include 'mod_clientfence_brand_drops.html.twig' with { urls: { logo: setup.logo_url, logo_dark: setup.logo_dark_url, logo_email: setup.logo_email_url, icon: setup.icon_url } } %}
 
                         <h2 class="cf-setup-h2 mt-4">{{ 'Brand color'|trans }}</h2>
                         <div class="cf-swatches" role="radiogroup" aria-label="{{ 'Brand color'|trans }}" data-cf-swatches>

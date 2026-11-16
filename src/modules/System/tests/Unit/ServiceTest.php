@@ -16,6 +16,29 @@ use Symfony\Component\Filesystem\Path;
 
 use function Tests\Helpers\container;
 
+test('emails show the email logo, else the logo (CF-138)', function (string $emailLogo, string $expected): void {
+    $result = Mockery::mock(Doctrine\DBAL\Result::class);
+    $result->shouldReceive('fetchAllAssociative')->andReturn([
+        ['param' => 'company_logo', 'value' => 'public/branding/logo.png'],
+        ['param' => 'company_logo_email', 'value' => $emailLogo],
+    ]);
+    $query = Mockery::mock(Doctrine\DBAL\Query\QueryBuilder::class);
+    $query->shouldReceive('select', 'from', 'where', 'setParameter')->andReturnSelf();
+    $query->shouldReceive('executeQuery')->andReturn($result);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('createQueryBuilder')->andReturn($query);
+    $di = container();
+    $di['dbal'] = $dbal;
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->getCompany()['logo_url_email'])->toBe($expected);
+})->with([
+    'not set' => ['', SYSTEM_URL . 'public/branding/logo.png'],
+    'uploaded' => ['public/uploads/brand/logo-email-0123456789abcdef.png', SYSTEM_URL . 'public/uploads/brand/logo-email-0123456789abcdef.png'],
+    'full URL' => ['https://cdn.example.com/mail-logo.png', 'https://cdn.example.com/mail-logo.png'],
+]);
+
 test('getParamValue throws exception when key parameter is missing', function (): void {
     $service = new Service();
     $param = '';
@@ -35,6 +58,7 @@ test('getCompany returns company information', function (): void {
         'signature' => null,
         'logo_url' => null,
         'logo_url_dark' => null,
+        'logo_url_email' => null,
         'favicon_url' => null,
         'address_1' => null,
         'address_2' => null,

@@ -20,6 +20,7 @@ test('the new invoice line starts taxed only when the setting is on and the clie
     $system->shouldReceive('getParamValue')->with('tax_staff_lines', false)->andReturn($setting === null ? false : ($setting ? '1' : '0'));
     $clients = Mockery::mock();
     $clients->shouldReceive('isClientTaxable')->with($client)->andReturn($taxable);
+    $clients->shouldReceive('pricesIncludeTax')->andReturn(false);
 
     $di = container();
     $di['api_admin'] = $api;
@@ -27,7 +28,7 @@ test('the new invoice line starts taxed only when the setting is on and the clie
     $di['mod_service'] = $di->protect(fn (string $name) => $name === 'system' ? $system : $clients);
 
     $app = Mockery::mock(\ClientFence\App::class);
-    $app->shouldReceive('render')->once()->with('mod_invoice_invoice', ['invoice' => ['id' => 5, 'client_id' => 7], 'tax_new_line' => $expected])->andReturn('ok');
+    $app->shouldReceive('render')->once()->with('mod_invoice_invoice', ['invoice' => ['id' => 5, 'client_id' => 7], 'tax_new_line' => $expected, 'prices_include_tax' => false])->andReturn('ok');
 
     $controller = new Admin();
     $controller->setDi($di);

@@ -226,6 +226,7 @@ test('Mark as Paid records and credits only the unpaid deposit remainder', funct
 test('Manage marks a partly paid invoice paid with its recorded payments', function (float $totalAfterSave, float $debit): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE setting (param TEXT PRIMARY KEY, value TEXT)');
     $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
     $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
     $dbal->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, description TEXT, amount REAL, created_at TEXT, updated_at TEXT)');

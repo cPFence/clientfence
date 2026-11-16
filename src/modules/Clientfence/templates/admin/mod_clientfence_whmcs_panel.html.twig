@@ -467,6 +467,21 @@
             </div>
             {% endif %}
 
+            {% if plan.credit_clients|default([]) %}
+            <h4 class="mt-4 mb-2">{{ 'Clients with the most credit'|trans }}</h4>
+            <p class="text-secondary small">{{ 'Imported credit pays the client\'s next invoices automatically: check these balances before you import.'|trans }}</p>
+            <div class="table-responsive">
+                <table class="table table-sm table-vcenter mb-0">
+                    <thead><tr><th>{{ 'Client'|trans }}</th><th>{{ 'Email'|trans }}</th><th>{{ 'Currency'|trans }}</th><th class="text-end">{{ 'Client credit'|trans }}</th></tr></thead>
+                    <tbody>
+                        {% for client in plan.credit_clients %}
+                        <tr><td><bdi>#{{ client.id }}</bdi> {{ client.name }}</td><td>{{ client.email }}</td><td>{{ client.currency }}</td><td class="text-end">{{ client.credit|number_format(2) }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
             <h4 class="mt-4 mb-2">{{ 'Add-on modules'|trans }}</h4>
             <p class="text-secondary small">{{ 'Modules with a ClientFence counterpart are imported. The rows of every other module are kept in an archive file next to the database backups, so nothing is lost and they can be imported later.'|trans }}</p>
             <div class="table-responsive">

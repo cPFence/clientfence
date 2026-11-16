@@ -82,7 +82,7 @@ final class Inventory
     private const SKIP = ['/^tbl/', '/cache/i', '/^sessions?$/i', '/^sqlite_/'];
 
     /**
-     * @return array{version: string, major: int, supported: bool, areas: array<string, array{group: string, label: string, table: string, rows: int, by_status: array<string, int>}>, money: list<array{currency: string, unpaid_invoices: float, client_credit: float, paid_invoices: float}>, modules: list<array{module: string, label: string, handling: string, active: bool, tables: list<array{table: string, rows: int}>, rows: int}>, gateways: list<array{gateway: string, label: string, services: int, invoices: int}>, server_modules: list<array{module: string, products: int, services: int}>, warnings: list<string>}
+     * @return array{version: string, major: int, supported: bool, areas: array<string, array{group: string, label: string, table: string, rows: int, by_status: array<string, int>}>, money: list<array{currency: string, unpaid_invoices: float, client_credit: float, paid_invoices: float}>, credit_clients: list<array{id: int, name: string, email: string, currency: string, credit: float}>, modules: list<array{module: string, label: string, handling: string, active: bool, tables: list<array{table: string, rows: int}>, rows: int}>, gateways: list<array{gateway: string, label: string, services: int, invoices: int}>, server_modules: list<array{module: string, products: int, services: int}>, warnings: list<string>}
      */
     public static function plan(Source $source): array
     {
@@ -114,6 +114,7 @@ final class Inventory
             'supported' => $supported,
             'areas' => $areas,
             'money' => self::money($source),
+            'credit_clients' => self::creditClients($source),
             'modules' => self::modules($source),
             'gateways' => self::gateways($source),
             'server_modules' => self::serverModules($source),
@@ -147,6 +148,29 @@ final class Inventory
         }
 
         return $out;
+    }
+
+    /**
+     * ClientFence (CF-136): the clients with the most credit, highest first, so a wrong imported balance shows
+     * before the import (imported credit pays the next invoices automatically).
+     *
+     * @return list<array{id: int, name: string, email: string, currency: string, credit: float}>
+     */
+    private static function creditClients(Source $source): array
+    {
+        if (!$source->hasTable('tblclients') || !$source->hasTable('tblcurrencies')) {
+            return [];
+        }
+        // c.*: the plan must not fail on a source without the name columns.
+        $rows = $source->rows('SELECT c.*, cur.code AS cf_currency FROM tblclients c JOIN tblcurrencies cur ON cur.id = c.currency WHERE c.credit > 0 ORDER BY c.credit DESC, c.id LIMIT 25');
+
+        return array_map(static fn (array $r): array => [
+            'id' => (int) $r['id'],
+            'name' => trim(($r['firstname'] ?? '') . ' ' . ($r['lastname'] ?? '')),
+            'email' => (string) ($r['email'] ?? ''),
+            'currency' => (string) $r['cf_currency'],
+            'credit' => round((float) $r['credit'], 2),
+        ], $rows);
     }
 
     /**

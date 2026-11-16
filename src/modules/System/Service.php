@@ -239,6 +239,7 @@ class Service
             'company_signature',
             'company_logo',
             'company_logo_dark',
+            'company_logo_email',
             'company_favicon',
             'company_address_1',
             'company_address_2',
@@ -269,6 +270,13 @@ class Service
         }
         $logoUrlDark ??= $logoUrl;
 
+        // ClientFence core patch (CF-138): the logo emails show (mail apps that recolor emails dark ignore dark mode CSS), else the logo.
+        $logoUrlEmail = (string) ($results['company_logo_email'] ?? '') !== '' ? (string) $results['company_logo_email'] : null;
+        if ($logoUrlEmail !== null && !str_contains($logoUrlEmail, 'http')) {
+            $logoUrlEmail = SYSTEM_URL . $logoUrlEmail;
+        }
+        $logoUrlEmail ??= $logoUrl;
+
         $faviconUrl = $results['company_favicon'] ?? null;
         if ($faviconUrl !== null && !str_contains((string) $faviconUrl, 'http')) {
             $faviconUrl = SYSTEM_URL . $faviconUrl;
@@ -286,6 +294,7 @@ class Service
             'signature' => $results['company_signature'] ?? null,
             'logo_url' => $logoUrl,
             'logo_url_dark' => $logoUrlDark,
+            'logo_url_email' => $logoUrlEmail,
             'favicon_url' => $faviconUrl,
             'address_1' => isset($results['company_address_1']) ? (string) $results['company_address_1'] : null,
             'address_2' => isset($results['company_address_2']) ? (string) $results['company_address_2'] : null,
@@ -867,6 +876,7 @@ class Service
             'company_address_3',
             'company_logo',
             'company_logo_dark',
+            'company_logo_email',
             'company_favicon',
             'company_number',
             'company_vat_number',

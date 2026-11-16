@@ -353,7 +353,8 @@
                                 </td>
                                 <td>
                                     <div class="input-group">
-                                        <input class="form-control" type="text" name="items[{{ item.id }}][price]" value="{{ item.price }}">
+                                        {# ClientFence core patch (CF-137): a taxed line's price with the tax in it when prices include tax (Invoice\Service::staffLineNet()). #}
+                                        <input class="form-control" type="text" name="items[{{ item.id }}][price]" value="{{ item.taxed and prices_include_tax|default(false) ? (item.price * (100 + invoice.taxrate) / 100)|round(2)|number_format(2, '.', '') : item.price }}">
                                         <span class="input-group-text">{{ invoice.currency|currency_symbol }}</span>
                                     </div>
                                 </td>

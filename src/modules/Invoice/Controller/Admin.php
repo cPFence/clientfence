@@ -164,7 +164,10 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $client = $this->di['db']->load('Client', $invoice['client_id']);
         $taxNewLine = $client !== null && $this->di['mod_service']('system')->getParamValue('tax_staff_lines', false) && $this->di['mod_service']('client')->isClientTaxable($client);
 
-        return $app->render('mod_invoice_invoice', ['invoice' => $invoice, 'tax_new_line' => $taxNewLine]);
+        // ClientFence core patch (CF-137): with prices that include tax, a taxed line's price field shows it with the tax, as staff type it.
+        $inclusive = $this->di['mod_service']('invoice')->pricesIncludeTax() && (float) ($invoice['taxrate'] ?? 0) > 0;
+
+        return $app->render('mod_invoice_invoice', ['invoice' => $invoice, 'tax_new_line' => $taxNewLine, 'prices_include_tax' => $inclusive]);
     }
 
     public function get_transaction(\ClientFence\App $app, $id): string

@@ -136,6 +136,7 @@
                                     {% include 'mod_clientfence_brand_drops.html.twig' with { urls: {
                                         logo: params.company_logo|default('') ? bf_company.logo_url : null,
                                         logo_dark: params.company_logo_dark|default('') ? bf_company.logo_url_dark : null,
+                                        logo_email: params.company_logo_email|default('') ? bf_company.logo_url_email : null,
                                         icon: params.company_favicon|default('') ? bf_company.favicon_url : null,
                                     } } %}
                                 </div>
@@ -151,6 +152,11 @@
                                     <div class="col-lg-6">
                                         <label class="form-label" for="company_logo_dark">{{ 'Logo URL (dark mode)'|trans }}</label>
                                         <input class="form-control" id="company_logo_dark" type="text" name="company_logo_dark" value="{{ params.company_logo_dark|default('') }}">
+                                    </div>
+                                    {# ClientFence core patch (CF-138): the logo every email shows. #}
+                                    <div class="col-lg-6">
+                                        <label class="form-label" for="company_logo_email">{{ 'Logo for emails'|trans }}</label>
+                                        <input class="form-control" id="company_logo_email" type="text" name="company_logo_email" value="{{ params.company_logo_email|default('') }}">
                                     </div>
                                 {% endif %}
                             </div>

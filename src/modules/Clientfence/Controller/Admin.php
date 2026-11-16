@@ -108,6 +108,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
                 'company' => $params,
                 'logo_url' => $company['logo_url'] ?? null,
                 'logo_dark_url' => (string) ($params['company_logo_dark'] ?? '') !== '' ? $company['logo_url_dark'] : null,
+                'logo_email_url' => (string) ($params['company_logo_email'] ?? '') !== '' ? $company['logo_url_email'] : null,
                 'icon_url' => $company['favicon_url'] ?? null,
                 'brand' => Branding::get($di),
                 'brand_default' => Branding::DEFAULT_COLOR,

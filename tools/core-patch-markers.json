@@ -3932,10 +3932,6 @@
         "done": "ClientFence core patch: a refund's credit note totals the amount refunded (its tax is that amount less the net)."
     },
     {
-        "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: lines and rates staff type are net, so the inclusive rounding cents no longer apply."
-    },
-    {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: the tax-inclusive cents were for all the invoice's lines (Invoice\\Service::applyInclusiveTax())."
     },
@@ -6514,5 +6510,37 @@
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
         "done": "ClientFence core patch: the service reads first: title and status, its price and next renewal, the actions, then the facts as a grid in place of the four tiles (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-137): lines staff type include the tax when prices do, as on the invoice form."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-137): with prices that include tax, a price typed on a taxed line includes the tax, as"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-137): the cents that make a tax-inclusive total the prices staff typed, as at checkout."
+    },
+    {
+        "file": "modules/Invoice/Controller/Admin.php",
+        "done": "ClientFence core patch (CF-137): with prices that include tax, a taxed line's price field shows it with the tax, as staff type it."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (CF-137): a taxed line's price with the tax in it when prices include tax (Invoice\\Service::staffLineNet())."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-137): the lines are staff's, so with prices that include tax their prices do too."
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (CF-138): the logo emails show (mail apps that recolor emails dark ignore dark mode CSS), else the logo."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch (CF-138): the logo every email shows."
     }
 ]

@@ -1,10 +1,11 @@
-{# Logo, dark logo and square icon upload zones (Clientfence Api setup_brand_asset, Branding.php; the
+{# Logo, dark logo, email logo and square icon upload zones (Clientfence Api setup_brand_asset, Branding.php; the
    script is clientfence-setup.js): the setup wizard's branding step and System → Settings. Each upload
    saves its setting at once. `urls`: the current image of each kind, or null. #}
 <div class="cf-drops">
     {% for drop in [
         { kind: 'logo', title: 'Logo'|trans, hint: 'For light backgrounds. Wide, up to 1200 × 400.'|trans, url: urls.logo, dark: false },
         { kind: 'logo_dark', title: 'Logo for dark backgrounds'|trans, hint: 'Light colored. The sign-in page and dark mode use it.'|trans, url: urls.logo_dark, dark: true },
+        { kind: 'logo_email', title: 'Logo for emails'|trans, hint: 'Every email shows it instead of the logo. Give it its own background so it stays clear when a mail app turns emails dark.'|trans, url: urls.logo_email|default(null), dark: false },
         { kind: 'icon', title: 'Square icon'|trans, hint: 'Browser tab icon. Square, at least 64 × 64.'|trans, url: urls.icon, dark: false },
     ] %}
         <div class="cf-drop{% if drop.dark %} is-dark{% endif %}{% if drop.kind == 'icon' %} is-icon{% endif %}" data-cf-drop="{{ drop.kind }}" tabindex="0" role="button" aria-label="{{ 'Upload'|trans }}: {{ drop.title }}">

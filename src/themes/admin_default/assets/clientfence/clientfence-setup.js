@@ -34,7 +34,7 @@ function bindDrops(scope, uploaded = () => {}) {
         const result = await post('clientfence/setup_brand_asset', data);
         img.src = result.url;
         img.hidden = false;
-        if (empty) empty.hidden = true;
+        empty?.setAttribute('hidden', ''); // an SVG has no .hidden property
         uploaded(kind, result.url);
         notify(text('textSaved'), 'success');
       } catch (e) {
