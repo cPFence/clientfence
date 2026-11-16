@@ -1,4 +1,4 @@
-{# ClientFence: the service page (CF-52). A header with the service's own actions, the open invoice, four tiles,
+{# ClientFence: the service page (CF-52). A summary card (price, next renewal, the service's own actions, facts), the open invoice,
    the service card (mod_service<type>_manage.html.twig) or a Details card, and a Manage panel. A service type
    adds to the header and the panel with mod_service<type>_head.html.twig (`part`: meta, actions or manage).
    No Order Notes row: notes are staff notes. #}
@@ -58,20 +58,52 @@
     {{ render_widgets('client.order.manage.content.start', { 'order': order }) }}
 
     {% set icon = { 'hosting': 'server', 'domain': 'world', 'license': 'key', 'apikey': 'key', 'downloadable': 'folder' }[order.service_type]|default('apps') %}
-    <div class="clientfence-hosting-hero card mb-4">
-        <div class="card-body d-flex flex-wrap align-items-center gap-3">
-            <span class="clientfence-hosting-monogram is-large" aria-hidden="true"><svg class="icon"><use href="#{{ icon }}"/></svg></span>
-            <div class="min-w-0 flex-grow-1">
-                <h1 class="clientfence-hosting-hero-domain mb-1">{% if order.service_type == 'domain' and service %}<bdi dir="ltr">{{ service.domain }}</bdi>{% else %}{{ order.title }}{% endif %}</h1>
-                <div class="clientfence-hosting-hero-meta">
-                    {{ mf.status_badge(order.status, 'order') }}
-                    {% if has_head %}{{ include(head_partial, { 'part': 'meta' }) }}{% else %}<span>{{ 'Order #:id'|trans({ ':id': order.id }) }}</span>{% endif %}
+    {# A domain's dates are the registrar's (Sync Now updates them); a one-off promo price does not renew. #}
+    {% set is_domain = order.service_type == 'domain' and service %}
+    {% set expires_at = is_domain ? service.expires_at : order.expires_at %}
+    {% set since = is_domain ? service.registered_at : order.activated_at %}
+    {# ClientFence core patch: the service reads first: title and status, its price and next renewal, the actions, then the facts as a grid in place of the four tiles (CF-135 redesign). #}
+    <div class="clientfence-hosting-hero cf-svc-hero card mb-4">
+        <div class="card-body">
+            <div class="cf-svc-head">
+                <span class="clientfence-hosting-monogram is-large" aria-hidden="true"><svg class="icon"><use href="#{{ icon }}"/></svg></span>
+                <div class="min-w-0 flex-grow-1">
+                    <h1 class="clientfence-hosting-hero-domain mb-1">{% if order.service_type == 'domain' and service %}<bdi dir="ltr">{{ service.domain }}</bdi>{% else %}{{ order.title }}{% endif %}</h1>
+                    <div class="clientfence-hosting-hero-meta">
+                        {{ mf.status_badge(order.status, 'order') }}
+                        {% if has_head %}{{ include(head_partial, { 'part': 'meta' }) }}{% endif %}
+                    </div>
                 </div>
+                <div class="cf-svc-figure">
+                    {% if order.service_type == 'domain' %}
+                        <span class="cf-label">{{ 'Payment Amount'|trans }}</span>
+                        <span class="cf-svc-amount">{{ (order.total - order.discount)|format_currency(order.currency ?? default_currency) }}</span>
+                        <span class="cf-svc-sub">{{ order.created_at|format_date }}</span>
+                    {% else %}
+                        <span class="cf-label">{{ 'Price'|trans }}</span>
+                        <span class="cf-svc-amount">{{ (order.promo_renews ? order.total - order.discount : order.total)|format_currency(order.currency ?? default_currency) }}</span>
+                        <span class="cf-svc-sub">{{ order.period ? order.period|period_title : 'One-time payment'|trans }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="cf-svc-renew{% if expires_at and expires_at|daysleft <= 14 %} is-soon{% endif %}">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg>
+                <span>{{ order.service_type == 'domain' ? 'Expires'|trans : 'Next renewal'|trans }}</span>
+                <strong>{{ expires_at ? expires_at|format_date : '-' }}</strong>
+                <span class="cf-svc-sub">{{ expires_at ? 'in :days day(s)'|trans({ ':days': expires_at|daysleft }) : 'Does not renew'|trans }}</span>
             </div>
             {% if has_head %}
                 <div class="clientfence-hosting-actions">{{ include(head_partial, { 'part': 'actions' }) }}</div>
             {% endif %}
         </div>
+        <dl class="bf-facts cf-svc-facts">
+            <div class="bf-fact"><dt>{{ is_domain ? 'Registered on'|trans : 'Active since'|trans }}</dt><dd>{{ since ? since|format_date : '-' }}</dd></div>
+            <div class="bf-fact"><dt>{{ 'Order ID'|trans }}</dt><dd><bdi>#{{ order.id }}</bdi></dd></div>
+            {# ClientFence core patch: no ticket count or Open Ticket while tickets are off (Support settings). #}
+            {% if tickets_on %}
+                <div class="bf-fact"><dt>{{ 'Open tickets'|trans }}</dt><dd><a href="{{ 'support'|url }}">{{ order.active_tickets }}</a></dd></div>
+            {% endif %}
+        </dl>
     </div>
 
     {% if open_invoice %}
@@ -95,55 +127,6 @@
             <a class="btn btn-outline-secondary btn-sm" {{ fb_api_link({href: 'order/cancel_request_withdraw'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Withdraw the cancellation request?'|trans, content: 'The service stays active.'|trans}, reload: true}) }}>{{ 'Withdraw Request'|trans }}</a>
         </div>
     {% endif %}
-
-    {% set tile_col = tickets_on ? 'col-6 col-xl-3' : 'col-6 col-xl-4' %}
-    {# A domain's dates are the registrar's (Sync Now updates them); a one-off promo price does not renew. #}
-    {% set is_domain = order.service_type == 'domain' and service %}
-    {% set expires_at = is_domain ? service.expires_at : order.expires_at %}
-    {% set since = is_domain ? service.registered_at : order.activated_at %}
-    <div class="row g-3 mb-4">
-        <div class="{{ tile_col }}">
-            <div class="stat-card">
-                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#credit-card"/></svg></span>
-                {% if order.service_type == 'domain' %}
-                    <div class="stat-label">{{ 'Payment Amount'|trans }}</div>
-                    <div class="stat-value">{{ (order.total - order.discount)|format_currency(order.currency ?? default_currency) }}</div>
-                    <div class="stat-meta">{{ order.created_at|format_date }}</div>
-                {% else %}
-                    <div class="stat-label">{{ 'Price'|trans }}</div>
-                    <div class="stat-value">{{ (order.promo_renews ? order.total - order.discount : order.total)|format_currency(order.currency ?? default_currency) }}</div>
-                    <div class="stat-meta">{{ order.period ? order.period|period_title : 'One-time payment'|trans }}</div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="{{ tile_col }}">
-            <div class="stat-card{% if expires_at and expires_at|daysleft <= 14 %} is-alert{% endif %}">
-                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#refresh"/></svg></span>
-                <div class="stat-label">{{ order.service_type == 'domain' ? 'Expires'|trans : 'Next renewal'|trans }}</div>
-                <div class="stat-value is-sm">{{ expires_at ? expires_at|format_date : '-' }}</div>
-                <div class="stat-meta">{{ expires_at ? 'in :days day(s)'|trans({ ':days': expires_at|daysleft }) : 'Does not renew'|trans }}</div>
-            </div>
-        </div>
-        <div class="{{ tile_col }}">
-            <div class="stat-card">
-                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#circle-check"/></svg></span>
-                <div class="stat-label">{{ is_domain ? 'Registered on'|trans : 'Active since'|trans }}</div>
-                <div class="stat-value is-sm">{{ since ? since|format_date : '-' }}</div>
-                <div class="stat-meta">{{ 'Order #:id'|trans({ ':id': order.id }) }}</div>
-            </div>
-        </div>
-        {# ClientFence core patch: no ticket count or Open Ticket while tickets are off (Support settings). #}
-        {% if tickets_on %}
-        <div class="{{ tile_col }}">
-            <a class="stat-card d-block" href="{{ 'support'|url }}">
-                <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#headset"/></svg></span>
-                <div class="stat-label">{{ 'Open tickets'|trans }}</div>
-                <div class="stat-value">{{ order.active_tickets }}</div>
-                <div class="stat-meta">{{ 'About this service'|trans }}</div>
-            </a>
-        </div>
-        {% endif %}
-    </div>
 
     <div class="row g-4">
         <div class="col-lg-8">
