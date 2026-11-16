@@ -27,9 +27,31 @@
 {% endblock %}
 
 {% block content %}
+    {# ClientFence core patch: the group reads first: name, place in the hierarchy and member initials, then the facts (CF-135 redesign). #}
+    <div class="card cf-hero-card mb-3">
+        <div class="cf-inv">
+            <div class="cf-inv-client cf-client-hero">
+                <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#key" /></svg></span>
+                <div class="cf-inv-who">
+                    <span class="cf-client-name">{{ group.name }}</span>
+                    {% if group.path and group.path != group.name %}<span class="text-secondary">{{ group.path }}</span>{% endif %}
+                    <div class="cf-inv-chips mt-1">
+                        {% if group.protected %}<span class="badge bg-blue-lt">{{ 'System'|trans }}</span>{% endif %}
+                        {% for member in members|slice(0, 8) %}
+                            <a class="cf-avatar cf-avatar-sm cf-avatar-stack" href='{{ "staff/manage/#{member.id}"|url }}' title="{{ member.name }}" aria-label="{{ member.name }}">{{ member.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <dl class="cf-facts">
+                <div><dt>{{ 'Members'|trans }}</dt><dd><bdi>{{ members|length }}</bdi></dd></div>
+                <div><dt>{{ 'Parent group'|trans }}</dt><dd>{{ group.parent_name|default('(This is a root group)'|trans) }}</dd></div>
+                {% if group.system_name %}<div><dt>{{ 'System name'|trans }}</dt><dd class="font-monospace">{{ group.system_name }}</dd></div>{% endif %}
+            </dl>
+        </div>
+    </div>
     {% embed 'partial_admin_detail_tabs.html.twig' with {
-        title: group.name,
-        subtitle: 'Manage this staff group details, permissions, and members.'|trans
+        title: group.name
     } %}
         {% block detail_tabs %}
             <li class="nav-item" role="presentation">
@@ -256,9 +278,11 @@
                                 <div class="list-group">
                                     {% for member in members %}
                                         <a class="list-group-item list-group-item-action d-flex align-items-center justify-content-between gap-3" href='{{ "staff/manage/#{member.id}"|url }}'>
-                                            <span>
+                                            {# ClientFence core patch: each member with initials (CF-135 redesign). #}
+                                            <span class="d-flex align-items-center flex-wrap gap-2">
+                                                <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ member.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>
                                                 <strong>{{ member.name }}</strong>
-                                                <span class="text-secondary ms-2">{{ member.email }}</span>
+                                                <span class="text-secondary">{{ member.email }}</span>
                                             </span>
                                             <span class="badge {% if member.status == 'active' %}bg-green-lt{% else %}bg-secondary-lt{% endif %}">{{ member.status|title }}</span>
                                         </a>

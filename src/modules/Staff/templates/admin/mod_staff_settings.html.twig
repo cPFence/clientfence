@@ -114,6 +114,7 @@
                         </form>
                     </section>
                     <div class="table-responsive">
+                        {# ClientFence core patch: initials avatars instead of the drawn identicons (CF-135 redesign). #}
                         <table class="table card-table table-vcenter table-striped text-nowrap">
                             <thead>
                             <tr>
@@ -131,10 +132,12 @@
                                 <tr>
                                     <td>{{ member.id }}</td>
                                     <td>
-                                        <a href='{{ "staff/manage/#{member.id}"|url }}'>
-                                        {{ avatar(member.email, 25, 'avatar avatar-xs me-2') }}
-                                        </a>
-                                        <a href='{{ "staff/manage/#{member.id}"|url }}'>{{ member.name }}</a>
+                                        <div class="d-flex py-1 align-items-center">
+                                            <a href='{{ "staff/manage/#{member.id}"|url }}'>
+                                                <span class="cf-avatar cf-avatar-sm me-2" aria-hidden="true">{{ member.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>
+                                            </a>
+                                            <a class="font-weight-medium" href='{{ "staff/manage/#{member.id}"|url }}'>{{ member.name }}</a>
+                                        </div>
                                     </td>
                                     <td>{{ member.email }}</td>
                                     <td>

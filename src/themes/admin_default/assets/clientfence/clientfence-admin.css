@@ -1186,3 +1186,66 @@ a.bf-file-name:hover .icon { color: inherit; }
   .bf-body .conversation > .ticket-message { width: 88%; }
   .bf-body .conversation > .ticket-message-staff { align-self: flex-end; }
 }
+
+/* ---- CF-135 part 3: admin catalogue and staff ---- */
+/* Record heroes (product, addon, category, promotion, staff member, staff group, own profile): a glass card
+   with a soft glow behind the name, the price or discount at the end, the facts grid under it. */
+.cf-hero-card {
+  overflow: hidden;
+  background-image:
+    radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--bf-teal) 13%, transparent), transparent 55%),
+    radial-gradient(90% 140% at 100% 0%, color-mix(in srgb, var(--bf-brand) 10%, transparent), transparent 60%);
+  animation: cf-hero-in .45s var(--bf-ease) backwards;
+}
+[dir="rtl"] .cf-hero-card {
+  background-image:
+    radial-gradient(120% 160% at 100% 0%, color-mix(in srgb, var(--bf-teal) 13%, transparent), transparent 55%),
+    radial-gradient(90% 140% at 0% 0%, color-mix(in srgb, var(--bf-brand) 10%, transparent), transparent 60%);
+}
+.cf-hero-card > .cf-inv > .cf-client-hero { flex-wrap: wrap; padding: 20px; }
+.cf-hero-card .cf-facts { margin-bottom: -1px; }
+.cf-hero-card .cf-client-name { overflow-wrap: anywhere; }
+.cf-hero-price { margin-inline-start: auto; text-align: end; }
+.cf-fact-num { font-family: var(--bf-font-h); font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+@keyframes cf-hero-in { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: none; } }
+
+/* Product, addon and group tiles: the avatar shape rounded square with an icon. */
+.cf-tile { border-radius: 10px; }
+.cf-avatar-lg.cf-tile { border-radius: 18px; }
+.cf-tile .icon { width: 18px; height: 18px; }
+.cf-avatar-lg.cf-tile .icon { width: 30px; height: 30px; stroke-width: 1.6; }
+.cf-tile-link { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
+.cf-tile-link:hover { text-decoration: none; }
+.cf-tile-link:hover > span:last-child { text-decoration: underline; }
+.cf-priority { width: 64px; margin-inline: auto; text-align: center; font-variant-numeric: tabular-nums; }
+
+/* Product settings: each section starts under a rule with a navy-to-teal mark. */
+.cf-section-head { padding-top: 20px; border-top: 1px solid var(--bf-line); }
+.cf-section-head > .card-title { display: flex; align-items: center; gap: 8px; }
+.cf-section-head > .card-title::before { content: ""; flex: none; width: 4px; height: 16px; border-radius: 2px; background: linear-gradient(180deg, var(--bf-teal), var(--bf-brand)); }
+
+/* Promotions: the code as a dashed coupon chip, a thin meter for uses against the limit. */
+.cf-code {
+  display: inline-block; padding: 2px 10px; border: 1px dashed color-mix(in srgb, var(--bf-teal) 55%, transparent); border-radius: 8px;
+  background: var(--bf-teal-soft); color: var(--bf-soft-ink); font-family: var(--tblr-font-monospace); font-weight: 600; letter-spacing: .04em;
+  transition: border-color .25s, background-color .25s;
+}
+.cf-code:hover { text-decoration: none; border-style: solid; background: color-mix(in srgb, var(--bf-teal) 18%, var(--bf-surface)); }
+.cf-code-lg { font-family: var(--tblr-font-monospace); letter-spacing: .06em; overflow-wrap: anywhere; }
+.cf-meter { width: 100%; max-width: 160px; height: 6px; margin-top: 6px; border: 0; border-radius: 999px; background: var(--bf-surface-2); appearance: none; overflow: hidden; }
+.cf-meter::-webkit-progress-bar { background: var(--bf-surface-2); border-radius: 999px; }
+.cf-meter::-webkit-progress-value { background: linear-gradient(90deg, var(--bf-teal), var(--bf-brand)); border-radius: 999px; }
+.cf-meter::-moz-progress-bar { background: linear-gradient(90deg, var(--bf-teal), var(--bf-brand)); border-radius: 999px; }
+[dir="rtl"] .cf-meter::-webkit-progress-value { background: linear-gradient(270deg, var(--bf-teal), var(--bf-brand)); }
+[dir="rtl"] .cf-meter::-moz-progress-bar { background: linear-gradient(270deg, var(--bf-teal), var(--bf-brand)); }
+
+/* Staff group: the members' initials overlap in a row and lift on hover. */
+.cf-avatar-stack { width: 30px; height: 30px; font-size: 11px; border: 2px solid var(--bf-surface); text-decoration: none; transition: translate .25s var(--bf-ease); }
+.cf-avatar-stack + .cf-avatar-stack { margin-inline-start: -14px; }
+.cf-avatar-stack:hover { translate: 0 -2px; text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-hero-card { animation: none; }
+  .cf-code, .cf-avatar-stack { transition: none; }
+  .cf-avatar-stack:hover { translate: none; }
+}

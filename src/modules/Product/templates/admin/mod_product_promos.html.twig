@@ -35,12 +35,12 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Product Promotions'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage promotional discounts and create new offers for products and client groups.'|trans }}</p>
             </div>
         </div>
         <div class="card-body p-0">
             {{ include('partial_search.html.twig', { search_toolbar_actions: promo_toolbar_actions }) }}
                 <div class="table-responsive">
+                {# ClientFence core patch: the code as a coupon chip, the discount in bold and a use meter under the limit (CF-135 redesign). #}
                 <table class="table card-table table-vcenter table-striped">
                     <thead>
                         <tr>
@@ -60,10 +60,10 @@
                     {% for promo in promos.list %}
                     <tr>
                         <td>
-                            <a href='{{ "product/promo/#{promo.id}"|url }}'>{{ promo.code }}</a>
+                            <a class="cf-code" href='{{ "product/promo/#{promo.id}"|url }}'>{{ promo.code }}</a>
                             {% if promo.auto_apply|default(false) %}<span class="badge bg-blue-lt ms-1">{{ 'Automatic'|trans }}</span>{% endif %}
                         </td>
-                        <td>{% if promo.type == 'percentage' %}{{ promo.value }}%{% endif %}{% if promo.type == 'absolute' %}{{ promo.value|format_currency(currency.code) }}{% endif %}</td>
+                        <td class="fw-bold">{% if promo.type == 'percentage' %}{{ promo.value }}%{% endif %}{% if promo.type == 'absolute' %}{{ promo.value|format_currency(currency.code) }}{% endif %}</td>
                         <td>{% for pid,product in promo.applies_to %}
                             <a href='{{ "product/manage/#{pid}"|url }}'>{{ product|truncate(15) }}</a><br/>
                             {% else %}
@@ -88,6 +88,7 @@
                         <td>{{ mf.boolean_badge(promo.active, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                         <td>
                             {{ promo.used }} / {% if promo.maxuses %}{{ promo.maxuses }}{% else %}&#8734;{% endif %}
+                            {% if promo.maxuses %}<progress class="cf-meter d-block" value="{{ min(promo.used, promo.maxuses) }}" max="{{ promo.maxuses }}" aria-hidden="true"></progress>{% endif %}
                             <div class="text-secondary small">{{ promo.redemption_count }} {{ 'recorded applications'|trans }}</div>
                         </td>
                         <td class="text-nowrap">

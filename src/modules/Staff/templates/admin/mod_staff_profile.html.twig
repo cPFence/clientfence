@@ -5,9 +5,29 @@
 {% block content %}
 {# ClientFence core patch: the staff member's own Sign-ins tab (Clientfence/SignInHistory.php), while the sign-in history is on. #}
 {% set signins = admin.profile_signins %}
+{% set twofactor = admin.profile_twofactor_get %}
+{# ClientFence core patch: your own account reads first: initials, name, email and sign-in chips, then the facts (CF-135 redesign). #}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg" aria-hidden="true">{{ profile.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ profile.name }}</span>
+                <span class="text-secondary text-break">{{ profile.email }}</span>
+                <div class="cf-inv-chips mt-1">
+                    <span class="badge {{ twofactor.enabled ? 'bg-green-lt' : 'bg-yellow-lt' }}">{{ 'Two-factor sign-in'|trans }} · {{ twofactor.enabled ? 'On'|trans : 'Off'|trans }}</span>
+                </div>
+            </div>
+        </div>
+        <dl class="cf-facts">
+            <div><dt>{{ 'Staff ID'|trans }}</dt><dd><bdi>{{ profile.id }}</bdi></dd></div>
+            <div><dt>{{ 'Registered on'|trans }}</dt><dd>{{ profile.created_at ? profile.created_at|format_date : '-' }}</dd></div>
+            <div><dt>{{ 'Timezone'|trans }}</dt><dd>{{ profile.timezone|default('-') }}</dd></div>
+        </dl>
+    </div>
+</div>
 {% embed 'partial_admin_detail_tabs.html.twig' with {
-    title: profile.name,
-    subtitle: 'Manage your staff profile details, update your password, and rotate your API key.'|trans
+    title: profile.name
 } %}
     {% block detail_tabs %}
                     <li class="nav-item" role="presentation">
@@ -109,7 +129,6 @@
             </div>
         </div>
 
-        {% set twofactor = admin.profile_twofactor_get %}
         <div class="tab-pane fade" id="tab-twofactor" role="tabpanel">
             <div class="p-3">
                 <div class="card">

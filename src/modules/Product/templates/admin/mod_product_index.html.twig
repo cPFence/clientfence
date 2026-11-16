@@ -19,7 +19,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Products'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage products, prepare new offerings, and organize product categories.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -43,6 +42,7 @@
             {{ include('partial_search.html.twig', { search_toolbar_actions: product_toolbar_actions }) }}
             <div class="table-responsive">
                 <form method="post" action="{{ 'product/update_priority'|api_url }}" {{ fb_api_form({reload: true}) }}>
+                    {# ClientFence core patch: a product tile beside the title, the type as a chip, a narrow priority field (CF-135 redesign). #}
                     <table class="table card-table table-vcenter table-striped text-nowrap sortable">
                         <thead>
                             <tr>
@@ -61,7 +61,7 @@
                             {% for product in products.list %}
                             <tr>
                                 <td>{{ product.id }}</td>
-                                <td>{{ product_types[product.type]|default(mf.status_name(product.type)) }}</td>
+                                <td><span class="bf-chip">{{ product_types[product.type]|default(mf.status_name(product.type)) }}</span></td>
                                 <td>
                                     {% if product.category is defined %}
                                     <a href='{{ "product/category/#{product.category.id}"|url }}'>{{ product.category.title }}</a>
@@ -69,10 +69,16 @@
                                     –
                                     {% endif %}
                                 </td>
-                                <td><a href='{{ "product/manage/#{product.id}"|url }}'>{{ product.title }}</a></td>
+                                <td>
+                                    <a class="cf-tile-link" href='{{ "product/manage/#{product.id}"|url }}'>
+                                        <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+                                        <span>{{ product.title }}</span>
+                                    </a>
+                                    {% if product.hidden|default(false) %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden'|trans }}</span>{% endif %}
+                                </td>
                                 <td>{{ mf.status_badge(product.status, 'product') }}</td>
                                 <td class="text-center">
-                                    <input type="text" class="form-control form-control-sm" name="priority[{{ product.id }}]" value="{{ product.priority }}" size="2">
+                                    <input type="text" class="form-control form-control-sm cf-priority" name="priority[{{ product.id }}]" value="{{ product.priority }}" size="2">
                                 </td>
                                 <td>
                                     <a class="btn btn-icon" href='{{ "product/manage/#{product.id}"|url }}'>

@@ -31,9 +31,35 @@
 		</div>
 	{% endif %}
 
+	{# ClientFence core patch: the staff member reads first: initials, name, status, groups and sign-in chips, then the facts (CF-135 redesign). #}
+	<div class="card cf-hero-card mb-3">
+		<div class="cf-inv">
+			<div class="cf-inv-client cf-client-hero">
+				<span class="cf-avatar cf-avatar-lg" aria-hidden="true">{{ staff.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</span>
+				<div class="cf-inv-who">
+					<span class="cf-client-name">{{ staff.name }}</span>
+					<span class="text-secondary text-break">{{ staff.email }}</span>
+					<div class="cf-inv-chips mt-1">
+						<span class="badge {{ staff.status == 'active' ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ staff.status == 'active' ? 'Active'|trans : 'Inactive'|trans }}</span>
+						{% for group in staff.groups %}
+							<a class="badge bg-blue-lt text-decoration-none" href='{{ "staff/group/#{group.id}"|url }}'>{{ group.name }}</a>
+						{% endfor %}
+						{% if staff.twofactor %}<span class="badge bg-teal-lt">{{ 'Two-factor sign-in'|trans }}</span>{% endif %}
+						{% if staff.passkeys %}<span class="badge bg-teal-lt">{{ 'Passkeys'|trans }} · <bdi>{{ staff.passkeys }}</bdi></span>{% endif %}
+					</div>
+				</div>
+			</div>
+			<dl class="cf-facts">
+				<div><dt>{{ 'Staff ID'|trans }}</dt><dd><bdi>{{ staff.id }}</bdi></dd></div>
+				<div><dt>{{ 'Registered on'|trans }}</dt><dd>{{ staff.created_at ? staff.created_at|format_date : '-' }}</dd></div>
+				<div><dt>{{ 'Last updated'|trans }}</dt><dd>{{ staff.updated_at ? staff.updated_at|format_date : '-' }}</dd></div>
+				<div><dt>{{ 'Timezone'|trans }}</dt><dd>{{ staff.timezone|default('-') }}</dd></div>
+			</dl>
+		</div>
+	</div>
+
 	{% embed 'partial_admin_detail_tabs.html.twig' with {
-		title: staff.name,
-		subtitle: 'Manage the staff profile, groups, and password for this administrator account.'|trans
+		title: staff.name
 	} %}
 		{% block detail_tabs %}
 						<li class="nav-item" role="presentation">
