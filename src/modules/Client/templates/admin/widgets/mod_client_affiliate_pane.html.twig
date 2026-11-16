@@ -107,7 +107,8 @@
     {% endembed %}
 
     {% set referralsPage = request.aff_referrals_page matches '/^[1-9]\\d*$/' ? request.aff_referrals_page : 1 %}
-    {% set referrals = admin.client_affiliate_referrals({ client_id: client.id, page: referralsPage, per_page: 10 }) %}
+    {% set referralsPerPage = request.aff_referrals_per_page in [10, 25, 50, 100] ? request.aff_referrals_per_page : 10 %}
+    {% set referrals = admin.client_affiliate_referrals({ client_id: client.id, page: referralsPage, per_page: referralsPerPage }) %}
     {% embed 'partial_admin_related_section.html.twig' with {
         title: 'Referred orders'|trans,
         subtitle: 'Services ordered through this affiliate\'s link or assigned to it by staff, and what each earned.'|trans,
@@ -151,16 +152,15 @@
             </div>
         {% endblock %}
         {% block section_footer %}
-            {% if referrals.pages > 1 %}
-                <div class="d-flex align-items-center">
-                    {{ include('partial_pagination.html.twig', { 'list': referrals, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_referrals_page', 'show_per_page_selector': false }) }}
-                </div>
-            {% endif %}
+            <div class="d-flex align-items-center">
+                {{ include('partial_pagination.html.twig', { 'list': referrals, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_referrals_page', 'per_page_param': 'aff_referrals_per_page', 'split_footer_controls': true }) }}
+            </div>
         {% endblock %}
     {% endembed %}
 
     {% set entriesPage = request.aff_entries_page matches '/^[1-9]\\d*$/' ? request.aff_entries_page : 1 %}
-    {% set entries = admin.client_affiliate_entries({ client_id: client.id, page: entriesPage, per_page: 20 }) %}
+    {% set entriesPerPage = request.aff_entries_per_page in [10, 25, 50, 100] ? request.aff_entries_per_page : 20 %}
+    {% set entries = admin.client_affiliate_entries({ client_id: client.id, page: entriesPage, per_page: entriesPerPage }) %}
     {% embed 'partial_admin_related_section.html.twig' with {
         title: 'Commissions'|trans,
         subtitle: 'Every commission, reversal, bonus, manual entry and payout. The balances are their sums.'|trans,
@@ -248,16 +248,15 @@
             </div>
         {% endblock %}
         {% block section_footer %}
-            {% if entries.pages > 1 %}
-                <div class="d-flex align-items-center">
-                    {{ include('partial_pagination.html.twig', { 'list': entries, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_entries_page', 'show_per_page_selector': false }) }}
-                </div>
-            {% endif %}
+            <div class="d-flex align-items-center">
+                {{ include('partial_pagination.html.twig', { 'list': entries, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_entries_page', 'per_page_param': 'aff_entries_per_page', 'split_footer_controls': true }) }}
+            </div>
         {% endblock %}
     {% endembed %}
 
     {% set payoutsPage = request.aff_payouts_page matches '/^[1-9]\\d*$/' ? request.aff_payouts_page : 1 %}
-    {% set payouts = admin.client_affiliate_payout_get_list({ client_id: client.id, page: payoutsPage, per_page: 10 }) %}
+    {% set payoutsPerPage = request.aff_payouts_per_page in [10, 25, 50, 100] ? request.aff_payouts_per_page : 10 %}
+    {% set payouts = admin.client_affiliate_payout_get_list({ client_id: client.id, page: payoutsPage, per_page: payoutsPerPage }) %}
     {% embed 'partial_admin_related_section.html.twig' with {
         title: 'Payouts'|trans,
         subtitle: 'Payout requests and how each was handled. Account credit is added to the client\'s credit balance at once; paid outside only records a payment you made yourself.'|trans,
@@ -267,11 +266,9 @@
             {{ include('mod_client_affiliate_payouts.html.twig', { payouts: payouts.list, show_client: false }) }}
         {% endblock %}
         {% block section_footer %}
-            {% if payouts.pages > 1 %}
-                <div class="d-flex align-items-center">
-                    {{ include('partial_pagination.html.twig', { 'list': payouts, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_payouts_page', 'show_per_page_selector': false }) }}
-                </div>
-            {% endif %}
+            <div class="d-flex align-items-center">
+                {{ include('partial_pagination.html.twig', { 'list': payouts, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-affiliate', 'page_param': 'aff_payouts_page', 'per_page_param': 'aff_payouts_per_page', 'split_footer_controls': true }) }}
+            </div>
         {% endblock %}
     {% endembed %}
 {% endif %}

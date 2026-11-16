@@ -8,6 +8,10 @@
 {% set can_twofactor = has_permission('client', 'edit_profile') %}
 {% set can_manage = can_twofactor %}
 {% set reload = { reload: true } %}
+{# ClientFence core patch: the users list pages like the other client page lists (users_page, users_per_page). #}
+{% set usersPage = request.users_page matches '/^[1-9]\\d*$/' ? request.users_page : 1 %}
+{% set usersPerPage = request.users_per_page in [10, 25, 50, 100] ? request.users_per_page : 10 %}
+{% set users = { list: users_page.users|slice((usersPage - 1) * usersPerPage, usersPerPage), total: users_page.users|length, per_page: usersPerPage, pages: (users_page.users|length / usersPerPage)|round(0, 'ceil') } %}
 <div class="tab-pane fade" id="tab-clientfence-users" role="tabpanel">
     {% embed 'partial_admin_related_section.html.twig' with {
         title: 'Authorized users'|trans,
@@ -96,7 +100,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for user in users_page.users %}
+                        {% for user in users.list %}
                             <tr data-clientfence-user="{{ user.id }}">
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -214,6 +218,11 @@
                     </table>
                 </div>
             {% endif %}
+        {% endblock %}
+        {% block section_footer %}
+            <div class="d-flex align-items-center">
+                {{ include('partial_pagination.html.twig', { 'list': users, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-users', 'page_param': 'users_page', 'per_page_param': 'users_per_page', 'split_footer_controls': true }) }}
+            </div>
         {% endblock %}
     {% endembed %}
 </div>

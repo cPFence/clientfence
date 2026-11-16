@@ -202,6 +202,7 @@ $paths = [
     'modules/Client/templates/email/mod_client_id_document_approved.html.twig',
     'modules/Client/templates/email/mod_client_id_document_refused.html.twig',
     'modules/Client/BalanceAlert.php',
+    'modules/Client/TrustScore.php',
     'modules/Client/templates/email/mod_client_low_balance.html.twig',
     'modules/Antispam/Banned.php',
     'modules/Antispam/Networks.php',

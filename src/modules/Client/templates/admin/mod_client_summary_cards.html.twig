@@ -1,239 +1,137 @@
-{# ClientFence: the client summary's cards, as WHMCS's (client/summary, notes, files; clientfence-admin.js). #}
+{# ClientFence: the Overview tab of the client page (client/summary, client/trust_score, notes, files; clientfence-admin.js):
+   key figures, client information, billing, trust score, services, support, actions, sending, recent services and
+   invoices, notes, files and emails. Its popups (Add funds invoice, Send email) are in mod_client_manage. #}
 {% import 'macro_functions.html.twig' as mf %}
-{% set can_manage_invoices = has_permission('invoice', 'manage_invoices') %}
-{% set can_manage_orders = has_permission('order', 'manage') %}
-{% set can_send_emails = has_permission('email', 'send_emails') %}
 {% set money = client.currency ?? default_currency %}
-<div class="row row-cards mt-1" data-bf-invoice-url="{{ 'invoice/manage'|url }}">
-    {% if can_view_invoices and can_view_orders and has_permission('support', 'view') %}
-    {% set summary = admin.client_summary({ 'id': client.id }) %}
-    <div class="col-lg-4">
-        <div class="card h-100">
-            <div class="card-header"><h3 class="card-title">{{ 'Invoices/Billing'|trans }}</h3></div>
-            <table class="table card-table table-vcenter table-sm">
-                <tbody>
-                    {% for status, label in { 'paid': 'Paid'|trans, 'draft': 'Draft'|trans, 'unpaid': 'Unpaid/Due'|trans, 'cancelled': 'Cancelled'|trans, 'refunded': 'Refunded'|trans } %}
-                    <tr>
-                        <td>{{ label }}</td>
-                        <td class="text-end text-secondary">{{ summary.invoices[status].count }}</td>
-                        <td class="text-end">{{ summary.invoices[status].total|format_currency(money) }}</td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td colspan="2"><strong>{{ 'Gross Revenue'|trans }}</strong></td>
-                        <td class="text-end"><strong>{{ summary.gross_revenue|format_currency(money) }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">{{ 'Credit Balance'|trans }}</td>
-                        <td class="text-end">{{ summary.credit_balance|format_currency(money) }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            {% if can_manage_invoices %}
-            <div class="card-footer d-flex flex-wrap gap-2">
-                <a class="btn btn-sm btn-outline-primary" href="{{ 'invoice'|url(query: { 'client_id': client.id }) }}#tab-new">{{ 'Create Invoice'|trans }}</a>
-                <a class="btn btn-sm btn-outline-secondary" href="#" data-bs-toggle="modal" data-bs-target="#bf-funds-invoice">{{ 'Create Add Funds Invoice'|trans }}</a>
-                <a class="btn btn-sm btn-outline-secondary"
-                    {{ fb_api_link({href: 'invoice/batch_generate'|api_url(query: {'client_id': client.id}), modal: {type: 'confirm', title: 'Generate due invoices for this client now?'|trans}, reload: true}) }}>{{ 'Generate Due Invoices'|trans }}</a>
-                {% if can_manage_balance %}
-                <a class="btn btn-sm btn-outline-secondary" href="#tab-balance" role="button" data-tab-jump>{{ 'Manage Credits'|trans }}</a>
-                {% endif %}
-                <a class="btn btn-sm btn-outline-secondary" href="{{ 'invoice/quote/0'|url(query: { 'client_id': client.id }) }}">{{ 'Create Quote'|trans }}</a>
+{% set summary = can_view_invoices and can_view_orders and has_permission('support', 'view') ? admin.client_summary({ 'id': client.id }) : null %}
+{% set balance_alert = admin.client_balance_alert_get({ id: client.id }) %}
+{% if can_view_tickets %}
+    {% set ticket_query = { 'client_id': client.id, 'per_page': 1, 'deep': 0, 'include_first': 0 } %}
+    {% set ticket_counts = {
+        open: admin.support_ticket_get_list(ticket_query|merge({ 'status': 'open' })).total,
+        on_hold: admin.support_ticket_get_list(ticket_query|merge({ 'status': 'on_hold' })).total,
+        recent: admin.support_ticket_get_list(ticket_query|merge({ 'date_from': '-3 months'|date('Y-m-d') })).total,
+        total: admin.support_ticket_get_list(ticket_query).total,
+    } %}
+{% endif %}
+{# The cards stand in three stacks (Overview layout in clientfence-admin.css): each is only as tall as its content. #}
+<div class="p-3" data-bf-invoice-url="{{ 'invoice/manage'|url }}">
+    <div class="cf-kpis">
+        <div class="card cf-kpi">
+            <span class="bf-tile cf-tile-blue" aria-hidden="true"><svg class="icon"><use href="#calendar" /></svg></span>
+            <div>
+                <div class="cf-label">{{ 'Client since'|trans }}</div>
+                <div class="cf-kpi-value" title="{{ client_age }}">{{ client_age }}</div>
+                <div class="cf-kpi-sub">{{ client.created_at|format_date }}</div>
+                <div class="cf-kpi-sub">{{ client.last_login_at ? 'Last sign-in :date'|trans({ ':date': client.last_login_at|format_date }) : 'Never signed in'|trans }}</div>
             </div>
+        </div>
+        {% if summary %}
+        <div class="card cf-kpi">
+            <span class="bf-tile cf-tile-teal" aria-hidden="true"><svg class="icon"><use href="#currency-dollar" /></svg></span>
+            <div>
+                <div class="cf-label">{{ 'Total paid'|trans }}</div>
+                <div class="cf-kpi-value" title="{{ summary.invoices.paid.total|format_currency(money) }}">{{ summary.invoices.paid.total|format_currency(money) }}</div>
+                <div class="cf-kpi-sub">{{ 'Paid invoices: :count'|trans({ ':count': summary.invoices.paid.count }) }}</div>
+                <div class="cf-kpi-sub">{{ 'Unpaid invoices: :count'|trans({ ':count': summary.invoices.unpaid.count }) }}</div>
+            </div>
+        </div>
+        {% endif %}
+        {% if can_view_orders %}
+        <div class="card cf-kpi">
+            <span class="bf-tile cf-tile-violet" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+            <div>
+                <div class="cf-label">{{ 'Services'|trans }}</div>
+                <div class="cf-kpi-value">{{ ':count active'|trans({ ':count': service_counts.active }) }}</div>
+                <div class="cf-kpi-sub">{{ 'Suspended: :count'|trans({ ':count': service_counts.suspended }) }}</div>
+                <div class="cf-kpi-sub">{{ 'Cancelled: :count'|trans({ ':count': service_counts.canceled }) }}</div>
+            </div>
+        </div>
+        {% endif %}
+        {% if can_view_tickets %}
+        <div class="card cf-kpi">
+            <span class="bf-tile cf-tile-amber" aria-hidden="true"><svg class="icon"><use href="#headset" /></svg></span>
+            <div>
+                <div class="cf-label">{{ 'Tickets'|trans }}</div>
+                <div class="cf-kpi-value">{{ ':count open'|trans({ ':count': ticket_counts.open }) }}</div>
+                <div class="cf-kpi-sub">{{ 'Last 3 months: :count'|trans({ ':count': ticket_counts.recent }) }}</div>
+                <div class="cf-kpi-sub">{{ 'Total: :count'|trans({ ':count': ticket_counts.total }) }}</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="cf-ov">
+    <div class="cf-ov-col">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Client information'|trans }}</h3>
+                {% if can_edit_profile %}<div class="card-actions"><a href="#tab-profile" role="button" data-tab-jump>{{ 'Edit profile'|trans }}</a></div>{% endif %}
+            </div>
+            {# ClientFence core patch: the last sign-in's address (imported clients have no sign-up IP), the email check and the client's age. #}
+            <dl class="cf-facts">
+                <div class="cf-facts-wide"><dt>{{ 'Email'|trans }}</dt><dd class="text-break" dir="ltr">{{ client.email }}</dd></div>
+                <div><dt>{{ 'Phone'|trans }}</dt><dd dir="ltr">{% if client.phone %}{% if client.phone_cc %}+{{ client.phone_cc }} {% endif %}{{ client.phone }}{% else %}-{% endif %}</dd></div>
+                <div><dt>{{ 'Client ID'|trans }}</dt><dd>{{ client.id }}{% if client.aid %} <span class="text-secondary">· {{ 'Custom Client ID'|trans }} {{ client.aid }}</span>{% endif %}</dd></div>
+                <div><dt>{{ 'Type'|trans }}</dt><dd>{{ client.type == 'company' ? 'Company'|trans : (client.type == 'individual' ? 'Individual'|trans : 'Other/Unknown'|trans) }}</dd></div>
+                {# ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php). #}
+                <div><dt>{{ 'Support PIN'|trans }}</dt><dd><span class="font-monospace">{{ admin.client_support_pin({ id: client.id }) }}</span>{% if can_edit_profile %} <a class="ms-1 text-nowrap" href="{{ 'client/support_pin_new'|api_url(query: { id: client.id }) }}" {{ fb_api_link({ modal: { type: 'confirm', title: 'Make a new Support PIN?'|trans, content: 'The current PIN stops working.'|trans }, reload: true }) }}>{{ 'New PIN'|trans }}</a>{% endif %}</dd></div>
+                <div><dt>{{ 'Currency'|trans }}</dt><dd>{{ client.currency ? (client.currency|currency_name) : '-' }}</dd></div>
+                {# ClientFence core patch: an Add Funds shortcut next to the balance (opens the Credit Balance tab). #}
+                <div><dt>{{ 'Balance'|trans }}</dt><dd>{% if client.currency is not null %}<span class="text-nowrap">{{ client.balance|format_currency(client.currency ?? default_currency) }}</span>{% if can_manage_balance %} <a class="ms-1 text-nowrap" href="#tab-balance" role="button" data-tab-jump>{{ 'Add Funds'|trans }}</a>{% endif %}{% else %}-{% endif %}</dd></div>
+                {# ClientFence core patch: the client's low balance alert, read-only, while staff allow it (Client/BalanceAlert.php). #}
+                {% if balance_alert %}
+                <div><dt>{{ 'Low balance alert'|trans }}</dt><dd>{{ balance_alert.threshold is null ? 'Off'|trans : 'Below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(client.currency ?? default_currency) }) }}</dd></div>
+                {% endif %}
+                {# Tax takes the whole row when it would stand alone. #}
+                <div{% if not balance_alert %} class="cf-facts-wide"{% endif %}><dt>{{ 'Tax'|trans }}</dt><dd>{{ client.tax_exempt ? 'Exempt from Tax'|trans : 'Pays tax'|trans }}{% if client.company_vat %} <span class="text-secondary" dir="ltr">· {{ client.company_vat }}</span>{% endif %}</dd></div>
+                <div class="cf-facts-wide"><dt>IP</dt><dd>{% if client.last_login_ip %}{{ mf.ip_lookup_link(client.last_login_ip) }}{% if client.last_login_at %} <span class="text-secondary">{{ client.last_login_at|format_datetime }}</span>{% endif %}{% else %}{{ 'Never signed in'|trans }}{% endif %}</dd></div>
+                <div class="cf-facts-wide"><dt>{{ 'Address'|trans }}</dt><dd>
+                    {% if client.country is not empty %}
+                        <span class="flag flag-country-{{ client.country|lower }}" title="{{ client.country|country_name }}"></span>
+                        {{ client.country|country_name }} {{ client.state }} {{ client.address_1 }} {{ client.address_2 }} {{ client.city }} {{ client.postcode }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </dd></div>
+                {% if can_manage_api_keys %}
+                <div class="cf-facts-wide"><dt>{{ 'API Key'|trans }}</dt><dd class="text-break font-monospace small">{{ client.api_token|default('-') }}</dd></div>
+                {% endif %}
+            </dl>
+            {% if client.notes %}
+                <div class="cf-inv-notes"><div class="cf-label">{{ 'Notes'|trans }}</div>
+                    {% if can_edit_profile %}
+                        <a href="#tab-profile" role="button" data-tab-jump>{{ client.notes }}</a>
+                    {% else %}
+                        {{ client.notes }}
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="card h-100">
-            <div class="card-header"><h3 class="card-title">{{ 'Products/Services'|trans }}</h3></div>
-            <table class="table card-table table-vcenter table-sm">
-                <tbody>
-                    {% for type, row in summary.services %}
-                    <tr>
-                        <td>{{ type|capitalize }}</td>
-                        <td class="text-end">{{ '%active% (%total% Total)'|trans({ '%active%': row.active, '%total%': row.total }) }}</td>
-                    </tr>
-                    {% else %}
-                    {# ClientFence core patch: empty lists under the tray icon, as on the other lists (CF-135 redesign). #}
-                    <tr><td class="text-muted" colspan="2">{{ 'No services yet.'|trans }}</td></tr>
-                    {% endfor %}
-                    <tr><td>{{ 'Addons'|trans }}</td><td class="text-end">{{ summary.addon_count }}</td></tr>
-                    <tr><td>{{ 'Open Quotes'|trans }}</td><td class="text-end">{{ summary.open_quotes }}</td></tr>
-                    {% if can_view_tickets %}<tr><td>{{ 'Open Tickets'|trans }}</td><td class="text-end">{{ summary.open_tickets }}</td></tr>{% endif %}
-                </tbody>
-            </table>
+
+        {% if summary %}
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">{{ 'Services'|trans }}</h3></div>
+            <div class="card-body">
+                <div class="cf-label">{{ 'Recurring amount a year'|trans }}</div>
+                <div class="cf-kpi-value">{{ summary.recurring|reduce((sum, amount) => sum + amount, 0)|format_currency(money) }}</div>
+                <div class="small text-secondary">{{ 'Active services in the client\'s currency, add-ons included, each price counted for a year.'|trans }}</div>
+            </div>
+            {% for type, row in summary.services|filter(row => row.active > 0) %}
+            <div class="cf-row"><span class="text-truncate">{{ type|capitalize }}</span><span class="text-nowrap"><b>{{ summary.recurring[type]|default(0)|format_currency(money) }}</b> <span class="small text-secondary">×{{ row.active }}</span></span></div>
+            {% endfor %}
+            {% if summary.services is empty %}
+            {# ClientFence core patch: empty lists under the tray icon, as on the other lists (CF-135 redesign). #}
+            <div class="cf-row text-secondary">{{ 'No services yet.'|trans }}</div>
+            {% endif %}
+            <div class="cf-row"><span class="text-truncate text-secondary">{{ 'Renewing within 30 days'|trans }}</span><b class="text-nowrap">{{ summary.renewing.count }} · {{ summary.renewing.total|format_currency(money) }}</b></div>
             <div class="card-footer d-flex flex-wrap gap-2">
+                {% if can_manage_orders %}<a class="btn btn-sm btn-primary" href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}">{{ 'Add New Order'|trans }}</a>{% endif %}
                 <a class="btn btn-sm btn-outline-secondary" href="#tab-orders" role="button" data-tab-jump>{{ 'View Orders'|trans }}</a>
-                <a class="btn btn-sm btn-outline-primary" href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}">{{ 'Add New Order'|trans }}</a>
             </div>
         </div>
-    </div>
-    {% endif %}
-    <div class="col-lg-4">
-        <div class="card h-100">
-            <div class="card-header"><h3 class="card-title">{{ 'Other Actions'|trans }}</h3></div>
-            <div class="list-group list-group-flush">
-                {% if can_send_emails %}
-                <a class="list-group-item list-group-item-action" href="#" data-bs-toggle="modal" data-bs-target="#bf-send-email">{{ 'Send Email'|trans }}</a>
-                {% endif %}
-                {% if can_view_invoices %}
-                <a class="list-group-item list-group-item-action" href="{{ 'invoice/reports/statement/pdf'|url(query: { 'client_id': client.id }) }}" target="_blank">{{ 'Account Statement (PDF)'|trans }}</a>
-                {% endif %}
-                {% if can_view_tickets %}
-                <a class="list-group-item list-group-item-action" href="{{ 'support'|url(query: { 'client_id': client.id }) }}#tab-new">{{ 'Open New Ticket'|trans }}</a>
-                <a class="list-group-item list-group-item-action" href="#tab-support" role="button" data-tab-jump>{{ 'View All Tickets'|trans }}</a>
-                {% endif %}
-                {% if can_edit_profile and can_manage_orders and client.status != 'canceled' %}
-                <a class="list-group-item list-group-item-action text-danger"
-                    {{ fb_api_link({href: 'client/close'|api_url(query: {'id': client.id}), modal: {type: 'confirm', title: 'Close this client account?'|trans, content: 'Every active or suspended service is cancelled and the client status becomes Canceled.'|trans}, reload: true}) }}>{{ 'Close Client Account'|trans }}</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% endif %}
 
-    {% if can_view_orders %}
-    {% set orders = admin.order_get_list({ 'per_page': 100, 'client_id': client.id }) %}
-    {% set lists = { 'Products/Services': orders.list|filter(o => o.service_type != 'domain' and (o.group_master or not o.group_id)), 'Domains': orders.list|filter(o => o.service_type == 'domain') } %}
-    {% for title, list in lists %}
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header"><h3 class="card-title">{{ title|trans }}</h3></div>
-            <div class="table-responsive">
-                <table class="table card-table table-vcenter table-sm text-nowrap">
-                    <thead>
-                        <tr>
-                            <th class="w-1"><input class="form-check-input m-0 align-middle batch-delete-master-checkbox" type="checkbox" aria-label="{{ 'Select all'|trans }}"></th>
-                            <th class="w-1">#</th>
-                            <th>{{ 'Title'|trans }}</th>
-                            <th>{{ 'Amount'|trans }}</th>
-                            <th>{{ 'Period'|trans }}</th>
-                            <th>{{ 'Next Due'|trans }}</th>
-                            <th>{{ 'Status'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in list %}
-                        <tr>
-                            <td><input class="form-check-input m-0 align-middle batch-delete-checkbox" type="checkbox" data-item-id="{{ order.id }}" aria-label="#{{ order.id }}"></td>
-                            <td>{{ order.id }}</td>
-                            <td dir="auto"><a href="{{ ('order/manage/' ~ order.id)|url }}">{{ order.title }}</a></td>
-                            <td>{{ order.total|format_currency(order.currency ?? default_currency) }}</td>
-                            <td>{{ order.period ? order.period|period_title : '-' }}</td>
-                            <td>{{ order.expires_at ? order.expires_at|format_date : '-' }}</td>
-                            <td>{{ mf.status_badge(order.status, 'order') }}</td>
-                        </tr>
-                        {% else %}
-                        <tr><td class="text-muted" colspan="7">{{ 'The list is empty'|trans }}</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-    {% if summary is defined and summary.addon_count > 0 %}
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header"><h3 class="card-title">{{ 'Addons'|trans }}</h3></div>
-            <div class="table-responsive">
-                <table class="table card-table table-vcenter table-sm text-nowrap">
-                    <thead>
-                        <tr>
-                            <th class="w-1"></th>
-                            <th class="w-1">#</th>
-                            <th>{{ 'Addon'|trans }}</th>
-                            <th>{{ 'Parent'|trans }}</th>
-                            <th>{{ 'Amount'|trans }}</th>
-                            <th>{{ 'Next Due'|trans }}</th>
-                            <th>{{ 'Status'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for parent in orders.list|filter(o => o.group_master) %}
-                        {% for addon in admin.order_addons({ 'id': parent.id }) %}
-                        <tr>
-                            <td><input class="form-check-input m-0 align-middle batch-delete-checkbox" type="checkbox" data-item-id="{{ addon.id }}" aria-label="#{{ addon.id }}"></td>
-                            <td>{{ addon.id }}</td>
-                            <td dir="auto"><a href="{{ ('order/manage/' ~ addon.id)|url }}">{{ addon.title }}</a></td>
-                            <td dir="auto"><a href="{{ ('order/manage/' ~ parent.id)|url }}">{{ parent.title }}</a></td>
-                            <td>{{ addon.total|format_currency(addon.currency ?? default_currency) }}</td>
-                            <td>{{ addon.expires_at ? addon.expires_at|format_date : '-' }}</td>
-                            <td>{{ mf.status_badge(addon.status, 'order') }}</td>
-                        </tr>
-                        {% endfor %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    {% if can_manage_invoices or can_manage_orders %}
-    <div class="col-12">
-        <div class="bf-bulk" data-bf-bulk
-            data-bf-none-title="{{ 'Nothing selected'|trans }}"
-            data-bf-none-text="{{ 'Tick the services first.'|trans }}"
-            data-bf-delete-title="{{ 'Delete services?'|trans }}"
-            data-bf-delete-text="{{ 'Orders %list% will be deleted. This cannot be undone.'|trans }}"
-            data-bf-delete-confirm="{{ 'Delete'|trans }}"
-            data-bf-cancel="{{ 'Cancel'|trans }}">
-            <span class="bf-bulk-label">{{ 'With Selected:'|trans }}</span>
-            {% if can_manage_invoices %}
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="invoice" data-bf-bulk-call="invoice/batch_renewal_invoice">{{ 'Invoice Selected Items'|trans }}</button>
-            {% endif %}
-            {% if can_manage_orders %}
-            <button type="button" class="btn btn-sm btn-danger" data-bf-bulk-action="delete" data-bf-bulk-call="order/batch_delete" data-bf-bulk-ask="Delete">{{ 'Delete'|trans }}</button>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-    {% endif %}
-
-    {% if can_view_invoices %}
-    {% set quotes = admin.invoice_quote_get_list({ 'client_id': client.id, 'per_page': 100 }).list|filter(q => q.open) %}
-    {% if quotes is not empty %}
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header"><h3 class="card-title">{{ 'Current Quotes'|trans }}</h3></div>
-            <table class="table card-table table-vcenter table-sm">
-                <tbody>
-                    {% for quote in quotes %}
-                    <tr>
-                        <td class="w-1">{{ quote.id }}</td>
-                        <td dir="auto"><a href="{{ ('invoice/quote/' ~ quote.id)|url }}">{{ quote.subject }}</a></td>
-                        <td class="text-end">{{ quote.total|format_currency(quote.currency) }}</td>
-                        <td>{{ quote.stage_title }}</td>
-                        <td class="{{ quote.expired ? 'text-danger' : 'text-secondary' }}">{{ quote.valid_until ?: '-' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% endif %}
-    {% endif %}
-
-    {% if can_view_email_history %}
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header"><h3 class="card-title">{{ 'Recent Emails'|trans }}</h3></div>
-            <table class="table card-table table-vcenter table-sm">
-                <tbody>
-                    {% for email in admin.email_email_get_list({ 'per_page': 5, 'client_id': client.id }).list %}
-                    <tr>
-                        <td class="text-secondary text-nowrap">{{ email.created_at|format_datetime }}</td>
-                        <td class="text-break" dir="auto"><a href="{{ ('email/' ~ email.id)|url }}">{{ email.subject }}</a></td>
-                    </tr>
-                    {% else %}
-                    <tr><td class="text-secondary">{{ 'No emails sent yet.'|trans }}</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="col-lg-6">
         <div class="card">
             <div class="card-header"><h3 class="card-title">{{ 'Admin Notes'|trans }}</h3></div>
             <div class="list-group list-group-flush">
@@ -264,21 +162,121 @@
             {% if can_edit_profile %}
             <form class="card-footer" method="post" action="{{ 'client/note_create'|api_url }}" {{ fb_api_form({ reload: true, message: 'Note added'|trans }) }}>
                 <input type="hidden" name="client_id" value="{{ client.id }}">
-                <label class="form-label" for="bf-new-note">{{ 'New note'|trans }}</label>
-                <textarea class="form-control mb-2" id="bf-new-note" name="note" rows="2" required></textarea>
+                <textarea class="form-control mb-2" id="bf-new-note" name="note" rows="2" required aria-label="{{ 'New note'|trans }}" placeholder="{{ 'New note'|trans }}"></textarea>
                 <button class="btn btn-sm btn-primary" type="submit">{{ 'Add Note'|trans }}</button>
             </form>
             {% endif %}
         </div>
     </div>
 
-    <div class="col-lg-6">
+    <div class="cf-ov-col">
+        {% if summary %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Billing'|trans }}</h3>
+                <div class="card-actions"><a href="{{ 'invoice/reports/statement/pdf'|url(query: { 'client_id': client.id }) }}" target="_blank">{{ 'Account Statement (PDF)'|trans }}</a></div>
+            </div>
+            {% set billed = summary.invoices.paid.total + summary.invoices.unpaid.total %}
+            <div class="card-body">
+                <div class="cf-label">{{ 'Unpaid invoices: :count'|trans({ ':count': summary.invoices.unpaid.count }) }}</div>
+                <div class="cf-kpi-value{{ summary.invoices.unpaid.total > 0 ? ' cf-tone-bad' }}">{{ summary.invoices.unpaid.total|format_currency(money) }}</div>
+                {% if billed > 0 %}
+                <progress class="cf-bar mt-2" value="{{ summary.invoices.paid.total }}" max="{{ billed }}"></progress>
+                <div class="small text-secondary">{{ ':percent% of the billed amount is paid'|trans({ ':percent': (summary.invoices.paid.total / billed * 100)|round }) }}</div>
+                {% endif %}
+            </div>
+            <div class="cf-tiles">
+                {% for status, label in { 'paid': 'Paid'|trans, 'cancelled': 'Cancelled'|trans, 'refunded': 'Refunded'|trans } %}
+                <div>
+                    <div class="cf-label">{{ label }}</div>
+                    <div class="cf-tile-value">{{ summary.invoices[status].total|format_currency(money) }}</div>
+                    <div class="small text-secondary">×{{ summary.invoices[status].count }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="card-body">
+                <div class="cf-label">{{ 'Credit Balance'|trans }}</div>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="fw-semibold text-nowrap">{{ summary.credit_balance|format_currency(money) }}</span>
+                    {% if balance_alert and balance_alert.threshold is not null %}<span class="small text-secondary">· {{ 'Alert below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(money) }) }}</span>{% endif %}
+                    {% if can_manage_balance %}<a class="btn btn-sm btn-outline-secondary ms-auto" href="#tab-balance" role="button" data-tab-jump>{{ 'Manage Credits'|trans }}</a>{% endif %}
+                </div>
+            </div>
+            {% if can_manage_invoices %}
+            <div class="card-footer d-flex flex-wrap gap-2">
+                <a class="btn btn-sm btn-primary" href="{{ 'invoice'|url(query: { 'client_id': client.id }) }}#tab-new">{{ 'Create Invoice'|trans }}</a>
+                <a class="btn btn-sm btn-outline-secondary" href="#" data-bs-toggle="modal" data-bs-target="#bf-funds-invoice">{{ 'Create Add Funds Invoice'|trans }}</a>
+                <a class="btn btn-sm btn-outline-secondary"
+                    {{ fb_api_link({href: 'invoice/batch_generate'|api_url(query: {'client_id': client.id}), modal: {type: 'confirm', title: 'Generate due invoices for this client now?'|trans}, reload: true}) }}>{{ 'Generate Due Invoices'|trans }}</a>
+                <a class="btn btn-sm btn-outline-secondary" href="{{ 'invoice/quote/0'|url(query: { 'client_id': client.id }) }}">{{ 'Create Quote'|trans }}</a>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if can_view_tickets %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Support'|trans }}</h3>
+                <div class="card-actions"><span class="badge bg-teal-lt">{{ 'PIN :pin'|trans({ ':pin': admin.client_support_pin({ id: client.id }) }) }}</span></div>
+            </div>
+            <div class="cf-row"><span>{{ 'Open'|trans }}</span><b>{{ ticket_counts.open }}</b></div>
+            <div class="cf-row"><span>{{ 'On Hold'|trans }}</span><b>{{ ticket_counts.on_hold }}</b></div>
+            <div class="cf-row"><span>{{ 'Opened in the last 3 months'|trans }}</span><b>{{ ticket_counts.recent }}</b></div>
+            <div class="cf-row"><span>{{ 'Total'|trans }}</span><b>{{ ticket_counts.total }}</b></div>
+            <div class="card-footer d-flex flex-wrap gap-2">
+                <a class="btn btn-sm btn-primary" href="{{ 'support'|url(query: { 'client_id': client.id }) }}#tab-new">{{ 'Open New Ticket'|trans }}</a>
+                <a class="btn btn-sm btn-outline-secondary" href="#tab-support" role="button" data-tab-jump>{{ 'View All Tickets'|trans }}</a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if can_send_emails or can_view_invoices %}
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">{{ 'Send to this client'|trans }}</h3></div>
+            {% if can_send_emails %}
+            {# Only templates that need nothing but the client: the welcome email and staff's own templates (Email Api template_send). #}
+            <form class="card-body" method="post" action="{{ 'email/template_send'|api_url }}" {{ fb_api_form({ message: 'Email sent'|trans }) }}>
+                <input type="hidden" name="to_client" value="{{ client.id }}">
+                <label class="form-label" for="cf-send-template">{{ 'Email from a template'|trans }}</label>
+                <select class="form-select mb-2" id="cf-send-template" name="code" required>
+                    <option value="mod_client_signup">{{ 'Welcome email (sign-up)'|trans }}</option>
+                    {% if has_permission('email', 'view_templates') %}
+                        {% for template in admin.email_template_get_list({ 'type': 'custom', 'enabled': 1, 'per_page': 100 }).list %}
+                        <option value="{{ template.action_code }}">{{ template.description ?: template.action_code }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                <div class="d-flex align-items-start gap-2">
+                    <button class="btn btn-sm btn-primary" type="submit">{{ 'Send'|trans }}</button>
+                    <span class="small text-secondary">{{ 'Filled in with this client\'s details and sent to the client\'s email address.'|trans }}</span>
+                </div>
+            </form>
+            {% endif %}
+            {# The statement shows without email rights too, as on the old page (invoice view only). #}
+            <div class="card-body cf-acts{{ can_send_emails ? ' pt-0' }}">
+                {% if can_send_emails %}
+                <a class="cf-act" href="#" data-bs-toggle="modal" data-bs-target="#bf-send-email">
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#mail" /></svg></span>
+                    <span><b>{{ 'Write an email'|trans }}</b><small>{{ 'Your own subject and text'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {% if can_view_invoices %}
+                <a class="cf-act" href="{{ 'invoice/reports/statement/pdf'|url(query: { 'client_id': client.id }) }}" target="_blank">
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#receipt" /></svg></span>
+                    <span><b>{{ 'Account Statement (PDF)'|trans }}</b><small>{{ 'Invoices and payments as a PDF'|trans }}</small></span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
         <div class="card">
             <div class="card-header"><h3 class="card-title">{{ 'Files'|trans }}</h3></div>
             <div class="list-group list-group-flush">
                 {% for file in admin.client_file_get_list({ 'client_id': client.id }) %}
                 <div class="list-group-item d-flex gap-2 align-items-center">
-                    <a class="flex-fill text-break" dir="auto" href="{{ ('client/file/' ~ file.id)|url }}">{{ file.name }}</a>
+                    <a class="flex-fill text-truncate" dir="auto" href="{{ ('client/file/' ~ file.id)|url }}">{{ file.name }}</a>
                     <span class="text-secondary small text-nowrap">{{ (file.size / 1024)|round(0, 'ceil') }} KB, {{ file.created_at|format_date }}</span>
                     {% if can_edit_profile %}
                     <a class="btn btn-sm btn-ghost-danger"
@@ -291,63 +289,208 @@
             </div>
             {% if can_edit_profile %}
             <div class="card-footer" data-bf-client-files data-client="{{ client.id }}">
-                <label class="form-label" for="bf-client-file">{{ 'Add file'|trans }}</label>
-                <input class="form-control" type="file" id="bf-client-file">
+                <input class="form-control form-control-sm" type="file" id="bf-client-file" aria-label="{{ 'Add file'|trans }}">
             </div>
             {% endif %}
         </div>
     </div>
-</div>
 
-{% if can_manage_invoices %}
-<div class="modal fade" id="bf-funds-invoice" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" method="post" action="{{ 'invoice/funds_invoice'|api_url }}" {{ fb_api_form({ callback: 'clientfenceInvoiceCreated' }) }}>
-            <div class="modal-header">
-                <h5 class="modal-title">{{ 'Create Add Funds Invoice'|trans }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+    <div class="cf-ov-col">
+        {% if trust %}
+        {% set trust_parts = {
+            on_time: ['Pays on time'|trans, 40, trust.counts.due ? 'Invoices due in the last 12 months and paid: :count, by the due date: :on_time.'|trans({ ':count': trust.counts.due, ':on_time': trust.counts.on_time }) : 'No invoices yet: 20 of 40.'|trans],
+            since: ['Client since'|trans, 20, '1 point a full month, up to 20.'|trans],
+            services: ['Active services'|trans, 15, '5 points each, up to 15.'|trans],
+            paid: ['Total paid'|trans, 15, 'Paid invoices in the default currency: 15 at 2,000 or more, 11 at 1,000, 7 at 500, 3 at 100.'|trans],
+            verified: ['Verified'|trans, 10, 'Email confirmed 5, an approved ID document 5.'|trans],
+        } %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Trust score'|trans }}</h3>
+                <div class="card-actions"><span class="badge {{ trust_class }}">{{ trust_label }}</span></div>
             </div>
-            <div class="modal-body">
-                <input type="hidden" name="client_id" value="{{ client.id }}">
-                <label class="form-label" for="bf-funds-amount">{{ 'Amount'|trans }}</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" inputmode="decimal" id="bf-funds-amount" name="amount" required>
-                    <span class="input-group-text">{{ client.currency|currency_symbol }}</span>
+            <div class="card-body">
+                <div class="cf-ring">
+                    <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="cf-ring-track" cx="18" cy="18" r="15.9155" pathLength="100" /><circle class="cf-ring-value" cx="18" cy="18" r="15.9155" pathLength="100" stroke-dasharray="{{ trust.total }} 100" /></svg>
+                    <div><b>{{ trust.total }}</b><span>{{ 'of 100'|trans }}</span></div>
                 </div>
+                {% for key, part in trust_parts %}
+                <div class="cf-score">
+                    <div class="d-flex justify-content-between gap-2"><span>{{ part[0] }}</span><b class="text-nowrap">{{ trust.parts[key] }}/{{ part[1] }}</b></div>
+                    <progress class="cf-bar" value="{{ trust.parts[key] }}" max="{{ part[1] }}"></progress>
+                    <div class="small text-secondary">{{ part[2] }}</div>
+                </div>
+                {% endfor %}
+                {% if trust.deductions.fraud %}
+                <div class="cf-score d-flex justify-content-between gap-2 cf-tone-bad"><span>{{ 'An order was held by the fraud check'|trans }}</span><b class="text-nowrap">−{{ trust.deductions.fraud }}</b></div>
+                {% endif %}
+                {% if trust.deductions.refunds %}
+                <div class="cf-score d-flex justify-content-between gap-2 cf-tone-bad"><span>{{ 'Refunded invoices: :refunded, reversed payments: :reversed'|trans({ ':refunded': trust.counts.refunded, ':reversed': trust.counts.reversed }) }}</span><b class="text-nowrap">−{{ trust.deductions.refunds }}</b></div>
+                {% endif %}
+                <p class="small text-secondary mt-3 mb-0">{{ 'For staff only; nothing acts on it. A fraud check hold takes 20 off, each refunded invoice or reversed payment 5. 80 or more: Very good, 60: Good, 40: Fair, below 40: Watch.'|trans }}</p>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" type="submit">{{ 'Create Invoice'|trans }}</button>
-            </div>
-        </form>
-    </div>
-</div>
-{% endif %}
+        </div>
+        {% endif %}
 
-{% if can_send_emails %}
-{% set company = guest.system_company %}
-<div class="modal fade" id="bf-send-email" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <form class="modal-content" method="post" action="{{ 'email/send'|api_url }}" {{ fb_api_form({ reload: true, message: 'Email sent'|trans }) }}>
-            <div class="modal-header">
-                <h5 class="modal-title">{{ 'Send Email'|trans }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">{{ 'Actions'|trans }}</h3></div>
+            {# Suspend all, Unsuspend all and Cancel all run each order's own action (Order Api client_services_action); clientfence-admin.js shows what failed. The Suspend popup is in mod_client_manage. #}
+            <div class="card-body cf-acts" data-cf-services
+                data-cf-services-done="{{ 'Services changed: :count'|trans }}"
+                data-cf-services-failed="{{ 'These services were not changed'|trans }}">
+                {% if can_manage_orders and service_counts.active %}
+                <a class="cf-act cf-act-warn" href="#" data-bs-toggle="modal" data-bs-target="#cf-suspend-all">
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#player-pause" /></svg></span>
+                    <span><b>{{ 'Suspend all services'|trans }}</b><small>{{ 'Every active service'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {% if can_manage_orders and service_counts.suspended %}
+                <a class="cf-act" {{ fb_api_link({ href: 'order/client_services_action'|api_url(query: { client_id: client.id, action: 'unsuspend' }), modal: { type: 'confirm', title: 'Unsuspend all suspended services (:count)?'|trans({ ':count': service_counts.suspended }), content: 'Each suspended service is unsuspended as with Unsuspend on its order page (a paid renewal waiting for it is applied instead), and the client gets the usual email.'|trans }, callback: 'clientfenceServicesDone' }) }}>
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#player-play" /></svg></span>
+                    <span><b>{{ 'Unsuspend all services'|trans }}</b><small>{{ 'Every suspended service'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {% if can_manage_orders and (service_counts.active or service_counts.suspended) %}
+                <a class="cf-act cf-act-warn" {{ fb_api_link({ href: 'order/client_services_action'|api_url(query: { client_id: client.id, action: 'cancel' }), modal: { type: 'confirm', title: 'Cancel all active and suspended services (:count)?'|trans({ ':count': service_counts.active + service_counts.suspended }), content: 'Each active or suspended service is cancelled as with Cancel on its order page: the server account is cancelled, its open renewal and first invoices are cancelled, a payment subscription stops and the client gets the usual email. Nothing is refunded and no credit is given.'|trans, buttonColor: 'danger' }, callback: 'clientfenceServicesDone' }) }}>
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#x" /></svg></span>
+                    <span><b>{{ 'Cancel all services'|trans }}</b><small>{{ 'No refund or credit is given'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {# ClientFence core patch: privacy tools, while they are on (Client/Privacy.php). #}
+                {% if privacy_tools|default(false) and has_permission('client', 'export') %}
+                <a class="cf-act" href="{{ "client/privacy-export/#{client.id}"|url(query: { CSRFToken: CSRFToken }) }}">
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#download" /></svg></span>
+                    <span><b>{{ 'Export Data'|trans }}</b><small>{{ 'All stored data as a JSON file'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {% if privacy_tools|default(false) and can_delete_client %}
+                <a class="cf-act" {{ fb_api_link({href: 'client/privacy_anonymize'|api_url(query: {'id': client.id}), modal: {type: 'confirm', title: 'Anonymize this client?'|trans, content: 'The name, email, address, phone, ticket messages and sent emails are erased for good; orders, invoices and payments stay. The client can no longer sign in. This cannot be undone.'|trans}, reload: true}) }}>
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#eye-off" /></svg></span>
+                    <span><b>{{ 'Anonymize'|trans }}</b><small>{{ 'Erases the personal data'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {% if can_edit_profile and can_manage_orders and client.status != 'canceled' %}
+                <a class="cf-act cf-act-bad" {{ fb_api_link({href: 'client/close'|api_url(query: {'id': client.id}), modal: {type: 'confirm', title: 'Close this client account?'|trans, content: 'Every active or suspended service is cancelled and the client status becomes Canceled.'|trans}, reload: true}) }}>
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#lock" /></svg></span>
+                    <span><b>{{ 'Close Client Account'|trans }}</b><small>{{ 'Cancels every service'|trans }}</small></span>
+                </a>
+                {% endif %}
+                {% if can_delete_client %}
+                <a class="cf-act cf-act-bad" {{ fb_api_link({href: 'client/delete'|api_url(query: {'id': client.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans, content: 'Deletes the client with its orders, invoices, tickets and history.'|trans}, redirect: 'client'|url}) }}>
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#trash" /></svg></span>
+                    <span><b>{{ 'Delete'|trans }}</b><small>{{ 'Removes all its records'|trans }}</small></span>
+                </a>
+                {% endif %}
             </div>
-            <div class="modal-body">
-                <input type="hidden" name="client_id" value="{{ client.id }}">
-                <input type="hidden" name="to" value="{{ client.email }}">
-                <input type="hidden" name="to_name" value="{{ client.first_name }} {{ client.last_name }}">
-                <input type="hidden" name="from" value="{{ company.email }}">
-                <input type="hidden" name="from_name" value="{{ company.name }}">
-                <p class="text-secondary">{{ 'To: %email%'|trans({ '%email%': client.email }) }}</p>
-                <label class="form-label" for="bf-email-subject">{{ 'Subject'|trans }}</label>
-                <input class="form-control mb-2" id="bf-email-subject" name="subject" required>
-                <label class="form-label" for="bf-email-content">{{ 'Message'|trans }}</label>
-                <textarea class="form-control" id="bf-email-content" name="content" rows="8" required></textarea>
+        </div>
+
+        {% if can_view_email_history %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Recent Emails'|trans }}</h3>
+                <div class="card-actions"><a href="#tab-emails" role="button" data-tab-jump>{{ 'All emails'|trans }}</a></div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" type="submit">{{ 'Send'|trans }}</button>
+            {% for email in admin.email_email_get_list({ 'per_page': 5, 'client_id': client.id }).list %}
+            <div class="cf-row"><a class="text-truncate" dir="auto" href="{{ ('email/' ~ email.id)|url }}">{{ email.subject }}</a><span class="small text-secondary text-nowrap">{{ email.created_at|format_date }}</span></div>
+            {% else %}
+            <div class="cf-row text-secondary">{{ 'No emails sent yet.'|trans }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    </div>
+
+    <div class="cf-ov-tables">
+        {% if can_view_orders %}
+        {% set recent_orders = admin.order_get_list({ 'per_page': 5, 'client_id': client.id }) %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Recent services'|trans }}</h3>
+                <div class="card-actions"><a href="#tab-orders" role="button" data-tab-jump>{{ 'All orders (:count)'|trans({ ':count': recent_orders.total }) }}</a></div>
             </div>
-        </form>
+            <div class="table-responsive-lg">
+                <table class="table card-table table-vcenter table-sm text-nowrap">
+                    <thead>
+                        <tr>
+                            <th class="w-1">#</th>
+                            <th>{{ 'Title'|trans }}</th>
+                            <th>{{ 'Amount'|trans }}</th>
+                            <th>{{ 'Next Due'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders.list %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td class="cf-trunc" dir="auto"><a class="d-block text-truncate" href="{{ ('order/manage/' ~ order.id)|url }}" title="{{ order.title }}">{{ order.title }}</a></td>
+                            <td>{{ order.total|format_currency(order.currency ?? default_currency) }}</td>
+                            <td>{{ order.expires_at ? order.expires_at|format_date : '-' }}</td>
+                            <td>{{ mf.status_badge(order.status, 'order') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td class="text-muted" colspan="5">{{ 'The list is empty'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if can_view_invoices %}
+        {% set recent_invoices = admin.invoice_get_list({ 'per_page': 5, 'client_id': client.id }) %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{ 'Recent invoices'|trans }}</h3>
+                <div class="card-actions"><a href="#tab-invoices" role="button" data-tab-jump>{{ 'All invoices (:count)'|trans({ ':count': recent_invoices.total }) }}</a></div>
+            </div>
+            <div class="table-responsive-lg">
+                <table class="table card-table table-vcenter table-sm text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>{{ 'Issued On'|trans }}</th>
+                            <th>{{ 'Amount'|trans }}</th>
+                            <th>{{ 'Status'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in recent_invoices.list %}
+                        <tr>
+                            <td><a href="{{ ('invoice/manage/' ~ invoice.id)|url }}">{{ invoice.serie_nr }}</a></td>
+                            <td>{{ invoice.created_at|format_date }}</td>
+                            <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
+                            <td>{{ mf.status_badge(invoice.status, 'invoice') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td class="text-muted" colspan="4">{{ 'The list is empty'|trans }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% set quotes = admin.invoice_quote_get_list({ 'client_id': client.id, 'per_page': 100 }).list|filter(q => q.open) %}
+        {% if quotes is not empty %}
+        <div class="card cf-ov-wide">
+            <div class="card-header"><h3 class="card-title">{{ 'Current Quotes'|trans }}</h3></div>
+            <div class="table-responsive-lg">
+                <table class="table card-table table-vcenter table-sm text-nowrap">
+                    <tbody>
+                        {% for quote in quotes %}
+                        <tr>
+                            <td class="w-1">{{ quote.id }}</td>
+                            <td class="cf-trunc" dir="auto"><a class="d-block text-truncate" href="{{ ('invoice/quote/' ~ quote.id)|url }}">{{ quote.subject }}</a></td>
+                            <td class="text-end">{{ quote.total|format_currency(quote.currency) }}</td>
+                            <td>{{ quote.stage_title }}</td>
+                            <td class="{{ quote.expired ? 'text-danger' : 'text-secondary' }}">{{ quote.valid_until ?: '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
     </div>
 </div>
-{% endif %}

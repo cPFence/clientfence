@@ -8,6 +8,10 @@
 {% set countries = guest.system_countries %}
 {% set labels = {} %}
 {% for kind in contacts_page.kinds %}{% set labels = labels|merge({ (kind.name): kind.label }) %}{% endfor %}
+{# ClientFence core patch: the contacts list pages like the other client page lists (contacts_page, contacts_per_page). #}
+{% set contactsPage = request.contacts_page matches '/^[1-9]\\d*$/' ? request.contacts_page : 1 %}
+{% set contactsPerPage = request.contacts_per_page in [10, 25, 50, 100] ? request.contacts_per_page : 10 %}
+{% set contacts = { list: contacts_page.contacts|slice((contactsPage - 1) * contactsPerPage, contactsPerPage), total: contacts_page.contacts|length, per_page: contactsPerPage, pages: (contacts_page.contacts|length / contactsPerPage)|round(0, 'ceil') } %}
 
 
 <div class="tab-pane fade" id="tab-clientfence-contacts" role="tabpanel">
@@ -44,7 +48,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for contact in contacts_page.contacts %}
+                        {% for contact in contacts.list %}
                             <tr data-clientfence-contact="{{ contact.id }}">
                                 {# ClientFence core patch: each contact with initials, an empty list under the tray icon (CF-135 redesign). #}
                                 <td>
@@ -88,6 +92,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        {% endblock %}
+        {% block section_footer %}
+            <div class="d-flex align-items-center">
+                {{ include('partial_pagination.html.twig', { 'list': contacts, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-contacts', 'page_param': 'contacts_page', 'per_page_param': 'contacts_per_page', 'split_footer_controls': true }) }}
             </div>
         {% endblock %}
     {% endembed %}

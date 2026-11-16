@@ -1563,6 +1563,38 @@ window.clientfenceInvoiceCreated = (id) => {
   const base = document.querySelector('[data-bf-invoice-url]')?.dataset.bfInvoiceUrl;
   if (base && Number(id) > 0) window.location.href = `${base}/${Number(id)}`;
 };
+// Suspend all, Unsuspend all and Cancel all (order/client_services_action): the services that failed are listed, then
+// the page reloads.
+window.clientfenceServicesDone = (result) => {
+  const box = document.querySelector('[data-cf-services]');
+  const failed = result?.failed || [];
+  document.querySelectorAll('.modal.show').forEach((modal) => window.bootstrap?.Modal.getInstance(modal)?.hide());
+  if (!box || !failed.length || typeof window.Modals?.create !== 'function') {
+    window.ClientFence?.message?.((box?.dataset.cfServicesDone || '').replace(':count', String(result?.done ?? 0)), 'success');
+    window.setTimeout(() => window.location.reload(), 900);
+    return;
+  }
+  const list = document.createElement('ul');
+  failed.forEach((order) => { list.appendChild(document.createElement('li')).textContent = `#${order.id} ${order.title}: ${order.error}`; });
+  const title = document.createElement('span');
+  title.textContent = box.dataset.cfServicesFailed || '';
+  window.Modals.create({ type: 'small', title: title.innerHTML, content: list.outerHTML, closeCallback: () => window.location.reload() });
+};
+
+// The client page's Profile tab: its side menu (General, Security, Cards, Custom fields) is kept in the address
+// (#cf-profile-security), so a reload or a link opens that section inside the Profile tab.
+const profileNav = document.querySelector('[data-cf-profile-nav]');
+if (profileNav && window.bootstrap?.Tab) {
+  const id = window.location.hash.slice(1);
+  const link = /^cf-profile-[a-z]+$/.test(id) ? profileNav.querySelector(`a[href="#${id}"]`) : null;
+  const outer = document.querySelector('[data-bs-toggle="tab"][href="#tab-profile"]');
+  if (link && outer) {
+    outer.addEventListener('shown.bs.tab', () => window.bootstrap.Tab.getOrCreateInstance(link).show(), { once: true });
+    window.bootstrap.Tab.getOrCreateInstance(outer).show();
+  }
+  profileNav.addEventListener('shown.bs.tab', (event) => history.replaceState(null, '', event.target.getAttribute('href')));
+}
+
 document.querySelectorAll('[data-bf-client-files] input[type="file"]').forEach((input) => {
   input.addEventListener('change', () => {
     if (!input.files.length) return;

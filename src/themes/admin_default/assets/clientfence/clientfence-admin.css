@@ -1729,3 +1729,85 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
 /* ---- CF-135 part 5: shared ---- */
 /* The sticky Save rows keep room at the end for the back-to-top button (.bf-top, fixed at the bottom end corner). */
 .bf-body form .cf-set-save, .bf-body form.cf-set > .cf-set-save, .bf-body .cf-set .clientfence-settings-actions { padding-inline-end: calc(1.5rem + 3rem + 16px); }
+
+/* ---- The admin client page (mod_client_manage, mod_client_summary_cards) ---- */
+/* Header: initials, name and chips, then the buttons at the end; they wrap under the name on a phone. */
+.cf-client-head { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; padding: 20px; }
+.cf-client-head .cf-inv-who { flex: 1 1 260px; }
+.cf-client-acts { margin-inline-start: auto; }
+/* Overview: the key figures, each with its tile. */
+.cf-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.cf-kpi { flex-direction: row; align-items: flex-start; gap: 10px; margin: 0; padding: 14px; container-type: inline-size; }
+.cf-kpi > div { min-width: 0; }
+.cf-kpi .bf-tile { flex: none; width: 36px; height: 36px; }
+.cf-kpi-sub { color: var(--bf-muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* A figure stays on one line: in a key figure card it shrinks with the card (cqi), elsewhere it keeps 22px. */
+.cf-kpi-value { font-family: var(--bf-font-h); font-size: clamp(15px, 7.2cqi, 22px); font-weight: 700; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Bars: the paid share and the trust score parts (a <progress>, so no inline width). */
+.cf-bar { display: block; width: 100%; height: 6px; margin: 6px 0 4px; border: 0; border-radius: 99px; background: var(--bf-surface-2); appearance: none; overflow: hidden; }
+.cf-bar::-webkit-progress-bar { background: var(--bf-surface-2); }
+.cf-bar::-webkit-progress-value { background: var(--bf-teal); border-radius: 99px; }
+.cf-bar::-moz-progress-bar { background: var(--bf-teal); border-radius: 99px; }
+.cf-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--bf-line); container-type: inline-size; }
+.cf-tiles > div { padding: 10px 6px; text-align: center; }
+.cf-tiles .cf-label { margin-bottom: 2px; letter-spacing: .03em; white-space: nowrap; }
+.cf-tile-value { font-weight: 600; font-size: clamp(12px, 4.2cqi, 16px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cf-tiles > div + div { border-inline-start: 1px solid var(--bf-line); }
+/* Trust score: the ring (an SVG circle drawn to the score) and its parts. */
+.cf-ring { position: relative; width: 120px; height: 120px; margin: 0 auto 16px; }
+.cf-ring svg { width: 100%; height: 100%; rotate: -90deg; }
+.cf-ring circle { fill: none; stroke-width: 3.2; }
+.cf-ring-track { stroke: var(--bf-surface-2); }
+.cf-ring-value { stroke: var(--bf-teal); stroke-linecap: round; }
+.cf-ring > div { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cf-ring b { font-family: var(--bf-font-h); font-size: 28px; line-height: 1; }
+.cf-ring span { color: var(--bf-muted); font-size: 12px; }
+.cf-score + .cf-score { margin-top: 10px; }
+/* Profile: the side menu next to its section; above it on a phone. */
+.cf-profile { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 767.98px) {
+  .cf-profile { grid-template-columns: minmax(0, 1fr); }
+}
+/* Overview: three stacks of cards, each card only as tall as its content (no shared rows, no holes); two balanced
+   columns on a tablet, one on a phone. Recent services and invoices sit side by side under the stacks. */
+.cf-ov { margin-top: 16px; }
+:is(.cf-ov, .cf-ov-tables) > * > .card, .cf-ov-tables > .card { margin: 0 0 16px; break-inside: avoid; }
+@media (min-width: 1200px) {
+  .cf-ov { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, .9fr); column-gap: 16px; align-items: start; }
+  .cf-ov-tables { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; align-items: start; }
+  .cf-ov-wide { grid-column: 1 / -1; }
+}
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .cf-ov { columns: 2; column-gap: 16px; }
+  .cf-ov-col { display: contents; }
+}
+:is(.cf-ov, .cf-ov-tables) .card-header { flex-wrap: wrap; gap: 4px 12px; min-height: 0; padding: 10px 16px; }
+:is(.cf-ov, .cf-ov-tables) .card-actions { margin-inline-start: auto; }
+:is(.cf-ov, .cf-ov-tables) .card-title { font-size: 15px; }
+:is(.cf-ov, .cf-ov-tables) .card-body { padding: 14px 16px; }
+:is(.cf-ov, .cf-ov-tables) .card-footer { padding: 10px 16px; }
+.cf-ov .cf-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cf-ov .cf-facts > div { padding: 10px 16px; }
+.cf-ov .cf-inv-notes { padding: 10px 16px; }
+.cf-ov .cf-ring { width: 104px; height: 104px; margin-bottom: 12px; }
+/* Label and figure rows (services by type, tickets, emails): the label shortens, the figure never wraps. */
+.cf-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 16px; }
+.cf-row > :first-child { min-width: 0; }
+.cf-row > :last-child:not(:first-child) { flex-shrink: 0; }
+* + .cf-row { border-top: 1px solid var(--bf-line); }
+.card-header + .cf-row { border-top: 0; }
+/* Action rows: an icon tile, a bold title and one short line. */
+.cf-acts { display: grid; gap: 8px; }
+.cf-act { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 1px solid var(--bf-line); border-radius: 12px; color: var(--bf-ink); }
+.cf-act:hover { border-color: color-mix(in srgb, var(--bf-brand) 35%, transparent); color: var(--bf-ink); text-decoration: none; }
+.cf-act > span:last-child { min-width: 0; }
+.cf-act b { display: block; font-weight: 600; }
+.cf-act small { display: block; color: var(--bf-muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cf-act-icon { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--bf-surface-2); color: var(--bf-muted); }
+.cf-act-warn .cf-act-icon { background: var(--bf-warn-soft); color: var(--bf-warn); }
+.cf-act-bad .cf-act-icon { background: var(--bf-bad-soft); color: var(--bf-bad); }
+.cf-act-bad b { color: var(--bf-bad); }
+/* Long titles in the recent lists end in an ellipsis on a desktop; below it the table scrolls. */
+@media (min-width: 992px) { .cf-trunc { width: 100%; max-width: 0; } }
+@media (max-width: 991.98px) { .cf-trunc a { max-width: 14rem; } }
+@media (max-width: 575.98px) { .cf-ov .cf-facts { grid-template-columns: minmax(0, 1fr); } }

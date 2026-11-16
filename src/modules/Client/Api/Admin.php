@@ -653,6 +653,16 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $this->getService()->summary((int) $data['id']);
     }
 
+    // ClientFence core patch: the client page's trust score (TrustScore.php), for staff only; nothing acts on it.
+    #[RequiredParams(['id' => 'Client ID is missing'])]
+    public function trust_score($data): array
+    {
+        $this->checkPermissions('client', 'view');
+        $this->checkPermissions('invoice', 'view');
+
+        return \ClientFence\Mod\Client\TrustScore::get($this->getDi()['dbal'], (int) $data['id']);
+    }
+
     #[RequiredParams(['id' => 'Client ID required', 'amount' => 'Amount is required', 'description' => 'Description is required'])]
     public function balance_deduct($data): bool
     {

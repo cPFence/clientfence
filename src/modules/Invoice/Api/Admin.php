@@ -1507,6 +1507,25 @@ class Admin extends \ClientFence\Api\AbstractApi
         return SavedCards::card($this->getDi(), (int) $invoice->client_id)['card'] ?? null;
     }
 
+    /** ClientFence core patch: the client's (`client_id`) saved cards and PayPal accounts, one per gateway: [{card, pays}]; `pays`: the one charged (SavedCards::method()). */
+    #[RequiredParams(['client_id' => 'Client ID was not passed'])]
+    public function card_list($data): array
+    {
+        $this->checkPermissions('invoice', 'view');
+        $di = $this->getDi();
+        $clientId = (int) $data['client_id'];
+        $pays = SavedCards::method($di, $clientId)['adapter'] ?? null;
+        $list = [];
+        foreach (SavedCards::adapters($di) as $adapter) {
+            $saved = $adapter->savedCard($clientId);
+            if ($saved !== null) {
+                $list[] = ['card' => $saved['card'], 'pays' => $adapter->gatewayId() === $pays?->gatewayId()];
+            }
+        }
+
+        return $list;
+    }
+
     /**
      * ClientFence: the balance of each enabled PayPal gateway (PayPal Email with its REST API keys, PayPal Auto-Pay) whose
      * "PayPal balance on the dashboard" is on, as WHMCS's gateway balance widget: [{gateway, test_mode, balances:

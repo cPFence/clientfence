@@ -29,7 +29,7 @@ function clientSummaryDi(): Pimple\Container
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, currency TEXT, status TEXT, approved INTEGER, taxrate TEXT, tax_adjust REAL DEFAULT 0)',
         'CREATE TABLE invoice_item (invoice_id INTEGER, price REAL, quantity INTEGER, taxed INTEGER)',
-        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, service_type TEXT, status TEXT, group_master INTEGER, group_id TEXT)',
+        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, service_type TEXT, status TEXT, group_master INTEGER, group_id TEXT, price REAL, quantity INTEGER, period TEXT, expires_at TEXT, currency TEXT)',
         'CREATE TABLE client_balance (client_id INTEGER, amount REAL)',
         'CREATE TABLE invoice_quote (client_id INTEGER, stage TEXT)',
         'CREATE TABLE support_ticket (client_id INTEGER, status TEXT)',
@@ -110,6 +110,32 @@ test('summary counts the refunded original invoice without its negative refund i
     $summary = $api->summary(['id' => 7]);
 
     expect($summary['invoices']['refunded'])->toBe(['count' => 1, 'total' => 100.0]);
+});
+
+test('summary adds up the active services a year by type and what renews within 30 days', function (): void {
+    $di = clientSummaryDi();
+    $soon = date('Y-m-d H:i:s', strtotime('+10 days'));
+    $later = date('Y-m-d H:i:s', strtotime('+90 days'));
+    foreach ([
+        ['hosting', 'active', 10, 1, '1M', 'USD', $soon],
+        ['hosting', 'active', 50, 2, '1Y', 'USD', $later],
+        ['domain', 'active', 12, 1, '1Y', 'USD', $soon],
+        ['hosting', 'suspended', 99, 1, '1M', 'USD', $soon],
+        ['hosting', 'active', 99, 1, '1M', 'EUR', $soon],
+        ['custom', 'active', 99, 1, null, 'USD', null],
+    ] as [$type, $status, $price, $quantity, $period, $currency, $expires]) {
+        $di['dbal']->insert('client_order', ['client_id' => 7, 'service_type' => $type, 'status' => $status, 'group_master' => 1, 'price' => $price, 'quantity' => $quantity, 'period' => $period, 'currency' => $currency, 'expires_at' => $expires]);
+    }
+    $service = new Service();
+    $service->setDi($di);
+    $api = clientSummaryApi($di);
+    $api->setService($service);
+
+    $summary = $api->summary(['id' => 7]);
+
+    // 10 a month is 120 a year; 2 x 50 a year is 100. Suspended, other-currency and one-time services do not count.
+    expect($summary['recurring'])->toBe(['hosting' => 220.0, 'domain' => 12.0])
+        ->and($summary['renewing'])->toBe(['count' => 2, 'total' => 22.0]);
 });
 
 test('balance deduction refuses amounts above the balance and creates a negative entry at the floor', function (float $amount, bool $allowed): void {

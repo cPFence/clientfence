@@ -268,7 +268,7 @@
         "done": "ClientFence core patch: private client notes and documents."
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "file": "modules/Client/templates/admin/mod_client_summary_cards.html.twig",
         "done": "ClientFence core patch: the last sign-in's address (imported clients have no sign-up IP), the email check and the client's age."
     },
     {
@@ -1396,7 +1396,7 @@
         "done": "ClientFence core patch: privacy tools and marketing email opt-out, off by default (Client/Privacy.php)."
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "file": "modules/Client/templates/admin/mod_client_summary_cards.html.twig",
         "done": "ClientFence core patch: privacy tools, while they are on (Client/Privacy.php)."
     },
     {
@@ -3268,7 +3268,7 @@
         "done": "ClientFence core patch: WHMCS-style totals of the money this client paid and was refunded"
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "file": "modules/Client/templates/admin/mod_client_summary_cards.html.twig",
         "done": "ClientFence core patch: an Add Funds shortcut next to the balance"
     },
     {
@@ -4936,7 +4936,7 @@
         "done": "ClientFence core patch: the Support PIN staff ask for in chat or on the phone (Client/SupportPin.php)."
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "file": "modules/Client/templates/admin/mod_client_summary_cards.html.twig",
         "done": "ClientFence core patch: the Support PIN staff check in chat or on the phone (Client/SupportPin.php)."
     },
     {
@@ -6368,7 +6368,7 @@
         "done": "ClientFence core patch: clients may set a low balance alert on the Wallet page (Client/BalanceAlert.php)."
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "file": "modules/Client/templates/admin/mod_client_summary_cards.html.twig",
         "done": "ClientFence core patch: the client's low balance alert, read-only, while staff allow it (Client/BalanceAlert.php)."
     },
     {
@@ -7746,5 +7746,49 @@
     {
         "file": "themes/admin_default/html/partial_pagination.html.twig",
         "done": "{# ClientFence core patch: admin lists split the footer by default, the records selector at the start and the pages at the end, the same on every page. #}"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: the client page's trust score (TrustScore.php), for staff only; nothing acts on it."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the active services' amount a year by type, and what renews within 30 days (client page)."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "public function client_services_action($data): array"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "public function card_list($data): array"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the services' \"With Selected\" bar of the old summary cards, on this list (clientfence-admin.js)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "The ids of the old Profile (#tab-info) and Edit (#tab-profile) tabs, so old links open Overview and Profile."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "data-cf-profile-nav"
+    },
+    {
+        "file": "modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig",
+        "done": "ClientFence core patch: the users list pages like the other client page lists (users_page, users_per_page)."
+    },
+    {
+        "file": "modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig",
+        "done": "ClientFence core patch: the contacts list pages like the other client page lists (contacts_page, contacts_per_page)."
+    },
+    {
+        "file": "modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig",
+        "done": "ClientFence core patch: the documents list pages like the other client page lists (id_documents_page, id_documents_per_page)."
+    },
+    {
+        "file": "modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig",
+        "done": "'per_page_param': 'aff_payouts_per_page'"
     }
 ]

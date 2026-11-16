@@ -46,10 +46,6 @@ msgstr ""
 msgid "$cc_encryption_hash in WHMCS's configuration.php. It lets the import read what WHMCS keeps encrypted, such as two-factor secrets."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "%active% (%total% Total)"
-msgstr ""
-
 #: src/modules/Support/templates/admin/mod_support_kb_index.html.twig
 msgid "%active% active, %draft% draft"
 msgstr ""
@@ -326,6 +322,10 @@ msgstr ""
 msgid "1 order counts."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "1 point a full month, up to 20."
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "1 warning"
 msgstr ""
@@ -382,6 +382,10 @@ msgstr ""
 msgid "4 GB"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "5 points each, up to 15."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/partials/store_macros.html.twig
 msgid "6 months"
 msgstr ""
@@ -428,6 +432,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid ":count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid ":count active"
 msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
@@ -504,8 +512,16 @@ msgstr ""
 msgid ":count need attention"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid ":count of 20 fields filled."
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":count on hold"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid ":count open"
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_network_status.html.twig
@@ -694,11 +710,11 @@ msgstr ""
 msgid ":limit; 256M or more is recommended."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid ":n year"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid ":n years"
 msgstr ""
 
@@ -716,6 +732,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid ":passed of :total checks passed"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid ":percent% of the billed amount is paid"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -1342,7 +1362,7 @@ msgstr ""
 msgid "API"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namecheap.php src/library/Server/Manager/CWP.php src/modules/Client/templates/admin/mod_client_manage.html.twig …
+#: src/library/Registrar/Adapter/Namecheap.php src/library/Server/Manager/CWP.php src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "API Key"
 msgstr ""
 
@@ -1694,6 +1714,10 @@ msgstr ""
 msgid "Account username is missing or is invalid"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Account, contact, company and preferences"
+msgstr ""
+
 #: src/themes/palisade/html/layout_default.html.twig
 msgid "Account: :name"
 msgstr ""
@@ -1746,7 +1770,11 @@ msgstr ""
 msgid "Action retried"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig …
+#: src/modules/Order/Api/Admin.php
+msgid "Action was not passed"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig …
 msgid "Actions"
 msgstr ""
 
@@ -1794,12 +1822,16 @@ msgstr ""
 msgid "Active in the last hour"
 msgstr ""
 
-#: src/modules/Invoice/Reports.php src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/Reports.php src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Active services"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Active services and active clients in each country."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Active services in the client's currency, add-ons included, each price counted for a year."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -1874,7 +1906,7 @@ msgstr ""
 msgid "Add Field Type"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig
 msgid "Add Funds"
 msgstr ""
 
@@ -2170,7 +2202,7 @@ msgstr ""
 msgid "Additional Settings"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Product/templates/admin/mod_product_addon_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Product/templates/admin/mod_product_addon_manage.html.twig
 msgid "Addon"
 msgstr ""
 
@@ -2202,7 +2234,7 @@ msgstr ""
 msgid "Addon quantity"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "Addons"
 msgstr ""
 
@@ -2214,7 +2246,7 @@ msgstr ""
 msgid "Addons you have ordered with this service"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig …
+#: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig …
 msgid "Address"
 msgstr ""
 
@@ -2458,6 +2490,10 @@ msgstr ""
 msgid "Alert and above"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Alert below :amount"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Alerts"
 msgstr ""
@@ -2594,12 +2630,20 @@ msgstr ""
 msgid "All dates"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "All emails"
+msgstr ""
+
 #: src/modules/Order/templates/client/mod_order_manage.html.twig
 msgid "All information about your service"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "All invoices"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "All invoices (:count)"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
@@ -2620,6 +2664,10 @@ msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_list.html.twig
 msgid "All of your orders are displayed here. Click on any service to get full information about it."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "All orders (:count)"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
@@ -2650,8 +2698,16 @@ msgstr ""
 msgid "All services"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "All sign-ins"
+msgstr ""
+
 #: src/modules/Notification/templates/admin/mod_notification_index.html.twig
 msgid "All staff"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "All stored data as a JSON file"
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_network_status.html.twig
@@ -3366,6 +3422,10 @@ msgstr ""
 msgid "An option needs at least one value."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "An order was held by the fraud check"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/partial_clientfence_toasts.html.twig src/themes/palisade/html/partials/i18n.html.twig
 msgid "An unexpected error occurred"
 msgstr ""
@@ -3414,11 +3474,11 @@ msgstr ""
 msgid "Announcements for staff, in their bell and on the dashboard"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Anonymize"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Anonymize this client?"
 msgstr ""
 
@@ -4114,7 +4174,7 @@ msgstr ""
 msgid "Bad log priority"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/Reports.php …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig …
 msgid "Balance"
 msgstr ""
 
@@ -4206,7 +4266,7 @@ msgstr ""
 msgid "Being imported"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Below :amount"
 msgstr ""
 
@@ -4242,7 +4302,7 @@ msgstr ""
 msgid "Billed weekly"
 msgstr ""
 
-#: src/modules/Clientfence/Notifications.php src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Invoice/Reports.php …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/Notifications.php src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
 msgid "Billing"
 msgstr ""
 
@@ -4630,7 +4690,7 @@ msgstr ""
 msgid "Canadian unincorporated association"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
 msgid "Cancel"
 msgstr ""
 
@@ -4656,6 +4716,14 @@ msgstr ""
 
 #: src/library/Payment/AdapterAbstract.php
 msgid "Cancel URL for the payment gateway was not set"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Cancel all active and suspended services (:count)?"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Cancel all services"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -4744,6 +4812,14 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_index.html.twig
 msgid "Cancelled and refunded"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Cancelled: :count"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Cancels every service"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_canned_response.html.twig
@@ -4886,6 +4962,10 @@ msgstr ""
 msgid "Card ID was not passed"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Card and account details stay with the payment provider; ClientFence keeps its reference and the name shown here."
+msgstr ""
+
 #: src/library/Payment/Adapter/PayTabs.php
 msgid "Card for automatic payments to :company"
 msgstr ""
@@ -4908,6 +4988,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Card saved with eWAY"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Cards"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -5118,11 +5202,11 @@ msgstr ""
 msgid "Changing the generation options will not automatically regenerate the current API key. Use the reset action if you want the live key replaced."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_upgrades.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_upgrades.html.twig
 msgid "Charge"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Charge :card?"
 msgstr ""
 
@@ -5136,6 +5220,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Charge saved method"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Charged for unpaid invoices"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -5854,7 +5942,7 @@ msgstr ""
 msgid "Client Groups"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings_google.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Client ID"
 msgstr ""
 
@@ -5924,10 +6012,6 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Client Status"
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
-msgid "Client Summary"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
@@ -6010,6 +6094,10 @@ msgstr ""
 msgid "Client identity not found"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Client information"
+msgstr ""
+
 #: src/modules/Activity/Service.php src/modules/Client/Affiliates/Affiliates.php src/modules/Client/Api/Admin.php …
 msgid "Client not found"
 msgstr ""
@@ -6044,6 +6132,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
 msgid "Client sign-up is off: “Disable New Signups” is on in"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Client since"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_index.html.twig
@@ -6378,7 +6470,7 @@ msgstr ""
 msgid "Clients, their authorized users and staff can attach up to 5 files of 10 MB to a ticket message: images, PDF, text and log files, CSV and archives (zip, rar, tar). Staff can remove a file from the ticket page."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig …
 msgid "Close"
 msgstr ""
 
@@ -7210,7 +7302,7 @@ msgstr ""
 msgid "Create Account"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Create Add Funds Invoice"
 msgstr ""
 
@@ -7234,7 +7326,7 @@ msgstr ""
 msgid "Create Hosting Plan"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Create Invoice"
 msgstr ""
 
@@ -7666,7 +7758,7 @@ msgstr ""
 msgid "Custom CSS must be plain text."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Custom Client ID"
 msgstr ""
 
@@ -8242,7 +8334,7 @@ msgstr ""
 msgid "Delete secrets after"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Delete services?"
 msgstr ""
 
@@ -8308,6 +8400,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Deleted."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Deletes the client with its orders, invoices, tickets and history."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
@@ -8942,7 +9038,7 @@ msgstr ""
 msgid "Downloads"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig …
+#: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Custompages/templates/admin/mod_custompages_page.html.twig src/modules/Invoice/Quotes.php …
 msgid "Draft"
 msgstr ""
 
@@ -8964,6 +9060,10 @@ msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig …
 msgid "Dropdown"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Due"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -9042,6 +9142,14 @@ msgstr ""
 msgid "EU reverse charge"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Each active or suspended service is cancelled as with Cancel on its order page: the server account is cancelled, its open renewal and first invoices are cancelled, a payment subscription stops and the client gets the usual email. Nothing is refunded and no credit is given."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each active service is suspended as with Suspend on its order page, with your reason: the server account is suspended and the client gets the usual email. Add-ons go with their service."
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Each day a share of the domains gets its expiry date from the registrar, so every domain is checked about once a month without one big run. A date at the registrar before the order's next due date is a notification for you; the order's date is never changed. Off: the old monthly run."
 msgstr ""
@@ -9066,6 +9174,10 @@ msgstr ""
 msgid "Each report can be filtered, printed and downloaded as a CSV file."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Each suspended service is unsuspended as with Unsuspend on its order page (a paid renewal waiting for it is applied instead), and the client gets the usual email."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
 msgid "Earn a commission when people you refer order from us."
 msgstr ""
@@ -9074,7 +9186,7 @@ msgstr ""
 msgid "Earned"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig …
 msgid "Edit"
 msgstr ""
 
@@ -9128,6 +9240,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Edit destination: :name"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Edit profile"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -9306,12 +9422,20 @@ msgstr ""
 msgid "Email backups are on."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Email confirmed 5, an approved ID document 5."
+msgstr ""
+
 #: src/modules/Email/Api/Admin.php
 msgid "Email content is required"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Email delivery"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Email from a template"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -9370,7 +9494,7 @@ msgstr ""
 msgid "Email sending"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Email sent"
 msgstr ""
 
@@ -10178,6 +10302,10 @@ msgstr ""
 msgid "Enter your secret code"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Erases the personal data"
+msgstr ""
+
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Invoice/templates/admin/mod_invoice_transactions.html.twig …
 msgid "Error"
 msgstr ""
@@ -10326,6 +10454,10 @@ msgstr ""
 msgid "Every active order that renews with an invoice, at its renewal price after any recurring discount and before tax, divided by the months of its billing period (yearly ÷ 12, quarterly ÷ 3) and converted to :currency. Free orders and orders that issue no invoice count 0."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Every active service"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
 msgid "Every check of a known licence key is logged with the host, IP address, path and version it came from and the answer; each licence page shows its recent checks."
 msgstr ""
@@ -10372,6 +10504,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "Every signed-in request is compared with the browser that signed in: its type, system, language and address. A session that suddenly looks like another browser is signed out, which stops a stolen session cookie from being used elsewhere. Turn it off only if staff or clients are signed out for no reason."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Every suspended service"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -10438,7 +10574,7 @@ msgstr ""
 msgid "Execute Now"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Exempt from Tax"
 msgstr ""
 
@@ -10502,7 +10638,7 @@ msgstr ""
 msgid "Export Clients"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Export Data"
 msgstr ""
 
@@ -10564,6 +10700,10 @@ msgstr ""
 
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Extension/Controller/Admin.php src/modules/Extension/manifest.json …
 msgid "Extensions"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Extra details for this client"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -10708,6 +10848,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Failed, will try again"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Fair"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -10880,6 +11024,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Fill in your account details to continue"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Filled in with this client's details and sent to the client's email address."
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig src/modules/Staff/templates/admin/mod_staff_login_history.html.twig
@@ -11080,6 +11228,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option_group.html.twig
 msgid "For staff only, such as \"VPS resources\"."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "For staff only; nothing acts on it. A fraud check hold takes 20 off, each refunded invoice or reversed payment 5. 80 or more: Very good, 60: Good, 40: Fair, below 40: Watch."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -11414,7 +11566,7 @@ msgstr ""
 msgid "Gender"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Email/templates/admin/mod_email_template.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig …
 msgid "General"
 msgstr ""
 
@@ -11642,7 +11794,7 @@ msgstr ""
 msgid "Goes to the test client set in the Mass Mail settings:"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Good"
 msgstr ""
 
@@ -11760,10 +11912,6 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig
 msgid "Greeting"
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Gross Revenue"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig
@@ -12898,7 +13046,7 @@ msgstr ""
 msgid "Indian band recognised by the Indian Act of Canada"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Opensrs.php src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/library/Registrar/Adapter/Opensrs.php src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Individual"
 msgstr ""
 
@@ -13350,7 +13498,7 @@ msgstr ""
 msgid "Invoice Prefix / Series"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Invoice Selected Items"
 msgstr ""
 
@@ -13478,8 +13626,16 @@ msgstr ""
 msgid "Invoices and payments"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Invoices and payments as a PDF"
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "Invoices are not generated for negative amount orders."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Invoices due in the last 12 months and paid: :count, by the due date: :on_time."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -13504,10 +13660,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Invoices, receipts, password resets and ticket replies are sent by email."
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Invoices/Billing"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -13542,7 +13694,7 @@ msgstr ""
 msgid "Issued At"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Issued On"
 msgstr ""
 
@@ -13878,6 +14030,10 @@ msgstr ""
 msgid "Last 12 months"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Last 3 months: :count"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ratings.html.twig
 msgid "Last 30 days"
 msgstr ""
@@ -13976,6 +14132,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "Last sign-in"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Last sign-in :date"
 msgstr ""
 
 #: src/modules/Seo/templates/admin/mod_seo_settings.html.twig
@@ -14534,7 +14694,7 @@ msgstr ""
 msgid "Login as Client"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Embed/templates/client/mod_embed_loginform.html.twig
+#: src/modules/Embed/templates/client/mod_embed_loginform.html.twig
 msgid "Login to Client Area"
 msgstr ""
 
@@ -14622,7 +14782,7 @@ msgstr ""
 msgid "Low"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_client_balance.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/themes/palisade/html/mod_client_balance.html.twig
 msgid "Low balance alert"
 msgstr ""
 
@@ -14750,7 +14910,7 @@ msgstr ""
 msgid "Maintenance settings"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Make a new Support PIN?"
 msgstr ""
 
@@ -15434,7 +15594,7 @@ msgstr ""
 msgid "Merged Tickets"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
 msgid "Message"
 msgstr ""
 
@@ -16034,7 +16194,7 @@ msgstr ""
 msgid "Never rate limited"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Never signed in"
 msgstr ""
 
@@ -16118,7 +16278,7 @@ msgstr ""
 msgid "New Order"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "New PIN"
 msgstr ""
 
@@ -16202,7 +16362,7 @@ msgstr ""
 msgid "New backup code"
 msgstr ""
 
-#: src/modules/Clientfence/Notifications.php
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/Notifications.php
 msgid "New client"
 msgstr ""
 
@@ -16386,7 +16546,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Next Due"
 msgstr ""
 
@@ -16722,6 +16882,10 @@ msgstr ""
 msgid "No invoices yet."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No invoices yet: 20 of 40."
+msgstr ""
+
 #: src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "No invoices, payments or credit in this period."
 msgstr ""
@@ -16886,6 +17050,10 @@ msgstr ""
 msgid "No referred orders yet."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No refund or credit is given"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "No registrar action: the expiry date is read from the registrar when it can tell."
 msgstr ""
@@ -16912,6 +17080,10 @@ msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_index.html.twig
 msgid "No results found"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No saved card or PayPal account."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
@@ -17210,7 +17382,7 @@ msgstr ""
 msgid "Note not found"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/QuotePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/QuotePdf.php …
 msgid "Notes"
 msgstr ""
 
@@ -17222,7 +17394,7 @@ msgstr ""
 msgid "Nothing is banned."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Nothing selected"
 msgstr ""
 
@@ -17434,7 +17606,7 @@ msgstr ""
 msgid "On (:service); the first copy is sent after the next cron run."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig src/modules/Invoice/Quotes.php …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig …
 msgid "On Hold"
 msgstr ""
 
@@ -17842,7 +18014,7 @@ msgstr ""
 msgid "Oops... You just found an error page"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
 msgid "Open"
 msgstr ""
 
@@ -17866,10 +18038,6 @@ msgstr ""
 msgid "Open New Ticket"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Open Quotes"
-msgstr ""
-
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "Open Security settings"
 msgstr ""
@@ -17888,10 +18056,6 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_new_ticket_form.html.twig
 msgid "Open Ticket for Existing Client"
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Open Tickets"
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
@@ -17972,6 +18136,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "Opened"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Opened in the last 3 months"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -18346,7 +18514,7 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Orders %list% will be deleted. This cannot be undone."
 msgstr ""
 
@@ -18398,10 +18566,6 @@ msgstr ""
 msgid "Other (such as an incorporated association number)"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Other Actions"
-msgstr ""
-
 #: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Other Italian organisation"
 msgstr ""
@@ -18438,7 +18602,7 @@ msgstr ""
 msgid "Other secret"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Other/Unknown"
 msgstr ""
 
@@ -18542,7 +18706,7 @@ msgstr ""
 msgid "Overrides the product and default commissions, except on products that pay no commission."
 msgstr ""
 
-#: src/modules/Client/Controller/Admin.php src/modules/Extension/Controller/Admin.php src/modules/Invoice/Controller/Admin.php …
+#: src/modules/Client/Controller/Admin.php src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Extension/Controller/Admin.php …
 msgid "Overview"
 msgstr ""
 
@@ -18624,6 +18788,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
 msgid "PIN"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "PIN :pin"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -18734,8 +18902,16 @@ msgstr ""
 msgid "Paid invoices"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Paid invoices in the default currency: 15 at 2,000 or more, 11 at 1,000, 7 at 500, 3 at 100."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Paid invoices only"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Paid invoices: :count"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig
@@ -18794,7 +18970,7 @@ msgstr ""
 msgid "Parameters `to` and `to_client` cannot be combined. Client-bound emails are always sent to the client's registered email address."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Parent"
 msgstr ""
 
@@ -18850,7 +19026,7 @@ msgstr ""
 msgid "Passkey sign-in is not on."
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig …
 msgid "Passkeys"
 msgstr ""
 
@@ -19626,6 +19802,14 @@ msgstr ""
 msgid "Pays invoices automatically"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Pays on time"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Pays tax"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig …
 msgid "Pending"
 msgstr ""
@@ -19698,7 +19882,7 @@ msgstr ""
 msgid "Performs simple checks to validate your if webserver blocks access to sensitive files."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig …
 msgid "Period"
 msgstr ""
 
@@ -19746,7 +19930,7 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
 msgid "Phone"
 msgstr ""
 
@@ -20558,10 +20742,6 @@ msgstr ""
 msgid "Products and services"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Products/Services"
-msgstr ""
-
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig …
 msgid "Profile"
 msgstr ""
@@ -21070,7 +21250,7 @@ msgstr ""
 msgid "Reason for Cancellation"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Reason for Suspension"
 msgstr ""
 
@@ -21150,8 +21330,16 @@ msgstr ""
 msgid "Recent checks"
 msgstr ""
 
-#: src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Recent invoices"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Recent services"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Recent sign-ins"
 msgstr ""
 
 #: src/modules/System/Service.php
@@ -21216,6 +21404,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Recurring"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Recurring amount a year"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -21330,6 +21522,10 @@ msgstr ""
 msgid "Refunded"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Refunded invoices: :refunded, reversed payments: :reversed"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Refunds Logic"
 msgstr ""
@@ -21442,7 +21638,7 @@ msgstr ""
 msgid "Registered business"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig …
 msgid "Registered on"
 msgstr ""
 
@@ -21642,7 +21838,7 @@ msgstr ""
 msgid "Remove credit"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Remove every passkey of this login? Its password then signs in. Do this only when you are sure who is asking."
 msgstr ""
 
@@ -21666,7 +21862,7 @@ msgstr ""
 msgid "Remove passkey"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig
 msgid "Remove passkeys"
 msgstr ""
 
@@ -21736,6 +21932,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_message_files.html.twig src/themes/palisade/html/partials/ticket_files.html.twig
 msgid "Removed by staff"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Removes all its records"
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -21808,6 +22008,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Renewals"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Renewing within 30 days"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
@@ -22762,6 +22966,10 @@ msgstr ""
 msgid "Saved cards"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards and PayPal accounts"
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Saved cards and bank accounts"
 msgstr ""
@@ -22954,7 +23162,7 @@ msgstr ""
 msgid "Section"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Security/Controller/Admin.php src/modules/Security/manifest.json …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Security/Controller/Admin.php …
 msgid "Security"
 msgstr ""
 
@@ -23062,7 +23270,7 @@ msgstr ""
 msgid "Select a default value"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "Select all"
 msgstr ""
 
@@ -23134,11 +23342,11 @@ msgstr ""
 msgid "Sell API keys: each order gets a key that your application can check, with allowed IPs and usage."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig …
 msgid "Send"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Send Email"
 msgstr ""
 
@@ -23280,6 +23488,10 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Send this message? Recipients: %count%"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Send to this client"
 msgstr ""
 
 #: src/modules/Support/TicketFiles.php
@@ -23582,7 +23794,7 @@ msgstr ""
 msgid "Service suspended"
 msgstr ""
 
-#: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/client/mod_order_list.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Services"
 msgstr ""
 
@@ -23592,6 +23804,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Services and domains"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Services changed: :count"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_index.html.twig
@@ -23950,6 +24166,10 @@ msgstr ""
 msgid "Show article view counts publicly"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Show empty fields"
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_index.html.twig
 msgid "Show fewer features"
 msgstr ""
@@ -24036,6 +24256,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Client/templates/client/mod_client_twofactor_code.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
 msgid "Sign in"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in as client"
 msgstr ""
 
 #: src/library/Payment/Adapter/GoCardless.php
@@ -24702,7 +24926,7 @@ msgstr ""
 msgid "Subdomain ordering is not available for this product."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Email/templates/admin/mod_email_history.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig …
 msgid "Subject"
 msgstr ""
 
@@ -24838,11 +25062,11 @@ msgstr ""
 msgid "Super Administrator is the root group. New groups are created below the selected parent."
 msgstr ""
 
-#: src/modules/Clientfence/Notifications.php src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/Notifications.php src/modules/Invoice/Reports.php …
 msgid "Support"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "Support PIN"
 msgstr ""
 
@@ -24898,6 +25122,14 @@ msgstr ""
 msgid "Suspend After Due Date"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Suspend all active services (:count)?"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Suspend all services"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Suspend when reports stop"
 msgstr ""
@@ -24916,6 +25148,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Suspended services and the reason for each."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Suspended: :count"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -24942,7 +25178,7 @@ msgstr ""
 msgid "Switch off this user's sign-in? It stops on every account the user has, until it is switched on again."
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Switch off two-factor"
 msgstr ""
 
@@ -24950,7 +25186,7 @@ msgstr ""
 msgid "Switch off two-factor sign-in"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Switch off two-factor sign-in for this login? Its password alone will sign in. Do this only when you are sure who is asking."
 msgstr ""
 
@@ -25162,7 +25398,7 @@ msgstr ""
 msgid "Task"
 msgstr ""
 
-#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/QuotePdf.php src/modules/Invoice/Reports.php …
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/InvoicePdf.php src/modules/Invoice/QuotePdf.php …
 msgid "Tax"
 msgstr ""
 
@@ -26150,7 +26386,7 @@ msgstr ""
 msgid "The currency of this service is unknown, so its price cannot change with the options."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "The current PIN stops working."
 msgstr ""
 
@@ -26623,7 +26859,7 @@ msgstr ""
 msgid "The name before @ may use letters, numbers, dots, dashes and underscores, and must start and end with a letter or number."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "The name, email, address, phone, ticket messages and sent emails are erased for good; orders, invoices and payments stay. The client can no longer sign in. This cannot be undone."
 msgstr ""
 
@@ -26799,7 +27035,7 @@ msgstr ""
 msgid "The payment was taken but is not completed yet. Check it with the payment service."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "The payment was taken."
 msgstr ""
 
@@ -27341,6 +27577,10 @@ msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "These services were not changed"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -28147,7 +28387,7 @@ msgstr ""
 msgid "Tick the invoices first."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Tick the services first."
 msgstr ""
 
@@ -28367,7 +28607,7 @@ msgstr ""
 msgid "Ticket was submitted. If you want to track conversation please go to support section"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Tickets"
 msgstr ""
 
@@ -28483,7 +28723,7 @@ msgstr ""
 msgid "To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>here</a>"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "To: %email%"
 msgstr ""
 
@@ -28571,7 +28811,7 @@ msgstr ""
 msgid "Top up once, then pay invoices and renewals from your balance."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig src/modules/Index/templates/client/mod_index_dashboard.html.twig …
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig …
 msgid "Total"
 msgstr ""
 
@@ -28589,6 +28829,14 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Total out"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Total paid"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Total: :count"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_addon_manage.html.twig
@@ -28835,8 +29083,16 @@ msgstr ""
 msgid "Trigger hooks"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Trust :score · :band"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Trust established in Canada"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Trust score"
 msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
@@ -28927,7 +29183,7 @@ msgstr ""
 msgid "Two-factor on"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_twofactor_code.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_login_code.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_twofactor_code.html.twig src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig …
 msgid "Two-factor sign-in"
 msgstr ""
 
@@ -28971,7 +29227,11 @@ msgstr ""
 msgid "Two-factor sign-in, saved cards and other stored payment methods. Stripe cards can be found again with \"Find saved cards in Stripe\"."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Two-factor, passkeys, password, sign-ins"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig …
 msgid "Type"
 msgstr ""
 
@@ -29227,6 +29487,10 @@ msgstr ""
 msgid "Unknown TLD. Could not determine registration price"
 msgstr ""
 
+#: src/modules/Order/Api/Admin.php
+msgid "Unknown action"
+msgstr ""
+
 #: src/modules/Client/Affiliates/Affiliates.php
 msgid "Unknown affiliate status."
 msgstr ""
@@ -29387,7 +29651,7 @@ msgstr ""
 msgid "Unpaid Orders"
 msgstr ""
 
-#: src/modules/Clientfence/Whmcs/Run.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Clientfence/Whmcs/Run.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Unpaid invoices"
 msgstr ""
 
@@ -29404,7 +29668,7 @@ msgid "Unpaid invoices of this gateway: :count. Clients pay them with the gatewa
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Unpaid/Due"
+msgid "Unpaid invoices: :count"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/News/templates/admin/mod_news_index.html.twig src/modules/Notification/templates/admin/mod_notification_index.html.twig …
@@ -29433,6 +29697,14 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Unsuspend"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Unsuspend all services"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Unsuspend all suspended services (:count)?"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -30203,7 +30475,7 @@ msgstr ""
 msgid "Verification codes"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Verified"
 msgstr ""
 
@@ -30221,6 +30493,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "Version"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Very good"
 msgstr ""
 
 #: src/modules/Email/templates/client/mod_email_index.html.twig src/modules/Invoice/templates/client/mod_invoice_index.html.twig src/modules/News/templates/admin/mod_news_index.html.twig …
@@ -30599,6 +30875,10 @@ msgstr ""
 msgid "Warnings (:count): what was not imported as it was, and what to do"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Watch"
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
 msgid "We added your affiliate payout to your account credit. It pays your next invoices."
 msgstr ""
@@ -30819,6 +31099,10 @@ msgstr ""
 msgid "Welcome back, :name"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Welcome email (sign-up)"
+msgstr ""
+
 #: src/modules/Client/Api/Admin.php
 msgid "Welcome email can only be sent for active clients."
 msgstr ""
@@ -31031,7 +31315,7 @@ msgstr ""
 msgid "With \"Chosen client groups\": a client in any of these groups must use it."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/templates/admin/mod_invoice_index.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
 msgid "With Selected:"
 msgstr ""
 
@@ -31073,6 +31357,10 @@ msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Write"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Write an email"
 msgstr ""
 
 #: src/modules/Massmailer/manifest.json
@@ -32067,6 +32355,10 @@ msgstr ""
 msgid "Your own sign-in. You use it for every account you have access to."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "Your own subject and text"
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_google_link.html.twig
 msgid "Your password first; then Google asks which account to link."
 msgstr ""
@@ -32589,6 +32881,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "now"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "of 100"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig

@@ -7,6 +7,10 @@
 {% set can_decide = has_permission('client', 'edit_profile') and has_permission('order', 'manage') %}
 {% set statuses = { 'waiting': 'Waiting for review'|trans, 'approved': 'Approved'|trans, 'refused': 'Refused'|trans } %}
 {% set waiting = id_documents.documents|filter(d => d.status == 'waiting') %}
+{# ClientFence core patch: the documents list pages like the other client page lists (id_documents_page, id_documents_per_page). #}
+{% set documentsPage = request.id_documents_page matches '/^[1-9]\\d*$/' ? request.id_documents_page : 1 %}
+{% set documentsPerPage = request.id_documents_per_page in [10, 25, 50, 100] ? request.id_documents_per_page : 10 %}
+{% set documents = { list: id_documents.documents|slice((documentsPage - 1) * documentsPerPage, documentsPerPage), total: id_documents.documents|length, per_page: documentsPerPage, pages: (id_documents.documents|length / documentsPerPage)|round(0, 'ceil') } %}
 <div class="tab-pane fade" id="tab-clientfence-id-documents" role="tabpanel">
     {% embed 'partial_admin_related_section.html.twig' with {
         title: 'ID documents'|trans,
@@ -40,7 +44,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for document in id_documents.documents %}
+                        {% for document in documents.list %}
                             <tr>
                                 <td class="text-nowrap">{{ document.created_at|format_datetime }}</td>
                                 <td>
@@ -63,6 +67,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        {% endblock %}
+        {% block section_footer %}
+            <div class="d-flex align-items-center">
+                {{ include('partial_pagination.html.twig', { 'list': documents, 'url': 'client/manage/' ~ client.id, 'hash': '#tab-clientfence-id-documents', 'page_param': 'id_documents_page', 'per_page_param': 'id_documents_per_page', 'split_footer_controls': true }) }}
             </div>
         {% endblock %}
     {% endembed %}

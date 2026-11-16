@@ -344,6 +344,45 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: Suspend all, Unsuspend all and Cancel all on the client page. `action` (suspend, unsuspend,
+     * cancel) runs on each order of `client_id` it applies to (active; suspended; active or suspended) through the
+     * single-order call (suspend() with `reason`, unsuspend(), cancel()), services before add-ons. A failed order is
+     * reported and the others go on: {done, failed: [{id, title, error}]}.
+     */
+    #[RequiredParams(['client_id' => 'Client ID was not passed', 'action' => 'Action was not passed'])]
+    public function client_services_action($data): array
+    {
+        $this->checkPermissions('order', 'manage');
+        $states = ['suspend' => ['active'], 'unsuspend' => ['suspended'], 'cancel' => ['active', 'suspended']][$data['action']] ?? throw new InformationException('Unknown action');
+        $db = $this->getDi()['dbal'];
+        $orders = $db->fetchAllAssociative(
+            'SELECT id, title FROM client_order WHERE client_id = ? AND status IN (?) ORDER BY group_master DESC, id',
+            [(int) $data['client_id'], $states],
+            [\Doctrine\DBAL\ParameterType::INTEGER, \Doctrine\DBAL\ArrayParameterType::STRING]
+        );
+        $result = ['done' => 0, 'failed' => []];
+        foreach ($orders as $order) {
+            // An add-on its service took along is already done.
+            if (!in_array($db->fetchOne('SELECT status FROM client_order WHERE id = ?', [$order['id']]), $states, true)) {
+                continue;
+            }
+
+            try {
+                match ($data['action']) {
+                    'suspend' => $this->suspend(['id' => $order['id'], 'reason' => $data['reason'] ?? null]),
+                    'unsuspend' => $this->unsuspend(['id' => $order['id']]),
+                    'cancel' => $this->cancel(['id' => $order['id']]),
+                };
+                ++$result['done'];
+            } catch (\Throwable $e) {
+                $result['failed'][] = ['id' => (int) $order['id'], 'title' => $order['title'], 'error' => $e->getMessage()];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Check whether an order can be cancelled at the end of its period: it has an expiry.
      */
     public function can_cancel_at_period_end($data): bool

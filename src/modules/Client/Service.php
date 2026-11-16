@@ -1053,9 +1053,27 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                FROM client_order WHERE client_id = ? GROUP BY service_type",
             [$clientId]
         );
+        // ClientFence core patch: the active services' amount a year by type, and what renews within 30 days (client page).
+        $recurring = [];
+        $renewing = ['count' => 0, 'total' => 0.0];
+        $soon = date('Y-m-d H:i:s', strtotime('+30 days'));
+        foreach ($db->fetchAllAssociative(
+            "SELECT service_type, price, quantity, period, expires_at FROM client_order
+              WHERE client_id = ? AND status = 'active' AND currency = ? AND period IS NOT NULL AND period <> ''",
+            [$clientId, $client['currency']]
+        ) as $row) {
+            $amount = (float) $row['price'] * (int) $row['quantity'];
+            $recurring[$row['service_type']] = ($recurring[$row['service_type']] ?? 0.0) + $amount * 12 / (new \ClientFence\Period($row['period']))->getMonths();
+            if ($row['expires_at'] !== null && $row['expires_at'] <= $soon) {
+                ++$renewing['count'];
+                $renewing['total'] += $amount;
+            }
+        }
 
         return [
             'currency' => $client['currency'],
+            'recurring' => array_map(static fn (float $amount): float => round($amount, 2), $recurring),
+            'renewing' => ['count' => $renewing['count'], 'total' => round($renewing['total'], 2)],
             'invoices' => $invoices,
             'gross_revenue' => $invoices['paid']['total'],
             'credit_balance' => $this->di['mod_service']('Invoice')->getFreeCredit($clientId),
