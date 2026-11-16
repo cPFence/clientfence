@@ -3,7 +3,7 @@
 //   css/palisade.rtl.css   the same, mirrored for Arabic
 //   js/palisade.js         client script (+ lazily loaded chunks)
 //   html/partials/asset_version.html.twig  short hash of the build, appended as ?v= to asset URLs
-//   symbol/icons-sprite.svg  Tabler icons listed in icon-manifest.json (read by FOSSBilling's svg_sprite())
+//   symbol/icons-sprite.svg  Bootstrap Icons listed in icon-manifest.json (read by FOSSBilling's svg_sprite())
 import { createHash } from 'node:crypto';
 import { mkdir, rm, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -57,11 +57,13 @@ await esbuild.build({
 });
 
 // An entry is a name, or { name, dynamic } for an icon the icon check cannot see in the templates.
-const icons = JSON.parse(await readFile(join(root, 'icon-manifest.json'), 'utf8')).icons.map((icon) => (typeof icon === 'string' ? icon : icon.name));
+// The map draws each icon id (the old Tabler names the templates use) from a Bootstrap Icons file.
+const manifest = JSON.parse(await readFile(join(root, 'icon-manifest.json'), 'utf8'));
+const icons = manifest.icons.map((icon) => (typeof icon === 'string' ? icon : icon.name));
 const symbols = await Promise.all(icons.map(async (name) => {
-  const svg = await readFile(join(root, 'node_modules/@tabler/icons/icons/outline', `${name}.svg`), 'utf8');
+  const svg = await readFile(join(root, 'node_modules/bootstrap-icons/icons', `${manifest.map[name]}.svg`), 'utf8');
   const inner = svg.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/\s*\n\s*/g, '');
-  return `<symbol id="${name}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${inner}</symbol>`;
+  return `<symbol id="${name}" viewBox="0 0 16 16" fill="currentColor">${inner}</symbol>`;
 }));
 await mkdir(join(out, 'symbol'), { recursive: true });
 await writeFile(join(out, 'symbol/icons-sprite.svg'),

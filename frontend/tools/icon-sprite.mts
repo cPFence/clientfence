@@ -44,8 +44,11 @@ export async function resolveIconFiles(options) {
   for (const icon of icons) {
     let resolvedIcon = null;
 
+    // ClientFence: the manifest's "map" draws an icon id from another file (Bootstrap Icons under the old Tabler ids).
+    const file = manifest.map?.[icon.name] ?? icon.name;
+
     for (const source of sources) {
-      const iconPath = resolve(source.dir, source.variant ? `${icon.name}.svg` : `${icon.variant}/${icon.name}.svg`);
+      const iconPath = resolve(source.dir, source.variant ? `${file}.svg` : `${icon.variant}/${file}.svg`);
 
       if (await fileExists(iconPath)) {
         resolvedIcon = {
@@ -121,7 +124,8 @@ export async function generateIconSprite(options) {
     const fileName = typeof icon === 'string' ? basename(icon) : `${icon.name}.svg`;
     const content = await readFile(filePath, 'utf8');
 
-    spriter.add(filePath, fileName, content);
+    // ClientFence: svg-sprite wants the id as the file's own name; a mapped file keeps its id this way (content is passed in).
+    spriter.add(resolve(filePath, '..', fileName), fileName, content);
   }
 
   type SpriteCompileResult = { symbol: { sprite: { contents: string } } };

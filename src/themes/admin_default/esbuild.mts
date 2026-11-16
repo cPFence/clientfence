@@ -31,7 +31,8 @@ async function build() {
       outputDir: paths.symbolDir,
       sources: [
         { name: 'custom', dir: resolve(__dirname, 'custom-icons'), variant: 'custom' },
-        { name: '@tabler/icons', dir: resolve(nodeModulesDir, '@tabler/icons/icons') },
+        // ClientFence core patch: Bootstrap Icons replace Tabler icons (ids kept through the manifest map).
+        { name: 'bootstrap-icons', dir: resolve(nodeModulesDir, 'bootstrap-icons/icons'), variant: 'bootstrap' },
       ],
     });
 

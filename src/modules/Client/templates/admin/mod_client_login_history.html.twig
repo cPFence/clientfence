@@ -133,10 +133,7 @@
                             </svg>
                         </a>
                         <a href="{{ 'antispam/block_ip'|api_url(query: { 'ip': event.ip }) }}" {{ fb_api_link({ modal: {type: 'confirm', title: 'Block IP'|trans, content: ('Are you sure you want to block IP address %ip%?'|trans({'%ip%': event.ip}))}, reload: true }) }} title="{{ 'Block IP'|trans }}">
-                            <svg class="icon icon-sm text-danger" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                            </svg>
+                            <svg class="icon icon-sm text-danger"><use href="#ban" /></svg>
                         </a>
                         {% endif %}
                     </div>
@@ -165,3 +162,4 @@
     {% endif %}
 </div>
 {% endblock %}
+{# ClientFence core patch: Bootstrap Icons from the sprite instead of an inline Tabler drawing. #}

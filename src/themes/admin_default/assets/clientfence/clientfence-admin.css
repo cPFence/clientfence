@@ -813,7 +813,7 @@ a.bf-file-name:hover .icon { color: inherit; }
   background: var(--cf-toast-soft);
   color: var(--cf-toast-tone);
 }
-.cf-toast-icon .icon { width: 1.25rem; height: 1.25rem; stroke-width: 2; }
+.cf-toast-icon .icon { width: 1.25rem; height: 1.25rem; }
 .cf-toast-content { flex: 1; min-width: 0; padding-block-start: .0625rem; }
 .cf-toast-title { display: block; font-weight: 600; font-size: .9rem; line-height: 1.35; }
 .cf-toast-message { margin-block-start: .125rem; color: var(--bf-muted); font-size: .85rem; line-height: 1.45; overflow-wrap: anywhere; }
@@ -883,7 +883,7 @@ a.bf-file-name:hover .icon { color: inherit; }
 }
 .bf-top:hover, .bf-top:focus-visible { background: var(--bf-brand); color: #fff; transform: translateY(-2px); }
 .bf-top:focus-visible { outline: 2px solid var(--bf-brand); outline-offset: 3px; }
-.bf-top > .icon { position: relative; width: 1.25rem; height: 1.25rem; stroke-width: 2.25; }
+.bf-top > .icon { position: relative; width: 1.25rem; height: 1.25rem; }
 .bf-top-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); pointer-events: none; }
 .bf-top-ring circle { fill: none; stroke-width: 2.5; }
 .bf-top-track { stroke: var(--bf-line); }
@@ -1027,6 +1027,10 @@ a.bf-file-name:hover .icon { color: inherit; }
 /* Row hover: one flat tint over the whole row (WiseCP's table hover). */
 .bf-body .table > tbody > tr:hover > * { --tblr-table-bg-state: rgba(51, 79, 97, .07); }
 :where([data-bs-theme="dark"]) .bf-body .table > tbody > tr:hover > * { --tblr-table-bg-state: rgba(230, 238, 243, .06); }
+/* Row actions: plain icons without a box, a soft round tint on hover; delete turns red. */
+.bf-body td .btn-icon:not([class*="ghost"]) { border-color: transparent; border-radius: 999px; background: transparent; box-shadow: none; color: var(--bf-muted); }
+.bf-body td .btn-icon:not([class*="ghost"]):is(:hover, :focus-visible) { background: color-mix(in srgb, var(--bf-teal) 12%, transparent); color: var(--bf-teal); }
+.bf-body td .btn-icon:not([class*="ghost"]):has(use[href="#trash"]):is(:hover, :focus-visible) { background: color-mix(in srgb, var(--bf-bad) 12%, transparent); color: var(--bf-bad); }
 
 /* Buttons: a navy-to-teal primary with a soft glow, a small press. */
 .bf-shell .btn { transition: transform .2s var(--bf-ease), box-shadow .25s, background-color .25s, border-color .25s; }
@@ -1261,7 +1265,7 @@ a.bf-file-name:hover .icon { color: inherit; }
 .cf-tile { border-radius: 10px; }
 .cf-avatar-lg.cf-tile { border-radius: 18px; }
 .cf-tile .icon { width: 18px; height: 18px; }
-.cf-avatar-lg.cf-tile .icon { width: 30px; height: 30px; stroke-width: 1.6; }
+.cf-avatar-lg.cf-tile .icon { width: 30px; height: 30px; }
 .cf-tile-link { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
 .cf-tile-link:hover { text-decoration: none; }
 .cf-tile-link:hover > span:last-child { text-decoration: underline; }
