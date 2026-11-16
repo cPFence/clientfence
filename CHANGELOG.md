@@ -1,8 +1,8 @@
 # Changelog
 
-## 1.0.55 (2026-11-15)
+## 1.0.55 (2026-11-16)
 
-A security release. Every new feature is off until you turn it on, and does no extra work while it is off.
+A security release. Every new feature is off until you turn it on, and does no extra work while it is off. A new security page explains each feature: https://clientfence.com/security/
 
 ### Added
 
