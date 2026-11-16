@@ -11,9 +11,12 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Google sign-in'|trans }}</li>{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-    <h1>{{ 'Google sign-in'|trans }}</h1>
-    <p>{{ 'Link your Google account to sign in with Google instead of your password. Your password keeps working, and two-factor sign-in still asks for its code.'|trans }}</p>
+{# ClientFence core patch: the shared page head; a linked Google account as a lit row with the Google tile, its email and dates (CF-135 redesign). #}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Google sign-in'|trans }}</h1>
+        <p class="bf-hint mb-0">{{ 'Link your Google account to sign in with Google instead of your password. Your password keeps working, and two-factor sign-in still asks for its code.'|trans }}</p>
+    </div>
 </div>
 
 {% if google.error %}
@@ -24,12 +27,15 @@
     <div class="card-header"><h2>{{ 'Google account'|trans }}</h2></div>
     <div class="card-body">
         {% if google.link %}
-            <div class="alert alert-success" role="status">
-                {{ 'Linked to the Google account'|trans }} <strong dir="ltr">{{ google.link.email ?: 'a Google account'|trans }}</strong>
+            <div class="cf-acct-who cf-acct-lit cf-acct-tile mb-3" role="status">
+                <span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#brand-google"/></svg></span>
+                <div class="min-w-0">
+                    <div>{{ 'Linked to the Google account'|trans }} <strong dir="ltr">{{ google.link.email ?: 'a Google account'|trans }}</strong></div>
+                    <div class="text-body-secondary small">
+                        {{ 'Linked on'|trans }} {{ google.link.created_at|format_date }}{% if google.link.last_used_at %} · {{ 'Last used'|trans }}: {{ google.link.last_used_at|format_date }}{% endif %}
+                    </div>
+                </div>
             </div>
-            <p class="text-body-secondary small">
-                {{ 'Linked on'|trans }} {{ google.link.created_at|format_date }}{% if google.link.last_used_at %} · {{ 'Last used'|trans }}: {{ google.link.last_used_at|format_date }}{% endif %}
-            </p>
             {% if google.needs_password %}
                 <div class="alert alert-info" role="status" data-clientfence-google-password>{{ 'You sign in with Google only. Choose a password so you can also sign in with your email; after that, you can unlink Google if you want.'|trans }}</div>
                 <form action="{{ 'client/google_password'|api_url }}" {{ fb_api_form({reload: true, message: 'Password saved'|trans}) }} autocomplete="off" data-clientfence-google-password-form>

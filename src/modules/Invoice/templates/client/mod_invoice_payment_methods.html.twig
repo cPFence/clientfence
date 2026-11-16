@@ -9,11 +9,14 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Payment methods'|trans }}</li>{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-    <h1>{{ 'Payment methods'|trans }}</h1>
-    {% if cards.available or cards.paypal or cards.autopay or cards.paytabs or cards.eway or cards.mollie or cards.gocardless %}
-    <p>{{ 'The payment method marked "Pays invoices automatically" pays your invoices when they are due. You can also save one when you pay an invoice.'|trans }}</p>
-    {% endif %}
+{# ClientFence core patch: the shared page head; each saved method as a row with its icon tile, the one that pays invoices lit in the accent (CF-135 redesign). #}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Payment methods'|trans }}</h1>
+        {% if cards.available or cards.paypal or cards.autopay or cards.paytabs or cards.eway or cards.mollie or cards.gocardless %}
+        <p class="bf-hint mb-0">{{ 'The payment method marked "Pays invoices automatically" pays your invoices when they are due. You can also save one when you pay an invoice.'|trans }}</p>
+        {% endif %}
+    </div>
 </div>
 
 {% if not cards.available and not cards.paypal and not cards.autopay and not cards.paytabs and not cards.eway and not cards.mollie and not cards.gocardless %}
@@ -22,12 +25,12 @@
 <div data-clientfence-cards data-return-url="{{ 'payment-methods'|url }}">
     {% if cards.paypal %}
     {# ClientFence: a saved PayPal account (Invoice/SavedCards.php): saved through PayPal's own approval page. #}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>PayPal</h2></div>
         {% if cards.paypal.account %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span dir="ltr">{{ cards.paypal.account }}</span>
+                <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if cards.paypal.default %} is-default{% endif %}">
+                    <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#wallet"/></svg></span><span dir="ltr">{{ cards.paypal.account }}</span></span>
                     <span class="d-flex flex-wrap align-items-center gap-2">
                         {% if cards.paypal.default %}
                             <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
@@ -48,12 +51,12 @@
     {% endif %}
     {% if cards.autopay and (cards.autopay.account or cards.autopay.add) %}
     {# ClientFence: a PayPal billing agreement (Payment_Adapter_PayPalAutoPay), agreed to on PayPal's own page. #}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>{{ 'PayPal automatic payments'|trans }}</h2></div>
         {% if cards.autopay.account %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span dir="ltr">{{ cards.autopay.account }}</span>
+                <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if cards.autopay.default %} is-default{% endif %}">
+                    <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#wallet"/></svg></span><span dir="ltr">{{ cards.autopay.account }}</span></span>
                     <span class="d-flex flex-wrap align-items-center gap-2">
                         {% if cards.autopay.default %}
                             <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
@@ -74,12 +77,12 @@
     {% endif %}
     {% if cards.paytabs and (cards.paytabs.account or cards.paytabs.add) %}
     {# ClientFence: a card saved on PayTabs' payment page (Payment_Adapter_PayTabs), here or while paying an invoice. #}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>{{ 'Card saved with PayTabs'|trans }}</h2></div>
         {% if cards.paytabs.account %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span dir="ltr">{{ cards.paytabs.account }}</span>
+                <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if cards.paytabs.default %} is-default{% endif %}">
+                    <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#credit-card"/></svg></span><span dir="ltr">{{ cards.paytabs.account }}</span></span>
                     <span class="d-flex flex-wrap align-items-center gap-2">
                         {% if cards.paytabs.default %}
                             <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
@@ -100,12 +103,12 @@
     {% endif %}
     {% if cards.eway and (cards.eway.account or cards.eway.add) %}
     {# ClientFence: a card saved on eWAY's payment page (Payment_Adapter_Eway), here or while paying an invoice. #}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>{{ 'Card saved with eWAY'|trans }}</h2></div>
         {% if cards.eway.account %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span dir="ltr">{{ cards.eway.account }}</span>
+                <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if cards.eway.default %} is-default{% endif %}">
+                    <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#credit-card"/></svg></span><span dir="ltr">{{ cards.eway.account }}</span></span>
                     <span class="d-flex flex-wrap align-items-center gap-2">
                         {% if cards.eway.default %}
                             <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
@@ -126,12 +129,12 @@
     {% endif %}
     {% if cards.gocardless and (cards.gocardless.account or cards.gocardless.add) %}
     {# ClientFence: a Direct Debit set up on GoCardless' page (Payment_Adapter_GoCardless), here or while paying an invoice. #}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>{{ 'Direct Debit with GoCardless'|trans }}</h2></div>
         {% if cards.gocardless.account %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span dir="ltr">{{ cards.gocardless.account }}</span>
+                <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if cards.gocardless.default %} is-default{% endif %}">
+                    <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#wallet"/></svg></span><span dir="ltr">{{ cards.gocardless.account }}</span></span>
                     <span class="d-flex flex-wrap align-items-center gap-2">
                         {% if cards.gocardless.default %}
                             <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
@@ -152,12 +155,12 @@
     {% endif %}
     {% if cards.mollie and (cards.mollie.account or cards.mollie.add) %}
     {# ClientFence: a card, bank account or PayPal account saved at Mollie (Payment_Adapter_Mollie), here or while paying an invoice. #}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>{{ 'Saved with Mollie'|trans }}</h2></div>
         {% if cards.mollie.account %}
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <span dir="ltr">{{ cards.mollie.account }}</span>
+                <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if cards.mollie.default %} is-default{% endif %}">
+                    <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#wallet"/></svg></span><span dir="ltr">{{ cards.mollie.account }}</span></span>
                     <span class="d-flex flex-wrap align-items-center gap-2">
                         {% if cards.mollie.default %}
                             <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>
@@ -177,15 +180,15 @@
     </div>
     {% endif %}
     {% if cards.available %}
-    <div class="card mb-4">
+    <div class="card mb-4 cf-acct-list">
         <div class="card-header"><h2>{{ cards.bank ? 'Saved cards and bank accounts'|trans : 'Saved cards'|trans }}</h2></div>
         {% if cards.cards is empty %}
             <div class="card-body"><p class="mb-0 text-secondary">{{ cards.bank ? 'You have no saved cards or bank accounts.'|trans : 'You have no saved cards.'|trans }}</p></div>
         {% else %}
             <ul class="list-group list-group-flush">
                 {% for card in cards.cards %}
-                    <li class="list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2">
-                        <span dir="ltr">{{ card.card }}</span>
+                    <li class="list-group-item cf-pm-row d-flex flex-wrap align-items-center justify-content-between gap-2{% if card.default %} is-default{% endif %}">
+                        <span class="cf-acct-who"><span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#credit-card"/></svg></span><span dir="ltr">{{ card.card }}</span></span>
                         <span class="d-flex flex-wrap align-items-center gap-2">
                             {% if card.default %}
                                 <span class="badge text-bg-success">{{ 'Pays invoices automatically'|trans }}</span>

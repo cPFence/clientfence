@@ -14,9 +14,11 @@
 
 {% block content %}
     {% set ticket = feedback.ticket %}
-    <div class="card">
-        <div class="card-header py-3">
-            <h1 class="h5 mb-0">{{ 'Ticket Feedback'|trans }}{% if ticket.id|default(0) %} · #{{ ticket.id }} {{ ticket.subject }}{% endif %}</h1>
+    {# ClientFence core patch: a centred card headed by its icon tile, the ticket's facts in a quiet band, each staff member's score as a row of round buttons (CF-135 redesign). #}
+    <div class="card cf-acct-narrow">
+        <div class="card-header cf-acct-who py-3">
+            <span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#headset"/></svg></span>
+            <h1 class="h5 mb-0 min-w-0">{{ 'Ticket Feedback'|trans }}{% if ticket.id|default(0) %} · <bdi>#{{ ticket.id }}</bdi> {{ ticket.subject }}{% endif %}</h1>
         </div>
         <div class="card-body">
             {% if feedback.state == 'invalid' %}
@@ -28,22 +30,15 @@
                 <p class="mb-0">{{ 'It helps us improve our support.'|trans }}</p>
             {% else %}
                 <p>{{ 'Please take a moment to tell us how we handled your ticket. Your answers go to our support team.'|trans }}</p>
-                <div class="table-responsive mb-4">
-                    <table class="table table-sm mb-0">
-                        <tbody>
-                            <tr><td class="text-muted">{{ 'Opened'|trans }}</td><td>{{ ticket.opened_at|format_datetime }}</td></tr>
-                            <tr><td class="text-muted">{{ 'Last Reply'|trans }}</td><td>{{ ticket.last_reply_at|format_datetime }}</td></tr>
-                            <tr><td class="text-muted">{{ 'Staff Involved'|trans }}</td><td>{{ feedback.staff ? feedback.staff|join(', ') : 'No staff member replied'|trans }}</td></tr>
-                            <tr>
-                                <td class="text-muted">{{ 'Total Duration'|trans }}</td>
-                                <td>{{ ':days days, :hours hours, :minutes minutes'|trans({ ':days': ticket.duration.days, ':hours': ticket.duration.hours, ':minutes': ticket.duration.minutes }) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <dl class="bf-facts cf-quote-facts mb-4">
+                    <div class="bf-fact"><dt>{{ 'Opened'|trans }}</dt><dd>{{ ticket.opened_at|format_datetime }}</dd></div>
+                    <div class="bf-fact"><dt>{{ 'Last Reply'|trans }}</dt><dd>{{ ticket.last_reply_at|format_datetime }}</dd></div>
+                    <div class="bf-fact"><dt>{{ 'Staff Involved'|trans }}</dt><dd>{{ feedback.staff ? feedback.staff|join(', ') : 'No staff member replied'|trans }}</dd></div>
+                    <div class="bf-fact"><dt>{{ 'Total Duration'|trans }}</dt><dd>{{ ':days days, :hours hours, :minutes minutes'|trans({ ':days': ticket.duration.days, ':hours': ticket.duration.hours, ':minutes': ticket.duration.minutes }) }}</dd></div>
+                </dl>
                 <form id="ticket-feedback-form" data-token="{{ feedback_token }}">
                     {% for staff_id, staff_name in feedback.staff %}
-                        <fieldset class="mb-4" data-staff="{{ staff_id }}">
+                        <fieldset class="cf-fb-staff mb-4" data-staff="{{ staff_id }}">
                             <legend class="h6">{{ 'How would you rate how :name handled your ticket?'|trans({ ':name': staff_name }) }}</legend>
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2" role="radiogroup">
                                 <span class="text-muted small">{{ 'Poor'|trans }}</span>

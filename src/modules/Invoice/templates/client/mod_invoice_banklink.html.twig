@@ -15,11 +15,20 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card mb-4">
-            <div class="card-header d-block">
-                <h1>{{ heading }}</h1>
-                <p class="mb-0">{{ payment.type == 'form' ? 'Thank you for your patience.'|trans : 'Amount due: :amount'|trans({ ':amount': invoice.balance_due|format_currency(invoice.currency) }) }}</p>
+        {# ClientFence core patch: the invoice and its amount due first as the key figure (amber), the gateway's own part in the card below (CF-135 redesign). #}
+        <section class="card cf-pay-hero mb-4{{ payment.type == 'form' ? '' : ' is-warn' }}">
+            <div class="cf-pay-hero-text">
+                <h1 class="bf-page-title mb-0">{{ heading }}</h1>
+                {% if payment.type == 'form' %}<span class="bf-hint">{{ 'Thank you for your patience.'|trans }}</span>{% endif %}
             </div>
+            {% if payment.type != 'form' %}
+                <div class="cf-pay-hero-figure">
+                    <span>{{ 'Amount due'|trans }}</span>
+                    <strong>{{ invoice.balance_due|format_currency(invoice.currency) }}</strong>
+                </div>
+            {% endif %}
+        </section>
+        <div class="card mb-4">
             <div class="card-body">
                 {% if payment.type == 'html' %}
                     {{ payment.result|raw }}

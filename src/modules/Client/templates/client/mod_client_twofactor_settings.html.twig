@@ -15,9 +15,12 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Two-factor sign-in'|trans }}</li>{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-    <h1>{{ 'Two-factor sign-in'|trans }}</h1>
-    <p>{{ 'After your password, sign-in also asks for a code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password and others).'|trans }}</p>
+{# ClientFence core patch: the shared page head, the backup code lit in the accent, passkeys as rows with a key tile (CF-135 redesign). #}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Two-factor sign-in'|trans }}</h1>
+        <p class="bf-hint mb-0">{{ 'After your password, sign-in also asks for a code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password and others).'|trans }}</p>
+    </div>
 </div>
 
 {% if twofactor.required %}
@@ -29,11 +32,11 @@
 {% endif %}
 
 <div data-clientfence-twofactor>
-    <div class="card mb-4" data-clientfence-twofactor-backup hidden>
+    <div class="card mb-4 cf-acct-lit" data-clientfence-twofactor-backup hidden>
         <div class="card-header"><h2>{{ 'Your backup code'|trans }}</h2></div>
         <div class="card-body">
             <p>{{ 'Keep this code somewhere safe, away from your phone. If you lose your phone, it signs you in once instead of a code. It is shown only now.'|trans }}</p>
-            <p class="fs-4 fw-semibold font-monospace" dir="ltr" data-clientfence-twofactor-backup-code></p>
+            <p class="cf-acct-code" dir="ltr" data-clientfence-twofactor-backup-code></p>
             <a class="btn btn-primary" href="{{ 'two-factor'|url }}">{{ 'Done'|trans }}</a>
         </div>
     </div>
@@ -119,7 +122,7 @@
 
 {% set passkeys = client.client_passkey_list %}
 {% if passkeys.on or passkeys.passkeys %}
-<div class="card mt-4" data-clientfence-passkey="list" data-role="client" data-options="client/passkey_options" data-add="client/passkey_add"
+<div class="card mt-4 cf-acct-list" data-clientfence-passkey="list" data-role="client" data-options="client/passkey_options" data-add="client/passkey_add"
      data-saved="{{ 'Passkey saved. Next time, sign in with it.'|trans }}" data-already="{{ 'This device already has a passkey for your sign-in.'|trans }}">
     <div class="card-header"><h2>{{ 'Passkeys'|trans }}</h2></div>
     <div class="card-body">
@@ -129,9 +132,12 @@
                 {% for passkey in passkeys.passkeys %}
                     <li class="list-group-item">
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-                            <div>
-                                <div class="fw-semibold">{{ passkey.name }}</div>
-                                <div class="small text-body-secondary">{{ 'Added %date%'|trans({'%date%': passkey.created_at|format_datetime}) }} &middot; {{ passkey.last_used_at ? 'Last used %date%'|trans({'%date%': passkey.last_used_at|format_datetime}) : 'Not used yet'|trans }}</div>
+                            <div class="cf-acct-who">
+                                <span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#key"/></svg></span>
+                                <div class="min-w-0">
+                                    <div class="fw-semibold">{{ passkey.name }}</div>
+                                    <div class="small text-body-secondary">{{ 'Added %date%'|trans({'%date%': passkey.created_at|format_datetime}) }} &middot; {{ passkey.last_used_at ? 'Last used %date%'|trans({'%date%': passkey.last_used_at|format_datetime}) : 'Not used yet'|trans }}</div>
+                                </div>
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#passkey-{{ passkey.id }}" aria-expanded="false" aria-controls="passkey-{{ passkey.id }}">{{ 'Rename or remove'|trans }}</button>
                         </div>

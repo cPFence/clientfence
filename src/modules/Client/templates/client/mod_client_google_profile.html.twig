@@ -12,9 +12,12 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Finish setting up your account'|trans }}</li>{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-    <h1>{{ 'Finish setting up your account'|trans }}</h1>
-    <p>{{ 'Your account is ready. Fill in the details below to continue; you only do this once.'|trans }}</p>
+{# ClientFence core patch: the shared page head over the form card (CF-135 redesign). #}
+<div class="bf-page-head mb-4">
+    <div>
+        <h1 class="bf-page-title">{{ 'Finish setting up your account'|trans }}</h1>
+        <p class="bf-hint mb-0">{{ 'Your account is ready. Fill in the details below to continue; you only do this once.'|trans }}</p>
+    </div>
 </div>
 <div class="card">
     <div class="card-body">

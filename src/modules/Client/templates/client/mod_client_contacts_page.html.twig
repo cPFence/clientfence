@@ -130,24 +130,28 @@
     </div>
 {% endif %}
 
-<div class="card">
+{# ClientFence core patch: contacts as rows with an avatar, a tinted hover and an empty state with its icon (CF-135 redesign). #}
+<div class="card cf-acct-list">
     <div class="card-header"><h2>{{ 'Contacts of this account'|trans }}</h2></div>
     {% if contacts_page.contacts is empty %}
-        <div class="empty-state">{{ 'This account has no contacts yet.'|trans }}</div>
+        <div class="empty-state"><svg class="icon" aria-hidden="true"><use href="#address-book"/></svg>{{ 'This account has no contacts yet.'|trans }}</div>
     {% else %}
         <div class="list-group list-group-flush">
             {% for contact in contacts_page.contacts %}
                 <div class="list-group-item py-3" data-clientfence-contact="{{ contact.id }}">
                     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
-                        <div class="min-w-0">
-                            <div class="fw-semibold">{{ contact.first_name }} {{ contact.last_name }}{% if contact.company %} <span class="text-body-secondary fw-normal">· {{ contact.company }}</span>{% endif %}</div>
-                            <div class="small text-body-secondary text-truncate" dir="ltr">{{ contact.email }}</div>
-                            <div class="small mt-1">
-                                {% if contact.emails is empty %}
-                                    <span class="text-body-secondary">{{ 'Gets no emails'|trans }}</span>
-                                {% else %}
-                                    {% for kind in contact.emails %}<span class="badge text-bg-secondary me-1 mb-1">{{ labels[kind] }}</span>{% endfor %}
-                                {% endif %}
+                        <div class="cf-acct-who">
+                            {{ avatar(contact.email, 40, 'rounded-circle', null, 'div') }}
+                            <div class="min-w-0">
+                                <div class="fw-semibold">{{ contact.first_name }} {{ contact.last_name }}{% if contact.company %} <span class="text-body-secondary fw-normal">· {{ contact.company }}</span>{% endif %}</div>
+                                <div class="small text-body-secondary text-truncate" dir="ltr">{{ contact.email }}</div>
+                                <div class="small mt-1">
+                                    {% if contact.emails is empty %}
+                                        <span class="text-body-secondary">{{ 'Gets no emails'|trans }}</span>
+                                    {% else %}
+                                        {% for kind in contact.emails %}<span class="badge text-bg-secondary me-1 mb-1">{{ labels[kind] }}</span>{% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         <div class="d-flex gap-2">

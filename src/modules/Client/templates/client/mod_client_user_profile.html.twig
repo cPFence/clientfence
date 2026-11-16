@@ -9,9 +9,16 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'My profile'|trans }}</li>{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-    <h1>{{ 'My profile'|trans }}</h1>
-    <p>{{ 'Your own sign-in. You use it for every account you have access to.'|trans }}</p>
+{# ClientFence core patch: a summary card first (avatar, name, email), as on the account's profile page (CF-135 redesign). #}
+<div class="card cf-svc-hero mb-4">
+    <div class="card-body cf-svc-head">
+        {{ avatar(clientfence_user.user.email, 64, 'rounded-circle cf-pf-avatar', null, 'div') }}
+        <div class="min-w-0 flex-grow-1">
+            <h1 class="bf-page-title mb-1">{{ 'My profile'|trans }}</h1>
+            <div class="cf-pf-who"><span>{{ clientfence_user.user.first_name }} {{ clientfence_user.user.last_name }}</span> <bdi dir="ltr">{{ clientfence_user.user.email }}</bdi></div>
+            <small class="text-secondary">{{ 'Your own sign-in. You use it for every account you have access to.'|trans }}</small>
+        </div>
+    </div>
 </div>
 <div class="row g-4">
     <div class="col-lg-6">
