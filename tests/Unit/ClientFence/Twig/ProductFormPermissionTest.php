@@ -52,7 +52,7 @@ test('product settings only load forms when staff can view them', function (bool
         ])),
         new FilesystemLoader(PATH_MODS . '/Product/templates/admin'),
     ]), ['strict_variables' => true]);
-    foreach (['trans', 'api_url', 'markdown_to_html'] as $filter) {
+    foreach (['trans', 'api_url', 'markdown_to_html', 'format_currency'] as $filter) {
         $twig->addFilter(new TwigFilter($filter, static fn (mixed $value, mixed ...$arguments): string => (string) $value));
     }
     $twig->addFilter(new TwigFilter('url', static fn (string $value, ?array $query = null, ?string $area = null): string => '/' . $value));

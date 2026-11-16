@@ -24,105 +24,60 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <h3>{{ 'Manage Promotion'|trans }}</h3>
-        {% if not promo.can_be_deleted %}
-            <div class="alert alert-info" role="alert">
-                {{ 'This promotion has redemption history and can no longer be deleted. Disable it to archive it.'|trans }}
-            </div>
-        {% endif %}
-        {% set stats = promo.usage_stats %}
-        <div class="row row-cards mb-4">
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Recorded Applications'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.recorded_applications }}</div>
-                    </div>
+{# ClientFence core patch: the promotion reads first: code, discount and status chips, then every usage figure as facts (CF-135 redesign). #}
+{% set stats = promo.usage_stats %}
+{% set promo_start = promo.start_at ? promo.start_at|format_date : 'now'|trans %}
+<div class="card cf-hero-card">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#currency-dollar" /></svg></span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name cf-code-lg">{{ promo.code }}</span>
+                <div class="cf-inv-chips mt-1">
+                    <span class="badge {{ promo.active ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ promo.active ? 'Active'|trans : 'Inactive'|trans }}</span>
+                    {% if promo.auto_apply|default(false) %}<span class="badge bg-blue-lt">{{ 'Automatic'|trans }}</span>{% endif %}
+                    {% if promo.recurring %}<span class="badge bg-azure-lt">{{ 'Recurring'|trans }}</span>{% endif %}
+                    {% if promo.freesetup %}<span class="badge bg-azure-lt">{{ 'Free Setup'|trans }}</span>{% endif %}
+                    <span class="badge bg-secondary-lt">{% if promo.end_at %}{{ 'From :start until :end'|trans({ ':start': promo_start, ':end': promo.end_at|format_date }) }}{% else %}{{ 'From :start until disabled'|trans({ ':start': promo_start }) }}{% endif %}</span>
                 </div>
             </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Checkout Applications'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.checkout_applications }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Renewal Applications'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.renewal_applications }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Reserved Applications'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.reserved_applications }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Committed Applications'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.committed_applications }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Released Applications'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.released_applications }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Distinct Clients'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.distinct_clients }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Orders Using Promo'|trans }}</div>
-                        <div class="h2 m-0">{{ stats.orders_using_promo }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-sm">
-                    <div class="card-body">
-                        <div class="text-secondary">{{ 'Operational Counter'|trans }}</div>
-                        <div class="h2 m-0">
-                            {{ stats.operational_use_count }}
-                            {% if stats.max_uses is not null %}/ {{ stats.max_uses }}{% else %}/ &#8734;{% endif %}
-                        </div>
-                        <div class="text-secondary small">
-                            {{ 'Used only for max-use enforcement, not historical reporting.'|trans }}
-                        </div>
-                        <div class="text-secondary small">
-                            {{ 'Active checkout applications'|trans }}: {{ stats.active_checkout_applications }}
-                        </div>
-                        <div class="text-secondary small">
-                            {% if stats.remaining_operational_uses is null %}
-                                {{ 'Remaining operational uses'|trans }}: {{ 'Unlimited'|trans }}
-                            {% else %}
-                                {{ 'Remaining operational uses'|trans }}: {{ stats.remaining_operational_uses }}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+            <div class="cf-hero-price">
+                <div class="cf-inv-figure">{% if promo.type == 'percentage' %}{{ promo.value }}%{% else %}{{ promo.value|format_currency(guest.currency_get.code) }}{% endif %}</div>
+                <div class="text-secondary">{{ 'Discount'|trans }}</div>
             </div>
         </div>
+        {% if not promo.can_be_deleted %}
+            <div class="cf-inv-note">
+                <div class="alert alert-info mb-0" role="alert">
+                    {{ 'This promotion has redemption history and can no longer be deleted. Disable it to archive it.'|trans }}
+                </div>
+            </div>
+        {% endif %}
+        <dl class="cf-facts">
+            <div><dt>{{ 'Recorded Applications'|trans }}</dt><dd class="cf-fact-num">{{ stats.recorded_applications }}</dd></div>
+            <div><dt>{{ 'Checkout Applications'|trans }}</dt><dd class="cf-fact-num">{{ stats.checkout_applications }}</dd></div>
+            <div><dt>{{ 'Renewal Applications'|trans }}</dt><dd class="cf-fact-num">{{ stats.renewal_applications }}</dd></div>
+            <div><dt>{{ 'Reserved Applications'|trans }}</dt><dd class="cf-fact-num">{{ stats.reserved_applications }}</dd></div>
+            <div><dt>{{ 'Committed Applications'|trans }}</dt><dd class="cf-fact-num">{{ stats.committed_applications }}</dd></div>
+            <div><dt>{{ 'Released Applications'|trans }}</dt><dd class="cf-fact-num">{{ stats.released_applications }}</dd></div>
+            <div><dt>{{ 'Distinct Clients'|trans }}</dt><dd class="cf-fact-num">{{ stats.distinct_clients }}</dd></div>
+            <div><dt>{{ 'Orders Using Promo'|trans }}</dt><dd class="cf-fact-num">{{ stats.orders_using_promo }}</dd></div>
+            <div class="cf-facts-wide"><dt>{{ 'Operational Counter'|trans }}</dt>
+                <dd>
+                    <span class="cf-fact-num">{{ stats.operational_use_count }} {% if stats.max_uses is not null %}/ {{ stats.max_uses }}{% else %}/ &#8734;{% endif %}</span>
+                    {% if stats.max_uses %}<progress class="cf-meter d-block" value="{{ min(stats.operational_use_count, stats.max_uses) }}" max="{{ stats.max_uses }}" aria-hidden="true"></progress>{% endif %}
+                    <div class="text-secondary small">{{ 'Used only for max-use enforcement, not historical reporting.'|trans }}</div>
+                    <div class="text-secondary small">{{ 'Active checkout applications'|trans }}: {{ stats.active_checkout_applications }}</div>
+                    <div class="text-secondary small">
+                        {% if stats.remaining_operational_uses is null %}
+                            {{ 'Remaining operational uses'|trans }}: {{ 'Unlimited'|trans }}
+                        {% else %}
+                            {{ 'Remaining operational uses'|trans }}: {{ stats.remaining_operational_uses }}
+                        {% endif %}
+                    </div>
+                </dd>
+            </div>
+        </dl>
     </div>
 </div>
 

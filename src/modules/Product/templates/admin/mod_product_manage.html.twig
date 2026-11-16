@@ -23,9 +23,57 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: the product reads first: name, type and status chips, its price, then each billing period and the activation as facts (CF-135 redesign). #}
+{% set cur = admin.currency_get_default.code %}
+{% set prices = [] %}
+{# Domain products are priced per TLD, not here. #}
+{% if product.type == 'domain' %}
+{% elseif product.pricing.type == 'once' %}
+    {% set prices = [{ label: 'One Time'|trans, price: product.pricing.once.price, setup: product.pricing.once.setup }] %}
+{% elseif product.pricing.type == 'recurrent' %}
+    {% for period, label in { '1W': 'Weekly', '1M': 'Monthly', '3M': 'Every 3 Months', '6M': 'Every 6 Months', '1Y': 'Every Year', '2Y': 'Every 2 Years', '3Y': 'Every 3 Years' } %}
+        {% if product.pricing.recurrent[period].enabled|default(false) %}
+            {% set prices = prices|merge([{ label: label|trans, price: product.pricing.recurrent[period].price, setup: product.pricing.recurrent[period].setup }]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ product.title }}</span>
+                {% if product.category is defined %}<a class="text-secondary" href='{{ "product/category/#{product.category.id}"|url }}'>{{ product.category.title }}</a>{% endif %}
+                <div class="cf-inv-chips mt-1">
+                    <span class="badge {{ product.status == 'enabled' ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ product.status == 'enabled' ? 'Enabled'|trans : 'Disabled'|trans }}</span>
+                    <span class="badge bg-azure-lt" title="{{ 'Product type'|trans }}">{{ admin.product_get_types[product.type]|default(product.type) }}</span>
+                    {% if product.hidden %}<span class="badge bg-secondary-lt">{{ 'Hidden'|trans }}</span>{% endif %}
+                </div>
+            </div>
+            {% if product.type != 'domain' and (product.pricing.type == 'free' or prices|length > 0) %}
+            <div class="cf-hero-price">
+                {% if product.pricing.type == 'free' %}
+                    <div class="cf-inv-figure cf-tone-ok">{{ 'Free'|trans }}</div>
+                {% else %}
+                    <div class="cf-inv-figure">{{ prices[0].price|format_currency(cur) }}</div>
+                    <div class="text-secondary">{{ prices[0].label }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <dl class="cf-facts">
+            {% for row in prices %}
+            <div><dt>{{ row.label }}</dt><dd>{{ row.price|format_currency(cur) }}{% if row.setup > 0 %} <span class="text-secondary small d-block">{{ 'Setup Price'|trans }} {{ row.setup|format_currency(cur) }}</span>{% endif %}</dd></div>
+            {% endfor %}
+            <div><dt>{{ 'Activation'|trans }}</dt><dd>{% if product.setup == 'after_order' %}{{ 'After Order is Placed'|trans }}{% elseif product.setup == 'manual' %}{{ 'Manual Activation'|trans }}{% else %}{{ 'After Payment is Received'|trans }}{% endif %}</dd></div>
+            {% if product.stock_control %}
+            <div><dt>{{ 'Quantity in Stock'|trans }}</dt><dd>{{ product.quantity_in_stock }}</dd></div>
+            {% endif %}
+        </dl>
+    </div>
+</div>
 {% embed 'partial_admin_detail_tabs.html.twig' with {
-    title: product.title,
-    subtitle: 'Manage product settings, service configuration, related addons, and upgrade paths.'|trans
+    title: product.title
 } %}
     {% block detail_tabs %}
                     <li class="nav-item" role="presentation">
@@ -138,7 +186,8 @@
                                 {% endif %}
                             </div>
 
-                            <div class="d-flex flex-column gap-1 mt-4 mb-4">
+                            {# ClientFence core patch: the settings sections start under a ruled heading (CF-135 redesign). #}
+                            <div class="d-flex flex-column gap-1 mt-4 mb-4 cf-section-head">
                                 <h6 class="card-title mb-0">{{ 'Pricing and Stock Control'|trans }}</h6>
                                 <p class="text-secondary mb-0">{{ 'Control inventory limits and configure how this product is priced and billed.'|trans }}</p>
                             </div>
@@ -172,7 +221,7 @@
                             </div>
 
                             {# ClientFence core patch: the product's affiliate commission (Client/Affiliates/Commissions.php rule()). #}
-                            <div class="d-flex flex-column gap-1 mt-4 mb-4">
+                            <div class="d-flex flex-column gap-1 mt-4 mb-4 cf-section-head">
                                 <h6 class="card-title mb-0">{{ 'Affiliate Commission'|trans }}</h6>
                                 <p class="text-secondary mb-0">{{ 'What affiliates earn on this product. Default uses the affiliate settings; an affiliate with its own commission keeps it, except when the product pays no commission.'|trans }}</p>
                             </div>

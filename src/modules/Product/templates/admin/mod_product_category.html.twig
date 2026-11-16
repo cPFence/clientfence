@@ -24,11 +24,31 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: the category reads first: its name and the products in it with their status, then the form (CF-135 redesign). #}
+<div class="card cf-hero-card mb-3">
+    <div class="cf-inv">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+            <div class="cf-inv-who">
+                <span class="cf-client-name">{{ category.title }}</span>
+                <span class="text-secondary">{{ 'Products'|trans }} · <bdi>{{ category.products|length }}</bdi></span>
+            </div>
+        </div>
+        {% if category.products|length > 0 %}
+        <dl class="cf-facts">
+            <div class="cf-facts-wide"><dt>{{ 'Products'|trans }}</dt><dd class="cf-inv-chips">
+                {% for p in category.products %}
+                    <a class="badge {{ p.status|default('') == 'enabled' ? 'bg-green-lt' : 'bg-secondary-lt' }}" href='{{ "product/manage/#{p.id}"|url }}'>{{ p.title }}</a>
+                {% endfor %}
+            </dd></div>
+        </dl>
+        {% endif %}
+    </div>
+</div>
 <div class="card">
     <form method="post" action="{{ 'product/category_update'|api_url }}" {{ fb_api_form({message: 'Category Updated'|trans}) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
-            title: category.title,
-            subtitle: 'Update the category title, icon, and description shown on the products area.'|trans,
+            title: 'Category Details'|trans,
             body_class: 'pt-4',
             footer_align: 'between'
         } %}

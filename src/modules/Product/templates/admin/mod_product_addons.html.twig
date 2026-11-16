@@ -25,7 +25,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Addons'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage product addons and create optional extras for existing products.'|trans }}</p>
             </div>
         </div>
         <div class="card-body p-0">
@@ -38,6 +37,7 @@
                 </button>
             </div>
             <div class="table-responsive">
+            {# ClientFence core patch: each addon with its tile, description and status (the columns were empty) (CF-135 redesign). #}
             <table class="table card-table table-vcenter table-striped text-nowrap">
                 <thead>
                     <tr>
@@ -50,13 +50,17 @@
                 </thead>
                 <tbody>
                     {% for addon_id, addon_title in admin.product_addon_get_pairs %}
+                    {% set addon = admin.product_addon_get({ 'id': addon_id }) %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>
-                            <a href='{{ "product/addon/#{addon_id}"|url }}'>{{ addon_title }}</a>
+                            <a class="cf-tile-link" href='{{ "product/addon/#{addon_id}"|url }}'>
+                                <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#package" /></svg></span>
+                                <span>{{ addon_title }}</span>
+                            </a>
                         </td>
-                        <td><!-- TODO: show addon description --></td>
-                        <td><!-- TODO: show addon status --></td>
+                        <td class="text-secondary">{{ addon.description|default('')|striptags|truncate(60) }}</td>
+                        <td><span class="badge {{ addon.status == 'enabled' ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ addon.status == 'enabled' ? 'Enabled'|trans : 'Disabled'|trans }}</span></td>
                         <td class="w-1">
                             <a class="btn btn-icon" href='{{ "product/addon/#{addon_id}"|url }}'>
                                 <svg class="icon">
