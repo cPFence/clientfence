@@ -1,16 +1,13 @@
-{% embed 'partial_admin_related_section.html.twig' with {
-    title: 'Domain Management'|trans,
-    subtitle: 'Domain products are configured from the shared domain management area, including TLD pricing, registrars, and nameservers.'|trans,
-    card_class: 'mb-0'
-} %}
-    {% block section_footer %}
-        <div class="d-flex justify-content-end">
-            <a href="{{ 'servicedomain'|url }}" class="btn btn-primary">
-                <svg class="icon">
-                    <use href="#edit" />
-                </svg>
-                <span>{{ 'Open Domain Management'|trans }}</span>
-            </a>
-        </div>
-    {% endblock %}
-{% endembed %}
+{# ClientFence core patch: the section starts under a ruled heading as on the product page, without a card in the card (CF-135 redesign). #}
+<div class="card-body">
+    <div class="cf-section-head border-0 pt-0">
+        <h3 class="card-title mb-1">{{ 'Domain Management'|trans }}</h3>
+        <p class="text-secondary mb-3">{{ 'Domain products are configured from the shared domain management area, including TLD pricing, registrars, and nameservers.'|trans }}</p>
+        <a href="{{ 'servicedomain'|url }}" class="btn btn-primary">
+            <svg class="icon">
+                <use href="#edit" />
+            </svg>
+            <span>{{ 'Open Domain Management'|trans }}</span>
+        </a>
+    </div>
+</div>

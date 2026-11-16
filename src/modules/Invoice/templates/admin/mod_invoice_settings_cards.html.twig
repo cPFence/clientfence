@@ -2,10 +2,11 @@
    (Invoice/SavedCards.php). Kept in mod_invoice; saved with invoice/card_settings_update. #}
 {% set cards = admin.extension_config_get({ 'ext': 'mod_invoice' }) %}
 {% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
-<div class="card mt-3 clientfence-settings" id="saved-cards" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+{# ClientFence core patch: the section starts under a ruled heading, its Save row stays in view (CF-135 redesign). #}
+<div class="card clientfence-settings" id="saved-cards" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form method="post" action="{{ 'invoice/card_settings_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
-		<div class="clientfence-settings-intro">
-			<h3>{{ 'Automatic payments'|trans }}</h3>
+		<div class="clientfence-settings-intro cf-section-head border-0">
+			<h3 class="card-title">{{ 'Automatic payments'|trans }}</h3>
 			<p>{{ 'Clients can save a card with Stripe, or their PayPal account (PayPal settings: Saved PayPal accounts), when they pay or on their Payment methods page. The method they saved or chose last is charged automatically for unpaid invoices that have no payment method or one of these.'|trans }}</p>
 		</div>
 		<div class="clientfence-setting clientfence-setting-row">
@@ -35,7 +36,7 @@
 				<input class="form-control" type="number" min="1" max="30" id="card_retry_every" name="card_retry_every" value="{{ cards.card_retry_every|default(7) }}">
 			</div>
 		</div>
-		<div class="clientfence-settings-actions">
+		<div class="clientfence-settings-actions cf-set-save">
 			<button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
 		</div>
 	</form>
