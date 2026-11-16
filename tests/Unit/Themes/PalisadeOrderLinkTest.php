@@ -5,7 +5,8 @@ declare(strict_types=1);
 /**
  * ClientFence: a store link to a product's order page (/order/<slug>?period=1Y&promo=CODE, as WHMCS's
  * billingcycle and promocode links) preselects the billing cycle and applies the promo code through
- * the page's own promo box (checkout.js, or cart.js on the cart page for plans with their own order form).
+ * the page's own promo box (checkout.js, or cart.js on the cart page for domain products, configured first).
+ * A hosting plan is ordered on the checkout with its domain section (CF-146).
  */
 
 use ClientFence\Twig\RequestDataView;
@@ -31,10 +32,11 @@ final class PalisadeOrderLinkGuestStub
 }
 
 /**
- * @param array<string, mixed> $query the link's query string
- * @param bool                 $ownForm a plan with its own order form (hosting), configured on the page and paid on the cart page
+ * @param array<string, mixed> $query  the link's query string
+ * @param string               $type   the product type: a domain product has its own order form, configured on the page and paid on the cart page
+ * @param array<string, mixed> $config the product's public config
  */
-function renderPalisadeOrderLink(string $template, array $query, bool $ownForm = false): string
+function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = []): string
 {
     $loader = new ChainLoader([
         new ArrayLoader([
@@ -42,10 +44,11 @@ function renderPalisadeOrderLink(string $template, array $query, bool $ownForm =
             'macro_functions.html.twig' => '{% macro recaptcha() %}{% endmacro %}',
             'mod_product_options_form.html.twig' => '',
             'mod_order_addons.html.twig' => '',
-            'mod_servicehosting_order_form.html.twig' => '',
+            'mod_servicedomain_order_form.html.twig' => '',
             'partials/pay_methods.html.twig' => '',
         ]),
         new FilesystemLoader(PATH_THEMES . '/palisade/html'),
+        new FilesystemLoader([PATH_MODS . '/Servicehosting/templates/client', PATH_MODS . '/Servicedomain/templates/client']),
     ]);
     $twig = new Environment($loader, ['strict_variables' => true, 'autoescape' => 'html']);
     $twig->addExtension(new IntlExtension());
@@ -62,15 +65,16 @@ function renderPalisadeOrderLink(string $template, array $query, bool $ownForm =
         'client' => null,
         'settings' => [],
         'product' => [
-            'id' => 7, 'type' => $ownForm ? 'hosting' : 'custom', 'title' => 'Trial', 'slug' => 'trial', 'description' => '', 'form_id' => 0,
-            'allow_quantity_select' => false, 'addons' => [],
+            'id' => 7, 'type' => $type, 'title' => 'Trial', 'slug' => 'trial', 'description' => '', 'form_id' => 0,
+            'allow_quantity_select' => false, 'addons' => [], 'config' => $config,
             'pricing' => ['type' => 'recurrent', 'recurrent' => ['1M' => ['enabled' => true, 'price' => 0, 'setup' => 0], '1Y' => ['enabled' => true, 'price' => 0, 'setup' => 0]]],
         ],
         'guest' => new PalisadeOrderLinkGuestStub([
             'clientfence_store_open' => true,
             'clientfence_store_info' => ['signup' => true],
             'clientfence_signup_info' => ['open' => true],
-            'system_template_exists' => $ownForm,
+            'system_template_exists' => $type !== 'custom',
+            'serviceDomain_tlds' => [['tld' => '.com', 'require_transfer_code' => false]],
             'system_periods' => ['1M' => 'Monthly', '1Y' => 'Every year'],
             'system_countries' => ['US' => 'United States'],
             'system_default_country' => 'US',
@@ -106,8 +110,8 @@ test('a promo code in the order link is applied through the promo box and kept t
         ->and($html)->toContain('href="/login?back=%2Forder%2Ftrial%3Fperiod%3D1Y%26promo%3DFREETRIAL"')
         ->and($html)->toContain('order/trial?period=1Y&amp;promo=FREETRIAL');
 
-    // A plan with its own order form goes to the cart page with the code, which applies it once through its promo box.
-    expect(renderPalisadeOrderLink('mod_order_product.html.twig', ['promo' => 'FREETRIAL'], true))->toContain('data-redirect="/cart?promo=FREETRIAL"');
+    // A domain product goes to the cart page with the code, which applies it once through its promo box.
+    expect(renderPalisadeOrderLink('mod_order_product.html.twig', ['promo' => 'FREETRIAL'], 'domain'))->toContain('data-redirect="/cart?promo=FREETRIAL"');
     $cart = renderPalisadeOrderLink('mod_cart_index.html.twig', ['promo' => 'FREETRIAL']);
     expect($cart)->toContain('data-bf-cart-promo data-bf-cart-promo-auto novalidate')
         ->and($cart)->toContain('name="promocode" value="FREETRIAL"')
@@ -119,7 +123,7 @@ test('an unusable promo code in the order link is ignored without an error', fun
     $html = renderPalisadeOrderLink('mod_order_product.html.twig', ['promo' => ['FREETRIAL']]);
     expect(palisadeOrderLinkData($html)['promo'])->toBe('')
         ->and($html)->toContain('href="/login?back=%2Forder%2Ftrial%3Fperiod%3D1M"')
-        ->and(renderPalisadeOrderLink('mod_order_product.html.twig', ['promo' => ['FREETRIAL']], true))->toContain('data-redirect="/cart"')
+        ->and(renderPalisadeOrderLink('mod_order_product.html.twig', ['promo' => ['FREETRIAL']], 'domain'))->toContain('data-redirect="/cart"')
         ->and(renderPalisadeOrderLink('mod_cart_index.html.twig', ['promo' => ['FREETRIAL']]))->not->toContain('data-bf-cart-promo-auto');
 });
 
@@ -135,5 +139,45 @@ test('a billing cycle the product does not offer is ignored', function (): void 
 
     expect(palisadeOrderLinkData($html)['period'])->toBe('1M')
         ->and($html)->toMatch('#class="bf-seg-item is-on" aria-pressed="true" data-cycle="1M"#')
-        ->and(renderPalisadeOrderLink('mod_order_product.html.twig', ['period' => '2Y'], true))->not->toContain(' selected>');
+        ->and(renderPalisadeOrderLink('mod_order_product.html.twig', ['period' => '2Y'], 'domain'))->not->toContain(' selected>');
+});
+
+test('a hosting plan is ordered on the checkout with its domain section; a domain product keeps the configure step (CF-146)', function (): void {
+    $html = renderPalisadeOrderLink('mod_order_product.html.twig', ['period' => '1Y', 'promo' => 'FREETRIAL'], 'hosting', [
+        'allow_domain_transfer' => false, 'allow_subdomain' => true, 'subdomain_base_domain' => 'example.net',
+        'free_domain' => '1', 'free_transfer' => '0', 'free_tlds' => ['.com'], 'free_domain_periods' => ['1Y'],
+    ]);
+    $plan = strpos($html, 'id="bf-h-plan"');
+    $start = strpos($html, '<section class="card bf-card bf-section cf-order-domain"');
+    $section = substr($html, (int) $start, strpos($html, '</section>', (int) $start) - (int) $start);
+
+    // The domain section follows the plan, with the choices the product allows and the domain[...] fields the cart reads.
+    expect($plan)->toBeInt()->and($start)->toBeGreaterThan($plan)
+        ->and($section)->toContain('data-cf-hosting-domain')
+        ->toContain('data-domain-action="register"')
+        ->toContain('data-domain-action="owndomain"')
+        ->toContain('data-domain-action="subdomain"')
+        ->not->toContain('data-domain-action="transfer"')
+        ->toContain('name="domain[register_sld]"')
+        ->toContain('<option value=".com">.com</option>')
+        ->toContain('name="domain[register_years]"')
+        ->toContain('name="domain[owndomain_sld]"')
+        ->toContain('.example.net</span>')
+        ->toContain('name="domain[action]" value="register"')
+        ->toContain('window.ClientFenceDomainCaptcha')
+        ->not->toContain(' style=')
+        ->and($html)->not->toContain('data-redirect=');
+
+    // checkout.js prices the domain line with the plan's free domain terms, as the cart does, and keeps a link's code.
+    $data = palisadeOrderLinkData($html);
+    expect($data['product']['freeDomain'])->toBe(['domain' => true, 'transfer' => false, 'tlds' => ['.com'], 'periods' => ['1Y']])
+        ->and($data['texts']['domainCheck'])->toBe('Check the domain to continue')
+        ->and($data['period'])->toBe('1Y')
+        ->and($data['promo'])->toBe('FREETRIAL');
+
+    // A domain product is configured and goes to the cart page; other products have no domain section.
+    $other = renderPalisadeOrderLink('mod_order_product.html.twig', []);
+    expect(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'domain'))->toContain('data-redirect="/cart"')->not->toContain('data-bf-checkout-data')
+        ->and($other)->not->toContain('data-cf-hosting-domain')
+        ->and(palisadeOrderLinkData($other)['product']['freeDomain'])->toBeNull();
 });

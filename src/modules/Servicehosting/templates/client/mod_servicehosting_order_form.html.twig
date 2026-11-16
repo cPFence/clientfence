@@ -1,5 +1,4 @@
-{% set periods = guest.system_periods %}
-{% set pricing = product.pricing %}
+{# ClientFence core patch (CF-146): the hosting plan's domain as a section of the one-page checkout (mod_order_product.html.twig), as WHMCS's one-step order form: the choices the product allows in one segmented row like the billing cycles, the availability or transfer check, the years, the transfer code, an own domain or a free subdomain. hosting-domain.js runs it; the domain[...] fields are the ones the cart reads. #}
 {% set tlds = guest.serviceDomain_tlds({"allow_register":1}) %}
 {% set transfer_tlds = guest.serviceDomain_tlds({"allow_transfer":1}) %}
 
@@ -16,368 +15,101 @@
 {% set can_own = allow_own %}
 {% set can_subdomain = allow_subdomain and subdomain_base_domain %}
 
-{# Only show domain configuration section if at least one option is available #}
-{% set show_domain_config = can_register or can_transfer or can_own or can_subdomain %}
+{# The first available choice is the default one. #}
+{% set choices = {register: can_register ? 'Register'|trans : null, transfer: can_transfer ? 'Transfer'|trans : null, owndomain: can_own ? 'Own domain'|trans : null, subdomain: can_subdomain ? 'Free subdomain'|trans : null}|filter(v => v) %}
+{% set default_action = choices|keys|first %}
 
-{# Determine which option should be active by default #}
-{% set default_action = null %}
-{% if can_register %}
-    {% set default_action = 'register' %}
-{% elseif can_transfer %}
-    {% set default_action = 'transfer' %}
-{% elseif can_own %}
-    {% set default_action = 'owndomain' %}
-{% elseif can_subdomain %}
-    {% set default_action = 'subdomain' %}
-{% endif %}
+{% if choices %}
+<section class="card bf-card bf-section cf-order-domain" aria-labelledby="bf-h-domain" data-cf-hosting-domain>
+    <h2 id="bf-h-domain">{{ 'Domain'|trans }}</h2>
+    <div class="bf-seg cf-dc-choice" role="group" aria-label="{{ 'Domain'|trans }}">
+        {% for action, label in choices %}
+            <button type="button" class="bf-seg-item{{ action == default_action ? ' is-on' : '' }}" aria-pressed="{{ action == default_action ? 'true' : 'false' }}" data-domain-action="{{ action }}">{{ label }}</button>
+        {% endfor %}
+    </div>
 
-{# ClientFence core patch: the plan details as plain text (inside an h5 every line showed as a heading). #}
-<div class="mb-1">{{ product_details }}</div>
-
-{% if show_domain_config %}
-<hr />
-<h4 class="mt-4 mb-1"><strong>{{ 'Domain Configuration'|trans }}</strong></h4>
-
-{# ClientFence core patch: the choices above the fields on a phone (the domain field was 19-42 px wide). #}
-{# ClientFence core patch: the domain choices as one segmented row above a tinted panel, like the checkout's billing cycles (CF-135 redesign). #}
-<div class="d-flex flex-column mb-3">
-    <nav class="nav nav-pills bf-seg cf-dc-choice mb-3">
+    <div class="cf-dc-panel">
         {% if can_register %}
-            <a class="nav-link bf-seg-item{% if default_action == 'register' %} active{% endif %}" href="#"
-               id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane"
-               role="tab" aria-controls="register-tab-pane" data-action="register">{{ 'Register'|trans }}</a>
-        {% endif %}
-        {% if can_transfer %}
-            <a class="nav-link bf-seg-item{% if default_action == 'transfer' %} active{% endif %}" href="#"
-               id="transfer-tab" data-bs-toggle="tab" data-bs-target="#transfer-tab-pane"
-               role="tab" aria-controls="transfer-tab-pane" data-action="transfer">{{ 'Transfer'|trans }}</a>
-        {% endif %}
-        {% if can_own %}
-            <a class="nav-link bf-seg-item{% if default_action == 'owndomain' %} active{% endif %}" href="#"
-               id="owndomain-tab" data-bs-toggle="tab" data-bs-target="#owndomain-tab-pane"
-               role="tab" aria-controls="owndomain-tab-pane" data-action="owndomain">{{ 'Own domain'|trans }}</a>
-        {% endif %}
-        {% if can_subdomain %}
-            <a class="nav-link bf-seg-item{% if default_action == 'subdomain' %} active{% endif %}" href="#"
-               id="subdomain-tab" data-bs-toggle="tab" data-bs-target="#subdomain-tab-pane"
-               role="tab" aria-controls="subdomain-tab-pane" data-action="subdomain">{{ 'Free subdomain'|trans }}</a>
-        {% endif %}
-    </nav>
-
-    <div class="tab-content cf-dc-panel">
-        {% if can_register %}
-            <div class="tab-pane{% if default_action == 'register' %} show active{% endif %}" id="register-tab-pane"
-                 role="tabpanel" aria-labelledby="register-tab" tabindex="0">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <label class="form-label">{{ 'Register a new domain'|trans }}</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            <div class="input-group cf-dc-input">
-                                <input class="form-control" type="text" name="domain[register_sld]"
-                                       value="{{ request.register_sld }}"
-                                       placeholder="{{ 'Enter new domain name to register'|trans }}">
-                                <select class="form-select cf-dc-tld" name="domain[register_tld]">
-                                    {% for tld in tlds %}
-                                        <option value="{{ tld.tld }}" label="{{ tld.tld }}">{{ tld.tld }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button class="btn btn-primary" type="button" id="domain-check">{{ 'Check'|trans }}</button>
-                        </div>
+            <div data-domain-pane="register"{% if default_action != 'register' %} hidden{% endif %}>
+                <label class="form-label" for="cf-dc-register">{{ 'Register a new domain'|trans }}</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="input-group cf-dc-input">
+                        <input class="form-control" type="text" id="cf-dc-register" name="domain[register_sld]" autocomplete="off"
+                               value="{{ request.register_sld }}"
+                               placeholder="{{ 'Enter new domain name to register'|trans }}">
+                        <select class="form-select cf-dc-tld" name="domain[register_tld]" aria-label="{{ 'Register a new domain'|trans }}">
+                            {% for tld in tlds %}
+                                <option value="{{ tld.tld }}">{{ tld.tld }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col-sm-12">
-                        <div id="register-config" style="display:none;">
-                            <label class="mt-2">
-                                <select class="form-select" name="domain[register_years]" id="registration-years"></select>
-                            </label>
-                            {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain[domain_fields]', tld_select: 'domain[register_tld]'}) }}
-                        </div>
-                    </div>
+                    <button class="btn btn-primary" type="button" data-domain-check>{{ 'Check'|trans }}</button>
+                </div>
+                <div class="mt-3" data-domain-config hidden>
+                    <label class="form-label" for="registration-years">{{ 'Registration period'|trans }}</label>
+                    <select class="form-select cf-dc-years" name="domain[register_years]" id="registration-years"></select>
+                    {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain[domain_fields]', tld_select: 'domain[register_tld]'}) }}
                 </div>
             </div>
         {% endif %}
 
         {% if can_transfer %}
-            <div class="tab-pane{% if default_action == 'transfer' %} show active{% endif %}" id="transfer-tab-pane"
-                 role="tabpanel" aria-labelledby="transfer-tab" tabindex="0">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <label class="form-label">{{ 'Transfer your existing domain'|trans }}</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            <div class="input-group cf-dc-input">
-                                <input class="form-control" type="text" name="domain[transfer_sld]"
-                                       value="{{ request.transfer_sld }}"
-                                       placeholder="{{ 'Enter your domain name to transfer'|trans }}">
-                                <select class="form-select cf-dc-tld" name="domain[transfer_tld]">
-                                    {% for tld in transfer_tlds %}
-                                        <option value="{{ tld.tld }}" label="{{ tld.tld }}" data-require-transfer-code="{{ tld.require_transfer_code ? '1' : '0' }}">{{ tld.tld }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button class="btn btn-primary" type="button" id="transfer-check">{{ 'Check'|trans }}</button>
-                        </div>
+            <div data-domain-pane="transfer"{% if default_action != 'transfer' %} hidden{% endif %}>
+                <label class="form-label" for="cf-dc-transfer">{{ 'Transfer your existing domain'|trans }}</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="input-group cf-dc-input">
+                        <input class="form-control" type="text" id="cf-dc-transfer" name="domain[transfer_sld]" autocomplete="off"
+                               value="{{ request.transfer_sld }}"
+                               placeholder="{{ 'Enter your domain name to transfer'|trans }}">
+                        <select class="form-select cf-dc-tld" name="domain[transfer_tld]" aria-label="{{ 'Transfer your existing domain'|trans }}">
+                            {% for tld in transfer_tlds %}
+                                <option value="{{ tld.tld }}" data-require-transfer-code="{{ tld.require_transfer_code ? '1' : '0' }}">{{ tld.tld }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col-sm-12">
-                        <div id="transfer-config" style="display:none;">
-                            <p class="fs-7 mt-2">{{ 'Transfer price is'|trans }}&nbsp;<span class="fw-bold" id="transfer-price"></span></p>
-                            <input class="form-control cf-dc-code" type="text" name="domain[transfer_code]" id="transfer-code"
-                                   value="{{ request.transfer_code }}" placeholder="{{ 'Enter domain transfer code'|trans }}">
-                            <div class="form-hint" id="transfer-code-hint" style="display:none;">{{ 'This TLD requires a transfer code (EPP/auth code) to proceed.'|trans }}</div>
-                        {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: transfer_tlds, key: 'transfer_fields', prefix: 'domain[transfer_fields]', tld_select: 'domain[transfer_tld]'}) }}
-                        </div>
-                    </div>
+                    <button class="btn btn-primary" type="button" data-domain-check>{{ 'Check'|trans }}</button>
+                </div>
+                <div class="mt-3" data-domain-config hidden>
+                    <p class="fs-7 mb-2">{{ 'Transfer price is'|trans }}&nbsp;<span class="fw-bold" id="transfer-price"></span></p>
+                    <input class="form-control cf-dc-code" type="text" name="domain[transfer_code]" id="transfer-code" autocomplete="off"
+                           value="{{ request.transfer_code }}" placeholder="{{ 'Enter domain transfer code'|trans }}" aria-label="{{ 'Domain transfer code'|trans }}">
+                    <div class="form-hint" id="transfer-code-hint" hidden>{{ 'This TLD requires a transfer code (EPP/auth code) to proceed.'|trans }}</div>
+                    {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: transfer_tlds, key: 'transfer_fields', prefix: 'domain[transfer_fields]', tld_select: 'domain[transfer_tld]'}) }}
                 </div>
             </div>
         {% endif %}
 
         {% if can_own %}
-            <div class="tab-pane{% if default_action == 'owndomain' %} show active{% endif %}" id="owndomain-tab-pane"
-                 role="tabpanel" aria-labelledby="owndomain-tab" tabindex="0">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <label class="form-label">{{ 'Use your existing domain'|trans }}</label>
-                        <div class="input-group cf-dc-input">
-                            <input class="form-control" type="text" name="domain[owndomain_sld]"
-                                   value="{{ request.owndomain_sld }}"
-                                   placeholder="{{ 'Your existing domain'|trans }}">
-                            <input class="form-control cf-dc-tld" type="text" name="domain[owndomain_tld]"
-                                   value="{{ request.owndomain_tld|default('.com') }}"
-                                   placeholder=".com">
-                        </div>
-                        <p class="fs-7 text-muted mt-2">{{ 'You will need to update your nameservers to point to our servers.'|trans }}</p>
-                    </div>
+            <div data-domain-pane="owndomain"{% if default_action != 'owndomain' %} hidden{% endif %}>
+                <label class="form-label" for="cf-dc-own">{{ 'Use your existing domain'|trans }}</label>
+                <div class="input-group cf-dc-input">
+                    <input class="form-control" type="text" id="cf-dc-own" name="domain[owndomain_sld]" autocomplete="off"
+                           value="{{ request.owndomain_sld }}"
+                           placeholder="{{ 'Your existing domain'|trans }}">
+                    <input class="form-control cf-dc-tld" type="text" name="domain[owndomain_tld]" autocomplete="off"
+                           value="{{ request.owndomain_tld|default('.com') }}"
+                           placeholder=".com" aria-label="{{ 'Use your existing domain'|trans }}">
                 </div>
+                <p class="fs-7 text-muted mt-2 mb-0">{{ 'You will need to update your nameservers to point to our servers.'|trans }}</p>
             </div>
         {% endif %}
 
         {% if can_subdomain %}
-            <div class="tab-pane{% if default_action == 'subdomain' %} show active{% endif %}" id="subdomain-tab-pane"
-                 role="tabpanel" aria-labelledby="subdomain-tab" tabindex="0">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <label class="form-label">{{ 'Choose your free subdomain'|trans }}</label>
-                        <div class="input-group cf-dc-input cf-dc-input-wide">
-                            <input class="form-control" type="text" name="domain[subdomain_sld]"
-                                   value="{{ request.subdomain_sld }}"
-                                   placeholder="{{ 'Subdomain'|trans }}">
-                            <span class="input-group-text input-group-text-sm">.{{ subdomain_base_domain|trim('.') }}</span>
-                        </div>
-                        <p class="fs-7 text-muted mt-2">{{ 'This free subdomain is provided by us. No domain registration or transfer will be added to this order.'|trans }}</p>
-                    </div>
+            <div data-domain-pane="subdomain"{% if default_action != 'subdomain' %} hidden{% endif %}>
+                <label class="form-label" for="cf-dc-subdomain">{{ 'Choose your free subdomain'|trans }}</label>
+                <div class="input-group cf-dc-input cf-dc-input-wide">
+                    <input class="form-control" type="text" id="cf-dc-subdomain" name="domain[subdomain_sld]" autocomplete="off"
+                           value="{{ request.subdomain_sld }}"
+                           placeholder="{{ 'Subdomain'|trans }}">
+                    <span class="input-group-text input-group-text-sm" dir="ltr">.{{ subdomain_base_domain|trim('.') }}</span>
                 </div>
+                <p class="fs-7 text-muted mt-2 mb-0">{{ 'This free subdomain is provided by us. No domain registration or transfer will be added to this order.'|trans }}</p>
             </div>
         {% endif %}
     </div>
-</div>
 
-{# ClientFence core patch: domain searches show the guest CAPTCHA (once an hour). #}
-{% if can_register or can_transfer %}{{ include('mod_servicedomain_lookup_captcha.html.twig') }}{% endif %}
-<input type="hidden" name="domain[action]" value="{{ default_action }}" id="domain-action">
+    {# ClientFence core patch: domain searches show the guest CAPTCHA (once an hour). #}
+    {% if can_register or can_transfer %}{{ include('mod_servicedomain_lookup_captcha.html.twig') }}{% endif %}
+    <input type="hidden" name="domain[action]" value="{{ default_action }}" id="domain-action">
+</section>
 {% endif %}
-
-{% set currency = guest.cart_get_currency %}
-<script nonce="{{ csp_nonce }}">
-    function fadeIn(el) {
-        el.style.removeProperty('display');
-        el.style.opacity = '0';
-        el.style.transition = 'opacity 0.15s ease-in';
-        requestAnimationFrame(() => el.style.opacity = '1');
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const currencyFormat = JSON.parse('{{ currency|json_encode|e('js') }}');
-
-        // Update domain action when switching tabs
-        document.querySelectorAll('.nav-pills .nav-link[data-action]').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const action = this.getAttribute('data-action');
-                const actionInput = document.getElementById('domain-action');
-                if (actionInput) {
-                    actionInput.value = action;
-                }
-                updateTransferCodeRequirement();
-            });
-        });
-
-        const formatCurrency = (price, rate, code, multiply) => {
-            let total = parseFloat(price) * parseFloat(rate);
-            if (typeof multiply !== 'undefined') {
-                total *= multiply;
-            }
-            // ClientFence core patch: in the page's language, as the store and checkout show prices (it was "E£518.10" on an Arabic page).
-            try {
-                return new Intl.NumberFormat(document.documentElement.lang || 'en-US', { style: 'currency', currency: code }).format(total);
-            } catch (e) {
-                return ClientFence.currency.format(total, { ...currencyFormat, code: code });
-            }
-        };
-
-        // Domain registration check
-        const domainCheck = document.getElementById('domain-check');
-        const registerSldInput = document.querySelector('input[name="domain[register_sld]"]');
-        const registerTldSelect = document.querySelector('select[name="domain[register_tld]"]');
-        let domainChecked = false;
-        let domainCheckGeneration = 0;
-
-        const resetRegisterCheck = () => {
-            domainCheckGeneration++;
-            if (!domainChecked) {
-                return;
-            }
-
-            domainChecked = false;
-            if (domainCheck) domainCheck.style.display = '';
-            const registerConfig = document.getElementById('register-config');
-            if (registerConfig) registerConfig.style.display = 'none';
-            const yearsSelect = document.getElementById('registration-years');
-            if (yearsSelect) yearsSelect.innerHTML = '';
-        };
-
-        if (registerSldInput) {
-            registerSldInput.addEventListener('input', resetRegisterCheck);
-        }
-
-        if (registerTldSelect) {
-            registerTldSelect.addEventListener('change', resetRegisterCheck);
-        }
-        if (domainCheck) {
-            domainCheck.addEventListener('click', function(event) {
-                event.preventDefault();
-                const generation = ++domainCheckGeneration;
-                const sld = document.querySelector('input[name="domain[register_sld]"]').value.toLowerCase();
-                const tld = document.querySelector('select[name="domain[register_tld]"]').value.toLowerCase();
-
-                ClientFenceDomainCaptcha.post('servicedomain/check', { sld: sld, tld: tld },
-                    function(result) {
-                        if (generation !== domainCheckGeneration) return;
-                        setRegistrationPricing(tld, generation);
-                        const registerConfig = document.getElementById('register-config');
-                        if (registerConfig) fadeIn(registerConfig);
-                        domainChecked = true;
-                        domainCheck.style.display = 'none';
-                    },
-                );
-            });
-        }
-
-        // Domain transfer check
-        const transferCheck = document.getElementById('transfer-check');
-        const transferSldInput = document.querySelector('input[name="domain[transfer_sld]"]');
-        const transferTldSelect = document.querySelector('select[name="domain[transfer_tld]"]');
-        let transferChecked = false;
-        let transferCheckGeneration = 0;
-
-        function updateTransferCodeRequirement() {
-            const selectedOption = transferTldSelect && transferTldSelect.options[transferTldSelect.selectedIndex];
-            const isTransfer = document.getElementById('domain-action')?.value === 'transfer';
-            const requiresTransferCode = isTransfer && transferChecked && selectedOption?.dataset.requireTransferCode === '1';
-            const transferCodeInput = document.getElementById('transfer-code');
-            const transferCodeHint = document.getElementById('transfer-code-hint');
-            if (transferCodeInput) transferCodeInput.required = requiresTransferCode;
-            if (transferCodeHint) transferCodeHint.style.display = requiresTransferCode ? '' : 'none';
-        }
-
-        const resetTransferCheck = () => {
-            transferCheckGeneration++;
-            if (!transferChecked) {
-                return;
-            }
-            transferChecked = false;
-            updateTransferCodeRequirement();
-            if (transferCheck) transferCheck.style.display = '';
-            const transferConfig = document.getElementById('transfer-config');
-            if (transferConfig) transferConfig.style.display = 'none';
-        };
-
-        if (transferSldInput) {
-           transferSldInput.addEventListener('input', resetTransferCheck);
-        }
-
-        if (transferTldSelect) {
-            transferTldSelect.addEventListener('change', resetTransferCheck);
-        }
-
-        if (transferCheck) {
-            transferCheck.addEventListener('click', function(event) {
-                event.preventDefault();
-                const generation = ++transferCheckGeneration;
-                const sld = document.querySelector('input[name="domain[transfer_sld]"]').value.toLowerCase();
-                const tld = document.querySelector('select[name="domain[transfer_tld]"]').value.toLowerCase();
-
-                ClientFenceDomainCaptcha.post('servicedomain/can_be_transferred', { sld: sld, tld: tld },
-                    function(result) {
-                        if (generation !== transferCheckGeneration) return;
-                        setTransferPricing(tld, generation);
-                        const transferConfig = document.getElementById('transfer-config');
-                        if (transferConfig) fadeIn(transferConfig);
-                        transferChecked = true;
-                        transferCheck.style.display = 'none';
-                        updateTransferCodeRequirement();
-                    },
-                );
-            });
-        }
-
-        updateTransferCodeRequirement();
-
-        function setRegistrationPricing(tld, generation) {
-            ClientFence.api.guest.post('servicedomain/pricing', { tld: tld },
-                function(result) {
-                    if (generation !== domainCheckGeneration) return;
-                    const yearsSelect = document.getElementById('registration-years');
-                    if (!yearsSelect) return;
-                    yearsSelect.innerHTML = '';
-
-                    const regPrice = Number(result.price_registration);
-                    let renewPrice = Number(result.price_renew);
-
-                    if (result.price_renew === null || typeof result.price_renew === 'undefined' || isNaN(renewPrice)) {
-                        renewPrice = regPrice;
-                    }
-
-                    const yearLabel = "{{ ' Year @ '|trans }}";
-                    const yearsLabel = "{{ ' Years @ '|trans }}";
-
-                    for (let i = 1; i <= 5; i++) {
-                        const totalPrice = (i === 1) ? regPrice : regPrice + (i - 1) * renewPrice;
-                        const priceFormatted = formatCurrency(
-                            totalPrice,
-                            {{ currency.conversion_rate }},
-                            "{{ currency.code }}",
-                            1
-                        );
-
-                        yearsSelect.append(
-                            new Option(i + (i === 1 ? yearLabel : yearsLabel) + priceFormatted, i)
-                        );
-                    }
-                },
-            );
-        }
-
-        function setTransferPricing(tld, generation) {
-            ClientFence.api.guest.post('servicedomain/pricing', { tld: tld },
-                function(result) {
-                    if (generation !== transferCheckGeneration) return;
-                    const price = formatCurrency(result.price_transfer, {{ currency.conversion_rate }}, "{{ currency.code }}");
-                    const transferPriceEl = document.getElementById('transfer-price');
-                    if (transferPriceEl) transferPriceEl.textContent = price;
-                },
-            );
-        }
-
-        // Handle addons visibility
-        const addons = document.querySelector('.addons');
-        const orderButton = document.getElementById('order-button');
-
-        if (addons && orderButton && getComputedStyle(addons).display === 'none') {
-            orderButton.addEventListener('click', function handler(event) {
-                event.preventDefault();
-                orderButton.style.display = 'none';
-                addons.style.display = 'block';
-                orderButton.removeEventListener('click', handler);
-                return false;
-            });
-        }
-    });
-</script>

@@ -4,10 +4,12 @@
  * Add to cart (the cart page) or, with Pay, sign-up for a new customer (signed in by FOSSBilling's "auto login after sign-up"), cart/add_item (which empties the cart first), the promo
  * code, cart/checkout, then the payment page (online methods) or the confirmation (manual
  * methods, balance, nothing to pay). Amounts shown before the promo code are the product
- * prices; with a promo code the cart's own totals are shown.
+ * prices; with a promo code the cart's own totals are shown. A hosting plan's domain (CF-146) is its
+ * own section (hosting-domain.js), priced here as the cart prices it.
  */
 import { MONTHS, api, cycleTexts, errorText, fill, moneyFormatter, readJson } from './store-utils.js';
 import { optionLines, readChoice, readOptions, showPrices } from './product-options.js';
+import initHostingDomain, { registrationTotal } from './hosting-domain.js';
 
 export default function initCheckout(root) {
   const data = readJson(root, '[data-bf-checkout-data]');
@@ -21,6 +23,10 @@ export default function initCheckout(root) {
   const $$ = (selector) => [...root.querySelectorAll(selector)];
   // Configurable options (Product/Options.php), priced per product unit for the cycle.
   const options = readOptions(root);
+  // CF-146: a hosting plan's domain. A change of its price acts as a change of choice (and may apply a link's promo code).
+  let afterDomain = () => {};
+  const domainRoot = root.querySelector('[data-cf-hosting-domain]');
+  const domain = domainRoot ? initHostingDomain(domainRoot, money, rate, t, () => { choiceChanged(); afterDomain(); }) : null;
 
   const state = {
     cycle: data.period || '',
@@ -51,6 +57,43 @@ export default function initCheckout(root) {
       return { price: 0, setup: 0 };
     }
     return null;
+  };
+
+  // The plan's free domain (Product\Service::getDomainRelatedDiscount()): a transfer with free_transfer; a registration
+  // with free_domain, of a free TLD (any when none is set), on a billing cycle in free_domain_periods.
+  const free = product.freeDomain ?? {};
+  const freeTlds = Object.values(free.tlds ?? {});
+  const freePeriods = Object.values(free.periods ?? {});
+  /** The registration years a free domain covers for the plan's cycle, as Product\Service::getFreeDomainDiscountYears(). */
+  const freeYears = (cycle, years) => {
+    if (cycle === `${years}Y`) {
+      return years;
+    }
+    if (!cycle.includes('Y')) {
+      return 0;
+    }
+    if (Math.min(years, parseInt(cycle, 10)) === 1) {
+      return 1;
+    }
+    const covered = freePeriods.map((period) => parseInt(period, 10)).filter((qty) => years - qty > 0);
+    return covered.length ? Math.min(years, ...covered) : 0;
+  };
+  /** The domain line as the cart prices it (Product\Service::getDomainOrderLineConfig()), less the plan's free domain. */
+  const domainLine = (cycle) => {
+    const chosen = domain?.priced();
+    if (!chosen) {
+      return null;
+    }
+    const register = chosen.action === 'register';
+    const price = register ? registrationTotal(chosen.prices, chosen.years) : Number(chosen.prices.price_transfer) || 0;
+    let off = 0;
+    if (!register && free.transfer) {
+      off = price;
+    } else if (register && free.domain && (!freeTlds.length || freeTlds.includes(chosen.tld)) && freePeriods.includes(cycle)) {
+      off = registrationTotal(chosen.prices, freeYears(cycle, chosen.years));
+    }
+    const label = register ? `${chosen.domain} · ${chosen.years} ${chosen.years === 1 ? t.yearOne : t.yearMany}` : `${chosen.domain} · ${t.transfer}`;
+    return { label, price, off };
   };
 
   /** Lines, today's total and the renewal amount for a cycle (without a promo code). */
@@ -93,6 +136,12 @@ export default function initCheckout(root) {
         lines.push([`${addon.title}: ${t.setup}`, price.setup * q]);
       }
     });
+    // The domain, once for the order and never prorated; it renews yearly on its own (the renewal line is the plan's).
+    const line = domainLine(cycle);
+    if (line) {
+      lines.push([line.label, line.price - line.off, line.price]);
+      due += line.price - line.off;
+    }
     return { lines, due: due * rate, renew: renew * rate };
   };
 
@@ -114,6 +163,15 @@ export default function initCheckout(root) {
   const signupMissing = () => !state.signedIn && $$('[data-bf-signup] input, [data-bf-signup] select').some((input) => input.required && input.value.trim() === '');
 
   const selectedMethod = () => form.querySelector('input[name="gateway_id"]:checked');
+
+  /** Why the domain stops the order (the Pay button's text), or null. */
+  const domainMissing = () => {
+    const need = domain?.missing();
+    if (!need) {
+      return null;
+    }
+    return need === 'check' ? t.domainCheck : fill(t.fillIn, { field: { code: t.transferCode, own: t.domainName, subdomain: t.subdomain }[need] });
+  };
 
   const render = () => {
     const now = compute(state.cycle);
@@ -167,13 +225,16 @@ export default function initCheckout(root) {
     });
 
     // Summary.
-    $('[data-bf-lines]').replaceChildren(...now.lines.map(([label, amount]) => {
+    $('[data-bf-lines]').replaceChildren(...now.lines.map(([label, amount, gross]) => {
       const line = document.createElement('div');
       line.className = 'bf-line';
       const name = document.createElement('span');
       name.textContent = label;
       const value = document.createElement('span');
-      value.textContent = money(amount * rate);
+      // The domain line: with a promo code the cart gives the code's discount instead of the free domain
+      // (Cart\Service::getProductDiscount()), so the line shows its price and the promo line the cart's discount.
+      const shown = state.promo && gross !== undefined ? gross : amount;
+      value.textContent = gross !== undefined && shown === 0 ? t.free : money(shown * rate);
       line.append(name, value);
       return line;
     }));
@@ -224,8 +285,12 @@ export default function initCheckout(root) {
     let label;
     let disabled = false;
     const missing = fieldsMissing();
+    const domainNeed = domainMissing();
     if (!state.signedIn && (!data.signup || state.accountReady)) {
       label = t.signIn;
+      disabled = true;
+    } else if (domainNeed) {
+      label = domainNeed;
       disabled = true;
     } else if (missing) {
       label = fill(t.fillIn, { field: missing });
@@ -285,6 +350,9 @@ export default function initCheckout(root) {
     }
     if (options.length) {
       item.options = readChoice(root, options);
+    }
+    if (domain) {
+      item.domain = domain.fields();
     }
     $$('[data-bf-field]').forEach((field) => {
       field.querySelectorAll('input, textarea, select').forEach((input) => {
@@ -382,6 +450,11 @@ export default function initCheckout(root) {
     if (!code) {
       return;
     }
+    // The cart takes a hosting plan only with its domain.
+    if (domainMissing()) {
+      promoMessage(domainMissing());
+      return;
+    }
     // The code is checked on this plan alone: cart/add_item without `multiple` empties the cart.
     if (Number(data.cartCount) > 0 && !data.linkRedo && !window.confirm(fill(t.promoOthers, { count: data.cartCount }))) {
       return;
@@ -400,7 +473,8 @@ export default function initCheckout(root) {
       // The cart's totals are in the default currency, like the product prices.
       // A recurring promo also comes off each renewal: the order keeps the price part of the discount (the full
       // period's, not a prorated first charge's).
-      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
+      // CF-146: not a domain's discount (the domain renews on its own).
+      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).filter((item) => item.type !== 'domain').reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
       state.promo = { code, discount: Number(cart.discount), total: Number(cart.total), renewDiscount };
     } catch (error) {
       state.promo = null;
@@ -472,6 +546,10 @@ export default function initCheckout(root) {
     const invalid = $$('[data-bf-field] input, [data-bf-field] textarea, [data-bf-field] select').find((input) => !input.checkValidity());
     if (invalid) {
       invalid.reportValidity();
+      return;
+    }
+    if (domainMissing()) {
+      ClientFence.message(domainMissing(), 'error');
       return;
     }
     setBusy(true);
@@ -573,19 +651,21 @@ export default function initCheckout(root) {
   render();
   // A store link's ?promo= code goes through the promo box, with all its checks and messages. It waits in the
   // box while the cart holds other items (applying it here empties the cart; not this link's own plan and code,
-  // data.linkRedo), and is applied once the required order questions are answered (the cart refuses the plan
-  // without them).
+  // data.linkRedo), and is applied once the required order questions are answered and a hosting plan's domain is
+  // chosen (the cart refuses the plan without them).
   if (data.promo) {
     $('[data-bf-promo-input]').value = data.promo;
     const required = [...root.querySelectorAll('[data-bf-field] [required]')];
     let pending = !(Number(data.cartCount) > 0) || data.linkRedo;
     const applyLink = () => {
-      if (pending && required.every((input) => input.checkValidity())) {
+      if (pending && !state.busy && !domainMissing() && required.every((input) => input.checkValidity())) {
         pending = false;
         applyPromo();
       }
     };
     required.forEach((input) => input.addEventListener('change', applyLink));
+    domainRoot?.addEventListener('change', applyLink);
+    afterDomain = applyLink;
     applyLink();
   }
 }

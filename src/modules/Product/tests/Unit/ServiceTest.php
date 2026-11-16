@@ -3068,3 +3068,15 @@ test('Prorata Billing days are saved as numbers and checked (CF-145)', function 
     }
     expect($config()['prorata_day'])->toBe(31);
 });
+
+test('a product shows clients its free domain terms but never its server settings (CF-146)', function (): void {
+    $config = [
+        'allow_domain_register' => true, 'free_domain' => '1', 'free_transfer' => '0', 'free_tlds' => ['.com'], 'free_domain_periods' => ['1Y', '2Y'],
+        'free_domain_renewals' => '1', 'server_id' => 2, 'hosting_plan_id' => 3, 'reseller' => true,
+    ];
+
+    // The one-page checkout prices the plan's free domain with them (checkout.js), as the cart does.
+    expect((new ReflectionMethod(Service::class, 'getPublicConfig'))->invoke(new Service(), $config))->toBe([
+        'allow_domain_register' => true, 'free_domain' => '1', 'free_transfer' => '0', 'free_tlds' => ['.com'], 'free_domain_periods' => ['1Y', '2Y'],
+    ]);
+});

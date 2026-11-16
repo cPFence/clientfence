@@ -1,4 +1,4 @@
-{# ClientFence: the configure step for plans with their own order form (hosting, domains), in place
+{# ClientFence: the configure step for plans with their own order form (domains; hosting plans use the checkout, CF-146), in place
    of FOSSBilling's order steps: the plan, its billing cycle and options, the product's order form
    (domain choice) and add-ons, then Add to cart, which opens the cart page. #}
 {% set cart_currency = guest.cart_get_currency %}

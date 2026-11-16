@@ -4975,11 +4975,10 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   @include media-breakpoint-down(sm) { margin-block: 1rem; padding: 2rem 1rem; }
 }
 
-// Hosting order form (inside the configure step): the domain choices as one segmented row, the chosen one in
+// Hosting order form (the checkout's domain section, CF-146): the domain choices as one segmented row, the chosen one in
 // the brand gradient as the checkout's billing cycles, its fields on a tinted panel.
 .cf-dc-choice {
   .bf-seg-item { flex: 1 1 0; min-height: 42px; white-space: nowrap; text-decoration: none; }
-  .nav-link.active { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); color: #fff; box-shadow: 0 6px 16px -8px var(--pal-brand); }
   @include media-breakpoint-down(md) { .bf-seg-item { flex-basis: calc(50% - 3px); } }
 }
 .cf-dc-panel { padding: 1rem; border: 1px solid var(--bf-line); border-radius: 14px; background: linear-gradient(160deg, rgba(var(--pal-accent-rgb), .07), transparent 60%); }
@@ -5045,4 +5044,21 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   .cf-print .card, .cf-print-box { border-color: #bbb; background: none; box-shadow: none; }
   .cf-print .table-responsive { overflow: visible; }
   .cf-print .badge { border-color: currentColor; }
+}
+
+// ---- CF-146: domain on the checkout
+// A hosting plan's domain section (mod_servicehosting_order_form, hosting-domain.js): the chosen domain choice in
+// the brand gradient as the billing cycles, the years and the transfer hint on the tinted panel, and a long domain
+// name wrapping in the summary instead of pushing a phone sideways.
+.cf-dc-choice .bf-seg-item {
+  transition: background-color .25s, color .25s, box-shadow .25s;
+  &.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); color: #fff; box-shadow: 0 6px 16px -8px var(--pal-brand); }
+}
+.cf-order-domain {
+  .cf-dc-years { width: auto; max-width: 100%; }
+  .form-hint { margin-top: .375rem; font-size: .875rem; color: var(--bf-muted); }
+}
+.bf-checkout [data-bf-lines] .bf-line > :first-child { min-width: 0; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) {
+  .cf-dc-choice .bf-seg-item { transition: none; }
 }

@@ -308,6 +308,11 @@ class Service implements InjectionAwareInterface
             'allow_domain_own',
             'allow_subdomain',
             'subdomain_base_domain',
+            // ClientFence core patch (CF-146): a hosting plan's free domain terms, for the checkout's domain line (checkout.js).
+            'free_domain',
+            'free_transfer',
+            'free_tlds',
+            'free_domain_periods',
         ];
 
         return array_intersect_key($config, array_flip($publicConfigKeys));

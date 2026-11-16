@@ -6,14 +6,15 @@
    code, checks out and then opens the payment (online methods) or shows the confirmation with
    the invoice (manual methods). The page script is assets/src/js/checkout.js.
 
-   Products with their own FOSSBilling order form (hosting, domains) are configured with
+   Products with their own FOSSBilling order form (domains) are configured with
    partials/order_configure.html.twig and go to the cart page. #}
 {% extends request.ajax ? "layout_blank.html.twig" : "layout_default.html.twig" %}
 {% import 'partials/store_macros.html.twig' as sm %}
 
 {% set allow_guest = guest.clientfence_store_open %}
 {% set active_menu = 'order' %}
-{% set stock_form = guest.system_template_exists({ file: 'mod_service' ~ product.type ~ '_order_form.html.twig' }) %}
+{# ClientFence core patch (CF-146): a hosting plan is ordered on this checkout, its domain chosen in its own section (mod_servicehosting_order_form.html.twig, hosting-domain.js), as WHMCS's one-step order form. #}
+{% set stock_form = product.type != 'hosting' and guest.system_template_exists({ file: 'mod_service' ~ product.type ~ '_order_form.html.twig' }) %}
 
 {% block meta_title %}{{ 'Checkout'|trans }} - {{ product.title }}{% endblock %}
 {% block body_class %}order-product bf-checkout-page{% endblock %}
@@ -71,8 +72,10 @@
     }]) %}
 {% endfor %}
 {# ClientFence core patch: the cart holds only this plan with the link's code (applied here before a sign-in or a reload): the link applies it again without asking. #}
+{# CF-146: a hosting plan's domain is a cart item of its own, put there with the plan. #}
 {% set link_cart = link_promo ? guest.cart_get : {} %}
-{% set link_redo = link_promo and link_cart.items|default([])|length == 1 and link_cart.items[0].product_id == product.id and link_cart.promocode|default('')|upper == link_promo|upper %}
+{% set link_items = link_cart.items|default([])|filter(i => i.type|default('') != 'domain') %}
+{% set link_redo = link_promo and link_items|length == 1 and (link_items|first).product_id == product.id and link_cart.promocode|default('')|upper == link_promo|upper %}
 {# ClientFence: data.tax is the tax the invoice adds, so "Due today" is what the invoice asks for. #}
 {# ClientFence core patch (CF-145): product.prorata is a prorata product's first period per cycle (factor of the price, first due date). #}
 {% set data = {
@@ -81,6 +84,12 @@
         once: product.pricing.type == 'once' ? { price: product.pricing.once.price, setup: product.pricing.once.setup } : null,
         quantity: product.allow_quantity_select,
         prorata: product.prorata|default({}),
+        freeDomain: product.type == 'hosting' ? {
+            domain: product.config.free_domain|default(false) ? true : false,
+            transfer: product.config.free_transfer|default(false) ? true : false,
+            tlds: product.config.free_tlds|default([]) is iterable ? product.config.free_tlds|default([]) : [],
+            periods: product.config.free_domain_periods|default([]) is iterable ? product.config.free_domain_periods|default([]) : [],
+        } : null,
     },
     addons: addons,
     period: period,
@@ -142,6 +151,15 @@
         failed: 'The order could not be placed: :error'|trans,
         promoOthers: 'Your cart has :count other item(s). Checking a code here empties your cart. Continue?'|trans,
         cartOthers: 'Your cart has :count other item(s). Paying here orders only this plan and empties your cart. Continue?'|trans,
+        year: ' Year @ '|trans,
+        years: ' Years @ '|trans,
+        yearOne: 'Year'|trans,
+        yearMany: 'Years'|trans,
+        transfer: 'Transfer'|trans,
+        domainCheck: 'Check the domain to continue'|trans,
+        transferCode: 'Domain transfer code'|trans,
+        domainName: 'Domain name'|trans,
+        subdomain: 'Subdomain'|trans,
     },
 } %}
 
@@ -188,6 +206,8 @@
                 {# ClientFence: configurable options (Product/Options.php), priced by checkout.js. #}
                 <div class="bf-divided cf-order-options">{{ include('mod_product_options_form.html.twig', { 'product_id': product.id, 'currency': cart_currency }) }}</div>
             </section>
+
+            {% if product.type == 'hosting' %}{{ include('mod_servicehosting_order_form.html.twig') }}{% endif %}
 
             {% if addons %}
             <section class="card bf-card bf-section cf-order-addons" aria-labelledby="bf-h-addons">
