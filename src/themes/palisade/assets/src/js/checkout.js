@@ -240,8 +240,9 @@ export default function initCheckout(root) {
       return line;
     }));
     const promoLine = $('[data-bf-promo-line]');
-    promoLine.hidden = !state.promo;
-    if (state.promo) {
+    // The cart's totals stay after an automatic promotion ended (state.promo with no discount): no "−0" line then.
+    promoLine.hidden = !(state.promo?.discount > 0);
+    if (!promoLine.hidden) {
       $('[data-bf-promo-label]').textContent = state.promo.code ? fill(t.promo, { code: state.promo.code }) : t.discount;
       $('[data-bf-promo-amount]').textContent = `−${money(state.promo.discount * rate)}`;
     }

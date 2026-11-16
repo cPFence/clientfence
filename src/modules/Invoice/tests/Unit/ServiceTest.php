@@ -3277,11 +3277,15 @@ test('removes an invoice', function (): void {
     $service = new Service();
     $invoiceModel = new Model_Invoice();
     $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->id = 5;
 
     $invoiceItemModel = new Model_InvoiceItem();
     $invoiceItemModel->loadBean(new Tests\Helpers\DummyBean());
 
     $dbMock = Mockery::mock('ClientFence\Database');
+    // The credit applied to it and its card charge tries go with it (they were left behind).
+    $dbMock->shouldReceive('exec')->once()->with('DELETE FROM invoice_credit WHERE invoice_id = :id', ['id' => 5]);
+    $dbMock->shouldReceive('exec')->once()->with('DELETE FROM invoice_card_charge WHERE invoice_id = :id', ['id' => 5]);
     $dbMock->shouldReceive('exec')
         ->atLeast()->once();
     $dbMock->shouldReceive('find')

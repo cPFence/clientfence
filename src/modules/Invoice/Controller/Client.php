@@ -461,7 +461,7 @@ class Client implements \ClientFence\InjectionAwareInterface
         $this->di['is_client_logged'];
         $user = \ClientFence\Mod\Client\Users::context($this->di);
         if ($user !== null && !$user['owner']) {
-            throw new InformationException('Only the account owner can save a payment method.');
+            throw new InformationException('Only the account owner can save a payment method.', null, 403);
         }
 
         return (int) $this->di['session']->get('client_id');
@@ -603,7 +603,7 @@ class Client implements \ClientFence\InjectionAwareInterface
         $this->di['is_client_logged'];
         $user = \ClientFence\Mod\Client\Users::context($this->di);
         if ($user !== null && !$user['owner']) {
-            throw new InformationException('Only the account owner can save a payment method.');
+            throw new InformationException('Only the account owner can save a payment method.', null, 403);
         }
 
         return \ClientFence\Mod\Invoice\SavedCards::paypal($this->di) ?? throw new InformationException('Saved PayPal accounts are not available.');
@@ -681,7 +681,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             $payment = $api->invoice_payment($data);
         } catch (InformationException $e) {
             if ($this->isInvoiceAccessDenied($e)) {
-                return $app->redirect('invoice');
+                return $this->invoiceDenied($app);
             }
 
             throw $e;
@@ -701,7 +701,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             $response = $api->invoice_pdf($data);
         } catch (InformationException $e) {
             if ($this->isInvoiceAccessDenied($e)) {
-                return $app->redirect('invoice');
+                return $this->invoiceDenied($app);
             }
 
             throw $e;
@@ -722,7 +722,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             return $api->invoice_get($data);
         } catch (InformationException $e) {
             if ($this->isInvoiceAccessDenied($e)) {
-                return $app->redirect('invoice');
+                return $this->invoiceDenied($app);
             }
 
             throw $e;
@@ -732,6 +732,17 @@ class Client implements \ClientFence\InjectionAwareInterface
     private function isInvoiceAccessDenied(InformationException $e): bool
     {
         return (int) $e->getCode() === 403;
+    }
+
+    /**
+     * ClientFence core patch: a signed-out visitor goes to the sign-in page and then back to this invoice
+     * link (as ticket links do); a signed-in client goes to their invoice list.
+     */
+    private function invoiceDenied(\ClientFence\App $app): Response
+    {
+        $this->di['is_client_logged'];
+
+        return $app->redirect('invoice');
     }
 
     /**

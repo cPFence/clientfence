@@ -470,13 +470,10 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function rmByClient(\Model_Client $client): void
     {
-        $em = $this->di['em'];
         foreach ($this->getSupportTicketRepository()->findByClientId((int) $client->id) as $ticket) {
-            // ClientFence core patch: deleting a client's tickets also erases secrets and their events.
-            TicketSecrets::forgetTicket($em->getConnection(), (int) $ticket->getId(), true);
-            $em->remove($ticket);
+            // ClientFence core patch: as a staff delete (rm()): with its messages, notes, secrets and their events (the messages were left).
+            $this->rm($ticket);
         }
-        $em->flush();
     }
 
     public function rm(SupportTicket $model): bool

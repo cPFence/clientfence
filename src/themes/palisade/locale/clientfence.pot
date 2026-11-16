@@ -8390,7 +8390,7 @@ msgstr ""
 msgid "Delete tickets?"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+#: src/modules/Invoice/Quotes.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Deleted client"
 msgstr ""
 
@@ -14826,6 +14826,10 @@ msgstr ""
 msgid "Lowercase"
 msgstr ""
 
+#: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+msgid "MRR"
+msgstr ""
+
 #: src/library/Payment/Adapter/Eway.php
 msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
 msgstr ""
@@ -16898,10 +16902,6 @@ msgstr ""
 msgid "No invoices yet."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "No invoices yet: 20 of 40."
-msgstr ""
-
 #: src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "No invoices, payments or credit in this period."
 msgstr ""
@@ -16980,6 +16980,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "No pack manifest: install the ClientFence release again."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No paid invoice was due in the last 12 months: 20 of 40."
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
@@ -27941,6 +27945,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "This invoice has no payment that can be refunded through the payment gateway."
+msgstr ""
+
+#: src/modules/Invoice/SavedCards.php
+msgid "This invoice is a draft. Approve it before charging it."
 msgstr ""
 
 #: src/modules/Invoice/Api/Client.php src/modules/Invoice/SavedCards.php

@@ -27,3 +27,11 @@ test('get search query builder excludes the attachment blob from the select', fu
     expect($selectCalls[0])->toContain('attachmentMime');
     expect($selectCalls[0])->not->toContain('attachmentContent');
 });
+
+test('an email of another client or a missing one is a 404', function (): void {
+    $repository = Mockery::mock(ActivityClientEmailRepository::class)->makePartial();
+    $repository->shouldReceive('findOneForClientById')->with(1, 99)->once()->andReturn(null);
+
+    expect(fn () => $repository->findOneForClientByIdOrFail(1, 99))
+        ->toThrow(fn (ClientFence\InformationException $e) => expect($e->getCode())->toBe(404));
+});

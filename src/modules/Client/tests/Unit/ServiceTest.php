@@ -767,6 +767,13 @@ test('remove wraps client cleanup and flush in one transaction', function (): vo
         ->with(Mockery::pattern("/^UPDATE client_affiliate_entry SET status = 'cancelled'/"), Mockery::on(fn (array $params): bool => $params[1] === 1))
         ->andReturn(0);
     $connection->shouldReceive('fetchOne')->once()->with('SELECT id FROM client_affiliate WHERE client_id = ?', [1])->andReturn(false);
+    // Its quotes with their lines, support PIN, marketing opt-out and saved gateway customers go too (they were left behind).
+    $connection->shouldReceive('executeStatement')->once()
+        ->with('DELETE FROM invoice_quote_item WHERE quote_id IN (SELECT id FROM invoice_quote WHERE client_id = ?)', [1])
+        ->andReturn(1);
+    foreach (['invoice_quote', 'client_support_pin', 'client_marketing_optout', 'pay_gateway_customer'] as $table) {
+        $connection->shouldReceive('delete')->once()->with($table, ['client_id' => 1])->andReturn(1);
+    }
 
     $passwordRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientPasswordResetRepository::class);
     $passwordRepository->shouldReceive('findBy')->once()->with(['clientId' => 1])->andReturn([$reset]);

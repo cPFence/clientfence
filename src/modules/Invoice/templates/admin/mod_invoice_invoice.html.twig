@@ -107,7 +107,7 @@
                                 {% if invoice.status == 'unpaid' and invoice.amount_paid > 0 %}
                                 <div><dt>{{ 'Amount paid'|trans }}</dt><dd>
                                     {{ invoice.amount_paid|format_currency(cur) }}
-                                    {% if invoice.credit_applied > 0 %}
+                                    {% if invoice.credit_applied > 0 and has_permission('invoice', 'manage_invoices') %}
                                         ({{ 'credit :amount'|trans({ ':amount': invoice.credit_applied|format_currency(cur) }) }},
                                         <a {{ fb_api_link({href: 'invoice/remove_credit'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Remove the credit applied to this invoice?'|trans}, reload: true}) }}>{{ 'Remove credit'|trans }}</a>)
                                     {% endif %}
@@ -129,7 +129,8 @@
                             <span>{{ 'View as Client'|trans }}</span>
                         </a>
                         {# ClientFence core patch: no Delete for a paid or refunded invoice (Refund it instead). #}
-                        {% if invoice.status not in ['paid', 'refunded'] %}
+                        {# ClientFence core patch: each action shows only to staff with the right its API call checks. #}
+                        {% if invoice.status not in ['paid', 'refunded'] and has_permission('invoice', 'manage_invoices') %}
                         <a class="btn btn-danger"
                             {{ fb_api_link({href: 'invoice/delete'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'invoice'|url}) }}>
                             <svg class="icon" width="24" height="24">
@@ -139,6 +140,7 @@
                         </a>
                         {% endif %}
                         {% if invoice.status == 'unpaid' %}
+                        {% if has_permission('invoice', 'manage_invoices') %}
                         <a class="btn btn-primary" {{ fb_api_link({href: 'invoice/send_reminder'|api_url(query: {id: invoice.id}), message: 'Payment Reminder Sent'|trans}) }}>
                             <svg class="icon" width="24" height="24">
                                 <use href="#mail" />
@@ -151,9 +153,10 @@
                             </svg>
                             <span>{{ 'Mark as Paid'|trans }}</span>
                         </a>
+                        {% endif %}
                         {# ClientFence core patch: WHMCS "Attempt Capture": charge the client's saved card or PayPal account (Invoice/SavedCards.php). #}
                         {% set saved_card = admin.invoice_card_get({ id: invoice.id }) %}
-                        {% if saved_card and not invoice.pending_payment|default(null) %}
+                        {% if saved_card and invoice.approved and not invoice.pending_payment|default(null) and has_permission('invoice', 'manage_transactions') %}
                         <a class="btn btn-primary" title="{{ saved_card }}" {{ fb_api_link({href: 'invoice/card_charge'|api_url(query: {id: invoice.id}), modal: {type: 'confirm', title: 'Charge :card?'|trans({':card': saved_card})}, message: 'The payment was taken.'|trans, reload: true}) }}>
                             <svg class="icon" width="24" height="24">
                                 <use href="#credit-card" />
@@ -163,7 +166,7 @@
                         {% endif %}
                         {# ClientFence core patch: WHMCS "Apply Credit": part or all of the client's credit. #}
                         {% set client_credit = invoice.client_credit|default(0) %}
-                        {% if client_credit > 0 and invoice.balance_due > 0 and 'deposit' not in invoice.lines|map(l => l.type) %}
+                        {% if client_credit > 0 and invoice.balance_due > 0 and 'deposit' not in invoice.lines|map(l => l.type) and has_permission('invoice', 'manage_invoices') %}
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#creditModal">
                             <svg class="icon" width="24" height="24">
                                 <use href="#currency-dollar" />
@@ -236,7 +239,7 @@
                         {% endif %}
 
                         {# ClientFence core patch (CF-144): undo a payment staff recorded by mistake (Invoice/PaymentReversal.php); a gateway payment needs Refund. #}
-                        {% if invoice.payment_reversible|default(false) %}
+                        {% if invoice.payment_reversible|default(false) and has_permission('invoice', 'manage_invoices') %}
                         <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reversePaymentModal">
                             <svg class="icon" width="24" height="24">
                                 <use href="#arrow-left" />
@@ -264,7 +267,7 @@
                         </div>
                         {% endif %}
 
-                        {% if invoice.status == 'paid' %}
+                        {% if invoice.status == 'paid' and has_permission('invoice', 'manage_invoices') %}
                         {# ClientFence core patch: WHMCS refunds: an amount (all or part) and, optionally, to the client's credit. #}
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#refundModal">
                             <svg class="icon" width="24" height="24">
@@ -850,7 +853,7 @@
         </div>
         <div class="d-grid gap-2">
             <button class="btn btn-primary" type="button" data-cf-print>{{ 'Print'|trans }}</button>
-            {% if invoice.status == 'unpaid' %}
+            {% if invoice.status == 'unpaid' and has_permission('invoice', 'manage_invoices') %}
                 <a class="btn btn-danger" href="{{ 'invoice/delete'|api_url(query: { 'id': invoice.id }) }}"
                     {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'invoice'|url}) }}>
                     {{ 'Delete'|trans }}

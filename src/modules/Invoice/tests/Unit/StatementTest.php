@@ -170,6 +170,45 @@ test('on a busy day each payment follows its invoice, in time order', function (
     ])->and(array_column($statement['lines'], 'balance'))->toBe([-20.0, 0.0, -30.0, 0.0]);
 });
 
+test('an invoice paid partly from account credit shows what was paid otherwise', function (array $balance, array $expected): void {
+    $db = statementDb();
+    $db->insert('pay_gateway', ['id' => 2, 'name' => 'Bank transfer']);
+    statementBalance($db, 'gift', null, 10, '2026-06-01', 'Goodwill');
+    statementInvoice($db, 1, '2026-06-02', 20, ['gateway_id' => 2, 'paid_at' => '2026-06-04 09:00:00']);
+    $db->insert('"transaction"', ['id' => 1, 'invoice_id' => 1]);
+    foreach ($balance as [$type, $rel, $amount, $date]) {
+        statementBalance($db, $type, $rel, $amount, $date);
+    }
+
+    $statement = Statement::build(statementContainer($db), 1);
+
+    expect(array_map(fn (array $l): array => [$l['date'], $l['description'], $l['debit'], $l['credit'], $l['balance']], $statement['lines']))->toBe($expected)
+        ->and($statement['closing'])->toBe(0.0);
+})->with([
+    // Mark as Paid takes the 10.00 credit from the balance and records the 10.00 transfer without a balance row.
+    'credit, then Mark as Paid' => [[['invoice', 1, -10, '2026-06-04']], [
+        ['2026-06-01', 'Account credit added: Goodwill', 0.0, 10.0, 10.0],
+        ['2026-06-02', 'Invoice CF-00001', 20.0, 0.0, -10.0],
+        ['2026-06-04', 'Payment for invoice CF-00001 (Bank transfer)', 0.0, 10.0, 0.0],
+    ]],
+    'credit, then a gateway payment through the balance' => [[['transaction', 1, 10, '2026-06-04'], ['invoice', 1, -20, '2026-06-04']], [
+        ['2026-06-01', 'Account credit added: Goodwill', 0.0, 10.0, 10.0],
+        ['2026-06-02', 'Invoice CF-00001', 20.0, 0.0, -10.0],
+        ['2026-06-04', 'Payment for invoice CF-00001 (Bank transfer)', 0.0, 10.0, 0.0],
+    ]],
+    'credit, Add Payment, then Mark as Paid for the rest' => [[['transaction', 1, 5, '2026-06-03'], ['invoice', 1, -15, '2026-06-04']], [
+        ['2026-06-01', 'Account credit added: Goodwill', 0.0, 10.0, 10.0],
+        ['2026-06-02', 'Invoice CF-00001', 20.0, 0.0, -10.0],
+        ['2026-06-03', 'Payment for invoice CF-00001 (Bank transfer)', 0.0, 5.0, -5.0],
+        ['2026-06-04', 'Payment for invoice CF-00001 (Bank transfer)', 0.0, 5.0, 0.0],
+    ]],
+    'all from credit' => [[['gift', null, 10, '2026-06-01'], ['invoice', 1, -20, '2026-06-04']], [
+        ['2026-06-01', 'Account credit added: Goodwill', 0.0, 10.0, 10.0],
+        ['2026-06-01', 'Account credit added', 0.0, 10.0, 20.0],
+        ['2026-06-02', 'Invoice CF-00001 (paid from account credit)', 20.0, 0.0, 0.0],
+    ]],
+]);
+
 test('a client without a currency gets the default one; the number follows the padding setting', function (): void {
     $db = statementDb();
     $db->insert('setting', ['param' => 'invoice_number_padding', 'value' => '3']);

@@ -113,6 +113,10 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function get_new(\ClientFence\App $app): string
     {
         $this->di['is_admin_logged'];
+        // ClientFence core patch: Add New Order refuses staff who may not create orders or read the products (403, not a page error).
+        $staff = $this->di['mod_service']('staff');
+        $staff->checkPermissionsAndThrowException('order', 'manage');
+        $staff->checkPermissionsAndThrowException('product', 'view');
         $clientId = (int) $app->getRequest()->query->get('client_id');
 
         return $app->render('mod_order_new', ['client' => $clientId > 0 ? $this->di['api_admin']->client_get(['id' => $clientId]) : null]);

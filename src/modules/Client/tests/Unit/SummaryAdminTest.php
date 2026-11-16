@@ -75,7 +75,10 @@ test('summary groups invoices once with tax, draft approval, services and open w
     // The credit shown is what the client can spend (the Invoice module sets aside part payments).
     $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
     $invoiceService->shouldReceive('getFreeCredit')->once()->with(7)->andReturn(7.0);
-    $di['mod_service'] = $di->protect(moduleService(['invoice' => $invoiceService]));
+    // Each type carries the product module's translated name; a type it does not list keeps its own.
+    $productService = Mockery::mock(ClientFence\Mod\Product\Service::class);
+    $productService->shouldReceive('getTypes')->once()->andReturn(['hosting' => 'Hébergement', 'domain' => 'Domaine']);
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $invoiceService, 'product' => $productService]));
     $service = new Service();
     $service->setDi($di);
     $api = clientSummaryApi($di);
@@ -84,6 +87,7 @@ test('summary groups invoices once with tax, draft approval, services and open w
     $summary = $api->summary(['id' => 7]);
 
     expect($summary['currency'])->toBe('USD')
+        ->and(array_column($summary['services'], 'title', 'type'))->toEqual(['hosting' => 'Hébergement', 'domain' => 'Domaine', 'custom' => 'Custom'])
         ->and(array_column($summary['invoices'], 'count'))->toBe([1, 1, 1, 1, 1])
         ->and(array_column($summary['invoices'], 'total'))->toBe([27.0, 27.0, 27.0, 27.0, 27.0])
         ->and($summary['gross_revenue'])->toBe(27.0)

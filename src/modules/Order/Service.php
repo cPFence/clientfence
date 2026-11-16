@@ -3024,6 +3024,22 @@ class Service implements InjectionAwareInterface
             $productService->releaseReservedPromoRedemptionsForOrder($order, 'client_deleted');
         }
 
+        // ClientFence core patch: each order's service row and the order's own records go with it (they were left behind).
+        // Rows only, as before: nothing is sent to the server or registrar.
+        $db = $this->di['dbal'];
+        // The type names the table: only a table that exists (an uninstalled service module may have dropped its own).
+        $tables = $db->createSchemaManager()->listTableNames();
+        foreach ($db->fetchAllAssociative('SELECT service_type, service_id FROM client_order WHERE client_id = ? AND service_id IS NOT NULL', [$clientId]) as $row) {
+            if (in_array('service_' . $row['service_type'], $tables, true)) {
+                $db->delete('service_' . $row['service_type'], ['id' => $row['service_id']]);
+            }
+        }
+        foreach (['client_order_meta', 'client_order_status', 'client_order_action_failure'] as $table) {
+            $db->executeStatement("DELETE FROM {$table} WHERE client_order_id IN (SELECT id FROM client_order WHERE client_id = ?)", [$clientId]);
+        }
+        $db->delete('client_order_cancel_request', ['client_id' => $clientId]);
+        $db->delete('client_order_upgrade', ['client_id' => $clientId]);
+
         $query = $this->di['dbal']->createQueryBuilder();
         $query
             ->delete('client_order')

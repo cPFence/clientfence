@@ -843,3 +843,18 @@ test('the console command also turns passkeys off', function (): void {
     expect(SignInSecurity::turnOff($world->di, false, false, false, false, true))->toMatchArray(['pin' => 'clients', 'passkeys' => 'off'])
         ->and(ClientFence\Mod\Client\Passkeys::on($world->di, 'staff'))->toBeFalse();
 });
+
+test('the sign-in security calls refuse staff who are not Super Administrators with the security settings text', function (string $method): void {
+    $di = new Pimple\Container();
+    $staff = Mockery::mock();
+    $staff->shouldReceive('isSuperAdministrator')->with(2)->andReturnFalse();
+    $di['mod_service'] = $di->protect(fn () => $staff);
+    $admin = new Model_Admin();
+    $admin->loadBean(new Tests\Helpers\DummyBean());
+    $admin->id = 2;
+    $api = new ClientFence\Mod\Clientfence\Api\Admin();
+    $api->setDi($di);
+    $api->setIdentity($admin);
+
+    expect(fn () => $api->{$method}([]))->toThrow(InformationException::class, 'Only Super Administrators can change security settings.');
+})->with(['signin_security_get', 'signin_security_save']);

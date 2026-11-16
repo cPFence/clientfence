@@ -277,9 +277,12 @@ final class SavedCards
     {
         return \ClientFence\Tools::withLock($di, 'cf:card-charge:' . (int) $invoice->id, static function () use ($di, $invoice, $adapter, $byStaff, $byClient): array {
             $db = $di['dbal'];
-            $row = $db->fetchAssociative('SELECT status, gateway_id FROM invoice WHERE id = ?', [(int) $invoice->id]) ?: [];
+            $row = $db->fetchAssociative('SELECT status, approved, gateway_id FROM invoice WHERE id = ?', [(int) $invoice->id]) ?: [];
             if (($row['status'] ?? null) !== \Model_Invoice::STATUS_UNPAID) {
                 return ['paid' => false, 'error' => __trans('This invoice is already paid or cancelled.')];
+            }
+            if (!$row['approved']) {
+                return ['paid' => false, 'error' => __trans('This invoice is a draft. Approve it before charging it.')];
             }
             if (PendingPayments::forInvoice($di, (int) $invoice->id) !== null) {
                 return ['paid' => false, 'error' => __trans('A payment for this invoice is still clearing.')];

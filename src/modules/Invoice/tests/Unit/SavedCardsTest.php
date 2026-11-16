@@ -178,6 +178,15 @@ test('a staff charge does not count as a try and emails nobody', function (): vo
         ->and($world->emails)->toBe([]);
 });
 
+test('a draft invoice is never charged, by staff either', function (): void {
+    $world = savedCardsWorld();
+    $world->db->insert('invoice', ['id' => 7, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 0, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
+    $invoice = $world->di['db']->load('Invoice', 7);
+
+    expect(SavedCards::charge($world->di, $invoice, SavedCards::stripe($world->di), true))->toBe(['paid' => false, 'error' => 'This invoice is a draft. Approve it before charging it.'])
+        ->and($world->charged)->toBe([]);
+});
+
 test('a cron try skips an invoice set to another payment method after the cron read it, staff can still charge it', function (): void {
     $world = savedCardsWorld();
     $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);

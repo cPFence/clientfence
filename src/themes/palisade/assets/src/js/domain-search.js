@@ -192,8 +192,8 @@ export default function initDomainSearch(root) {
       addToCart();
     }
   }, true);
-  // From the embedded domain checker: its domains are ticked, so search at once unless a CAPTCHA waits.
-  if (data.auto && input.value.trim() && !document.querySelector('[data-domain-captcha]:not([hidden])')) {
+  // From the store's search or the embedded domain checker (a name filled in): search at once unless a CAPTCHA waits.
+  if (input.value.trim() && !document.querySelector('[data-domain-captcha]:not([hidden])')) {
     search();
   }
 }

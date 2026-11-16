@@ -54,6 +54,8 @@ test('the stylesheet sets the client and admin color variables for both color mo
         ->toContain('--bf-brand: #e85d04')
         ->toContain('[data-bs-theme="dark"]')
         ->toContain('.btn-primary')
+        // Outline buttons in dark mode use the lighter accent (the brand color is too dark on the navy page).
+        ->toContain("[data-bs-theme=\"dark\"] .btn-outline-primary {\n  --bs-btn-color: " . Branding::palette('#e85d04')['accent'])
         ->not->toContain('url(')
         ->not->toContain('@import');
 });

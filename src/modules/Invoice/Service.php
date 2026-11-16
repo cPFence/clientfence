@@ -2355,6 +2355,9 @@ class Service implements InjectionAwareInterface
             SET unpaid_invoice_id = NULL
             WHERE unpaid_invoice_id = :id';
         $this->di['db']->exec($sql, ['id' => $model->id]);
+        // ClientFence core patch: the credit applied to the invoice and its card charge tries go with it.
+        $this->di['db']->exec('DELETE FROM invoice_credit WHERE invoice_id = :id', ['id' => $model->id]);
+        $this->di['db']->exec('DELETE FROM invoice_card_charge WHERE invoice_id = :id', ['id' => $model->id]);
 
         $invoiceItems = $this->di['db']->find('InvoiceItem', 'invoice_id = ?', [$model->id]);
         foreach ($invoiceItems as $item) {

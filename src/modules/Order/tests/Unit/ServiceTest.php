@@ -3333,89 +3333,36 @@ test('cancelFromOrder remains retryable when subscription cancellation fails', f
         ->and($clientOrderModel->status)->toBe(Order::STATUS_ACTIVE);
 });
 
-test('rmByClient removes all client orders', function (): void {
+// Deleting a client left its orders' service rows (hosting, domain, custom) and order records behind.
+test('rmByClient removes the client\'s orders with their service rows and records, and nobody else\'s', function (): void {
     $clientModel = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 100]);
-
     $orderModel = createEntity(Order::class);
 
-    $queryBuilderMock = new class {
-        private bool $deleteCalled = false;
-        private bool $whereCalled = false;
-        private bool $setParamCalled = false;
-        private mixed $deleteTable = null;
-        private mixed $whereCond = null;
-        private mixed $paramId = null;
-
-        public function delete($table)
-        {
-            $this->deleteCalled = true;
-            $this->deleteTable = $table;
-
-            return $this;
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    foreach ([
+        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, service_type TEXT, service_id INTEGER)',
+        'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, client_id INTEGER)',
+        'CREATE TABLE service_domain (id INTEGER PRIMARY KEY, client_id INTEGER)',
+        'CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY, client_order_id INTEGER)',
+        'CREATE TABLE client_order_status (id INTEGER PRIMARY KEY, client_order_id INTEGER)',
+        'CREATE TABLE client_order_action_failure (id INTEGER PRIMARY KEY, client_order_id INTEGER)',
+        'CREATE TABLE client_order_cancel_request (id INTEGER PRIMARY KEY, client_order_id INTEGER, client_id INTEGER)',
+        'CREATE TABLE client_order_upgrade (id INTEGER PRIMARY KEY, order_id INTEGER, client_id INTEGER)',
+    ] as $sql) {
+        $dbal->executeStatement($sql);
+    }
+    // Orders 1-3 are the client's (order 3 of a service module whose table is gone), order 4 another client's.
+    foreach ([[1, 100, 'hosting', 11], [2, 100, 'domain', 21], [3, 100, 'gone', 31], [4, 200, 'hosting', 12]] as [$id, $client, $type, $serviceId]) {
+        $dbal->insert('client_order', ['id' => $id, 'client_id' => $client, 'service_type' => $type, 'service_id' => $serviceId]);
+        foreach (['client_order_meta', 'client_order_status', 'client_order_action_failure'] as $table) {
+            $dbal->insert($table, ['client_order_id' => $id]);
         }
-
-        public function where($cond)
-        {
-            $this->whereCalled = true;
-            $this->whereCond = $cond;
-
-            return $this;
-        }
-
-        public function setParameter($key, $val)
-        {
-            $this->setParamCalled = true;
-            $this->paramId = $val;
-
-            return $this;
-        }
-
-        public function executeStatement(): int
-        {
-            return 1;
-        }
-
-        public function getDeleteTable()
-        {
-            return $this->deleteTable;
-        }
-
-        public function getWhereCond()
-        {
-            return $this->whereCond;
-        }
-
-        public function getParamId()
-        {
-            return $this->paramId;
-        }
-
-        public function wasDeleteCalled(): bool
-        {
-            return $this->deleteCalled;
-        }
-
-        public function wasWhereCalled(): bool
-        {
-            return $this->whereCalled;
-        }
-
-        public function wasSetParamCalled(): bool
-        {
-            return $this->setParamCalled;
-        }
-    };
-
-    $dbalMock = new class($queryBuilderMock) {
-        public function __construct(private $qb)
-        {
-        }
-
-        public function createQueryBuilder()
-        {
-            return $this->qb;
-        }
-    };
+        $dbal->insert('client_order_cancel_request', ['client_order_id' => $id, 'client_id' => $client]);
+        $dbal->insert('client_order_upgrade', ['order_id' => $id, 'client_id' => $client]);
+    }
+    $dbal->insert('service_hosting', ['id' => 11, 'client_id' => 100]);
+    $dbal->insert('service_domain', ['id' => 21, 'client_id' => 100]);
+    $dbal->insert('service_hosting', ['id' => 12, 'client_id' => 200]);
 
     $orderRepoMock = Mockery::mock(OrderRepository::class)->shouldIgnoreMissing();
     $orderRepoMock->shouldReceive('findByClientId')->once()->with(100)->andReturn([$orderModel]);
@@ -3431,7 +3378,7 @@ test('rmByClient removes all client orders', function (): void {
 
     $di = container();
     $di['em'] = $emMock;
-    $di['dbal'] = $dbalMock;
+    $di['dbal'] = $dbal;
     $di['mod_service'] = $di->protect(fn (string $name): Mockery\MockInterface => match (strtolower($name)) {
         'product' => $productServiceMock,
         default => Mockery::mock()->shouldIgnoreMissing(),
@@ -3442,9 +3389,14 @@ test('rmByClient removes all client orders', function (): void {
 
     $svc->rmByClient($clientModel);
 
-    expect($queryBuilderMock->getDeleteTable())->toBe('client_order');
-    expect($queryBuilderMock->getWhereCond())->toBe('client_id = :id');
-    expect($queryBuilderMock->getParamId())->toBe($clientModel->id);
+    expect(array_map(intval(...), $dbal->fetchFirstColumn('SELECT id FROM client_order')))->toBe([4])
+        ->and(array_map(intval(...), $dbal->fetchFirstColumn('SELECT id FROM service_hosting')))->toBe([12])
+        ->and((int) $dbal->fetchOne('SELECT COUNT(*) FROM service_domain'))->toBe(0);
+    foreach (['client_order_meta', 'client_order_status', 'client_order_action_failure'] as $table) {
+        expect(array_map(intval(...), $dbal->fetchFirstColumn("SELECT client_order_id FROM {$table}")))->toBe([4]);
+    }
+    expect(array_map(intval(...), $dbal->fetchFirstColumn('SELECT client_order_id FROM client_order_cancel_request')))->toBe([4])
+        ->and(array_map(intval(...), $dbal->fetchFirstColumn('SELECT order_id FROM client_order_upgrade')))->toBe([4]);
 });
 
 test('updatePeriod sets period when given', function (): void {

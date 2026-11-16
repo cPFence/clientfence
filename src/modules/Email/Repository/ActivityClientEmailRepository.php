@@ -110,7 +110,8 @@ class ActivityClientEmailRepository extends EntityRepository
     {
         $email = $this->findOneForClientById($clientId, $id);
         if (!$email instanceof ActivityClientEmail) {
-            throw new \ClientFence\InformationException('Email not found');
+            // ClientFence core patch: a 404, so the client area shows its own "not found" page for another client's email.
+            throw new \ClientFence\InformationException('Email not found', [], 404);
         }
 
         return $email;

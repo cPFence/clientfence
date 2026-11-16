@@ -141,6 +141,7 @@ class Admin extends \ClientFence\Api\AbstractApi
                 'category' => $item['category'] ?? '',
                 'enabled' => $item['enabled'] ?? '',
                 'subject' => $item['subject'] ?? '',
+                'title' => $this->listTitle($item['subject'] ?? '', $item['action_code'] ?? ''),
                 'description' => $item['description'] ?? '',
                 'is_custom' => $item['is_custom'] ?? false,
                 'has_default' => $item['has_default'] ?? false,
@@ -151,6 +152,26 @@ class Admin extends \ClientFence\Api\AbstractApi
         }
 
         return $pager;
+    }
+
+    /**
+     * ClientFence core patch: the template list names a template by its subject as staff read it (WHMCS lists names):
+     * each Twig tag becomes its first translated text, or nothing; a subject of variables only shows the action code.
+     */
+    private function listTitle(string $subject, string $code): string
+    {
+        $title = preg_replace_callback('/{{.*?}}|{%.*?%}/s', static function (array $tag): string {
+            // The first quoted string the tag translates, as in {{ 'Invoice #%number% is ready'|trans({...}) }}.
+            if (!preg_match('/([\'"])((?:\\\\.|(?!\1).)*)\1\s*\|\s*trans\b/s', $tag[0], $text)) {
+                return '';
+            }
+
+            return __trans(stripslashes($text[2]));
+        }, $subject);
+        // "[{{ guest.system_company.name }}] Text" leaves empty brackets.
+        $title = trim(preg_replace(['/\[\s*\]/', '/\s+/'], ['', ' '], $title));
+
+        return $title !== '' ? $title : $code;
     }
 
     /**

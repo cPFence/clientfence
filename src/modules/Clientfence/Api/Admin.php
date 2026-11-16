@@ -524,7 +524,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      */
     public function signin_security_get(): array
     {
-        $this->requireSuperAdmin();
+        $this->requireSuperAdmin('Only Super Administrators can change security settings.');
 
         return SignInSecurity::forPage($this->getDi(), (string) $this->getIp());
     }
@@ -536,7 +536,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      */
     public function signin_security_save($data): array
     {
-        $this->requireSuperAdmin();
+        $this->requireSuperAdmin('Only Super Administrators can change security settings.');
 
         $admin = $this->getIdentity();
 

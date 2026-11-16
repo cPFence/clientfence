@@ -1070,6 +1070,9 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             }
         }
 
+        // ClientFence core patch: each service type with its translated name, as on the product pages (client page).
+        $types = $this->di['mod_service']('product')->getTypes();
+
         return [
             'currency' => $client['currency'],
             'recurring' => array_map(static fn (float $amount): float => round($amount, 2), $recurring),
@@ -1077,7 +1080,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             'invoices' => $invoices,
             'gross_revenue' => $invoices['paid']['total'],
             'credit_balance' => $this->di['mod_service']('Invoice')->getFreeCredit($clientId),
-            'services' => array_column(array_map(static fn (array $row): array => ['type' => $row['type'], 'active' => (int) $row['active'], 'total' => (int) $row['total']], $services), null, 'type'),
+            'services' => array_column(array_map(static fn (array $row): array => ['type' => $row['type'], 'title' => $types[$row['type']] ?? ucfirst((string) $row['type']), 'active' => (int) $row['active'], 'total' => (int) $row['total']], $services), null, 'type'),
             'addon_count' => (int) array_sum(array_column($services, 'addons')),
             'open_quotes' => (int) $db->fetchOne('SELECT COUNT(*) FROM invoice_quote WHERE client_id = ? AND stage IN (?, ?, ?)', [$clientId, ...\ClientFence\Mod\Invoice\Quotes::OPEN_STAGES]),
             'open_tickets' => (int) $db->fetchOne("SELECT COUNT(*) FROM support_ticket WHERE client_id = ? AND status <> 'closed'", [$clientId]),
@@ -1156,6 +1159,11 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             $connection->delete('client_order_hold', ['client_id' => $clientId]);
             // ClientFence core patch: affiliate records of the client (Client/Affiliates/Affiliates.php).
             Affiliates\Affiliates::clientRemoved($connection, $clientId);
+            // ClientFence core patch: and its quotes, support PIN, marketing opt-out and saved gateway customers (they were left behind).
+            \ClientFence\Mod\Invoice\Quotes::forgetClient($connection, $clientId);
+            foreach (['client_support_pin', 'client_marketing_optout', 'pay_gateway_customer'] as $table) {
+                $connection->delete($table, ['client_id' => $clientId]);
+            }
 
             $client = $model instanceof Client ? $model : $this->clientRepository->find($clientId);
             if ($client instanceof Client) {

@@ -53,7 +53,9 @@
                         <td><a href="{{ ('invoice/quote/' ~ quote.id)|url }}">{{ quote.id }}</a></td>
                         <td class="text-wrap" dir="auto"><a href="{{ ('invoice/quote/' ~ quote.id)|url }}">{{ quote.subject }}</a></td>
                         <td>
-                            {% if quote.client_id %}
+                            {% if quote.recipient.deleted %}
+                                {{ quote.recipient.name }}
+                            {% elseif quote.client_id %}
                                 <a href="{{ ('client/manage/' ~ quote.client_id)|url }}">{{ quote.recipient.company ?: quote.recipient.name }}</a>
                             {% else %}
                                 {{ quote.recipient.company ?: quote.recipient.name }} <span class="badge bg-purple-lt">{{ 'Prospect'|trans }}</span>

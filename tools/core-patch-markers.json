@@ -2244,6 +2244,10 @@
         "done": "ClientFence core patch: no Delete for a paid or refunded invoice"
     },
     {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: each action shows only to staff with the right its API call checks."
+    },
+    {
         "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
         "done": "ClientFence core patch: the order settings only for staff who may read them"
     },
@@ -3969,7 +3973,7 @@
     },
     {
         "file": "modules/Support/Service.php",
-        "done": "ClientFence core patch: deleting a client's tickets also erases secrets and their events."
+        "done": "ClientFence core patch: as a staff delete (rm()): with its messages, notes, secrets and their events (the messages were left)."
     },
     {
         "file": "modules/Support/Service.php",
@@ -4662,6 +4666,14 @@
     {
         "file": "modules/Order/Controller/Admin.php",
         "done": "ClientFence core patch: Add New Order is one page for a client's products and domains (WHMCS)."
+    },
+    {
+        "file": "modules/Order/Controller/Admin.php",
+        "done": "ClientFence core patch: Add New Order refuses staff who may not create orders or read the products (403, not a page error)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: New Order only for staff who may create orders, as the header button."
     },
     {
         "file": "modules/Order/Service.php",
@@ -7756,6 +7768,10 @@
         "done": "ClientFence core patch: the active services' amount a year by type, and what renews within 30 days (client page)."
     },
     {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: each service type with its translated name, as on the product pages (client page)."
+    },
+    {
         "file": "modules/Order/Api/Admin.php",
         "done": "public function client_services_action($data): array"
     },
@@ -7926,5 +7942,33 @@
     {
         "file": "modules/System/templates/admin/mod_system_settings.html.twig",
         "done": "ClientFence core patch: table sizes, optimize and clean-up as a Database tab here (Clientfence DatabaseMaintenance.php; Super Administrators, ClientFence on)."
+    },
+    {
+        "file": "modules/Email/Api/Admin.php",
+        "done": "ClientFence core patch: the template list names a template by its subject as staff read it (WHMCS lists names):"
+    },
+    {
+        "file": "modules/Email/templates/admin/mod_email_settings.html.twig",
+        "done": "ClientFence core patch: the subject without its Twig tags (Email Api listTitle)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: each order's service row and the order's own records go with it (they were left behind)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the credit applied to the invoice and its card charge tries go with it."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: and its quotes, support PIN, marketing opt-out and saved gateway customers (they were left behind)."
+    },
+    {
+        "file": "modules/Email/Repository/ActivityClientEmailRepository.php",
+        "done": "ClientFence core patch: a 404, so the client area shows its own \"not found\" page for another client's email."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence core patch: a signed-out visitor goes to the sign-in page and then back to this invoice"
     }
 ]

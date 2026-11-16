@@ -118,7 +118,7 @@
                 <div class="small text-secondary">{{ 'Active services in the client\'s currency, add-ons included, each price counted for a year.'|trans }}</div>
             </div>
             {% for type, row in summary.services|filter(row => row.active > 0) %}
-            <div class="cf-row"><span class="text-truncate">{{ type|capitalize }}</span><span class="text-nowrap"><b>{{ summary.recurring[type]|default(0)|format_currency(money) }}</b> <span class="small text-secondary">×{{ row.active }}</span></span></div>
+            <div class="cf-row"><span class="text-truncate">{{ row.title }}</span><span class="text-nowrap"><b>{{ summary.recurring[type]|default(0)|format_currency(money) }}</b> <span class="small text-secondary">×{{ row.active }}</span></span></div>
             {% endfor %}
             {% if summary.services is empty %}
             {# ClientFence core patch: empty lists under the tray icon, as on the other lists (CF-135 redesign). #}
@@ -298,7 +298,7 @@
     <div class="cf-ov-col">
         {% if trust %}
         {% set trust_parts = {
-            on_time: ['Pays on time'|trans, 40, trust.counts.due ? 'Invoices due in the last 12 months and paid: :count, by the due date: :on_time.'|trans({ ':count': trust.counts.due, ':on_time': trust.counts.on_time }) : 'No invoices yet: 20 of 40.'|trans],
+            on_time: ['Pays on time'|trans, 40, trust.counts.due ? 'Invoices due in the last 12 months and paid: :count, by the due date: :on_time.'|trans({ ':count': trust.counts.due, ':on_time': trust.counts.on_time }) : 'No paid invoice was due in the last 12 months: 20 of 40.'|trans],
             since: ['Client since'|trans, 20, '1 point a full month, up to 20.'|trans],
             services: ['Active services'|trans, 15, '5 points each, up to 15.'|trans],
             paid: ['Total paid'|trans, 15, 'Paid invoices in the default currency: 15 at 2,000 or more, 11 at 1,000, 7 at 500, 3 at 100.'|trans],

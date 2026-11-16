@@ -1406,6 +1406,14 @@ dd {
   --bs-btn-hover-bg: #{$navy-600};
 }
 
+// Outline primary buttons in dark mode take the dark link colour: the brand navy on the navy page was 2.4:1.
+[data-bs-theme="dark"] .btn-outline-primary {
+  --bs-btn-color: var(--pal-accent);
+  --bs-btn-border-color: var(--pal-accent);
+  --bs-btn-disabled-color: var(--pal-accent);
+  --bs-btn-disabled-border-color: var(--pal-accent);
+}
+
 // Secondary buttons hover in a soft accent tint instead of Bootstrap's flat grey fill.
 .btn-outline-secondary {
   --bs-btn-hover-bg: rgba(var(--pal-accent-rgb), .1);

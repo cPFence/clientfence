@@ -17,7 +17,8 @@ use Doctrine\DBAL\Connection;
  * - each paid invoice's payment: paid (a credit), on the day it was paid. A gateway payment that
  *   passed through the account balance (ServiceTransaction::debitTransaction() adds it, then
  *   tryPayWithCredits() takes the invoice from it) is the amount received, so an overpayment shows;
- *   an invoice paid from account credit has no payment line, as the credit was counted when added;
+ *   an invoice paid from account credit has no payment line, as the credit was counted when added,
+ *   and one paid partly from credit has a payment line for the rest only;
  * - account credit added or removed (client_balance), without those payment movements.
  * Cancelled and refunded invoices are left out, with their payments (WHMCS does the same).
  */
@@ -133,7 +134,9 @@ final class Statement
             $id = (int) $invoice['id'];
             $number = self::number($db, $invoice);
             $total = round((float) $invoice['total'], 2);
-            $fromCredit = $invoice['status'] === 'paid' && isset($usedFor[$id]) && !isset($received[$id]);
+            // What reached the invoice from outside the balance (staff Mark as Paid takes the credit used from it, then records the rest without a balance row).
+            $outside = round($total + array_sum(array_column($usedFor[$id] ?? [], 'amount')), 2);
+            $fromCredit = $invoice['status'] === 'paid' && isset($usedFor[$id]) && !isset($received[$id]) && $outside <= 0;
             $lines[] = [
                 'date' => substr((string) $invoice['created_at'], 0, 10),
                 'at' => (string) $invoice['created_at'],
@@ -165,9 +168,10 @@ final class Statement
                     $skip[(int) $row['id']] = true;
                     $lines[] = ['date' => substr((string) $row['created_at'], 0, 10), 'at' => (string) $row['created_at'], 'type' => 'payment', 'description' => $payment, 'title' => $paymentTitle, 'detail' => $method, 'invoice_id' => $id, 'debit' => 0.0, 'credit' => round((float) $row['amount'], 2), 'order' => 1, 'seq' => ++$seq];
                 }
-                continue;
             }
-            $lines[] = ['date' => substr($paidAt, 0, 10), 'at' => $paidAt, 'type' => 'payment', 'description' => $payment, 'title' => $paymentTitle, 'detail' => $method, 'invoice_id' => $id, 'debit' => 0.0, 'credit' => $total, 'order' => 1, 'seq' => ++$seq];
+            if (!isset($usedFor[$id]) || $outside > 0) {
+                $lines[] = ['date' => substr($paidAt, 0, 10), 'at' => $paidAt, 'type' => 'payment', 'description' => $payment, 'title' => $paymentTitle, 'detail' => $method, 'invoice_id' => $id, 'debit' => 0.0, 'credit' => $outside, 'order' => 1, 'seq' => ++$seq];
+            }
         }
 
         foreach ($balanceRows as $row) {

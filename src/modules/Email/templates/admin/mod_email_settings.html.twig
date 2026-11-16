@@ -228,7 +228,8 @@
                                     </td>
                                     {% endif %}
                                     <td class="text-wrap">
-                                        <a href='{{ "email/template/#{template.id}"|url }}'>{{ template.subject }}</a>
+                                        {# ClientFence core patch: the subject without its Twig tags (Email Api listTitle). #}
+                                        <a href='{{ "email/template/#{template.id}"|url }}'>{{ template.title }}</a>
                                     </td>
                                     <td class="text-wrap">{{ template.category }}</td>
                                     <td class="text-break">{{ template.action_code }}</td>

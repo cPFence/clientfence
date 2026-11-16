@@ -270,6 +270,22 @@ test('template get list', function (): void {
     expect($result['list'])->toBeArray();
 });
 
+test('template get list names each template by its subject without the Twig tags', function (string $subject, string $title): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldReceive('getTemplateList')->once()->andReturn(['list' => [['id' => 1, 'action_code' => 'mod_custom_note', 'subject' => $subject]]]);
+    $adminApi->setDi(container());
+    $adminApi->setService($emailService);
+
+    expect($adminApi->template_get_list([])['list'][0]['title'])->toBe($title);
+})->with([
+    'translated text' => ["[{{ guest.system_company.name }}] {{ 'Invoice #%number% is ready'|trans({'%number%': invoice.serie_nr|default('')}) }}", 'Invoice #%number% is ready'],
+    'first text of a choice' => ["{{ count|default(1) == 1 ? 'System health: 1 check needs attention'|trans : ':count checks'|trans }}", 'System health: 1 check needs attention'],
+    'escaped quote' => ["{{ 'Your client\\'s order'|trans }}", "Your client's order"],
+    'plain text and variables' => ['Your order {{ order.title }} {% if paid %}is paid{% endif %}', 'Your order is paid'],
+    'variables only' => ['{{ subject }}', 'mod_custom_note'],
+]);
+
 test('template get', function (): void {
     $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
 

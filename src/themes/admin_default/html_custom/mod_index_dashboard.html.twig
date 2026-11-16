@@ -220,7 +220,7 @@
         {% set last30 = { 'date_from': '-30 days'|date('Y-m-d'), 'date_to': '+1 day'|date('Y-m-d') } %}
         {% set kpis = [
             { 'label': 'Income this month'|trans, 'value': income.this_month|format_currency(currency.code), 'now': income.this_month, 'last': income.last_month, 'last_text': income.last_month|format_currency(currency.code), 'url': 'invoice'|url(query: { 'status': 'paid' }),
-              'total': income.total|format_currency(currency.code), 'extra': all_time ? all_time.mrr|format_currency(currency.code) : '', 'extra_label': 'MRR', 'tip': true, 'spark': admin.stats_get_income(last30) },
+              'total': income.total|format_currency(currency.code), 'extra': all_time ? all_time.mrr|format_currency(currency.code) : '', 'extra_label': 'MRR'|trans, 'tip': true, 'spark': admin.stats_get_income(last30) },
             { 'label': 'New clients'|trans, 'value': stats.clients_this_month, 'now': stats.clients_this_month, 'last': stats.clients_last_month, 'last_text': stats.clients_last_month, 'url': 'client'|url,
               'total': stats.clients_total|number_format(0), 'extra': all_time ? all_time.active_clients|number_format(0) : '', 'extra_label': 'active'|trans, 'spark': admin.stats_get_clients(last30) },
             { 'label': 'New orders'|trans, 'value': stats.orders_this_month, 'now': stats.orders_this_month, 'last': stats.orders_last_month, 'last_text': stats.orders_last_month, 'url': 'order'|url,

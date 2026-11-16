@@ -277,6 +277,12 @@ final class Branding
               --bs-btn-disabled-color: {$p['brand']};
               --bs-btn-disabled-border-color: {$p['brand']};
             }
+            [data-bs-theme="dark"] .btn-outline-primary {
+              --bs-btn-color: {$p['accent']};
+              --bs-btn-border-color: {$p['accent']};
+              --bs-btn-disabled-color: {$p['accent']};
+              --bs-btn-disabled-border-color: {$p['accent']};
+            }
             .form-check-input:checked { background-color: {$p['brand']}; border-color: {$p['brand']}; }
             .form-check-input:focus, .form-control:focus, .form-select:focus { border-color: {$p['accent']}; box-shadow: 0 0 0 .25rem rgba({$r}, .25); }
             .nav-pills { --bs-nav-pills-link-active-bg: {$p['brand']}; --bs-nav-pills-link-active-color: {$p['text']}; }

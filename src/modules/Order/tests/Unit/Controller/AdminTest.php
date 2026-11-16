@@ -14,6 +14,7 @@ use ClientFence\Mod\Order\Controller\Admin;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Tests\Helpers\container;
+use function Tests\Helpers\moduleService;
 
 test('register configures routes', function (): void {
     $controller = new Admin();
@@ -56,3 +57,22 @@ test('get new opens without a client', function (): void {
 
     expect($controller->get_new($boxAppMock))->toBe('rendered');
 });
+
+test('get new refuses staff without the right to create orders or read products', function (string $module, string $key): void {
+    $controller = new Admin();
+    $di = container();
+    $di['is_admin_logged'] = true;
+    $staff = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staff->shouldReceive('checkPermissionsAndThrowException')->andReturnUsing(static function (string $m, string $k) use ($module, $key): void {
+        if ($m === $module && $k === $key) {
+            throw new ClientFence\InformationException("You need the \"{$m}.{$k}\" permission to perform this action", [], 403);
+        }
+    });
+    $di['mod_service'] = $di->protect(moduleService(['staff' => $staff]));
+    $controller->setDi($di);
+
+    $boxAppMock = Mockery::mock('ClientFence\App');
+    $boxAppMock->shouldNotReceive('render');
+
+    expect(fn () => $controller->get_new($boxAppMock))->toThrow(ClientFence\InformationException::class, "You need the \"{$module}.{$key}\" permission to perform this action");
+})->with([['order', 'manage'], ['product', 'view']]);

@@ -514,7 +514,7 @@
                             </div>
                             <div class="card-body border-top text-secondary small">{{ 'Card and account details stay with the payment provider; ClientFence keeps its reference and the name shown here.'|trans }}</div>
                             {% if paying and has_permission('invoice', 'manage_transactions') %}
-                            {% set unpaid = admin.invoice_get_list({ client_id: client.id, status: 'unpaid', per_page: 25 }) %}
+                            {% set unpaid = admin.invoice_get_list({ client_id: client.id, status: 'unpaid', approved: 1, per_page: 25 }) %}
                             {% if unpaid.list %}
                             <div class="table-responsive border-top">
                                 <table class="table card-table table-vcenter text-nowrap">
@@ -604,12 +604,15 @@
                 card_class: 'm-3'
             } %}
                 {% block section_action %}
+                    {# ClientFence core patch: New Order only for staff who may create orders, as the header button. #}
+                    {% if can_manage_orders %}
                     <a href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}" class="btn btn-primary">
                         <svg class="icon">
                             <use href="#plus" />
                         </svg>
                         {{ 'New Order'|trans }}
                     </a>
+                    {% endif %}
                 {% endblock %}
 
                 {% block section_content %}

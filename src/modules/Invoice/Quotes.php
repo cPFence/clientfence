@@ -230,6 +230,13 @@ final class Quotes
         $db->delete('invoice_quote', ['id' => $id]);
     }
 
+    /** A deleted client's quotes and their lines go with it (Client\Service::remove()). */
+    public static function forgetClient(Connection $db, int $clientId): void
+    {
+        $db->executeStatement('DELETE FROM invoice_quote_item WHERE quote_id IN (SELECT id FROM invoice_quote WHERE client_id = ?)', [$clientId]);
+        $db->delete('invoice_quote', ['client_id' => $clientId]);
+    }
+
     /**
      * Emails the quote with its PDF and link to the client or prospect; a draft becomes delivered.
      */
@@ -671,6 +678,8 @@ final class Quotes
         $clientId = $row['client_id'] !== null ? (int) $row['client_id'] : null;
         $client = $clientId !== null ? $db->fetchAssociative('SELECT id, first_name, last_name, company, email, country FROM client WHERE id = ?', [$clientId]) : false;
         $source = $client !== false ? $client : $row;
+        // A quote whose client was deleted before deleting a client took its quotes: it opens, but cannot be accepted.
+        $deleted = $clientId !== null && $client === false;
         $totals = self::totals($items, (float) $row['taxrate']);
 
         return [
@@ -680,17 +689,18 @@ final class Quotes
             'recipient' => [
                 'first_name' => (string) $source['first_name'],
                 'last_name' => (string) $source['last_name'],
-                'name' => trim($source['first_name'] . ' ' . $source['last_name']),
+                'name' => $deleted ? __trans('Deleted client') : trim($source['first_name'] . ' ' . $source['last_name']),
                 'company' => (string) $source['company'],
                 'email' => (string) $source['email'],
                 'country' => (string) $source['country'],
                 'prospect' => $clientId === null,
+                'deleted' => $deleted,
             ],
             'currency' => (string) $row['currency'],
             'subject' => (string) $row['subject'],
             'stage' => (string) $row['stage'],
             'stage_title' => self::stages()[$row['stage']] ?? (string) $row['stage'],
-            'open' => in_array($row['stage'], self::OPEN_STAGES, true),
+            'open' => !$deleted && in_array($row['stage'], self::OPEN_STAGES, true),
             'expired' => $row['valid_until'] !== null && (string) $row['valid_until'] < date('Y-m-d'),
             'valid_until' => $row['valid_until'] !== null ? (string) $row['valid_until'] : '',
             'proposal' => (string) $row['proposal'],

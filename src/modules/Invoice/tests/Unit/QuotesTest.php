@@ -542,6 +542,28 @@ test('right-to-left PDF text keeps Latin values, short Latin phrases and numbere
         ->and(ClientFence\Mod\Invoice\RtlPdf::text(false)('UI <b>'))->toBe('UI &lt;b&gt;');
 });
 
+// Deleting a client left its quotes behind, and the staff page of such a quote answered HTTP 500.
+test('deleting a client takes its quotes; one left from before opens as a deleted client and cannot be accepted', function (): void {
+    $db = quotesDb();
+    [$di] = quotesContainer($db);
+    $orphan = Quotes::save($di, quotesForm());
+    $db->insert('client', ['id' => 2, 'first_name' => 'Carol', 'last_name' => 'Jones', 'company' => '', 'email' => 'carol@example.com', 'country' => 'EG', 'currency' => 'USD']);
+    $kept = Quotes::save($di, quotesForm(['client_id' => 2]));
+    $db->delete('client', ['id' => 1]);
+
+    $quote = Quotes::get($di, $orphan);
+    expect($quote['client_id'])->toBe(1)
+        ->and($quote['recipient'])->toMatchArray(['name' => 'Deleted client', 'deleted' => true, 'prospect' => false])
+        ->and($quote['open'])->toBeFalse()
+        ->and(Quotes::get($di, $kept)['recipient'])->toMatchArray(['name' => 'Carol Jones', 'deleted' => false])
+        ->and(fn () => Quotes::accept($di, $orphan, 'link'))->toThrow(InformationException::class, 'Client not found');
+
+    Quotes::forgetClient($db, 2);
+    expect(array_map(intval(...), $db->fetchFirstColumn('SELECT id FROM invoice_quote')))->toBe([$orphan])
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM invoice_quote_item WHERE quote_id = ?', [$kept]))->toBe(0)
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM invoice_quote_item WHERE quote_id = ?', [$orphan]))->toBe(2);
+});
+
 test('the test tables have the columns of the real tables', function (): void {
     $schema = json_decode((string) file_get_contents(dirname(__DIR__, 3) . '/Clientfence/schema.json'), true)['tables'];
     $db = quotesDb();

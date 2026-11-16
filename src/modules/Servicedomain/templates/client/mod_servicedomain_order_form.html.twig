@@ -18,12 +18,13 @@
         {% if tlds is not empty %}
             {# ClientFence core patch (CF-139): one name across the ticked TLDs (up to 20), the staff-pinned ones ticked first
                (WHMCS Spotlight TLDs), results per TLD as they arrive and the chosen domains added to the cart together
-               (themes/palisade/assets/src/js/domain-search.js). ?tld= ticks one more TLD; ?tlds= (the embedded checker)
-               ticks exactly those and searches at once. #}
+               (themes/palisade/assets/src/js/domain-search.js). ?tld= (the store's search) ticks one more TLD, first;
+               ?tlds= (the embedded checker) ticks exactly those. With a name (?register_sld=) the search runs at once. #}
             {% set pinned = guest.servicedomain_pinned_tlds %}
-            {% set top = pinned ?: [(tlds|first).tld] %}
+            {% set picked = request.tld is iterable or request.tld not in tlds|column('tld') ? [] : [request.tld] %}
+            {% set top = picked|merge((pinned ?: [(tlds|first).tld])|filter(t => t not in picked)) %}
             {% set wanted = request.tlds is iterable or not request.tlds ? [] : request.tlds|split(',') %}
-            {% set ticked = wanted ?: top|merge(request.tld is iterable or not request.tld ? [] : [request.tld]) %}
+            {% set ticked = wanted ?: top %}
             {% set rest = tlds|filter(t => t.tld not in top) %}
             <div class="tab-pane show active" id="register-tab-pane" role="tabpanel" aria-labelledby="register-tab" tabindex="0" data-cf-domain-search>
                 <script nonce="{{ csp_nonce }}" type="application/json" data-cf-domain-search-data>{{ {

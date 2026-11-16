@@ -63,7 +63,9 @@
             <div class="cf-inv-client">
                 <span class="cf-avatar" aria-hidden="true">{{ (quote.recipient.first_name|first ~ quote.recipient.last_name|first)|upper }}</span>
                 <div class="cf-inv-who">
-                    {% if quote.client_id %}
+                    {% if quote.recipient.deleted %}
+                        <span class="fw-semibold">{{ quote.recipient.name }}</span>
+                    {% elseif quote.client_id %}
                         <a href="{{ ('client/manage/' ~ quote.client_id)|url }}">{{ quote.recipient.name }}</a>
                     {% else %}
                         <span class="fw-semibold">{{ quote.recipient.name }} <span class="badge bg-purple-lt">{{ 'Prospect'|trans }}</span></span>
@@ -140,8 +142,9 @@
                             <select class="form-control autocomplete-selector" placeholder="{{ 'Start Typing the Client Name or ID'|trans }}"
                                     id="client_id" name="client_id" data-resturl="/api/admin/client/get_pairs">
                                 {% if client_id %}
-                                    {% set client = admin.client_get({ 'id': client_id }) %}
-                                    <option value="{{ client_id }}" selected>{{ client.first_name }} {{ client.last_name }}{% if client.company %} ({{ client.company }}){% endif %}</option>
+                                    {# A saved quote has its client's names (or "Deleted client"): client_get fails for a deleted client. #}
+                                    {% set client = quote ? quote.recipient : admin.client_get({ 'id': client_id }) %}
+                                    <option value="{{ client_id }}" selected>{{ quote ? client.name : client.first_name ~ ' ' ~ client.last_name }}{% if client.company %} ({{ client.company }}){% endif %}</option>
                                 {% endif %}
                             </select>
                             <small class="form-hint">{{ 'The quote is in the client\'s currency.'|trans }}</small>

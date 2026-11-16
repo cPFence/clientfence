@@ -817,6 +817,7 @@ test('checks if ticket can be reopened', function (): void {
     expect($result)->toBeTrue();
 });
 
+// A deleted client's tickets go as a staff delete does (rm()): their messages were left behind.
 test('removes tickets by client', function (): void {
     $service = Mockery::mock(Service::class)->makePartial();
     $model = new SupportTicket();
@@ -827,15 +828,9 @@ test('removes tickets by client', function (): void {
         ->andReturn([$model]);
     $service->shouldReceive('getSupportTicketRepository')->atLeast()->once()
         ->andReturn($repo);
-
-    $emMock = Mockery::mock(EntityManagerInterface::class);
-    supportWireKbRepositories($emMock);
-    $emMock->shouldReceive('remove')->atLeast()->once();
-    $emMock->shouldReceive('flush')->atLeast()->once();
+    $service->shouldReceive('rm')->once()->with($model)->andReturnTrue();
 
     $di = container();
-    $di['em'] = $emMock;
-    $di['logger'] = new Tests\Helpers\TestLogger();
     $service->setDi($di);
 
     $client = new Model_Client();
