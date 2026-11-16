@@ -24,7 +24,7 @@
 
 {% block content %}
 {# ClientFence core patch: the product reads first: name, type and status chips, its price, then each billing period and the activation as facts (CF-135 redesign). #}
-{% set cur = admin.currency_get_default.code %}
+{% set cur = product.type == 'domain' ? '' : admin.currency_get_default.code %}
 {% set prices = [] %}
 {# Domain products are priced per TLD, not here. #}
 {% if product.type == 'domain' %}
