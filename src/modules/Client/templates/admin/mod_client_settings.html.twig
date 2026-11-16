@@ -24,12 +24,10 @@
     {% set params = admin.extension_config_get({ 'ext': 'mod_client' }) %}
     {% set required_fields = params.required|default([]) %}
     {% set auto_login_after_signup = params.auto_login_after_signup is not defined or params.auto_login_after_signup == true %}
+    {# ClientFence core patch: no filler subtitles, the sections side by side on wide screens, each switch with its hint, Save rows that stay in view (CF-135 redesign). #}
     <div class="card">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Client Settings'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage signup behavior, required client profile fields, and optional custom registration fields.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Client Settings'|trans }}</h3>
         </div>
         <div class="card-body pt-3 pb-0">
             <ul class="nav nav-pills mb-3" role="tablist">
@@ -57,33 +55,32 @@
                 <div class="tab-content border-top">
                     <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
                         <div class="card-body">
-                            <div class="alert alert-info" role="alert">
-                                <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Use these settings to control how new client accounts are created and what profile information must be collected at signup.'|trans }}
-                            </div>
-
                             <div class="row row-cards">
-                                <div class="col-12">
-                                    <section class="card card-sm">
+                                <div class="col-12 col-xl-6">
+                                    <section class="card card-sm h-100">
                                         <div class="card-body">
-                                            <h4 class="card-title mb-2">{{ 'Signup Controls'|trans }}</h4>
-                                            <p class="text-secondary mb-3">{{ 'Control who can register and whether clients may manage their own email addresses.'|trans }}</p>
+                                            <h4 class="card-title mb-3">{{ 'Signup Controls'|trans }}</h4>
 
                                             <div class="d-flex flex-column gap-3">
                                                 <label class="form-check form-switch form-switch-2">
                                                     <input class="form-check-input" name="disable_signup" type="checkbox" {% if params.disable_signup|default(false) %}checked="checked"{% endif %}>
                                                     <span class="form-check-label">{{ 'Disable New Signups'|trans }}</span>
                                                 </label>
-                                                <label class="form-check form-switch form-switch-2">
-                                                    <input class="form-check-input" name="require_email_confirmation" type="checkbox" {% if params.require_email_confirmation|default(false) %}checked="checked"{% endif %}>
-                                                    <span class="form-check-label">{{ 'Require Email Confirmation'|trans }}</span>
-                                                </label>
-                                                <small class="form-hint">{{ 'After enabling this feature, existing users who have not yet confirmed their email addresses will also need to do so.'|trans }}</small>
-                                                <input type="hidden" name="auto_login_after_signup" value="0">
-                                                <label class="form-check form-switch form-switch-2">
-                                                    <input class="form-check-input" name="auto_login_after_signup" value="1" type="checkbox" {% if auto_login_after_signup %}checked="checked"{% endif %}>
-                                                    <span class="form-check-label">{{ 'Auto Login After Signup'|trans }}</span>
-                                                </label>
-                                                <small class="form-hint">{{ 'Automatically log clients in after successful registration.'|trans }}</small>
+                                                <div>
+                                                    <label class="form-check form-switch form-switch-2 mb-1">
+                                                        <input class="form-check-input" name="require_email_confirmation" type="checkbox" {% if params.require_email_confirmation|default(false) %}checked="checked"{% endif %}>
+                                                        <span class="form-check-label">{{ 'Require Email Confirmation'|trans }}</span>
+                                                    </label>
+                                                    <small class="form-hint">{{ 'After enabling this feature, existing users who have not yet confirmed their email addresses will also need to do so.'|trans }}</small>
+                                                </div>
+                                                <div>
+                                                    <input type="hidden" name="auto_login_after_signup" value="0">
+                                                    <label class="form-check form-switch form-switch-2 mb-1">
+                                                        <input class="form-check-input" name="auto_login_after_signup" value="1" type="checkbox" {% if auto_login_after_signup %}checked="checked"{% endif %}>
+                                                        <span class="form-check-label">{{ 'Auto Login After Signup'|trans }}</span>
+                                                    </label>
+                                                    <small class="form-hint">{{ 'Automatically log clients in after successful registration.'|trans }}</small>
+                                                </div>
                                                 <label class="form-check form-switch form-switch-2">
                                                     <input class="form-check-input" name="disable_change_email" type="checkbox" {% if params.disable_change_email|default(false) %}checked="checked"{% endif %}>
                                                     <span class="form-check-label">{{ 'Disable Email Change'|trans }}</span>
@@ -92,11 +89,10 @@
                                         </div>
                                     </section>
                                 </div>
-                                <div class="col-12">
-                                    <section class="card card-sm">
+                                <div class="col-12 col-xl-6">
+                                    <section class="card card-sm h-100">
                                         <div class="card-body">
-                                            <h4 class="card-title mb-2">{{ 'Required Profile Fields'|trans }}</h4>
-                                            <p class="text-secondary mb-3">{{ 'Select the client fields that must be completed during registration or profile updates.'|trans }}</p>
+                                            <h4 class="card-title mb-3">{{ 'Required Profile Fields'|trans }}</h4>
                                             <select class="form-select" name="required[]" multiple size="13">
                                         <optgroup label="General">
                                             <option value="last_name" {% if 'last_name' in required_fields %}selected{% endif %}>{{ 'Last Name'|trans }}</option>
@@ -119,21 +115,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer text-end">
+                        <div class="card-footer text-end cf-set-save">
                             <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="tab-custom-fields" role="tabpanel">
                         <div class="card-body">
-                            <div class="alert alert-info" role="alert">
-                                <strong class="me-1">{{ 'Information:'|trans }}</strong>{{ 'Custom fields let you extend the standard client profile with up to twenty optional registration fields.'|trans }}
-                            </div>
                             <div class="row row-cards">
                             {% for i in 1..20 %}
                                 {% set field_name = 'custom_' ~ i %}
                                 {% set custom_field = params.custom_fields|default({}).(field_name)|default({}) %}
-                                <div class="col-xl-6">
+                                <div class="col-md-6">
                                     <section class="card card-sm h-100">
                                         <div class="card-body">
                                             <h4 class="card-title mb-3">{% if custom_field.title|default('') is not empty %}{{ custom_field.title }}{% else %}{{ 'Custom_'|trans }}{{ i }}{% endif %}</h4>
@@ -157,7 +150,7 @@
                             {% endfor %}
                             </div>
                         </div>
-                        <div class="card-footer text-end">
+                        <div class="card-footer text-end cf-set-save">
                             <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
                         </div>
                     </div>
@@ -194,7 +187,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer text-end">
+                        <div class="card-footer text-end cf-set-save">
                             <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
                         </div>
                     </div>

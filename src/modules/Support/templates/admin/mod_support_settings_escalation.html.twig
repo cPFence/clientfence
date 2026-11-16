@@ -8,10 +8,11 @@
 {% set statuses = admin.support_ticket_get_statuses({ 'titles': true }) %}
 {% set priorities = guest.support_ticket_priorities %}
 {% set staff = admin.support_ticket_assignable_staff %}
+{# ClientFence core patch: the rules in a tinted list with each action as a chip, the rule form as a card with small headings and a Save row that stays in view (CF-135 redesign). #}
 <div class="card-body">
     <h4 class="card-title mb-1">{{ 'Escalation Rules'|trans }}</h4>
     <p class="text-secondary mb-3">{{ 'A rule acts on tickets of the chosen help desks, statuses and priorities that got no reply for the set time: it can add a reply, move the ticket, change its priority and status, assign it and email staff. It acts once for each reply, and only when the time runs out after the rule was made. The cron runs the rules.'|trans }}</p>
-    <div class="table-responsive mb-3">
+    <div class="table-responsive cf-set-list mb-3">
         <table class="table card-table table-vcenter text-nowrap">
             <thead>
                 <tr>
@@ -25,9 +26,9 @@
             <tbody>
                 {% for item in rules %}
                     <tr>
-                        <td>{{ item.name }}</td>
+                        <td class="fw-semibold">{{ item.name }}</td>
                         <td class="text-end">{{ item.minutes }}</td>
-                        <td class="text-wrap">
+                        <td>
                             {% set done = [] %}
                             {% if item.reply %}{% set done = done|merge(['Reply'|trans]) %}{% endif %}
                             {% if item.new_helpdesk_id %}{% set done = done|merge(['Help desk: %name%'|trans({ '%name%': helpdesks[item.new_helpdesk_id]|default('#' ~ item.new_helpdesk_id) })]) %}{% endif %}
@@ -35,7 +36,7 @@
                             {% if item.new_status %}{% set done = done|merge(['Status: %name%'|trans({ '%name%': statuses[item.new_status]|default(item.new_status) })]) %}{% endif %}
                             {% if item.assign_to %}{% set done = done|merge(['Assign: %name%'|trans({ '%name%': staff[item.assign_to]|default('#' ~ item.assign_to) })]) %}{% endif %}
                             {% if item.notify %}{% set done = done|merge(['Email %count% staff'|trans({ '%count%': item.notify|length })]) %}{% endif %}
-                            {{ done|join(', ') }}
+                            <div class="cf-inv-chips">{% for action in done %}<span class="bf-chip">{{ action }}</span>{% endfor %}</div>
                         </td>
                         <td>{% if item.active %}<span class="badge bg-green-lt">{{ 'Active'|trans }}</span>{% else %}<span class="badge bg-secondary-lt">{{ 'Paused'|trans }}</span>{% endif %}</td>
                         <td class="text-nowrap">
@@ -53,90 +54,94 @@
 
     <form method="post" action="{{ 'support/escalation_rule_save'|api_url }}" id="escalation-rule-form" {{ fb_api_form({ message: 'Escalation rule saved'|trans, redirect: 'extension/settings/support'|url ~ '#tab-escalation' }) }}>
         <input type="hidden" name="id" value="{{ rule.id }}">
-        <h4 class="card-title mb-3">{{ rule.id ? 'Edit rule: %name%'|trans({ '%name%': rule.name }) : 'New Rule'|trans }}</h4>
-        <div class="row g-3">
-            <div class="col-lg-6">
-                <label class="form-label" for="esc-name">{{ 'Name'|trans }}</label>
-                <input class="form-control" id="esc-name" type="text" name="name" maxlength="100" value="{{ rule.name }}" required>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label" for="esc-minutes">{{ 'No reply for (minutes)'|trans }}</label>
-                <input class="form-control" id="esc-minutes" type="number" min="1" max="525600" name="minutes" value="{{ rule.minutes }}" required>
-            </div>
-            <div class="col-lg-3 d-flex align-items-end">
-                <label class="form-check form-switch form-switch-2 mb-2">
-                    <input name="active" type="hidden" value="0">
-                    <input class="form-check-input" name="active" type="checkbox" value="1"{% if rule.active %} checked{% endif %}>
-                    <span class="form-check-label">{{ 'Active'|trans }}</span>
-                </label>
-            </div>
+        <section class="card card-sm">
+            <div class="card-body">
+                <h4 class="card-title mb-3">{{ rule.id ? 'Edit rule: %name%'|trans({ '%name%': rule.name }) : 'New Rule'|trans }}</h4>
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <label class="form-label" for="esc-name">{{ 'Name'|trans }}</label>
+                        <input class="form-control" id="esc-name" type="text" name="name" maxlength="100" value="{{ rule.name }}" required>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="form-label" for="esc-minutes">{{ 'No reply for (minutes)'|trans }}</label>
+                        <input class="form-control" id="esc-minutes" type="number" min="1" max="525600" name="minutes" value="{{ rule.minutes }}" required>
+                    </div>
+                    <div class="col-lg-3 d-flex align-items-end">
+                        <label class="form-check form-switch form-switch-2 mb-2">
+                            <input name="active" type="hidden" value="0">
+                            <input class="form-check-input" name="active" type="checkbox" value="1"{% if rule.active %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Active'|trans }}</span>
+                        </label>
+                    </div>
 
-            <div class="col-12"><h5 class="mb-0">{{ 'Conditions'|trans }}</h5><div class="form-hint">{{ 'None ticked in a group: any.'|trans }}</div></div>
-            <div class="col-lg-4">
-                <div class="form-label">{{ 'Help desks'|trans }}</div>
-                {% for id, name in helpdesks %}
-                    <label class="form-check"><input class="form-check-input" type="checkbox" name="helpdesks[]" value="{{ id }}"{% if id in rule.helpdesks %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
-                {% endfor %}
-            </div>
-            <div class="col-lg-4">
-                <div class="form-label">{{ 'Statuses'|trans }}</div>
-                {% for key, name in statuses %}
-                    <label class="form-check"><input class="form-check-input" type="checkbox" name="statuses[]" value="{{ key }}"{% if key in rule.statuses %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
-                {% endfor %}
-            </div>
-            <div class="col-lg-4">
-                <div class="form-label">{{ 'Priorities'|trans }}</div>
-                {% for key, name in priorities %}
-                    <label class="form-check"><input class="form-check-input" type="checkbox" name="priorities[]" value="{{ key }}"{% if key in rule.priorities %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
-                {% endfor %}
-            </div>
+                    <div class="col-12"><h5 class="cf-label mb-0">{{ 'Conditions'|trans }}</h5><div class="form-hint">{{ 'None ticked in a group: any.'|trans }}</div></div>
+                    <div class="col-lg-4">
+                        <div class="form-label">{{ 'Help desks'|trans }}</div>
+                        {% for id, name in helpdesks %}
+                            <label class="form-check"><input class="form-check-input" type="checkbox" name="helpdesks[]" value="{{ id }}"{% if id in rule.helpdesks %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
+                        {% endfor %}
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-label">{{ 'Statuses'|trans }}</div>
+                        {% for key, name in statuses %}
+                            <label class="form-check"><input class="form-check-input" type="checkbox" name="statuses[]" value="{{ key }}"{% if key in rule.statuses %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
+                        {% endfor %}
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-label">{{ 'Priorities'|trans }}</div>
+                        {% for key, name in priorities %}
+                            <label class="form-check"><input class="form-check-input" type="checkbox" name="priorities[]" value="{{ key }}"{% if key in rule.priorities %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
+                        {% endfor %}
+                    </div>
 
-            <div class="col-12"><h5 class="mb-0">{{ 'Actions'|trans }}</h5></div>
-            <div class="col-lg-3">
-                <label class="form-label" for="esc-helpdesk">{{ 'Move to help desk'|trans }}</label>
-                <select class="form-select" id="esc-helpdesk" name="new_helpdesk_id">
-                    <option value="0">{{ 'No change'|trans }}</option>
-                    {% for id, name in helpdesks %}<option value="{{ id }}"{% if id == rule.new_helpdesk_id %} selected{% endif %}>{{ name }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label" for="esc-priority">{{ 'Set priority'|trans }}</label>
-                <select class="form-select" id="esc-priority" name="new_priority">
-                    <option value="">{{ 'No change'|trans }}</option>
-                    {% for key, name in priorities %}<option value="{{ key }}"{% if key == rule.new_priority %} selected{% endif %}>{{ name }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label" for="esc-status">{{ 'Set status'|trans }}</label>
-                <select class="form-select" id="esc-status" name="new_status">
-                    <option value="">{{ 'No change'|trans }}</option>
-                    {% for key, name in statuses %}<option value="{{ key }}"{% if key == rule.new_status %} selected{% endif %}>{{ name }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label" for="esc-assign">{{ 'Assign to'|trans }}</label>
-                <select class="form-select" id="esc-assign" name="assign_to">
-                    <option value="0">{{ 'No change'|trans }}</option>
-                    {% for id, name in staff %}<option value="{{ id }}"{% if id == rule.assign_to %} selected{% endif %}>{{ name }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="col-12">
-                <div class="form-label">{{ 'Email these staff members'|trans }}</div>
-                <div class="d-flex flex-wrap gap-3">
-                    {% for id, name in staff %}
-                        <label class="form-check mb-0"><input class="form-check-input" type="checkbox" name="notify[]" value="{{ id }}"{% if id in rule.notify %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
-                    {% endfor %}
+                    <div class="col-12"><h5 class="cf-label mb-0">{{ 'Actions'|trans }}</h5></div>
+                    <div class="col-lg-3">
+                        <label class="form-label" for="esc-helpdesk">{{ 'Move to help desk'|trans }}</label>
+                        <select class="form-select" id="esc-helpdesk" name="new_helpdesk_id">
+                            <option value="0">{{ 'No change'|trans }}</option>
+                            {% for id, name in helpdesks %}<option value="{{ id }}"{% if id == rule.new_helpdesk_id %} selected{% endif %}>{{ name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="form-label" for="esc-priority">{{ 'Set priority'|trans }}</label>
+                        <select class="form-select" id="esc-priority" name="new_priority">
+                            <option value="">{{ 'No change'|trans }}</option>
+                            {% for key, name in priorities %}<option value="{{ key }}"{% if key == rule.new_priority %} selected{% endif %}>{{ name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="form-label" for="esc-status">{{ 'Set status'|trans }}</label>
+                        <select class="form-select" id="esc-status" name="new_status">
+                            <option value="">{{ 'No change'|trans }}</option>
+                            {% for key, name in statuses %}<option value="{{ key }}"{% if key == rule.new_status %} selected{% endif %}>{{ name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="form-label" for="esc-assign">{{ 'Assign to'|trans }}</label>
+                        <select class="form-select" id="esc-assign" name="assign_to">
+                            <option value="0">{{ 'No change'|trans }}</option>
+                            {% for id, name in staff %}<option value="{{ id }}"{% if id == rule.assign_to %} selected{% endif %}>{{ name }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-label">{{ 'Email these staff members'|trans }}</div>
+                        <div class="d-flex flex-wrap gap-3">
+                            {% for id, name in staff %}
+                                <label class="form-check mb-0"><input class="form-check-input" type="checkbox" name="notify[]" value="{{ id }}"{% if id in rule.notify %} checked{% endif %}><span class="form-check-label">{{ name }}</span></label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="esc-reply">{{ 'Add a reply'|trans }}</label>
+                        <textarea class="form-control" id="esc-reply" name="reply" rows="4" maxlength="10000">{{ rule.reply }}</textarea>
+                        <div class="form-hint">{{ 'Posted by the system and emailed to the client like a staff reply. [NAME], [FIRSTNAME] and [EMAIL] are the client\'s. Leave empty for no reply.'|trans }}</div>
+                    </div>
                 </div>
             </div>
-            <div class="col-12">
-                <label class="form-label" for="esc-reply">{{ 'Add a reply'|trans }}</label>
-                <textarea class="form-control" id="esc-reply" name="reply" rows="4" maxlength="10000">{{ rule.reply }}</textarea>
-                <div class="form-hint">{{ 'Posted by the system and emailed to the client like a staff reply. [NAME], [FIRSTNAME] and [EMAIL] are the client\'s. Leave empty for no reply.'|trans }}</div>
+            <div class="card-footer d-flex justify-content-end gap-2 cf-set-save">
+                {% if rule.id %}<a class="btn btn-secondary" href="{{ 'extension/settings/support'|url }}#tab-escalation">{{ 'Cancel'|trans }}</a>{% endif %}
+                <button class="btn btn-primary" type="submit">{{ rule.id ? 'Save Rule'|trans : 'Add Rule'|trans }}</button>
             </div>
-        </div>
-        <div class="mt-3 d-flex gap-2">
-            <button class="btn btn-primary" type="submit">{{ rule.id ? 'Save Rule'|trans : 'Add Rule'|trans }}</button>
-            {% if rule.id %}<a class="btn btn-secondary" href="{{ 'extension/settings/support'|url }}#tab-escalation">{{ 'Cancel'|trans }}</a>{% endif %}
-        </div>
+        </section>
     </form>
 </div>

@@ -29,27 +29,18 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
+{# ClientFence core patch: no filler subtitles; the Add New Form button in the list header and each form with its tile; a form's settings above a Save row that stays in view, its fields in a card of their own with the field types as dashed add buttons (CF-135 redesign). #}
 {% if not request.id %}
+<div class="card">
     <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'Custom Forms'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Create and manage reusable custom forms that can be attached to products and order flows.'|trans }}</p>
-        </div>
-    </div>
-    <div class="card-body border-bottom">
-        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
-            <div>
-                <div class="text-secondary">{{ 'Forms created here can be reused across products and checkout flows. Duplicate existing forms when you want a starting point.'|trans }}</div>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="#" id="new-form" class="btn btn-primary">
-                    <svg class="icon">
-                        <use href="#plus" />
-                    </svg>
-                    <span>{{ 'Add New Form'|trans }}</span>
-                </a>
-            </div>
+        <h3 class="card-title">{{ 'Custom Forms'|trans }}</h3>
+        <div class="card-actions">
+            <a href="#" id="new-form" class="btn btn-primary">
+                <svg class="icon">
+                    <use href="#plus" />
+                </svg>
+                <span>{{ 'Add New Form'|trans }}</span>
+            </a>
         </div>
     </div>
     <div class="table-responsive">
@@ -65,7 +56,12 @@
             <tbody>
                 {% for form in admin.formbuilder_get_forms %}
                 <tr>
-                    <td class="fw-semibold">{{ form.name }}</td>
+                    <td>
+                        <a class="cf-tile-link" href="{{ 'extension/settings/formbuilder'|url(query:{'id' : form.id}) }}">
+                            <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#notes" /></svg></span>
+                            <span>{{ form.name }}</span>
+                        </a>
+                    </td>
                     <td>{{ form.order_count }}</td>
                     <td>{{ form.product_count }}</td>
                     <td>
@@ -97,107 +93,100 @@
             </tbody>
         </table>
     </div>
+</div>
 {% else %}
 {% set form = admin.formbuilder_get_form({ "id": request.id }) %}
+<div class="card">
     <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ form.name }}</h3>
-            <p class="card-subtitle">{{ 'Adjust form-level display options and then manage the individual fields below.'|trans }}</p>
-        </div>
+        <h3 class="card-title">{{ form.name }}</h3>
     </div>
     <form method="post" action="{{ 'formbuilder/update_form_settings'|api_url }}" {{ fb_api_form({message: 'Form Options Updated'|trans}) }}>
         <div class="card-body">
             <input type="hidden" name="form_id" value="{{ form.id }}">
-            <section>
-                <h4 class="card-title mb-2">{{ 'Form Settings'|trans }}</h4>
-                <p class="text-secondary mb-4">{{ 'Control the form name and how labels are displayed when this form is rendered.'|trans }}</p>
-                <div class="row g-3">
-                    <div class="col-xl-6">
-                        <label class="form-label" for="form_name">{{ 'Form Title'|trans }}</label>
-                        <input class="form-control" type="text" name="form_name" id="form_name" value="{{ form.name }}">
-                    </div>
-                    <div class="col-xl-3">
-                        <label class="form-label" for="form_type">{{ 'Labels Position'|trans }}</label>
-                        <select class="form-select" name="type" id="form_type">
-                            <option value="default" {% if form.style.type=='default' %} selected {% endif %}>{{ 'Labels on Top'|trans }}</option>
-                            <option value="horizontal" {% if form.style.type=='horizontal' %} selected {% endif %}>{{ 'Labels on the Left'|trans }}</option>
-                        </select>
-                    </div>
-                    <div class="col-xl-3">
-                        <label class="form-label" for="show_title">{{ 'Form Title Visibility'|trans }}</label>
-                        <select class="form-select" name="show_title" id="show_title">
-                            <option value="1" {% if form.style.show_title=='1' %} selected {% endif %}>{{ 'Show Form Title'|trans }}</option>
-                            <option value="0" {% if form.style.show_title=='0' %} selected {% endif %}>{{ 'Do Not Show Form Title'|trans }}</option>
-                        </select>
-                    </div>
+            <h4 class="card-title mb-3">{{ 'Form Settings'|trans }}</h4>
+            <div class="row g-3">
+                <div class="col-12 col-xl-6">
+                    <label class="form-label" for="form_name">{{ 'Form Title'|trans }}</label>
+                    <input class="form-control" type="text" name="form_name" id="form_name" value="{{ form.name }}">
                 </div>
-            </section>
+                <div class="col-md-6 col-xl-3">
+                    <label class="form-label" for="form_type">{{ 'Labels Position'|trans }}</label>
+                    <select class="form-select" name="type" id="form_type">
+                        <option value="default" {% if form.style.type=='default' %} selected {% endif %}>{{ 'Labels on Top'|trans }}</option>
+                        <option value="horizontal" {% if form.style.type=='horizontal' %} selected {% endif %}>{{ 'Labels on the Left'|trans }}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <label class="form-label" for="show_title">{{ 'Form Title Visibility'|trans }}</label>
+                    <select class="form-select" name="show_title" id="show_title">
+                        <option value="1" {% if form.style.show_title=='1' %} selected {% endif %}>{{ 'Show Form Title'|trans }}</option>
+                        <option value="0" {% if form.style.show_title=='0' %} selected {% endif %}>{{ 'Do Not Show Form Title'|trans }}</option>
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="card-footer text-end">
+        <div class="card-footer text-end cf-set-save">
             <button type="submit" class="btn btn-primary">{{ 'Update'|trans }}</button>
         </div>
     </form>
+</div>
 
-    <div class="mt-3 card widget" id="form-{{ form.id }}">
-        <div class="card-header">
-            <div>
-                <h5 class="card-title mb-1">{{ 'Form Fields'|trans }}</h5>
-                <p class="card-subtitle">{{ 'Add field types to this form and edit each field individually.'|trans }}</p>
+<div class="mt-3 card widget" id="form-{{ form.id }}">
+    <div class="card-header">
+        <h5 class="card-title">{{ 'Form Fields'|trans }}</h5>
+    </div>
+    <div class="card-body">
+        <section class="mb-4 pb-4 border-bottom">
+            <div class="mb-3">
+                <h5 class="card-title mb-0">{{ 'Add Field Type'|trans }}</h5>
             </div>
-        </div>
-        <div class="card-body">
-            <section class="mb-4 pb-4 border-bottom">
-                <div class="mb-3">
-                    <h5 class="card-title mb-1">{{ 'Add Field Type'|trans }}</h5>
-                    <p class="text-secondary mb-0">{{ 'Choose a field type to add it to this form and configure it further.'|trans }}</p>
-                </div>
-                <div class="d-flex gap-2 flex-wrap" id="fields">
-                    <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'text' }) }}" {{ fb_api_link({reload: true}) }}>
-                        <svg class="icon">
-                            <use href="#plus"/>
-                        </svg>
-                        <span>{{ 'Text'|trans }}</span>
-                    </a>
-                    <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'select' }) }}" {{ fb_api_link({reload: true}) }}>
-                        <svg class="icon">
-                            <use href="#plus"/>
-                        </svg>
-                        <span>{{ 'Dropdown'|trans }}</span>
-                    </a>
-                    <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'radio' }) }}" {{ fb_api_link({reload: true}) }}>
-                        <svg class="icon">
-                            <use href="#plus"/>
-                        </svg>
-                        <span>{{ 'Radio'|trans }}</span>
-                    </a>
-                    <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query:{'form_id': form.id, 'type': 'checkbox' }) }}" {{ fb_api_link({reload: true}) }}>
-                        <svg class="icon">
-                            <use href="#plus"/>
-                        </svg>
-                        <span>{{ 'Checkbox'|trans }}</span>
-                    </a>
-                    <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'textarea' }) }}" {{ fb_api_link({reload: true}) }}>
-                        <svg class="icon">
-                            <use href="#plus"/>
-                        </svg>
-                        <span>{{ 'Textarea'|trans }}</span>
-                    </a>
-                </div>
-            </section>
-            <div class="d-flex flex-column gap-3">
-                {% for i,field in form.fields %}
-                    <div class="wrap-field">
-                        {{ include('mod_formbuilder_field.html.twig', field) }}
-                        {{ include('mod_formbuilder_preview.html.twig', field) }}
-                    </div>
-                {% else %}
-                    <div class="text-center text-muted py-4 border rounded">
-                        {{ 'No fields have been added to this form yet.'|trans }}
-                    </div>
-                {% endfor %}
+            <div class="d-flex gap-2 flex-wrap" id="fields">
+                <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'text' }) }}" {{ fb_api_link({reload: true}) }}>
+                    <svg class="icon">
+                        <use href="#plus"/>
+                    </svg>
+                    <span>{{ 'Text'|trans }}</span>
+                </a>
+                <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'select' }) }}" {{ fb_api_link({reload: true}) }}>
+                    <svg class="icon">
+                        <use href="#plus"/>
+                    </svg>
+                    <span>{{ 'Dropdown'|trans }}</span>
+                </a>
+                <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'radio' }) }}" {{ fb_api_link({reload: true}) }}>
+                    <svg class="icon">
+                        <use href="#plus"/>
+                    </svg>
+                    <span>{{ 'Radio'|trans }}</span>
+                </a>
+                <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query:{'form_id': form.id, 'type': 'checkbox' }) }}" {{ fb_api_link({reload: true}) }}>
+                    <svg class="icon">
+                        <use href="#plus"/>
+                    </svg>
+                    <span>{{ 'Checkbox'|trans }}</span>
+                </a>
+                <a class="btn btn-outline-primary" href="{{ 'formbuilder/add_field'|api_url(query: {'form_id': form.id, 'type': 'textarea' }) }}" {{ fb_api_link({reload: true}) }}>
+                    <svg class="icon">
+                        <use href="#plus"/>
+                    </svg>
+                    <span>{{ 'Textarea'|trans }}</span>
+                </a>
             </div>
+        </section>
+        <div class="d-flex flex-column gap-3">
+            {% for i,field in form.fields %}
+                <div class="wrap-field">
+                    {{ include('mod_formbuilder_field.html.twig', field) }}
+                    {{ include('mod_formbuilder_preview.html.twig', field) }}
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-4 border rounded">
+                    {{ 'No fields have been added to this form yet.'|trans }}
+                </div>
+            {% endfor %}
         </div>
     </div>
+</div>
 {% endif %}
 {% endblock %}
 
