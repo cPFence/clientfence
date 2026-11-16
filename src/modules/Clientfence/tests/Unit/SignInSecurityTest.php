@@ -511,6 +511,15 @@ test('the console command turns sign-in security off', function (): void {
         ->and(SignInSecurity::turnOff($world->di, true, false, false, false, false)['pin'])->toBe('off');
 });
 
+test('the console command turns CAPTCHA Protection off (CF-140)', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->staffConfig = ['ext' => 'mod_antispam', 'captcha_enabled' => '1', 'captcha_provider' => 'hcaptcha'];
+
+    SignInSecurity::turnOff($world->di, false, false, false, false, false, true);
+
+    expect($world->staffConfig)->toBe(['ext' => 'mod_antispam', 'captcha_enabled' => '0', 'captcha_provider' => 'hcaptcha']);
+});
+
 test('the setup wizard sets the staff side only and saves nothing until the PIN is confirmed', function (): void {
     $world = new SignInSecurityTestWorld();
     expect($world->save(['pin' => 'clients']))->toBe(['saved' => true]);

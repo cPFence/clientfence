@@ -227,8 +227,8 @@ final class SignInSecurity
         return ['saved' => true];
     }
 
-    /** The console command for a locked-out site: turns the email PIN (back to every sign-in), country and/or IP rules, the clients' required two-factor sign-in and/or passkeys off. */
-    public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries, bool $ips, bool $twofactor, bool $passkeys): array
+    /** The console command for a locked-out site: turns the email PIN (back to every sign-in), country and/or IP rules, the clients' required two-factor sign-in, passkeys and/or CAPTCHA Protection off. */
+    public static function turnOff(\Pimple\Container $di, bool $pin, bool $countries, bool $ips, bool $twofactor, bool $passkeys, bool $captcha = false): array
     {
         $settings = self::settings($di);
         if ($twofactor) {
@@ -247,6 +247,11 @@ final class SignInSecurity
         if ($ips) {
             $extension = $di['mod_service']('extension');
             $extension->setConfig(array_merge($extension->getConfig('mod_staff'), ['ext' => 'mod_staff', 'check_ip' => 0]));
+        }
+        if ($captcha) {
+            // A wrong CAPTCHA key locks every staff member out, and the Anti-Spam settings are stored encrypted (no SQL way back).
+            $extension = $di['mod_service']('extension');
+            $extension->setConfig(array_merge($extension->getConfig('mod_antispam'), ['ext' => 'mod_antispam', 'captcha_enabled' => '0']));
         }
         self::saveState($di, ['pin' => $settings['pin'], 'pin_when' => $settings['pin_when'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries'], 'history' => $settings['history'], 'twofactor' => $settings['twofactor'], 'twofactor_groups' => $settings['twofactor_groups'], 'passkeys' => $settings['passkeys']]);
 
