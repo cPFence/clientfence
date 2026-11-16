@@ -36,16 +36,19 @@
         failed: 'The invoice could not be created: :error'|trans,
     }|json_encode|raw }}</script>
 
-    <div class="bf-page-head">
-        <div>
-            <h1 class="bf-page-title">{{ 'Wallet'|trans }}</h1>
+    {# ClientFence core patch: the balance as the page's key figure, green with credit, red below zero (CF-135 redesign). #}
+    {% set balance = profile.balance|default(0) %}
+    <section class="card cf-pay-hero cf-wallet-hero{{ balance > 0 ? ' is-ok' : (balance < 0 ? ' is-bad' : '') }}">
+        <div class="cf-pay-hero-text">
+            <span class="cf-wallet-icon" aria-hidden="true"><svg class="icon"><use href="#wallet"/></svg></span>
+            <h1 class="bf-page-title mb-0">{{ 'Wallet'|trans }}</h1>
             <span class="bf-hint">{{ 'Top up once, then pay invoices and renewals from your balance.'|trans }}</span>
         </div>
-        <div class="card bf-card bf-balance">
+        <div class="cf-pay-hero-figure">
             <span>{{ 'Balance'|trans }}</span>
-            <strong>{{ sm.money(profile.balance|default(0), currency) }}</strong>
+            <strong>{{ sm.money(balance, currency) }}</strong>
         </div>
-    </div>
+    </section>
 
     <div class="bf-checkout-grid">
         <div class="bf-checkout-main">
