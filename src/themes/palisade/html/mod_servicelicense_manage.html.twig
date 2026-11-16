@@ -25,7 +25,8 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade show active" id="bf-licence-key" role="tabpanel">
-            <div class="card-body">
+            {# ClientFence core patch: the key on a lit panel; How to check opens with an icon, like the domain card's sections (CF-135 redesign). #}
+            <div class="card-body cf-sv-key">
                 <span class="bf-licence-label">{{ 'Key'|trans }}</span>
                 <div class="bf-key">
                     <code class="bf-licence-code flex-grow-1" dir="ltr">{{ service.license_key }}</code>
@@ -104,7 +105,10 @@
         </div>
 
         <div class="tab-pane fade card-body" id="bf-licence-how" role="tabpanel">
-            <p class="small text-body-secondary">{{ 'Your software sends the key, its domain, install path and version to this address. The answer has "valid": true when the licence passes.'|trans }}</p>
+            <div class="cf-dom-head">
+                <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#info-circle"/></svg></span>
+                <p class="small text-body-secondary mb-0">{{ 'Your software sends the key, its domain, install path and version to this address. The answer has "valid": true when the licence passes.'|trans }}</p>
+            </div>
             <code class="bf-licence-code small" dir="ltr">curl -d "license=YOUR_LICENSE_KEY" -d "host=example.com" -d "path=/var/www/app" -d "version=1.0" {{ 'servicelicense/check'|api_url(role: 'guest') }}</code>
         </div>
     </div>

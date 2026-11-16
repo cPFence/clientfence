@@ -4786,3 +4786,53 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   .auth-brand::before, .auth-brand::after, .auth-card { animation: none; }
   .bf-checkout [data-bf-cycles] .bf-seg-item, .cf-order-addons .bf-addon { transition: none; }
 }
+
+// ---- CF-135 part 4: client services
+// Service cards inside the service page (mod_service<type>_manage): a licence or API key on a lit panel, a
+// download in one row; their sections open with the domain card's .cf-dom-head. Hosting accounts (/hosting,
+// mod_servicehosting_account*): the account hero reuses .cf-svc-hero; cards, tabs, meters and rows in the brand
+// shades. No transform, filter or isolation on these cards: the API key, Restore and the email tab open dialogs.
+.cf-sv-key {
+  background: linear-gradient(115deg, rgba(var(--pal-accent-rgb), .10), transparent 60%);
+  .bf-licence-code, .form-control { border-color: rgba(var(--pal-accent-rgb), .35); background-color: var(--pal-glass); }
+}
+:is(.cf-sv-file, .clientfence-hosting) .clientfence-hosting-tile-icon { background: linear-gradient(135deg, rgba(var(--pal-accent-rgb), .18), rgba(var(--pal-brand-rgb), .12)); color: var(--pal-accent); }
+:is(.cf-sv-file, .cf-sv-empty) .clientfence-hosting-tile-icon { width: 40px; height: 40px; border-radius: 12px; }
+.cf-sv-file { display: flex; flex-wrap: wrap; align-items: center; gap: .875rem; }
+.cf-sv-file-name { display: block; color: var(--bs-emphasis-color); font-weight: 600; overflow-wrap: anywhere; }
+.cf-sv-empty { display: flex; flex-direction: column; align-items: center; gap: .75rem; }
+// Hosting accounts list: a soft glow in each card, an accent edge and a lift on hover (the lift is the card's own).
+.clientfence-hosting-card {
+  background-image: radial-gradient(320px 180px at 100% 0, rgba(var(--pal-accent-rgb), .14), transparent 70%);
+  &:hover, &:focus-visible { border-color: rgba(var(--pal-accent-rgb), .45); box-shadow: 0 14px 32px -14px rgba(var(--pal-brand-rgb), .45); }
+}
+// One account: the tabs as glass pills, the open one in the brand gradient.
+.clientfence-hosting-tabs .nav-link {
+  background: var(--pal-glass);
+  transition: border-color .25s, box-shadow .25s, color .25s;
+  &:hover { border-color: rgba(var(--pal-accent-rgb), .45); }
+  &.active { border-color: transparent; background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); box-shadow: 0 6px 16px -8px var(--pal-brand); }
+}
+// Usage: meters with a glow and a bar that fills in the brand gradient (amber and red stay), tinted resource tiles.
+.clientfence-hosting-meter { background-image: radial-gradient(360px 200px at 100% 0, rgba(var(--pal-accent-rgb), .12), transparent 70%); }
+.clientfence-hosting-bar .progress-bar {
+  transform-origin: left center;
+  animation: cf-sv-fill .9s var(--pal-ease) backwards;
+  &:not(.bg-warning, .bg-danger) { background-image: linear-gradient(90deg, var(--pal-brand), var(--pal-accent)); }
+}
+@keyframes cf-sv-fill { from { scale: 0 1; } }
+.clientfence-hosting-resource {
+  background: linear-gradient(150deg, rgba(var(--pal-accent-rgb), .08), transparent 60%), var(--pal-glass);
+  transition: border-color .25s;
+  &:hover { border-color: rgba(var(--pal-accent-rgb), .45); }
+}
+// Websites, domains and backups rows: tinted on hover, their facts as tinted chips, a DNS fix as an amber note.
+.clientfence-hosting-site:hover { background-image: linear-gradient(90deg, rgba(var(--pal-accent-rgb), .07), transparent 80%); }
+.clientfence-hosting-site-stats > div { border: 1px solid rgba(var(--pal-accent-rgb), .14); background: rgba(var(--pal-accent-rgb), .06); }
+.clientfence-dns-note { padding: .5rem .75rem; border-inline-start: 3px solid rgba(var(--bs-warning-rgb), .8); border-radius: 8px; background: rgba(var(--bs-warning-rgb), .08); }
+// A backup's restore form: a red-tinted panel, since it replaces the website.
+.clientfence-hosting [data-backup-restore] { padding: .875rem 1rem; border: 1px solid rgba(var(--bs-danger-rgb), .3); border-radius: 12px; background: linear-gradient(110deg, rgba(var(--bs-danger-rgb), .08), transparent 70%); }
+@media (prefers-reduced-motion: reduce) {
+  .clientfence-hosting-bar .progress-bar { animation: none; }
+  .clientfence-hosting-tabs .nav-link, .clientfence-hosting-resource { transition: none; }
+}

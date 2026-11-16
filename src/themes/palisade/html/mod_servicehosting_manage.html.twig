@@ -50,9 +50,16 @@
         </div>
         {# Domain registration with ClientFence #}
         <div class="tab-pane fade card-body" role="tabpanel" id="hosting-domain">
+            {# ClientFence core patch: the Domain and Password tabs open with an icon and their title, like the domain card's sections (CF-135 redesign). #}
             {% if registered %}
                 {% set expired = registered.expires_at and registered.expires_at|date('U') < 'now'|date('U') %}
-                <p>{{ ':domain is registered with us.'|trans({ ':domain': registered.domain }) }}</p>
+                <div class="cf-dom-head">
+                    <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#world"/></svg></span>
+                    <div>
+                        <h3 class="h6 mb-1">{{ ':domain is registered with us.'|trans({ ':domain': registered.domain }) }}</h3>
+                        <span class="small text-secondary">{{ 'For renewal or any change to this domain, open a support ticket.'|trans }}</span>
+                    </div>
+                </div>
                 <dl class="bf-facts bf-facts-inset">
                     <div class="bf-fact"><dt>{{ 'Domain'|trans }}</dt><dd><bdi dir="ltr">{{ registered.domain }}</bdi></dd></div>
                     <div class="bf-fact"><dt>{{ 'Status'|trans }}</dt><dd>{% if expired %}<span class="badge bg-danger">{{ 'Expired'|trans }}</span>{% else %}<span class="badge bg-success">{{ 'Active'|trans }}</span>{% endif %}</dd></div>
@@ -61,15 +68,22 @@
                     {% endif %}
                     <div class="bf-fact"><dt>{{ 'Renewal Date'|trans }}{% if registered.expires_at and not expired %} {{ 'in :days day(s)'|trans({ ':days': registered.expires_at|daysleft }) }}{% endif %}</dt><dd>{% if registered.expires_at %}{{ registered.expires_at|format_date }}{% else %}-{% endif %}</dd></div>
                 </dl>
-                <p class="text-secondary small mt-3 mb-0">{{ 'For renewal or any change to this domain, open a support ticket.'|trans }}</p>
             {% else %}
-                <p>{{ 'No domain is registered with us for this service.'|trans }}</p>
-                <p class="text-secondary mb-0">{{ ':domain is registered with another registrar, so its renewal is handled there. To transfer it to us, open a support ticket.'|trans({ ':domain': service.domain }) }}</p>
+                <div class="cf-dom-head mb-0">
+                    <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#world"/></svg></span>
+                    <div>
+                        <h3 class="h6 mb-1">{{ 'No domain is registered with us for this service.'|trans }}</h3>
+                        <span class="small text-secondary">{{ ':domain is registered with another registrar, so its renewal is handled there. To transfer it to us, open a support ticket.'|trans({ ':domain': service.domain }) }}</span>
+                    </div>
+                </div>
             {% endif %}
         </div>
         {# Hosting password #}
         <div class="tab-pane fade card-body" role="tabpanel" id="hosting-password">
-            <h3 class="h6 mb-3">{{ 'Change Your Control Panel/FTP/SSH Password'|trans }}</h3>
+            <div class="cf-dom-head">
+                <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#key"/></svg></span>
+                <div><h3 class="h6 mb-0">{{ 'Change Your Control Panel/FTP/SSH Password'|trans }}</h3></div>
+            </div>
             <form action="{{ 'servicehosting/change_password'|api_url }}" method="post" {{ fb_api_form({message: 'Password Changed'|trans}) }}>
                 <div class="row g-3">
                     <div class="col-md-6">

@@ -14,14 +14,18 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Hosting accounts'|trans }}</li>{% endblock %}
 
 {% block content %}
+{# ClientFence core patch: no filler subtitle; an empty list says how to get an account; the cards glow on hover (CF-135 redesign). #}
 <div class="page-heading">
     <h1>{{ 'Hosting accounts'|trans }}</h1>
-    <p>{{ 'Open an account to see its usage, read live from the server it runs on.'|trans }}</p>
 </div>
 
 {% if accounts is empty %}
     <div class="card">
-        <div class="empty-state">{{ 'You have no hosting accounts yet.'|trans }}</div>
+        <div class="empty-state cf-sv-empty">
+            <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#server"/></svg></span>
+            <p class="mb-0">{{ 'You have no hosting accounts yet.'|trans }}</p>
+            <a class="btn btn-primary btn-sm" href="{{ 'order'|url }}">{{ 'Browse the store'|trans }}</a>
+        </div>
     </div>
 {% else %}
     <div class="row g-3">

@@ -1,11 +1,13 @@
 {# ClientFence: the download card of the service page; the header's Download button is in mod_servicedownloadable_head. #}
 {% if order.status == 'active' %}
+{# ClientFence core patch: the file in one row: its icon, name and Download (CF-135 redesign). #}
 <div class="card mb-4">
-    <div class="card-header"><h2>{{ 'File'|trans }}</h2></div>
-    <dl class="bf-facts">
-        <div class="bf-fact"><dt>{{ 'File'|trans }}</dt><dd><bdi dir="ltr">{{ service.filename }}</bdi></dd></div>
-    </dl>
-    <div class="bf-card-foot">
+    <div class="card-body cf-sv-file">
+        <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#folder"/></svg></span>
+        <div class="min-w-0 flex-grow-1">
+            <h2 class="bf-licence-label mb-1">{{ 'File'|trans }}</h2>
+            <bdi class="cf-sv-file-name" dir="ltr">{{ service.filename }}</bdi>
+        </div>
         <a class="btn btn-primary btn-sm" href="{{ "servicedownloadable/get-file/#{order.id}"|url }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#download"/></svg> {{ 'Download'|trans }}</a>
     </div>
 </div>
