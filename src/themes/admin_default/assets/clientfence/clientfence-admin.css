@@ -1479,8 +1479,13 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
 .cf-bk tr.cf-bk-bad > td:first-child { border-inline-start-color: var(--bf-bad); }
 .cf-bk tr.cf-bk-bad > *, .bf-body tr.cf-row-bad > * { --tblr-table-bg-state: color-mix(in srgb, var(--bf-bad) 7%, transparent); }
 
-/* Sign-in security: the state of each protection as a facts grid of chips. */
-.cf-signin-sum .cf-facts { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); border-top: 0; }
+/* Sign-in security: the state of each protection as rows of the same height, the name and its chip on one line, so
+   the chips line up whatever the length of the name. */
+.cf-signin-sum .cf-facts { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); border-top: 0; overflow: hidden; }
+/* The divider pokes 1px past its cell, so the outer column's one is clipped at the card edge. */
+.cf-signin-sum .cf-facts > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin-inline-end: -1px; border-inline-end: 1px solid color-mix(in srgb, var(--bf-line) 60%, transparent); }
+.cf-signin-sum .cf-facts dt { margin: 0; font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--bf-ink); }
+.cf-signin-sum .cf-facts dd { flex-shrink: 0; }
 .cf-signin-sum { background-image: radial-gradient(380px 160px at 100% 0%, color-mix(in srgb, var(--bf-teal) 10%, transparent), transparent 70%); }
 [dir="rtl"] .cf-signin-sum { background-image: radial-gradient(380px 160px at 0% 0%, color-mix(in srgb, var(--bf-teal) 10%, transparent), transparent 70%); }
 
