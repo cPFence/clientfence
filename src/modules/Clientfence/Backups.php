@@ -374,9 +374,16 @@ final class Backups
             return ['warn', Health::msg('The newest backup sent is :days days old: check that the cron runs.'), [':days' => (int) floor($age / 86400)]];
         }
 
-        return $on === ['this server']
-            ? ['warn', Health::msg('Made :time, but kept only on this server: add SFTP/FTP or email for a copy that survives losing it.'), [':time' => $latest]]
-            : ['ok', Health::msg('Sent :time by :methods.'), [':time' => $latest, ':methods' => $on]];
+        if ($on !== ['this server']) {
+            return ['ok', Health::msg('Sent :time by :methods.'), [':time' => $latest, ':methods' => $on]];
+        }
+
+        // Cloud copies of the database also keep one off this server (their own check reports failures and old copies).
+        $cloud = CloudBackups::settings($di);
+
+        return $cloud['enabled'] && isset(CloudBackups::EVERY[$cloud['db_every']])
+            ? ['ok', Health::msg('Made :time; cloud storage keeps a copy off this server.'), [':time' => $latest]]
+            : ['warn', Health::msg('Made :time, but kept only on this server: add SFTP/FTP, cloud storage or email for a copy that survives losing it.'), [':time' => $latest]];
     }
 
     // ---- Kept on this server.

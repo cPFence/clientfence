@@ -181,6 +181,20 @@ test('Health warns with no method on, needs attention after a failure and warns 
     expect(Backups::health($di)[1])->toContain('being made now');
 });
 
+test('Health counts cloud copies of the database as a copy off this server', function (): void {
+    $local = ['local' => ['enabled' => true], 'email' => ['enabled' => false], 'ftp' => ['enabled' => false]];
+    $done = ['ran_at' => date('Y-m-d H:i:s'), 'ok' => true, 'results' => ['local' => 'ok']];
+    [$di] = backupsContainer(['backups' => $local, 'backups_status' => $done]);
+    expect(Backups::health($di)[0])->toBe('warn')->and(Backups::health($di)[1])->toContain('cloud storage');
+
+    [$di] = backupsContainer(['backups' => $local, 'backups_status' => $done, 'backups_cloud' => ['enabled' => true, 'provider' => 'gdrive', 'db_every' => 'daily']]);
+    expect(Backups::health($di))->toBe(['ok', 'Made :time; cloud storage keeps a copy off this server.', [':time' => $done['ran_at']]]);
+
+    // Cloud copies of the files only leave the database on this server.
+    [$di] = backupsContainer(['backups' => $local, 'backups_status' => $done, 'backups_cloud' => ['enabled' => true, 'provider' => 'gdrive', 'db_every' => 'never', 'files_every' => 'daily']]);
+    expect(Backups::health($di)[0])->toBe('warn');
+});
+
 test('update backups refuse a folder inside the site root', function (): void {
     $previous = getenv('CLIENTFENCE_BACKUP_DIR');
     $dir = PATH_ROOT . '/data/cache/cf-backup-' . bin2hex(random_bytes(4));
