@@ -195,13 +195,15 @@ test('service pagination links stay on the service list', function (): void {
         ]),
         new Twig\Loader\FilesystemLoader(PATH_MODS . '/Order/templates/client'),
     ]), ['strict_variables' => true]);
-    foreach (['trans', 'url', 'format_currency', 'period_title', 'format_date'] as $filter) {
+    foreach (['trans', 'format_currency', 'period_title', 'format_date'] as $filter) {
         $twig->addFilter(new Twig\TwigFilter($filter, fn ($value) => $value));
     }
+    // The status filter cards pass a query, as the real url filter allows.
+    $twig->addFilter(new Twig\TwigFilter('url', fn ($value, ?array $query = null) => $value));
     $client = new class {
         public function order_get_list(): array
         {
-            return ['list' => []];
+            return ['list' => [], 'total' => 0];
         }
     };
     $html = $twig->render('mod_order_list.html.twig', ['request' => ['ajax' => false, 'page' => 1], 'client' => $client]);
