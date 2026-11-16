@@ -10,7 +10,8 @@
 
 <body>
 {# ClientFence core patch (ext embed): the password, CAPTCHA and two-factor code are entered on the sign-in page in the top window; a framed sign-in cannot keep its SameSite=Strict session cookie. #}
-<form action="{{ 'login'|url }}" method="get" target="_top" class="embed-shell embed-stack">
+{# ClientFence core patch: the sign-in embed shares the contact embed's glow and button (CF-135 redesign). #}
+<form action="{{ 'login'|url }}" method="get" target="_top" class="embed-shell embed-shell--login embed-stack">
     <h1 class="embed-title">{{ 'Login to Client Area'|trans }}</h1>
     <div class="embed-field">
         <label class="embed-sr-only" for="embed-login-email">{{ 'Email'|trans }}</label>

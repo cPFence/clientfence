@@ -11,25 +11,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="bf-page-head mb-4">
-            <div>
-                <h1 class="bf-page-title">{{ category.title }}</h1>
-                <span class="bf-hint">{{ category.description }}</span>
-            </div>
+{# ClientFence core patch: a short hero with the category, then its articles in a glass card (CF-135 redesign). #}
+<header class="bf-store-head cf-pub-head mb-4">
+    <h1>{{ category.title }}</h1>
+    {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+</header>
+<div class="card bf-card mb-4">
+    {% if category.articles %}
+        <div class="cf-kb-list cf-kb-list-page">
+            {% for article in category.articles %}
+                <a href='{{ "support/kb/#{article.category.slug}/#{article.slug}"|url }}'><svg class="icon" aria-hidden="true"><use href="#book"/></svg><span>{{ article.title }}</span></a>
+            {% endfor %}
         </div>
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="list-group ms-2">
-                    {% for i, article in category.articles %}
-                        <a class="list-group-item list-group-item-action" href='{{ "support/kb/#{article.category.slug}/#{article.slug}"|url }}'>{{ article.title }}</a>
-                    {% else %}
-                        <div class="empty-state">{{ 'No articles in this category yet.'|trans }}</div>
-                    {% endfor %}
-                </div>
-            </div>
+    {% else %}
+        <div class="empty-state">
+            <p class="mb-3">{{ 'No articles in this category yet.'|trans }}</p>
+            <a class="btn btn-outline-secondary" href="{{ 'support/kb'|url }}">{{ 'Browse all articles'|trans }}</a>
         </div>
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

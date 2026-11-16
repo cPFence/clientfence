@@ -1,4 +1,5 @@
-<div class="fb-kb-suggestions alert alert-light border" data-input-id="{{ input_id|default('subject') }}" data-limit="{{ limit|default(5) }}" aria-live="polite">
+{# ClientFence core patch: the suggestions in the tinted info panel of the redesign (CF-135 redesign). #}
+<div class="fb-kb-suggestions alert alert-info" data-input-id="{{ input_id|default('subject') }}" data-limit="{{ limit|default(5) }}" aria-live="polite">
     <div class="fb-kb-suggestions-hint">
         {{ 'Try the knowledge base before opening a ticket.'|trans }}
         <a href="{{ 'support/kb'|url }}">{{ 'Browse articles'|trans }}</a>

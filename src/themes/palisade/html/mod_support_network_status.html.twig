@@ -14,12 +14,11 @@
 {% set groups = { 'open': 'Open'|trans, 'scheduled': 'Scheduled'|trans, 'resolved': 'Resolved'|trans } %}
 {% set tones = { 'reported': 'warn', 'investigating': 'warn', 'in_progress': 'warn', 'outage': 'danger', 'scheduled': 'info', 'resolved': 'ok' } %}
 {% set open_count = issues.counts.open|default(0) %}
-<div class="bf-page-head mb-4">
-    <div>
-        <h1 class="bf-page-title">{{ 'Network Status'|trans }}</h1>
-        <span class="bf-hint">{{ 'Outages and planned work on our servers and services.'|trans }}</span>
-    </div>
-</div>
+{# ClientFence core patch: a short hero, the issues on glass cards (CF-135 redesign). #}
+<header class="bf-store-head cf-pub-head mb-4">
+    <h1>{{ 'Network Status'|trans }}</h1>
+    <p>{{ 'Outages and planned work on our servers and services.'|trans }}</p>
+</header>
 
 <div class="ns-summary ns-{{ open_count ? 'warn' : 'ok' }} mb-4" role="status">
     <span class="ns-summary-icon"><svg class="icon" aria-hidden="true"><use href="#{{ open_count ? 'alert-triangle' : 'circle-check' }}"/></svg></span>

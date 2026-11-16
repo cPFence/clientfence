@@ -2444,20 +2444,8 @@
         "done": "ClientFence core patch: a run that found another one going did nothing."
     },
     {
-        "file": "modules/News/templates/client/mod_news_index.html.twig",
-        "done": "<div class=\"empty-state pt-3\">{{ 'No news or announcements'|trans }}</div>"
-    },
-    {
         "file": "modules/Email/templates/client/mod_email_index.html.twig",
         "done": "<div class=\"empty-state\" id=\"information-block\">"
-    },
-    {
-        "file": "modules/Support/templates/client/mod_support_kb_category.html.twig",
-        "done": "<div class=\"empty-state\">{{ 'No articles in this category yet.'|trans }}</div>"
-    },
-    {
-        "file": "modules/Support/templates/client/mod_support_kb_index.html.twig",
-        "done": "<div class=\"empty-state\">\n                        {% if request.q %}"
     },
     {
         "file": "modules/Order/Upgrades.php",
@@ -2560,32 +2548,8 @@
         "done": "throw new \\ClientFence\\InformationException('Ticket not found', [], 404);"
     },
     {
-        "file": "modules/Support/templates/client/mod_support_kb_article.html.twig",
-        "done": "<div class=\"card bg-body-tertiary border-0 mb-4\">"
-    },
-    {
-        "file": "modules/Support/templates/client/mod_support_kb_index.html.twig",
-        "done": "<h1 class=\"bf-page-title\">{{ 'Knowledge Base'|trans }}</h1>"
-    },
-    {
-        "file": "modules/Support/templates/client/mod_support_kb_category.html.twig",
-        "done": "<h1 class=\"bf-page-title\">"
-    },
-    {
-        "file": "modules/Support/templates/client/mod_support_contact_us.html.twig",
-        "done": "<h1 class=\"bf-page-title\">"
-    },
-    {
         "file": "modules/Email/templates/client/mod_email_index.html.twig",
         "done": "<h1 class=\"bf-page-title\">"
-    },
-    {
-        "file": "modules/News/templates/client/mod_news_index.html.twig",
-        "done": "<h1 class=\"bf-page-title\">"
-    },
-    {
-        "file": "modules/Custompages/templates/client/mod_custompages_content.html.twig",
-        "done": "<h1 class=\"bf-page-title\">{{ page.title }}</h1>"
     },
     {
         "file": "modules/Custompages/Entity/CustomPage.php",
@@ -3298,10 +3262,6 @@
     {
         "file": "modules/News/templates/client/mod_news_post.html.twig",
         "done": "ClientFence core patch: the post title as the page title, then the post"
-    },
-    {
-        "file": "modules/Support/templates/client/mod_support_kb_article.html.twig",
-        "done": "ClientFence core patch: the page title size used across the client area"
     },
     {
         "file": "modules/Invoice/ServiceTransaction.php",
@@ -6686,5 +6646,77 @@
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig",
         "done": "ClientFence core patch: each registrar with its initial in a tile (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Custompages/templates/client/mod_custompages_content.html.twig",
+        "done": "ClientFence core patch: a short hero with the title, the page in a glass card (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_loginform.html.twig",
+        "done": "ClientFence core patch: the sign-in embed shares the contact embed's glow and button (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Embed/templates/client/partial_embed_styles.html.twig",
+        "done": "ClientFence core patch: the contact and sign-in embeds get a soft glow and a gradient button (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Formbuilder/templates/client/mod_formbuilder_build.html.twig",
+        "done": "ClientFence core patch: the form on the rounded card of the redesign (CF-135 redesign)."
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_index.html.twig",
+        "done": "ClientFence core patch: a short hero, then one glass card per post with its date first (CF-135 redesign)."
+    },
+    {
+        "file": "modules/News/templates/client/mod_news_post.html.twig",
+        "done": "ClientFence core patch: the title and date in a short hero, the post in a glass card (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Page/templates/client/mod_page_about-us.html.twig",
+        "done": "ClientFence core patch: a short hero with the title, the text in a glass card (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Page/templates/client/mod_page_privacy-policy.html.twig",
+        "done": "ClientFence core patch: a short hero with the title, the policy in a glass card (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Page/templates/client/mod_page_tos.html.twig",
+        "done": "ClientFence core patch: a short hero with the title, the terms in a glass card (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig",
+        "done": "ClientFence core patch: the domain choices as one segmented row above a tinted panel, like the checkout's billing cycles (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_contact_us.html.twig",
+        "done": "ClientFence core patch: a short hero, the form in a glass card and the company's details beside it, empty ones left out (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_article.html.twig",
+        "done": "ClientFence core patch: the article title in a short hero, the article and the help panel as glass cards, the category and related articles beside them (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_category.html.twig",
+        "done": "ClientFence core patch: a short hero with the category, then its articles in a glass card (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_index.html.twig",
+        "done": "ClientFence core patch: the store's search hero, then the matching articles and the categories as glass cards (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_kb_suggestions.html.twig",
+        "done": "ClientFence core patch: the suggestions in the tinted info panel of the redesign (CF-135 redesign)."
+    },
+    {
+        "file": "themes/palisade/html/error.html.twig",
+        "done": "ClientFence core patch: the error on a glass panel with a soft glow (CF-135 redesign)."
+    },
+    {
+        "file": "themes/palisade/html/mod_support_network_status.html.twig",
+        "done": "ClientFence core patch: a short hero, the issues on glass cards (CF-135 redesign)."
+    },
+    {
+        "file": "themes/palisade/html/mod_system_maintenance.html.twig",
+        "done": "ClientFence core patch: a pulsing status tile above the title (CF-135 redesign)."
     }
 ]

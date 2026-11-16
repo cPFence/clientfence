@@ -7,6 +7,8 @@
 {% block body %}
 {% embed 'partials/auth_shell.html.twig' %}
     {% block auth_content %}
+        {# ClientFence core patch: a pulsing status tile above the title (CF-135 redesign). #}
+        <span class="bf-cart-item-icon cf-pub-icon" aria-hidden="true"><svg class="icon"><use href="#server"/></svg></span>
         <h1>{{ 'System Undergoing Maintenance'|trans }}</h1>
         {# ClientFence core patch: maintenance mode as WHMCS: the staff's own message (System > Settings > Maintenance). #}
         <p class="auth-lead">{% if maintenance_message|default('') %}{{ maintenance_message|nl2br }}{% else %}{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}{% endif %}</p>

@@ -17,37 +17,40 @@
 
 {% block content %}
     {% set company = guest.system_company %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="bf-page-head mb-4">
-                <div>
-                    <h1 class="bf-page-title">{{ 'Contact Us'|trans }}</h1>
-                    <span class="bf-hint">{{ company.signature }}</span>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-body">
+    {# ClientFence core patch: a short hero, the form in a glass card and the company's details beside it, empty ones left out (CF-135 redesign). #}
+    <header class="bf-store-head cf-pub-head mb-4">
+        <h1>{{ 'Contact Us'|trans }}</h1>
+        {% if company.signature %}<p>{{ company.signature }}</p>{% endif %}
+    </header>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card bf-card">
+                <div class="card-body p-4">
                     <form method="post" action="{{ 'support/ticket_create'|api_url(role: 'guest') }}" id="public-ticket-create" {{ fb_api_form({ callback: 'onTicketCreate' }) }}>
-                        <div class="mb-3">
-                            <label class="form-label" for="name">{{ 'Name'|trans }}</label>
-                            <input class="form-control" type="text" name="name" value="{{ request.name }}" required="required" id="name">
+                        <div class="bf-grid-2">
+                            <div class="mb-3">
+                                <label class="form-label" for="name">{{ 'Name'|trans }}</label>
+                                <input class="form-control" type="text" name="name" value="{{ request.name }}" required="required" id="name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="email">{{ 'Email'|trans }}</label>
+                                <input class="form-control" type="email" name="email" value="{{ request.email }}" required="required" id="email">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="email">{{ 'Email'|trans }}</label>
-                            <input class="form-control" type="email" name="email" value="{{ request.email }}" required="required" id="email">
-                        </div>
-                        <div class="mb-3">
-                            <label for="support-helpdesk-id" class="form-label">{{ 'Helpdesk'|trans }}</label>
-                            {{ mf.selectbox('support_helpdesk_id', guest.support_helpdesk_get_pairs, request.support_helpdesk_id, 1) }}
-                        </div>
-                        {# ClientFence core patch: the urgency, as WHMCS (Support/TicketPriority.php). #}
-                        <div class="mb-3">
-                            <label for="ticket-priority" class="form-label">{{ 'Urgency'|trans }}</label>
-                            <select class="form-select" name="priority" id="ticket-priority">
-                                {% for level, title in guest.support_ticket_priorities %}
-                                    <option value="{{ level }}"{% if level == (request.priority|default('medium')) %} selected{% endif %}>{{ title }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="bf-grid-2">
+                            <div class="mb-3">
+                                <label for="support-helpdesk-id" class="form-label">{{ 'Helpdesk'|trans }}</label>
+                                {{ mf.selectbox('support_helpdesk_id', guest.support_helpdesk_get_pairs, request.support_helpdesk_id, 1) }}
+                            </div>
+                            {# ClientFence core patch: the urgency, as WHMCS (Support/TicketPriority.php). #}
+                            <div class="mb-3">
+                                <label for="ticket-priority" class="form-label">{{ 'Urgency'|trans }}</label>
+                                <select class="form-select" name="priority" id="ticket-priority">
+                                    {% for level, title in guest.support_ticket_priorities %}
+                                        <option value="{{ level }}"{% if level == (request.priority|default('medium')) %} selected{% endif %}>{{ title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="subject">{{ 'Subject'|trans }}</label>
@@ -69,31 +72,22 @@
                         <input type="hidden" name="anti-spam" value="1" id="anti-spam" required="required"/>
                     </form>
                 </div>
-                <div class="card-footer small">
-                    <dl>
-                        <dd>
-                            {{ company.name }}
-                        </dd>
-                        <dd>
-                            {{ company.address_1|default('') }}
-                        </dd>
-                        <dd>
-                            {{ company.address_2|default('') }}
-                        </dd>
-                        <dd>
-                            {{ company.address_3|default('') }}
-                        </dd>
-                        <dd>
-                            {{ company.tel|default('') }}
-                        </dd>
-                        <dd>
-                            {{ company.www|default('') }}
-                        </dd>
-                        <dd>
-                            {{ company.email|default('') }}
-                        </dd>
-                    </dl>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card bf-card bf-section cf-contact-card">
+                <div class="cf-kb-cat-head">
+                    <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#address-book"/></svg></span>
+                    <h2>{{ company.name }}</h2>
                 </div>
+                <ul class="cf-contact-list">
+                    {% for line in [company.address_1|default(''), company.address_2|default(''), company.address_3|default('')]|filter(l => l) %}
+                        <li>{{ line }}</li>
+                    {% endfor %}
+                    {% if company.tel|default('') %}<li><svg class="icon" aria-hidden="true"><use href="#device-mobile"/></svg><bdi>{{ company.tel }}</bdi></li>{% endif %}
+                    {% if company.www|default('') %}<li><svg class="icon" aria-hidden="true"><use href="#world"/></svg><bdi>{{ company.www }}</bdi></li>{% endif %}
+                    {% if company.email|default('') %}<li><svg class="icon" aria-hidden="true"><use href="#mail"/></svg><bdi>{{ company.email }}</bdi></li>{% endif %}
+                </ul>
             </div>
         </div>
     </div>

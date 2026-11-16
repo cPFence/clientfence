@@ -18,22 +18,24 @@
 
 {% block content %}
 {% set related_articles = guest.support_kb_article_get_list({ 'kb_article_category_id': article.category.id, 'per_page': 6 }).list|filter(related_article => related_article.id != article.id)|slice(0, 5) %}
-<div class="row g-4 justify-content-center">
+{# ClientFence core patch: the article title in a short hero, the article and the help panel as glass cards, the category and related articles beside them (CF-135 redesign). #}
+<header class="bf-store-head cf-pub-head mb-4">
+    <a class="bf-chip bf-chip-muted align-self-start text-decoration-none" href='{{ "support/kb/#{article.category.slug}"|url }}'><svg class="icon" aria-hidden="true"><use href="#folder"/></svg>{{ article.category.title }}</a>
+    <h1>{{ article.title }}</h1>
+    {% if article.updated_at or guest.support_kb_article_views_enabled %}
+        <p class="cf-pub-meta">
+            {% if article.updated_at %}
+                <span>{{ 'Updated'|trans }} {{ '%time% ago'|trans({ '%time%': article.updated_at|timeago }) }}</span>
+            {% endif %}
+            {% if guest.support_kb_article_views_enabled %}
+                <span><svg class="icon" aria-hidden="true"><use href="#eye"/></svg>{{ article.views }} {{ 'views'|trans }}</span>
+            {% endif %}
+        </p>
+    {% endif %}
+</header>
+<div class="row g-4">
     <article class="col-lg-9">
-        <div class="mb-4">
-            {# ClientFence core patch: the page title size used across the client area (display-6 was oversized). #}
-            <h1 class="bf-page-title mt-2 mb-3">{{ article.title }}</h1>
-            <div class="d-flex flex-wrap gap-3 text-muted small">
-                {% if article.updated_at %}
-                    <span>{{ 'Updated'|trans }} {{ '%time% ago'|trans({ '%time%': article.updated_at|timeago }) }}</span>
-                {% endif %}
-                {% if guest.support_kb_article_views_enabled %}
-                    <span>{{ article.views }} {{ 'views'|trans }}</span>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="card border-0 shadow-sm mb-4">
+        <div class="card bf-card mb-4">
             <div class="card-body p-4 p-lg-5">
                 <article class="kb-article-content markdown-body bg-transparent text-reset">
                     {{ (article.content ?? '')|markdown_to_html }}
@@ -41,13 +43,16 @@
             </div>
         </div>
 
-        <div class="card bg-body-tertiary border-0 mb-4">
+        <div class="card bf-card cf-quote-answer mb-4">
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                <div>
-                    <h2 class="h5 mb-1">{{ 'Still need help?'|trans }}</h2>
-                    <p class="text-muted mb-0">{{ 'If this article did not answer your question, our support team can help.'|trans }}</p>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#headset"/></svg></span>
+                    <div>
+                        <h2 class="h5 mb-1">{{ 'Still need help?'|trans }}</h2>
+                        <p class="text-muted mb-0">{{ 'If this article did not answer your question, our support team can help.'|trans }}</p>
+                    </div>
                 </div>
-                <a href="{{ 'support/contact-us'|url }}" class="btn btn-primary">{{ 'Contact support'|trans }}</a>
+                <a href="{{ 'support/contact-us'|url }}" class="btn btn-primary flex-shrink-0">{{ 'Contact support'|trans }}</a>
             </div>
         </div>
 
@@ -58,8 +63,8 @@
     </article>
 
     <aside class="col-lg-3">
-        <div class="position-sticky" style="top: 1rem;">
-            <div class="card mb-4">
+        <div class="cf-kb-aside">
+            <div class="card bf-card mb-4">
                 <div class="card-body">
                     <div class="text-muted small mb-1">{{ 'Category'|trans }}</div>
                     <a class="h5 d-block mb-3 text-decoration-none" href='{{ "support/kb/#{article.category.slug}"|url }}'>{{ article.category.title }}</a>
@@ -67,19 +72,19 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card bf-card mb-4">
                 <div class="card-header py-3">
                     <h2 class="h5 mb-0">{{ 'Related articles'|trans }}</h2>
                 </div>
-                <div class="list-group list-group-flush">
-                    {% if related_articles %}
+                {% if related_articles %}
+                    <div class="cf-kb-list cf-kb-list-page">
                         {% for related_article in related_articles %}
-                            <a class="list-group-item list-group-item-action" href='{{ "support/kb/#{related_article.category.slug}/#{related_article.slug}"|url }}'>{{ related_article.title }}</a>
+                            <a href='{{ "support/kb/#{related_article.category.slug}/#{related_article.slug}"|url }}'><svg class="icon" aria-hidden="true"><use href="#book"/></svg><span>{{ related_article.title }}</span></a>
                         {% endfor %}
-                    {% else %}
-                        <div class="list-group-item text-muted">{{ 'No related articles yet.'|trans }}</div>
-                    {% endif %}
-                </div>
+                    </div>
+                {% else %}
+                    <div class="card-body text-muted">{{ 'No related articles yet.'|trans }}</div>
+                {% endif %}
             </div>
         </div>
     </aside>

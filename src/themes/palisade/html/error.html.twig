@@ -8,7 +8,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="text-center py-5">
+    {# ClientFence core patch: the error on a glass panel with a soft glow (CF-135 redesign). #}
+    <div class="card bf-card cf-error text-center">
         <div class="error-code mb-3">{{ exception.getCode ?: 404 }}</div>
         <h1 class="h4">{{ 'Whoops! Unable to find the page you are looking for'|trans }}</h1>
         {% if exception.getMessage %}

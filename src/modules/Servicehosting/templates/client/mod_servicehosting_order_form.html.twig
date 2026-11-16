@@ -39,31 +39,32 @@
 <h4 class="mt-4 mb-1"><strong>{{ 'Domain Configuration'|trans }}</strong></h4>
 
 {# ClientFence core patch: the choices above the fields on a phone (the domain field was 19-42 px wide). #}
-<div class="d-flex flex-column flex-md-row mb-3">
-    <nav class="nav nav-pills flex-md-column border-end me-3 mb-3 mb-md-0 gap-2">
+{# ClientFence core patch: the domain choices as one segmented row above a tinted panel, like the checkout's billing cycles (CF-135 redesign). #}
+<div class="d-flex flex-column mb-3">
+    <nav class="nav nav-pills bf-seg cf-dc-choice mb-3">
         {% if can_register %}
-            <a class="nav-link me-3 py-1 px-2 fs-7{% if default_action == 'register' %} active{% endif %}" href="#"
+            <a class="nav-link bf-seg-item{% if default_action == 'register' %} active{% endif %}" href="#"
                id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane"
                role="tab" aria-controls="register-tab-pane" data-action="register">{{ 'Register'|trans }}</a>
         {% endif %}
         {% if can_transfer %}
-            <a class="nav-link me-3 py-1 px-2 fs-7{% if default_action == 'transfer' %} active{% endif %}" href="#"
+            <a class="nav-link bf-seg-item{% if default_action == 'transfer' %} active{% endif %}" href="#"
                id="transfer-tab" data-bs-toggle="tab" data-bs-target="#transfer-tab-pane"
                role="tab" aria-controls="transfer-tab-pane" data-action="transfer">{{ 'Transfer'|trans }}</a>
         {% endif %}
         {% if can_own %}
-            <a class="nav-link me-3 py-1 px-2 fs-7{% if default_action == 'owndomain' %} active{% endif %}" href="#"
+            <a class="nav-link bf-seg-item{% if default_action == 'owndomain' %} active{% endif %}" href="#"
                id="owndomain-tab" data-bs-toggle="tab" data-bs-target="#owndomain-tab-pane"
                role="tab" aria-controls="owndomain-tab-pane" data-action="owndomain">{{ 'Own domain'|trans }}</a>
         {% endif %}
         {% if can_subdomain %}
-            <a class="nav-link me-3 py-1 px-2 fs-7{% if default_action == 'subdomain' %} active{% endif %}" href="#"
+            <a class="nav-link bf-seg-item{% if default_action == 'subdomain' %} active{% endif %}" href="#"
                id="subdomain-tab" data-bs-toggle="tab" data-bs-target="#subdomain-tab-pane"
                role="tab" aria-controls="subdomain-tab-pane" data-action="subdomain">{{ 'Free subdomain'|trans }}</a>
         {% endif %}
     </nav>
 
-    <div class="tab-content flex-grow-1">
+    <div class="tab-content cf-dc-panel">
         {% if can_register %}
             <div class="tab-pane{% if default_action == 'register' %} show active{% endif %}" id="register-tab-pane"
                  role="tabpanel" aria-labelledby="register-tab" tabindex="0">
@@ -71,23 +72,23 @@
                     <div class="col-sm-12">
                         <label class="form-label">{{ 'Register a new domain'|trans }}</label>
                         <div class="d-flex flex-wrap gap-2">
-                            <div class="input-group" style="max-width: 320px;">
-                                <input class="form-control form-control-sm" type="text" name="domain[register_sld]"
+                            <div class="input-group cf-dc-input">
+                                <input class="form-control" type="text" name="domain[register_sld]"
                                        value="{{ request.register_sld }}"
                                        placeholder="{{ 'Enter new domain name to register'|trans }}">
-                                <select class="form-select form-select-sm" name="domain[register_tld]" style="width: 30%; max-width: 90px;">
+                                <select class="form-select cf-dc-tld" name="domain[register_tld]">
                                     {% for tld in tlds %}
                                         <option value="{{ tld.tld }}" label="{{ tld.tld }}">{{ tld.tld }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <button class="btn btn-sm btn-dark" type="button" id="domain-check">{{ 'Check'|trans }}</button>
+                            <button class="btn btn-primary" type="button" id="domain-check">{{ 'Check'|trans }}</button>
                         </div>
                     </div>
                     <div class="col-sm-12">
                         <div id="register-config" style="display:none;">
                             <label class="mt-2">
-                                <select class="form-select form-select-sm" name="domain[register_years]" id="registration-years"></select>
+                                <select class="form-select" name="domain[register_years]" id="registration-years"></select>
                             </label>
                             {{ include('mod_servicedomain_domain_fields.html.twig', {prefix: 'domain[domain_fields]', tld_select: 'domain[register_tld]'}) }}
                         </div>
@@ -103,24 +104,24 @@
                     <div class="col-sm-12">
                         <label class="form-label">{{ 'Transfer your existing domain'|trans }}</label>
                         <div class="d-flex flex-wrap gap-2">
-                            <div class="input-group" style="max-width: 320px;">
-                                <input class="form-control form-control-sm" type="text" name="domain[transfer_sld]"
+                            <div class="input-group cf-dc-input">
+                                <input class="form-control" type="text" name="domain[transfer_sld]"
                                        value="{{ request.transfer_sld }}"
                                        placeholder="{{ 'Enter your domain name to transfer'|trans }}">
-                                <select class="form-select form-select-sm" name="domain[transfer_tld]" style="width: 30%; max-width: 90px;">
+                                <select class="form-select cf-dc-tld" name="domain[transfer_tld]">
                                     {% for tld in transfer_tlds %}
                                         <option value="{{ tld.tld }}" label="{{ tld.tld }}" data-require-transfer-code="{{ tld.require_transfer_code ? '1' : '0' }}">{{ tld.tld }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <button class="btn btn-sm btn-dark" type="button" id="transfer-check">{{ 'Check'|trans }}</button>
+                            <button class="btn btn-primary" type="button" id="transfer-check">{{ 'Check'|trans }}</button>
                         </div>
                     </div>
                     <div class="col-sm-12">
                         <div id="transfer-config" style="display:none;">
                             <p class="fs-7 mt-2">{{ 'Transfer price is'|trans }}&nbsp;<span class="fw-bold" id="transfer-price"></span></p>
-                            <input class="form-control form-control-sm" type="text" name="domain[transfer_code]" id="transfer-code"
-                                   value="{{ request.transfer_code }}" style="width: 200px" placeholder="{{ 'Enter domain transfer code'|trans }}">
+                            <input class="form-control cf-dc-code" type="text" name="domain[transfer_code]" id="transfer-code"
+                                   value="{{ request.transfer_code }}" placeholder="{{ 'Enter domain transfer code'|trans }}">
                             <div class="form-hint" id="transfer-code-hint" style="display:none;">{{ 'This TLD requires a transfer code (EPP/auth code) to proceed.'|trans }}</div>
                         {{ include('mod_servicedomain_domain_fields.html.twig', {tlds: transfer_tlds, key: 'transfer_fields', prefix: 'domain[transfer_fields]', tld_select: 'domain[transfer_tld]'}) }}
                         </div>
@@ -135,12 +136,11 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <label class="form-label">{{ 'Use your existing domain'|trans }}</label>
-                        <div class="input-group" style="max-width: 320px;">
-                            <input class="form-control form-control-sm" type="text" name="domain[owndomain_sld]"
+                        <div class="input-group cf-dc-input">
+                            <input class="form-control" type="text" name="domain[owndomain_sld]"
                                    value="{{ request.owndomain_sld }}"
                                    placeholder="{{ 'Your existing domain'|trans }}">
-                            <input class="form-control form-control-sm" type="text" name="domain[owndomain_tld]"
-                                   style="width: 30%; max-width: 90px;"
+                            <input class="form-control cf-dc-tld" type="text" name="domain[owndomain_tld]"
                                    value="{{ request.owndomain_tld|default('.com') }}"
                                    placeholder=".com">
                         </div>
@@ -156,8 +156,8 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <label class="form-label">{{ 'Choose your free subdomain'|trans }}</label>
-                        <div class="input-group" style="max-width: 420px;">
-                            <input class="form-control form-control-sm" type="text" name="domain[subdomain_sld]"
+                        <div class="input-group cf-dc-input cf-dc-input-wide">
+                            <input class="form-control" type="text" name="domain[subdomain_sld]"
                                    value="{{ request.subdomain_sld }}"
                                    placeholder="{{ 'Subdomain'|trans }}">
                             <span class="input-group-text input-group-text-sm">.{{ subdomain_base_domain|trim('.') }}</span>

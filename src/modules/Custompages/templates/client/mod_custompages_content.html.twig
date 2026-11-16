@@ -17,11 +17,12 @@
             {% if page.status == 'draft' %}
                 <div class="alert alert-warning mb-4" role="status">{{ 'This page is a draft. Only staff can see it.'|trans }}</div>
             {% endif %}
-            <div class="bf-page-head mb-4">
-                <h1 class="bf-page-title">{{ page.title }}</h1>
-            </div>
-            <div class="card mb-4">
-                <div class="card-body">
+            {# ClientFence core patch: a short hero with the title, the page in a glass card (CF-135 redesign). #}
+            <header class="bf-store-head cf-pub-head mb-4">
+                <h1>{{ page.title }}</h1>
+            </header>
+            <div class="card bf-card mb-4">
+                <div class="card-body p-4 p-lg-5">
                     {{ (page.content ?? '')|markdown_to_html }}
                 </div>
             </div>
