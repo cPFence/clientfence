@@ -15,16 +15,26 @@
     </div>
 </div>
 
+{# ClientFence core patch: each group a card with its icon tile and report count, the reports as rows (CF-135 redesign). #}
+{% set rep_look = { 'billing': ['receipt', 'teal'], 'clients': ['address-book', 'blue'], 'support': ['headset', 'violet'] } %}
 <div class="row row-cards">
-    {% for group in catalog %}
+    {% for gkey, group in catalog %}
+        {% set look = rep_look[gkey] ?? ['chart-bar', 'teal'] %}
         <div class="col-lg-4">
             <div class="card h-100">
-                <div class="card-header"><h3 class="card-title">{{ group.title }}</h3></div>
-                <div class="list-group list-group-flush">
+                <div class="card-header gap-3">
+                    <span class="bf-tile cf-tile-{{ look[1] }}" aria-hidden="true"><svg class="icon"><use href="#{{ look[0] }}" /></svg></span>
+                    <h3 class="card-title flex-fill">{{ group.title }}</h3>
+                    <span class="bf-chip"><bdi>{{ group.reports|length }}</bdi></span>
+                </div>
+                <div class="cf-rep-list">
                     {% for key, item in group.reports %}
-                        <a class="list-group-item list-group-item-action" href="{{ ('invoice/reports/' ~ key)|url }}">
-                            <div class="fw-medium">{{ item.title }}</div>
-                            <div class="text-secondary small">{{ item.description }}</div>
+                        <a class="bf-row" href="{{ ('invoice/reports/' ~ key)|url }}">
+                            <span class="bf-row-main">
+                                <span class="fw-semibold">{{ item.title }}</span>
+                                <span class="text-secondary small">{{ item.description }}</span>
+                            </span>
+                            <svg class="icon text-secondary flex-shrink-0 bf-flip" aria-hidden="true"><use href="#chevron-right" /></svg>
                         </a>
                     {% endfor %}
                 </div>
