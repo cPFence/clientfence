@@ -23,18 +23,15 @@
 {% block content %}
     {% set current_client_theme = admin.theme_get_current({ 'client': true }) %}
     {% set current_admin_theme = admin.theme_get_current({ 'client': false }) %}
-    <div class="card">
+    {# ClientFence core patch: each theme list a panel, the current theme's row tinted, no filler subtitles (CF-135 redesign). #}
+    <div class="card cf-sys">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Themes'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Choose the active client and admin themes, and open theme-specific settings where available.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Themes'|trans }}</h3>
         </div>
         <div class="card-body p-0">
-            <section>
-                <div class="card-body border-bottom">
-                    <h4 class="card-title mb-2">{{ 'Client Area Themes'|trans }}</h4>
-                    <p class="text-secondary mb-0">{{ 'These themes control the client-facing storefront, account area, and other public pages.'|trans }}</p>
+            <section class="cf-sys-sec">
+                <div class="card-body">
+                    <h4 class="card-title mb-0">{{ 'Client Area Themes'|trans }}</h4>
                 </div>
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter table-striped text-nowrap table-hover">
@@ -49,7 +46,7 @@
                         <tbody>
                         {% set themes = admin.theme_get_list({ 'per_page': 100 }) %}
                         {% for theme in themes.list %}
-                        <tr>
+                        <tr{% if current_client_theme.code == theme.code %} class="cf-sys-current"{% endif %}>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
                                     <span>{{ theme.code|capitalize }}</span>
@@ -99,10 +96,9 @@
                 </div>
             </section>
 
-            <section>
-                <div class="card-body border-top border-bottom">
-                    <h4 class="card-title mb-2">{{ 'Admin Area Themes'|trans }}</h4>
-                    <p class="text-secondary mb-0">{{ 'These themes control the administrator interface used by staff.'|trans }}</p>
+            <section class="cf-sys-sec">
+                <div class="card-body">
+                    <h4 class="card-title mb-0">{{ 'Admin Area Themes'|trans }}</h4>
                 </div>
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter table-striped text-nowrap table-hover">
@@ -117,7 +113,7 @@
                         <tbody>
                         {% set themes = admin.theme_get_admin_list({ 'per_page': 100 }) %}
                         {% for theme in themes.list %}
-                        <tr>
+                        <tr{% if current_admin_theme.code == theme.code %} class="cf-sys-current"{% endif %}>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
                                     <span>{{ theme.code|replace({ 'admin_': '' })|capitalize }}</span>

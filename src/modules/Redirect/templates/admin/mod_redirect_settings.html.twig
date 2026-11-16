@@ -90,12 +90,13 @@
         {% endif %}
     </div>
 
+    {# ClientFence core patch: paths read left to right in every language; a switched-off redirect is muted (CF-135 redesign). #}
     <template id="redirect-row-template">
         <tr>
-            <td class="text-break"><a data-field="path" target="_blank" rel="noopener"></a></td>
+            <td class="text-break"><a data-field="path" target="_blank" rel="noopener" dir="ltr"></a></td>
             <td class="text-break">
                 <svg class="icon text-secondary me-1"><use href="#arrow-right" /></svg>
-                <a data-field="target" target="_blank" rel="noopener noreferrer"></a>
+                <a data-field="target" target="_blank" rel="noopener noreferrer" dir="ltr"></a>
             </td>
             <td class="text-nowrap"><span class="badge" data-field="type"></span></td>
             <td>

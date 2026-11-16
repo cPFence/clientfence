@@ -22,12 +22,10 @@
 
 {% block content %}
 	{% set params = admin.extension_config_get({ 'ext': 'mod_activity' }) %}
-	<div class="card">
+	{# ClientFence core patch: the section mark on each retention card (cf-sys), no filler subtitles (CF-135 redesign). #}
+	<div class="card cf-sys">
 		<div class="card-header">
-			<div>
-				<h3 class="card-title">{{ 'Activity Settings'|trans }}</h3>
-				<p class="card-subtitle">{{ 'Control how long system activity and sent email logs are retained before automatic cleanup.'|trans }}</p>
-			</div>
+			<h3 class="card-title">{{ 'Activity Settings'|trans }}</h3>
 		</div>
 
 		<form method="post" action="{{ 'extension/config_save'|api_url }}" {{ fb_api_form({message: 'Configuration Updated'|trans}) }}>
@@ -41,8 +39,7 @@
 					<div class="col-lg-6">
 						<section class="card card-sm">
 							<div class="card-body">
-								<h4 class="card-title mb-2">{{ 'Activity Log Retention'|trans }}</h4>
-								<p class="text-secondary mb-3">{{ 'Automatically remove system activity logs older than the configured number of days.'|trans }}</p>
+								<h4 class="card-title mb-3">{{ 'Activity Log Retention'|trans }}</h4>
 								<label class="form-label" for="max_age">{{ 'Retention Period'|trans }}</label>
 								<div class="input-group">
 									<input class="form-control" id="max_age" name="max_age" type="number" min="0" value="{{ params.max_age|default(90) }}">
@@ -54,8 +51,7 @@
 					<div class="col-lg-6">
 						<section class="card card-sm">
 							<div class="card-body">
-								<h4 class="card-title mb-2">{{ 'Email Log Retention'|trans }}</h4>
-								<p class="text-secondary mb-3">{{ 'Automatically remove sent email history records older than the configured number of days.'|trans }}</p>
+								<h4 class="card-title mb-3">{{ 'Email Log Retention'|trans }}</h4>
 								<label class="form-label" for="email_max_age">{{ 'Retention Period'|trans }}</label>
 								<div class="input-group">
 									<input class="form-control" id="email_max_age" name="email_max_age" type="number" min="0" value="{{ params.email_max_age|default(0) }}">
@@ -67,9 +63,9 @@
 				</div>
 			</div>
 
-            <div class="card-footer text-end">
-                <button type="submit" class="btn btn-primary">{{ 'Update'|trans }}</button>
-            </div>
+			<div class="card-footer text-end">
+				<button type="submit" class="btn btn-primary">{{ 'Update'|trans }}</button>
+			</div>
 		</form>
 	</div>
 {% endblock %}
