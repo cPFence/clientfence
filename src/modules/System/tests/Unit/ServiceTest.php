@@ -75,9 +75,9 @@ test('getCompany returns company information', function (): void {
         'vat_number' => null,
         'invoice_title' => '',
         'tax_label' => '',
-        'brand_color' => '#2563eb',
+        'brand_color' => '#0e5a7a',
         'brand_text' => '#ffffff',
-        'brand_link' => '#2563eb',
+        'brand_link' => '#0e5a7a',
     ];
 
     $multParamsResults = [

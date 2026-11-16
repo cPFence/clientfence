@@ -94,7 +94,7 @@ test('a color or sign-in style that is not offered is refused', function (): voi
         ->and(fn () => Branding::save($di, '#2672e3', 'neon'))->toThrow(InformationException::class);
 });
 
-test('emails keep their blue with the default color and take a custom one, with readable text and links (GitHub #10)', function (?string $color, array $expected): void {
+test('emails take the theme color by default and a custom one, with readable text and links (GitHub #10)', function (?string $color, array $expected): void {
     $connection = Mockery::mock(Doctrine\DBAL\Connection::class);
     $connection->shouldReceive('fetchAllKeyValue')->andReturn($color === null ? [] : [Branding::COLOR => $color]);
     $em = Mockery::mock();
@@ -103,8 +103,9 @@ test('emails keep their blue with the default color and take a custom one, with 
 
     expect(Branding::email(new Pimple\Container(['em' => $em])))->toBe($expected);
 })->with([
-    'no color set' => [null, ['color' => '#2563eb', 'text' => '#ffffff', 'link' => '#2563eb']],
-    'the default color' => ['#2672e3', ['color' => '#2563eb', 'text' => '#ffffff', 'link' => '#2563eb']],
+    'no color set' => [null, ['color' => '#0e5a7a', 'text' => '#ffffff', 'link' => '#0e5a7a']],
+    'the default color' => ['#0e5a7a', ['color' => '#0e5a7a', 'text' => '#ffffff', 'link' => '#0e5a7a']],
+    'the default before 1.0.56, saved without a stylesheet' => ['#2672e3', ['color' => '#0e5a7a', 'text' => '#ffffff', 'link' => '#0e5a7a']],
     'a dark color' => ['#7c2d12', ['color' => '#7c2d12', 'text' => '#ffffff', 'link' => '#7c2d12']],
     'a light color' => ['#facc15', ['color' => '#facc15', 'text' => '#111827', 'link' => Branding::mix('#facc15', '#000000', 0.45)]],
 ]);

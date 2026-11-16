@@ -1,7 +1,7 @@
 /* ClientFence setup wizard (Clientfence module, mod_clientfence_setup.html.twig; the page script is
    clientfence-setup.js). A full-screen page: a step list on the side, one step at a time, and a
-   live preview of the brand on the branding step. --cf-accent follows the brand color as it is
-   picked; the preview mocks use the --cfp-* colors set by the script. */
+   live preview of the brand on the branding step. The page keeps the admin's colors and buttons
+   (clientfence-admin.css); the preview mocks use the --cfp-* colors set by the script. */
 
 .cf-setup {
   --cf-accent: var(--tblr-primary);
@@ -14,13 +14,6 @@
     radial-gradient(1200px 500px at 100% -10%, rgba(var(--cf-accent-rgb), .10), transparent 60%),
     radial-gradient(900px 400px at -10% 110%, rgba(var(--cf-accent-rgb), .07), transparent 60%),
     var(--tblr-bg-surface-secondary, #f6f8fb);
-}
-
-.cf-setup .btn-primary {
-  --tblr-btn-bg: var(--cf-accent);
-  --tblr-btn-border-color: var(--cf-accent);
-  --tblr-btn-hover-bg: var(--cf-accent);
-  --tblr-btn-hover-border-color: var(--cf-accent);
 }
 
 .cf-setup-top {
@@ -238,7 +231,7 @@
   border: 1px solid var(--tblr-border-color, #e6e7e9);
 }
 
-.cf-drop.is-dark .cf-drop-preview { background: #0c1422; border-color: #0c1422; }
+.cf-drop.is-dark .cf-drop-preview { background: #0c2738; border-color: #0c2738; }
 .cf-drop.is-icon .cf-drop-preview { width: 3.75rem; }
 .cf-drop-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .cf-drop-empty { width: 1.5rem; height: 1.5rem; color: var(--tblr-secondary, #8b95a1); }
@@ -308,9 +301,9 @@
 }
 
 .cf-style-thumb span:last-child { background: #fff; }
-.cf-style-thumb.is-dark span:first-child { background: radial-gradient(circle at 20% 15%, rgba(var(--cfp-accent-rgb, 99, 160, 255), .45), transparent 60%), linear-gradient(160deg, #0c1422, #060a12); }
-.cf-style-thumb.is-brand span:first-child { background: linear-gradient(150deg, var(--cfp-brand, #2672e3), var(--cfp-deep, #153f7d)); }
-.cf-style-thumb.is-light span:first-child { background: linear-gradient(160deg, var(--cfp-subtle, #e9f1fc), #fff); border-right: 1px solid #e6e7e9; }
+.cf-style-thumb.is-dark span:first-child { background: radial-gradient(circle at 20% 15%, rgba(var(--cfp-accent-rgb, 20, 163, 154), .45), transparent 60%), linear-gradient(160deg, #0c2738, #05131c); }
+.cf-style-thumb.is-brand span:first-child { background: linear-gradient(150deg, var(--cfp-brand, #0e5a7a), var(--cfp-deep, #0a4862)); }
+.cf-style-thumb.is-light span:first-child { background: linear-gradient(160deg, var(--cfp-subtle, #dbe6eb), #fff); border-right: 1px solid #e6e7e9; }
 
 /* ---- live preview (mock pages) ---- */
 .cf-preview {
@@ -322,10 +315,11 @@
   border-radius: var(--cf-radius);
   background: var(--tblr-bg-surface-secondary, #f6f8fb);
   border: 1px solid var(--tblr-border-color, #e6e7e9);
-  --cfp-brand: #2672e3;
+  --cfp-brand: #0e5a7a;
   --cfp-text: #fff;
-  --cfp-deep: #153f7d;
-  --cfp-subtle: #e9f1fc;
+  --cfp-deep: #0a4862;
+  --cfp-accent: #14a39a;
+  --cfp-subtle: #dbe6eb;
 }
 
 .cf-preview-label { font-size: .6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--tblr-secondary, #667382); }
@@ -348,7 +342,8 @@
   justify-content: center;
   padding: .3rem .7rem;
   border-radius: 6px;
-  background: var(--cfp-brand);
+  background: linear-gradient(135deg, var(--cfp-brand), color-mix(in srgb, var(--cfp-accent) 80%, var(--cfp-brand)));
+  box-shadow: 0 4px 12px -6px var(--cfp-brand);
   color: var(--cfp-text);
   font-weight: 600;
   font-size: .6875rem;
@@ -363,10 +358,13 @@
 .cf-mock-pill { display: inline-block; margin-top: .35rem; padding: .1rem .5rem; border-radius: 1rem; background: var(--cfp-subtle); color: var(--cfp-deep); font-weight: 600; font-size: .625rem; }
 .cf-mock-pill.is-warn { background: #fef3c7; color: #92400e; margin: 0; }
 
-.cf-mock-bar { display: flex; align-items: center; gap: .75rem; padding: .55rem .75rem; border-bottom: 1px solid #eef1f4; }
-.cf-mock-nav { display: flex; gap: .4rem; margin-inline-start: auto; }
-.cf-mock-nav i { width: 1.6rem; height: 5px; border-radius: 3px; background: #e2e7ee; }
-.cf-mock-nav i:first-child { background: var(--cfp-brand); opacity: .7; }
+.cf-mock-client { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); }
+/* The client area's side menu: a navy rail with the dark logo, the open page in the brand gradient. */
+.cf-mock-rail { display: grid; align-content: start; gap: .4rem; padding: .6rem; background: #0c2738; color: #fff; }
+.cf-mock-rail .cf-mock-logo { margin-bottom: .35rem; max-width: 100%; }
+.cf-mock-rail i { display: block; height: .85rem; border-radius: 5px; background: rgba(255, 255, 255, .12); }
+.cf-mock-rail i.is-active { background: linear-gradient(135deg, var(--cfp-brand), var(--cfp-deep)); }
+.cf-mock-bar { display: flex; justify-content: flex-end; padding: .5rem .75rem; border-bottom: 1px solid #eef1f4; }
 .cf-mock-hero { padding: .75rem; }
 
 .cf-mock-login { display: grid; grid-template-columns: 2fr 3fr; min-height: 8.5rem; }
@@ -377,7 +375,7 @@
   gap: .25rem;
   padding: .75rem;
   color: #e6ebf3;
-  background: radial-gradient(circle at 20% 15%, rgba(var(--cfp-accent-rgb, 99, 160, 255), .35), transparent 55%), linear-gradient(160deg, #0c1422, #060a12);
+  background: radial-gradient(circle at 20% 15%, rgba(var(--cfp-accent-rgb, 20, 163, 154), .35), transparent 55%), linear-gradient(160deg, #0c2738, #05131c);
 }
 
 .cf-mock-side-h { margin-top: auto; font-weight: 700; font-size: .8125rem; color: #fff; }

@@ -24,7 +24,8 @@ final class Branding
     public const string COLOR = 'clientfence_brand_color';
     public const string LOGIN_STYLE = 'clientfence_login_style';
     public const string CSS = 'clientfence_brand_css';
-    public const string DEFAULT_COLOR = '#2672e3';
+    /** The client theme's own brand color (palisade.scss $brand): no stylesheet is written for it. */
+    public const string DEFAULT_COLOR = '#0e5a7a';
     public const array LOGIN_STYLES = ['dark', 'brand', 'light'];
     public const string DIR = 'public/uploads/brand';
 
@@ -61,6 +62,10 @@ final class Branding
         $style = (string) ($rows[self::LOGIN_STYLE] ?? '');
         $css = (string) ($rows[self::CSS] ?? '');
         $cssOk = $css !== '' && preg_match('#\A' . preg_quote(self::DIR, '#') . '/brand-[a-f0-9]{12}\.css\z#', $css) === 1;
+        // The default before 1.0.56, saved without a stylesheet: those sites show the theme's own color.
+        if ($color === '#2672e3' && !$cssOk) {
+            $color = self::DEFAULT_COLOR;
+        }
 
         return self::$cache[$key] = [
             'color' => $color,
@@ -159,8 +164,7 @@ final class Branding
     }
 
     /**
-     * The colors of the email templates: the custom brand color with its text and link colors, or the emails' own
-     * blue while the brand color is the default (GitHub #10).
+     * The colors of the email templates: the brand color with its text and link colors (GitHub #10).
      *
      * @return array{color: string, text: string, link: string}
      */
@@ -168,7 +172,7 @@ final class Branding
     {
         $brand = self::get($di);
         if (!$brand['custom']) {
-            return ['color' => '#2563eb', 'text' => '#ffffff', 'link' => '#2563eb'];
+            return ['color' => self::DEFAULT_COLOR, 'text' => '#ffffff', 'link' => self::DEFAULT_COLOR];
         }
         $text = self::textOn($brand['color']);
 

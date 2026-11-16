@@ -456,7 +456,7 @@ body { font-family: var(--bf-font); }
 .bf-auth-title + form, .bf-auth-title + div { margin-top: 24px; }
 .bf-auth-card .form-label { font-weight: 500; color: var(--bf-ink); }
 .bf-auth-card .form-control { min-height: 46px; padding: 10px 14px; border-radius: 10px; border-color: var(--bf-line); background: var(--bf-surface); color: var(--bf-ink); font-size: 15px; }
-.bf-auth-card .form-control:focus { border-color: var(--bf-brand); box-shadow: 0 0 0 3px rgba(38, 114, 227, .18); }
+.bf-auth-card .form-control:focus { border-color: var(--bf-brand); box-shadow: 0 0 0 3px rgba(var(--tblr-primary-rgb), .18); }
 .bf-auth-card .form-label-description a { font-weight: 500; }
 .bf-auth-card .form-footer { margin-top: 24px; }
 .bf-auth-card .form-footer .btn { width: 100%; min-height: 46px; border-radius: 10px; background: var(--bf-brand); border-color: var(--bf-brand); font-size: 15px; font-weight: 600; }
@@ -1032,28 +1032,28 @@ a.bf-file-name:hover .icon { color: inherit; }
 .bf-body td .btn-icon:not([class*="ghost"]):is(:hover, :focus-visible) { background: color-mix(in srgb, var(--bf-teal) 12%, transparent); color: var(--bf-teal); }
 .bf-body td .btn-icon:not([class*="ghost"]):has(use[href="#trash"]):is(:hover, :focus-visible) { background: color-mix(in srgb, var(--bf-bad) 12%, transparent); color: var(--bf-bad); }
 
-/* Buttons: a navy-to-teal primary with a soft glow, a small press. */
-.bf-shell .btn { transition: transform .2s var(--bf-ease), box-shadow .25s, background-color .25s, border-color .25s; }
-.bf-shell .btn:hover { transform: translateY(-1px); }
-.bf-shell .btn:active { transform: translateY(0) scale(.98); }
+/* Buttons: a navy-to-teal primary with a soft glow, a small press (also on the setup wizard, a page without the shell). */
+:is(.bf-shell, .cf-setup) .btn { transition: transform .2s var(--bf-ease), box-shadow .25s, background-color .25s, border-color .25s; }
+:is(.bf-shell, .cf-setup) .btn:hover { transform: translateY(-1px); }
+:is(.bf-shell, .cf-setup) .btn:active { transform: translateY(0) scale(.98); }
 /* Secondary buttons hover in the theme's soft teal instead of Tabler's flat grey fill. */
-.bf-shell :is(.btn-outline-secondary, .btn-ghost-secondary) {
+:is(.bf-shell, .cf-setup) :is(.btn-outline-secondary, .btn-ghost-secondary) {
   --tblr-btn-hover-bg: var(--bf-soft); --tblr-btn-hover-color: var(--bf-soft-ink);
   --tblr-btn-hover-border-color: color-mix(in srgb, var(--bf-teal) 45%, transparent);
   --tblr-btn-active-bg: var(--bf-soft); --tblr-btn-active-color: var(--bf-soft-ink);
   --tblr-btn-active-border-color: color-mix(in srgb, var(--bf-teal) 60%, transparent);
 }
-.bf-shell .btn-primary, .bf-shell .btn-primary:hover, .bf-shell .btn-primary:focus {
+:is(.bf-shell, .cf-setup) .btn-primary, :is(.bf-shell, .cf-setup) .btn-primary:hover, :is(.bf-shell, .cf-setup) .btn-primary:focus {
   background-image: linear-gradient(135deg, var(--bf-brand), color-mix(in srgb, var(--bf-teal) 80%, var(--bf-brand)));
   border-color: transparent; box-shadow: 0 6px 18px -8px var(--bf-brand);
 }
-.bf-shell .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--bf-teal); }
+:is(.bf-shell, .cf-setup) .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--bf-teal); }
 /* Dark mode: primary buttons keep the client area's deep brand gradient (the lighter dark --bf-brand is for text and links). */
-[data-bs-theme="dark"] .bf-shell :is(.btn-primary, .btn-primary:hover, .btn-primary:focus) {
+[data-bs-theme="dark"] :is(.bf-shell, .cf-setup) :is(.btn-primary, .btn-primary:hover, .btn-primary:focus) {
   background-image: linear-gradient(135deg, var(--pal-brand, #0e5a7a), color-mix(in srgb, var(--pal-accent, #14a39a) 80%, var(--pal-brand, #0e5a7a)));
   box-shadow: 0 6px 18px -8px var(--pal-brand, #0e5a7a);
 }
-[data-bs-theme="dark"] .bf-shell .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--pal-accent, #14a39a); }
+[data-bs-theme="dark"] :is(.bf-shell, .cf-setup) .btn-primary:hover { box-shadow: 0 10px 26px -8px var(--pal-accent, #14a39a); }
 .bf-shell .btn-success { background-image: linear-gradient(135deg, #14a39a, #1bb7a0); border-color: transparent; }
 
 /* Tabs: the active one underlined in navy to teal. */

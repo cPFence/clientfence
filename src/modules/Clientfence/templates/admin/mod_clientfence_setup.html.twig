@@ -119,7 +119,7 @@
 
                         <h2 class="cf-setup-h2 mt-4">{{ 'Brand color'|trans }}</h2>
                         <div class="cf-swatches" role="radiogroup" aria-label="{{ 'Brand color'|trans }}" data-cf-swatches>
-                            {% for swatch in ['#2672e3', '#4f46e5', '#7c3aed', '#c026d3', '#db2777', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#0d9488', '#0891b2', '#334155'] %}
+                            {% for swatch in ['#0e5a7a', '#2672e3', '#4f46e5', '#7c3aed', '#c026d3', '#db2777', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#0891b2', '#334155'] %}
                                 <button type="button" class="cf-swatch" data-cf-swatch="{{ swatch }}" aria-label="{{ swatch }}" role="radio" aria-checked="false"></button>
                             {% endfor %}
                         </div>
@@ -155,16 +155,18 @@
                         <div class="cf-preview-label">{{ 'Live preview'|trans }}</div>
 
                         <div class="cf-mock cf-mock-client">
-                            <div class="cf-mock-bar">
-                                <span class="cf-mock-logo" data-cf-preview-logo="logo"><img alt="" hidden><b data-cf-preview-name>{{ biz.company_name }}</b></span>
-                                <span class="cf-mock-nav"><i></i><i></i><i></i></span>
-                                <span class="cf-mock-btn">{{ 'Order now'|trans }}</span>
+                            <div class="cf-mock-rail">
+                                <span class="cf-mock-logo" data-cf-preview-logo="rail"><img alt="" hidden><b data-cf-preview-name>{{ biz.company_name }}</b></span>
+                                <i class="is-active"></i><i></i><i></i><i></i>
                             </div>
-                            <div class="cf-mock-hero">
-                                <span class="cf-mock-h">{{ 'Welcome back'|trans }}</span>
-                                <span class="cf-mock-pill">{{ 'Active'|trans }}</span>
-                                <span class="cf-mock-line"></span><span class="cf-mock-line is-short"></span>
-                                <span class="cf-mock-link">{{ 'View invoices'|trans }} →</span>
+                            <div class="cf-mock-main">
+                                <div class="cf-mock-bar"><span class="cf-mock-btn">{{ 'Order now'|trans }}</span></div>
+                                <div class="cf-mock-hero">
+                                    <span class="cf-mock-h">{{ 'Welcome back'|trans }}</span>
+                                    <span class="cf-mock-pill">{{ 'Active'|trans }}</span>
+                                    <span class="cf-mock-line"></span><span class="cf-mock-line is-short"></span>
+                                    <span class="cf-mock-link">{{ 'View invoices'|trans }} →</span>
+                                </div>
                             </div>
                         </div>
 

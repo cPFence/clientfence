@@ -293,21 +293,21 @@ if (root) {
     const color = normalize(hex);
     if (!color) return;
     const textColor = luminance(color) > 0.18 ? '#111827' : '#ffffff';
-    const accent = mix(color, '#ffffff', 0.3);
+    // The default color writes no stylesheet: the client area keeps the theme's own shades (palisade.scss).
+    const theme = color === root.dataset.defaultColor;
+    const accent = theme ? '#14a39a' : mix(color, '#ffffff', 0.3);
     const vars = {
       '--cfp-brand': color,
       '--cfp-text': textColor,
-      '--cfp-deep': mix(color, '#000000', 0.45),
+      '--cfp-deep': theme ? '#0a4862' : mix(color, '#000000', 0.45),
       '--cfp-subtle': mix(color, '#ffffff', 0.85),
+      '--cfp-accent': accent,
       '--cfp-accent-rgb': toRgb(accent).join(', '),
     };
     for (const [name, value] of Object.entries(vars)) {
       preview?.style.setProperty(name, value);
       root.style.setProperty(name, value);
     }
-    // The wizard itself takes the color too.
-    root.style.setProperty('--cf-accent', color);
-    root.style.setProperty('--cf-accent-rgb', toRgb(color).join(', '));
     if (from !== 'hex' && hexInput) hexInput.value = color;
     if (from !== 'picker' && picker) picker.value = color;
     swatchBox?.querySelectorAll('[data-cf-swatch]').forEach((s) => s.setAttribute('aria-checked', String(s.dataset.cfSwatch === color)));
@@ -348,7 +348,8 @@ if (root) {
     const light = logoUrl('logo') || logoUrl('logo_dark');
     const dark = logoUrl('logo_dark') || logoUrl('logo');
     root.querySelectorAll('[data-cf-preview-logo]').forEach((holder) => {
-      const src = holder.dataset.cfPreviewLogo === 'side' && style !== 'light' ? dark : light;
+      const place = holder.dataset.cfPreviewLogo;
+      const src = place === 'rail' || (place === 'side' && style !== 'light') ? dark : light;
       const img = holder.querySelector('img');
       const name = holder.querySelector('b');
       img.hidden = !src;
