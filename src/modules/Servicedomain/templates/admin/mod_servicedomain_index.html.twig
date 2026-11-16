@@ -23,10 +23,7 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Domain Management'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage TLD pricing, registrars, extension installs, and default nameserver settings.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Domain Management'|trans }}</h3>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
             <div class="card border-0 shadow-none rounded-0">
@@ -56,7 +53,6 @@
                         </div>
                         <div class="px-3 pt-3">
                             <h5>{{ 'Manage TLDs'|trans }}</h5>
-                            <p class="text-muted">{{ 'Set domain pricing, control allowed operations, and assign a registrar for each top level domain.'|trans }}</p>
                             {# ClientFence core patch: search and pages (imported price lists have hundreds of TLDs). #}
                             <form method="get" action="{{ 'servicedomain'|url }}#tab-tlds" class="row g-2 mb-3">
                                 <div class="col-sm-8 col-lg-4">
@@ -81,7 +77,8 @@
                             </form>
                         </div>
                         <div class="table-responsive">
-                            <table class="table card-table table-vcenter table-striped text-nowrap sortable">
+                            {# ClientFence core patch: the TLD prices in even figures and the allowed operations as chips (CF-135 redesign). #}
+                            <table class="table card-table table-vcenter table-striped text-nowrap sortable cf-tld-table">
                                 <thead>
                                     <tr>
                                         <th>{{ 'TLD'|trans }}</th>
@@ -99,16 +96,18 @@
                                     {% for tld in tlds.list %}
                                     <tr>
                                         <td>
-                                            <a href='{{ "servicedomain/id/#{tld.id}"|url }}'>{{ tld.tld }}</a>
+                                            <a class="fw-semibold" href='{{ "servicedomain/id/#{tld.id}"|url }}'><bdi>{{ tld.tld }}</bdi></a>
                                             {% if tld.price_locked %}<span class="badge bg-secondary-lt ms-1" title="{{ 'The price import and the scheduled sync leave this extension\'s prices alone.'|trans }}">{{ 'Keep my price'|trans }}</span>{% endif %}
                                         </td>
                                         <td>{{ tld.price_registration|format_currency(currency.code) }}</td>
                                         <td>{{ tld.price_renew|format_currency(currency.code) }}</td>
                                         <td>{{ tld.price_transfer|format_currency(currency.code) }}</td>
                                         <td>
-                                            {{ 'Allow register:'|trans }} {% if tld.allow_register %}{{ 'Yes'|trans }}{% else %}{{ 'No'|trans }}{% endif %}<br>
-                                            {{ 'Allow transfer:'|trans }} {% if tld.allow_transfer %}{{ 'Yes'|trans }}{% else %}{{ 'No'|trans }}{% endif %}<br>
-                                            {{ 'Require transfer code:'|trans }} {% if tld.require_transfer_code %}{{ 'Yes'|trans }}{% else %}{{ 'No'|trans }}{% endif %}<br>
+                                            <div class="cf-tld-ops">
+                                                <span class="bf-chip{% if tld.allow_register %} bf-tone-ok{% endif %}">{{ 'Allow register:'|trans }} {% if tld.allow_register %}{{ 'Yes'|trans }}{% else %}{{ 'No'|trans }}{% endif %}</span>
+                                                <span class="bf-chip{% if tld.allow_transfer %} bf-tone-ok{% endif %}">{{ 'Allow transfer:'|trans }} {% if tld.allow_transfer %}{{ 'Yes'|trans }}{% else %}{{ 'No'|trans }}{% endif %}</span>
+                                                <span class="bf-chip">{{ 'Require transfer code:'|trans }} {% if tld.require_transfer_code %}{{ 'Yes'|trans }}{% else %}{{ 'No'|trans }}{% endif %}</span>
+                                            </div>
                                             {# ClientFence core patch: one click puts an imported (inactive) TLD on sale. #}
                                             <label class="form-check form-switch mb-0 mt-1">
                                                 <input class="form-check-input" type="checkbox" data-cf-tld-active="{{ tld.tld }}"{% if tld.active %} checked{% endif %}>
@@ -155,7 +154,6 @@
                         </div>
                         <div class="px-3 pt-3">
                             <h5>{{ 'Domain Registrars'|trans }}</h5>
-                            <p class="text-muted">{{ 'Manage installed registrars and configure the providers available for domain operations.'|trans }}</p>
                         </div>
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter table-striped text-nowrap">
@@ -169,7 +167,11 @@
                                     {% for registrar in admin.servicedomain_registrar_get_list.list %}
                                     <tr>
                                         <td>
-                                            <a href='{{ "servicedomain/registrar/#{registrar.id}"|url }}'>{{ registrar.title }}</a>
+                                            {# ClientFence core patch: each registrar with its initial in a tile (CF-135 redesign). #}
+                                            <span class="d-inline-flex align-items-center gap-2">
+                                                <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ registrar.title|first|upper }}</span>
+                                                <a class="fw-semibold" href='{{ "servicedomain/registrar/#{registrar.id}"|url }}'>{{ registrar.title }}</a>
+                                            </span>
                                         </td>
                                         <td>
                                             <a class="btn btn-icon" href="{{ 'servicedomain/registrar_copy'|api_url(query: { 'id': registrar.id }) }}" title="{{ 'Copy'|trans }}" {{ fb_api_link({redirect: 'servicedomain#tab-registrars'|url}) }}>

@@ -8,10 +8,7 @@
 {% block content %}
     <div class="card">
         <div class="card-header">
-            <div>
-                <h3 class="card-title">{{ 'Settings'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Open module-level configuration screens for billing, support, localization, themes, and other system features.'|trans }}</p>
-            </div>
+            <h3 class="card-title">{{ 'Settings'|trans }}</h3>
             {# ClientFence core patch: setup wizard link (Clientfence Setup.php), for Super Administrators. #}
             {% if admin.clientfence_setup_allowed %}
                 <div class="card-actions">
@@ -23,41 +20,45 @@
             {% endif %}
         </div>
         <div class="card-body">
-            <div class="row row-cards">
-                {% for ext in settings_extensions %}
-                    <div class="col-md-6 col-xl-4">
-                        <a class="card card-sm card-link h-100 text-reset" href='{{ "extension/settings/#{ext.id}"|url }}'>
-                            <div class="card-body">
-                                <div class="d-flex align-items-start gap-3">
-                                    {% set icon_filename = ext.icon_url|split('/')|last %}
-                                    {% if (icon_filename != 'cog.svg') and (icon_filename|split('.')|last == 'svg' and ext.icon_path) %}
-                                        <div class="text-primary flex-shrink-0" style="width: 24px; height: 24px;">
-                                            {{ source(ext.icon_path, ignore_missing = true) }}
-                                        </div>
-                                    {% else %}
-                                        <img class="flex-shrink-0" src="{{ ext.icon_url }}" alt="{{ ext.name }}" style="width: 32px; height: 32px;">
-                                    {% endif %}
-                                    <div class="flex-fill min-w-0">
-                                        <div class="d-flex align-items-start justify-content-between gap-2">
-                                            <div>
+            {# ClientFence core patch: the settings cards in groups, each with an icon tile in its group's shade (CF-135 redesign). #}
+            {% set hub_group = { 'invoice': 'billing', 'currency': 'billing', 'order': 'billing', 'formbuilder': 'billing', 'client': 'clients', 'support': 'clients', 'email': 'clients', 'security': 'security', 'antispam': 'security' } %}
+            {% set hub_groups = { 'billing': { 'title': 'Billing'|trans, 'shade': 'teal' }, 'clients': { 'title': 'Clients'|trans, 'shade': 'blue' }, 'security': { 'title': 'Security'|trans, 'shade': 'amber' }, 'system': { 'title': 'System'|trans, 'shade': 'violet' } } %}
+            {% for key, group in hub_groups %}
+                {% set exts = settings_extensions|filter(e => (hub_group[e.id] ?? 'system') == key) %}
+                {% if exts is not empty %}
+                    <section class="cf-hub-group">
+                        <h4 class="cf-label">{{ group.title }}</h4>
+                        <div class="row row-cards">
+                            {% for ext in exts %}
+                                <div class="col-md-6 col-xl-4">
+                                    <a class="card card-sm card-link h-100 text-reset cf-hub-card" href='{{ "extension/settings/#{ext.id}"|url }}'>
+                                        <div class="card-body d-flex align-items-center gap-3">
+                                            {% set icon_filename = ext.icon_url|split('/')|last %}
+                                            <span class="bf-tile cf-tile-{{ group.shade }}" aria-hidden="true">
+                                                {% if (icon_filename != 'cog.svg') and (icon_filename|split('.')|last == 'svg' and ext.icon_path) %}
+                                                    {{ source(ext.icon_path, ignore_missing = true) }}
+                                                {% else %}
+                                                    <img src="{{ ext.icon_url }}" alt="">
+                                                {% endif %}
+                                            </span>
+                                            <div class="flex-fill min-w-0">
                                                 <div class="fw-semibold">{{ ext.name|trans }}</div>
                                                 <div class="text-secondary small">{{ ext.description ? ext.description|trans : 'Manage module settings and operational defaults.'|trans }}</div>
                                             </div>
-                                            <svg class="icon text-secondary flex-shrink-0">
+                                            <svg class="icon text-secondary flex-shrink-0 bf-flip" aria-hidden="true">
                                                 <use href="#chevron-right" />
                                             </svg>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="col-12">
-                        <div class="text-muted text-center py-3">{{ 'No configurable modules were found.'|trans }}</div>
-                    </div>
-                {% endfor %}
-            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+            {% endfor %}
+            {% if settings_extensions is empty %}
+                <div class="text-muted text-center py-3">{{ 'No configurable modules were found.'|trans }}</div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

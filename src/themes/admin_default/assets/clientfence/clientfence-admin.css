@@ -1248,4 +1248,72 @@ a.bf-file-name:hover .icon { color: inherit; }
   .cf-hero-card { animation: none; }
   .cf-code, .cf-avatar-stack { transition: none; }
   .cf-avatar-stack:hover { translate: none; }
+
+/* ---- CF-135 part 3: admin settings, reports and domains ---- */
+/* Icon tiles in colour shades (settings hub, reports). */
+.bf-tile:is(.cf-tile-teal, .cf-tile-blue, .cf-tile-violet, .cf-tile-amber) {
+  --cf-shade: var(--bf-teal);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--cf-shade) 22%, transparent), color-mix(in srgb, var(--cf-shade) 8%, transparent));
+  color: var(--cf-shade);
+}
+.bf-tile.cf-tile-blue { --cf-shade: var(--bf-brand); }
+.bf-tile.cf-tile-violet { --cf-shade: var(--bf-violet); }
+.bf-tile.cf-tile-amber { --cf-shade: var(--bf-warn); }
+.bf-tile > svg:not(.icon) { width: 22px; height: 22px; }
+.bf-tile > img { width: 24px; height: 24px; object-fit: contain; }
+
+/* Settings hub: the cards in groups; on hover the card lifts (.card-sm), the tile grows, the chevron moves on. */
+.cf-hub-group + .cf-hub-group { margin-top: 28px; }
+.cf-hub-group > .cf-label { margin-bottom: 12px; }
+.cf-hub-card .bf-tile, .cf-hub-card .bf-flip { transition: scale .3s var(--bf-ease), translate .3s var(--bf-ease), color .3s; }
+.cf-hub-card:hover .bf-tile { scale: 1.08; }
+.cf-hub-card:hover .bf-flip { translate: 3px 0; color: var(--bf-teal) !important; }
+[dir="rtl"] .cf-hub-card:hover .bf-flip { translate: -3px 0; }
+
+/* Reports: the reports of a group as rows that tint and move in on hover. */
+.cf-rep-list > .bf-row:first-child { border-top: 0; }
+.cf-rep-list > .bf-row { transition: background-color .2s, padding .25s var(--bf-ease); }
+.cf-rep-list > .bf-row:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--bf-teal) 9%, transparent), transparent 70%); padding-inline-start: 26px; }
+[dir="rtl"] .cf-rep-list > .bf-row:hover { background: linear-gradient(270deg, color-mix(in srgb, var(--bf-teal) 9%, transparent), transparent 70%); }
+
+/* One domain: the hero on a soft teal glow, long values wrap. */
+.cf-dom > .cf-inv-hero {
+  padding-top: 20px; border-start-start-radius: 13px; border-start-end-radius: 13px;
+  background: radial-gradient(460px 180px at 0% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%);
+}
+[dir="rtl"] .cf-dom > .cf-inv-hero { background: radial-gradient(460px 180px at 100% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%); }
+.cf-dom .cf-facts dd { overflow-wrap: anywhere; }
+.cf-dom .cf-inv-chips .badge { white-space: normal; text-align: start; }
+
+/* Domain TLDs: prices in even figures, the allowed operations as chips. */
+.cf-tld-table td { font-variant-numeric: tabular-nums; }
+.cf-tld-ops { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.cf-tld-ops .bf-chip { font-weight: 600; }
+
+/* Settings pages: pill tabs, section headings with a navy-to-teal bar, a teal focus ring and switches,
+   a lightly tinted form footer. */
+.bf-body .nav-pills { gap: 4px; }
+.bf-body .nav-pills .nav-link { border-radius: 999px; padding-inline: 14px; font-weight: 600; color: var(--bf-muted); transition: background-color .25s, color .25s, box-shadow .25s; }
+.bf-body .nav-pills .nav-link:hover { background: color-mix(in srgb, var(--bf-teal) 10%, transparent); color: var(--bf-ink); }
+.bf-body .nav-pills .nav-link.active, .bf-body .nav-pills .show > .nav-link {
+  background: var(--bf-soft); color: var(--bf-soft-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bf-brand) 30%, transparent);
+}
+.bf-body .card-body > h4.card-title { display: flex; align-items: center; gap: 8px; }
+.bf-body .card-body > h4.card-title::before {
+  content: ""; flex: none; width: 4px; height: 1em; border-radius: 4px;
+  background: linear-gradient(180deg, var(--bf-brand), var(--bf-teal));
+}
+.bf-body .form-control:focus, .bf-body .form-select:focus {
+  border-color: color-mix(in srgb, var(--bf-teal) 60%, var(--bf-line));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--bf-teal) 14%, transparent);
+}
+.bf-body .form-check-input:checked { background-color: var(--bf-teal); border-color: var(--bf-teal); }
+.bf-body form .card-footer { background: linear-gradient(180deg, color-mix(in srgb, var(--bf-teal) 5%, transparent), transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-hub-card .bf-tile, .cf-hub-card .bf-flip, .cf-rep-list > .bf-row, .bf-body .nav-pills .nav-link { transition: none; }
+  .cf-hub-card:hover .bf-tile { scale: none; }
+  .cf-hub-card:hover .bf-flip, [dir="rtl"] .cf-hub-card:hover .bf-flip { translate: none; }
+  .cf-rep-list > .bf-row:hover { padding-inline-start: 20px; }
 }

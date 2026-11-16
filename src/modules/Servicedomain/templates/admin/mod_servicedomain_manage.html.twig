@@ -1,97 +1,57 @@
 {% import 'macro_functions.html.twig' as mf %}
 <div class="card-body">
     <div class="card mb-4">
-        <div class="card-body">
-            <div class="d-flex flex-column gap-1">
-                <h5 class="card-title mb-0">{{ 'Domain Service Details'|trans }}</h5>
-                <p class="text-secondary mb-0">{{ 'Review registrar status, nameservers, and core registration data for this domain service.'|trans }}</p>
-            </div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table card-table table-vcenter table-striped text-nowrap">
-                <tbody>
-                    <tr>
-                        <td class="w-50 text-end">{{ 'Domain'|trans }}:</td>
-                        <td>
-                            <a target="_blank" href="https://{{ service.domain }}">{{ service.domain }}</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Registrar'|trans }}:</td>
-                        <td>{{ service.registrar }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Nameserver 1'|trans }}:</td>
-                        <td>{{ service.ns1 }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Nameserver 2'|trans }}:</td>
-                        <td>{{ service.ns2 }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Nameserver 3'|trans }}:</td>
-                        <td>{{ service.ns3 }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Nameserver 4'|trans }}:</td>
-                        <td>{{ service.ns4 }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Transfer Code'|trans }}:</td>
-                        <td>{{ service.transfer_code }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Locked'|trans }}:</td>
-                        <td id="locked-value">{{ mf.boolean_badge(service.locked, 'Yes'|trans, 'No'|trans, 'text-bg-danger', 'text-bg-success') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Privacy Protection'|trans }}:</td>
-                        <td id="privacy-value">{{ mf.boolean_badge(service.privacy, 'Enabled'|trans, 'Disabled'|trans, 'text-bg-danger', 'text-bg-success') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Registration/Renewal Years'|trans }}:</td>
-                        <td>{{ service.period }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Registration Date'|trans }}:</td>
-                        <td>{{ service.registered_at|format_date }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-end">{{ 'Expires At'|trans }}:</td>
-                        <td>
-                            {{ service.expires_at|format_date }}
-                            {# ClientFence core patch: a registrar expiry before the order's next due date (DomainSync.php). #}
-                            {% if service.expires_at and order.expires_at and service.expires_at|slice(0, 10) < order.expires_at|slice(0, 10) %}
-                                <span class="badge bg-warning-lt ms-1">{{ 'Before the next due date %date%'|trans({'%date%': order.expires_at|format_date}) }}</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {# ClientFence core patch: the Email registrar's requests waiting for staff (Servicedomain/DomainTickets.php). #}
-                    {% if service.requests|default(null) %}
-                    <tr>
-                        <td class="text-end">{{ 'Waiting for Staff'|trans }}:</td>
-                        <td class="text-wrap">
-                            {% for text in service.requests.actions %}<div class="mb-2">{{ text|nl2br }}</div>{% endfor %}
-                            <a href="{{ "support/ticket/#{service.requests.ticket_id}"|url }}">{{ 'Ticket #:id'|trans({':id': service.requests.ticket_id}) }}</a>
-                        </td>
-                    </tr>
+        {# ClientFence core patch: the domain reads first: its name, status, registrar and expiry, then the facts as a grid (CF-135 redesign). #}
+        <div class="cf-inv cf-dom">
+            <div class="cf-inv-hero">
+                <div class="min-w-0">
+                    <div class="cf-client-name"><a target="_blank" href="https://{{ service.domain }}"><bdi>{{ service.domain }}</bdi></a></div>
+                    <div class="text-secondary">{{ 'Registrar'|trans }}: {{ service.registrar }}</div>
+                </div>
+                <div class="cf-inv-chips">
+                    {{ mf.status_badge(order.status, 'order') }}
+                    {% if service.expires_at %}
+                        {% if date(service.expires_at) < date() %}
+                            <span class="badge bg-red-lt">{{ 'Expired'|trans }} · {{ service.expires_at|format_date }}</span>
+                        {% else %}
+                            {% set days = service.expires_at|daysleft %}
+                            <span class="badge {{ days <= 30 ? 'bg-yellow-lt' : 'bg-green-lt' }}">{{ 'Expires At'|trans }} · {{ service.expires_at|format_date }} · <bdi>{{ days }}</bdi> {{ 'day(s)'|trans }}</span>
+                        {% endif %}
                     {% endif %}
                     {% if service.transfer_status %}
-                    <tr>
-                        <td class="text-end">{{ 'Transfer'|trans }}:</td>
-                        <td>{% if service.transfer_status == 'pending' %}<span class="badge bg-azure-lt">{{ 'Transfer in progress'|trans }}</span>{% else %}<span class="badge bg-danger-lt">{{ 'Transfer not completed: see Orders > Failed actions'|trans }}</span>{% endif %}</td>
-                    </tr>
+                        {% if service.transfer_status == 'pending' %}<span class="badge bg-azure-lt">{{ 'Transfer in progress'|trans }}</span>{% else %}<span class="badge bg-danger-lt">{{ 'Transfer not completed: see Orders > Failed actions'|trans }}</span>{% endif %}
                     {% endif %}
-                    <tr>
-                        <td class="text-end">{{ 'Last Synced'|trans }}:</td>
-                        <td id="synced-at-value">
-                            {{ service.synced_at ? service.synced_at|format_date : 'Never'|trans }}
-                            {% if service.sync_error %}<div class="text-danger text-wrap small">{{ service.sync_error }}</div>{% endif %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                </div>
+            </div>
+            <dl class="cf-facts">
+                <div><dt>{{ 'Nameserver 1'|trans }}</dt><dd>{{ service.ns1|default('-') }}</dd></div>
+                <div><dt>{{ 'Nameserver 2'|trans }}</dt><dd>{{ service.ns2|default('-') }}</dd></div>
+                <div><dt>{{ 'Nameserver 3'|trans }}</dt><dd>{{ service.ns3|default('-') }}</dd></div>
+                <div><dt>{{ 'Nameserver 4'|trans }}</dt><dd>{{ service.ns4|default('-') }}</dd></div>
+                <div><dt>{{ 'Transfer Code'|trans }}</dt><dd>{{ service.transfer_code|default('-') }}</dd></div>
+                <div><dt>{{ 'Locked'|trans }}</dt><dd id="locked-value">{{ mf.boolean_badge(service.locked, 'Yes'|trans, 'No'|trans, 'text-bg-danger', 'text-bg-success') }}</dd></div>
+                <div><dt>{{ 'Privacy Protection'|trans }}</dt><dd id="privacy-value">{{ mf.boolean_badge(service.privacy, 'Enabled'|trans, 'Disabled'|trans, 'text-bg-danger', 'text-bg-success') }}</dd></div>
+                <div><dt>{{ 'Registration/Renewal Years'|trans }}</dt><dd>{{ service.period }}</dd></div>
+                <div><dt>{{ 'Registration Date'|trans }}</dt><dd>{{ service.registered_at|format_date }}</dd></div>
+                <div><dt>{{ 'Expires At'|trans }}</dt><dd>
+                    {{ service.expires_at|format_date }}
+                    {# ClientFence core patch: a registrar expiry before the order's next due date (DomainSync.php). #}
+                    {% if service.expires_at and order.expires_at and service.expires_at|slice(0, 10) < order.expires_at|slice(0, 10) %}
+                        <span class="badge bg-warning-lt ms-1">{{ 'Before the next due date %date%'|trans({'%date%': order.expires_at|format_date}) }}</span>
+                    {% endif %}
+                </dd></div>
+                <div><dt>{{ 'Last Synced'|trans }}</dt><dd id="synced-at-value">
+                    {{ service.synced_at ? service.synced_at|format_date : 'Never'|trans }}
+                    {% if service.sync_error %}<div class="text-danger small">{{ service.sync_error }}</div>{% endif %}
+                </dd></div>
+                {# ClientFence core patch: the Email registrar's requests waiting for staff (Servicedomain/DomainTickets.php). #}
+                {% if service.requests|default(null) %}
+                <div class="cf-facts-wide"><dt>{{ 'Waiting for Staff'|trans }}</dt><dd>
+                    {% for text in service.requests.actions %}<div class="mb-2">{{ text|nl2br }}</div>{% endfor %}
+                    <a href="{{ "support/ticket/#{service.requests.ticket_id}"|url }}">{{ 'Ticket #:id'|trans({':id': service.requests.ticket_id}) }}</a>
+                </dd></div>
+                {% endif %}
+            </dl>
         </div>
 
         <div class="card-footer text-center">
