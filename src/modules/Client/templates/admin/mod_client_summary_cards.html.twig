@@ -54,7 +54,8 @@
                         <td class="text-end">{{ '%active% (%total% Total)'|trans({ '%active%': row.active, '%total%': row.total }) }}</td>
                     </tr>
                     {% else %}
-                    <tr><td class="text-secondary" colspan="2">{{ 'No services yet.'|trans }}</td></tr>
+                    {# ClientFence core patch: empty lists under the tray icon, as on the other lists (CF-135 redesign). #}
+                    <tr><td class="text-muted" colspan="2">{{ 'No services yet.'|trans }}</td></tr>
                     {% endfor %}
                     <tr><td>{{ 'Addons'|trans }}</td><td class="text-end">{{ summary.addon_count }}</td></tr>
                     <tr><td>{{ 'Open Quotes'|trans }}</td><td class="text-end">{{ summary.open_quotes }}</td></tr>
@@ -122,7 +123,7 @@
                             <td>{{ mf.status_badge(order.status, 'order') }}</td>
                         </tr>
                         {% else %}
-                        <tr><td class="text-secondary" colspan="7">{{ 'The list is empty'|trans }}</td></tr>
+                        <tr><td class="text-muted" colspan="7">{{ 'The list is empty'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

@@ -49,8 +49,10 @@
                     </form>
                 </div>
             {% endif %}
+            {# ClientFence core patch: the owner's sign-in security as rows with an icon tile, users with initials, an empty list under the tray icon (CF-135 redesign). #}
             <div class="card-body border-top py-3 d-flex flex-wrap align-items-center gap-2" data-clientfence-owner-twofactor="{{ users_page.owner_twofactor ? 'on' : 'off' }}">
-                <span>{{ 'Account owner\'s two-factor sign-in'|trans }}:</span>
+                <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#lock" /></svg></span>
+                <span class="fw-medium">{{ 'Account owner\'s two-factor sign-in'|trans }}:</span>
                 {% if users_page.owner_twofactor %}
                     <span class="badge bg-green-lt">{{ 'On'|trans }}</span>
                     {% if can_twofactor %}
@@ -67,7 +69,8 @@
                 {% endif %}
             </div>
             <div class="card-body border-top py-3 d-flex flex-wrap align-items-center gap-2" data-clientfence-owner-google="{{ users_page.owner_google ? 'linked' : 'none' }}">
-                <span>{{ 'Account owner\'s Google sign-in'|trans }}:</span>
+                <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#bf-world" /></svg></span>
+                <span class="fw-medium">{{ 'Account owner\'s Google sign-in'|trans }}:</span>
                 {% if users_page.owner_google %}
                     <span class="badge bg-green-lt">{{ 'Linked'|trans }}</span>
                     <span class="text-secondary" dir="ltr">{{ users_page.owner_google.email }}</span>
@@ -96,8 +99,13 @@
                         {% for user in users_page.users %}
                             <tr data-clientfence-user="{{ user.id }}">
                                 <td>
-                                    <div class="fw-medium">{{ user.first_name }} {{ user.last_name }}</div>
-                                    <div class="text-secondary small" dir="ltr">{{ user.email }}</div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (user.first_name|first ~ user.last_name|first)|upper }}</span>
+                                        <div>
+                                            <div class="fw-medium">{{ user.first_name }} {{ user.last_name }}</div>
+                                            <div class="text-secondary small" dir="ltr">{{ user.email }}</div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     {% if user.owner %}
@@ -172,7 +180,7 @@
                             {% endif %}
                         {% else %}
                             <tr>
-                                <td class="text-secondary" colspan="5">{{ 'No one else has access to this account yet.'|trans }}</td>
+                                <td class="text-muted" colspan="5">{{ 'No one else has access to this account yet.'|trans }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

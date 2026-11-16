@@ -4,7 +4,8 @@
 <div class="card mt-3" id="email-import">
     <div class="card-header">
         <div>
-            <h3 class="card-title">{{ 'Email importing'|trans }}</h3>
+            {# ClientFence core patch: the mailbox's on or off state as a chip by the title (CF-135 redesign). #}
+            <h3 class="card-title d-flex align-items-center gap-2">{{ 'Email importing'|trans }} <span class="badge {{ mailbox.enabled ? 'bg-green-lt' : 'bg-secondary-lt' }}">{{ mailbox.enabled ? 'On'|trans : 'Off'|trans }}</span></h3>
             <p class="card-subtitle">{{ 'Emails to this mailbox become tickets in this help desk, and replies to ticket emails ([Ticket #123] in the subject) are added to their ticket. The cron reads the mailbox every run and deletes each email once it is handled, so use a mailbox only ClientFence reads. Every email is listed in the email import log.'|trans }}</p>
         </div>
     </div>

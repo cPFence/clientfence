@@ -46,7 +46,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Canned Responses'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage reusable support responses and organize them into categories.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -111,12 +110,13 @@
                 <tbody>
                 {% set responses = admin.support_canned_get_list({ 'per_page': 25, 'page': request.page }|merge(request)) %}
                 {% for i, response in responses.list %}
+                {# ClientFence core patch: each response with its tile and the category as a chip, without the filler subtitle (CF-135 redesign). #}
                 <tr>
                     <td>
-                        <a href='{{ "support/canned/#{response.id}"|url }}'>{{ response.title }}</a>
+                        <a class="cf-tile-link" href='{{ "support/canned/#{response.id}"|url }}'><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#note" /></svg></span><span>{{ response.title }}</span></a>
                     </td>
                     <td class="text-center">
-                        <a href='{{ "support/canned-category/#{response.category.id}"|url }}'>{{ response.category.title }}</a>
+                        <a class="badge bg-azure-lt" href='{{ "support/canned-category/#{response.category.id}"|url }}'>{{ response.category.title }}</a>
                     </td>
                     <td class="text-muted">{% if response.created_at %}{{ '%time% ago'|trans({ '%time%': response.created_at|timeago }) }}{% else %}-{% endif %}</td>
                     <td class="text-muted">{% if response.updated_at %}{{ '%time% ago'|trans({ '%time%': response.updated_at|timeago }) }}{% else %}-{% endif %}</td>
@@ -164,8 +164,9 @@
                 <tbody>
                     {% for cat_id, cat_title in admin.support_canned_category_pairs %}
                     <tr>
+                        {# ClientFence core patch: each category with its tile (CF-135 redesign). #}
                         <td>
-                            <a href='{{ "support/canned-category/#{cat_id}"|url }}'>{{ cat_title }}</a>
+                            <a class="cf-tile-link" href='{{ "support/canned-category/#{cat_id}"|url }}'><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#notes" /></svg></span><span>{{ cat_title }}</span></a>
                         </td>
                         <td>
                             <a class="btn btn-icon" href='{{ "support/canned-category/#{cat_id}"|url }}'>

@@ -1390,4 +1390,59 @@ a.bf-file-name:hover .icon { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .bf-body .alert.cf-notice { animation: none; }
   .cf-order-item, .cf-fold > summary::before { transition: none; }
+
+/* ---- CF-135 part 4: admin support, clients and staff sign-in ---- */
+/* Staff sign-in screens (login, two-factor code, email PIN, password reset and update): glows drifting in the
+   brand panel, the form on a frosted glass card over a soft glow, as the client area's sign-in. Only the card
+   and the glow box blur or isolate: the language menu and the toasts sit outside them. */
+.bf-auth-brand { isolation: isolate; }
+.bf-auth-brand::before, .bf-auth-brand::after {
+  content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none;
+  filter: blur(60px); animation: cf-auth-drift 18s ease-in-out infinite alternate;
+}
+.bf-auth-brand::before { top: -120px; inset-inline-end: -100px; width: 420px; height: 320px; background: radial-gradient(circle, color-mix(in srgb, var(--bf-teal) 55%, transparent), transparent 70%); }
+.bf-auth-brand::after { bottom: -140px; inset-inline-start: -60px; width: 380px; height: 340px; background: radial-gradient(circle, color-mix(in srgb, var(--bf-brand) 60%, transparent), transparent 70%); animation-delay: -9s; }
+@keyframes cf-auth-drift { from { translate: 0 0; scale: 1; } to { translate: -40px 30px; scale: 1.08; } }
+.bf-auth-body { position: relative; isolation: isolate; }
+.bf-auth-body::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; width: min(520px, 100%); height: 60%; margin: auto;
+  border-radius: 50%; pointer-events: none; filter: blur(50px); opacity: .5;
+  background:
+    radial-gradient(circle at 30% 40%, color-mix(in srgb, var(--bf-teal) 55%, transparent), transparent 65%),
+    radial-gradient(circle at 70% 65%, color-mix(in srgb, var(--bf-brand) 50%, transparent), transparent 65%);
+}
+.bf-auth-card {
+  max-width: 452px; padding: 32px;
+  border: 1px solid color-mix(in srgb, var(--bf-line) 75%, transparent); border-radius: 20px;
+  background: var(--bf-glass); -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 30px 60px -32px color-mix(in srgb, var(--bf-brand) 55%, transparent);
+  animation: bf-rise .55s var(--bf-ease) backwards;
+}
+.bf-auth-card .form-control:focus { border-color: color-mix(in srgb, var(--bf-teal) 60%, var(--bf-line)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bf-teal) 16%, transparent); }
+.bf-auth-card [data-cf-passkey] { min-height: 46px; border-radius: 10px; border-color: var(--bf-line); background: var(--bf-surface); color: var(--bf-ink); font-weight: 600; }
+@media (max-width: 575.98px) {
+  .bf-auth-card { padding: 24px 18px; border-radius: 16px; }
+}
+
+/* Ticket attachments in the chat bubbles and the reply form: glass chips with a teal edge that lifts on hover. */
+.bf-body .ticket-message .bf-files-box { border-top-color: color-mix(in srgb, currentColor 8%, transparent); }
+.bf-body :is(.ticket-message, [data-clientfence-staff-files]) .bf-file:not(.is-removed) {
+  border-color: color-mix(in srgb, var(--bf-teal) 24%, var(--bf-line)); border-radius: 10px; background: var(--bf-glass);
+  transition: border-color .25s, box-shadow .25s;
+}
+.bf-body :is(.ticket-message, [data-clientfence-staff-files]) .bf-file:not(.is-removed):hover {
+  border-color: color-mix(in srgb, var(--bf-teal) 50%, var(--bf-line));
+  box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--bf-brand) 55%, transparent);
+}
+
+/* Ticket secrets: each one a row on a warm tint, as something to handle with care. */
+.cf-secret {
+  margin-bottom: 8px; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--bf-warn) 26%, var(--bf-line)); border-radius: 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bf-warn) 8%, transparent), transparent 70%);
+}
+[dir="rtl"] .cf-secret { background: linear-gradient(270deg, color-mix(in srgb, var(--bf-warn) 8%, transparent), transparent 70%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-auth-brand::before, .bf-auth-brand::after, .bf-auth-card { animation: none; }
+  .bf-body :is(.ticket-message, [data-clientfence-staff-files]) .bf-file:not(.is-removed) { transition: none; }
 }

@@ -22,12 +22,13 @@
 {% endblock %}
 
 {% block content %}
+{# ClientFence core patch: the group with its tile, without the filler subtitle (CF-135 redesign). #}
 <div class="card">
     <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ group.title }}</h3>
-            <p class="card-subtitle">{{ 'Update the client group name or remove the group entirely.'|trans }}</p>
-        </div>
+        <h3 class="card-title d-flex align-items-center gap-2">
+            <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#address-book" /></svg></span>
+            <span>{{ group.title }}</span>
+        </h3>
     </div>
     {% if can_manage_groups %}
     <form method="post" action="{{ 'client/group_update'|api_url }}" {{ fb_api_form({redirect: 'client'|url ~ '#tab-groups'}) }}>

@@ -33,7 +33,6 @@
     <form method="post" action="{{ 'support/kb_category_update'|api_url }}" {{ fb_api_form({ message: 'Category Updated'|trans }) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
             title: category.title,
-            subtitle: 'Update the category details used to organize knowledge base articles.'|trans,
             body_class: 'pt-4',
             footer_align: 'between'
         } %}
@@ -78,12 +77,11 @@
     </form>
 </div>
 
+{# ClientFence core patch: the articles count as a chip and each article with its tile, without the filler subtitles (CF-135 redesign). #}
 <div class="card mt-3">
     <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ 'Articles'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Manage articles assigned to this category.'|trans }}</p>
-        </div>
+        <h3 class="card-title">{{ 'Articles'|trans }}</h3>
+        <span class="badge bg-secondary-lt ms-2"><bdi>{{ category.articles|length }}</bdi></span>
     </div>
     <div class="table-responsive">
         <table class="table card-table table-vcenter table-striped text-nowrap">
@@ -100,7 +98,7 @@
                 {% for article in category.articles %}
                     <tr>
                         <td>
-                            <a href='{{ "support/kb/article/#{article.id}"|url }}'>{{ article.title }}</a>
+                            <a class="cf-tile-link" href='{{ "support/kb/article/#{article.id}"|url }}'><span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#notes" /></svg></span><span>{{ article.title }}</span></a>
                         </td>
                         <td>{{ mf.status_badge(article.status, 'post') }}</td>
                         <td class="text-center">{{ article.views }}</td>

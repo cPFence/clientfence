@@ -3,12 +3,13 @@
 {% set waiting = admin.client_affiliate_payout_get_list({ status: 'requested', per_page: 100 }) %}
 <div class="tab-pane fade" id="tab-affiliates" role="tabpanel">
     <div class="card-body border-bottom py-3">
-        <h4 class="mb-1">{{ 'Payout requests'|trans }}</h4>
+        {# ClientFence core patch: section headings with the navy-to-teal mark, affiliates with initials and the code as a chip, an empty list under the tray icon (CF-135 redesign). #}
+        <h4 class="card-title mb-1">{{ 'Payout requests'|trans }}</h4>
         <p class="text-secondary mb-0">{{ 'Requests waiting for you. The amount is set aside from the affiliate\'s available balance until you pay or decline it.'|trans }}</p>
     </div>
     {{ include('mod_client_affiliate_payouts.html.twig', { payouts: waiting.list, show_client: true }) }}
     <div class="card-body border-top border-bottom py-3">
-        <h4 class="mb-1">{{ 'Affiliates'|trans }}</h4>
+        <h4 class="card-title mb-1">{{ 'Affiliates'|trans }}</h4>
         <p class="text-secondary mb-0">{{ 'Open an affiliate for its referred orders, commissions and payouts. Amounts are in each affiliate\'s currency.'|trans }}</p>
     </div>
     <div class="table-responsive">
@@ -30,11 +31,16 @@
                     {% set currency = affiliate.currency ?? default_currency %}
                     <tr>
                         <td>
-                            <a href="{{ ('client/manage/' ~ affiliate.client_id)|url }}#tab-clientfence-affiliate">{{ affiliate.first_name }} {{ affiliate.last_name }}</a>
-                            {% if affiliate.requests > 0 %}<span class="badge bg-yellow-lt ms-1">{{ 'Payout requested'|trans }}</span>{% endif %}
-                            <div class="small text-secondary" dir="ltr">{{ affiliate.email }}</div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (affiliate.first_name|first ~ affiliate.last_name|first)|upper }}</span>
+                                <div>
+                                    <a href="{{ ('client/manage/' ~ affiliate.client_id)|url }}#tab-clientfence-affiliate">{{ affiliate.first_name }} {{ affiliate.last_name }}</a>
+                                    {% if affiliate.requests > 0 %}<span class="badge bg-yellow-lt ms-1">{{ 'Payout requested'|trans }}</span>{% endif %}
+                                    <div class="small text-secondary" dir="ltr">{{ affiliate.email }}</div>
+                                </div>
+                            </div>
                         </td>
-                        <td class="font-monospace" dir="ltr">{{ affiliate.code }}</td>
+                        <td><span class="cf-code" dir="ltr">{{ affiliate.code }}</span></td>
                         <td>{% if affiliate.status == 'active' %}<span class="badge bg-green-lt">{{ 'Active'|trans }}</span>{% else %}<span class="badge bg-secondary-lt">{{ 'Inactive'|trans }}</span>{% endif %}</td>
                         <td>{{ affiliate.visitors }}</td>
                         <td>{{ affiliate.signups }}</td>
@@ -43,7 +49,7 @@
                         <td>{{ affiliate.paid_out|format_currency(currency) }}</td>
                     </tr>
                 {% else %}
-                    <tr><td class="text-secondary" colspan="8">{{ 'No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client\'s Affiliate tab.'|trans }}</td></tr>
+                    <tr><td class="text-muted" colspan="8">{{ 'No affiliates yet. Clients join on the Affiliates page of the client area, or staff activate them on the client\'s Affiliate tab.'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

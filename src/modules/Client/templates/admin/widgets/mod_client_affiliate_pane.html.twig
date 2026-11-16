@@ -48,59 +48,34 @@
         {% block section_content %}
             <div class="card-body border-top">
                 <label class="form-label" for="clientfence-affiliate-link">{{ 'Affiliate link'|trans }}</label>
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <input class="form-control font-monospace" type="text" id="clientfence-affiliate-link" value="{{ affiliate.link }}" dir="ltr" readonly>
                     <button class="btn clipboard-copy" type="button" data-clipboard-target="#clientfence-affiliate-link" title="{{ 'Copy'|trans }}">
                         <svg class="icon"><use href="#copy" /></svg>{{ 'Copy'|trans }}
                     </button>
                 </div>
-                <div class="datagrid">
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Code'|trans }}</div>
-                        <div class="datagrid-content font-monospace" dir="ltr">{{ affiliate.code }}</div>
-                    </div>
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Visitors'|trans }}</div>
-                        <div class="datagrid-content">{{ affiliate.visitors }}</div>
-                    </div>
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Signups'|trans }}</div>
-                        <div class="datagrid-content">{{ affiliate.signups }}</div>
-                    </div>
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Pending'|trans }}</div>
-                        <div class="datagrid-content">{{ affiliate.pending|format_currency(currency) }}</div>
-                    </div>
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Available'|trans }}</div>
-                        <div class="datagrid-content fw-bold">{{ affiliate.available|format_currency(currency) }}</div>
-                    </div>
-                    {% if affiliate.held > 0 %}
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Held bonus'|trans }}</div>
-                        <div class="datagrid-content" title="{{ 'The bonus deposit can be paid out once a first commission has cleared.'|trans }}">{{ affiliate.held|format_currency(currency) }}</div>
-                    </div>
-                    {% endif %}
-                    {% if affiliate.requested > 0 %}
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Payout requested'|trans }}</div>
-                        <div class="datagrid-content">{{ affiliate.requested|format_currency(currency) }}</div>
-                    </div>
-                    {% endif %}
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Paid out'|trans }}</div>
-                        <div class="datagrid-content">{{ affiliate.paid_out|format_currency(currency) }}</div>
-                    </div>
-                    <div class="datagrid-item">
-                        <div class="datagrid-title">{{ 'Affiliate since'|trans }}</div>
-                        <div class="datagrid-content">{{ affiliate.created_at|format_date }}</div>
-                    </div>
-                </div>
             </div>
+            {# ClientFence core patch: the affiliate's figures as the client page's facts grid, the code as a chip (CF-135 redesign). #}
+            <dl class="cf-facts">
+                <div><dt>{{ 'Code'|trans }}</dt><dd><span class="cf-code" dir="ltr">{{ affiliate.code }}</span></dd></div>
+                <div><dt>{{ 'Visitors'|trans }}</dt><dd class="cf-fact-num"><bdi>{{ affiliate.visitors }}</bdi></dd></div>
+                <div><dt>{{ 'Signups'|trans }}</dt><dd class="cf-fact-num"><bdi>{{ affiliate.signups }}</bdi></dd></div>
+                <div><dt>{{ 'Pending'|trans }}</dt><dd>{{ affiliate.pending|format_currency(currency) }}</dd></div>
+                <div><dt>{{ 'Available'|trans }}</dt><dd class="cf-fact-num{{ affiliate.available > 0 ? ' cf-tone-ok' }}">{{ affiliate.available|format_currency(currency) }}</dd></div>
+                {% if affiliate.held > 0 %}
+                <div><dt>{{ 'Held bonus'|trans }}</dt><dd title="{{ 'The bonus deposit can be paid out once a first commission has cleared.'|trans }}">{{ affiliate.held|format_currency(currency) }}</dd></div>
+                {% endif %}
+                {% if affiliate.requested > 0 %}
+                <div><dt>{{ 'Payout requested'|trans }}</dt><dd>{{ affiliate.requested|format_currency(currency) }}</dd></div>
+                {% endif %}
+                <div><dt>{{ 'Paid out'|trans }}</dt><dd>{{ affiliate.paid_out|format_currency(currency) }}</dd></div>
+                <div><dt>{{ 'Affiliate since'|trans }}</dt><dd>{{ affiliate.created_at|format_date }}</dd></div>
+            </dl>
             {% if can_manage_affiliate %}
                 <form class="card-body border-top" method="post" action="{{ 'client/affiliate_update'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans, reload: true }) }}>
                     <input type="hidden" name="client_id" value="{{ client.id }}">
-                    <h4 class="mb-1">{{ 'Commission for this affiliate'|trans }}</h4>
+                    {# ClientFence core patch: the section heading with the navy-to-teal mark; empty lists under the tray icon (CF-135 redesign). #}
+                    <h4 class="card-title mb-1">{{ 'Commission for this affiliate'|trans }}</h4>
                     <p class="text-secondary">{{ 'Overrides the product and default commissions, except on products that pay no commission.'|trans }}</p>
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
@@ -169,7 +144,7 @@
                                 {% endif %}
                             </tr>
                         {% else %}
-                            <tr><td class="text-secondary" colspan="7">{{ 'No referred orders yet.'|trans }}</td></tr>
+                            <tr><td class="text-muted" colspan="7">{{ 'No referred orders yet.'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -266,7 +241,7 @@
                                 {% endif %}
                             </tr>
                         {% else %}
-                            <tr><td class="text-secondary" colspan="6">{{ 'No commissions yet.'|trans }}</td></tr>
+                            <tr><td class="text-muted" colspan="6">{{ 'No commissions yet.'|trans }}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
