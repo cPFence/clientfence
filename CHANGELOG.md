@@ -15,6 +15,7 @@ A new look for the admin and client areas, and new billing features.
 - **Client Overview:** the admin client page opens on an Overview with key figures, billing, a trust score for staff, services, support, recent services and invoices, notes, files and emails.
 - Suspend all, Unsuspend all and Cancel all services of a client from its Overview; each service goes through its own action, as on its order page.
 - Send a client the welcome email or one of your own templates from its Overview.
+- **Database tab:** System → Settings → System lists the database tables by size. Optimize tables gives back the space of deleted rows, and Run clean-up now removes old logs and ticket files at once, following your retention settings. Super Administrators only.
 
 ### Changed
 
@@ -27,6 +28,14 @@ A new look for the admin and client areas, and new billing features.
 - Profile and Edit on the client page are one Profile tab with General, Security, Cards and Custom fields.
 - Every client page tab has paging and a records selector, including Users, Contacts, ID documents and Affiliate.
 - Admin lists show the records selector at the start and the page numbers at the end, on every list.
+- **Icons:** the admin and client areas use Bootstrap Icons, and the edit and delete buttons in admin lists are plain icons without a box.
+- **Side menus:** both areas use a rail like WiseCP's, dark glass in dark mode and a solid deep rail in light mode, without scrollbars. A collapsed client menu opens over the page on hover.
+- Services and Support tickets in the client area have small status cards that filter the list, and active services come first (also on the admin client page).
+- Client pages for a service, ticket, email, quote, statement, knowledge base article and hosting account have a Back link to their list.
+- Wallet, payment and public pages have smaller page heads.
+- Users, Contacts and Support tickets show the list first; the add form opens from its button.
+- Table rows hover with one flat tint, secondary buttons hover in soft teal, and admin primary buttons in dark mode use the client area's brand colour.
+- On the admin client page, the Credit Balance tab shows the balance in key figure cards and the Tickets tab counts filter the list.
 
 ### Fixed
 
@@ -34,9 +43,11 @@ A new look for the admin and client areas, and new billing features.
 - The admin back-to-top button no longer covers the version number. ([#36](https://github.com/cPFence/clientfence/issues/36))
 - Email history shows emails with their styling. ([#39](https://github.com/cPFence/clientfence/issues/39))
 - The store no longer shows a free billing cycle as a saving.
-
 - System Health no longer says the database backup is kept only on this server when cloud storage keeps a copy.
 - The empty-list icon no longer covers its text, and the Security sign-in summary rows line up.
+- Behind Cloudflare, email addresses on pages no longer show as "[email protected]".
+- In client area dark mode, the language, notification and account menus are readable.
+
 ## 1.0.55 (2026-11-16)
 
 A security release. Every new feature is off until you turn it on, and does no extra work while it is off. A new security page explains each feature: https://clientfence.com/security/
