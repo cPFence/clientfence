@@ -370,9 +370,12 @@ dd {
     position: relative;
     overflow-y: auto;
     overscroll-behavior: contain;
-    // A slim scrollbar in the menu's colours, as in the admin area, only when the menu is taller than the screen.
-    scrollbar-width: thin;
-    scrollbar-color: var(--bf-sidebar-border) transparent;
+    // The menu scrolls without a visible scrollbar (wheel, touch, keyboard).
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -4336,10 +4339,20 @@ body::before {
 }
 .app-sidebar, .sidebar-panel {
   @include media-breakpoint-up(lg) {
+    // Dark glass, as in the admin area: the page shows through, blurred (less on the light page, which would wash
+    // the navy out). Only the panel paints it, so the collapsed rail opened over the page is one layer.
+    background: transparent;
+  }
+}
+.sidebar-panel {
+  @include media-breakpoint-up(lg) {
+    [data-bs-theme="dark"] & { --pal-side-glass: 80%; }
     background:
-      radial-gradient(260px 220px at 0% 0%, rgba(var(--pal-accent-rgb), .36), transparent 70%),
-      radial-gradient(260px 260px at 0% 92%, rgba(var(--pal-brand-rgb), .45), transparent 70%),
-      linear-gradient(180deg, var(--bf-sidebar-bg), color-mix(in srgb, var(--bf-sidebar-bg) 82%, #17405a));
+      radial-gradient(260px 220px at 0% 0%, rgba(var(--pal-accent-rgb), .28), transparent 70%),
+      radial-gradient(260px 260px at 0% 92%, rgba(var(--pal-brand-rgb), .36), transparent 70%),
+      linear-gradient(180deg, color-mix(in srgb, var(--bf-sidebar-bg) var(--pal-side-glass, 92%), transparent), color-mix(in srgb, var(--bf-sidebar-bg) calc(var(--pal-side-glass, 92%) - 10%), rgba(23, 64, 90, .7)));
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    backdrop-filter: blur(22px) saturate(160%);
   }
 }
 .card, .stat-card { background-color: var(--pal-glass); transition: transform .35s var(--pal-ease), box-shadow .35s var(--pal-ease), border-color .35s; }

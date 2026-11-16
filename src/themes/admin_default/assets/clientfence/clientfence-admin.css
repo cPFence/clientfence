@@ -224,8 +224,10 @@ body { font-family: var(--bf-font); }
   display: flex; flex-direction: column; gap: 4px;
   padding: 16px 12px; overflow-y: auto; overscroll-behavior: contain;
   background: var(--bf-side); color: var(--bf-side-ink);
-  scrollbar-width: thin; scrollbar-color: var(--bf-side-active) transparent;
+  scrollbar-width: none;
 }
+/* The menu scrolls without a visible scrollbar (wheel, touch, keyboard). */
+.bf-sidebar::-webkit-scrollbar { display: none; }
 .bf-brand { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 12px; }
 .bf-brand-link { display: flex; align-items: center; min-width: 0; color: #ffffff; text-decoration: none; }
 .bf-brand-link:hover { text-decoration: none; }
@@ -945,12 +947,16 @@ a.bf-file-name:hover .icon { color: inherit; }
 /* translate and scale, not transform: Popper positions the menu with an inline transform. */
 @keyframes bf-pop { from { opacity: 0; translate: 0 -6px; scale: .98; } to { opacity: 1; translate: none; scale: none; } }
 
-/* Sidebar: navy with two soft glows, a tinted active item. */
+/* Sidebar: dark glass (the page shows through, blurred) with two soft glows, a tinted active item. Less see-through on
+   the light page, which would wash the navy out. */
+[data-bs-theme="dark"] .bf-sidebar { --bf-side-glass: 80%; }
 .bf-sidebar {
   background:
-    radial-gradient(260px 220px at 0% 0%, rgba(31, 168, 156, .38), transparent 70%),
-    radial-gradient(260px 260px at 0% 92%, rgba(47, 111, 179, .32), transparent 70%),
-    linear-gradient(180deg, var(--bf-side), color-mix(in srgb, var(--bf-side) 82%, #17405a));
+    radial-gradient(260px 220px at 0% 0%, rgba(31, 168, 156, .30), transparent 70%),
+    radial-gradient(260px 260px at 0% 92%, rgba(47, 111, 179, .26), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bf-side) var(--bf-side-glass, 92%), transparent), color-mix(in srgb, var(--bf-side) calc(var(--bf-side-glass, 92%) - 10%), rgba(23, 64, 90, .7)));
+  -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%);
+  border-inline-end: 1px solid rgba(255, 255, 255, .06);
 }
 .bf-item, .bf-sub { transition: background .25s, color .25s; }
 .bf-item.is-active {
