@@ -182,7 +182,10 @@
         {% if can_delete_email_history %}
             {% include "partial_batch_delete.html.twig" with { 'action': 'email/batch_delete' } %}
         {% endif %}
-        {% include "partial_pagination.html.twig" with { 'list': emails, 'url': 'email/history' } %}
+        {# ClientFence core patch: the pages sit on the right even while the hidden Delete Selected button is the footer's only other child. #}
+        <div class="d-flex align-items-center gap-2 ms-auto">
+            {% include "partial_pagination.html.twig" with { 'list': emails, 'url': 'email/history' } %}
+        </div>
     </div>
     {% else %}
         <div class="card-body">
