@@ -137,7 +137,7 @@ final class SettingsIndex
         $label = '\{\{\s*\'(?<%s>(?:[^\'\\\\]|\\\\.)*)\'\s*\|\s*trans\s*\}\}';
         $pattern = '/(?<tablink><(?:a|button)\b[^>]*data-bs-toggle="tab"[^>]*>\s*(?:<[^>{]+>\s*)*' . sprintf($label, 'tabtext') . ')'
             . '|(?<include>(?:\{%-?\s*include\s+|\{\{-?\s*include\(\s*)[\'"](?<file>[a-z0-9_]+\.html\.twig)[\'"])'
-            . '|(?<label><(?<tag>label|span|div|h[1-6])\b[^>]*class="[^"]*\b(?<class>form-label|form-check-label|col-form-label|card-title)\b[^"]*"[^>]*>\s*' . sprintf($label, 'text') . ')'
+            . '|(?<label><(?<tag>label|span|div|h[1-6])\b[^>]*class="[^"]*\b(?<class>form-label|form-check-label|col-form-label|card-title|bf-h)\b[^"]*"[^>]*>\s*' . sprintf($label, 'text') . ')'
             . '|(?<open><(?<opentag>div|form)\b[^>]*>)|(?<close><\/(?:div|form)\s*>)/s';
         preg_match_all($pattern, $source, $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL);
         // Open <div> and <form> elements: [tab or null, whether labels inside are left out].
@@ -155,7 +155,8 @@ final class SettingsIndex
                 }
             } elseif ($m['label'] !== null) {
                 if (!$hidden) {
-                    self::add($entries, $mod, $here, $m['class'] === 'card-title' ? 'section' : 'field', $m['text']);
+                    // A page title (bf-h, the redesign's heading) is a section too.
+                    self::add($entries, $mod, $here, in_array($m['class'], ['card-title', 'bf-h'], true) ? 'section' : 'field', $m['text']);
                 }
                 if ($m['tag'] === 'div') {
                     $stack[] = [$here, $hidden];

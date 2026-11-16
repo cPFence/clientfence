@@ -2018,10 +2018,6 @@ msgstr ""
 msgid "Add extra provisioning parameters required by the active server manager for this hosting plan."
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
-msgid "Add field types to this form and edit each field individually."
-msgstr ""
-
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Add file"
 msgstr ""
@@ -2260,10 +2256,6 @@ msgstr ""
 
 #: src/modules/Formbuilder/manifest.json
 msgid "Adds ability to create custom forms to be used anywhere"
-msgstr ""
-
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
-msgid "Adjust form-level display options and then manage the individual fields below."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
@@ -3986,18 +3978,6 @@ msgstr ""
 msgid "Automatically log clients in after successful registration."
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig
-msgid "Automatically remove sent email history records older than the configured number of days."
-msgstr ""
-
-#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig
-msgid "Automatically remove system activity logs older than the configured number of days."
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_settings.html.twig
-msgid "Automatically send a canned response when a new ticket is created."
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Automatically: once a day, the daily cron cancels a service with an Immediate request, and schedules one with an End of billing period request to be cancelled at the end of its paid period. Until then the client can withdraw a request and staff can stop it."
 msgstr ""
@@ -5350,10 +5330,6 @@ msgstr ""
 msgid "Choose a date before the start date."
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
-msgid "Choose a field type to add it to this form and configure it further."
-msgstr ""
-
 #: src/modules/Client/Files.php src/modules/Support/TicketFiles.php
 msgid "Choose a file to attach."
 msgstr ""
@@ -5534,18 +5510,6 @@ msgstr ""
 msgid "Choose how often the copies are made."
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig
-msgid "Choose how outgoing email is delivered and whether sent emails should be stored in the database."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "Choose how refund documents are generated when a paid invoice is reversed."
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_settings.html.twig
-msgid "Choose how the next service expiration date is calculated after a renewal payment is received."
-msgstr ""
-
 #: src/modules/Client/Affiliates/Payouts.php
 msgid "Choose how the payout was paid."
 msgstr ""
@@ -5584,10 +5548,6 @@ msgstr ""
 
 #: src/modules/Invoice/Accounting/Sync.php
 msgid "Choose the :program tax rate for \":tax\" in the accounting settings."
-msgstr ""
-
-#: src/modules/Theme/templates/admin/mod_theme_settings.html.twig
-msgid "Choose the active client and admin themes, and open theme-specific settings where available."
 msgstr ""
 
 #: src/modules/Order/Api/Client.php
@@ -5640,10 +5600,6 @@ msgstr ""
 
 #: src/modules/Clientfence/SecuritySettings.php
 msgid "Choose the header the proxy sends."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "Choose the invoice page format and whether invoice hashes may be used for direct access."
 msgstr ""
 
 #: src/modules/Product/Options.php
@@ -5768,10 +5724,6 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Choose which environment checks clients must satisfy when validating a license."
-msgstr ""
-
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
-msgid "Choose which exchange-rate provider to use and how often automated synchronization should run."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -6730,16 +6682,8 @@ msgstr ""
 msgid "Configuration for"
 msgstr ""
 
-#: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
-msgid "Configure anti-spam checks for signups, contact forms, public tickets, and automated abuse protection."
-msgstr ""
-
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Configure how license keys are generated for this product and which validation rules should apply to issued licenses."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "Configure invoice timing, numbering, document behavior, refunds, and add-funds limits."
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
@@ -6828,6 +6772,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Connectreseller.php
 msgid "ConnectReseller returned an unreadable response for :command"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Connected"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -6962,14 +6910,6 @@ msgstr ""
 msgid "Control how API keys are generated for this product, including length, formatting, and any custom parameters your application expects."
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig
-msgid "Control how long system activity and sent email logs are retained before automatic cleanup."
-msgstr ""
-
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig
-msgid "Control how many messages are processed per cron run, how long delivery may run, and when failed deliveries should be abandoned."
-msgstr ""
-
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Control how the promotion behaves during checkout and renewals."
 msgstr ""
@@ -6978,44 +6918,12 @@ msgstr ""
 msgid "Control inventory limits and configure how this product is priced and billed."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "Control invoice cleanup rules and the numbering scheme used for generated documents."
-msgstr ""
-
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
 msgid "Control panel"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_settings.html.twig
-msgid "Control renewal-date logic, addon visibility, suspension reasons, and automated cancellation behavior."
-msgstr ""
-
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig
-msgid "Control the default sender name and sender email used for outgoing messages."
-msgstr ""
-
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
-msgid "Control the form name and how labels are displayed when this form is rendered."
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Control the invoice lifecycle, approval state, and displayed numbering."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "Control when renewal invoices are created and when they become due."
-msgstr ""
-
-#: src/modules/Order/templates/admin/mod_order_settings.html.twig
-msgid "Control whether addon orders are shown directly in the main orders list."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "Control whether clients can request to add funds to their account balance, and set optional minimum and maximum invoice amounts for those requests."
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_settings.html.twig
-msgid "Control whether non-client visitors may open support tickets."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
@@ -7026,20 +6934,12 @@ msgstr ""
 msgid "Control whether the generated key uses dash separators and how each segment is cased."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_settings.html.twig
-msgid "Control whether the knowledge base is visible to clients and available throughout the support area."
-msgstr ""
-
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Control whether this field is required, visible, or editable."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Control which actions are available to clients for this TLD and whether the TLD is active."
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_settings.html.twig
-msgid "Control who can register and whether clients may manage their own email addresses."
 msgstr ""
 
 #: src/modules/Invoice/manifest.json
@@ -7446,10 +7346,6 @@ msgstr ""
 msgid "Create and edit staff members"
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
-msgid "Create and manage reusable custom forms that can be attached to products and order flows."
-msgstr ""
-
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Create email account"
 msgstr ""
@@ -7820,10 +7716,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Custom fields"
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_settings.html.twig
-msgid "Custom fields let you extend the standard client profile with up to twenty optional registration fields."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -11294,10 +11186,6 @@ msgstr ""
 msgid "Formatting"
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
-msgid "Forms created here can be reused across products and checkout flows. Duplicate existing forms when you want a starting point."
-msgstr ""
-
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Forward to"
 msgstr ""
@@ -13030,7 +12918,7 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig …
 msgid "Information:"
 msgstr ""
 
@@ -13466,7 +13354,7 @@ msgstr ""
 msgid "Invoice Settings"
 msgstr ""
 
-#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/client/mod_invoice_print.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig …
+#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/client/mod_invoice_print.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig
 msgid "Invoice Status"
 msgstr ""
 
@@ -15014,14 +14902,6 @@ msgstr ""
 msgid "Manage client and guest tickets, filter conversations, and open new support requests."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Manage company information, localization, system maintenance, and environment-level controls."
-msgstr ""
-
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
-msgid "Manage currencies, configure exchange-rate automation, and test conversions from the default currency."
-msgstr ""
-
 #: src/modules/Custompages/Service.php
 msgid "Manage custom pages"
 msgstr ""
@@ -15044,10 +14924,6 @@ msgstr ""
 
 #: src/modules/Email/Service.php
 msgid "Manage email templates"
-msgstr ""
-
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig
-msgid "Manage email templates, queued messages, and delivery settings for outgoing mail."
 msgstr ""
 
 #: src/modules/Extension/Service.php
@@ -15154,20 +15030,12 @@ msgstr ""
 msgid "Manage settings"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_settings.html.twig
-msgid "Manage signup behavior, required client profile fields, and optional custom registration fields."
-msgstr ""
-
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "Manage staff accounts, configure staff login rules, and maintain permission groups."
 msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "Manage subscriptions"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_settings.html.twig
-msgid "Manage support automation, knowledge base availability, guest tickets, and helpdesk configuration."
 msgstr ""
 
 #: src/modules/Invoice/Service.php
@@ -17208,6 +17076,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/System/templates/admin/mod_system_update.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Not checked yet"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+msgid "Not connected"
 msgstr ""
 
 #: src/modules/Support/Mail/ImapClient.php
@@ -22414,10 +22286,6 @@ msgstr ""
 msgid "Review and send"
 msgstr ""
 
-#: src/modules/Cron/templates/admin/mod_cron_settings.html.twig
-msgid "Review cron status, confirm your schedule, and control whether the guest cron endpoint is available."
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Review invoices generated for this order and open any invoice details directly from here."
 msgstr ""
@@ -23026,7 +22894,7 @@ msgstr ""
 msgid "Search email accounts"
 msgstr ""
 
-#: src/modules/Seo/manifest.json src/modules/Seo/templates/admin/mod_seo_settings.html.twig
+#: src/modules/Seo/manifest.json
 msgid "Search engine verification and IndexNow submission."
 msgstr ""
 
@@ -23208,10 +23076,6 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Select the Default Network Interface:"
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_settings.html.twig
-msgid "Select the client fields that must be completed during registration or profile updates."
 msgstr ""
 
 #: src/modules/Support/Api/Admin.php
@@ -23766,10 +23630,6 @@ msgstr ""
 msgid "Set a date range to update the dashboard graphs."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Set a default company signature for use in documents and communications."
-msgstr ""
-
 #: src/modules/Product/templates/admin/mod_product_currency_prices.html.twig
 msgid "Set a fixed price in a currency, or leave it blank to convert the default currency price at the rate (shown in grey). A fixed price stays the same when the rate changes. New orders get it; existing services keep their own price."
 msgstr ""
@@ -23824,10 +23684,6 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Set the default nameservers that will be suggested for domains provisioned on this server."
-msgstr ""
-
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Set the primary contact details and branding assets used across the system."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
@@ -24276,10 +24132,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Sign-in page"
-msgstr ""
-
-#: src/modules/Security/templates/admin/mod_security_settings.html.twig
-msgid "Sign-in rules, proxies, access lists and sessions."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -24776,10 +24628,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/themes/palisade/html/layout_default.html.twig …
 msgid "Store"
-msgstr ""
-
-#: src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Store company identifiers and optional bank details for use on invoices and documents."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
@@ -25508,10 +25356,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Test connection"
-msgstr ""
-
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
-msgid "Test conversions from the current default currency to any enabled currency using the configured rates."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -27487,28 +27331,12 @@ msgstr ""
 msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_settings.html.twig
-msgid "These settings affect renewal timing, how addon orders appear in lists, and how suspended or unpaid orders are automatically cleaned up."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
-msgid "These settings control when invoices are issued, how they are numbered, and how invoice documents behave after they are created."
-msgstr ""
-
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "These settings define the company details shown throughout invoices, public pages, and client-facing documents."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "These text blocks appear on legal and informational pages and may also be referenced from other client-facing areas."
-msgstr ""
-
-#: src/modules/Theme/templates/admin/mod_theme_settings.html.twig
-msgid "These themes control the administrator interface used by staff."
-msgstr ""
-
-#: src/modules/Theme/templates/admin/mod_theme_settings.html.twig
-msgid "These themes control the client-facing storefront, account area, and other public pages."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
@@ -30125,14 +29953,6 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Use these settings in Outlook, Apple Mail, Thunderbird or a phone mail app. The password is the mailbox password."
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_settings.html.twig
-msgid "Use these settings to automate default ticket responses, control submission throttling, and manage public support visibility."
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_settings.html.twig
-msgid "Use these settings to control how new client accounts are created and what profile information must be collected at signup."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
