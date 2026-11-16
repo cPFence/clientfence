@@ -30613,3 +30613,100 @@ msgstr "Enintään :count tarjouksessa olevaa TLD:tä, välilyönnein eroteltuin
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Enintään :count TLD:tä, jotka asiakkaat voivat rekisteröidä, välilyönnein eroteltuina. Ne valitaan ensin tilauslomakkeen ja upotetun verkkotunnustarkistimen verkkotunnushaussa."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Maksettua laskua ei voi poistaa. Peruuta virheellisesti kirjattu maksu toiminnolla Peruuta maksu tai hyvitä lasku."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Maksettu lasku säilyttää tilansa. Peruuta virheellisesti kirjattu maksu toiminnolla Peruuta maksu tai hyvitä lasku."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Tälle laskulle on kirjattu tämän maksun jälkeen toinen maksu, joten maksua ei voi peruuttaa. Hyvitä se sen sijaan."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Veloita seuraava kuukausi"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Vain maksetun laskun maksun voi peruuttaa."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Tästä kuun päivästä alkaen tehdyt tilaukset maksavat ensimmäisellä laskulla myös seuraavan koko jakson. Tyhjä: pois käytöstä."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Suhteellinen laskutus"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Suhteellinen päivä"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Vain toistuvat hinnat: tämän tuotteen kaikki palvelut uusiutuvat yhtenä kuun päivänä. Ensimmäinen lasku veloittaa päivät kyseiseen päivään asti."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Peruuta maksu"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Peruutetaanko maksu?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Peruutettu"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Asiakas on jo käyttänyt tämän maksun lisäämän hyvityksen, joten maksua ei voi peruuttaa. Hyvitä tämä lasku käsin."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Kuun päivä (1-31), jona palvelut uusiutuvat; lyhyemmässä kuussa käytetään sen viimeistä päivää. Tyhjä: pois käytöstä."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Lasku muuttuu taas maksamattomaksi, maksettavaa :amount. Henkilökunnan siihen kirjaamat maksut merkitään peruutetuiksi, maksun käyttämä tilin hyvitys palautuu asiakkaalle ja sen lisäämä hyvitys otetaan takaisin. Sen uusimat palvelut palaavat taaksepäin jaksonsa verran, ja sen käyttöön ottamat palvelut keskeytetään, kunnes lasku on maksettu."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Maksu peruutettiin täällä: poista se käsin kohteessa :program ja valitse sitten Lähetä uudelleen."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Maksu peruutettiin täällä: poista se käsin kohteessa :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Suhteellisen päivän on oltava kuun päivä väliltä 1-31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Tällä laskulla on maksuyhdyskäytävän kautta tehty maksu tai tuotu maksu. Hyvitä se sen sijaan."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Tämä lasku on hyvitetty osittain, joten sen maksua ei voi peruuttaa. Hyvitä loput."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Tämä maksu muutti palvelua (päivitys), mitä ei voi perua täällä. Hyvitä lasku sen sijaan."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Tämä maksu uusi verkkotunnuksen rekisterinpitäjällä, mitä ei voi perua täällä. Hyvitä lasku sen sijaan."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Tämä maksu peruutettiin, ja se säilyy vain tietueena. Kirjaa sen sijaan uusi maksu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Käytä tätä, kun maksu on kirjattu virheellisesti, esimerkiksi pankkisiirto, joka ei koskaan saapunut. Rahaa ei lähetetä minnekään."

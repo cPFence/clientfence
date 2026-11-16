@@ -28003,3 +28003,100 @@ msgstr "TLD ที่ลดราคาได้สูงสุด :count รา
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "TLD ที่ลูกค้าสามารถจดทะเบียนได้สูงสุด :count รายการ คั่นด้วยการเว้นวรรค จะถูกเลือกไว้ก่อนในการค้นหาโดเมนของแบบฟอร์มสั่งซื้อและตัวตรวจสอบโดเมนแบบฝัง"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "ไม่สามารถลบใบแจ้งหนี้ที่ชำระแล้วได้ ให้ยกเลิกการชำระเงินที่บันทึกผิดด้วย ย้อนรายการชำระเงิน หรือคืนเงินใบแจ้งหนี้"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "ใบแจ้งหนี้ที่ชำระแล้วจะคงสถานะเดิม ให้ยกเลิกการชำระเงินที่บันทึกผิดด้วย ย้อนรายการชำระเงิน หรือคืนเงินใบแจ้งหนี้"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "มีการบันทึกการชำระเงินอื่นในใบแจ้งหนี้นี้หลังจากรายการนี้ จึงย้อนรายการนี้ไม่ได้ ให้คืนเงินแทน"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "เรียกเก็บเดือนถัดไป"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "ย้อนได้เฉพาะการชำระเงินของใบแจ้งหนี้ที่ชำระแล้วเท่านั้น"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "คำสั่งซื้อที่สั่งตั้งแต่วันนี้ของเดือนเป็นต้นไป จะชำระรอบเต็มรอบถัดไปในใบแจ้งหนี้ใบแรกด้วย เว้นว่าง: ปิด"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "การเรียกเก็บตามสัดส่วน"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "วันที่คิดตามสัดส่วน"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "เฉพาะราคาแบบเรียกเก็บซ้ำ: บริการทั้งหมดของผลิตภัณฑ์นี้ต่ออายุในวันเดียวกันของเดือน ใบแจ้งหนี้ใบแรกเรียกเก็บเฉพาะจำนวนวันจนถึงวันนั้น"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "ย้อนรายการชำระเงิน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "ย้อนรายการชำระเงิน?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "ย้อนรายการแล้ว"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "ลูกค้าใช้เครดิตที่การชำระเงินนี้เพิ่มไปแล้ว จึงย้อนรายการไม่ได้ ให้คืนเงินใบแจ้งหนี้นี้ด้วยตนเอง"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "วันที่ของเดือน (1-31) ที่บริการต่ออายุ เดือนที่สั้นกว่าจะใช้วันสุดท้ายของเดือน เว้นว่าง: ปิด"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "ใบแจ้งหนี้จะกลับเป็นยังไม่ได้ชำระ โดยมียอดค้าง :amount การชำระเงินที่ทีมงานบันทึกไว้จะถูกทำเครื่องหมายว่าย้อนรายการแล้ว เครดิตในบัญชีที่การชำระเงินใช้จะกลับไปให้ลูกค้า และเครดิตที่การชำระเงินเพิ่มไว้จะถูกหักคืน บริการที่ต่ออายุไว้จะถอยกลับตามระยะเวลา และบริการที่ตั้งค่าไว้จะถูกระงับจนกว่าจะชำระใบแจ้งหนี้"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "ย้อนรายการชำระเงินที่นี่แล้ว: ให้ลบรายการนั้นใน :program ด้วยตนเอง แล้วเลือก ส่งอีกครั้ง"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "ย้อนรายการชำระเงินที่นี่แล้ว: ให้ลบรายการนั้นใน :program ด้วยตนเอง"
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "วันที่คิดตามสัดส่วนต้องเป็นวันที่ของเดือนตั้งแต่ 1 ถึง 31"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "ใบแจ้งหนี้นี้มีการชำระเงินผ่านเกตเวย์การชำระเงินหรือการชำระเงินที่นำเข้า ให้คืนเงินแทน"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "ใบแจ้งหนี้นี้คืนเงินบางส่วนไปแล้ว จึงย้อนรายการชำระเงินไม่ได้ ให้คืนเงินส่วนที่เหลือแทน"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "การชำระเงินนี้เปลี่ยนแปลงบริการ (การอัปเกรด) ซึ่งยกเลิกที่นี่ไม่ได้ ให้คืนเงินใบแจ้งหนี้แทน"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "การชำระเงินนี้ต่ออายุโดเมนกับผู้รับจดทะเบียน ซึ่งยกเลิกที่นี่ไม่ได้ ให้คืนเงินใบแจ้งหนี้แทน"
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "การชำระเงินนี้ถูกย้อนรายการแล้วและเก็บไว้เป็นบันทึกเท่านั้น ให้บันทึกการชำระเงินใหม่แทน"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "ใช้เมื่อบันทึกการชำระเงินผิด เช่น การโอนเงินผ่านธนาคารที่ไม่เคยเข้ามา ไม่มีการส่งเงินไปที่ใดเลย"

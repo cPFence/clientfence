@@ -30352,3 +30352,100 @@ msgstr "Do :count TLD w promocji, oddzielonych spacjami. Są zaznaczone jako pie
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Do :count TLD, które klienci mogą rejestrować, oddzielonych spacjami. Są zaznaczone jako pierwsze w wyszukiwaniu domen w formularzu zamówienia i we wbudowanym sprawdzaniu domen."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Opłaconej faktury nie można usunąć. Cofnij omyłkowo zapisaną płatność przez Cofnij płatność lub zwróć środki za fakturę."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Opłacona faktura zachowuje swój status. Cofnij omyłkowo zapisaną płatność przez Cofnij płatność lub zwróć środki za fakturę."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Po tej płatności zapisano na fakturze kolejną, więc nie można jej cofnąć. Zamiast tego zwróć środki."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Nalicz następny miesiąc"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Można cofnąć tylko płatność opłaconej faktury."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Zamówienia złożone w tym dniu miesiąca lub później płacą na pierwszej fakturze także za następny pełny okres. Puste: wyłączone."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Rozliczenie proporcjonalne"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Dzień rozliczenia proporcjonalnego"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Tylko ceny cykliczne: wszystkie usługi tego produktu odnawiają się jednego dnia miesiąca. Pierwsza faktura obejmuje dni do tego dnia."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Cofnij płatność"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Cofnąć płatność?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Cofnięta"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Klient wydał już środki dodane tą płatnością, więc nie można jej cofnąć. Zwróć środki za tę fakturę ręcznie."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Dzień miesiąca (1-31), w którym usługi się odnawiają; w krótszym miesiącu używany jest jego ostatni dzień. Puste: wyłączone."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Faktura znów jest niezapłacona, do zapłaty :amount. Płatności zapisane na niej przez personel są oznaczone jako cofnięte, środki na koncie użyte przez płatność wracają do klienta, a środki, które dodała, są odbierane. Usługi, które odnowiła, cofają się o swój okres, a usługi, które uruchomiła, są zawieszane do czasu opłacenia faktury."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Płatność została tu cofnięta: usuń ją ręcznie w :program, a potem wybierz Wyślij ponownie."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Płatność została tu cofnięta: usuń ją ręcznie w :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Dzień rozliczenia proporcjonalnego musi być dniem miesiąca od 1 do 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Ta faktura ma płatność przez bramkę płatności lub zaimportowaną płatność. Zamiast tego zwróć środki."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Ta faktura została częściowo zwrócona, więc jej płatności nie można cofnąć. Zwróć resztę."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Ta płatność zmieniła usługę (ulepszenie), czego nie można tu cofnąć. Zamiast tego zwróć środki za fakturę."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Ta płatność odnowiła domenę u rejestratora, czego nie można tu cofnąć. Zamiast tego zwróć środki za fakturę."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Ta płatność została cofnięta i jest zachowana tylko jako zapis. Zamiast tego zapisz nową płatność."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Użyj tego, gdy płatność zapisano omyłkowo, na przykład przelew, który nigdy nie dotarł. Żadne pieniądze nie są wysyłane."

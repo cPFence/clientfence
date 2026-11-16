@@ -30178,3 +30178,100 @@ msgstr "Legfeljebb :count akciós TLD, szóközzel elválasztva. A rendelési ű
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Legfeljebb :count TLD, amelyet az ügyfelek regisztrálhatnak, szóközzel elválasztva. A rendelési űrlap és a beágyazott domainellenőrző domainkeresésében ezek vannak először bejelölve."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Kifizetett számla nem törölhető. A tévesen rögzített fizetést a Fizetés visszavonása gombbal vonja vissza, vagy térítse vissza a számlát."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "A kifizetett számla megtartja az állapotát. A tévesen rögzített fizetést a Fizetés visszavonása gombbal vonja vissza, vagy térítse vissza a számlát."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Ezen a számlán e fizetés után újabb fizetést rögzítettek, ezért nem vonható vissza. Térítse vissza helyette."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Következő hónap terhelése"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Csak kifizetett számla fizetése vonható vissza."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Az ettől a naptól kezdve leadott rendelések az első számlán a következő teljes időszakot is kifizetik. Üres: kikapcsolva."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Időarányos számlázás"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Időarányos nap"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Csak ismétlődő áraknál: a termék minden szolgáltatása a hónap egy napján újul meg. Az első számla az addig a napig tartó napokat számlázza."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Fizetés visszavonása"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Visszavonja a fizetést?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Visszavonva"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Az ügyfél már elköltötte a fizetés által jóváírt összeget, ezért nem vonható vissza. Térítse vissza ezt a számlát kézzel."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "A hónap napja (1-31), amelyen a szolgáltatások megújulnak; rövidebb hónapban az utolsó nap érvényes. Üres: kikapcsolva."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "A számla újra fizetetlen lesz, :amount fizetendővel. A munkatársak által rögzített fizetések visszavontnak lesznek jelölve, a fizetés által felhasznált fiókjóváírás visszakerül az ügyfélhez, az általa jóváírt összeg pedig visszavonásra kerül. A megújított szolgáltatások az időszakukkal visszaugranak, a beállított szolgáltatások pedig felfüggesztésre kerülnek a számla kifizetéséig."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "A fizetést itt visszavonták: törölje kézzel itt: :program, majd válassza a Küldés újra lehetőséget."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "A fizetést itt visszavonták: törölje kézzel itt: :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Az időarányos napnak a hónap egy napjának kell lennie, 1 és 31 között."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Ezen a számlán fizetési átjárón keresztüli vagy importált fizetés van. Térítse vissza helyette."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Ez a számla részben visszatérítésre került, ezért a fizetése nem vonható vissza. Térítse vissza a maradékot."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Ez a fizetés módosított egy szolgáltatást (frissítést), ami itt nem vonható vissza. Térítse vissza helyette a számlát."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Ez a fizetés megújított egy domaint a regisztrátornál, ami itt nem vonható vissza. Térítse vissza helyette a számlát."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Ez a fizetés vissza lett vonva, és csak nyilvántartásként marad meg. Rögzítsen helyette új fizetést."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Akkor használja, ha egy fizetést tévesen rögzítettek, például egy sosem érkezett banki átutalást. Pénz nem megy sehova."

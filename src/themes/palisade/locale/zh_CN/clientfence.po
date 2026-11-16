@@ -29677,3 +29677,100 @@ msgstr "最多 :count 个促销中的顶级域名，用空格分隔。它们会�
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "最多 :count 个客户可注册的顶级域名，用空格分隔。它们会在订单表单和嵌入式域名查询的域名搜索中优先勾选。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "已付款的发票不能删除。请用“撤销付款”撤销误记的付款，或为发票退款。"
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "已付款的发票会保持其状态。请用“撤销付款”撤销误记的付款，或为发票退款。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "此付款之后，该发票上又记录了另一笔付款，因此无法撤销此付款。请改为退款。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "收取下个月费用"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "只能撤销已付款发票的付款。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "从每月的这一天起（含）下的订单，首张发票还会支付下一个完整周期。留空：关闭。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "按比例计费"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "按比例日期"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "仅适用于周期性价格：该产品的所有服务在每月的同一天续费。首张发票只收取到该日为止的天数。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "撤销付款"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "撤销付款？"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "已撤销"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "客户已用掉此付款增加的余额，因此无法撤销。请手动为此发票退款。"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "服务续费的日期（1-31）；较短的月份使用其最后一天。留空：关闭。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "发票将重新变为未付款，欠款 :amount。工作人员在其上记录的付款会标记为已撤销，付款使用的账户余额退回给客户，其增加的余额会被收回。它续费的服务按其周期回退，它开通的服务会被冻结，直到发票付款。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "付款已在此撤销：请在 :program 中手动删除，然后选择“再次发送”。"
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "付款已在此撤销：请在 :program 中手动删除。"
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "按比例日必须是每月的 1 到 31 日之间的某一天。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "此发票有通过支付网关的付款或导入的付款。请改为退款。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "此发票已部分退款，因此无法撤销其付款。请退还其余部分。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "此付款更改了一项服务（升级），无法在此撤销。请改为为发票退款。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "此付款在注册商处续费了一个域名，无法在此撤销。请改为为发票退款。"
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "此付款已撤销，仅作为记录保留。请改为记录一笔新付款。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "当付款被误记时使用，例如一笔从未到账的银行转账。不会向任何地方汇款。"

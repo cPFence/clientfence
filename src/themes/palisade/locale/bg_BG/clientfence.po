@@ -30668,3 +30668,100 @@ msgstr "До :count TLD в продажба, разделени с интерв�
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "До :count TLD, които клиентите могат да регистрират, разделени с интервали. Те са отметнати първи в търсенето на домейни във формуляра за поръчка и във вградената проверка на домейни."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Платена фактура не може бъде изтрита. Отменете погрешно записано плащане с Анулиране на плащане или върнете сумата по фактурата."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Платената фактура запазва статуса си. Отменете погрешно записано плащане с Анулиране на плащане или върнете сумата по фактурата."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "След това плащане по фактурата е записано друго плащане, затова то не може да бъде анулирано. Върнете сумата вместо това."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Таксувай следващия месец"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Може да се анулира само плащането на платена фактура."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Поръчки, направени от този ден на месеца нататък, плащат с първата фактура и следващия пълен период. Празно: изключено."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Пропорционално таксуване"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Дата за пропорция"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Само за повтарящи се цени: всички услуги на този продукт се подновяват в един ден от месеца. Първата фактура таксува дните до този ден."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Анулиране на плащане"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Да се анулира ли плащането?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Анулирано"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Клиентът вече е изразходвал кредита, добавен от това плащане, затова то не може да бъде анулирано. Върнете сумата по тази фактура ръчно."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Денят от месеца (1-31), в който се подновяват услугите; по-кратък месец използва последния си ден. Празно: изключено."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Фактурата отново става неплатена с :amount за плащане. Плащанията, записани по нея от персонала, се маркират като анулирани, кредитът по сметката, използван от плащането, се връща на клиента, а кредитът, който е добавило, се отнема. Услугите, които е подновило, се връщат с периода си, а услугите, които е активирало, се прекратяват, докато фактурата не бъде платена."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Плащането е анулирано тук: изтрийте го ръчно в :program, след това изберете Изпращане отново."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Плащането е анулирано тук: изтрийте го ръчно в :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Денят за пропорция трябва да е ден от месеца от 1 до 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Тази фактура има плащане през платежен шлюз или импортирано плащане. Върнете сумата вместо това."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Тази фактура е частично възстановена, затова плащането ѝ не може да бъде анулирано. Върнете остатъка."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Това плащане е променило услуга (надграждане), което не може да се отмени тук. Върнете сумата по фактурата."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Това плащане е подновило домейн при регистратора, което не може да се отмени тук. Върнете сумата по фактурата."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Това плащане е анулирано и се пази само като запис. Запишете ново плащане вместо това."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Използвайте, когато плащане е записано погрешно, например банков превод, който никога не е пристигнал. Не се изпращат пари никъде."

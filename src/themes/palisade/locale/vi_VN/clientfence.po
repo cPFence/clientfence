@@ -30187,3 +30187,100 @@ msgstr "Tối đa :count TLD đang khuyến mãi, cách nhau bằng dấu cách.
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Tối đa :count TLD mà khách hàng có thể đăng ký, cách nhau bằng dấu cách. Chúng được tích trước trong tìm kiếm tên miền của biểu mẫu đặt hàng và của công cụ kiểm tra tên miền nhúng."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Không thể xóa hóa đơn đã thanh toán. Hãy hoàn tác khoản thanh toán ghi nhầm bằng Đảo ngược thanh toán, hoặc hoàn tiền hóa đơn."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Hóa đơn đã thanh toán giữ nguyên trạng thái. Hãy hoàn tác khoản thanh toán ghi nhầm bằng Đảo ngược thanh toán, hoặc hoàn tiền hóa đơn."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Sau khoản thanh toán này, hóa đơn đã có thêm một khoản thanh toán khác, nên không thể đảo ngược. Hãy hoàn tiền thay thế."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Tính tháng tiếp theo"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Chỉ có thể đảo ngược khoản thanh toán của hóa đơn đã thanh toán."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Đơn hàng đặt từ ngày này của tháng trở đi cũng trả kỳ đầy đủ tiếp theo trên hóa đơn đầu tiên. Để trống: tắt."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Thanh toán theo tỷ lệ"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Ngày tính theo tỷ lệ"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Chỉ áp dụng cho giá định kỳ: mọi dịch vụ của sản phẩm này gia hạn vào một ngày trong tháng. Hóa đơn đầu tiên tính các ngày cho đến ngày đó."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Đảo ngược thanh toán"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Đảo ngược thanh toán?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Đã đảo ngược"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Khách hàng đã dùng hết khoản tín dụng mà khoản thanh toán này thêm vào, nên không thể đảo ngược. Hãy hoàn tiền hóa đơn này thủ công."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Ngày trong tháng (1-31) mà dịch vụ gia hạn; tháng ngắn hơn dùng ngày cuối của tháng. Để trống: tắt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Hóa đơn trở lại chưa thanh toán, còn nợ :amount. Các khoản thanh toán nhân viên đã ghi trên đó được đánh dấu là đã đảo ngược, tín dụng tài khoản mà khoản thanh toán đã dùng được trả lại cho khách hàng và tín dụng mà nó thêm vào bị thu hồi. Các dịch vụ mà nó đã gia hạn lùi lại theo kỳ của chúng, và các dịch vụ mà nó đã thiết lập bị tạm dừng cho đến khi hóa đơn được thanh toán."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Khoản thanh toán đã được đảo ngược tại đây: hãy xóa thủ công trong :program, rồi chọn Gửi lại."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Khoản thanh toán đã được đảo ngược tại đây: hãy xóa thủ công trong :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Ngày tính theo tỷ lệ phải là một ngày trong tháng từ 1 đến 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Hóa đơn này có khoản thanh toán qua cổng thanh toán hoặc khoản thanh toán được nhập. Hãy hoàn tiền thay thế."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Hóa đơn này đã được hoàn tiền một phần, nên không thể đảo ngược khoản thanh toán. Hãy hoàn tiền phần còn lại."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Khoản thanh toán này đã thay đổi một dịch vụ (nâng cấp), không thể hoàn tác tại đây. Hãy hoàn tiền hóa đơn thay thế."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Khoản thanh toán này đã gia hạn một tên miền tại nhà đăng ký, không thể hoàn tác tại đây. Hãy hoàn tiền hóa đơn thay thế."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Khoản thanh toán này đã bị đảo ngược và chỉ được giữ làm bản ghi. Hãy ghi một khoản thanh toán mới."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Dùng khi một khoản thanh toán bị ghi nhầm, ví dụ chuyển khoản ngân hàng không bao giờ đến. Không có tiền nào được gửi đi."

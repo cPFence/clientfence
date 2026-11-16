@@ -29567,3 +29567,100 @@ msgstr "حتى :count من نطاقات TLD المعروضة للبيع، مفص
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "حتى :count من نطاقات TLD التي يمكن للعملاء تسجيلها، مفصولة بمسافات. تُحدَّد أولًا في البحث عن النطاقات في نموذج الطلب وفي أداة فحص النطاقات المضمّنة."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "لا يمكن حذف فاتورة مدفوعة. تراجع عن دفعة سُجلت بالخطأ عبر عكس الدفعة، أو استرد قيمة الفاتورة."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "تحتفظ الفاتورة المدفوعة بحالتها. تراجع عن دفعة سُجلت بالخطأ عبر عكس الدفعة، أو استرد قيمة الفاتورة."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "سُجلت دفعة أخرى على هذه الفاتورة بعد هذه الدفعة، لذا لا يمكن عكسها. استرد قيمتها بدلًا من ذلك."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "احتساب الشهر التالي"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "لا يمكن عكس إلا دفعة فاتورة مدفوعة."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "الطلبات المقدمة في هذا اليوم من الشهر أو بعده تدفع أيضًا الفترة الكاملة التالية في الفاتورة الأولى. فارغ: معطّل."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "الفوترة بالتناسب"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "تاريخ التناسب"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "للأسعار المتكررة فقط: تُجدَّد كل خدمات هذا المنتج في يوم واحد من الشهر. تحتسب الفاتورة الأولى الأيام حتى ذلك اليوم."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "عكس الدفعة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "عكس الدفعة؟"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "معكوسة"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "أنفق العميل الرصيد الذي أضافته هذه الدفعة، لذا لا يمكن عكسها. استرد قيمة هذه الفاتورة يدويًا."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "يوم الشهر (1-31) الذي تُجدَّد فيه الخدمات؛ الشهر الأقصر يستخدم آخر يوم فيه. فارغ: معطّل."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "تعود الفاتورة غير مدفوعة ويتبقى :amount مستحقًا. تُعلَّم الدفعات التي سجلها الموظفون عليها كمعكوسة، ويعود إلى العميل الرصيد الدائن الذي استخدمته الدفعة، ويُسحب الرصيد الذي أضافته. تعود الخدمات التي جددتها بمقدار فترتها، وتُوقَف الخدمات التي أعدّتها حتى تُدفع الفاتورة."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "عُكست الدفعة هنا: احذفها يدويًا في :program، ثم اختر إرسال مرة أخرى."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "عُكست الدفعة هنا: احذفها يدويًا في :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "يجب أن يكون يوم التناسب يومًا من الشهر بين 1 و31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "لهذه الفاتورة دفعة عبر بوابة دفع أو دفعة مستوردة. استرد قيمتها بدلًا من ذلك."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "استُردت قيمة هذه الفاتورة جزئيًا، لذا لا يمكن عكس دفعتها. استرد الباقي."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "غيّرت هذه الدفعة خدمة (ترقية)، ولا يمكن التراجع عن ذلك هنا. استرد قيمة الفاتورة بدلًا من ذلك."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "جددت هذه الدفعة نطاقًا لدى المسجّل، ولا يمكن التراجع عن ذلك هنا. استرد قيمة الفاتورة بدلًا من ذلك."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "عُكست هذه الدفعة وتبقى كسجل فقط. سجّل دفعة جديدة بدلًا من ذلك."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "استخدمه عند تسجيل دفعة بالخطأ، مثل حوالة بنكية لم تصل أبدًا. لا يُرسل أي مال إلى أي جهة."

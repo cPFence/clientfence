@@ -29707,3 +29707,100 @@ msgstr "Până la :count TLD-uri la ofertă, separate prin spații. Sunt bifate 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Până la :count TLD-uri pe care clienții le pot înregistra, separate prin spații. Sunt bifate primele în căutarea de domenii din formularul de comandă și din verificatorul de domenii încorporat."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "O factură plătită nu poate fi ștearsă. Anulați o plată înregistrată din greșeală cu Stornează plata sau rambursați factura."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "O factură plătită își păstrează starea. Anulați o plată înregistrată din greșeală cu Stornează plata sau rambursați factura."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "După această plată a fost înregistrată o altă plată pe factură, deci nu poate fi stornată. Rambursați-o în schimb."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Taxează luna următoare"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Doar plata unei facturi plătite poate fi stornată."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Comenzile plasate începând cu această zi a lunii plătesc pe prima factură și următoarea perioadă întreagă. Gol: dezactivat."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Facturare proporțională"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Data proporțională"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Doar prețuri recurente: toate serviciile acestui produs se reînnoiesc într-o singură zi a lunii. Prima factură taxează zilele până la acea zi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Stornează plata"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Stornați plata?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Stornată"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Clientul a cheltuit creditul adăugat de această plată, deci nu poate fi stornată. Rambursați această factură manual."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Ziua lunii (1-31) în care se reînnoiesc serviciile; o lună mai scurtă folosește ultima ei zi. Gol: dezactivat."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Factura devine din nou neplătită, cu :amount de plată. Plățile înregistrate de personal pe ea sunt marcate ca stornate, creditul în cont folosit de plată revine clientului, iar creditul adăugat de ea este retras. Serviciile pe care le-a reînnoit se întorc cu perioada lor, iar serviciile pe care le-a activat sunt suspendate până la plata facturii."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Plata a fost stornată aici: ștergeți-o manual în :program, apoi alegeți Trimite din nou."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Plata a fost stornată aici: ștergeți-o manual în :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Ziua proporțională trebuie să fie o zi a lunii de la 1 la 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Această factură are o plată prin gateway de plată sau o plată importată. Rambursați-o în schimb."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Această factură a fost rambursată parțial, deci plata ei nu poate fi stornată. Rambursați restul."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Această plată a modificat un serviciu (un upgrade), ceea ce nu poate fi anulat aici. Rambursați factura în schimb."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Această plată a reînnoit un domeniu la registrar, ceea ce nu poate fi anulat aici. Rambursați factura în schimb."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Această plată a fost stornată și este păstrată doar ca înregistrare. Înregistrați în schimb o plată nouă."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Folosiți asta când o plată a fost înregistrată din greșeală, de exemplu un transfer bancar care nu a ajuns niciodată. Nu se trimit bani nicăieri."

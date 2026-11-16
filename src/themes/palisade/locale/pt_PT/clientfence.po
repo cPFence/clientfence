@@ -30862,3 +30862,100 @@ msgstr "Até :count TLDs em promoção, separados por espaços. São assinalados
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Até :count TLDs que os clientes podem registar, separados por espaços. São assinalados primeiro na pesquisa de domínios do formulário de encomenda e do verificador de domínios incorporado."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Uma fatura paga não pode ser eliminada. Anule um pagamento registado por engano com Estornar pagamento ou reembolse a fatura."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Uma fatura paga mantém o seu estado. Anule um pagamento registado por engano com Estornar pagamento ou reembolse a fatura."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Foi registado um pagamento nesta fatura depois deste, por isso não pode ser estornado. Reembolse-o."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Cobrar o mês seguinte"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Só o pagamento de uma fatura paga pode ser estornado."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "As encomendas feitas a partir deste dia do mês também pagam o período completo seguinte na primeira fatura. Vazio: desativado."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Faturação proporcional"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Data proporcional"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Apenas preços recorrentes: todos os serviços deste produto renovam num único dia do mês. A primeira fatura cobra os dias até esse dia."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Estornar pagamento"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Estornar pagamento?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Estornado"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "O cliente já gastou o crédito que este pagamento adicionou, por isso não pode ser estornado. Reembolse esta fatura manualmente."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "O dia do mês (1-31) em que os serviços renovam; um mês mais curto usa o último dia. Vazio: desativado."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "A fatura volta a ficar não paga, com :amount em dívida. Os pagamentos registados pela equipa nela são marcados como estornados, o crédito na conta usado pelo pagamento volta ao cliente e o crédito que adicionou é retirado. Os serviços que renovou recuam o seu período, e os serviços que ativou são suspensos até a fatura ser paga."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "O pagamento foi estornado aqui: elimine-o manualmente em :program e depois escolha Enviar novamente."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "O pagamento foi estornado aqui: elimine-o manualmente em :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "O dia proporcional tem de ser um dia do mês de 1 a 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Esta fatura tem um pagamento por gateway de pagamento ou um pagamento importado. Reembolse-o."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Esta fatura foi reembolsada em parte, por isso o seu pagamento não pode ser estornado. Reembolse o restante."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Este pagamento alterou um serviço (um upgrade), o que não pode ser desfeito aqui. Reembolse a fatura."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Este pagamento renovou um domínio no registador, o que não pode ser desfeito aqui. Reembolse a fatura."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Este pagamento foi estornado e fica apenas como registo. Registe um novo pagamento."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Use quando um pagamento foi registado por engano, por exemplo uma transferência bancária que nunca chegou. Não é enviado dinheiro."

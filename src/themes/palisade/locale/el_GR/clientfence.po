@@ -30277,3 +30277,100 @@ msgstr "Έως :count TLD σε προσφορά, χωρισμένα με κεν�
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Έως :count TLD που μπορούν να καταχωρούν οι πελάτες, χωρισμένα με κενά. Είναι τσεκαρισμένα πρώτα στην αναζήτηση ονομάτων χώρου της φόρμας παραγγελίας και του ενσωματωμένου ελέγχου ονομάτων χώρου."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Ένα εξοφλημένο παραστατικό δεν μπορεί να διαγραφεί. Αναιρέστε μια πληρωμή που καταχωρίστηκε κατά λάθος με Αντιστροφή πληρωμής ή επιστρέψτε τα χρήματα του παραστατικού."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Ένα εξοφλημένο παραστατικό διατηρεί την κατάστασή του. Αναιρέστε μια πληρωμή που καταχωρίστηκε κατά λάθος με Αντιστροφή πληρωμής ή επιστρέψτε τα χρήματα του παραστατικού."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Μετά από αυτή την πληρωμή καταχωρίστηκε άλλη πληρωμή στο παραστατικό, οπότε δεν μπορεί να αντιστραφεί. Επιστρέψτε τα χρήματα."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Χρέωση επόμενου μήνα"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Μόνο η πληρωμή ενός εξοφλημένου παραστατικού μπορεί να αντιστραφεί."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Οι παραγγελίες από αυτή την ημέρα του μήνα και μετά πληρώνουν στο πρώτο παραστατικό και την επόμενη πλήρη περίοδο. Κενό: ανενεργό."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Αναλογική χρέωση"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Ημερομηνία αναλογίας"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Μόνο για επαναλαμβανόμενες τιμές: όλες οι υπηρεσίες αυτού του προϊόντος ανανεώνονται μία ημέρα του μήνα. Το πρώτο παραστατικό χρεώνει τις ημέρες μέχρι εκείνη την ημέρα."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Αντιστροφή πληρωμής"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Αντιστροφή πληρωμής;"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Αντεστραμμένη"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Ο πελάτης έχει ξοδέψει την πίστωση που πρόσθεσε αυτή η πληρωμή, οπότε δεν μπορεί να αντιστραφεί. Επιστρέψτε τα χρήματα αυτού του παραστατικού χειροκίνητα."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Η ημέρα του μήνα (1-31) που ανανεώνονται οι υπηρεσίες· ένας συντομότερος μήνας χρησιμοποιεί την τελευταία του ημέρα. Κενό: ανενεργό."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Το παραστατικό γίνεται ξανά απλήρωτο με :amount οφειλόμενο. Οι πληρωμές που καταχώρισε το προσωπικό σε αυτό σημειώνονται ως αντεστραμμένες, η πίστωση λογαριασμού που χρησιμοποίησε η πληρωμή επιστρέφει στον πελάτη και η πίστωση που πρόσθεσε αφαιρείται. Οι υπηρεσίες που ανανέωσε γυρίζουν πίσω κατά την περίοδό τους και οι υπηρεσίες που ενεργοποίησε αναστέλλονται μέχρι να πληρωθεί το παραστατικό."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Η πληρωμή αντιστράφηκε εδώ: διαγράψτε την χειροκίνητα στο :program και μετά επιλέξτε Αποστολή ξανά."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Η πληρωμή αντιστράφηκε εδώ: διαγράψτε την χειροκίνητα στο :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Η ημέρα αναλογίας πρέπει να είναι ημέρα του μήνα από 1 έως 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Αυτό το παραστατικό έχει πληρωμή μέσω πύλης πληρωμών ή εισαγμένη πληρωμή. Επιστρέψτε τα χρήματα."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Αυτό το παραστατικό επιστράφηκε μερικώς, οπότε η πληρωμή του δεν μπορεί να αντιστραφεί. Επιστρέψτε το υπόλοιπο."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Αυτή η πληρωμή άλλαξε μια υπηρεσία (αναβάθμιση), κάτι που δεν αναιρείται εδώ. Επιστρέψτε τα χρήματα του παραστατικού."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Αυτή η πληρωμή ανανέωσε ένα όνομα χώρου στον καταχωρητή του, κάτι που δεν αναιρείται εδώ. Επιστρέψτε τα χρήματα του παραστατικού."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Αυτή η πληρωμή αντιστράφηκε και διατηρείται μόνο ως εγγραφή. Καταχωρίστε μια νέα πληρωμή."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Χρησιμοποιήστε το όταν μια πληρωμή καταχωρίστηκε κατά λάθος, για παράδειγμα μια τραπεζική μεταφορά που δεν έφτασε ποτέ. Δεν στέλνονται χρήματα πουθενά."

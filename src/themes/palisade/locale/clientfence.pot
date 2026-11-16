@@ -1074,7 +1074,7 @@ msgstr ""
 msgid "A downgrade already gave :amount of this invoice back as account credit, and the client has spent it. Refund this invoice by hand."
 msgstr ""
 
-#: src/modules/Invoice/Service.php
+#: src/modules/Invoice/PaymentReversal.php src/modules/Invoice/Service.php
 msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
 msgstr ""
 
@@ -1179,6 +1179,14 @@ msgid "A notice about cookies for visitors of the client area. Once a visitor ac
 msgstr ""
 
 #: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr ""
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
 msgid "A paid or refunded invoice cannot be deleted. Refund it instead."
 msgstr ""
 
@@ -1228,6 +1236,10 @@ msgstr ""
 
 #: src/modules/Invoice/SavedCards.php
 msgid "A payment for this invoice is still clearing."
+msgstr ""
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -5132,6 +5144,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Charge :card?"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_cards.html.twig
@@ -13518,7 +13534,7 @@ msgstr ""
 msgid "Invoice lines"
 msgstr ""
 
-#: src/modules/Invoice/Receipts.php src/modules/Invoice/Service.php
+#: src/modules/Invoice/PaymentReversal.php src/modules/Invoice/Receipts.php src/modules/Invoice/Service.php
 msgid "Invoice not found"
 msgstr ""
 
@@ -17918,6 +17934,10 @@ msgstr ""
 msgid "Only the first :count rows are shown. Narrow the filters to see the rest."
 msgstr ""
 
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Only the ticked alerts are sent here."
 msgstr ""
@@ -18468,6 +18488,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Orders pending setup"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -20778,6 +20802,14 @@ msgstr ""
 msgid "Proposal"
 msgstr ""
 
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
 msgid "Prospect"
 msgstr ""
@@ -21308,6 +21340,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "Recurring discount of %amount% still applies"
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -22336,6 +22372,18 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
 msgid "Reversal"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr ""
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -26138,6 +26186,10 @@ msgstr ""
 msgid "The client has no saved payment method."
 msgstr ""
 
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
 msgid "The client picks one value. The first one offered is chosen until they change it."
 msgstr ""
@@ -26284,6 +26336,10 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The database update failed, so the update was rolled back: the database and the files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr ""
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -26553,6 +26609,10 @@ msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_price_changed.html.twig
 msgid "The invoice already issued for it keeps the old price; the new price starts with the renewal after it."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
@@ -26875,6 +26935,14 @@ msgstr ""
 msgid "The payment service did not answer. Please try again later."
 msgstr ""
 
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr ""
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr ""
+
 #: src/modules/Invoice/SavedCards.php
 msgid "The payment was taken but is not completed yet. Check it with the payment service."
 msgstr ""
@@ -26969,6 +27037,10 @@ msgstr ""
 
 #: src/modules/Cart/Api/Guest.php
 msgid "The promo code has expired or does not exist"
+msgstr ""
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
 msgstr ""
 
 #: src/library/ClientFence/Tools.php
@@ -27727,6 +27799,10 @@ msgstr ""
 msgid "This invoice and :method both support subscription payments. Subscribe to pay the next invoices of this service automatically, or pay this invoice once."
 msgstr ""
 
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "This invoice has no payment that can be refunded through the payment gateway."
 msgstr ""
@@ -27741,6 +27817,10 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "This invoice link has expired"
+msgstr ""
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
@@ -27915,12 +27995,24 @@ msgstr ""
 msgid "This payment cannot be changed. Reload the page and try again."
 msgstr ""
 
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig
 msgid "This payment gateway does not support any of the payment methods available for this invoice. Please choose a different payment gateway."
 msgstr ""
 
 #: src/modules/Invoice/Receipts.php
 msgid "This payment method does not take receipt uploads."
+msgstr ""
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr ""
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
 msgstr ""
 
 #: src/modules/Client/Affiliates/Payouts.php
@@ -30061,6 +30153,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_profile.html.twig
 msgid "Use this token for external integrations. Rotating it will immediately invalidate existing API clients."
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
@@ -32831,7 +32927,7 @@ msgstr ""
 msgid "the mailbox opens at once, signed in, on mail.<the client’s domain>."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/themes/palisade/html/mod_cart_index.html.twig
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_cart_index.html.twig
 msgid "then"
 msgstr ""
 
@@ -32843,7 +32939,7 @@ msgstr ""
 msgid "ticket_ID is missing"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_cart_index.html.twig …
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig …
 msgid "to :date"
 msgstr ""
 

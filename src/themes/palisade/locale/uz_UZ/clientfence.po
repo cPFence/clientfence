@@ -28275,3 +28275,100 @@ msgstr "Chegirmadagi ko'pi bilan :count ta TLD, probel bilan ajratilgan. Ular bu
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Mijozlar ro'yxatdan o'tkaza oladigan ko'pi bilan :count ta TLD, probel bilan ajratilgan. Ular buyurtma shakli va o'rnatilgan domen tekshirgichidagi domen qidiruvida birinchi bo'lib belgilanadi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "To'langan hisob-fakturani o'chirib bo'lmaydi. Xato kiritilgan to'lovni To'lovni bekor qilish orqali qaytaring yoki hisob-faktura bo'yicha pulni qaytaring."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "To'langan hisob-faktura holatini saqlab qoladi. Xato kiritilgan to'lovni To'lovni bekor qilish orqali qaytaring yoki hisob-faktura bo'yicha pulni qaytaring."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Bu to'lovdan keyin hisob-fakturaga yana bir to'lov kiritilgan, shuning uchun uni bekor qilib bo'lmaydi. Buning o'rniga pulni qaytaring."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Keyingi oyni hisoblash"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Faqat to'langan hisob-fakturaning to'lovini bekor qilish mumkin."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Oyning shu kunidan boshlab berilgan buyurtmalar birinchi hisob-fakturada keyingi to'liq davrni ham to'laydi. Bo'sh: o'chirilgan."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Proporsional hisoblash"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Proporsional sana"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Faqat takrorlanuvchi narxlar uchun: bu mahsulotning barcha xizmatlari oyning bir kunida yangilanadi. Birinchi hisob-faktura shu kungacha bo'lgan kunlarni hisoblaydi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "To'lovni bekor qilish"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "To'lov bekor qilinsinmi?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Bekor qilingan"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Mijoz bu to'lov qo'shgan kreditni allaqachon sarflagan, shuning uchun uni bekor qilib bo'lmaydi. Bu hisob-faktura bo'yicha pulni qo'lda qaytaring."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Xizmatlar yangilanadigan oy kuni (1-31); qisqaroq oyda uning oxirgi kuni olinadi. Bo'sh: o'chirilgan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Hisob-faktura yana to'lanmagan bo'lib qoladi, to'lanishi kerak: :amount. Xodimlar unga kiritgan to'lovlar bekor qilingan deb belgilanadi, to'lov ishlatgan hisob krediti mijozga qaytadi, u qo'shgan kredit esa qaytarib olinadi. U yangilagan xizmatlar o'z davriga orqaga qaytadi, u ishga tushirgan xizmatlar esa hisob-faktura to'langunicha to'xtatiladi."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "To'lov shu yerda bekor qilindi: uni :program ichida qo'lda o'chiring, so'ng «Qayta yuborish» tugmasini bosing."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "To'lov shu yerda bekor qilindi: uni :program ichida qo'lda o'chiring."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Proporsional kun oyning 1 dan 31 gacha bo'lgan kuni bo'lishi kerak."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Bu hisob-fakturada to'lov shlyuzi orqali to'lov yoki import qilingan to'lov bor. Buning o'rniga pulni qaytaring."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Bu hisob-faktura qisman qaytarilgan, shuning uchun uning to'lovini bekor qilib bo'lmaydi. Qolganini qaytaring."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Bu to'lov xizmatni o'zgartirgan (yangilanish), buni bu yerda bekor qilib bo'lmaydi. Buning o'rniga hisob-faktura bo'yicha pulni qaytaring."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Bu to'lov domenni registratorda yangilagan, buni bu yerda bekor qilib bo'lmaydi. Buning o'rniga hisob-faktura bo'yicha pulni qaytaring."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Bu to'lov bekor qilingan va faqat yozuv sifatida saqlanadi. Buning o'rniga yangi to'lov kiriting."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "To'lov xato kiritilganda foydalaning, masalan, hech qachon kelmagan bank o'tkazmasi. Hech qayerga pul yuborilmaydi."

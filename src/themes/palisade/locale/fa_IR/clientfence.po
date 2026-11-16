@@ -29695,3 +29695,100 @@ msgstr "حداکثر :count TLD در حراج، جداشده با فاصله. ا
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "حداکثر :count TLD که مشتریان می‌توانند ثبت کنند، جداشده با فاصله. این‌ها در جستجوی دامنه در فرم سفارش و در بررسی‌کننده دامنه تعبیه‌شده ابتدا تیک می‌خورند."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "فاکتور پرداخت‌شده را نمی‌توان حذف کرد. پرداختی را که اشتباهی ثبت شده با ابطال پرداخت لغو کنید، یا فاکتور را برگشت بزنید."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "فاکتور پرداخت‌شده وضعیت خود را حفظ می‌کند. پرداختی را که اشتباهی ثبت شده با ابطال پرداخت لغو کنید، یا فاکتور را برگشت بزنید."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "پس از این پرداخت، پرداخت دیگری روی این فاکتور ثبت شده است، پس ابطال آن ممکن نیست. به‌جای آن برگشت بزنید."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "محاسبه ماه بعد"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "فقط پرداخت یک فاکتور پرداخت‌شده را می‌توان ابطال کرد."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "سفارش‌هایی که از این روز ماه به بعد ثبت می‌شوند، در فاکتور اول دوره کامل بعدی را هم می‌پردازند. خالی: خاموش."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "صورتحساب تناسبی"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "تاریخ تناسب"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "فقط برای قیمت‌های تکرارشونده: همه سرویس‌های این محصول در یک روز از ماه تمدید می‌شوند. فاکتور اول روزهای تا آن روز را محاسبه می‌کند."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "ابطال پرداخت"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "پرداخت ابطال شود؟"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "ابطال‌شده"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "مشتری اعتباری را که این پرداخت اضافه کرده خرج کرده است، پس ابطال آن ممکن نیست. این فاکتور را دستی برگشت بزنید."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "روز ماه (1-31) که سرویس‌ها تمدید می‌شوند؛ ماه کوتاه‌تر از آخرین روز خود استفاده می‌کند. خالی: خاموش."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "فاکتور دوباره پرداخت‌نشده می‌شود و :amount بدهی دارد. پرداخت‌هایی که کارکنان روی آن ثبت کرده‌اند ابطال‌شده علامت می‌خورند، اعتبار حسابی که پرداخت استفاده کرده به مشتری برمی‌گردد و اعتباری که اضافه کرده پس گرفته می‌شود. سرویس‌هایی که تمدید کرده به‌اندازه دوره خود عقب می‌روند و سرویس‌هایی که راه‌اندازی کرده تا پرداخت فاکتور تعلیق می‌شوند."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "پرداخت اینجا ابطال شد: آن را دستی در :program حذف کنید، سپس ارسال دوباره را بزنید."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "پرداخت اینجا ابطال شد: آن را دستی در :program حذف کنید."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "روز تناسب باید یکی از روزهای ماه از 1 تا 31 باشد."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "این فاکتور پرداختی از طریق درگاه پرداخت یا پرداخت واردشده دارد. به‌جای آن برگشت بزنید."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "این فاکتور به‌صورت جزئی برگشت خورده است، پس ابطال پرداخت آن ممکن نیست. باقی‌مانده را برگشت بزنید."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "این پرداخت یک سرویس را تغییر داده است (ارتقا) که اینجا قابل واگرد نیست. به‌جای آن فاکتور را برگشت بزنید."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "این پرداخت یک دامنه را نزد ثبت‌کننده تمدید کرده است که اینجا قابل واگرد نیست. به‌جای آن فاکتور را برگشت بزنید."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "این پرداخت ابطال شده و فقط به‌عنوان سابقه نگه داشته می‌شود. به‌جای آن پرداخت جدیدی ثبت کنید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "وقتی پرداختی اشتباهی ثبت شده از این استفاده کنید، مثلاً یک حواله بانکی که هرگز نرسیده است. پولی به هیچ جا فرستاده نمی‌شود."

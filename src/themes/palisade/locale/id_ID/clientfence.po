@@ -30337,3 +30337,100 @@ msgstr "Hingga :count TLD yang sedang promo, dipisahkan spasi. TLD ini dicentang
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Hingga :count TLD yang dapat didaftarkan klien, dipisahkan spasi. TLD ini dicentang lebih dulu di pencarian domain pada formulir pesanan dan pemeriksa domain tertanam."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Faktur yang sudah dibayar tidak dapat dihapus. Batalkan pembayaran yang tercatat keliru dengan Balikkan pembayaran, atau kembalikan dana faktur."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Faktur yang sudah dibayar tetap pada statusnya. Batalkan pembayaran yang tercatat keliru dengan Balikkan pembayaran, atau kembalikan dana faktur."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Pembayaran lain tercatat pada faktur ini setelah pembayaran ini, sehingga tidak dapat dibalikkan. Kembalikan dananya saja."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Tagih Bulan Berikutnya"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Hanya pembayaran faktur yang sudah dibayar yang dapat dibalikkan."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Pesanan yang dibuat pada atau setelah tanggal ini juga membayar periode penuh berikutnya di faktur pertama. Kosong: nonaktif."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Penagihan Prorata"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Tanggal Prorata"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Hanya harga berulang: semua layanan produk ini diperpanjang pada satu tanggal setiap bulan. Faktur pertama menagih hari hingga tanggal itu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Balikkan pembayaran"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Balikkan pembayaran?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Dibalikkan"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Klien sudah memakai kredit yang ditambahkan pembayaran ini, sehingga tidak dapat dibalikkan. Kembalikan dana faktur ini secara manual."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Tanggal dalam bulan (1-31) saat layanan diperpanjang; bulan yang lebih pendek memakai hari terakhirnya. Kosong: nonaktif."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Faktur menjadi belum dibayar lagi dengan :amount terutang. Pembayaran yang dicatat staf pada faktur ini ditandai dibalikkan, kredit akun yang dipakai pembayaran kembali ke klien, dan kredit yang ditambahkannya ditarik. Layanan yang diperpanjangnya mundur sesuai periodenya, dan layanan yang disiapkannya ditangguhkan sampai faktur dibayar."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Pembayaran dibalikkan di sini: hapus secara manual di :program, lalu pilih Kirim lagi."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Pembayaran dibalikkan di sini: hapus secara manual di :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Tanggal prorata harus berupa tanggal dalam bulan dari 1 sampai 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Faktur ini memiliki pembayaran melalui gateway pembayaran atau pembayaran impor. Kembalikan dananya saja."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Faktur ini sebagian dananya sudah dikembalikan, sehingga pembayarannya tidak dapat dibalikkan. Kembalikan sisanya."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Pembayaran ini mengubah sebuah layanan (upgrade), yang tidak dapat dibatalkan di sini. Kembalikan dana faktur saja."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Pembayaran ini memperpanjang sebuah domain di registrarnya, yang tidak dapat dibatalkan di sini. Kembalikan dana faktur saja."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Pembayaran ini dibalikkan dan hanya disimpan sebagai catatan. Catat pembayaran baru saja."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Gunakan ini saat pembayaran tercatat keliru, misalnya transfer bank yang tidak pernah masuk. Tidak ada uang yang dikirim ke mana pun."

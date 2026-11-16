@@ -27943,3 +27943,100 @@ msgstr "İndirimdeki en fazla :count TLD, boşlukla ayrılmış. Sipariş formun
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Müşterilerin kaydedebileceği en fazla :count TLD, boşlukla ayrılmış. Sipariş formundaki ve gömülü alan adı denetleyicisindeki alan adı aramasında ilk olarak işaretlenirler."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Ödenmiş bir fatura silinemez. Yanlışlıkla kaydedilen bir ödemeyi Ödemeyi geri al ile geri alın veya faturanın ücretini iade edin."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Ödenmiş bir fatura durumunu korur. Yanlışlıkla kaydedilen bir ödemeyi Ödemeyi geri al ile geri alın veya faturanın ücretini iade edin."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Bu faturaya bu ödemeden sonra başka bir ödeme kaydedildi, bu yüzden ödeme geri alınamaz. Bunun yerine ücret iadesi yapın."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Gelecek Ayı Ücretlendir"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Yalnızca ödenmiş bir faturanın ödemesi geri alınabilir."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Ayın bu gününde veya sonrasında verilen siparişler ilk faturada bir sonraki tam dönemi de öder. Boş: kapalı."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Orantılı Faturalama"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Orantı Günü"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Yalnızca yinelenen fiyatlar: bu ürünün tüm hizmetleri ayın tek bir gününde yenilenir. İlk fatura o güne kadar olan günleri ücretlendirir."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Ödemeyi geri al"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Ödeme geri alınsın mı?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Geri alındı"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Müşteri bu ödemenin eklediği krediyi harcadı, bu yüzden ödeme geri alınamaz. Bu faturanın ücretini elle iade edin."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Hizmetlerin yenilendiği ayın günü (1-31); daha kısa bir ay son gününü kullanır. Boş: kapalı."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Fatura yeniden ödenmemiş olur ve :amount borç kalır. Personelin üzerine kaydettiği ödemeler geri alındı olarak işaretlenir, ödemenin kullandığı hesap kredisi müşteriye geri döner ve eklediği kredi geri alınır. Yenilediği hizmetler dönemleri kadar geri gider, kurduğu hizmetler fatura ödenene kadar askıya alınır."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Ödeme burada geri alındı: :program içinde elle silin, sonra Yeniden gönder'i seçin."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Ödeme burada geri alındı: :program içinde elle silin."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Orantı günü ayın 1 ile 31 arasında bir günü olmalıdır."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Bu faturada bir ödeme ağ geçidi üzerinden yapılan ödeme veya içe aktarılmış ödeme var. Bunun yerine ücret iadesi yapın."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Bu faturanın ücreti kısmen iade edildi, bu yüzden ödemesi geri alınamaz. Kalanı iade edin."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Bu ödeme bir hizmeti değiştirdi (bir yükseltme); bu burada geri alınamaz. Bunun yerine faturanın ücretini iade edin."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Bu ödeme bir alan adını kayıt kuruluşunda yeniledi; bu burada geri alınamaz. Bunun yerine faturanın ücretini iade edin."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Bu ödeme geri alındı ve yalnızca kayıt olarak tutuluyor. Bunun yerine yeni bir ödeme kaydedin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Bir ödeme yanlışlıkla kaydedildiğinde, örneğin hiç ulaşmayan bir banka havalesinde kullanın. Hiçbir yere para gönderilmez."

@@ -30223,3 +30223,100 @@ msgstr "До :count TLD зі знижкою, через пробіл. Вони �
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "До :count TLD, які клієнти можуть зареєструвати, через пробіл. Вони позначені першими в пошуку доменів у формі замовлення та у вбудованій перевірці доменів."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Сплачений рахунок не можна видалити. Скасуйте помилково записану оплату через Скасувати оплату або зробіть повернення за рахунком."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Сплачений рахунок зберігає свій статус. Скасуйте помилково записану оплату через Скасувати оплату або зробіть повернення за рахунком."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Після цієї оплати на рахунку записано ще одну оплату, тому її не можна скасувати. Зробіть повернення."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Нараховувати наступний місяць"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Скасувати можна лише оплату сплаченого рахунку."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Замовлення, оформлені в цей день місяця або пізніше, на першому рахунку сплачують і наступний повний період. Порожньо: вимкнено."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Пропорційне нарахування"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Дата пропорційного нарахування"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Лише для повторюваних цін: усі послуги цього продукту продовжуються в один день місяця. Перший рахунок охоплює дні до цього дня."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Скасувати оплату"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Скасувати оплату?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Скасовано"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Клієнт уже витратив кредит, доданий цією оплатою, тому її не можна скасувати. Зробіть повернення за цим рахунком вручну."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "День місяця (1-31), у який продовжуються послуги; у коротшому місяці береться його останній день. Порожньо: вимкнено."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Рахунок знову стане несплаченим, до сплати :amount. Оплати, записані на ньому співробітниками, позначаються як скасовані, кредит на рахунку, використаний оплатою, повертається клієнту, а кредит, який вона додала, списується. Послуги, які вона продовжила, повертаються на свій період, а послуги, які вона активувала, призупиняються до сплати рахунку."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Оплату тут скасовано: видаліть її вручну в :program, потім виберіть Надіслати знову."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Оплату тут скасовано: видаліть її вручну в :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "День пропорційного нарахування має бути днем місяця від 1 до 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "За цим рахунком є оплата через платіжний шлюз або імпортована оплата. Зробіть повернення."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "За цим рахунком виконано часткове повернення, тому його оплату не можна скасувати. Поверніть решту."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Ця оплата змінила послугу (підвищення тарифу), що не можна скасувати тут. Зробіть повернення за рахунком."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Ця оплата продовжила домен у реєстратора, що не можна скасувати тут. Зробіть повернення за рахунком."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Цю оплату скасовано, і вона зберігається лише як запис. Натомість запишіть нову оплату."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Використовуйте, якщо оплату записано помилково, наприклад банківський переказ, який так і не надійшов. Гроші нікуди не надсилаються."

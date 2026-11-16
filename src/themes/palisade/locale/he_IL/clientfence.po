@@ -33849,3 +33849,100 @@ msgstr "עד :count TLD במבצע, מופרדים ברווחים. הם מסומ
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "עד :count TLD שלקוחות יכולים לרשום, מופרדים ברווחים. הם מסומנים ראשונים בחיפוש הדומיינים בטופס ההזמנה ובבודק הדומיינים המוטמע."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "לא ניתן למחוק חשבונית ששולמה. בטלו תשלום שנרשם בטעות באמצעות ביטול תשלום, או זכו את החשבונית."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "חשבונית ששולמה שומרת על הסטטוס שלה. בטלו תשלום שנרשם בטעות באמצעות ביטול תשלום, או זכו את החשבונית."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "אחרי תשלום זה נרשם תשלום נוסף בחשבונית, ולכן אי אפשר לבטל אותו. זכו אותו במקום זאת."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "חיוב החודש הבא"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "אפשר לבטל רק את התשלום של חשבונית ששולמה."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "הזמנות שבוצעו מיום זה בחודש ואילך משלמות בחשבונית הראשונה גם את התקופה המלאה הבאה. ריק: כבוי."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "חיוב יחסי"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "תאריך יחסי"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "למחירים חוזרים בלבד: כל השירותים של מוצר זה מתחדשים ביום אחד בחודש. החשבונית הראשונה מחייבת את הימים עד אותו יום."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "ביטול תשלום"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "לבטל את התשלום?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "בוטל"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "הלקוח כבר הוציא את הזיכוי שהתשלום הזה הוסיף, ולכן אי אפשר לבטל אותו. זכו את החשבונית הזו ידנית."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "היום בחודש (1-31) שבו השירותים מתחדשים; חודש קצר יותר משתמש ביום האחרון שלו. ריק: כבוי."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "החשבונית חוזרת להיות לא שולמה, עם :amount לתשלום. התשלומים שהצוות רשם עליה מסומנים כמבוטלים, זיכוי בחשבון שהתשלום השתמש בו חוזר ללקוח, וזיכוי שהוא הוסיף נלקח בחזרה. שירותים שהוא חידש חוזרים אחורה בתקופתם, ושירותים שהוא הקים מושעים עד שהחשבונית תשולם."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "התשלום בוטל כאן: מחקו אותו ידנית ב-:program ואז בחרו שליחה מחדש."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "התשלום בוטל כאן: מחקו אותו ידנית ב-:program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "היום היחסי חייב להיות יום בחודש בין 1 ל-31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "לחשבונית זו יש תשלום דרך שער תשלום או תשלום מיובא. זכו אותה במקום זאת."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "החשבונית זוכתה חלקית, ולכן אי אפשר לבטל את התשלום שלה. זכו את היתרה."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "התשלום הזה שינה שירות (שדרוג), ולא ניתן לבטל זאת כאן. זכו את החשבונית במקום זאת."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "התשלום הזה חידש דומיין אצל הרשם, ולא ניתן לבטל זאת כאן. זכו את החשבונית במקום זאת."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "התשלום הזה בוטל ונשמר כרשומה בלבד. רשמו תשלום חדש במקום זאת."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "השתמשו בזה כשתשלום נרשם בטעות, למשל העברה בנקאית שמעולם לא הגיעה. לא נשלח כסף לשום מקום."

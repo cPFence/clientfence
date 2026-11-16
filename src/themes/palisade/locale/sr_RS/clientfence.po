@@ -30173,3 +30173,100 @@ msgstr "Do :count TLD-ova na akciji, razdvojenih razmacima. Oni su prvi označen
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Do :count TLD-ova koje klijenti mogu da registruju, razdvojenih razmacima. Oni su prvi označeni u pretrazi domena u formularu za porudžbinu i u ugrađenoj proveri domena."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Plaćeni račun se ne može izbrisati. Poništite greškom evidentirano plaćanje opcijom Storniraj plaćanje ili vratite novac za račun."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Plaćeni račun zadržava svoj status. Poništite greškom evidentirano plaćanje opcijom Storniraj plaćanje ili vratite novac za račun."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Nakon ovog plaćanja na računu je evidentirano još jedno, pa se ne može stornirati. Umesto toga vratite novac."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Naplati sledeći mesec"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Može se stornirati samo plaćanje plaćenog računa."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Porudžbine od ovog dana u mesecu nadalje na prvom računu plaćaju i sledeći pun period. Prazno: isključeno."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Srazmerno obračunavanje"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Datum srazmernog obračuna"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Samo za ponavljajuće cene: sve usluge ovog proizvoda se obnavljaju jednog dana u mesecu. Prvi račun naplaćuje dane do tog dana."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Storniraj plaćanje"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Stornirati plaćanje?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Stornirano"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Klijent je već potrošio kredit koji je ovo plaćanje dodalo, pa se ne može stornirati. Vratite novac za ovaj račun ručno."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Dan u mesecu (1-31) kada se usluge obnavljaju; kraći mesec koristi svoj poslednji dan. Prazno: isključeno."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Račun ponovo postaje neplaćen, sa :amount za uplatu. Plaćanja koja je osoblje evidentiralo na njemu označavaju se kao stornirana, kredit na nalogu koji je plaćanje iskoristilo vraća se klijentu, a kredit koji je dodalo se oduzima. Usluge koje je obnovilo vraćaju se za svoj period, a usluge koje je pokrenulo suspenduju se dok se račun ne plati."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Plaćanje je ovde stornirano: ručno ga izbrišite u :program, pa izaberite Pošalji ponovo."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Plaćanje je ovde stornirano: ručno ga izbrišite u :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Dan srazmernog obračuna mora biti dan u mesecu od 1 do 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Ovaj račun ima plaćanje preko gejtveja za plaćanje ili uvezeno plaćanje. Umesto toga vratite novac."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Ovaj račun je delimično vraćen, pa se njegovo plaćanje ne može stornirati. Vratite ostatak."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Ovo plaćanje je promenilo uslugu (nadogradnju), što se ovde ne može poništiti. Umesto toga vratite novac za račun."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Ovo plaćanje je obnovilo domen kod registra, što se ovde ne može poništiti. Umesto toga vratite novac za račun."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Ovo plaćanje je stornirano i čuva se samo kao zapis. Umesto toga evidentirajte novo plaćanje."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Koristite ovo kada je plaćanje greškom evidentirano, na primer bankarski prenos koji nikada nije stigao. Novac se nigde ne šalje."

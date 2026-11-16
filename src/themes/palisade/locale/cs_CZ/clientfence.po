@@ -29975,3 +29975,100 @@ msgstr "Nejvýše :count TLD v prodeji, oddělených mezerami. Jsou zaškrtnuté
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Nejvýše :count TLD, které si klienti mohou registrovat, oddělených mezerami. Jsou zaškrtnuté jako první ve vyhledávání domén v objednávkovém formuláři a ve vložené kontrole domén."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Zaplacenou fakturu nelze odstranit. Platbu zadanou omylem zrušte pomocí Stornovat platbu, nebo fakturu vraťte."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Zaplacená faktura si ponechá svůj stav. Platbu zadanou omylem zrušte pomocí Stornovat platbu, nebo fakturu vraťte."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Po této platbě byla na faktuře zaznamenána další platba, proto ji nelze stornovat. Vraťte ji místo toho."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Účtovat příští měsíc"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Stornovat lze jen platbu zaplacené faktury."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Objednávky vytvořené od tohoto dne v měsíci platí na první faktuře i další celé období. Prázdné: vypnuto."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Poměrné účtování"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Datum poměrného účtování"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Jen opakované ceny: všechny služby tohoto produktu se obnovují jeden den v měsíci. První faktura účtuje dny do tohoto dne."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Stornovat platbu"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Stornovat platbu?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Stornováno"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "Klient už utratil kredit, který tato platba přidala, proto ji nelze stornovat. Vraťte tuto fakturu ručně."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "Den v měsíci (1-31), kdy se služby obnovují; v kratším měsíci se použije jeho poslední den. Prázdné: vypnuto."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "Faktura je opět nezaplacená, k úhradě zbývá :amount. Platby, které na ní zadal personál, se označí jako stornované, kredit na účtu použitý platbou se vrátí klientovi a kredit, který přidala, se odebere. Služby, které obnovila, se vrátí o své období, a služby, které zřídila, se pozastaví, dokud nebude faktura zaplacena."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "Platba byla zde stornována: smažte ji ručně v :program a poté zvolte Odeslat znovu."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "Platba byla zde stornována: smažte ji ručně v :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "Den poměrného účtování musí být den v měsíci od 1 do 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Tato faktura má platbu přes platební bránu nebo importovanou platbu. Vraťte ji místo toho."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Tato faktura byla částečně vrácena, proto její platbu nelze stornovat. Vraťte zbytek."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Tato platba změnila službu (upgrade), což zde nelze vrátit zpět. Vraťte místo toho fakturu."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Tato platba obnovila doménu u registrátora, což zde nelze vrátit zpět. Vraťte místo toho fakturu."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Tato platba byla stornována a zůstává jen jako záznam. Zadejte místo toho novou platbu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Použijte to, když byla platba zadána omylem, například bankovní převod, který nikdy nedorazil. Žádné peníze se nikam neposílají."

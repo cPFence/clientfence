@@ -29680,3 +29680,100 @@ msgstr "Maximaal :count TLD's in de aanbieding, gescheiden door spaties. Ze zijn
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Up to :count TLDs that clients can register, separated by spaces. They are ticked first in the domain search of the order form and of the embedded domain checker."
 msgstr "Maximaal :count TLD's die klanten kunnen registreren, gescheiden door spaties. Ze zijn als eerste aangevinkt in het zoeken naar domeinen in het bestelformulier en in de ingesloten domeincontrole."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/Service.php
+msgid "A paid invoice cannot be deleted. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Een betaalde factuur kan niet worden verwijderd. Maak een per ongeluk vastgelegde betaling ongedaan met Betaling terugdraaien, of betaal de factuur terug."
+
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
+msgid "A paid invoice keeps its status. Undo a payment recorded by mistake with Reverse payment, or refund the invoice."
+msgstr "Een betaalde factuur behoudt haar status. Maak een per ongeluk vastgelegde betaling ongedaan met Betaling terugdraaien, of betaal de factuur terug."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "A payment was recorded on this invoice after it was paid, so its payment cannot be reversed. Refund it instead."
+msgstr "Na deze betaling is nog een betaling op deze factuur vastgelegd, dus ze kan niet worden teruggedraaid. Betaal ze in plaats daarvan terug."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Charge Next Month"
+msgstr "Volgende maand in rekening brengen"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only the payment of a paid invoice can be reversed."
+msgstr "Alleen de betaling van een betaalde factuur kan worden teruggedraaid."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off."
+msgstr "Bestellingen vanaf deze dag van de maand betalen op de eerste factuur ook de volgende volledige periode. Leeg: uit."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Billing"
+msgstr "Pro-rata facturering"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Prorata Date"
+msgstr "Pro-ratadatum"
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day."
+msgstr "Alleen terugkerende prijzen: alle services van dit product worden op één dag van de maand verlengd. De eerste factuur rekent de dagen tot die dag aan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment"
+msgstr "Betaling terugdraaien"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse payment?"
+msgstr "Betaling terugdraaien?"
+
+#: src/themes/admin_default/html/macro_functions.html.twig
+msgid "Reversed"
+msgstr "Teruggedraaid"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr "De klant heeft het tegoed dat deze betaling toevoegde al uitgegeven, dus ze kan niet worden teruggedraaid. Betaal deze factuur handmatig terug."
+
+#: src/modules/Product/templates/admin/mod_product_manage.html.twig
+msgid "The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off."
+msgstr "De dag van de maand (1-31) waarop services worden verlengd; een kortere maand gebruikt de laatste dag. Leeg: uit."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "The invoice becomes unpaid again with :amount due. The payments staff recorded on it are marked reversed, account credit the payment used goes back to the client and credit it added is taken back. Services it renewed go back by their period, and services it set up are suspended until the invoice is paid."
+msgstr "De factuur is weer onbetaald, met :amount openstaand. De betalingen die medewerkers erop vastlegden worden als teruggedraaid gemarkeerd, accounttegoed dat de betaling gebruikte gaat terug naar de klant en tegoed dat ze toevoegde wordt teruggenomen. Services die ze verlengde gaan met hun periode terug, en services die ze instelde worden opgeschort tot de factuur is betaald."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand, then choose Send again."
+msgstr "De betaling is hier teruggedraaid: verwijder ze handmatig in :program en kies dan Opnieuw verzenden."
+
+#: src/modules/Invoice/Accounting/Sync.php
+msgid "The payment was reversed here: delete it at :program by hand."
+msgstr "De betaling is hier teruggedraaid: verwijder ze handmatig in :program."
+
+#: src/modules/Product/Service.php
+msgid "The prorata day must be a day of the month from 1 to 31."
+msgstr "De pro-rata dag moet een dag van de maand zijn van 1 tot 31."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice has a payment through a payment gateway or an imported payment. Refund it instead."
+msgstr "Deze factuur heeft een betaling via een betaalgateway of een geïmporteerde betaling. Betaal ze in plaats daarvan terug."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice was partly refunded, so its payment cannot be reversed. Refund the rest instead."
+msgstr "Deze factuur is gedeeltelijk terugbetaald, dus de betaling kan niet worden teruggedraaid. Betaal de rest terug."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment changed a service (an upgrade), which cannot be undone here. Refund the invoice instead."
+msgstr "Deze betaling heeft een service gewijzigd (een upgrade), wat hier niet ongedaan kan worden gemaakt. Betaal de factuur in plaats daarvan terug."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This payment renewed a domain at its registrar, which cannot be undone here. Refund the invoice instead."
+msgstr "Deze betaling heeft een domein bij de registrar verlengd, wat hier niet ongedaan kan worden gemaakt. Betaal de factuur in plaats daarvan terug."
+
+#: src/modules/Invoice/ServiceTransaction.php
+msgid "This payment was reversed and is kept as a record only. Record a new payment instead."
+msgstr "Deze betaling is teruggedraaid en wordt alleen als gegeven bewaard. Leg in plaats daarvan een nieuwe betaling vast."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Use this when a payment was recorded by mistake, for example a bank transfer that never arrived. No money is sent anywhere."
+msgstr "Gebruik dit als een betaling per ongeluk is vastgelegd, bijvoorbeeld een bankoverschrijving die nooit aankwam. Er wordt geen geld verstuurd."
