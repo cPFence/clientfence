@@ -83,3 +83,15 @@ test('offers are priced in the service currency, the first charge to its due dat
         ->and(array_column($offers, 'setup', 'id'))->toBe([2 => 50.0, 4 => 0.0])
         ->and(array_column($offers, 'now', 'id'))->toBe([2 => round(500 * $factor, 2), 4 => 200.0]);
 });
+
+test('an add-on of a prorata service is charged over the period from the prorata day', function (): void {
+    // CF-145: day 31, due 30 April: the period is 31 March to 30 April (30 days), not from 30 March.
+    $order = addonOrdersService();
+    $order->expires_at = '2027-04-30 12:00:00';
+    $order->activated_at = '2027-01-15 12:00:00';
+    $order->config = json_encode(['prorata_day' => 31]);
+    $anchor = ClientFence\Mod\Order\Upgrades::anchorFor(addonOrdersDi(), $order);
+
+    expect($anchor)->toBe('2027-03-31')
+        ->and(ClientFence\Mod\Order\Proration::daysTotal('1M', (string) $order->expires_at, $anchor, true))->toBe(30);
+});

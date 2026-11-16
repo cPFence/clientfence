@@ -4712,3 +4712,49 @@ test('updateOrder changes the activation day and keeps its time when the day is 
     'same day' => ['2026-01-05', '2026-01-05 14:30:00'],
     'other day' => ['2025-12-01', '2025-12-01 00:00:00'],
 ]);
+
+// CF-145: a prorata service renews on its prorata day in either Renewal Day mode, back from a short month's last day.
+test('periodEnd keeps a prorata day in either Renewal Day mode', function (string $mode, string $period, string $from, int $day, int $count, string $expected, string $logic = ''): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (): array => ['renewal_day' => $mode, 'order_renewal_logic' => $logic]);
+    $service = new Service();
+    $service->setDi($di);
+
+    // Activated mid-month: without the prorata day, keeping the day would stay on the 28th.
+    expect(date('Y-m-d', $service->periodEnd($period, (int) strtotime($from), '2027-01-15 08:00:00', $count, $day)))->toBe($expected);
+})->with([
+    'day 31 after February, day kept' => ['keep', '1M', '2027-02-28 09:00:00', 31, 1, '2027-03-31'],
+    'day 31 after February, calendar months' => ['calendar', '1M', '2027-02-28 09:00:00', 31, 1, '2027-03-31'],
+    'day 31 into April' => ['calendar', '1M', '2027-03-31 09:00:00', 31, 1, '2027-04-30'],
+    'day 31 after April' => ['keep', '1M', '2027-04-30 09:00:00', 31, 1, '2027-05-31'],
+    'day 30 after February' => ['keep', '1M', '2027-02-28 09:00:00', 30, 1, '2027-03-30'],
+    'day 1' => ['calendar', '1M', '2027-02-01 09:00:00', 1, 1, '2027-03-01'],
+    'yearly day 29 in a leap year' => ['calendar', '1Y', '2031-02-28 09:00:00', 29, 1, '2032-02-29'],
+    'from the payment day too' => ['keep', '1M', '2027-02-28 09:00:00', 31, 1, '2027-03-31', 'from_greater'],
+    'chargeback back to February' => ['keep', '1M', '2027-03-31 09:00:00', 31, -1, '2027-02-28'],
+    'chargeback back from February' => ['calendar', '1M', '2027-02-28 09:00:00', 31, -1, '2027-01-31'],
+    // A due date staff moved off the prorata day keeps its own day.
+    'a moved due date' => ['calendar', '1M', '2027-04-10 09:00:00', 31, 1, '2027-05-10'],
+]);
+
+test('a prorata order runs to its first due date, then renews on its prorata day', function (string $mode): void {
+    $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1M', 'serviceType' => 'custom',
+        'config' => json_encode(['addon_due' => '2027-02-28 10:00:00', 'prorata_day' => 31])]);
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderService')->andReturn(new stdClass());
+    $serviceMock->shouldReceive('_callOnService')->andReturn(true);
+    $serviceMock->shouldReceive('saveStatusChange');
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (): array => ['renewal_day' => $mode]);
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
+    $serviceMock->setDi($di);
+
+    $serviceMock->createFromOrder($order);
+    expect($order->getExpiresAt()->format('Y-m-d'))->toBe('2027-02-28');
+
+    $serviceMock->renewFromOrder($order);
+    expect($order->getExpiresAt()->format('Y-m-d'))->toBe('2027-03-31');
+    $serviceMock->renewFromOrder($order);
+    expect($order->getExpiresAt()->format('Y-m-d'))->toBe('2027-04-30');
+})->with(['keep', 'calendar']);

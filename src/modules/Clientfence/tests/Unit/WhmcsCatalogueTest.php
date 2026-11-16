@@ -913,3 +913,23 @@ test('invoices keep the WHMCS total with a second tax or with tax inside the pri
         expect((float) $target->fetchOne('SELECT price FROM invoice_item WHERE invoice_id = 30 AND taxed = 1'))->toBe(100.0);
     }
 })->with(['Exclusive', 'Inclusive']);
+
+test('WHMCS Prorata Billing is imported as the product\'s prorata day (CF-145)', function (): void {
+    $source = whmcsCatalogueSource();
+    $source->executeStatement('ALTER TABLE tblproducts ADD COLUMN proratadate INTEGER DEFAULT 0');
+    $source->executeStatement('ALTER TABLE tblproducts ADD COLUMN proratachargenextmonth INTEGER DEFAULT 0');
+    $source->insert('tblproducts', ['id' => 5, 'type' => 'other', 'gid' => 1, 'name' => 'Prorata VPS', 'paytype' => 'recurring', 'proratabilling' => 1, 'proratadate' => 1, 'proratachargenextmonth' => 25]);
+    whmcsPricing($source, 'product', 5, 1, ['monthly' => 20]);
+    $source->insert('tblproducts', ['id' => 6, 'type' => 'other', 'gid' => 1, 'name' => 'No prorata day', 'paytype' => 'recurring', 'proratabilling' => 1, 'proratadate' => 0]);
+    whmcsPricing($source, 'product', 6, 1, ['monthly' => 20]);
+    $target = whmcsCatalogueTarget();
+    $catalogue = whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+
+    $warnings = implode("\n", $catalogue->warnings());
+    expect(json_decode((string) whmcsProductByTitle($target, 'Prorata VPS')['config'], true))->toMatchArray(['prorata_day' => 1, 'prorata_charge_next' => 25])
+        ->and(json_decode((string) whmcsProductByTitle($target, 'No prorata day')['config'], true))->not->toHaveKey('prorata_day')
+        ->and($warnings)->not->toContain('Product "Prorata VPS": prorata billing')
+        ->toContain('Product "No prorata day": prorata billing is not imported.')
+        // A one-time product has nothing to prorate.
+        ->toContain('Product "Setup service": prorata billing is not imported.');
+});

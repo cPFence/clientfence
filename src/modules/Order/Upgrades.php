@@ -230,7 +230,7 @@ final class Upgrades
                 }
                 $newTotal = round(($price + $target['price']) * $rate * $quantity, 2);
                 $sameCycle = isset($from['prices'][$period]) && $here !== null ? round(($from['prices'][$period] + $here['price']) * $rate * $quantity, 2) : null;
-                $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, $newTotal, $period, $now, $sameCycle, $anchor, Service::keepsRenewalDay($di));
+                $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, $newTotal, $period, $now, $sameCycle, $anchor, Service::keepsRenewalDay($di), self::prorataDay($order));
                 if (!self::allowedBy($settings, $productRule, $orderRule, $quote['kind'])) {
                     continue;
                 }
@@ -953,7 +953,7 @@ final class Upgrades
         if ($newTotal < 0 || round($paid + $delta, 2) < 0) {
             throw new InformationException('The price of this service is lower than its options, so it is changed by our staff. Please contact us.');
         }
-        $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, round($paid + $delta, 2), (string) $order->period, $now, $paid, self::anchorFor($di, $order), Service::keepsRenewalDay($di));
+        $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, round($paid + $delta, 2), (string) $order->period, $now, $paid, self::anchorFor($di, $order), Service::keepsRenewalDay($di), self::prorataDay($order));
         if (!self::allowedBy($settings, self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id), self::rule($di, self::SCOPE_ORDER, (int) $order->id), $quote['kind'])) {
             throw new InformationException('This change is not available for this service.');
         }
@@ -1235,6 +1235,11 @@ final class Upgrades
      */
     public static function anchorFor(\Pimple\Container $di, \Model_ClientOrder $order): ?string
     {
+        // CF-145: a prorata service's period starts on its prorata day (31 March to 30 April, not 30 March).
+        $prorataDay = self::prorataDay($order);
+        if ($prorataDay > 0 && (string) $order->expires_at !== '' && (string) $order->period !== '') {
+            return Proration::periodStart(new \DateTimeImmutable(substr((string) $order->expires_at, 0, 10)), (string) $order->period, $prorataDay)->format('Y-m-d');
+        }
         $anchor = self::periodAnchor(self::db($di), $order);
         $logic = $di['mod_config']('order')['order_renewal_logic'] ?? '';
         if ($anchor === null || ($logic !== 'from_today' && $logic !== 'from_greater') || !Service::keepsRenewalDay($di)) {
@@ -1243,6 +1248,16 @@ final class Upgrades
         $firstEnd = $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime($anchor));
 
         return date('Y-m-d', $firstEnd) === substr((string) $order->expires_at, 0, 10) ? $anchor : null;
+    }
+
+    /** CF-145: the prorata day while the service renews on it (monthly or yearly, due on that day); 0 once a cycle change moved it off. */
+    private static function prorataDay(\Model_ClientOrder $order): int
+    {
+        $day = (int) ((json_decode((string) $order->config, true) ?? [])['prorata_day'] ?? 0);
+        $expires = strtotime((string) $order->expires_at);
+
+        return $day > 0 && $expires !== false && preg_match('/^\d+[MY]$/i', trim((string) $order->period)) === 1
+            && (int) date('j', $expires) === min($day, (int) date('t', $expires)) ? $day : 0;
     }
 
     private static function periodAnchor(Connection $db, \Model_ClientOrder $order): ?string
@@ -1571,10 +1586,18 @@ final class Upgrades
                 $left = Proration::daysLeft((string) $order->expires_at, $now);
                 // The first period ended where activation put the first expiry, or earlier where the paid period began (renewals
                 // counted from the payment day).
-                $firstEnd = (string) $order->activated_at !== '' ? $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime((string) $order->activated_at)) : false;
+                // CF-145: a first period charged to a set due date (an add-on, a prorata product) ended on it.
+                $due = (string) ((json_decode((string) $order->config, true) ?? [])['addon_due'] ?? '');
+                $firstEnd = $due !== '' ? (int) strtotime($due) : ((string) $order->activated_at !== '' ? $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime((string) $order->activated_at)) : false);
                 [$qty, $unit] = Proration::parsePeriod((string) $order->period);
                 $firstEnd = $firstEnd === false ? false : min($firstEnd, Proration::shift(new \DateTimeImmutable((string) $order->expires_at), $qty, $unit, -1)->getTimestamp());
-                $firstDiscount = $left > 0 && $firstEnd !== false ? $firstDiscount * min($left, Proration::daysLeft(date('Y-m-d H:i:s', $firstEnd), $now)) / $left : 0.0;
+                if ($due !== '' && ($day = self::prorataDay($order)) > 0) {
+                    // A prorata service is credited per period (Proration::quote()): its share is the first part's periods.
+                    $all = Proration::prorataPeriodsLeft((string) $order->expires_at, $now, (string) $order->period, $day);
+                    $firstDiscount = $all > 0 ? $firstDiscount * Proration::prorataPeriodsLeft($due, $now, (string) $order->period, $day) / $all : 0.0;
+                } else {
+                    $firstDiscount = $left > 0 && $firstEnd !== false ? $firstDiscount * min($left, Proration::daysLeft(date('Y-m-d H:i:s', $firstEnd), $now)) / $left : 0.0;
+                }
             }
         }
 

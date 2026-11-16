@@ -164,10 +164,15 @@ class Service implements InjectionAwareInterface
      * day the service started, on a short month's last day (31 January, 28 February, 31 March), or add calendar months
      * (31 January + 1 month = 3 March, then the 3rd).
      */
-    public function periodEnd(string $period, int $from, ?string $activatedAt = null, int $count = 1): int
+    public function periodEnd(string $period, int $from, ?string $activatedAt = null, int $count = 1, int $prorataDay = 0): int
     {
         $anchor = null;
-        if (self::keepsRenewalDay($this->di)) {
+        // ClientFence core patch (CF-145): a prorata service renews on its day in either mode, back from a short month's last
+        // day (28 February, then 31 March); a due date off that day keeps its own.
+        $day = (int) date('j', $from);
+        if ($prorataDay > 0 && ($day === $prorataDay || ($day === (int) date('t', $from) && $day < $prorataDay))) {
+            $anchor = $prorataDay;
+        } elseif (self::keepsRenewalDay($this->di)) {
             $anchor = (int) date('j', $from);
             // On a month's last day a short month may have moved it back: the day the service started brings it back, unless
             // renewals are counted from the payment day (Renewal Logic), which can start a cycle on a day of its own.
@@ -203,6 +208,12 @@ class Service implements InjectionAwareInterface
         }
 
         return $order instanceof Order ? $order->getActivatedAt()?->format('Y-m-d H:i:s') : $order->activated_at;
+    }
+
+    /** ClientFence core patch (CF-145): the prorata day a service renews on (Cart\Service sets it at checkout), 0: none. */
+    public function prorataDay(Order|\Model_ClientOrder $order): int
+    {
+        return (int) ($this->getConfig($order)['prorata_day'] ?? 0);
     }
 
     private function orderQuantity(Order|\Model_ClientOrder $order): int
@@ -1516,10 +1527,11 @@ class Service implements InjectionAwareInterface
 
                 // ClientFence core patch: an add-on ordered for a service was charged to the service's due date then
                 // (Order/AddonOrders.php): it first runs to that date, then renews with the service.
-                $addonDue = $expiresAt === null ? (string) ($this->getConfig($order)['addon_due'] ?? '') : '';
+                $addonDue = $expiresAt === null && !$activatedBefore ? (string) ($this->getConfig($order)['addon_due'] ?? '') : '';
                 // ClientFence core patch: an existing domain runs to its expiry at the registrar (Servicedomain action_activate()).
                 $domainDue = $expiresAt === null && $result instanceof \Model_ServiceDomain && !empty($this->getConfig($order)['import']) ? (string) $result->expires_at : '';
-                $newExpires = $addonDue !== '' ? $addonDue : ($domainDue !== '' ? $domainDue : date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order))));
+                // ClientFence core patch (CF-145): a prorata product's first due date is its addon_due (Cart\Service).
+                $newExpires = $addonDue !== '' ? $addonDue : ($domainDue !== '' ? $domainDue : date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order), 1, $this->prorataDay($order))));
                 if ($order instanceof Order) {
                     $order->setExpiresAt(new \DateTime($newExpires));
                 } else {
@@ -1907,7 +1919,7 @@ class Service implements InjectionAwareInterface
                     $from_time = time();
                 }
             }
-            $newExpires = date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order)));
+            $newExpires = date('Y-m-d H:i:s', $this->periodEnd($period, (int) $from_time, $this->orderActivatedAt($order), 1, $this->prorataDay($order)));
             if ($order instanceof Order) {
                 $order->setExpiresAt(new \DateTime($newExpires));
             } else {

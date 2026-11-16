@@ -165,3 +165,59 @@ test('with calendar months a period made by keeping the day is still measured fr
     expect(Proration::quote(30, '1M', '2027-02-28 10:00:00', 10, '1M', '2027-02-10 11:00:00', null, '2027-01-31 10:00:00', false))
         ->toMatchArray(['period_start' => '2027-01-31', 'days_total' => 28]);
 });
+
+// CF-145: Prorata Billing (WHMCS): the first period runs to the prorata day, charged for its days over the days of the
+// billing period ending on that day; on or after the "charge next month" day the next full period is added.
+test('a prorata product first charges the days to its prorata day, or the next period too from the charge day', function (string $period, int $day, int $next, string $now, array $expected, float $price, float $first): void {
+    $term = Proration::prorata($period, $day, $next, $now);
+
+    expect($term)->toMatchArray($expected)
+        // The cart charges price × factor; the invoice keeps cents (half up).
+        ->and(round($price * $term['factor'] + 1e-9, 2))->toBe($first);
+})->with([
+    'monthly, before the charge day' => ['1M', 1, 25, '2027-01-15 10:00:00', ['due' => '2027-02-01 10:00:00', 'days' => 17, 'days_total' => 31], 10.0, 5.48],
+    'monthly, on the charge day: 7 days and February' => ['1M', 1, 25, '2027-01-25 10:00:00', ['due' => '2027-03-01 10:00:00', 'days' => 7, 'days_total' => 31], 10.0, 12.26],
+    'monthly, no charge day' => ['1M', 1, 0, '2027-01-25 10:00:00', ['due' => '2027-02-01 10:00:00', 'days' => 7, 'days_total' => 31], 31.0, 7.0],
+    'yearly, before the charge day' => ['1Y', 1, 20, '2027-01-15 10:00:00', ['due' => '2027-02-01 10:00:00', 'days' => 17, 'days_total' => 365], 365.0, 17.0],
+    'yearly, after the charge day: 17 days and a year' => ['1Y', 1, 10, '2027-01-15 10:00:00', ['due' => '2028-02-01 10:00:00', 'days' => 17, 'days_total' => 365], 365.0, 382.0],
+    'quarterly' => ['3M', 15, 0, '2027-05-20 10:00:00', ['due' => '2027-06-15 10:00:00', 'days' => 26, 'days_total' => 92], 92.0, 26.0],
+    // Day 31 in February: its last day, the period from 31 January.
+    'day 31 in February' => ['1M', 31, 0, '2027-02-10 10:00:00', ['due' => '2027-02-28 10:00:00', 'days' => 18, 'days_total' => 28], 28.0, 18.0],
+    'day 31 in a leap February' => ['1M', 31, 0, '2028-02-10 10:00:00', ['due' => '2028-02-29 10:00:00', 'days' => 19, 'days_total' => 29], 29.0, 19.0],
+    'day 31 from February, the next month too' => ['1M', 31, 5, '2027-02-10 10:00:00', ['due' => '2027-03-31 10:00:00', 'days' => 18, 'days_total' => 28], 28.0, 46.0],
+    // Ordered on the prorata day (or a short month's last day for it): a whole period to the next one.
+    'on the prorata day' => ['1M', 31, 0, '2027-03-31 10:00:00', ['due' => '2027-04-30 10:00:00', 'days' => 30, 'days_total' => 30, 'factor' => 1.0], 9.99, 9.99],
+    'on the last day of a 30-day month for day 31' => ['1M', 31, 0, '2027-04-30 10:00:00', ['due' => '2027-05-31 10:00:00', 'days' => 31, 'days_total' => 31, 'factor' => 1.0], 9.99, 9.99],
+]);
+
+test('weeks, days or no prorata day are not prorated', function (): void {
+    expect(Proration::prorata('1W', 1, 0, '2027-01-15 10:00:00'))->toBeNull()
+        ->and(Proration::prorata('1M', 0, 25, '2027-01-15 10:00:00'))->toBeNull()
+        ->and(Proration::prorata('1M', 32, 0, '2027-01-15 10:00:00'))->toBeNull();
+});
+
+test('an upgrade of a prorata service measures its period from the prorata day', function (): void {
+    // Day 31, due 30 April: the period is 31 March to 30 April (Upgrades::anchorFor() passes 31 March), not 30 March.
+    $anchor = Proration::periodStart(new DateTimeImmutable('2027-04-30'), '1M', 31)->format('Y-m-d');
+
+    expect($anchor)->toBe('2027-03-31')
+        ->and(Proration::periodStart(new DateTimeImmutable('2027-03-31'), '1M', 31)->format('Y-m-d'))->toBe('2027-02-28')
+        ->and(Proration::quote(10, '1M', '2027-04-30 10:00:00', 20, '1M', '2027-04-15 11:00:00', 10, $anchor, true))
+        ->toMatchArray(['period_start' => '2027-03-31', 'days_total' => 30, 'days_left' => 15, 'credit' => 5.0, 'charge' => 10.0, 'amount' => 5.0]);
+});
+
+test('a prorata service\'s days before its period count at their own month, as they were charged (CF-145)', function (): void {
+    // 310 a month on the 1st, ordered 25 January with the next month: charged 310 x (7/31 + 1) = 380.00 to 1 March.
+    $quote = Proration::quote(310, '1M', '2027-03-01 00:00:00', 1, '1M', '2027-01-25 00:00:00', null, '2027-02-01', false, 1);
+
+    expect($quote)->toMatchArray(['period_start' => '2027-02-01', 'days_total' => 28, 'days_left' => 35, 'credit' => 380.00, 'charge' => 1.23, 'amount' => -378.77, 'kind' => 'downgrade'])
+        // Without the prorata walk February's days value the 35 at 310/28: 387.50, more than was paid.
+        ->and(Proration::quote(310, '1M', '2027-03-01 00:00:00', 1, '1M', '2027-01-25 00:00:00', null, '2027-02-01')['credit'])->toBe(387.5);
+});
+
+test('a prorata service on day 31 keeps its day walking back past a short month (CF-145)', function (): void {
+    // 280 a month on the 31st, ordered 10 February with the next month: charged 280 x (18/28 + 1) = 460.00 to 31 March.
+    expect(Proration::prorataPeriodsLeft('2027-03-31 00:00:00', '2027-02-10 00:00:00', '1M', 31))->toEqualWithDelta(1 + 18 / 28, 1e-9)
+        ->and(Proration::quote(280, '1M', '2027-03-31 00:00:00', 140, '1M', '2027-02-10 00:00:00', null, '2027-02-28', false, 31))
+        ->toMatchArray(['credit' => 460.00, 'charge' => 230.00, 'amount' => -230.00]);
+});

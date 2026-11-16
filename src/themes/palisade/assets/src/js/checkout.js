@@ -60,16 +60,18 @@ export default function initCheckout(root) {
     let renew = 0;
     const qty = product.quantity ? state.qty : 1;
     const base = recurrent ? product.prices?.[cycle] : (product.type === 'once' ? product.once : { price: 0, setup: 0 });
+    // CF-145: a prorata product first charges part of a period (with its add-ons), setup fees in full.
+    const part = recurrent ? Number(product.prorata?.[cycle]?.factor ?? 1) : 1;
     if (base) {
-      lines.push([qty > 1 ? `${product.title} × ${qty}` : product.title, base.price * qty]);
-      due += (Number(base.price) + Number(base.setup || 0)) * qty;
+      lines.push([qty > 1 ? `${product.title} × ${qty}` : product.title, base.price * qty * part]);
+      due += (base.price * part + Number(base.setup || 0)) * qty;
       renew += recurrent ? base.price * qty : 0;
       if (Number(base.setup) > 0) {
         lines.push([t.setup, base.setup * qty]);
       }
       optionLines(options, readChoice(root, options), recurrent ? cycle : 'once').forEach((line) => {
-        lines.push([line.title, line.price * qty]);
-        due += (line.price + line.setup) * qty;
+        lines.push([line.title, line.price * qty * part]);
+        due += (line.price * part + line.setup) * qty;
         renew += recurrent ? line.price * qty : 0;
         if (line.setup > 0) {
           lines.push([`${line.title}: ${t.setup}`, line.setup * qty]);
@@ -83,8 +85,9 @@ export default function initCheckout(root) {
         return;
       }
       const q = addon.quantity ? choice.qty : 1;
-      lines.push([q > 1 ? `${addon.title} × ${q}` : addon.title, price.price * q]);
-      due += (Number(price.price) + Number(price.setup || 0)) * q;
+      const addonPart = addon.type === 'recurrent' ? part : 1;
+      lines.push([q > 1 ? `${addon.title} × ${q}` : addon.title, price.price * q * addonPart]);
+      due += (price.price * addonPart + Number(price.setup || 0)) * q;
       renew += addon.type === 'recurrent' ? price.price * q : 0;
       if (Number(price.setup) > 0) {
         lines.push([`${addon.title}: ${t.setup}`, price.setup * q]);
@@ -191,8 +194,11 @@ export default function initCheckout(root) {
     const then = $('[data-bf-then]');
     const renew = now.renew - (state.promo ? state.promo.renewDiscount * rate : 0);
     if (recurrent && renew > 0) {
-      const renewAt = new Date();
-      renewAt.setDate(renewAt.getDate() + Math.round(MONTHS[state.cycle] * 30.4375));
+      const prorataDue = product.prorata?.[state.cycle]?.due;
+      const renewAt = prorataDue ? new Date(`${prorataDue}T00:00:00`) : new Date();
+      if (!prorataDue) {
+        renewAt.setDate(renewAt.getDate() + Math.round(MONTHS[state.cycle] * 30.4375));
+      }
       then.textContent = fill(t.then, {
         amount: money(withTax(renew)),
         per: cycles[state.cycle]?.per ?? '',
@@ -392,8 +398,9 @@ export default function initCheckout(root) {
         throw new Error(t.promoInvalid);
       }
       // The cart's totals are in the default currency, like the product prices.
-      // A recurring promo also comes off each renewal: the order keeps the price part of the discount.
-      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).reduce((sum, item) => sum + Number(item.discount_price ?? 0), 0) : 0;
+      // A recurring promo also comes off each renewal: the order keeps the price part of the discount (the full
+      // period's, not a prorated first charge's).
+      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
       state.promo = { code, discount: Number(cart.discount), total: Number(cart.total), renewDiscount };
     } catch (error) {
       state.promo = null;

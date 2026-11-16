@@ -3049,3 +3049,22 @@ test('the upgrades "whole category" switch is saved in the upgrades list and kep
     $service->updateProduct($product, ['upgrades' => [''], 'upgrades_category' => '0']);
     expect($product->getUpgrades())->toBeNull();
 });
+
+test('Prorata Billing days are saved as numbers and checked (CF-145)', function (): void {
+    $service = new Service();
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories();
+    $di['logger'] = new \ClientFence\Log();
+    $service->setDi($di);
+    $product = productTestCreateProductEntity(1)->setConfig(json_encode(['affiliate_payout' => 'none']));
+    $config = fn (): array => json_decode((string) $product->getConfig(), true);
+
+    $service->updateProduct($product, ['config' => ['prorata_day' => '31', 'prorata_charge_next' => '']]);
+    expect($config())->toBe(['affiliate_payout' => 'none', 'prorata_day' => 31, 'prorata_charge_next' => 0]);
+
+    foreach (['32', '-1', '1.5', 'x'] as $bad) {
+        expect(fn () => $service->updateProduct($product, ['config' => ['prorata_day' => $bad]]))
+            ->toThrow(ClientFence\InformationException::class, 'The prorata day must be a day of the month from 1 to 31.');
+    }
+    expect($config()['prorata_day'])->toBe(31);
+});

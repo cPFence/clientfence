@@ -243,6 +243,8 @@ class Service implements InjectionAwareInterface
             'addons' => $addons,
 
             'price_starting_from' => $starting_from,
+            // ClientFence core patch (CF-145): a prorata product's first period per billing cycle, for the order form.
+            'prorata' => $this->prorataTerms($config, $pricing),
             'icon_url' => $model->getIconUrl(),
 
             // stock control
@@ -275,6 +277,27 @@ class Service implements InjectionAwareInterface
 
         // ClientFence core patch: clients and guests read the name and description in the page language (Product/Translations.php).
         return $isAdmin ? $result : Translations::overlay($this->di, 'product', $result);
+    }
+
+    /**
+     * ClientFence core patch (CF-145): the factor of the price and the first due date of each enabled billing cycle of a
+     * prorata product (Order\Proration::prorata()); none without a prorata day.
+     *
+     * @return array<string, array{factor: float, due: string}>
+     */
+    private function prorataTerms(array $config, array $pricing): array
+    {
+        $terms = [];
+        if ((int) ($config['prorata_day'] ?? 0) > 0 && ($pricing['type'] ?? '') === ProductPayment::RECURRENT) {
+            foreach ((array) ($pricing[ProductPayment::RECURRENT] ?? []) as $code => $price) {
+                $term = !empty($price['enabled']) ? \ClientFence\Mod\Order\Proration::prorata((string) $code, (int) $config['prorata_day'], (int) ($config['prorata_charge_next'] ?? 0), date('Y-m-d H:i:s')) : null;
+                if ($term !== null) {
+                    $terms[$code] = ['factor' => $term['factor'], 'due' => substr($term['due'], 0, 10)];
+                }
+            }
+        }
+
+        return $terms;
     }
 
     private function getPublicConfig(array $config): array
@@ -566,6 +589,16 @@ class Service implements InjectionAwareInterface
         }
 
         if (isset($data['config']) && is_array($data['config'])) {
+            // ClientFence core patch (CF-145): Prorata Billing, the day services renew on (1-31) and the "charge next month" day (0: off).
+            foreach (['prorata_day', 'prorata_charge_next'] as $key) {
+                if (array_key_exists($key, $data['config'])) {
+                    $value = trim((string) $data['config'][$key]);
+                    if ($value !== '' && (!ctype_digit($value) || (int) $value > 31)) {
+                        throw new \ClientFence\InformationException('The prorata day must be a day of the month from 1 to 31.');
+                    }
+                    $data['config'][$key] = (int) $value;
+                }
+            }
             $current = json_decode($model->getConfig() ?? '', true) ?? [];
             $c = array_merge($current, $data['config']);
             $model->setConfig(json_encode($c));
