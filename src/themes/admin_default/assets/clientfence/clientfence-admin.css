@@ -1717,3 +1717,7 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
   .cf-sys-sec { animation: none; }
   :is(#cache-driver, #mailer) > .form-check, .clientfence-setting, .clientfence-panel-option { transition: none; }
 }
+
+/* ---- CF-135 part 5: shared ---- */
+/* The sticky Save rows keep room at the end for the back-to-top button (.bf-top, fixed at the bottom end corner). */
+.bf-body form .cf-set-save, .bf-body form.cf-set > .cf-set-save, .bf-body .cf-set .clientfence-settings-actions { padding-inline-end: calc(1.5rem + 3rem + 16px); }
