@@ -4377,6 +4377,9 @@ body::before {
   .bf-seg-item.is-on .bf-save { color: rgba(255, 255, 255, .85); }
 }
 .bf-tab.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); border-color: transparent; color: #fff; }
+// The checkout's billing cycles match the store's: the chosen one in the brand gradient.
+[data-bf-cycles] .bf-seg-item.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); color: #fff; box-shadow: 0 6px 16px -8px var(--pal-brand); }
+[data-bf-cycles] .bf-seg-item.is-on .bf-seg-sub { color: rgba(255, 255, 255, .85); }
 // Store hero (with a domain product on sale): a deep panel with glows, the domain search and TLD prices.
 .bf-store-head.has-search {
   max-width: none; align-items: center; gap: .625rem; padding: 2.75rem 1.5rem 2.25rem; overflow: hidden;
@@ -4426,7 +4429,7 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .cf-pay-hero {
   --cf-tone-rgb: var(--bs-secondary-rgb);
   --cf-tone-ink: var(--bf-ink-2);
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; padding: 1.5rem;
+  display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; padding: 1.5rem;
   border-color: rgba(var(--cf-tone-rgb), .3);
   background-image: linear-gradient(110deg, rgba(var(--cf-tone-rgb), .14), transparent 65%);
   box-shadow: 0 18px 40px -26px rgba(var(--cf-tone-rgb), .7);
