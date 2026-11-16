@@ -220,6 +220,26 @@
                                 {{ include('partial_pricing.html.twig', { 'product': product }) }}
                             </div>
 
+                            {% if product.type != 'domain' %}
+                            {# ClientFence core patch (CF-145): Prorata Billing, as WHMCS (Order/Proration.php prorata()). #}
+                            <div class="d-flex flex-column gap-1 mt-4 mb-4 cf-section-head">
+                                <h6 class="card-title mb-0">{{ 'Prorata Billing'|trans }}</h6>
+                                <p class="text-secondary mb-0">{{ 'Recurring prices only: every service of this product renews on one day of the month. The first invoice charges the days up to that day.'|trans }}</p>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="prorata-day">{{ 'Prorata Date'|trans }}</label>
+                                    <input class="form-control" type="number" id="prorata-day" name="config[prorata_day]" min="0" max="31" step="1" value="{{ product.config.prorata_day|default(0) ?: '' }}">
+                                    <div class="form-text">{{ 'The day of the month (1-31) services renew on; a shorter month uses its last day. Empty: off.'|trans }}</div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="prorata-charge-next">{{ 'Charge Next Month'|trans }}</label>
+                                    <input class="form-control" type="number" id="prorata-charge-next" name="config[prorata_charge_next]" min="0" max="31" step="1" value="{{ product.config.prorata_charge_next|default(0) ?: '' }}">
+                                    <div class="form-text">{{ 'Orders placed on or after this day of the month also pay the next full period on the first invoice. Empty: off.'|trans }}</div>
+                                </div>
+                            </div>
+                            {% endif %}
+
                             {# ClientFence core patch: the product's affiliate commission (Client/Affiliates/Commissions.php rule()). #}
                             <div class="d-flex flex-column gap-1 mt-4 mb-4 cf-section-head">
                                 <h6 class="card-title mb-0">{{ 'Affiliate Commission'|trans }}</h6>

@@ -145,6 +145,7 @@
 {% endblock %}
 
 {% block js %}
+{# ClientFence core patch (CF-145): a line charged to a set due date (prorata product, add-on) shows that date and the renewal price. #}
 <script nonce="{{ csp_nonce }}">
 (() => {
     const text = {{ {
@@ -163,7 +164,8 @@
         noDomains: 'No domains in this order.'|trans, noLines: 'No items yet. Add a product or a domain.'|trans,
         noClient: 'Choose a client to see the prices.'|trans, newDomain: 'New domain'|trans, optional: '(optional)'|trans,
         setup: 'Setup fee'|trans, subtotal: 'Subtotal'|trans, discount: 'Promotion (:code)'|trans, tax: 'Tax'|trans,
-        taxIncluded: 'Prices include :tax'|trans, credit: 'Client credit'|trans, creditLabel: 'Apply client credit (:amount)'|trans
+        taxIncluded: 'Prices include :tax'|trans, credit: 'Client credit'|trans, creditLabel: 'Apply client credit (:amount)'|trans,
+        to: 'to :date'|trans, then: 'then'|trans
     }|json_encode|raw }};
 
     const form = document.getElementById('cf-new-order');
@@ -329,7 +331,7 @@
         const fee = !$('invoice').checked ? 0 : (credit ? q.fee_with_credit : q.fee);
         $('cf-lines').innerHTML = q.items.map((l) => `<li><span class="fw-medium">${esc(l.title)}${l.quantity > 1 ? ' × ' + esc(l.quantity) : ''}</span>
             <span class="cf-order-amount">${esc(money(l.total + l.setup_price))}</span>
-            <small class="text-secondary">${[l.period ? PERIODS[l.period] || l.period : '', l.setup_price ? text.setup + ' ' + money(l.setup_price) : '', l.discount ? '−' + money(l.discount) : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`).join('');
+            <small class="text-secondary">${[l.period ? PERIODS[l.period] || l.period : '', l.due ? fill(text.to, { date: l.due }) + ', ' + text.then + ' ' + money(l.recurring_price) : '', l.setup_price ? text.setup + ' ' + money(l.setup_price) : '', l.discount ? '−' + money(l.discount) : ''].filter(Boolean).map(esc).join(' · ')}</small></li>`).join('');
         const row = (label, value, cls = '') => `<dt class="fw-normal text-secondary">${esc(label)}</dt><dd class="cf-order-amount ${cls}">${esc(value)}</dd>`;
         $('cf-totals').innerHTML = [
             row(text.subtotal, money(q.subtotal)),

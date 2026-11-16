@@ -1146,8 +1146,10 @@ class Service implements InjectionAwareInterface
                     $order->setUnit($item['unit'] ?? null);
                     $order->setPeriod($item['period'] ?? null);
                     $order->setQuantity($item['quantity'] ?? null);
-                    $order->setPrice(($addonFor !== null ? $recurringPrice : $item['price']) * $currency->getConversionRate());
-                    $order->setDiscount(($addonFor !== null ? $recurringDiscount : $item['discount_price']) * $currency->getConversionRate());
+                    // ClientFence core patch (CF-145): a first period to a set due date (an add-on, a prorata product) keeps the full price.
+                    $firstPart = $addonFor !== null || !empty($item['addon_due']);
+                    $order->setPrice(($firstPart ? $recurringPrice : $item['price']) * $currency->getConversionRate());
+                    $order->setDiscount(($firstPart ? $recurringDiscount : $item['discount_price']) * $currency->getConversionRate());
                     $order->setStatus(Order::STATUS_PENDING_SETUP);
                     $order->setNotes($item['notes'] ?? null);
                     $order->setConfig(json_encode($item));
@@ -1155,7 +1157,7 @@ class Service implements InjectionAwareInterface
                     $this->di['em']->flush();
 
                     $orders[] = $order;
-                    if ($addonFor !== null) {
+                    if ($firstPart) {
                         $firstPeriodOnly[] = $order->getId();
                     }
 
@@ -1174,9 +1176,10 @@ class Service implements InjectionAwareInterface
                     $invoice_items[] = [
                         // ClientFence core patch: configurable options (Product/Options.php) are listed on the line.
                         'title' => \ClientFence\Mod\Product\Options::titleWith((string) $order->getTitle(), is_array($item['option_lines'] ?? null) ? $item['option_lines'] : [])
-                            . (!empty($item['addon_due']) ? ' (' . date('Y-m-d') . ' - ' . substr((string) $item['addon_due'], 0, 10) . ')' : ''),
+                            . (!empty($item['addon_due']) ? ' (' . ($item['_start_date'] ?? date('Y-m-d')) . ' - ' . substr((string) $item['addon_due'], 0, 10) . ')' : ''),
                         // ClientFence core patch: an add-on for a service is charged to the service's due date (Order/AddonOrders.php).
-                        'price' => $addonFor !== null ? $item['price'] * $currency->getConversionRate() : $order->getPrice(),
+                        // A prorata product is charged to its prorata day (CF-145).
+                        'price' => $firstPart ? $item['price'] * $currency->getConversionRate() : $order->getPrice(),
                         'quantity' => $order->getQuantity(),
                         'unit' => $order->getUnit(),
                         'period' => $order->getPeriod(),
@@ -1186,7 +1189,7 @@ class Service implements InjectionAwareInterface
                         'task' => \Model_InvoiceItem::TASK_ACTIVATE,
                     ];
 
-                    $lineDiscount = $addonFor !== null ? $item['discount_price'] * $currency->getConversionRate() : $order->getDiscount();
+                    $lineDiscount = $firstPart ? $item['discount_price'] * $currency->getConversionRate() : $order->getDiscount();
                     if ($lineDiscount > 0) {
                         $invoice_items[] = [
                             // ClientFence core patch: a promotion's discount is named as on its renewals, so the client sees which one it is.
@@ -1431,6 +1434,8 @@ class Service implements InjectionAwareInterface
                     'items' => array_map(static fn (array $i): array => [
                         'title' => $i['title'], 'quantity' => $i['quantity'], 'period' => $i['period'] ?? null,
                         'price' => $i['price'] * $rate, 'total' => $i['total'] * $rate, 'setup_price' => $i['setup_price'] * $rate, 'discount' => $i['discount'] * $rate,
+                        // ClientFence core patch (CF-145): a first period to a set due date, then the full price.
+                        'due' => empty($i['addon_due']) ? null : substr((string) $i['addon_due'], 0, 10), 'recurring_price' => $i['recurring_price'] * $rate,
                     ], $cart['items']),
                     'promocode' => $cart['promocode'] ?? $cart['auto_promo'],
                     'subtotal' => $cart['subtotal'] * $rate,
@@ -1608,6 +1613,15 @@ class Service implements InjectionAwareInterface
             $price = $this->staffPrices[$this->cartProductId($model)];
             $discount_price = $discount_setup = 0;
         }
+        // ClientFence core patch (CF-145): a prorata product, or an add-on ordered with one, first runs to its prorata day
+        // (Order\Proration::prorata()): the price and its discount (a staff override too) are for that part; the order keeps
+        // the full price for its renewals, which fall on that day (prorata_day).
+        $prorata = $addonFor === null && !empty($config['period']) ? $this->prorataLine($config, (int) $productView['product_id'], $cart, $cartProducts) : null;
+        if ($prorata !== null) {
+            [$recurringPrice, $recurringDiscount] = [$price, $discount_price];
+            $price *= $prorata['factor'];
+            $discount_price *= $prorata['factor'];
+        }
 
         $discount_total = $discount_price + $discount_setup;
 
@@ -1637,8 +1651,46 @@ class Service implements InjectionAwareInterface
             'recurring_price' => $recurringPrice,
             'recurring_discount' => $recurringDiscount,
             'promo_line' => $promoLine,
-            'addon_due' => $addonFor !== null && !empty($config['period']) ? (string) $addonFor->expires_at : null,
+            'addon_due' => $addonFor !== null && !empty($config['period']) ? (string) $addonFor->expires_at : ($prorata['due'] ?? null),
+            // An add-on for a service renews on that service's prorata day.
+            'prorata_day' => $addonFor !== null ? ((int) (json_decode((string) $addonFor->config, true)['prorata_day'] ?? 0) ?: null) : ($prorata['day'] ?? null),
         ]);
+    }
+
+    /**
+     * ClientFence core patch (CF-145): the first period of a recurring cart line on a prorata product, or of an add-on
+     * ordered with one (its own product's day is not asked), from a staff order's start date or today.
+     *
+     * @return array{factor: float, due: string, day: int}|null
+     */
+    private function prorataLine(array $config, int $productId, Cart|\Model_Cart|null $cart, ?array $cartProducts): ?array
+    {
+        $sql = 'SELECT p.config, p.is_addon, pp.type FROM product p LEFT JOIN product_payment pp ON pp.id = p.product_payment_id WHERE p.id = ?';
+        $product = $this->di['dbal']->fetchAssociative($sql, [$productId]);
+        if (!is_array($product) || ($product['type'] ?? '') !== 'recurrent') {
+            return null;
+        }
+        $settings = json_decode((string) $product['config'], true) ?? [];
+        if (!empty($product['is_addon']) && $cart !== null && isset($config[self::CART_FAMILY_KEY])) {
+            $settings = [];
+            foreach ($cartProducts ?? $this->findCartProducts($cart) as $line) {
+                if (($this->getItemConfig($line)[self::CART_FAMILY_KEY] ?? null) !== $config[self::CART_FAMILY_KEY]) {
+                    continue;
+                }
+                $parent = $this->di['dbal']->fetchAssociative($sql, [(int) $this->cartProductProductId($line)]);
+                $parentSettings = is_array($parent) && empty($parent['is_addon']) ? json_decode((string) $parent['config'], true) ?? [] : [];
+                if ((int) ($parentSettings['prorata_day'] ?? 0) > 0) {
+                    $settings = $parentSettings;
+
+                    break;
+                }
+            }
+        }
+        $day = (int) ($settings['prorata_day'] ?? 0);
+        $start = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($config['_start_date'] ?? '')) === 1 ? $config['_start_date'] . date(' H:i:s') : date('Y-m-d H:i:s');
+        $term = $day > 0 ? \ClientFence\Mod\Order\Proration::prorata((string) $config['period'], $day, (int) ($settings['prorata_charge_next'] ?? 0), $start) : null;
+
+        return $term === null ? null : ['factor' => $term['factor'], 'due' => $term['due'], 'day' => $day];
     }
 
     /** ClientFence core patch: the order group of the service an add-on joins; a service ordered on its own gets one. */

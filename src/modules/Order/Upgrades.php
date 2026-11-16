@@ -1235,6 +1235,11 @@ final class Upgrades
      */
     public static function anchorFor(\Pimple\Container $di, \Model_ClientOrder $order): ?string
     {
+        // CF-145: a prorata service's period starts on its prorata day (31 March to 30 April, not 30 March).
+        $prorataDay = (int) ((json_decode((string) $order->config, true) ?? [])['prorata_day'] ?? 0);
+        if ($prorataDay > 0 && (string) $order->expires_at !== '' && (string) $order->period !== '') {
+            return Proration::periodStart(new \DateTimeImmutable(substr((string) $order->expires_at, 0, 10)), (string) $order->period, $prorataDay)->format('Y-m-d');
+        }
         $anchor = self::periodAnchor(self::db($di), $order);
         $logic = $di['mod_config']('order')['order_renewal_logic'] ?? '';
         if ($anchor === null || ($logic !== 'from_today' && $logic !== 'from_greater') || !Service::keepsRenewalDay($di)) {
@@ -1571,7 +1576,9 @@ final class Upgrades
                 $left = Proration::daysLeft((string) $order->expires_at, $now);
                 // The first period ended where activation put the first expiry, or earlier where the paid period began (renewals
                 // counted from the payment day).
-                $firstEnd = (string) $order->activated_at !== '' ? $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime((string) $order->activated_at)) : false;
+                // CF-145: a first period charged to a set due date (an add-on, a prorata product) ended on it.
+                $due = (string) ((json_decode((string) $order->config, true) ?? [])['addon_due'] ?? '');
+                $firstEnd = $due !== '' ? (int) strtotime($due) : ((string) $order->activated_at !== '' ? $di['mod_service']('order')->periodEnd((string) $order->period, (int) strtotime((string) $order->activated_at)) : false);
                 [$qty, $unit] = Proration::parsePeriod((string) $order->period);
                 $firstEnd = $firstEnd === false ? false : min($firstEnd, Proration::shift(new \DateTimeImmutable((string) $order->expires_at), $qty, $unit, -1)->getTimestamp());
                 $firstDiscount = $left > 0 && $firstEnd !== false ? $firstDiscount * min($left, Proration::daysLeft(date('Y-m-d H:i:s', $firstEnd), $now)) / $left : 0.0;

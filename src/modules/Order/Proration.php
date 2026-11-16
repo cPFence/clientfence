@@ -129,6 +129,50 @@ final class Proration
         return $date->setDate($y, $m, $day);
     }
 
+    /**
+     * CF-145: the first period of a prorata product (WHMCS Prorata Billing), for months and years: it runs to the next
+     * prorata day after $now (a shorter month's last day for 29-31) and is charged for its days over the days of the
+     * billing period ending on that day (the factor of the price). On or after the "charge next month" day (0: off) the
+     * next full period is added. Null for weeks, days or no prorata day.
+     *
+     * @return array{factor: float, due: string, days: int, days_total: int}|null
+     */
+    public static function prorata(string $period, int $day, int $chargeNextDay, string $now): ?array
+    {
+        [$qty, $unit] = self::parsePeriod($period);
+        if ($day < 1 || $day > 31 || ($unit !== 'M' && $unit !== 'Y')) {
+            return null;
+        }
+        $today = self::day($now, 'current date');
+        $due = self::onDay($today, $day);
+        if ($due <= $today) {
+            $due = self::onDay($today->modify('first day of next month'), $day);
+        }
+        $days = self::daysBetween($today, $due);
+        $total = self::daysBetween(self::periodStart($due, $period, $day), $due);
+        $factor = $days / $total;
+        if ($chargeNextDay > 0 && (int) $today->format('j') >= $chargeNextDay) {
+            $factor += 1;
+            $due = self::onDay(self::shift($due, $qty, $unit, 1), $day);
+        }
+
+        return ['factor' => $factor, 'due' => $due->format('Y-m-d') . self::at($now)->format(' H:i:s'), 'days' => $days, 'days_total' => $total];
+    }
+
+    /** CF-145: the start of a prorata service's billing period that ends on $expiry: one period back, on the prorata day. */
+    public static function periodStart(\DateTimeImmutable $expiry, string $period, int $day): \DateTimeImmutable
+    {
+        [$qty, $unit] = self::parsePeriod($period);
+
+        return self::onDay(self::shift($expiry, $qty, $unit, -1), $day);
+    }
+
+    /** The day of the month of a date, or the month's last day when it is shorter. */
+    private static function onDay(\DateTimeImmutable $date, int $day): \DateTimeImmutable
+    {
+        return $date->setDate((int) $date->format('Y'), (int) $date->format('n'), min($day, (int) $date->format('t')));
+    }
+
     /** Whole days from now to the expiry date, as quote() counts the days left. */
     public static function daysLeft(string $expiresAt, string $now): int
     {

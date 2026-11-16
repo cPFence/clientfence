@@ -74,11 +74,13 @@
 {% set link_cart = link_promo ? guest.cart_get : {} %}
 {% set link_redo = link_promo and link_cart.items|default([])|length == 1 and link_cart.items[0].product_id == product.id and link_cart.promocode|default('')|upper == link_promo|upper %}
 {# ClientFence: data.tax is the tax the invoice adds, so "Due today" is what the invoice asks for. #}
+{# ClientFence core patch (CF-145): product.prorata is a prorata product's first period per cycle (factor of the price, first due date). #}
 {% set data = {
     product: {
         id: product.id, title: product.title, type: product.pricing.type, prices: prices,
         once: product.pricing.type == 'once' ? { price: product.pricing.once.price, setup: product.pricing.once.setup } : null,
         quantity: product.allow_quantity_select,
+        prorata: product.prorata|default({}),
     },
     addons: addons,
     period: period,

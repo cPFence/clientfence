@@ -264,6 +264,10 @@ final class Catalogue
                 'affiliate_onetime' => in_array(strtolower(trim((string) ($row['affiliateonetime'] ?? ''))), ['on', '1', 'yes'], true) ? '1' : '0',
             ];
         }
+        // CF-145: WHMCS Prorata Billing (Order\Proration::prorata()): the prorata date and the "charge next month" day.
+        if (self::prorataDay($row) > 0) {
+            $config += ['prorata_day' => self::prorataDay($row), 'prorata_charge_next' => min(31, max(0, (int) ($row['proratachargenextmonth'] ?? 0)))];
+        }
         $groupHidden = $this->groupHidden((int) ($row['gid'] ?? 0));
         $paymentId = $this->payment('product', $id, (string) ($row['paytype'] ?? 'recurring'), null, $title);
         $productId = $this->insertProduct([
@@ -533,11 +537,23 @@ final class Catalogue
         return ['text', null];
     }
 
+    /**
+     * The prorata day of a WHMCS product with Prorata Billing on a recurring price (1-31), else 0.
+     *
+     * @param array<string, mixed> $row
+     */
+    private static function prorataDay(array $row): int
+    {
+        $day = (int) ($row['proratadate'] ?? 0);
+
+        return (int) ($row['proratabilling'] ?? 0) === 1 && $day >= 1 && $day <= 31 && !in_array(strtolower(trim((string) ($row['paytype'] ?? 'recurring'))), ['free', 'free account', 'onetime', 'one time'], true) ? $day : 0;
+    }
+
     /** @param array<string, mixed> $row */
     private function productWarnings(array $row, string $title): void
     {
         $unused = [];
-        if ((int) ($row['proratabilling'] ?? 0) === 1) {
+        if ((int) ($row['proratabilling'] ?? 0) === 1 && self::prorataDay($row) === 0) {
             $unused[] = 'prorata billing';
         }
         if ((int) ($row['recurringcycles'] ?? 0) > 0) {

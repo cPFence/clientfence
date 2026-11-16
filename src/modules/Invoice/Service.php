@@ -2462,7 +2462,9 @@ class Service implements InjectionAwareInterface
             // ClientFence core patch: an add-on goes back on its service's renewal day, as it renews (Order/AddonOrders.php).
             $parentId = (int) (json_decode((string) $order['config'], true)['addon_for'] ?? 0);
             $activated = ($parentId > 0 ? $db->fetchOne('SELECT activated_at FROM client_order WHERE id = ?', [$parentId]) : false) ?: $order['activated_at'];
-            $expires = date('Y-m-d H:i:s', $this->di['mod_service']('order')->periodEnd($code, (int) strtotime((string) $order['expires_at']), $activated, -1));
+            // ClientFence core patch (CF-145): a prorata service goes back on its prorata day.
+            $prorataDay = (int) (json_decode((string) $order['config'], true)['prorata_day'] ?? 0);
+            $expires = date('Y-m-d H:i:s', $this->di['mod_service']('order')->periodEnd($code, (int) strtotime((string) $order['expires_at']), $activated, -1, $prorataDay));
             $db->update('client_order', ['expires_at' => $expires, 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $order['id']]);
             $moved[] = sprintf('order #%d due %s', $order['id'], substr($expires, 0, 10));
         }

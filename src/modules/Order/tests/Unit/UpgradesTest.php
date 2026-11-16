@@ -537,6 +537,20 @@ test('leap years, month ends and longer cycles', function (string $now, string $
     'two years to monthly' => [UPGRADES_NOW, '2Y', '2027-06-30 00:00:00', 1000, '3/1M', ['upgrade', 352.05, 85.0, -267.05, '2026-11-16 09:00:00']],
 ]);
 
+test('a prorata service measures its period from its prorata day', function (?int $day, array $want): void {
+    // CF-145: day 31, due 30 April, 15 days left: the period is 31 March to 30 April (30 days).
+    $db = upgradesDb();
+    $db->update('client_order', ['period' => '1M', 'expires_at' => '2026-04-30 00:00:00', 'price' => 5, 'config' => json_encode($day === null ? [] : ['prorata_day' => $day])], ['id' => 1]);
+    $db->update('invoice_item', ['price' => 5], ['invoice_id' => 9001]);
+    $di = upgradesContainer($db);
+
+    expect(upgradesOptionTable($di, 1, '2026-04-15 10:00:00')['2/1M'])->toBe($want);
+})->with([
+    'prorata day 31' => [31, ['upgrade', 2.5, 22.5, 20.0, '2026-04-30 00:00:00']],
+    // Without it the month before 30 April starts on 30 March (31 days).
+    'no prorata day' => [null, ['upgrade', 2.42, 21.77, 19.35, '2026-04-30 00:00:00']],
+]);
+
 test('a retired product moves to its listed products but not to its own cycles', function (): void {
     $db = upgradesDb();
     $db->update('product', ['upgrades' => json_encode(['1'])], ['id' => 4]);

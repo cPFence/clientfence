@@ -7142,5 +7142,57 @@
     {
         "file": "modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig",
         "done": "ClientFence core patch: the error text on the theme's tinted surface, readable in dark mode (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (CF-145): a prorata service renews on its day in either mode"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (CF-145): the prorata day a service renews on"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (CF-145): a prorata product's first due date is its addon_due"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch (CF-145): a prorata product, or an add-on ordered with one, first runs to its prorata day"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch (CF-145): a first period to a set due date (an add-on, a prorata product) keeps the full price."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch (CF-145): the first period of a recurring cart line on a prorata product"
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch (CF-145): a first period to a set due date, then the full price."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-145): a prorata service goes back on its prorata day."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch (CF-145): Prorata Billing, the day services renew on"
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch (CF-145): a prorata product's first period per billing cycle, for the order form."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
+        "done": "ClientFence core patch (CF-145): Prorata Billing, as WHMCS"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
+        "done": "ClientFence core patch (CF-145): a line charged to a set due date"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "ClientFence core patch (CF-145): product.prorata is a prorata product's first period per cycle"
     }
 ]
