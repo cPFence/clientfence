@@ -444,6 +444,32 @@ dd {
   html.cf-menu-collapsed {
     --bf-sidebar-width: 76px;
 
+    // ClientFence: the icon rail opens over the page on hover (or keyboard focus), as in the admin area; the page
+    // does not move. Above the top bar (1020), below the cookie notice, menus and modals.
+    .app-sidebar {
+      z-index: 1025;
+    }
+
+    .sidebar-panel {
+      width: 76px;
+      transition: width .3s var(--pal-ease) .12s, box-shadow .3s;
+    }
+
+    .app-sidebar:is(:hover, :has(:focus-visible)) .sidebar-panel {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: 264px;
+      box-shadow: 24px 0 70px rgba(4, 16, 24, .35);
+    }
+
+    .sidebar-panel .offcanvas-body {
+      overflow-x: hidden;
+    }
+  }
+
+  // Collapsed and not opened: icons only.
+  html.cf-menu-collapsed .app-sidebar:not(:hover, :has(:focus-visible)) {
     .sidebar-panel .offcanvas-body {
       padding-inline: .75rem;
     }
@@ -480,7 +506,7 @@ dd {
     }
   }
 
-  [dir="rtl"].cf-menu-collapsed .sidebar-brand img {
+  [dir="rtl"].cf-menu-collapsed .app-sidebar:not(:hover, :has(:focus-visible)) .sidebar-brand img {
     object-position: right center;
   }
 }
