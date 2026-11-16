@@ -2262,10 +2262,6 @@ msgstr ""
 msgid "Adjust the available theme options below. Changes are applied to the currently selected preset."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_taxupdate.html.twig
-msgid "Adjust the tax title, rate, and location targeting for this billing rule."
-msgstr ""
-
 #: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
 msgid "Adjustment"
 msgstr ""
@@ -2694,7 +2690,7 @@ msgstr ""
 msgid "Allow One Time Payments"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Allow One-Time Payments"
 msgstr ""
 
@@ -2726,7 +2722,7 @@ msgstr ""
 msgid "Allow passkeys for"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
 msgid "Allow register:"
 msgstr ""
 
@@ -2750,7 +2746,7 @@ msgstr ""
 msgid "Allow the staff member to uninstall extensions, including their associated database records and files."
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
 msgid "Allow transfer:"
 msgstr ""
 
@@ -3254,12 +3250,8 @@ msgstr ""
 msgid "Amount cannot exceed :max_amount"
 msgstr ""
 
-#: src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig …
+#: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig src/modules/Invoice/templates/email/mod_invoice_card_failed.html.twig src/modules/Invoice/templates/email/mod_invoice_created.html.twig …
 msgid "Amount due"
-msgstr ""
-
-#: src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
-msgid "Amount due: :amount"
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -4442,7 +4434,7 @@ msgstr ""
 msgid "Broken Email Templates"
 msgstr ""
 
-#: src/modules/Support/templates/client/mod_support_kb_article.html.twig src/modules/Support/templates/client/mod_support_kb_index.html.twig
+#: src/modules/Support/templates/client/mod_support_kb_article.html.twig src/modules/Support/templates/client/mod_support_kb_category.html.twig src/modules/Support/templates/client/mod_support_kb_index.html.twig
 msgid "Browse all articles"
 msgstr ""
 
@@ -4462,7 +4454,7 @@ msgstr ""
 msgid "Browse support articles in this knowledge base category."
 msgstr ""
 
-#: src/themes/palisade/html/mod_cart_index.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig src/themes/palisade/html/mod_cart_index.html.twig
 msgid "Browse the store"
 msgstr ""
 
@@ -6426,7 +6418,7 @@ msgstr ""
 msgid "Close Ticket"
 msgstr ""
 
-#: src/modules/Support/templates/admin/partial_support_helpdesks.html.twig
+#: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig src/modules/Support/templates/admin/partial_support_helpdesks.html.twig
 msgid "Close Tickets After"
 msgstr ""
 
@@ -6726,28 +6718,12 @@ msgstr ""
 msgid "Configure anti-spam checks for signups, contact forms, public tickets, and automated abuse protection."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
-msgid "Configure gateway behavior, accepted currencies, and provider credentials for this payment adapter."
-msgstr ""
-
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Configure how license keys are generated for this product and which validation rules should apply to issued licenses."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "Configure invoice timing, numbering, document behavior, refunds, and add-funds limits."
-msgstr ""
-
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig
-msgid "Configure resource limits, manager-specific parameters, and extra provisioning fields for this hosting plan."
-msgstr ""
-
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig
-msgid "Configure test mode, display title, and adapter-specific settings for this registrar."
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig
-msgid "Configure the inbox identity, auto-close timing, and whether tickets can be reopened."
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
@@ -8514,7 +8490,7 @@ msgstr ""
 msgid "Disable this template to stop it from being used when the related email event is triggered."
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig src/modules/Product/templates/admin/mod_product_addon_manage.html.twig …
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig …
 msgid "Disabled"
 msgstr ""
 
@@ -10686,7 +10662,7 @@ msgstr ""
 msgid "Fail: HTTPS is not enforced."
 msgstr ""
 
-#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig src/modules/Seo/templates/admin/mod_seo_settings.html.twig …
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig …
 msgid "Failed"
 msgstr ""
 
@@ -10948,10 +10924,6 @@ msgstr ""
 
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_config.html.twig src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
 msgid "File was uploaded"
-msgstr ""
-
-#: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
-msgid "Filename"
 msgstr ""
 
 #: src/modules/Servicedownloadable/Service.php
@@ -12098,10 +12070,6 @@ msgstr ""
 msgid "Helpdesk invalid"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig
-msgid "Helpdesk name will be visible for clients when submitting a new ticket."
-msgstr ""
-
 #: src/modules/Support/Controller/Admin.php src/modules/Support/templates/admin/mod_support_helpdesks.html.twig src/modules/Support/templates/admin/mod_support_settings.html.twig
 msgid "Helpdesks"
 msgstr ""
@@ -12134,7 +12102,7 @@ msgstr ""
 msgid "Hidden"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_kb_index.html.twig src/modules/Support/templates/admin/partial_support_helpdesks.html.twig
+#: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig src/modules/Support/templates/admin/mod_support_kb_index.html.twig src/modules/Support/templates/admin/partial_support_helpdesks.html.twig
 msgid "Hidden from clients"
 msgstr ""
 
@@ -12254,7 +12222,7 @@ msgstr ""
 msgid "Hosting Management"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig …
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
 msgid "Hosting Plan"
 msgstr ""
 
@@ -12978,7 +12946,7 @@ msgstr ""
 msgid "In your default currency; other currencies at the exchange rates."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig …
 msgid "Inactive"
 msgstr ""
 
@@ -13096,14 +13064,6 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Install latest preview build?"
-msgstr ""
-
-#: src/modules/System/templates/admin/mod_system_update.html.twig
-msgid "Install preview builds and review update status."
-msgstr ""
-
-#: src/modules/Extension/templates/admin/mod_extension_index.html.twig
-msgid "Installed and available extensions are listed here. Use the action icons to activate, deactivate, uninstall, or configure each module."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -13790,10 +13750,6 @@ msgstr ""
 msgid "Keep bots out and make a stolen staff password useless on its own."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_update.html.twig
-msgid "Keep database structure and settings aligned with the installed ClientFence version."
-msgstr ""
-
 #: src/modules/Security/templates/admin/mod_security_settings.html.twig
 msgid "Keep for (days)"
 msgstr ""
@@ -14106,7 +14062,7 @@ msgstr ""
 msgid "Last run :ago ago; it should run every 5 minutes."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Last run :time ago"
 msgstr ""
 
@@ -14626,7 +14582,7 @@ msgstr ""
 msgid "Log Into Your Account"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Log Into the Control Panel"
 msgstr ""
 
@@ -14744,10 +14700,6 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_iplookup.html.twig
 msgid "Lookup"
-msgstr ""
-
-#: src/modules/Security/templates/admin/mod_security_iplookup.html.twig
-msgid "Lookup IP addresses and review country and ASN ownership details."
 msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig
@@ -15034,16 +14986,8 @@ msgstr ""
 msgid "Manage antispam settings"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_kb_category.html.twig
-msgid "Manage articles assigned to this category."
-msgstr ""
-
 #: src/modules/Support/Service.php
 msgid "Manage canned responses"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_canned_category.html.twig
-msgid "Manage canned responses assigned to this category."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_index.html.twig
@@ -15056,10 +15000,6 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Manage company information, localization, system maintenance, and environment-level controls."
-msgstr ""
-
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
-msgid "Manage connection details, provisioning settings, and nameserver defaults for this hosting server."
 msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -15134,22 +15074,6 @@ msgstr ""
 msgid "Manage hosting servers"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
-msgid "Manage hosting servers, hosting plans, and the provisioning details used by your products."
-msgstr ""
-
-#: src/modules/Extension/templates/admin/mod_extension_index.html.twig
-msgid "Manage installed extensions, browse the extension directory, and review integration information."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
-msgid "Manage installed payment gateways, add new adapters, and install supported gateways from the extension directory."
-msgstr ""
-
-#: src/modules/Extension/templates/admin/mod_extension_languages.html.twig
-msgid "Manage installed translations and discover new language packs."
-msgstr ""
-
 #: src/modules/Invoice/Service.php
 msgid "Manage invoices"
 msgstr ""
@@ -15160,10 +15084,6 @@ msgstr ""
 
 #: src/modules/Support/Service.php
 msgid "Manage knowledge base"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_kb_index.html.twig
-msgid "Manage knowledge base articles and organize content into categories."
 msgstr ""
 
 #: src/modules/Servicelicense/Service.php
@@ -15190,10 +15110,6 @@ msgstr ""
 msgid "Manage payment gateways"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
-msgid "Manage pricing, registrar assignment, and registration availability for this top-level domain."
-msgstr ""
-
 #: src/modules/Product/Service.php
 msgid "Manage product categories"
 msgstr ""
@@ -15210,16 +15126,8 @@ msgstr ""
 msgid "Manage rate limits"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig
-msgid "Manage recurring billing subscriptions and create new subscription records."
-msgstr ""
-
 #: src/modules/Servicedomain/Service.php
 msgid "Manage registrars"
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_canned_responses.html.twig
-msgid "Manage reusable support responses and organize them into categories."
 msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_cancel_request.html.twig src/modules/Order/templates/email/mod_order_ip_request.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_activated.html.twig …
@@ -15248,10 +15156,6 @@ msgstr ""
 
 #: src/modules/Invoice/Service.php
 msgid "Manage tax rules"
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_tax.html.twig
-msgid "Manage tax rules and configure how taxes are applied across the billing system."
 msgstr ""
 
 #: src/modules/System/Service.php
@@ -16626,7 +16530,7 @@ msgstr ""
 msgid "Next page"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Next renewal"
 msgstr ""
 
@@ -17530,7 +17434,7 @@ msgstr ""
 msgid "Numeric or custom ID"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "OK"
 msgstr ""
 
@@ -18092,10 +17996,6 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/email/mod_serviceapikey_canceled.html.twig src/modules/Serviceapikey/templates/email/mod_serviceapikey_suspended.html.twig src/modules/Servicecustom/templates/email/mod_servicecustom_canceled.html.twig …
 msgid "Open a support ticket"
-msgstr ""
-
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
-msgid "Open an account to see its usage, read live from the server it runs on."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig
@@ -20022,7 +19922,7 @@ msgstr ""
 msgid "Plain text; line breaks are kept."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Plan Details"
 msgstr ""
 
@@ -21626,10 +21526,6 @@ msgstr ""
 msgid "Registered business"
 msgstr ""
 
-#: src/modules/Extension/templates/admin/mod_extension_index.html.twig
-msgid "Registered hooks let extensions integrate with key lifecycle events throughout ClientFence."
-msgstr ""
-
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/modules/Staff/templates/admin/mod_staff_manage.html.twig …
 msgid "Registered on"
 msgstr ""
@@ -21998,7 +21894,7 @@ msgstr ""
 msgid "Renewals"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_accounts.html.twig
 msgid "Renews :date"
 msgstr ""
 
@@ -22230,7 +22126,7 @@ msgstr ""
 msgid "Resell.biz Reseller ID"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Reseller Hosting"
 msgstr ""
 
@@ -22446,10 +22342,6 @@ msgstr ""
 msgid "Review"
 msgstr ""
 
-#: src/modules/Security/templates/admin/mod_security_rate_limits.html.twig
-msgid "Review IP addresses that are currently rate-limited and reset counters when legitimate users are blocked."
-msgstr ""
-
 #: src/modules/System/Service.php
 msgid "Review Update"
 msgstr ""
@@ -22478,10 +22370,6 @@ msgstr ""
 msgid "Review cron status, confirm your schedule, and control whether the guest cron endpoint is available."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_transactions.html.twig
-msgid "Review invoice transactions, filter payment activity, and retry or remove transaction records."
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Review invoices generated for this order and open any invoice details directly from here."
 msgstr ""
@@ -22506,32 +22394,12 @@ msgstr ""
 msgid "Review payment transactions recorded against this client across all gateways."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig
-msgid "Review recurring billing details and update the stored gateway subscription record."
-msgstr ""
-
 #: src/modules/Widgets/templates/admin/mod_widgets_index.html.twig
 msgid "Review registered widget slots and the modules that populate them across the admin and client themes."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_update.html.twig
-msgid "Review release notes, check for updates, and install available platform updates."
-msgstr ""
-
 #: src/modules/Email/templates/admin/mod_email_history.html.twig
 msgid "Review sent emails, inspect individual messages, and manage stored email logs."
-msgstr ""
-
-#: src/modules/Staff/templates/admin/mod_staff_login_history.html.twig
-msgid "Review staff login events, related IP addresses, and origin countries."
-msgstr ""
-
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig
-msgid "Review staff, client, and guest activity across the platform with detailed filtering."
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_login_history.html.twig
-msgid "Review successful client logins, related IP addresses, and origin countries."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -22542,32 +22410,8 @@ msgstr ""
 msgid "Review the client’s active and historical orders, or create a new order directly for this client."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
-msgid "Review the current hosting account, jump to the server control panel, and make targeted changes to the provisioned account."
-msgstr ""
-
-#: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig
-msgid "Review the current key and adjust how this service generates replacement API keys."
-msgstr ""
-
-#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
-msgid "Review the current license, plugin, and recent validation activity for this order."
-msgstr ""
-
-#: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_manage.html.twig
-msgid "Review the file currently assigned to this order and upload a replacement when needed."
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "Review the raw request body received from the payment gateway."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
-msgid "Review the stored payment record, gateway response details, and current processing status."
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig
-msgid "Review the stored recurring billing record, gateway reference, and current subscription state."
 msgstr ""
 
 #: src/modules/Page/templates/client/mod_page_tos.html.twig
@@ -22576,10 +22420,6 @@ msgstr ""
 
 #: src/modules/Staff/templates/email/mod_staff_ticket_close.html.twig src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig
 msgid "Review the ticket"
-msgstr ""
-
-#: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
-msgid "Review transaction details, correct payment metadata, and inspect the raw callback payload."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
@@ -22608,14 +22448,6 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_index.html.twig
 msgid "Run Check"
-msgstr ""
-
-#: src/modules/Security/templates/admin/mod_security_index.html.twig
-msgid "Run all checks for a full snapshot, or execute individual checks while investigating one specific area."
-msgstr ""
-
-#: src/modules/Security/templates/admin/mod_security_index.html.twig
-msgid "Run built-in security checks and review the current status of key platform safeguards."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig
@@ -23662,7 +23494,7 @@ msgstr ""
 msgid "Server"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server Connected"
 msgstr ""
 
@@ -25014,10 +24846,6 @@ msgstr ""
 msgid "Subscription Details"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig
-msgid "Subscription ID on PG"
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig
 msgid "Subscription ID on Payment Gateway"
 msgstr ""
@@ -25050,7 +24878,7 @@ msgstr ""
 msgid "Subscription sID was not passed"
 msgstr ""
 
-#: src/modules/Invoice/Controller/Admin.php src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig
+#: src/modules/Invoice/Controller/Admin.php src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig …
 msgid "Subscriptions"
 msgstr ""
 
@@ -25402,7 +25230,7 @@ msgstr ""
 msgid "TLDs"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig
 msgid "TLDs and prices"
 msgstr ""
 
@@ -25606,11 +25434,11 @@ msgstr ""
 msgid "Test API key:"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Test Connection"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig
 msgid "Test Mode"
 msgstr ""
 
@@ -28839,10 +28667,6 @@ msgstr ""
 msgid "Track available stock for this product"
 msgstr ""
 
-#: src/modules/News/templates/client/mod_news_index.html.twig
-msgid "Track our latest information."
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Track status changes and internal notes recorded against this order over time."
 msgstr ""
@@ -29587,7 +29411,7 @@ msgstr ""
 msgid "Unknown uppercase option ':case:'. API generator only accepts 'lower', 'upper', or 'mixed'."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig …
+#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig …
 msgid "Unlimited"
 msgstr ""
 
@@ -29835,10 +29659,6 @@ msgstr ""
 msgid "Update Transaction"
 msgstr ""
 
-#: src/modules/Staff/templates/admin/mod_staff_password_update.html.twig
-msgid "Update Your Password"
-msgstr ""
-
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Update and Test Connection"
 msgstr ""
@@ -29879,28 +29699,12 @@ msgstr ""
 msgid "Update profile"
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_kb_article.html.twig
-msgid "Update the article content, category, and visibility for the knowledge base."
-msgstr ""
-
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
 msgid "Update the authoritative nameservers assigned to this domain."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_kb_category.html.twig
-msgid "Update the category details used to organize knowledge base articles."
-msgstr ""
-
-#: src/modules/Support/templates/admin/mod_support_canned_category.html.twig
-msgid "Update the category used to organize reusable support responses."
-msgstr ""
-
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Update the client account, contact information, and internal settings."
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_group.html.twig
-msgid "Update the client group name or remove the group entirely."
 msgstr ""
 
 #: src/modules/Servicedomain/DomainTickets.php
@@ -31213,10 +31017,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Where the counts differ, the warnings say why."
-msgstr ""
-
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
-msgid "Where your backups go and how the last ones went."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -32771,7 +32571,7 @@ msgstr ""
 msgid "hour"
 msgstr ""
 
-#: src/modules/Support/templates/admin/partial_support_helpdesks.html.twig
+#: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig src/modules/Support/templates/admin/partial_support_helpdesks.html.twig
 msgid "hour(s)"
 msgstr ""
 
@@ -32779,7 +32579,7 @@ msgstr ""
 msgid "hours"
 msgstr ""
 
-#: src/themes/palisade/html/mod_order_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/themes/palisade/html/mod_order_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "in :days day(s)"
 msgstr ""
 
