@@ -8,31 +8,32 @@
 <meta name="x-apple-disable-message-reformatting">
 <title>{{ 'Order action failed'|trans }}</title>
 </head>
-<body style="margin:0; padding:0; background-color:#f1f4f8;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f4f8;">
+<body style="margin:0; padding:0; background-color:#eef3f6;">
+{# ClientFence core patch: email restyled: header band, rounded card, panel strip, pill button, status chips (CF-135 redesign). #}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef3f6" style="background-color:#eef3f6; background-image:linear-gradient(180deg, #d7eeec 0px, #eef3f6 360px);">
 <tr><td align="center" style="padding:24px 12px;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:8px;">
-	<tr><td style="padding:20px 32px; border-bottom:3px solid {{ guest.system_company.brand_color|default('#2563eb') }};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:600px; background-color:#ffffff; border:1px solid #e4eaee; border-radius:16px; box-shadow:0 8px 28px rgba(12,39,56,0.10);">
+	<tr><td bgcolor="#0c2738" style="padding:24px 32px; background-color:#0c2738; background-image:linear-gradient(135deg, #0c2738 0%, #11334a 55%, #0e5a7a 100%); border-radius:16px 16px 0 0; border-bottom:3px solid {{ guest.system_company.brand_color|default('#2563eb') }};">
 		{% if guest.system_company.logo_url_email|default('') %}
-		<img src="{{ guest.system_company.logo_url_email }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;">
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#ffffff" style="padding:8px 14px; background-color:#ffffff; border-radius:12px;"><img src="{{ guest.system_company.logo_url_email }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;"></td></tr></table>
 		{% else %}
-		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#0f172a;">{{ guest.system_company.name }}</span>
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#ffffff;">{{ guest.system_company.name }}</span>
 		{% endif %}
 	</td></tr>
 	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">
-		<h1 style="margin:0 0 16px; font-size:22px; line-height:30px; color:#0f172a;">{{ 'Order action failed'|trans }}</h1>
+		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Order action failed'|trans }}</h1>
 		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': staff.name|default('')}) }}</p>
 		<p style="margin:0 0 16px;">{% if failure.client_name|default('') %}{{ 'The %action% action of order %order% (client %client%) failed. Its hosting panel, registrar or other service refused it or could not finish it.'|trans_html({}, {'%action%': '<strong>' ~ (failure.action|default(''))|e ~ '</strong>', '%order%': '<strong>#' ~ (failure.order_id|default(''))|e ~ ' ' ~ (failure.order_title|default(''))|e ~ '</strong>', '%client%': '<strong>' ~ (failure.client_name)|e ~ '</strong>'}) }}{% else %}{{ 'The %action% action of order %order% failed. Its hosting panel, registrar or other service refused it or could not finish it.'|trans_html({}, {'%action%': '<strong>' ~ (failure.action|default(''))|e ~ '</strong>', '%order%': '<strong>#' ~ (failure.order_id|default(''))|e ~ ' ' ~ (failure.order_title|default(''))|e ~ '</strong>'}) }}{% endif %}</p>
-		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f8fafc; border-left:3px solid #cbd5e1; font-family:'Courier New', Courier, monospace; font-size:13px; line-height:22px; color:#334155; white-space:pre-line;">{{ failure.message|default('') }}</div>
+		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f3f6f8; border-left:3px solid #14a39a; border-radius:8px; font-family:'Courier New', Courier, monospace; font-size:13px; line-height:22px; color:#334155; white-space:pre-line;">{{ failure.message|default('') }}</div>
 		<p style="margin:0 0 16px;">{{ 'Fix the cause, then retry the action from Orders > Failed actions, or dismiss it there if it was done by hand. Nothing is retried on its own. Further failures of the same action are counted there without another email.'|trans }}</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
-			<tr><td style="border-radius:6px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }};">
-				<a href="{{ failure.list_url|default('') }}" target="_blank" style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open Failed actions'|trans }}</a>
+			<tr><td bgcolor="{{ guest.system_company.brand_color|default('#2563eb') }}" style="border-radius:999px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }}; mso-padding-alt:13px 30px;">
+				<a href="{{ failure.list_url|default('') }}" target="_blank" style="display:inline-block; padding:13px 30px; border-radius:999px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open Failed actions'|trans }}</a>
 			</td></tr>
 		</table>
 		<p style="margin:0 0 16px;"><a href="{{ failure.order_url|default('') }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">{{ 'Manage the order'|trans }}</a></p>
 	</td></tr>
-	<tr><td style="padding:20px 32px; border-top:1px solid #e2e8f0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+	<tr><td bgcolor="#f7fafb" style="padding:20px 32px; background-color:#f7fafb; border-top:1px solid #eef2f5; border-radius:0 0 16px 16px; text-align:center; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
 		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
 		<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>
 	</td></tr>
