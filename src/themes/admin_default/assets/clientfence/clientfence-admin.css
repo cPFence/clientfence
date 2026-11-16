@@ -1740,6 +1740,17 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
 .cf-kpi { flex-direction: row; align-items: flex-start; gap: 10px; margin: 0; padding: 14px; container-type: inline-size; }
 .cf-kpi > div { min-width: 0; }
 .cf-kpi .bf-tile { flex: none; width: 36px; height: 36px; }
+/* A key figure with its action (Credit Balance tab): the button moves under the figure when the card is narrow. */
+.cf-kpi-action { flex-wrap: wrap; }
+.cf-kpi-action > div { flex: 1 1 200px; }
+/* Key figures that filter a list (client Tickets tab): one click filters, a second clears it. */
+.cf-kpi-filter { color: inherit; text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+.cf-kpi-filter:hover { color: inherit; border-color: color-mix(in srgb, var(--bf-brand) 40%, var(--bf-line)); }
+.cf-kpi-filter.active { border-color: var(--bf-brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bf-brand) 18%, transparent); }
+/* Four key figures in one even row (two on smaller screens), never three and one. */
+.cf-kpis-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 992px) { .cf-kpis-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 575.98px) { .cf-kpis-4 .bf-tile { display: none; } }
 .cf-kpi-sub { color: var(--bf-muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* A figure stays on one line: in a key figure card it shrinks with the card (cqi), elsewhere it keeps 22px. */
 .cf-kpi-value { font-family: var(--bf-font-h); font-size: clamp(15px, 7.2cqi, 22px); font-weight: 700; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

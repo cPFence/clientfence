@@ -612,7 +612,7 @@
         <div class="tab-pane fade" id="tab-orders" role="tabpanel">
             {# ClientFence core patch: paging on every list tab, each tab with its own page parameters (orders_page, tickets_page...). #}
             {% set ordersPage = request.orders_page matches '/^[1-9]\\d*$/' ? request.orders_page : 1 %}
-            {% set ordersPerPage = request.orders_per_page in [10, 25, 50, 100] ? request.orders_per_page : 20 %}
+            {% set ordersPerPage = request.orders_per_page in [10, 25, 50, 100] ? request.orders_per_page : 25 %}
             {% set orders = admin.order_get_list({ 'per_page': ordersPerPage, 'page': ordersPage, 'client_id': client.id }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Client Orders'|trans,
@@ -815,8 +815,21 @@
         {% if can_view_tickets %}
         <div class="tab-pane fade" id="tab-support" role="tabpanel" aria-labelledby="support-tab">
             {% set ticketsPage = request.tickets_page matches '/^[1-9]\\d*$/' ? request.tickets_page : 1 %}
-            {% set ticketsPerPage = request.tickets_per_page in [10, 25, 50, 100] ? request.tickets_per_page : 20 %}
-            {% set tickets = admin.support_ticket_get_list({ 'per_page': ticketsPerPage, 'page': ticketsPage, 'client_id': client.id, 'search': request.ticket_search|default(''), 'deep': 0, 'include_first': 0 }) %}
+            {% set ticketsPerPage = request.tickets_per_page in [10, 25, 50, 100] ? request.tickets_per_page : 25 %}
+            {# ClientFence core patch: the ticket count cards filter the list by when the ticket was opened (ticket_period); a second click clears it. #}
+            {% set year = 'now'|date('Y') %}
+            {% set ticket_periods = {
+                this_month: { label: 'Opened this month'|trans, from: 'first day of this month'|date('Y-m-d'), to: 'now'|date('Y-m-d'), tile: 'teal' },
+                last_month: { label: 'Opened last month'|trans, from: 'first day of last month'|date('Y-m-d'), to: 'last day of last month'|date('Y-m-d'), tile: 'blue' },
+                this_year: { label: 'Opened this year'|trans, from: year ~ '-01-01', to: 'now'|date('Y-m-d'), tile: 'violet' },
+                last_year: { label: 'Opened last year'|trans, from: (year - 1) ~ '-01-01', to: (year - 1) ~ '-12-31', tile: 'amber' },
+            } %}
+            {% set ticket_period = ticket_periods[request.ticket_period|default('')] is defined ? request.ticket_period : null %}
+            {% set ticket_filter = { 'per_page': ticketsPerPage, 'page': ticketsPage, 'client_id': client.id, 'search': request.ticket_search|default(''), 'deep': 0, 'include_first': 0 } %}
+            {% if ticket_period %}
+                {% set ticket_filter = ticket_filter|merge({ 'date_from': ticket_periods[ticket_period].from, 'date_to': ticket_periods[ticket_period].to }) %}
+            {% endif %}
+            {% set tickets = admin.support_ticket_get_list(ticket_filter) %}
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Help Desk'|trans,
                 subtitle: 'Track the client’s support tickets and open a new ticket without leaving the client profile.'|trans,
@@ -834,24 +847,20 @@
                 {% block section_content %}
                     {% import 'macro_functions.html.twig' as mf %}
                     {# ClientFence core patch: WHMCS-style ticket counts and a search over this client's tickets. #}
-                    {% set year = 'now'|date('Y') %}
-                    {% set ticket_periods = [
-                        { label: 'Opened this month'|trans, from: 'first day of this month'|date('Y-m-d'), to: 'now'|date('Y-m-d') },
-                        { label: 'Opened last month'|trans, from: 'first day of last month'|date('Y-m-d'), to: 'last day of last month'|date('Y-m-d') },
-                        { label: 'Opened this year'|trans, from: year ~ '-01-01', to: 'now'|date('Y-m-d') },
-                        { label: 'Opened last year'|trans, from: (year - 1) ~ '-01-01', to: (year - 1) ~ '-12-31' },
-                    ] %}
-                    <div class="row g-2 p-3 pb-0">
-                        {% for period in ticket_periods %}
-                            <div class="col-6 col-lg-3">
-                                <div class="border rounded-3 bg-body-tertiary px-3 py-2 h-100">
-                                    <div class="fs-2 fw-semibold lh-sm">{{ admin.support_ticket_get_list({ 'client_id': client.id, 'date_from': period.from, 'date_to': period.to, 'per_page': 1, 'deep': 0, 'include_first': 0 }).total }}</div>
-                                    <div class="text-secondary small text-uppercase">{{ period.label }}</div>
+                    <div class="cf-kpis cf-kpis-4 p-3 pb-0">
+                        {% for key, period in ticket_periods %}
+                            {% set query = request|merge({ 'ticket_period': key == ticket_period ? null : key, 'tickets_page': null })|filter(v => v is not null) %}
+                            <a class="card cf-kpi cf-kpi-filter align-items-center{{ key == ticket_period ? ' active' }}" href="{{ ('client/manage/' ~ client.id)|url(query: query) }}#tab-support"{% if key == ticket_period %} aria-current="true"{% endif %}>
+                                <span class="bf-tile cf-tile-{{ period.tile }}" aria-hidden="true"><svg class="icon"><use href="#calendar" /></svg></span>
+                                <div>
+                                    <div class="cf-label">{{ period.label }}</div>
+                                    <div class="cf-kpi-value">{{ admin.support_ticket_get_list({ 'client_id': client.id, 'date_from': period.from, 'date_to': period.to, 'per_page': 1, 'deep': 0, 'include_first': 0 }).total }}</div>
                                 </div>
-                            </div>
+                            </a>
                         {% endfor %}
                     </div>
                     <form class="d-flex gap-2 p-3" method="get" action="{{ ('client/manage/' ~ client.id)|url }}#tab-support" role="search">
+                        {% if ticket_period %}<input type="hidden" name="ticket_period" value="{{ ticket_period }}">{% endif %}
                         <input class="form-control" type="search" name="ticket_search" value="{{ request.ticket_search|default('') }}" placeholder="{{ 'Search this client’s tickets'|trans }}" aria-label="{{ 'Search this client’s tickets'|trans }}">
                         <button class="btn btn-outline-secondary" type="submit">{{ 'Search'|trans }}</button>
                         {% if request.ticket_search|default('') %}<a class="btn btn-link" href="{{ ('client/manage/' ~ client.id)|url }}#tab-support">{{ 'Clear'|trans }}</a>{% endif %}
@@ -905,8 +914,19 @@
         {% if can_manage_balance %}
         <div class="tab-pane fade" id="tab-balance" role="tabpanel" aria-labelledby="balance-tab">
             {% set paymentsPage = request.payments_page matches '/^[1-9]\\d*$/' ? request.payments_page : 1 %}
-            {% set paymentsPerPage = request.payments_per_page in [10, 25, 50, 100] ? request.payments_per_page : 20 %}
+            {% set paymentsPerPage = request.payments_per_page in [10, 25, 50, 100] ? request.payments_per_page : 25 %}
             {% set payments = admin.client_balance_get_list({ 'per_page': paymentsPerPage, 'page': paymentsPage, 'client_id': client.id }) %}
+            {# ClientFence core patch: the credit balance and its low balance alert on top of the Credit Balance tab, as a key figure card. #}
+            {% set balance_alert = admin.client_balance_alert_get({ id: client.id }) %}
+            <div class="card cf-kpi cf-kpi-action align-items-center m-3 mb-0">
+                <span class="bf-tile cf-tile-violet" aria-hidden="true"><svg class="icon"><use href="#currency-dollar" /></svg></span>
+                <div>
+                    <div class="cf-label">{{ 'Credit Balance'|trans }}</div>
+                    <div class="cf-kpi-value">{{ client.balance|format_currency(client.currency ?? default_currency) }}</div>
+                    <div class="cf-kpi-sub">{{ 'Low balance alert'|trans }}: {{ balance_alert and balance_alert.threshold is not null ? 'Alert below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(client.currency ?? default_currency) }) : 'Off'|trans }}</div>
+                </div>
+                <a class="btn btn-primary ms-auto" href="#inputAmount"><svg class="icon"><use href="#plus" /></svg>{{ 'Add Funds'|trans }}</a>
+            </div>
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Credit History'|trans,
                 subtitle: "Credit added to or used from this client's balance."|trans,
@@ -1115,16 +1135,18 @@
                     {% import 'macro_functions.html.twig' as mf %}
                     {# ClientFence core patch: WHMCS-style totals of the money this client paid and was refunded (processed transactions, per currency). #}
                     {% for totals in admin.invoice_transaction_client_totals({ 'client_id': client.id }) %}
-                        <div class="row g-2 p-3">
+                        {# The same key figure cards as the Overview and the Credit Balance tab. #}
+                        <div class="cf-kpis p-3">
                             {% for box in [
-                                { label: 'Total in'|trans, value: totals.in },
-                                { label: 'Total out'|trans, value: totals.out },
-                                { label: 'Balance'|trans, value: totals.balance },
+                                { label: 'Total in'|trans, value: totals.in, icon: 'currency-dollar', tile: 'teal' },
+                                { label: 'Total out'|trans, value: totals.out, icon: 'receipt-refund', tile: 'amber' },
+                                { label: 'Balance'|trans, value: totals.balance, icon: 'chart-bar', tile: 'blue' },
                             ] %}
-                                <div class="col-12 col-sm-4">
-                                    <div class="border rounded-3 bg-body-tertiary px-3 py-2 h-100">
-                                        <div class="fs-2 fw-semibold lh-sm">{{ box.value|format_currency(totals.currency) }}</div>
-                                        <div class="text-secondary small text-uppercase">{{ box.label }}</div>
+                                <div class="card cf-kpi align-items-center">
+                                    <span class="bf-tile cf-tile-{{ box.tile }}" aria-hidden="true"><svg class="icon"><use href="#{{ box.icon }}" /></svg></span>
+                                    <div>
+                                        <div class="cf-label">{{ box.label }}</div>
+                                        <div class="cf-kpi-value">{{ box.value|format_currency(totals.currency) }}</div>
                                     </div>
                                 </div>
                             {% endfor %}

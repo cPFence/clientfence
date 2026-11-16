@@ -29,6 +29,8 @@
 </head>
 
 <body class="d-flex flex-column bf-auth-page">
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
     <script nonce="{{ csp_nonce }}">
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute("data-bs-theme", localStorage.getItem('theme'));
@@ -45,5 +47,6 @@
         {{ include('partial_clientfence_icons.html.twig') }}
     </div>
     {{ include('partial_clientfence_toasts.html.twig') }}
+<!--/email_off-->
 </body>
 </html>

@@ -7790,5 +7790,45 @@
     {
         "file": "modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig",
         "done": "'per_page_param': 'aff_payouts_per_page'"
+    },
+    {
+        "file": "themes/admin_default/html/layout_default.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "themes/admin_default/html/layout_login.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "modules/Invoice/templates/client/mod_invoice_print.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_loginform.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_contact.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_domainchecker.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "modules/Page/templates/client/mod_page_preview_markdown.html.twig",
+        "done": "{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the credit balance and its low balance alert on top of the Credit Balance tab, as a key figure card."
+    },
+    {
+        "file": "themes/admin_default/html/partial_pagination.html.twig",
+        "done": "ClientFence core patch: an admin list with rows always shows its records selector and its pages, even when it fits on one page."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the ticket count cards filter the list by when the ticket was opened (ticket_period); a second click clears it."
     }
 ]

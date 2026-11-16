@@ -29,8 +29,9 @@
     {% set perPageOptions = perPageOptions|merge([currentPerPage])|sort %}
 {% endif %}
 {% set minPerPageOption = (perPageOptions|first)|default(list.per_page) %}
-{% set showPerPageSelector = enablePerPageSelector and list.total > minPerPageOption and hasUrl %}
-{% set showPaginator = list.pages > 1 and hasUrl %}
+{# ClientFence core patch: an admin list with rows always shows its records selector and its pages, even when it fits on one page. #}
+{% set showPerPageSelector = enablePerPageSelector and hasUrl and (splitFooterControls ? list.total > 0 : list.total > minPerPageOption) %}
+{% set showPaginator = hasUrl and (list.pages > 1 or (splitFooterControls and list.total > 0)) %}
 
 {% if showPerPageSelector or showPaginator %}
     {# Removing pagination parameters from the request to avoid duplication #}

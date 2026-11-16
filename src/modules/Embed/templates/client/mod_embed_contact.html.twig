@@ -45,6 +45,8 @@
 </head>
 
 <body>
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
     <form method="post" action="" id="public-ticket-create" class="embed-shell embed-shell--contact">
         <div class="embed-stack">
             <h1 class="embed-title">{{ 'Contact us'|trans }}</h1>
@@ -108,5 +110,6 @@
         });
     });
 </script>
+<!--/email_off-->
 </body>
 </html>

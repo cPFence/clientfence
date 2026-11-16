@@ -103,6 +103,8 @@
 </head>
 
 <body>
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
 {# ClientFence core patch (CF-139): one name across the ticked TLDs (up to 20, the staff-pinned ones ticked first),
    the results with their price, and Order now opening the domain order form with the chosen domains (?tlds=). #}
 {% set tlds = guest.servicedomain_tlds({ allow_register: 1 }) %}
@@ -248,5 +250,6 @@
         });
     });
 </script>
+<!--/email_off-->
 </body>
 </html>

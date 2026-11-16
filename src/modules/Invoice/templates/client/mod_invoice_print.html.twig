@@ -12,6 +12,8 @@
     <link rel="shortcut icon" href="{{ guest.system_company.favicon_url }}">
 </head>
 <body>
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-10 offset-md-1">
@@ -214,5 +216,6 @@
         </div>
     </div>
 </div>
+<!--/email_off-->
 </body>
 </html>

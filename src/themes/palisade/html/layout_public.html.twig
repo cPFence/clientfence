@@ -14,6 +14,8 @@
     {% if not guest_gated %}{% block js %}{% endblock %}{% endif %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
 <div class="d-none">{{ svg_sprite() }}</div>
 {{ render_widgets('client.theme.body.start') }}
 {% if guest_gated %}
@@ -24,5 +26,6 @@
 {{ include('partials/toasts.html.twig') }}
 {{ render_widgets('client.theme.body.end') }}
 {{ include('partials/page_end.html.twig') }}
+<!--/email_off-->
 </body>
 </html>

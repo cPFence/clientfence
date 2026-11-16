@@ -21,6 +21,8 @@
     <link rel="shortcut icon" href="{{ guest.system_company.favicon_url }}">
 </head>
 <body>
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
 {# ClientFence core patch: the rebuilt invoice page's look: a header card with the logo, title, status and dates, the parties as cards, a tinted lines table, the totals in a panel at the end side, notes and bank details in soft boxes; on paper no shadow, glow or tint is needed to read it (CF-135 redesign). #}
 <main class="container cf-print">
     <header class="card bf-card cf-print-head">
@@ -213,5 +215,6 @@
         <div class="cf-print-box">{{ (invoice.text_2 ?? '')|markdown_to_html }}</div>
     {% endif %}
 </main>
+<!--/email_off-->
 </body>
 </html>

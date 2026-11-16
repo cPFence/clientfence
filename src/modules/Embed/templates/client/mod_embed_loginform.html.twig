@@ -9,6 +9,8 @@
 </head>
 
 <body>
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
 {# ClientFence core patch (ext embed): the password, CAPTCHA and two-factor code are entered on the sign-in page in the top window; a framed sign-in cannot keep its SameSite=Strict session cookie. #}
 {# ClientFence core patch: the sign-in embed shares the contact embed's glow and button (CF-135 redesign). #}
 <form action="{{ 'login'|url }}" method="get" target="_top" class="embed-shell embed-shell--login embed-stack">
@@ -19,5 +21,6 @@
     </div>
     <button class="embed-button" type="submit">{{ 'Sign in'|trans }}</button>
 </form>
+<!--/email_off-->
 </body>
 </html>

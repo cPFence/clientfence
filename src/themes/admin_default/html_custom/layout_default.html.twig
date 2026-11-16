@@ -39,6 +39,8 @@
 </head>
 
 <body data-bf-saved="{{ 'Changes saved'|trans }}" data-bf-done="{{ 'Done'|trans }}" data-cf-signed-out="{{ 'Your session has ended. Copy anything you typed, then sign in again.'|trans }}">
+{# ClientFence core patch: Cloudflare leaves emails alone here; its email decode script has no CSP nonce, so obfuscated emails would never show. #}
+<!--email_off-->
     <script nonce="{{ csp_nonce }}">
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute("data-bs-theme", localStorage.getItem('theme'));
@@ -228,5 +230,6 @@
     {{ debug_bar_render() }}
 
     {{ include('partial_clientfence_toasts.html.twig') }}
+<!--/email_off-->
 </body>
 </html>

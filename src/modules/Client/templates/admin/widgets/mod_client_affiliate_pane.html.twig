@@ -159,7 +159,7 @@
     {% endembed %}
 
     {% set entriesPage = request.aff_entries_page matches '/^[1-9]\\d*$/' ? request.aff_entries_page : 1 %}
-    {% set entriesPerPage = request.aff_entries_per_page in [10, 25, 50, 100] ? request.aff_entries_per_page : 20 %}
+    {% set entriesPerPage = request.aff_entries_per_page in [10, 25, 50, 100] ? request.aff_entries_per_page : 25 %}
     {% set entries = admin.client_affiliate_entries({ client_id: client.id, page: entriesPage, per_page: entriesPerPage }) %}
     {% embed 'partial_admin_related_section.html.twig' with {
         title: 'Commissions'|trans,

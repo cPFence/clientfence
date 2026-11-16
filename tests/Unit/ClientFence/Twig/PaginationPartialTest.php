@@ -76,22 +76,24 @@ test('admin pagination partial renders paginator when url is provided and the li
         ->toContain('class="page-link"');
 });
 
-test('admin pagination partial skips paginator when the list fits on a single page', function (): void {
+// ClientFence: an admin list with rows always shows its records selector and its pages; an empty one shows neither.
+test('admin pagination partial shows the records selector and page 1 when the list fits on a single page', function (int $total, bool $shown): void {
     $html = (new StrictTemplateRenderer())->renderTemplate(
         PATH_THEMES . '/admin_default/html/partial_pagination.html.twig',
         [
             'app_area' => 'admin',
             'request' => paginationRequest(),
             'guest' => new PermissiveCallableStub([
-                'system_paginator' => paginationPaginator(5, 1, 25),
+                'system_paginator' => paginationPaginator($total, 1, 25),
             ]),
-            'list' => paginationList(5, 1),
+            'list' => paginationList($total, $total > 0 ? 1 : 0),
             'url' => 'client',
         ],
     );
 
-    expect($html)->not->toContain('class="pagination"');
-});
+    expect(str_contains($html, 'class="pagination m-0"'))->toBe($shown)
+        ->and(str_contains($html, 'class="btn dropdown-toggle"'))->toBe($shown);
+})->with(['5 rows' => [5, true], 'no rows' => [0, false]]);
 
 test('admin pagination partial appends the hash to every paginator link', function (): void {
     $html = (new StrictTemplateRenderer())->renderTemplate(
