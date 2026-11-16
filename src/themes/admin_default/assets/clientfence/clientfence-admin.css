@@ -411,6 +411,8 @@ body { font-family: var(--bf-font); }
 .bf-footer {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
   padding: 14px 28px 18px; font-size: 12px; color: var(--bf-muted);
+  /* Room for the back-to-top button (.bf-top, fixed at the bottom end corner) so it never covers the version. */
+  padding-inline-end: calc(1.5rem + 3rem + 16px);
 }
 .bf-footer-links { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
 .bf-footer a { color: var(--bf-muted); text-decoration: none; }
