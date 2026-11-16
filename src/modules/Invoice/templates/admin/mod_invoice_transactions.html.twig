@@ -80,7 +80,6 @@
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Transactions'|trans }}</h3>
-            <p class="card-subtitle">{{ 'Review invoice transactions, filter payment activity, and retry or remove transaction records.'|trans }}</p>
         </div>
     </div>
 
@@ -169,6 +168,7 @@
         </form>
     </section>
     <div class="table-responsive">
+    {# ClientFence core patch: amounts right-aligned, an error as a red chip, the empty row spans every column (CF-135 redesign). #}
     <table class="table card-table table-vcenter table-striped text-nowrap">
         <thead>
             <tr>
@@ -179,7 +179,7 @@
                 <th>{{ 'Type'|trans }}</th>
                 <th>{{ 'Status'|trans }}</th>
                 <th>{{ 'Gateway'|trans }}</th>
-                <th>{{ 'Amount'|trans }}</th>
+                <th class="text-end">{{ 'Amount'|trans }}</th>
                 <th>{{ 'Date'|trans }}</th>
                 <th class="w-1"></th>
             </tr>
@@ -194,7 +194,7 @@
                 </td>
                 <td>
                     {% if tx.invoice_id %}
-                        <a href='{{ "invoice/manage/#{tx.invoice_id}"|url }}'>#{{ tx.invoice_id }}</a>
+                        <a href='{{ "invoice/manage/#{tx.invoice_id}"|url }}'><bdi>#{{ tx.invoice_id }}</bdi></a>
                     {% else %}
                         {{ 'N/A'|trans }}
                     {% endif %}
@@ -202,13 +202,13 @@
                 <td>{{ mf.status_name(tx.type|default('-')) }}</td>
                 <td>
                     {% if tx.error %}
-                        <a href="#" data-cf-message="{{ tx.error }}">{{ tx.error_code }}</a>
+                        <a class="badge bg-red-lt" href="#" data-cf-message="{{ tx.error }}">{{ tx.error_code }}</a>
                     {% else %}
                         {{ mf.status_badge(tx.status, 'transaction') }}
                     {% endif %}
                 </td>
                 <td>{{ tx.gateway }}</td>
-                <td>{{ (tx.amount ?? 0)|format_currency(tx.currency ?? default_currency) }}</td>
+                <td class="text-end">{{ (tx.amount ?? 0)|format_currency(tx.currency ?? default_currency) }}</td>
                 <td>{{ tx.created_at|format_datetime }}</td>
                 <td>
                     <a class="btn btn-icon" href='{{ "invoice/transaction/#{tx.id}"|url }}'>
@@ -231,7 +231,7 @@
             </tr>
             {% else %}
             <tr>
-                <td class="text-muted" colspan="7">{{ 'The list is empty'|trans }}</td>
+                <td class="text-muted" colspan="8">{{ 'The list is empty'|trans }}</td>
             </tr>
             {% endfor %}
         </tbody>

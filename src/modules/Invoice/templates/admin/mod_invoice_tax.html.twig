@@ -21,7 +21,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Tax'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage tax rules and configure how taxes are applied across the billing system.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -44,6 +43,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
+                            {# ClientFence core patch: the rate right-aligned in bold, "any country/state" muted (CF-135 redesign). #}
                             <table class="table card-table table-vcenter table-striped text-nowrap sortable">
                                 <thead>
                                     <tr>
@@ -53,7 +53,7 @@
                                         <th>{{ 'Title'|trans }}</th>
                                         <th>{{ 'Country'|trans }}</th>
                                         <th>{{ 'State/Region'|trans }}</th>
-                                        <th>{{ 'Tax Rate'|trans }}</th>
+                                        <th class="text-end">{{ 'Tax Rate'|trans }}</th>
                                         <th class="w-1 no-sort"></th>
                                     </tr>
                                 </thead>
@@ -70,17 +70,17 @@
                                             {% if tax.country %}
                                                 {{ tax.country|country_name }}
                                             {% else %}
-                                                {{ 'Applies to Any Country'|trans }}
+                                                <span class="text-secondary">{{ 'Applies to Any Country'|trans }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
                                             {% if tax.state %}
                                                 {{ tax.state }}
                                             {% else %}
-                                                {{ 'Applies to Any State'|trans }}
+                                                <span class="text-secondary">{{ 'Applies to Any State'|trans }}</span>
                                             {% endif %}
                                         </td>
-                                        <td>{{ tax.taxrate }}%</td>
+                                        <td class="text-end fw-bold">{{ tax.taxrate }}%</td>
                                         <td>
                                             <a class="btn btn-icon" href='{{ "invoice/tax/#{tax.id}"|url }}'>
                                                 <svg class="icon">

@@ -16,6 +16,7 @@
         </div>
         <div class="card-body pt-3 pb-0 px-0">
             <div class="table-responsive">
+                {# ClientFence core patch: the type and task as chips, the attempts as a red chip (CF-135 redesign). #}
                 <table class="table card-table table-vcenter table-striped text-nowrap">
                     <thead>
                         <tr>
@@ -33,12 +34,12 @@
                         <tr>
                             <td>{{ item.id }}</td>
                             <td>
-                                <a href='{{ "invoice/manage/#{item.invoice_id}"|url }}'>#{{ item.invoice_id }}</a>
+                                <a href='{{ "invoice/manage/#{item.invoice_id}"|url }}'><bdi>#{{ item.invoice_id }}</bdi></a>
                             </td>
                             <td>{{ item.title }}</td>
-                            <td>{{ item.type }}</td>
-                            <td>{{ item.task }}</td>
-                            <td>{{ item.attempts }}</td>
+                            <td><span class="bf-chip">{{ item.type }}</span></td>
+                            <td><span class="bf-chip">{{ item.task }}</span></td>
+                            <td><span class="bf-chip bf-tone-bad">{{ item.attempts }}</span></td>
                             <td>
                                 <a class="btn btn-icon" href="{{ 'invoice/item_requeue'|api_url(query: { 'id': item.id }) }}"
                                     title="{{ 'Re-queue'|trans }}"

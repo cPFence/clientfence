@@ -3,7 +3,8 @@
 {% set hold = order.status == 'pending_setup' ? admin.order_hold_get({ 'id': order.id }) : null %}
 {% if hold %}
     {% set hold_reasons = { 'network': 'Hosting network'|trans, 'fraud': 'Fraud check'|trans, 'id_document': 'ID document'|trans } %}
-    <div class="alert alert-warning" role="alert">
+    {# ClientFence core patch: the notice as a tinted banner in its colour, matching the order page (CF-135 redesign). #}
+    <div class="cf-notice alert alert-warning" role="alert">
         <h4 class="alert-title">{{ 'This order waits for review'|trans }}</h4>
         <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
             <span class="badge bg-warning-lt">{{ hold_reasons[hold.reason]|default(hold.reason) }}</span>

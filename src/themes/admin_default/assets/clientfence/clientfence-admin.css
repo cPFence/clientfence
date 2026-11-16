@@ -1318,3 +1318,76 @@ a.bf-file-name:hover .icon { color: inherit; }
   .cf-hub-card:hover .bf-flip, [dir="rtl"] .cf-hub-card:hover .bf-flip { translate: none; }
   .cf-rep-list > .bf-row:hover { padding-inline-start: 20px; }
 }
+
+/* ---- CF-135 part 4: admin billing and orders ---- */
+/* One transaction, subscription, quote or gateway: the hero on a soft teal glow, long gateway ids wrap. */
+.cf-pay > :is(.cf-inv-hero, .cf-client-hero) {
+  padding-top: 20px;
+  background: radial-gradient(460px 180px at 0% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%);
+}
+[dir="rtl"] .cf-pay > :is(.cf-inv-hero, .cf-client-hero) { background: radial-gradient(460px 180px at 100% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%); }
+.card > .cf-pay:first-child > .cf-client-hero { border-start-start-radius: 13px; border-start-end-radius: 13px; }
+.cf-pay .cf-facts dd, .cf-pay .cf-client-name { overflow-wrap: anywhere; }
+
+/* Order notices (cancellation request, failed action, waiting for review): a banner tinted in its colour. */
+.bf-body .alert.cf-notice {
+  --cf-shade: var(--bf-warn);
+  border: 1px solid color-mix(in srgb, var(--cf-shade) 30%, var(--bf-line)); border-inline-start: 4px solid var(--cf-shade); border-radius: 14px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cf-shade) 12%, var(--bf-surface)), var(--bf-surface) 80%);
+  color: var(--bf-ink); box-shadow: var(--bf-shadow);
+  animation: cf-notice-in .4s var(--bf-ease) backwards;
+}
+[dir="rtl"] .bf-body .alert.cf-notice { background: linear-gradient(270deg, color-mix(in srgb, var(--cf-shade) 12%, var(--bf-surface)), var(--bf-surface) 80%); }
+.bf-body .alert-danger.cf-notice { --cf-shade: var(--bf-bad); }
+.bf-body .cf-notice .alert-title { color: var(--cf-shade); }
+@keyframes cf-notice-in { from { opacity: 0; translate: 0 -6px; } to { opacity: 1; translate: none; } }
+
+/* Add New Order (moved from the page): item boxes that light up while edited, the Order Summary with a
+   soft glow and the total due today as the figure. */
+.bf-body .cf-order-summary {
+  position: sticky; top: 1rem;
+  background-image: radial-gradient(120% 70% at 100% 0%, color-mix(in srgb, var(--bf-teal) 12%, transparent), transparent 60%);
+}
+[dir="rtl"] .bf-body .cf-order-summary { background-image: radial-gradient(120% 70% at 0% 0%, color-mix(in srgb, var(--bf-teal) 12%, transparent), transparent 60%); }
+.cf-order-summary > .card-footer { background: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 9%, transparent), color-mix(in srgb, var(--bf-brand) 6%, transparent)); }
+.cf-order-summary > .card-footer .cf-order-amount { font-family: var(--bf-font-h); font-weight: 800; color: var(--bf-brand); }
+[data-bs-theme="dark"] .cf-order-summary > .card-footer .cf-order-amount { color: var(--bf-soft-ink); }
+.cf-order-item { border: 1px solid var(--bf-line); border-radius: 12px; background: var(--bf-surface-2); transition: border-color .25s, box-shadow .25s; }
+.cf-order-item:focus-within { border-color: color-mix(in srgb, var(--bf-teal) 50%, var(--bf-line)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--bf-teal) 10%, transparent); }
+.cf-order-item + .cf-order-item { margin-top: 1rem; }
+.cf-order-lines li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 .75rem; padding: .625rem 0; border-bottom: 1px dashed var(--bf-line); }
+.cf-order-lines li > :first-child { overflow-wrap: anywhere; }
+.cf-order-lines small { grid-column: 1 / -1; }
+.cf-order-amount { font-variant-numeric: tabular-nums; text-align: end; }
+.cf-order-totals { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .375rem .75rem; }
+.cf-order-totals dd { margin: 0; }
+@media (max-width: 991.98px) { .bf-body .cf-order-summary { position: static; } }
+/* Add buttons (order items, option values) as a dashed teal outline. */
+.bf-body :is(#cf-add-product, #cf-add-domain, [data-cf-option-value-add]) {
+  width: 100%; border: 1px dashed color-mix(in srgb, var(--bf-teal) 45%, var(--bf-line)); background: transparent; color: var(--bf-teal);
+}
+.bf-body :is(#cf-add-product, #cf-add-domain, [data-cf-option-value-add]):hover { background: color-mix(in srgb, var(--bf-teal) 8%, transparent); color: var(--bf-teal); }
+
+/* Bulk price preview: the rows that get a new price tinted, the new price in teal. */
+.bf-body .table > tbody > tr.cf-row-change > * { --tblr-table-bg-state: color-mix(in srgb, var(--bf-teal) 6%, transparent); }
+.cf-row-change strong { color: var(--bf-teal); }
+
+/* Product fragments: prices in other currencies as a tinted fold with a turning chevron, the language bar
+   as pills, each option value as a tinted box with a teal edge. */
+.cf-fold { border: 1px solid var(--bf-line); border-radius: 14px; background: linear-gradient(180deg, color-mix(in srgb, var(--bf-teal) 6%, transparent), transparent 96px); }
+.cf-fold > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; }
+.cf-fold > summary::-webkit-details-marker { display: none; }
+.cf-fold > summary::before {
+  content: ""; flex: none; width: 8px; height: 8px; border-inline-end: 2px solid var(--bf-teal); border-block-end: 2px solid var(--bf-teal);
+  rotate: -45deg; transition: rotate .25s var(--bf-ease);
+}
+.cf-fold[open] > summary::before { rotate: 45deg; }
+[dir="rtl"] .cf-fold > summary::before { rotate: 45deg; }
+[dir="rtl"] .cf-fold[open] > summary::before { rotate: -45deg; }
+.bf-body [data-cf-text-langs] :is(.btn, .form-select) { border-radius: 999px; }
+.bf-body .card[data-cf-option-value] { --tblr-card-bg: var(--bf-surface-2); border-inline-start: 3px solid color-mix(in srgb, var(--bf-teal) 55%, transparent); box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-body .alert.cf-notice { animation: none; }
+  .cf-order-item, .cf-fold > summary::before { transition: none; }
+}

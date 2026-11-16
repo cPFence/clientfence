@@ -7,11 +7,11 @@
 {% set active_menu = 'system' %}
 
 {% block content %}
+    {# ClientFence core patch: the filler subtitle under the heading removed (CF-135 redesign). #}
     <div class="card">
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Update Tax Rule'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Adjust the tax title, rate, and location targeting for this billing rule.'|trans }}</p>
             </div>
         </div>
         <div class="card-body">

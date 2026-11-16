@@ -42,7 +42,8 @@
                         {% set current = order_options.choice[option.id] ?? null %}
                         <div class="col-12 col-lg-6">
                             <label class="form-label" for="{{ fid }}">
-                                {{ option.title }} <span class="text-secondary small">({{ kinds[option.type]|default(option.type) }})</span>
+                                {# ClientFence core patch: the option kind as a chip (CF-135 redesign). #}
+                                {{ option.title }} <span class="bf-chip ms-1">{{ kinds[option.type]|default(option.type) }}</span>
                                 {% if option.hidden %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden'|trans }}</span>{% endif %}
                             </label>
                             {% if option.type in ['select', 'radio'] %}

@@ -23,13 +23,23 @@
 
 {% block content %}
 <div class="card">
-    <div class="card-header">
-        <div>
-            <h3 class="card-title">{{ gateway.title }}</h3>
-            <p class="card-subtitle">{{ 'Configure gateway behavior, accepted currencies, and provider credentials for this payment adapter.'|trans }}</p>
+    {# ClientFence core patch: the gateway reads first: its tile, title and code, then chips for enabled, test mode and the payment modes (CF-135 redesign). #}
+    <div class="cf-inv cf-pay">
+        <div class="cf-inv-client cf-client-hero">
+            <span class="cf-avatar cf-avatar-lg cf-tile" aria-hidden="true"><svg class="icon"><use href="#credit-card" /></svg></span>
+            <div class="cf-inv-who">
+                <h3 class="cf-client-name mb-0">{{ gateway.title }}</h3>
+                <span class="text-secondary small">{{ gateway.code }}</span>
+                <div class="cf-inv-chips mt-2">
+                    {% if gateway.enabled %}<span class="badge bg-green-lt">{{ 'Enabled'|trans }}</span>{% else %}<span class="badge bg-secondary-lt">{{ 'Disabled'|trans }}</span>{% endif %}
+                    {% if gateway.test_mode %}<span class="badge bg-yellow-lt">{{ 'Test Mode'|trans }}</span>{% endif %}
+                    {% if gateway.allow_single %}<span class="badge bg-blue-lt">{{ 'Allow One-Time Payments'|trans }}</span>{% endif %}
+                    {% if gateway.allow_recurrent %}<span class="badge bg-blue-lt">{{ 'Subscriptions'|trans }}</span>{% endif %}
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card-body d-flex flex-column gap-3">
+    <div class="card-body d-flex flex-column gap-3 border-top">
         {% if gateway.description %}
             <div class="alert alert-info mb-0">
                 {{ gateway.description|raw }}

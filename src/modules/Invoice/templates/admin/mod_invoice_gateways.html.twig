@@ -22,7 +22,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Payment Gateways'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage installed payment gateways, add new adapters, and install supported gateways from the extension directory.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -105,9 +104,13 @@
                                 {% for gateway in gateway_list %}
                                 <tr>
                                     <td>
-                                        <a href='{{ "invoice/gateway/#{gateway.id}"|url }}'>{{ gateway.title }}</a>
+                                        {# ClientFence core patch: a card tile beside the title, the code as a chip (CF-135 redesign). #}
+                                        <a class="cf-tile-link" href='{{ "invoice/gateway/#{gateway.id}"|url }}'>
+                                            <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#credit-card" /></svg></span>
+                                            <span>{{ gateway.title }}</span>
+                                        </a>
                                     </td>
-                                    <td>{{ gateway.code }}</td>
+                                    <td><span class="bf-chip">{{ gateway.code }}</span></td>
                                     <td>{{ mf.boolean_badge(gateway.enabled, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                     <td>{{ mf.boolean_badge(gateway.allow_single, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                     <td>

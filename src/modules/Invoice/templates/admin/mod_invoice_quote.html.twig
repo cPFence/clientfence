@@ -19,19 +19,8 @@
 <div class="card mb-3">
     <div class="card-header">
         <div>
-            <h3 class="card-title">
-                {{ title }}
-                {% if quote %}<span class="badge {{ badges[quote.stage]|default('bg-secondary-lt') }} ms-2">{{ quote.stage_title }}</span>{% endif %}
-            </h3>
-            {% if quote %}
-                <p class="card-subtitle">
-                    {{ 'Created %date%'|trans({ '%date%': quote.created_at|date('Y-m-d') }) }}
-                    {% if quote.sent_at %} · {{ 'Sent %date%'|trans({ '%date%': quote.sent_at|date('Y-m-d') }) }}{% endif %}
-                    {% if quote.accepted_at %} · {{ 'Accepted %date%'|trans({ '%date%': quote.accepted_at|date('Y-m-d') }) }}{% endif %}
-                    {% if quote.declined_at %} · {{ 'Declined %date%'|trans({ '%date%': quote.declined_at|date('Y-m-d') }) }}{% endif %}
-                    {% if quote.invoice_id %} · <a href="{{ ('invoice/manage/' ~ quote.invoice_id)|url }}">{{ 'Invoice #%id%'|trans({ '%id%': quote.invoice_id }) }}</a>{% endif %}
-                </p>
-            {% else %}
+            <h3 class="card-title">{{ title }}</h3>
+            {% if not quote %}
                 <p class="card-subtitle">{{ 'Save the quote, then send it: the client gets the PDF and a link to accept it.'|trans }}</p>
             {% endif %}
         </div>
@@ -50,8 +39,43 @@
             {% endif %}
         </div>
     </div>
+    {% if quote %}
+        {# ClientFence core patch: a saved quote reads first: the subject and total in its stage colour, the stage chips, the dates, then the recipient (CF-135 redesign). #}
+        {% set tone = quote.stage == 'accepted' ? 'ok' : (quote.stage == 'lost' or (quote.open and quote.expired) ? 'bad' : (quote.stage == 'dead' ? 'muted' : 'warn')) %}
+        <div class="cf-inv cf-pay">
+            <div class="cf-inv-hero">
+                <div>
+                    <div class="cf-client-name" dir="auto">{{ quote.subject }}</div>
+                    <div class="cf-inv-figure cf-tone-{{ tone }}">{{ quote.total|format_currency(quote.currency) }}</div>
+                    <div class="text-secondary">
+                        {{ 'Created %date%'|trans({ '%date%': quote.created_at|date('Y-m-d') }) }}
+                        {% if quote.sent_at %} · {{ 'Sent %date%'|trans({ '%date%': quote.sent_at|date('Y-m-d') }) }}{% endif %}
+                        {% if quote.accepted_at %} · {{ 'Accepted %date%'|trans({ '%date%': quote.accepted_at|date('Y-m-d') }) }}{% endif %}
+                        {% if quote.declined_at %} · {{ 'Declined %date%'|trans({ '%date%': quote.declined_at|date('Y-m-d') }) }}{% endif %}
+                        {% if quote.invoice_id %} · <a href="{{ ('invoice/manage/' ~ quote.invoice_id)|url }}">{{ 'Invoice #%id%'|trans({ '%id%': quote.invoice_id }) }}</a>{% endif %}
+                    </div>
+                </div>
+                <div class="cf-inv-chips">
+                    <span class="badge {{ badges[quote.stage]|default('bg-secondary-lt') }}">{{ quote.stage_title }}</span>
+                    {% if quote.valid_until %}<span class="badge {{ quote.open and quote.expired ? 'bg-red-lt' : 'bg-secondary-lt' }}">{{ 'Valid until'|trans }} · {{ quote.valid_until }}</span>{% endif %}
+                </div>
+            </div>
+            <div class="cf-inv-client">
+                <span class="cf-avatar" aria-hidden="true">{{ (quote.recipient.first_name|first ~ quote.recipient.last_name|first)|upper }}</span>
+                <div class="cf-inv-who">
+                    {% if quote.client_id %}
+                        <a href="{{ ('client/manage/' ~ quote.client_id)|url }}">{{ quote.recipient.name }}</a>
+                    {% else %}
+                        <span class="fw-semibold">{{ quote.recipient.name }} <span class="badge bg-purple-lt">{{ 'Prospect'|trans }}</span></span>
+                    {% endif %}
+                    {% if quote.recipient.company %}<span class="text-secondary">{{ quote.recipient.company }}</span>{% endif %}
+                    <span class="text-secondary small">{{ quote.recipient.email }}</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     {% if quote and quote.open %}
-        <div class="card-body py-2 border-bottom">
+        <div class="card-body py-2 border-top">
             <span class="text-secondary">{{ 'Link for the client (opens without signing in):'|trans }}</span>
             <code class="user-select-all">{{ ('quote/' ~ quote.hash)|url(area: 'client') }}</code>
         </div>

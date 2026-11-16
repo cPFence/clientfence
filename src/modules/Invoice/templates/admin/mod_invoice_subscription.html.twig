@@ -24,8 +24,7 @@
 
 {% block content %}
     {% embed 'partial_admin_detail_tabs.html.twig' with {
-        title: 'Subscription'|trans ~ ' ' ~ subscription.sid,
-        subtitle: 'Review recurring billing details and update the stored gateway subscription record.'|trans
+        title: 'Subscription'|trans ~ ' ' ~ subscription.sid
     } %}
         {% block detail_tabs %}
                         <li class="nav-item" role="presentation">
@@ -39,53 +38,39 @@
         {% block detail_tab_content %}
             {% import 'macro_functions.html.twig' as mf %}
             <div class="tab-pane fade show active" id="tab-index" role="tabpanel">
-                <div class="card-body overflow-auto">
+                <div class="card-body">
                     {% embed 'partial_admin_summary_card.html.twig' with {
                         title: 'Subscription Details'|trans,
-                        subtitle: 'Review the stored recurring billing record, gateway reference, and current subscription state.'|trans,
                         centered_actions: true
                     } %}
                         {% import 'macro_functions.html.twig' as mf %}
                         {% block summary_content %}
-                            {# ClientFence: the details table scrolls on phones instead of running off the card. #}
-                            <div class="table-responsive">
-                            <table class="table card-table table-vcenter table-striped text-nowrap">
-                                <tbody>
-                                    <tr>
-                                        <td class="text-end">{{ 'Client'|trans }}:</td>
-                                        <td>
-                                            <a href='{{ "client/manage/#{subscription.client.id}"|url }}'>{{ subscription.client.first_name }} {{ subscription.client.last_name }}</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Amount'|trans }}:</td>
-                                        <td>{{ subscription.amount|format_currency(subscription.currency ?? default_currency) }} {{ subscription.period|period_title }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Payment Gateway'|trans }}:</td>
-                                        <td>{{ subscription.gateway.title }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end d-none d-sm-table-cell">{{ 'Subscription ID on Payment Gateway'|trans }}:</td>
-                                        <td class="text-end d-sm-none">{{ 'Subscription ID on PG'|trans }}:</td>
-                                        <td>{{ subscription.sid|default('-') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Status'|trans }}:</td>
-                                        <td>{{ mf.status_badge(subscription.status, 'subscription') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">{{ 'Created At'|trans }}:</td>
-                                        <td>{{ subscription.created_at|format_date }}</td>
-                                    </tr>
+                            {# ClientFence core patch: the summary reads first: the amount per period in its status colour, the status chip, the client, then the facts (CF-135 redesign). #}
+                            {% set tone = subscription.status == 'active' ? 'ok' : (subscription.status == 'pending_cancellation' ? 'warn' : 'muted') %}
+                            <div class="cf-inv cf-pay">
+                                <div class="cf-inv-hero">
+                                    <div>
+                                        <div class="cf-inv-figure cf-tone-{{ tone }}">{{ subscription.amount|format_currency(subscription.currency ?? default_currency) }}</div>
+                                        <div class="text-secondary">{{ subscription.period|period_title }}</div>
+                                    </div>
+                                    <div class="cf-inv-chips">
+                                        {{ mf.status_badge(subscription.status, 'subscription') }}
+                                    </div>
+                                </div>
+                                <div class="cf-inv-client">
+                                    <span class="cf-avatar" aria-hidden="true">{{ (subscription.client.first_name|first ~ subscription.client.last_name|first)|upper }}</span>
+                                    <div class="cf-inv-who">
+                                        <a href='{{ "client/manage/#{subscription.client.id}"|url }}'>{{ subscription.client.first_name }} {{ subscription.client.last_name }}</a>
+                                    </div>
+                                </div>
+                                <dl class="cf-facts">
+                                    <div><dt>{{ 'Payment Gateway'|trans }}</dt><dd>{{ subscription.gateway.title }}</dd></div>
+                                    <div><dt>{{ 'Subscription ID on Payment Gateway'|trans }}</dt><dd>{{ subscription.sid|default('-') }}</dd></div>
+                                    <div><dt>{{ 'Created At'|trans }}</dt><dd>{{ subscription.created_at|format_date }}</dd></div>
                                     {% if subscription.created_at != subscription.updated_at %}
-                                    <tr>
-                                        <td class="text-end">{{ 'Updated At'|trans }}:</td>
-                                        <td>{{ subscription.updated_at|format_date }}</td>
-                                    </tr>
+                                    <div><dt>{{ 'Updated At'|trans }}</dt><dd>{{ subscription.updated_at|format_date }}</dd></div>
                                     {% endif %}
-                                </tbody>
-                            </table>
+                                </dl>
                             </div>
                         {% endblock %}
 

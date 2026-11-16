@@ -149,6 +149,7 @@
             </div>
         {% endif %}
         <div class="table-responsive">
+            {# ClientFence core patch: rows that change tinted, the status as a chip, the empty preview gets the shared empty state (CF-135 redesign). #}
             <table class="table card-table table-vcenter">
                 <thead>
                     <tr>
@@ -163,11 +164,11 @@
                 </thead>
                 <tbody>
                 {% for row in preview.rows %}
-                    <tr{% if row.state != 'change' %} class="text-secondary"{% endif %}>
-                        <td><a href="{{ 'order/manage'|url }}/{{ row.id }}" dir="auto">#{{ row.id }} {{ row.title }}</a>{% if row.quantity > 1 %} <span class="text-secondary">× {{ row.quantity }}</span>{% endif %}</td>
+                    <tr class="{{ row.state == 'change' ? 'cf-row-change' : 'text-secondary' }}">
+                        <td><a href="{{ 'order/manage'|url }}/{{ row.id }}" dir="auto"><bdi>#{{ row.id }}</bdi> {{ row.title }}</a>{% if row.quantity > 1 %} <span class="text-secondary">× {{ row.quantity }}</span>{% endif %}</td>
                         <td><a href="{{ 'client/manage'|url }}/{{ row.client_id }}" dir="auto">{{ row.client }}</a></td>
                         <td class="text-nowrap">{{ row.period|period_title }}</td>
-                        <td class="text-nowrap">{{ status_names[row.status]|default(row.status) }}</td>
+                        <td class="text-nowrap"><span class="bf-chip">{{ status_names[row.status]|default(row.status) }}</span></td>
                         <td class="text-end text-nowrap">{{ row.old_price|format_currency(row.currency) }}</td>
                         <td class="text-end text-nowrap">{% if row.new_price is not null %}<strong>{{ row.new_price|format_currency(row.currency) }}</strong>{% else %}-{% endif %}</td>
                         <td class="small">
@@ -181,7 +182,7 @@
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="7" class="text-secondary">{{ 'No service matches.'|trans }}</td></tr>
+                    <tr><td colspan="7" class="text-muted">{{ 'No service matches.'|trans }}</td></tr>
                 {% endfor %}
                 </tbody>
             </table>

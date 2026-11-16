@@ -3,10 +3,9 @@
    service's seats), `order`, `api` (servicelicense or serviceapikey). Staff edit the list in the form below it. #}
 {% set p = seats.pending %}
 <div class="card-body border-top">
-    <div class="mb-3">
-        <h3 class="card-title mb-1">{{ 'Client IP Addresses'|trans }}</h3>
-        <p class="text-secondary mb-0">{% if seats.ip_seats %}{{ ':used of :seats servers used'|trans({':used': seats.ips|length, ':seats': seats.ip_seats}) }}{% else %}{{ 'This product has no server limit.'|trans }}{% endif %}</p>
-    </div>
+    {# ClientFence core patch: the section heading with the navy-to-teal mark and a meter for the servers used (CF-135 redesign). #}
+    <h4 class="card-title mb-1">{{ 'Client IP Addresses'|trans }}</h4>
+    <p class="text-secondary mb-3">{% if seats.ip_seats %}{{ ':used of :seats servers used'|trans({':used': seats.ips|length, ':seats': seats.ip_seats}) }}<progress class="cf-meter d-block" value="{{ min(seats.ips|length, seats.ip_seats) }}" max="{{ seats.ip_seats }}" aria-hidden="true"></progress>{% else %}{{ 'This product has no server limit.'|trans }}{% endif %}</p>
 
     {% if p %}
         {% set ip = '<bdi dir="ltr">' ~ p.ip|e ~ '</bdi>' %}

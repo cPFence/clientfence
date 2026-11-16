@@ -40,6 +40,7 @@
 
     {% set failures = admin.order_failed_action_get_list({ 'status': status, 'page': request.page|default(1), 'per_page': request.per_page|default(25) }) %}
     <div class="table-responsive">
+        {# ClientFence core patch: the attempts as a red chip, order numbers isolated for right-to-left languages (CF-135 redesign). #}
         <table class="table card-table table-vcenter">
             <thead>
                 <tr>
@@ -57,9 +58,9 @@
                 <tr>
                     <td class="text-nowrap">
                         {% if failure.order_title is not null %}
-                            <a href="{{ 'order/manage'|url }}/{{ failure.order_id }}">#{{ failure.order_id }} {{ failure.order_title }}</a>
+                            <a href="{{ 'order/manage'|url }}/{{ failure.order_id }}"><bdi>#{{ failure.order_id }}</bdi> {{ failure.order_title }}</a>
                         {% else %}
-                            #{{ failure.order_id }} <span class="text-muted">({{ 'order deleted'|trans }})</span>
+                            <bdi>#{{ failure.order_id }}</bdi> <span class="text-muted">({{ 'order deleted'|trans }})</span>
                         {% endif %}
                     </td>
                     <td class="text-nowrap">
@@ -71,7 +72,7 @@
                     </td>
                     <td><span class="badge bg-danger-lt">{{ action_names[failure.action]|default(failure.action) }}</span></td>
                     <td class="text-break">{{ failure.message }}</td>
-                    <td>{{ failure.attempts }}</td>
+                    <td><span class="bf-chip bf-tone-bad">{{ failure.attempts }}</span></td>
                     <td class="text-nowrap">{{ failure.last_failed_at|format_datetime }}</td>
                     <td class="text-nowrap">
                         {% if failure.status == 'open' and can_manage %}
