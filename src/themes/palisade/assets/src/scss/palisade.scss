@@ -4886,4 +4886,114 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .auth-card :is([data-clientfence-google-sign-in], [data-clientfence-google-sign-up]) { background-color: var(--pal-glass); }
 @media (prefers-reduced-motion: reduce) {
   .cf-acct-list .list-group-item, .cf-id-drop { transition: none; }
+
+// ---- CF-135 part 4: client public pages
+// Public pages (knowledge base, news, contact, network status, custom and legal pages): a short hero in the
+// store's glass and glows (the knowledge base home uses the store's search hero), then glass cards.
+.cf-pub-head {
+  max-width: none; padding: 1.75rem 1.5rem;
+  border: 1px solid rgba(var(--pal-accent-rgb), .22); border-radius: 1.25rem;
+  background:
+    radial-gradient(420px 220px at 100% 0, rgba(var(--pal-accent-rgb), .22), transparent 70%),
+    radial-gradient(380px 220px at 0 100%, rgba(var(--pal-brand-rgb), .16), transparent 70%),
+    var(--pal-glass);
+  box-shadow: 0 24px 50px -34px rgba(var(--pal-brand-rgb), .6);
+  animation: pal-rise .55s var(--pal-ease) backwards;
+  h1 { font-size: clamp(1.5rem, 5vw, 2rem); overflow-wrap: anywhere; }
+  p:not(.cf-pub-meta) { font-size: 1rem; }
+  @include media-breakpoint-down(md) { padding: 1.25rem 1.125rem; }
+}
+.cf-pub-title { margin: 0 0 1rem; font-size: 1.0625rem; font-weight: 600; }
+.cf-pub-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .375rem 1rem; color: var(--bs-secondary-color); font-size: .875rem;
+  span { display: inline-flex; align-items: center; gap: .375rem; }
+}
+:is(.kb-index, .news-index) .empty-state > .icon { display: block; width: 2.25rem; height: 2.25rem; margin: 0 auto .75rem; color: var(--pal-accent); }
+
+// Knowledge base: categories as glass tiles that lift on hover, article links as rows tinted on hover.
+.cf-kb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 1rem; }
+.cf-kb-empty { grid-column: 1 / -1; }
+.cf-kb-cat {
+  display: flex; flex-direction: column; gap: .75rem; padding: 1.25rem;
+  transition: translate .3s var(--pal-ease), border-color .3s, box-shadow .3s;
+  &:hover { translate: 0 -2px; border-color: rgba(var(--pal-accent-rgb), .45); box-shadow: 0 16px 34px -20px rgba(var(--pal-brand-rgb), .55); }
+}
+.cf-kb-cat-head {
+  display: flex; align-items: center; gap: .75rem; min-width: 0;
+  h2 { margin: 0; font-size: 1.0625rem; font-weight: 600; overflow-wrap: anywhere; }
+  h2 a { color: var(--bs-emphasis-color); text-decoration: none; }
+  h2 a:hover { color: var(--bs-link-hover-color); }
+}
+.cf-kb-list {
+  display: flex; flex-direction: column;
+  a {
+    display: flex; align-items: center; gap: .625rem; min-height: 44px; padding: .5rem .625rem; margin-inline: -.625rem;
+    border-radius: 10px; color: var(--bs-body-color); text-decoration: none; transition: background-color .25s, color .25s;
+    &:hover { background-image: linear-gradient(90deg, rgba(var(--pal-accent-rgb), .1), transparent 85%); color: var(--bs-emphasis-color); }
+  }
+  .icon { flex: none; color: var(--pal-accent); }
+  span { min-width: 0; overflow-wrap: anywhere; }
+}
+.cf-kb-list-page {
+  padding: .5rem 1rem;
+  a { margin-inline: 0; border-bottom: 1px solid var(--bf-line); border-radius: 0; }
+  a:last-child { border-bottom: 0; }
+}
+.cf-kb-aside { @include media-breakpoint-up(lg) { position: sticky; top: 1rem; } }
+
+// News: the post title links to the post.
+.cf-news-item h2 a { color: var(--bs-emphasis-color); text-decoration: none; overflow-wrap: anywhere; }
+.cf-news-item h2 a:hover { color: var(--bs-link-hover-color); }
+
+// Contact: the company's details as a quiet list beside the form.
+.cf-contact-list {
+  display: flex; flex-direction: column; gap: .5rem; margin: 0; padding: 0; list-style: none; color: var(--bf-ink-2);
+  li { display: flex; align-items: center; gap: .5rem; min-width: 0; overflow-wrap: anywhere; }
+  .icon { flex: none; color: var(--pal-accent); }
+  &:empty { display: none; }
+}
+
+// Network status: the issues on glass with a tint in their status colour.
+.network-status {
+  .ns-summary { border: 1px solid color-mix(in srgb, var(--ns) 30%, transparent); box-shadow: 0 14px 32px -20px var(--ns); animation: pal-rise .55s var(--pal-ease) backwards; }
+  .ns-issue { background: linear-gradient(110deg, var(--ns-bg), var(--pal-glass) 55%); animation: pal-rise .45s var(--pal-ease) backwards; }
+}
+
+// Maintenance (sign-in shell) and error page.
+.cf-pub-icon { width: 52px; height: 52px; margin-bottom: 1rem; animation: cf-pub-pulse 2.4s ease-in-out infinite; .icon { width: 1.5rem; height: 1.5rem; } }
+@keyframes cf-pub-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--pal-accent-rgb), .35); } 50% { box-shadow: 0 0 0 10px rgba(var(--pal-accent-rgb), 0); } }
+.cf-error {
+  align-items: center; max-width: 640px; margin: 2rem auto; padding: 3rem 1.5rem;
+  background:
+    radial-gradient(420px 220px at 50% 0, rgba(var(--pal-accent-rgb), .2), transparent 70%),
+    var(--pal-glass);
+  box-shadow: 0 28px 60px -34px rgba(var(--pal-brand-rgb), .7);
+  @include media-breakpoint-down(sm) { margin-block: 1rem; padding: 2rem 1rem; }
+}
+
+// Hosting order form (inside the configure step): the domain choices as one segmented row, the chosen one in
+// the brand gradient as the checkout's billing cycles, its fields on a tinted panel.
+.cf-dc-choice {
+  .bf-seg-item { flex: 1 1 0; min-height: 42px; white-space: nowrap; text-decoration: none; }
+  .nav-link.active { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); color: #fff; box-shadow: 0 6px 16px -8px var(--pal-brand); }
+  @include media-breakpoint-down(md) { .bf-seg-item { flex-basis: calc(50% - 3px); } }
+}
+.cf-dc-panel { padding: 1rem; border: 1px solid var(--bf-line); border-radius: 14px; background: linear-gradient(160deg, rgba(var(--pal-accent-rgb), .07), transparent 60%); }
+.cf-dc-input { max-width: 360px; }
+.cf-dc-input-wide { max-width: 440px; }
+.cf-dc-input > .cf-dc-tld { flex: 0 0 auto; width: auto; min-width: 5.5rem; max-width: 7rem; }
+.cf-dc-code { max-width: 260px; }
+
+// Cookie notice: frosted glass with a brand glow, rising in when it opens.
+.cf-cookie {
+  background: var(--pal-glass); -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 -10px 30px -16px rgba(var(--pal-brand-rgb), .45);
+  animation: pal-rise .45s var(--pal-ease) backwards;
+}
+.cf-cookie-card { @include media-breakpoint-up(sm) { border-color: rgba(var(--pal-accent-rgb), .3); box-shadow: 0 24px 50px -24px rgba(var(--pal-brand-rgb), .6); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-pub-head, .cf-pub-icon, .cf-cookie, .network-status .ns-summary, .network-status .ns-issue { animation: none; }
+  .cf-kb-cat, .cf-kb-list a { transition: none; }
+  .cf-kb-cat:hover { translate: none; }
 }

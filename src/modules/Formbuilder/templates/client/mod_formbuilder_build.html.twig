@@ -1,7 +1,8 @@
 {# ClientFence core patch (0.8.9 port): standalone forms have a route id rather than a product. #}
 {% if guest.extension_is_on({ "mod": "formbuilder" }) %}
     {% set form = guest.formbuilder_get({ "id": product.form_id ?? id }) %}
-    <div class="card mb-3 mt-3">
+    {# ClientFence core patch: the form on the rounded card of the redesign (CF-135 redesign). #}
+    <div class="card bf-card mb-3 mt-3">
     {% if form.style.show_title != "0" %}
         <div class="card-header">
             <legend>{{ form.name }}</legend>

@@ -173,4 +173,33 @@
             grid-template-columns: 1fr;
         }
     }
+
+    {# ClientFence core patch: the contact and sign-in embeds get a soft glow and a gradient button (CF-135 redesign). #}
+    .embed-shell--contact,
+    .embed-shell--login {
+        background: radial-gradient(260px 150px at 100% 0, var(--embed-focus), transparent 70%), var(--embed-bg);
+        box-shadow: 0 18px 40px -28px var(--embed-primary);
+    }
+
+    :is(.embed-shell--contact, .embed-shell--login) .embed-button {
+        border-color: transparent;
+        background-image: linear-gradient(135deg, var(--embed-primary), var(--embed-primary-hover));
+        box-shadow: 0 6px 16px -8px var(--embed-primary);
+        transition: translate 0.2s ease, box-shadow 0.25s ease;
+    }
+
+    :is(.embed-shell--contact, .embed-shell--login) .embed-button:hover {
+        translate: 0 -1px;
+        box-shadow: 0 10px 22px -8px var(--embed-primary);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :is(.embed-shell--contact, .embed-shell--login) .embed-button {
+            transition: none;
+        }
+
+        :is(.embed-shell--contact, .embed-shell--login) .embed-button:hover {
+            translate: none;
+        }
+    }
 </style>

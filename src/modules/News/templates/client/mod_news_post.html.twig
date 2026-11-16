@@ -29,12 +29,13 @@
 {% block content %}
 {# ClientFence core patch: the post title as the page title, then the post in a card (the title sat small in a card header). #}
 <a class="bf-linkbtn" href="{{ 'news'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back to the List'|trans }}</a>
-<div class="page-heading mt-2">
+{# ClientFence core patch: the title and date in a short hero, the post in a glass card (CF-135 redesign). #}
+<header class="bf-store-head cf-pub-head mt-2 mb-4">
     <h1 dir="auto">{{ post.title }}</h1>
     <p>{{ (post.publish_at ?? post.created_at)|format_datetime }}{% if post.author.name is defined %} {{ 'by'|trans }} {{ post.author.name }}{% endif %}</p>
-</div>
-<article class="card">
-    <div class="card-body news-post-body" dir="auto">
+</header>
+<article class="card bf-card">
+    <div class="card-body news-post-body p-4 p-lg-5" dir="auto">
         {% if post.image %}<img class="img-fluid rounded mb-3" src="{{ post.image }}" alt="{{ post.title }}">{% endif %}
         {{ (post.content ?? '')|markdown_to_html }}
     </div>

@@ -25,74 +25,61 @@
         {% set kbarticles = null %}
     {% endif %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="bf-page-head mb-4">
-                <div>
-                    <h1 class="bf-page-title">{{ 'Knowledge Base'|trans }}</h1>
-                    <span class="bf-hint">{{ 'Explore our knowledge base categories and their associated articles below.'|trans }}</span>
-                </div>
-                <form method="get" action="" class="form-inline flex-grow-1 flex-md-grow-0">
-                    <div class="input-group">
-                        <input class="form-control" name="q" type="text" value="{{ request.q }}" placeholder="{{ 'What are you looking for?'|trans }}">
-                        <button class="btn btn-outline-secondary" type="submit">
-                            <svg class="icon"><use href="#search" /></svg>
-                        </button>
-                    </div>
-                </form>
+    {# ClientFence core patch: the store's search hero, then the matching articles and the categories as glass cards (CF-135 redesign). #}
+    <header class="bf-store-head has-search mb-4">
+        <h1>{{ 'Knowledge Base'|trans }}</h1>
+        <p>{{ 'Explore our knowledge base categories and their associated articles below.'|trans }}</p>
+        <form class="bf-domain-search" method="get" action="" role="search">
+            <input class="form-control" name="q" type="text" value="{{ request.q }}" placeholder="{{ 'What are you looking for?'|trans }}" aria-label="{{ 'What are you looking for?'|trans }}">
+            <button class="btn btn-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#search"/></svg>{{ 'Search'|trans }}</button>
+        </form>
+    </header>
+
+    {% if kbarticles and kbarticles.list %}
+        <section class="card bf-card bf-section mb-4" aria-labelledby="cf-kb-h-articles">
+            <h2 id="cf-kb-h-articles">{{ 'Matching articles'|trans }}</h2>
+            <div class="cf-kb-list">
+                {% for article in kbarticles.list %}
+                    <a href='{{ "support/kb/#{article.category.slug}/#{article.slug}"|url }}'><svg class="icon" aria-hidden="true"><use href="#book"/></svg><span>{{ article.title }}</span></a>
+                {% endfor %}
             </div>
-            <div class="card mb-4">
-                <div class="card-body">
-                {% if kbarticles and kbarticles.list %}
-                    <h5 class="mb-3">{{ 'Matching articles'|trans }}</h5>
-                    <div class="list-group mb-4">
-                        {% for article in kbarticles.list %}
-                            <a class="list-group-item list-group-item-action" href='{{ "support/kb/#{article.category.slug}/#{article.slug}"|url }}'>{{ article.title }}</a>
-                        {% endfor %}
-                    </div>
-                    <h5 class="mb-3">{{ 'Matching categories'|trans }}</h5>
-                {% endif %}
-                {% for row in kbcategories.list|batch(3) %}
-                    <div class="row g-3 mb-3">
-                        {% for i, category in row %}
-                            <div class="col-md-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            <a href='{{ "support/kb/#{category.slug}"|url }}' class="link-underline link-underline-opacity-0">{{ category.title }}</a>
-                                        </h5>
-                                        <p class="card-subtitle mb-3 text-muted">{{ category.description }}</p>
-                                        {% if category.articles %}
-                                            <div class="list-group list-group-flush border-top">
-                                                {% for article in category.articles|slice(0, 3) %}
-                                                    <a class="list-group-item list-group-item-action px-0" href='{{ "support/kb/#{article.category.slug}/#{article.slug}"|url }}'>{{ article.title }}</a>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="card-footer bg-transparent border-0 pt-0">
-                                        <a href='{{ "support/kb/#{category.slug}"|url }}' class="btn btn-link px-0">{{ 'View all articles'|trans }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
+        </section>
+        <h2 class="cf-pub-title">{{ 'Matching categories'|trans }}</h2>
+    {% endif %}
+
+    <div class="cf-kb-grid mb-4">
+    {% for category in kbcategories.list %}
+        <article class="card bf-card cf-kb-cat">
+            <div class="cf-kb-cat-head">
+                <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#folder"/></svg></span>
+                <h2><a href='{{ "support/kb/#{category.slug}"|url }}'>{{ category.title }}</a></h2>
+            </div>
+            {% if category.description %}<p class="bf-hint mb-0">{{ category.description }}</p>{% endif %}
+            {% if category.articles %}
+                <div class="cf-kb-list">
+                    {% for article in category.articles|slice(0, 3) %}
+                        <a href='{{ "support/kb/#{article.category.slug}/#{article.slug}"|url }}'><svg class="icon" aria-hidden="true"><use href="#book"/></svg><span>{{ article.title }}</span></a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <a class="bf-linkbtn mt-auto" href='{{ "support/kb/#{category.slug}"|url }}'>{{ 'View all articles'|trans }} <svg class="icon flip-rtl" aria-hidden="true"><use href="#chevron-right"/></svg></a>
+        </article>
+    {% else %}
+        <div class="card bf-card cf-kb-empty">
+            <div class="empty-state">
+                <svg class="icon" aria-hidden="true"><use href="#book"/></svg>
+                {% if request.q %}
+                    <h2 class="h5">{{ 'No results found'|trans }}</h2>
+                    <p class="mb-3">{{ 'No articles or categories matched your search for:'|trans }} <strong>{{ request.q }}</strong></p>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <a class="btn btn-primary" href="{{ 'support/contact-us'|url }}">{{ 'Contact support'|trans }}</a>
+                        <a class="btn btn-outline-secondary" href="{{ 'support/kb'|url }}">{{ 'Browse all articles'|trans }}</a>
                     </div>
                 {% else %}
-                    <div class="empty-state">
-                        {% if request.q %}
-                            <h5>{{ 'No results found'|trans }}</h5>
-                            <p class="mb-3">{{ 'No articles or categories matched your search for:'|trans }} <strong>{{ request.q }}</strong></p>
-                            <div class="d-flex flex-wrap justify-content-center gap-2">
-                                <a class="btn btn-primary" href="{{ 'support/contact-us'|url }}">{{ 'Contact support'|trans }}</a>
-                                <a class="btn btn-outline-secondary" href="{{ 'support/kb'|url }}">{{ 'Browse all articles'|trans }}</a>
-                            </div>
-                        {% else %}
-                            {{ 'No knowledge base categories are available yet.'|trans }}
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                </div>
+                    <p class="mb-0">{{ 'No knowledge base categories are available yet.'|trans }}</p>
+                {% endif %}
             </div>
         </div>
+    {% endfor %}
     </div>
 {% endblock %}
