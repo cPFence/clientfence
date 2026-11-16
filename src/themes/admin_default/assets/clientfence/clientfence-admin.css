@@ -1134,8 +1134,9 @@ a.bf-file-name:hover .icon { color: inherit; }
 .cf-avatar-sm { width: 32px; height: 32px; font-size: 12px; }
 .bf-body .table > tbody > tr > td.text-end { font-variant-numeric: tabular-nums; }
 
-/* An empty list: the list's own text under a soft tray icon. */
-.bf-body .table > tbody > tr:only-child > td[colspan].text-muted:only-child { position: relative; padding-block: 88px 36px; text-align: center; font-weight: 500; }
+/* An empty list: the list's own text under a soft tray icon. The padding beats a py-* utility on the cell (Email
+   Queue, Email Templates), or the icon covers the text and is clipped. */
+.bf-body .table > tbody > tr:only-child > td[colspan].text-muted:only-child { position: relative; padding-block: 88px 36px !important; text-align: center; font-weight: 500; }
 .bf-body .table > tbody > tr:only-child > td[colspan].text-muted:only-child::before {
   content: ""; position: absolute; top: 28px; left: 50%; translate: -50% 0; width: 48px; height: 48px; border-radius: 50%;
   background: linear-gradient(135deg, color-mix(in srgb, var(--bf-teal) 22%, transparent), color-mix(in srgb, var(--bf-brand) 16%, transparent));
