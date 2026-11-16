@@ -26,177 +26,140 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card mb-3">
-                <div class="card-header py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-2">{{ 'Ticket'|trans }} #{{ ticket.id }}</h5>
+    {# ClientFence core patch: a summary card first (subject, status, help desk, urgency and dates, Reply and Close), then the conversation as a thread with the client's and staff messages on their own sides (CF-135 redesign). #}
+    <div class="card cf-svc-hero cf-tk-hero mb-4">
+        <div class="card-body">
+            <div class="cf-svc-head">
+                <span class="clientfence-hosting-monogram is-large" aria-hidden="true"><svg class="icon"><use href="#headset"/></svg></span>
+                <div class="min-w-0 flex-grow-1">
+                    <span class="cf-tk-number">{{ 'Ticket'|trans }} <bdi>#{{ ticket.id }}</bdi></span>
+                    <h1 class="cf-tk-title">{{ ticket.subject }}</h1>
+                    {{ mf.status_badge(ticket.status, 'ticket') }}
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if can_reply %}
+                        <button class="btn btn-primary btn-sm" id="reply-to-btn">{{ 'Reply'|trans }}</button>
+                    {% endif %}
+                    {% if ticket.status != 'closed' %}
+                        <button class="btn btn-secondary btn-sm" type="button" id="ticket-close">{{ 'Close Ticket'|trans }}</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <dl class="bf-facts cf-svc-facts">
+            <div class="bf-fact"><dt>{{ 'Help Desk'|trans }}</dt><dd>{{ ticket.helpdesk.name|trans }}</dd></div>
+            <div class="bf-fact"><dt>{{ 'Urgency'|trans }}</dt><dd>{{ {'high': 'High', 'medium': 'Medium', 'low': 'Low'}[ticket.priority_level|default('medium')]|default('Medium')|trans }}</dd></div>
+            <div class="bf-fact"><dt>{{ 'Time Opened'|trans }}</dt><dd>{{ ticket.created_at|format_date }}</dd></div>
+            {% if ticket.updated_at|default(null) %}
+                <div class="bf-fact"><dt>{{ 'Last updated'|trans }}</dt><dd>{{ ticket.updated_at|format_date }}</dd></div>
+            {% endif %}
+            {% if ticket.rel_type|default('') == 'order' and ticket.rel_id %}
+                <div class="bf-fact"><dt>{{ 'Related To'|trans }}</dt><dd><a href='{{ "order/service/manage/#{ticket.rel_id}"|url }}'>{{ 'Service #'|trans }} {{ ticket.rel_id }}</a></dd></div>
+            {% endif %}
+        </dl>
+    </div>
+
+    <div class="cf-tk-thread">
+        {% for i, message in ticket.messages %}
+            {% set is_staff = message.author.role|default('') == 'admin' %}
+            <div class="card cf-tk-msg {{ is_staff ? 'ticket-message-staff is-staff' : 'is-client' }}">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div class="d-flex flex-wrap align-items-center gap-2 min-w-0">
+                        {{ avatar(message.author.email|default(''), 40, 'img-thumbnail d-none d-md-block', null, 'div') }}
+                        <div class="d-flex flex-column align-items-start">
+                            <span class="fw-semibold">
+                                {{ message.author.name }}
+                            </span>
+                            {% if is_staff %}
+                                <span class="badge text-bg-primary">
+                                        {{ 'Operator'|trans }}
+                                    </span>
+                            {% elseif message.author.clientfence_user|default(false) %}
+                                {# Written by an authorized user (ClientFence). #}
+                                <span class="badge text-bg-info" data-clientfence-ticket-user>
+                                        {{ 'Authorized user'|trans }}
+                                    </span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">
+                                        {{ 'You'|trans }}
+                                    </span>
+                            {% endif %}
                         </div>
-                        <div class="">
-                            <div class="d-flex gap-2">
-                                {% if can_reply %}
-                                    <button class="btn btn-primary btn-sm" id="reply-to-btn">{{ 'Reply'|trans }}</button>
-                                {% endif %}
-                                {% if ticket.status != 'closed' %}
-                                    <button class="btn btn-secondary btn-sm" type="button" id="ticket-close">{{ 'Close Ticket'|trans }}</button>
-                                {% endif %}
-                            </div>
-                        </div>
+                        <span class="text-muted fs-7">{{ 'on :date'|trans({ ':date': message.created_at|format_date }) }}</span>
                     </div>
+                    {% if can_reply %}
+                        <div class="d-flex gap-3 align-items-center">
+                            <span class="text-muted fs-7"><bdi>#{{ message.id }}</bdi></span>
+                            <button class="btn btn-outline-secondary btn-quote-reply"
+                                    message-quote="{{ mf.markdown_quote(message.content) }}"
+                                    data-bs-toggle="tooltip" data-bs-title="{{ 'Quote Reply'|trans }}">
+                                <svg class="icon"><use href="#quote" /></svg>
+                            </button>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="card-body">
-                    <table class="table table-hover table-sm">
-                        <tbody>
-                        <tr>
-                            <td>{{ 'Help Desk'|trans }}</td>
-                            <td>{{ ticket.helpdesk.name|trans }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Status'|trans }}</td>
-                            <td>
-                                {{ mf.status_badge(ticket.status, 'ticket') }}
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Urgency'|trans }}</td>
-                            <td>{{ {'high': 'High', 'medium': 'Medium', 'low': 'Low'}[ticket.priority_level|default('medium')]|default('Medium')|trans }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>{{ 'Time Opened'|trans }}</td>
-                            <td>{{ ticket.created_at|format_date }}</td>
-                        </tr>
-
-                        {% if ticket.rel_type|default('') == 'order' and ticket.rel_id %}
-                            <tr>
-                                <td>{{ 'Related To'|trans }}</td>
-                                <td>
-                                    <a href='{{ "order/service/manage/#{ticket.rel_id}"|url }}'>{{ 'Service #'|trans }} {{ ticket.rel_id }}</a>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="d-flex flex-column gap-3">
-            {% for i, message in ticket.messages %}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card {% if message.author.role|default('') == 'admin' %}ticket-message-staff{% endif %}">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    {{ avatar(message.author.email|default(''), 40, 'img-thumbnail d-none d-md-block', null, 'div') }}
-                                    <div class="d-flex flex-column align-items-start">
-                                        <span class="text-muted">
-                                            {{ message.author.name }}
-                                        </span>
-                                        {% if message.author.role|default('') == 'admin' %}
-                                            <span class="badge text-bg-primary">
-                                                    {{ 'Operator'|trans }}
-                                                </span>
-                                        {% elseif message.author.clientfence_user|default(false) %}
-                                            {# Written by an authorized user (ClientFence). #}
-                                            <span class="badge text-bg-info" data-clientfence-ticket-user>
-                                                    {{ 'Authorized user'|trans }}
-                                                </span>
-                                        {% else %}
-                                            <span class="badge text-bg-secondary">
-                                                    {{ 'You'|trans }}
-                                                </span>
-                                        {% endif %}
-                                    </div>
-                                    <span class="text-muted fs-7">{{ 'on :date'|trans({ ':date': message.created_at|format_date }) }}</span>
-                                </div>
-                                {% if can_reply %}
-                                    <div class="d-flex gap-3 align-items-center">
-                                        <span class="text-muted fs-7">#{{ message.id }}</span>
-                                        <button class="btn btn-outline-secondary btn-quote-reply"
-                                                message-quote="{{ mf.markdown_quote(message.content) }}"
-                                                data-bs-toggle="tooltip" data-bs-title="{{ 'Quote Reply'|trans }}">
-                                            <svg class="icon"><use href="#quote" /></svg>
-                                        </button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <article class="markdown-body bg-transparent text-reset" id="message-{{ message.id }}">
-                                            {{ (message.content ?? '')|markdown_to_html }}
-                                        </article>
-                                        {% include 'partials/ticket_files.html.twig' %}
-                                        {# Rate a staff reply, 1 to 5 stars, once, as WHMCS (Support/TicketFeedback.php). #}
-                                        {% if message.author.role|default('') == 'admin' and ticket.ratings_on|default(false) %}
-                                            {% set stars = ticket.message_ratings[message.id]|default(0) %}
-                                            <div class="d-flex flex-wrap align-items-center gap-1 mt-3 pt-2 border-top" data-reply-rating="{{ message.id }}">
-                                                {% if stars %}
-                                                    <span class="fs-5 lh-1" role="img" aria-label="{{ ':stars of 5 stars'|trans({ ':stars': stars }) }}">{% for n in 1..5 %}<span class="{{ n <= stars ? 'text-warning' : 'text-body-tertiary' }}">★</span>{% endfor %}</span>
-                                                    <span class="text-muted small ms-1">{{ 'You rated this reply.'|trans }}</span>
-                                                {% else %}
-                                                    <span class="text-muted small me-1">{{ 'Rate this reply:'|trans }}</span>
-                                                    {% for n in 1..5 %}
-                                                        <button type="button" class="btn btn-link p-0 fs-5 lh-1 text-body-tertiary text-decoration-none" data-rate="{{ n }}" aria-label="{{ ':stars of 5 stars'|trans({ ':stars': n }) }}">★</button>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
+                    <article class="markdown-body bg-transparent text-reset" id="message-{{ message.id }}">
+                        {{ (message.content ?? '')|markdown_to_html }}
+                    </article>
+                    {% include 'partials/ticket_files.html.twig' %}
+                    {# Rate a staff reply, 1 to 5 stars, once, as WHMCS (Support/TicketFeedback.php). #}
+                    {% if is_staff and ticket.ratings_on|default(false) %}
+                        {% set stars = ticket.message_ratings[message.id]|default(0) %}
+                        <div class="d-flex flex-wrap align-items-center gap-1 mt-3 pt-2 border-top" data-reply-rating="{{ message.id }}">
+                            {% if stars %}
+                                <span class="fs-5 lh-1" role="img" aria-label="{{ ':stars of 5 stars'|trans({ ':stars': stars }) }}">{% for n in 1..5 %}<span class="{{ n <= stars ? 'text-warning' : 'text-body-tertiary' }}">★</span>{% endfor %}</span>
+                                <span class="text-muted small ms-1">{{ 'You rated this reply.'|trans }}</span>
+                            {% else %}
+                                <span class="text-muted small me-1">{{ 'Rate this reply:'|trans }}</span>
+                                {% for n in 1..5 %}
+                                    <button type="button" class="btn btn-link p-0 fs-5 lh-1 text-body-tertiary text-decoration-none" data-rate="{{ n }}" aria-label="{{ ':stars of 5 stars'|trans({ ':stars': n }) }}">★</button>
+                                {% endfor %}
+                            {% endif %}
                         </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <div>
-            <div class="row">
-                <div class="col-md-12">
-                    {# The feedback form's link while it waits for an answer, as WHMCS (Support/TicketFeedback.php). #}
-                    {% if ticket.feedback_url|default(null) %}
-                        <div class="mt-3 alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2">
-                            <span>{{ 'How did we do? Tell us about the support you received on this ticket.'|trans }}</span>
-                            <a class="btn btn-primary btn-sm" href="{{ ticket.feedback_url }}">{{ 'Give Feedback'|trans }}</a>
-                        </div>
-                    {% endif %}
-                    {% if not can_reply %}
-                        <div class="mt-3 alert alert-secondary text-center">{{ 'Ticket was closed and cannot be reopened.'|trans }}</div>
-                    {% else %}
-                        {% if ticket.status == 'closed' %}
-                            <div class="mt-3 alert alert-secondary text-center">{{ 'This ticket was closed, but you can still reopen it by replying.'|trans }}</div>
-                        {% endif %}
-                        <div class="card mt-3" id="reply-to">
-                            <div class="card-body">
-                                <form id="ticket-reply-form">
-                                    {% if is_guest_ticket %}
-                                        <input type="hidden" name="hash" value="{{ ticket.hash }}">
-                                    {% else %}
-                                        <input type="hidden" name="id" value="{{ ticket.id }}">
-                                    {% endif %}
-                                    <textarea name="content" cols="5" rows="10" class="form-control" dir="auto" required="required"
-                                              id="ticket-reply-text"></textarea>
-                                    {% if not is_guest_ticket %}
-                                        {% include 'partials/ticket_upload.html.twig' with { ticket_id: ticket.id } %}
-                                    {% endif %}
-                                    <button class="mt-2 btn btn-primary" type="submit" id="post-reply-btn"
-                                            value="{{ 'Post'|trans }}">{{ 'Post'|trans }}</button>
-                                </form>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {# ClientFence: server access and other secrets (Support/TicketSecrets.php); signed-in clients only. #}
-                    {% if not is_guest_ticket %}
-                        {{ include('partials/ticket_secrets.html.twig') }}
                     {% endif %}
                 </div>
             </div>
-        </div>
+        {% endfor %}
     </div>
+
+    {# The feedback form's link while it waits for an answer, as WHMCS (Support/TicketFeedback.php). #}
+    {% if ticket.feedback_url|default(null) %}
+        <div class="mt-3 alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <span>{{ 'How did we do? Tell us about the support you received on this ticket.'|trans }}</span>
+            <a class="btn btn-primary btn-sm" href="{{ ticket.feedback_url }}">{{ 'Give Feedback'|trans }}</a>
+        </div>
+    {% endif %}
+    {% if not can_reply %}
+        <div class="mt-3 alert alert-secondary text-center">{{ 'Ticket was closed and cannot be reopened.'|trans }}</div>
+    {% else %}
+        {% if ticket.status == 'closed' %}
+            <div class="mt-3 alert alert-secondary text-center">{{ 'This ticket was closed, but you can still reopen it by replying.'|trans }}</div>
+        {% endif %}
+        <div class="card mt-3 cf-tk-reply" id="reply-to">
+            <div class="card-body">
+                <form id="ticket-reply-form">
+                    {% if is_guest_ticket %}
+                        <input type="hidden" name="hash" value="{{ ticket.hash }}">
+                    {% else %}
+                        <input type="hidden" name="id" value="{{ ticket.id }}">
+                    {% endif %}
+                    <label class="form-label fw-semibold" for="ticket-reply-text">{{ 'Reply'|trans }}</label>
+                    <textarea name="content" cols="5" rows="10" class="form-control" dir="auto" required="required"
+                              id="ticket-reply-text"></textarea>
+                    {% if not is_guest_ticket %}
+                        {% include 'partials/ticket_upload.html.twig' with { ticket_id: ticket.id } %}
+                    {% endif %}
+                    <button class="mt-2 btn btn-primary" type="submit" id="post-reply-btn"
+                            value="{{ 'Post'|trans }}">{{ 'Post'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    {# ClientFence: server access and other secrets (Support/TicketSecrets.php); signed-in clients only. #}
+    {% if not is_guest_ticket %}
+        {{ include('partials/ticket_secrets.html.twig') }}
+    {% endif %}
 {% endblock %}
 
 {% block js %}
