@@ -1391,6 +1391,8 @@ a.bf-file-name:hover .icon { color: inherit; }
   .bf-body .alert.cf-notice { animation: none; }
   .cf-order-item, .cf-fold > summary::before { transition: none; }
 
+}
+
 /* ---- CF-135 part 4: admin support, clients and staff sign-in ---- */
 /* Staff sign-in screens (login, two-factor code, email PIN, password reset and update): glows drifting in the
    brand panel, the form on a frosted glass card over a soft glow, as the client area's sign-in. Only the card
@@ -1445,6 +1447,8 @@ a.bf-file-name:hover .icon { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .bf-auth-brand::before, .bf-auth-brand::after, .bf-auth-card { animation: none; }
   .bf-body :is(.ticket-message, [data-clientfence-staff-files]) .bf-file:not(.is-removed) { transition: none; }
+
+}
 
 /* ---- CF-135 part 4: admin operations ---- */
 /* ClientFence panels (health, backups, sign-in) and the support dashboard: glass over the glow. No backdrop-filter:

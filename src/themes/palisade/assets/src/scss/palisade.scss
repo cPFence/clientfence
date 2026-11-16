@@ -4836,6 +4836,8 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   .clientfence-hosting-bar .progress-bar { animation: none; }
   .clientfence-hosting-tabs .nav-link, .clientfence-hosting-resource { transition: none; }
 
+}
+
 // ---- CF-135 part 4: client account
 // Users, contacts, invitations, passkeys, saved payment methods, referrals and commissions (the account pages): rows
 // open with an avatar or an icon tile and tint on hover; the one that matters (the method that pays invoices, the
@@ -4886,6 +4888,8 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .auth-card :is([data-clientfence-google-sign-in], [data-clientfence-google-sign-up]) { background-color: var(--pal-glass); }
 @media (prefers-reduced-motion: reduce) {
   .cf-acct-list .list-group-item, .cf-id-drop { transition: none; }
+
+}
 
 // ---- CF-135 part 4: client public pages
 // Public pages (knowledge base, news, contact, network status, custom and legal pages): a short hero in the
