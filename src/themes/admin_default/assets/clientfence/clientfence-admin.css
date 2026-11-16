@@ -1160,3 +1160,29 @@ a.bf-file-name:hover .icon { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .bf-body .card:has(input.batch-delete-checkbox:checked) .card-footer { animation: none; }
 }
+
+/* ---- CF-135 part 2: order and ticket pages ---- */
+/* Summary-first order and ticket pages reuse the invoice classes; the service title or ticket subject sits above the figure. */
+.cf-inv-hero .cf-client-name { overflow-wrap: anywhere; }
+.cf-inv-hero .cf-client-name + .cf-inv-figure { margin-top: 4px; }
+.cf-facts dd .btn-sm { margin-block: 2px; }
+/* The ticket conversation as a chat: client messages on a teal tint at the start, staff replies on the warm
+   tint (as WHMCS and the client area) at the other side, each with the author's initials. */
+.bf-body .conversation > .ticket-message {
+  --tblr-card-bg: color-mix(in srgb, var(--bf-teal) 6%, var(--bf-surface));
+  background-color: var(--tblr-card-bg);
+  border-color: color-mix(in srgb, var(--bf-teal) 22%, var(--bf-line));
+  border-radius: 16px; border-start-start-radius: 4px; overflow: clip;
+}
+.bf-body .conversation > .ticket-message-staff {
+  --tblr-card-bg: color-mix(in srgb, var(--bf-warn) 7%, var(--bf-surface));
+  border-color: color-mix(in srgb, var(--bf-warn) 28%, var(--bf-line));
+  border-start-start-radius: 16px; border-start-end-radius: 4px;
+}
+.bf-body .conversation > .ticket-message > .card-header { background: transparent; border-bottom-color: color-mix(in srgb, currentColor 8%, transparent); }
+.ticket-message .cf-avatar { width: 36px; height: 36px; font-size: 13px; }
+.ticket-message-staff .cf-avatar { background: linear-gradient(135deg, var(--bf-brand), var(--bf-teal)); color: #fff; }
+@media (min-width: 768px) {
+  .bf-body .conversation > .ticket-message { width: 88%; }
+  .bf-body .conversation > .ticket-message-staff { align-self: flex-end; }
+}

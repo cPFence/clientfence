@@ -2620,14 +2620,6 @@
         "done": "<h2 class=\"mb-1\">{{ 'Manage'|trans }} {{ service.domain }}</h2>"
     },
     {
-        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
-        "done": "cf-summary"
-    },
-    {
-        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
-        "done": "cf-summary"
-    },
-    {
         "file": "themes/admin_default/html/partial_admin_summary_card.html.twig",
         "done": "cf-summary-actions"
     },
@@ -6506,5 +6498,17 @@
     {
         "file": "themes/palisade/html/mod_cart_index.html.twig",
         "done": "ClientFence core patch: the order steps (Choose, Checkout, Done) in the top bar, as on the store and one-page checkout (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the summary reads first: the service and its price per period, the status chips, the client, then the facts (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the summary reads first: the subject with its status and priority, the client, then the facts (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the conversation reads as a chat: author initials, client and staff tinted apart, staff on the other side (CF-135 redesign)."
     }
 ]

@@ -28,7 +28,6 @@
 {% block content %}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
     title: ticket.subject,
-    subtitle: 'Review the ticket, manage its status, track internal notes, and inspect related client conversations.'|trans,
     outer_card_class: 'mb-3'
 } %}
     {% block detail_tabs %}
@@ -59,42 +58,51 @@
                 {% set task = ticket.rel %}
                 {% embed 'partial_admin_summary_card.html.twig' with {
                     title: 'Ticket Summary'|trans,
-                    subtitle: 'Review the client, helpdesk, status, and any linked task or order context for this ticket.'|trans,
                     centered_actions: true,
                     card_class: 'mb-0'
                 } %}
                     {% import 'macro_functions.html.twig' as mf %}
                     {% block summary_content %}
-                        <div class="table-responsive">
-                            <table class="table card-table table-vcenter cf-summary">
-                                <tbody>
-                                    <tr><td class="w-25">{{ 'Ticket ID'|trans }}</td><td>#{{ ticket.id }}</td></tr>
-                                    {% if ticket.author.role|default('') == 'client' %}
-                                        <tr><td>{{ 'Client'|trans }}</td><td><a href='{{ "client/manage/#{ticket.author.id }"|url }}'>{{ ticket.author.name }}</a> (#{{ ticket.author.id }})</td></tr>
-                                    {% else %}
-                                        <tr>
-                                            <td>{{ 'Author'|trans }}</td>
-                                            <td>
-                                                {{ ticket.author.name }} ({{ ticket.author.email }})
-                                                <span class="badge bg-orange-lt ms-1">{{ 'Guest' |trans }}</span>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                    <tr><td>{{ 'Helpdesk'|trans }}</td><td>{{ admin.support_helpdesk_get_pairs[ticket.support_helpdesk_id]|trans }}</td></tr>
-                                    <tr><td>{{ 'Status'|trans }}</td><td>{{ mf.status_badge(ticket.status, 'ticket') }}</td></tr>
+                        {# ClientFence core patch: the summary reads first: the subject with its status and priority, the client, then the facts (CF-135 redesign). #}
+                        {% set who = ticket.author.name|default('?')|split(' ') %}
+                        <div class="cf-inv">
+                            <div class="cf-inv-hero">
+                                <div>
+                                    <div class="cf-client-name" dir="auto">{{ ticket.subject }}</div>
+                                    <div class="text-secondary"><bdi>#{{ ticket.id }}</bdi> · {{ ticket.messages|length }} {{ 'message(s)'|trans }}</div>
+                                </div>
+                                <div class="cf-inv-chips">
+                                    {{ mf.status_badge(ticket.status, 'ticket') }}
                                     {# ClientFence core patch: priority as WHMCS and the assignee (Support/TicketPriority.php, TicketAssign.php). #}
-                                    <tr><td>{{ 'Priority'|trans }}</td><td>{{ include('mod_support_ticket_priority.html.twig', { level: ticket.priority_level|default('medium') }) }}</td></tr>
-                                    <tr><td>{{ 'Assigned To'|trans }}</td><td>{{ ticket.assigned_to.name|default('Nobody'|trans) }}</td></tr>
-                                    <tr><td>{{ 'Time Opened'|trans }}</td><td>{{ ticket.created_at|format_date }}</td></tr>
-                                    {# ClientFence core patch: the tickets merged into this one (Support/TicketMerge.php). #}
-                                    {% if ticket.merged_tickets|default([]) is not empty %}
-                                        <tr><td>{{ 'Merged Tickets'|trans }}</td><td class="text-wrap">{% for merged in ticket.merged_tickets %}#{{ merged.id }} {{ merged.subject|truncate(40) }} ({{ merged.merged_at|format_date }}){% if not loop.last %}<br>{% endif %}{% endfor %}</td></tr>
+                                    {{ include('mod_support_ticket_priority.html.twig', { level: ticket.priority_level|default('medium') }) }}
+                                </div>
+                            </div>
+                            <div class="cf-inv-client">
+                                <span class="cf-avatar" aria-hidden="true">{{ (who|first|first ~ (who|length > 1 ? who|last|first : ''))|upper }}</span>
+                                <div class="cf-inv-who">
+                                    {% if ticket.author.role|default('') == 'client' %}
+                                        <a href='{{ "client/manage/#{ticket.author.id }"|url }}'>{{ ticket.author.name }}</a>
+                                        <span class="text-secondary small"><bdi>#{{ ticket.author.id }}</bdi>{% if ticket.author.email|default('') %} · {{ ticket.author.email }}{% endif %}</span>
+                                    {% else %}
+                                        <span class="fw-semibold">{{ ticket.author.name }} <span class="badge bg-orange-lt ms-1">{{ 'Guest' |trans }}</span></span>
+                                        <span class="text-secondary small">{{ ticket.author.email }}</span>
                                     {% endif %}
-                                    {% if task.task %}<tr><td>{{ 'Task'|trans }}</td><td>{{ mf.status_name(task.task) }}</td></tr>{% endif %}
-                                    {% if task.type == 'order' %}<tr><td>{{ 'Related To'|trans }}</td><td><a href='{{ "order/manage/#{task.id}"|url }}'>Order #{{ task.id }}</a></td></tr>{% endif %}
-                                    {% if task.task == 'upgrade' %}<tr><td>{{ 'Upgrade To'|trans }}</td><td><a href='{{ "product/manage/#{task.new_value}"|url }}'>{{ admin.product_get_pairs[task.new_value] }}</a></td></tr>{% endif %}
-                                </tbody>
-                            </table>
+                                </div>
+                            </div>
+                            <dl class="cf-facts">
+                                <div><dt>{{ 'Ticket ID'|trans }}</dt><dd><bdi>#{{ ticket.id }}</bdi></dd></div>
+                                <div><dt>{{ 'Helpdesk'|trans }}</dt><dd>{{ admin.support_helpdesk_get_pairs[ticket.support_helpdesk_id]|trans }}</dd></div>
+                                <div><dt>{{ 'Assigned To'|trans }}</dt><dd>{{ ticket.assigned_to.name|default('Nobody'|trans) }}</dd></div>
+                                <div><dt>{{ 'Time Opened'|trans }}</dt><dd>{{ ticket.created_at|format_date }}</dd></div>
+                                <div><dt>{{ 'Updated'|trans }}</dt><dd>{{ ticket.updated_at|format_datetime }}</dd></div>
+                                {% if task.task %}<div><dt>{{ 'Task'|trans }}</dt><dd>{{ mf.status_name(task.task) }}</dd></div>{% endif %}
+                                {% if task.type == 'order' %}<div><dt>{{ 'Related To'|trans }}</dt><dd><a href='{{ "order/manage/#{task.id}"|url }}'>{{ 'Order'|trans }} <bdi>#{{ task.id }}</bdi></a></dd></div>{% endif %}
+                                {% if task.task == 'upgrade' %}<div><dt>{{ 'Upgrade To'|trans }}</dt><dd><a href='{{ "product/manage/#{task.new_value}"|url }}'>{{ admin.product_get_pairs[task.new_value] }}</a></dd></div>{% endif %}
+                                {# ClientFence core patch: the tickets merged into this one (Support/TicketMerge.php). #}
+                                {% if ticket.merged_tickets|default([]) is not empty %}
+                                    <div class="cf-facts-wide"><dt>{{ 'Merged Tickets'|trans }}</dt><dd>{% for merged in ticket.merged_tickets %}<bdi>#{{ merged.id }}</bdi> {{ merged.subject|truncate(40) }} ({{ merged.merged_at|format_date }}){% if not loop.last %}<br>{% endif %}{% endfor %}</dd></div>
+                                {% endif %}
+                            </dl>
                         </div>
                     {% endblock %}
 
@@ -149,8 +157,7 @@
                 {# ClientFence core patch: the conversation as in the client area (full-width messages, oldest first, all open), with a red warning on emails from an unverified sender (MailImport). #}
                 <div class="card mb-3">
                     <div class="card-body pb-3">
-                        <h5 class="card-title mb-1">{{ 'Conversation'|trans }}</h5>
-                        <p class="text-secondary mb-0">{{ 'The full message history, oldest first.'|trans }}</p>
+                        <h5 class="card-title mb-0">{{ 'Conversation'|trans }}</h5>
                     </div>
                     <div class="card-body">
                         <div class="conversation d-flex flex-column gap-3">
@@ -171,7 +178,9 @@
                                 {% endif %}
                                 <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
                                     <div class="d-flex align-items-center gap-2">
-                                        {{ avatar(message.author.email|default(''), 40, 'avatar d-none d-md-block') }}
+                                        {# ClientFence core patch: the conversation reads as a chat: author initials, client and staff tinted apart, staff on the other side (CF-135 redesign). #}
+                                        {% set who = message.author.name|default('?')|split(' ') %}
+                                        <span class="cf-avatar" aria-hidden="true">{{ (who|first|first ~ (who|length > 1 ? who|last|first : ''))|upper }}</span>
                                         <div class="d-flex flex-column">
                                             <div class="d-flex flex-wrap align-items-center gap-2">
                                                 <span class="fw-semibold">{{ message.author.name|default('') }}</span>
