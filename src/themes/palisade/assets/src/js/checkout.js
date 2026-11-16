@@ -398,8 +398,9 @@ export default function initCheckout(root) {
         throw new Error(t.promoInvalid);
       }
       // The cart's totals are in the default currency, like the product prices.
-      // A recurring promo also comes off each renewal: the order keeps the price part of the discount.
-      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).reduce((sum, item) => sum + Number(item.discount_price ?? 0), 0) : 0;
+      // A recurring promo also comes off each renewal: the order keeps the price part of the discount (the full
+      // period's, not a prorated first charge's).
+      const renewDiscount = cart.promo_recurring ? (cart.items ?? []).reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
       state.promo = { code, discount: Number(cart.discount), total: Number(cart.total), renewDiscount };
     } catch (error) {
       state.promo = null;
