@@ -365,7 +365,7 @@
                 {% endif %}
                 {% if privacy_tools|default(false) and can_delete_client %}
                 <a class="cf-act" {{ fb_api_link({href: 'client/privacy_anonymize'|api_url(query: {'id': client.id}), modal: {type: 'confirm', title: 'Anonymize this client?'|trans, content: 'The name, email, address, phone, ticket messages and sent emails are erased for good; orders, invoices and payments stay. The client can no longer sign in. This cannot be undone.'|trans}, reload: true}) }}>
-                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#eye-off" /></svg></span>
+                    <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#user-x" /></svg></span>
                     <span><b>{{ 'Anonymize'|trans }}</b><small>{{ 'Erases the personal data'|trans }}</small></span>
                 </a>
                 {% endif %}
