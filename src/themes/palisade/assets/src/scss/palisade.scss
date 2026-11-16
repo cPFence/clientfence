@@ -698,6 +698,15 @@ dd {
   overflow-y: auto;
 }
 
+// The top bar's menu lists scroll without a visible scrollbar, as the side menu.
+:is(.lang-menu-list, .topbar-bell-list) {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .app-main {
   flex: 1 1 auto;
   min-width: 0;
@@ -4391,6 +4400,17 @@ body::before {
 .nav-tabs .nav-link.active { border-color: transparent; background: linear-gradient(90deg, var(--pal-brand), var(--pal-accent)) bottom / 100% 2px no-repeat; }
 .dropdown-menu { background-color: var(--pal-glass); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); box-shadow: 0 30px 60px -20px rgba(4, 20, 30, .30); }
 .dropdown-menu.show { animation: pal-pop .28s var(--pal-ease) backwards; }
+// A top bar menu opens over a blurred page, as in the admin area (.bf-shell::after): the menu's own blur cannot
+// reach the page from inside the blurred top bar, so without this layer the page showed through, unreadable.
+// Under the top bar (1020); the large-screen side menu stays above it, as in the admin area.
+.app-shell::after {
+  content: ""; position: fixed; inset: 0; z-index: 1015; pointer-events: none; opacity: 0;
+  background: color-mix(in srgb, var(--bs-body-bg) 30%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: opacity .3s var(--pal-ease);
+}
+.app-shell:has(.app-topbar .dropdown-menu.show)::after { opacity: 1; }
+.app-sidebar { @include media-breakpoint-up(lg) { z-index: 1016; } }
 // Solid status badges and alerts become soft chips and tinted panels in their colour.
 .badge:is(.text-bg-success, .bg-success) { background: rgba(var(--bs-success-rgb), .12) !important; color: var(--bs-success-text-emphasis) !important; }
 .badge:is(.text-bg-warning, .bg-warning) { background: rgba(var(--bs-warning-rgb), .14) !important; color: var(--bs-warning-text-emphasis) !important; }
