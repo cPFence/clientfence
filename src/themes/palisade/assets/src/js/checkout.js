@@ -231,9 +231,9 @@ export default function initCheckout(root) {
       const name = document.createElement('span');
       name.textContent = label;
       const value = document.createElement('span');
-      // The domain line: with a promo code the cart gives the code's discount instead of the free domain
-      // (Cart\Service::getProductDiscount()), so the line shows its price and the promo line the cart's discount.
-      const shown = state.promo && gross !== undefined ? gross : amount;
+      // The domain line: a promo code that beats the free domain takes its place (Cart\Service::getProductDiscount()),
+      // so the line shows its price and the promo line the cart's discount.
+      const shown = state.promo && gross !== undefined && !state.promo.keepFree ? gross : amount;
       value.textContent = gross !== undefined && shown === 0 ? t.free : money(shown * rate);
       line.append(name, value);
       return line;
@@ -467,7 +467,10 @@ export default function initCheckout(root) {
       data.cartCount = 0;
       await api('guest', 'cart/apply_promo', { promocode: code });
       const cart = await api('guest', 'cart/get');
-      if (!(Number(cart.discount) > 0)) {
+      // CF-146: a free domain the code does not beat stays the domain's own (promo_line false), not the code's discount.
+      const kept = (cart.items ?? []).filter((item) => item.promo_line === false).reduce((sum, item) => sum + Number(item.discount ?? 0), 0);
+      const discount = Number(cart.discount) - kept;
+      if (!(discount > 0)) {
         throw new Error(t.promoInvalid);
       }
       // The cart's totals are in the default currency, like the product prices.
@@ -475,7 +478,7 @@ export default function initCheckout(root) {
       // period's, not a prorated first charge's).
       // CF-146: not a domain's discount (the domain renews on its own).
       const renewDiscount = cart.promo_recurring ? (cart.items ?? []).filter((item) => item.type !== 'domain').reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
-      state.promo = { code, discount: Number(cart.discount), total: Number(cart.total), renewDiscount };
+      state.promo = { code, discount, total: Number(cart.total), renewDiscount, keepFree: kept > 0 };
     } catch (error) {
       state.promo = null;
       promoMessage(errorText(error));

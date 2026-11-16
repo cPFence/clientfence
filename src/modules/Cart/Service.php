@@ -1050,7 +1050,7 @@ class Service implements InjectionAwareInterface
         $this->autoPromo = $autoPromo;
 
         try {
-            return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $promoId, $staff, $hold, &$reservedOrderIds, &$reservedCount) {
+            return $this->di['em']->wrapInTransaction(function () use ($ca, $cart, $client, $legacyClient, $currency, $currencyCode, $gateway_id, $taxed, $promo, $promoProductService, $staff, $hold, &$reservedOrderIds, &$reservedCount) {
                 if ($promo instanceof Promo) {
                     $this->assertClientAbleToUsePromoForUpdate($client, $promo);
                 }
@@ -1127,7 +1127,7 @@ class Service implements InjectionAwareInterface
 
                     $order = new Order();
                     $order->setClientId($this->clientId($client));
-                    $order->setPromoId($promoId ?? ($promoLine ? $promo?->getId() : null));
+                    $order->setPromoId($promoLine ? $promo?->getId() : null);
                     $order->setProductId($item['product_id']);
                     $order->setFormId($item['form_id']);
 
@@ -1164,7 +1164,7 @@ class Service implements InjectionAwareInterface
                     // Reserve promo capacity at order creation time.
                     // ClientFence core patch: only for a line the promo discounts (every line of the cart used one: a
                     // product with its add-on took two uses, and a code with uses left was refused for a larger cart).
-                    if ($promo instanceof Promo && $promoProductService !== null && ($promoId || $promoLine) && abs((float) ($item['discount'] ?? 0)) > 0) {
+                    if ($promo instanceof Promo && $promoProductService !== null && $promoLine && abs((float) ($item['discount'] ?? 0)) > 0) {
                         $promoProductService->reservePromoForOrder($promo, $order);
                         $reservedOrderIds[] = $order->getId();
                         ++$reservedCount;
@@ -1193,7 +1193,7 @@ class Service implements InjectionAwareInterface
                     if ($lineDiscount > 0) {
                         $invoice_items[] = [
                             // ClientFence core patch: a promotion's discount is named as on its renewals, so the client sees which one it is.
-                            'title' => $promo instanceof Promo && ($promoId || $promoLine)
+                            'title' => $promo instanceof Promo && $promoLine
                                 ? $this->getProductService()->getPromoDiscountTitle($promo, (string) $order->getCurrency())
                                 : __trans('Discount: :product', [':product' => $order->getTitle()]),
                             'price' => $lineDiscount * -1,
@@ -1740,7 +1740,8 @@ class Service implements InjectionAwareInterface
             );
             // Promo discount should override related item discount
             // ClientFence core patch: an automatic promotion only on a line it covers, and only where it takes off at least the line's own discount.
-            $promoLine = $this->cartPromoId($cart) || ($promoApplies && $promoDiscount >= $discount_price);
+            // ClientFence core patch (CF-146): a typed code too only where it takes off at least the free domain, which it never removes.
+            $promoLine = ($this->cartPromoId($cart) || $promoApplies) && $promoDiscount >= $discount_price;
             if ($promoLine) {
                 $discount_price = $promoDiscount;
             }

@@ -932,6 +932,7 @@ test('createFromCart with promo entity uses product promo service', function (fl
         'setup_price' => 0,
         'discount_setup' => 0,
         'discount' => $discount,
+        'promo_line' => true, // a line the typed code discounts (CF-146)
         'notes' => null,
     ]);
     $serviceMock->shouldReceive('isStockAvailable')->once()->with($product, 1)->andReturn(true);
@@ -1381,6 +1382,7 @@ test('createFromCart compensates promo usage on transaction failure', function (
         'setup_price' => 0,
         'discount_setup' => 0,
         'discount' => 1.0,
+        'promo_line' => true, // a line the typed code discounts (CF-146)
         'notes' => null,
     ]);
     $serviceMock->shouldReceive('isStockAvailable')->once()->with($product, 1)->andReturn(true);
@@ -2620,4 +2622,38 @@ test('a cart with a code or without a client gets no automatic promotion', funct
 })->with([
     'a code' => [true, true],
     'no client' => [false, false],
+]);
+
+test('a typed promo code never takes away a larger free domain (CF-146)', function (float $promoDiscount, bool $applies, float $expected, bool $promoLine): void {
+    $cartProductModel = new CartProduct();
+    (new ReflectionProperty($cartProductModel, 'id'))->setValue($cartProductModel, 1);
+    $modelCart = new Cart();
+    (new ReflectionProperty($modelCart, 'id'))->setValue($modelCart, 1);
+    $modelCart->setPromoId(1);
+
+    $cartRepo = Mockery::mock(CartRepository::class);
+    $cartRepo->shouldReceive('find')->andReturn($modelCart);
+    $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $emMock->shouldReceive('getRepository')->with(Cart::class)->andReturn($cartRepo);
+    $di = container();
+    $di['em'] = $emMock;
+    $productService = Mockery::mock(ProductService::class)->shouldIgnoreMissing();
+    $productService->shouldReceive('findPromoById')->with(1)->andReturn(new Promo());
+    $productService->shouldReceive('isPromoApplicableToProductById')->andReturn($applies);
+    $di['mod_service'] = $di->protect(fn () => $productService);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    // The domain line's free domain: 1 of 2 years of an 11.99 .com.
+    $serviceMock->shouldReceive('getRelatedItemsDiscount')->andReturn(11.99);
+    $serviceMock->shouldReceive('getItemPromoDiscount')->andReturn($promoDiscount);
+    $serviceMock->setDi($di);
+
+    $result = $serviceMock->getProductDiscount($cartProductModel, 0);
+
+    expect($result[0])->toEqual($expected)
+        ->and($result[2])->toBe($promoLine);
+})->with([
+    'a 10% code keeps the free year' => [2.40, true, 11.99, false],
+    'a code for the plan only keeps the free year' => [0.0, false, 11.99, false],
+    'a bigger code replaces it' => [15.0, true, 15.0, true],
 ]);
