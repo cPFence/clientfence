@@ -13,12 +13,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * For a site whose staff are locked out by sign-in security (SignInSecurity.php): turns the email
- * PIN, the staff country and IP rules, the clients' required two-factor sign-in and passkeys off (or only the
- * selected --pin / --countries / --ips / --twofactor / --passkeys): a broken setup page must not lock every client out.
+ * PIN, the staff country and IP rules, the clients' required two-factor sign-in, passkeys and CAPTCHA Protection off
+ * (or only the selected --pin / --countries / --ips / --twofactor / --passkeys / --captcha): a broken setup page must not lock every client out.
  */
 #[AsCommand(
     name: 'clientfence:signin-security-off',
-    description: 'Turns sign-in security off: the email PIN, the staff country and IP address rules, the required client two-factor sign-in and passkeys',
+    description: 'Turns sign-in security off: the email PIN, the staff country and IP address rules, the required client two-factor sign-in, passkeys and CAPTCHA Protection',
     hidden: false
 )]
 class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareInterface
@@ -42,6 +42,7 @@ class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareIn
         $this->addOption('ips', null, InputOption::VALUE_NONE, 'Only turn the staff IP address rule off');
         $this->addOption('twofactor', null, InputOption::VALUE_NONE, 'Only turn the required two-factor sign-in for clients off');
         $this->addOption('passkeys', null, InputOption::VALUE_NONE, 'Only turn passkey sign-in off');
+        $this->addOption('captcha', null, InputOption::VALUE_NONE, 'Only turn CAPTCHA Protection off');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -51,12 +52,14 @@ class SignInSecurityOff extends Command implements \ClientFence\InjectionAwareIn
         $ips = (bool) $input->getOption('ips');
         $twofactor = (bool) $input->getOption('twofactor');
         $passkeys = (bool) $input->getOption('passkeys');
-        if (!$pin && !$countries && !$ips && !$twofactor && !$passkeys) {
-            $pin = $countries = $ips = $twofactor = $passkeys = true;
+        $captcha = (bool) $input->getOption('captcha');
+        if (!$pin && !$countries && !$ips && !$twofactor && !$passkeys && !$captcha) {
+            $pin = $countries = $ips = $twofactor = $passkeys = $captcha = true;
         }
-        $settings = SignInSecurity::turnOff($this->di, $pin, $countries, $ips, $twofactor, $passkeys);
-        $this->di['logger']->warning('Sign-in security turned off from the console (email PIN: %s, country rule: %s, IP rule: %s, clients two-factor: %s, passkeys: %s)', $pin ? 'off' : 'kept', $countries ? 'off' : 'kept', $ips ? 'off' : 'kept', $twofactor ? 'off' : 'kept', $passkeys ? 'off' : 'kept');
-        $output->writeln(sprintf('Email PIN: %s. Staff countries: %s. Staff IPs: %s. Clients two-factor: %s. Passkeys: %s.', $settings['pin'], $settings['countries_on'] ? implode(', ', $settings['countries']) : 'off', $settings['ips_on'] ? implode(', ', $settings['ips']) : 'off', $settings['twofactor'], $settings['passkeys']));
+        $settings = SignInSecurity::turnOff($this->di, $pin, $countries, $ips, $twofactor, $passkeys, $captcha);
+        $captchaOn = !empty($this->di['mod_service']('extension')->getConfig('mod_antispam')['captcha_enabled']);
+        $this->di['logger']->warning('Sign-in security turned off from the console (email PIN: %s, country rule: %s, IP rule: %s, clients two-factor: %s, passkeys: %s, CAPTCHA: %s)', $pin ? 'off' : 'kept', $countries ? 'off' : 'kept', $ips ? 'off' : 'kept', $twofactor ? 'off' : 'kept', $passkeys ? 'off' : 'kept', $captcha ? 'off' : 'kept');
+        $output->writeln(sprintf('Email PIN: %s. Staff countries: %s. Staff IPs: %s. Clients two-factor: %s. Passkeys: %s. CAPTCHA: %s.', $settings['pin'], $settings['countries_on'] ? implode(', ', $settings['countries']) : 'off', $settings['ips_on'] ? implode(', ', $settings['ips']) : 'off', $settings['twofactor'], $settings['passkeys'], $captchaOn ? 'on' : 'off'));
 
         return Command::SUCCESS;
     }
