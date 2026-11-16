@@ -88,6 +88,13 @@ class ServiceInvoiceItem implements InjectionAwareInterface
                 $orderService = $this->di['mod_service']('Order');
                 switch ($item->task) {
                     case \Model_InvoiceItem::TASK_ACTIVATE:
+                        // ClientFence core patch (CF-144): a service suspended when this payment was reversed (PaymentReversal.php)
+                        // comes back when the invoice is paid again.
+                        if ($order->status == \Model_ClientOrder::STATUS_SUSPENDED) {
+                            $orderService->unsuspendFromOrder($order);
+
+                            break;
+                        }
                         $product = $this->di['mod_service']('Product')->findProductById((int) $order->product_id);
                         if ($product->getSetup() == \ClientFence\Mod\Product\Service::SETUP_AFTER_PAYMENT) {
                             try {

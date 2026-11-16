@@ -308,6 +308,25 @@ final class Sync
         return Tools::withLock($this->di, self::LOCK, fn (): array => ['accounts' => $this->program()->accounts(), 'tax_rates' => $this->program()->taxRates()], 30);
     }
 
+    /**
+     * CF-144: a payment staff reversed (Invoice/PaymentReversal.php). One already at the program stays there (no call here
+     * removes a payment), so its record stops with what to do and the invoice waits until staff choose Send again; one not
+     * sent yet is dropped.
+     */
+    public static function paymentReversed(\Pimple\Container $di, int $invoiceId): void
+    {
+        $db = $di['dbal'];
+        foreach ($db->fetchAllAssociative('SELECT id, program, status FROM ' . self::TABLE . " WHERE entity = 'payment' AND local_id = ?", [$invoiceId]) as $row) {
+            if ($row['status'] !== 'sent') {
+                $db->delete(self::TABLE, ['id' => (int) $row['id']]);
+
+                continue;
+            }
+            $label = isset(self::PROGRAMS[$row['program']]) ? self::PROGRAMS[$row['program']]::label() : (string) $row['program'];
+            $db->update(self::TABLE, ['status' => 'stopped', 'last_error' => __trans('The payment was reversed here: delete it at :program by hand, then choose Send again.', [':program' => $label]), 'updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $row['id']]);
+        }
+    }
+
     /** "Send again": the row's attempts start over and it goes on the next run, as if it had changed. */
     public function resend(int $id): void
     {

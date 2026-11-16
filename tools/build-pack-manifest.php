@@ -181,6 +181,7 @@ $paths = [
     'modules/Client/templates/email/mod_client_affiliate_report.html.twig',
     'modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig',
     'modules/Invoice/PendingPayments.php',
+    'modules/Invoice/PaymentReversal.php',
     'modules/Invoice/templates/email/mod_invoice_refunded.html.twig',
     'modules/Order/CancelRequests.php',
     'modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig',

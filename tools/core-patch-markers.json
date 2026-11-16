@@ -7142,5 +7142,53 @@
     {
         "file": "modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig",
         "done": "ClientFence core patch: the error text on the theme's tinted surface, readable in dark mode (CF-135 redesign)."
+    },
+    {
+        "file": "library/Model/Transaction.php",
+        "done": "ClientFence core patch (CF-144): a staff payment undone with Reverse payment (Invoice/PaymentReversal.php); kept, never counted."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch (CF-144): staff payments undone with Reverse payment."
+    },
+    {
+        "file": "modules/Invoice/ServiceInvoiceItem.php",
+        "done": "ClientFence core patch (CF-144): a service suspended when this payment was reversed (PaymentReversal.php)"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-144): a payment recorded by mistake is undone with Reverse payment (PaymentReversal.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-144): the services the invoice renewed go back by their period (a chargeback, a reversed payment);"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-144): a paid one points to Reverse payment too."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (CF-144): undo a payment staff recorded by mistake (Invoice/PaymentReversal.php); a gateway payment needs Refund."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-144): whether Reverse payment applies (a payment staff recorded, nothing since)."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-144): undo a payment staff recorded by mistake (a bank transfer that never arrived): the"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-144): a paid one is skipped with the way to undo its payment."
+    },
+    {
+        "file": "themes/admin_default/html/macro_functions.html.twig",
+        "done": "ClientFence core patch (CF-144): a staff payment undone with Reverse payment."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch (CF-144): a reversed payment stays a record of the mistake: \"Process\" credited money that never"
     }
 ]
