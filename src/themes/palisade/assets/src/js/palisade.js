@@ -384,6 +384,11 @@ document.addEventListener('DOMContentLoaded', () => {
       import('./product-options.js').then((module) => module.default(box));
     }
   });
+  // The domain order form's register search (CF-139).
+  const domainSearch = document.querySelector('[data-cf-domain-search]');
+  if (domainSearch) {
+    import('./domain-search.js').then((module) => module.default(domainSearch));
+  }
   const optionsChange = document.querySelector('[data-cf-options-change]');
   if (optionsChange) {
     import('./product-options.js').then((module) => module.initOptionsChange(optionsChange));

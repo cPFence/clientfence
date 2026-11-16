@@ -24,6 +24,8 @@ class Service implements \ClientFence\InjectionAwareInterface
      * thing; this sentinel exists only for clients that can't send an empty string.
      */
     public const string REGISTRAR_CREDENTIAL_KEEP_SENTINEL = '__KEEP__';
+    public const string PINNED_TLDS = 'servicedomain_pinned_tlds';
+    public const int PINNED_MAX = 8;
 
     protected ?\Pimple\Container $di = null;
     private Filesystem $filesystem;
@@ -1290,6 +1292,44 @@ class Service implements \ClientFence\InjectionAwareInterface
     public function tldFindAllActive()
     {
         return $this->di['db']->find('Tld', 'active = 1 ORDER by id ASC');
+    }
+
+    /**
+     * ClientFence core patch (CF-139): the TLDs staff pin for the domain search (WHMCS Spotlight TLDs), in
+     * their order; one taken off sale since drops out.
+     *
+     * @return list<string>
+     */
+    public function pinnedTlds(): array
+    {
+        $saved = json_decode((string) $this->di['mod_service']('system')->getParamValue(self::PINNED_TLDS, '[]'), true);
+        $onSale = $this->di['db']->getAssoc('SELECT id, tld FROM tld WHERE active = 1 AND allow_register = 1');
+
+        return array_slice(array_values(array_intersect(is_array($saved) ? $saved : [], $onSale)), 0, self::PINNED_MAX);
+    }
+
+    /** ClientFence core patch (CF-139): saves the pinned TLDs, up to 8 TLDs on sale (a list, or names separated by spaces or commas). */
+    public function pinnedTldsUpdate(mixed $tlds): bool
+    {
+        $tlds = is_array($tlds) ? $tlds : preg_split('/[\s,]+/', (string) $tlds, -1, PREG_SPLIT_NO_EMPTY);
+        $names = [];
+        foreach ($tlds as $name) {
+            $tld = is_string($name) ? $this->tldFindOneByTld($name) : null;
+            if (!$tld instanceof \Model_Tld) {
+                throw new \ClientFence\InformationException('TLD not found');
+            }
+            if (!$tld->active || !$tld->allow_register) {
+                throw new \ClientFence\InformationException('Domain cannot be registered');
+            }
+            $names[$tld->tld] = $tld->tld;
+        }
+        if (count($names) > self::PINNED_MAX) {
+            throw new \ClientFence\InformationException('Pin up to :count TLDs.', [':count' => self::PINNED_MAX]);
+        }
+        $this->di['mod_service']('system')->setParamValue(self::PINNED_TLDS, json_encode(array_values($names)));
+        $this->di['logger']->info('Updated the pinned TLDs');
+
+        return true;
     }
 
     public function tldFindOneActiveById($id)

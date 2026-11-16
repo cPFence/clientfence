@@ -19,56 +19,220 @@
             padding-top: 6px;
             padding-bottom: 6px;
         }
+
+        /* CF-139: the TLDs to tick, the results per TLD and the order button. */
+        .embed-inline-form {
+            grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        .embed-tlds,
+        .embed-tlds-more {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .embed-tlds details {
+            flex-basis: 100%;
+        }
+
+        .embed-tlds summary {
+            color: var(--embed-primary);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .embed-tlds-more {
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .embed-tld {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border: 1px solid var(--embed-border);
+            border-radius: 999px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .embed-results {
+            margin: 8px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .embed-results li {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 10px;
+            padding: 6px 0;
+            border-top: 1px solid var(--embed-border);
+        }
+
+        .embed-results label {
+            display: inline-flex;
+            flex: 1 1 10em;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .embed-results .embed-note {
+            margin-inline-start: auto;
+        }
+
+        a.embed-button {
+            display: inline-block;
+            width: auto;
+            margin-top: 8px;
+            text-align: center;
+            text-decoration: none;
+        }
     </style>
 </head>
 
 <body>
-<form method="post" action="" class="embed-shell embed-shell--compact" id="domain-checker">
+{# ClientFence core patch (CF-139): one name across the ticked TLDs (up to 20, the staff-pinned ones ticked first),
+   the results with their price, and Order now opening the domain order form with the chosen domains (?tlds=). #}
+{% set tlds = guest.servicedomain_tlds({ allow_register: 1 }) %}
+{% set pinned = guest.servicedomain_pinned_tlds %}
+{% set top = pinned ?: (tlds is empty ? [] : [(tlds|first).tld]) %}
+{% set rest = tlds|filter(t => t.tld not in top) %}
+{% set product = guest.product_get_list({ type: 'domain', per_page: 1 }).list|first %}
+{% set currency = guest.cart_get_currency %}
+<form method="post" action="" class="embed-shell embed-shell--compact" id="domain-checker"
+    data-order="{{ product ? ('order/' ~ (product.slug ?: product.id))|url : '' }}">
     <div class="embed-inline-form">
         <label class="embed-sr-only" for="embed-domain-sld">{{ 'Domain name'|trans }}</label>
-        <input class="embed-input" type="text" id="embed-domain-sld" value="" name="sld" placeholder="{{ 'yourdomain'|trans }}" />
-        {% set tlds = guest.servicedomain_tlds %}
-        <label class="embed-sr-only" for="embed-domain-tld">{{ 'Extension'|trans }}</label>
-        <select class="embed-select" id="embed-domain-tld" name="tld">
-            {% for tld in tlds %}
-            <option value="{{ tld.tld }}" label="{{ tld.tld }}">{{ tld.tld }}</option>
-            {% endfor %}
-        </select>
+        <input class="embed-input" type="text" id="embed-domain-sld" value="" name="sld" dir="ltr" autocomplete="off" placeholder="{{ 'yourdomain'|trans }}" />
         <button class="embed-button" type="submit"><span>{{ 'Search'|trans }}</span></button>
     </div>
+    <fieldset class="embed-tlds" aria-describedby="embed-tlds-max">
+        <legend class="embed-sr-only">{{ 'Extensions'|trans }}</legend>
+        {% for name in top %}
+            <label class="embed-tld"><input type="checkbox" value="{{ name }}" data-tld checked> <span dir="ltr">{{ name }}</span></label>
+        {% endfor %}
+        {% if rest is not empty %}
+            <details>
+                <summary>{{ 'More extensions'|trans }}</summary>
+                <div class="embed-tlds-more">
+                    {% for tld in rest %}
+                        <label class="embed-tld"><input type="checkbox" value="{{ tld.tld }}" data-tld> <span dir="ltr">{{ tld.tld }}</span></label>
+                    {% endfor %}
+                </div>
+            </details>
+        {% endif %}
+        <span class="embed-sr-only" id="embed-tlds-max">{{ 'Choose up to :count extensions.'|trans({':count': 20}) }}</span>
+    </fieldset>
+    <ul class="embed-results" aria-live="polite" hidden></ul>
+    <a class="embed-button" href="#" target="_blank" rel="noopener" data-order-link hidden>{{ 'Order now'|trans }}</a>
     {# ClientFence core patch: embedded domain searches show the guest CAPTCHA (once an hour). #}
     {{ include('mod_servicedomain_lookup_captcha.html.twig') }}
 </form>
 
 <script nonce="{{ csp_nonce }}">
     document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('domain-checker').addEventListener('submit', function(event) {
+        const form = document.getElementById('domain-checker');
+        const list = form.querySelector('.embed-results');
+        const link = form.querySelector('[data-order-link]');
+        const boxes = [...form.querySelectorAll('[data-tld]')];
+        const texts = {{ { available: 'Available'|trans, taken: 'Domain is not available.'|trans, unknown: 'Unknown'|trans, error: 'Error'|trans }|json_encode|raw }};
+        const currency = {{ { code: currency.code, rate: currency.conversion_rate }|json_encode|raw }};
+        const url = {{ 'servicedomain/check_bulk'|api_url(role='guest')|json_encode|raw }};
+        let sld = '';
+
+        const money = (amount) => {
+            const total = Number(amount) * Number(currency.rate);
+            try {
+                return new Intl.NumberFormat(document.documentElement.lang || 'en-US', { style: 'currency', currency: currency.code }).format(total);
+            } catch (e) {
+                return total.toFixed(2) + ' ' + currency.code;
+            }
+        };
+        const post = (params) => fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString()
+        }).then(response => response.json()).then(json => {
+            if (json.error) {
+                throw new Error(json.error.message);
+            }
+            return json.result;
+        });
+        // Up to 20 TLDs: at the limit the unticked ones rest (the server refuses more in any case).
+        const limit = () => {
+            const full = boxes.filter(box => box.checked).length >= 20;
+            boxes.forEach(box => { box.disabled = full && !box.checked; });
+        };
+        // Order now opens the domain order form with the chosen domains ticked (it searches them at once).
+        const update = () => {
+            const chosen = [...list.querySelectorAll('input:checked')].map(box => box.value);
+            link.hidden = !form.dataset.order || chosen.length === 0;
+            link.href = form.dataset.order + '?' + new URLSearchParams({ register_sld: sld, tlds: chosen.join(',') }).toString();
+        };
+        const addRow = (result) => {
+            const row = document.createElement('li');
+            const name = document.createElement('label');
+            const box = document.createElement('input');
+            box.type = 'checkbox';
+            box.value = result.tld;
+            box.disabled = result.available !== true;
+            box.checked = result.available === true && !list.querySelector('input:checked');
+            const domain = document.createElement('span');
+            domain.dir = 'ltr';
+            domain.textContent = result.domain;
+            name.append(box, ' ', domain);
+            const note = document.createElement('span');
+            note.className = 'embed-note';
+            note.textContent = result.available === true ? texts.available + ' · ' + money(result.price_registration)
+                : (result.available === false ? texts.taken : texts.unknown);
+            row.append(name, note);
+            list.append(row);
+        };
+
+        boxes.forEach(box => box.addEventListener('change', limit));
+        list.addEventListener('change', update);
+        form.addEventListener('submit', async function(event) {
             event.preventDefault();
-
-            const searchParams = new URLSearchParams({ sld: this.elements.sld.value, tld: this.elements.tld.value });
-
-            ClientFenceDomainCaptcha.fields()
-                .then(captcha => {
-                    for (const [key, value] of Object.entries(captcha)) {
-                        searchParams.append(key, value);
-                    }
-
-                    return fetch("{{ 'servicedomain/check'|api_url(role='guest') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: searchParams.toString()
-                    });
-                })
-                .then(response => response.json())
-                .then(json => {
-                    ClientFenceDomainCaptcha.after();
-                    alert(json.error ? json.error.message : {{ 'Domain is available'|trans|json_encode|raw }});
-                })
-                .catch(error => {
-                    alert({{ 'Error'|trans|json_encode|raw }});
-                });
+            const typed = this.elements.sld.value.trim().toLowerCase();
+            const dot = typed.indexOf('.');
+            sld = dot === -1 ? typed : typed.slice(0, dot);
+            const tlds = boxes.filter(box => box.checked).map(box => box.value);
+            if (dot !== -1 && !tlds.includes(typed.slice(dot))) {
+                tlds.unshift(typed.slice(dot));
+            }
+            if (!sld || !tlds.length) {
+                return;
+            }
+            const params = new URLSearchParams({ sld: sld });
+            tlds.forEach(tld => params.append('tlds[]', tld));
+            list.replaceChildren();
+            list.hidden = true;
+            update();
+            try {
+                const captcha = await ClientFenceDomainCaptcha.fields();
+                for (const [key, value] of Object.entries(captcha)) {
+                    params.append(key, value);
+                }
+                let answer = await post(params).finally(() => ClientFenceDomainCaptcha.after());
+                list.hidden = false;
+                answer.results.forEach(addRow);
+                update();
+                while (answer.search) {
+                    answer = await post(new URLSearchParams({ search: answer.search }));
+                    answer.results.forEach(addRow);
+                    update();
+                }
+            } catch (error) {
+                alert(error.message || texts.error);
+            }
         });
     });
 </script>

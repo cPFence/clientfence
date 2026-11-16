@@ -63,6 +63,8 @@ class RateLimiter implements InjectionAwareInterface
                 'guest_ticket_create' => ['policy' => 'fixed_window', 'limit' => 3, 'interval' => '1 hour'],
                 'order_generation_ip' => ['policy' => 'fixed_window', 'limit' => 15, 'interval' => '1 hour'],
                 'domain_lookup_ip' => ['policy' => 'fixed_window', 'limit' => 60, 'interval' => '1 hour'],
+                // ClientFence core patch (CF-139): the next batches of a bulk domain search, 3 per counted lookup (20 TLDs, 5 a call).
+                'domain_lookup_batch_ip' => ['policy' => 'fixed_window', 'limit' => 180, 'interval' => '1 hour'],
                 'invoice_payment_ip' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 'invoice_payment_hash' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 'invoice_pdf_ip' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],

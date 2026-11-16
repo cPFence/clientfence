@@ -904,6 +904,11 @@ class Service
             return false;
         }
 
+        // ClientFence core patch (CF-139): the pinned TLDs belong to the TLD permission (Servicedomain tld_pinned_update).
+        if ($param === 'servicedomain_pinned_tlds' && !$staff_service->hasPermission(null, 'servicedomain', 'manage_tlds')) {
+            return false;
+        }
+
         return true;
     }
 }
