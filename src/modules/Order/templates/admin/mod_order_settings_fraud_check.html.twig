@@ -1,17 +1,23 @@
 {# ClientFence: the Fraud check tab of the Orders settings page (Order/FraudCheck.php, CF-116). Its own form, saved
    in config.php by clientfence/fraud_check_save; Super Administrators only (it holds the service's key). "Test the
    connection" checks the typed details with one sample call and saves nothing. #}
+{# ClientFence core patch: the tab is a glass card under a ruled heading with the service as an on or off chip, the Save row stays in view (CF-135 redesign). #}
 <div class="tab-pane fade" id="tab-fraud-check" role="tabpanel">
 {% if not (guest.extension_is_on({ 'mod': 'clientfence' }) and admin.clientfence_backup_access) %}
-    <div class="card-body">
-        <p class="text-secondary mb-0">{{ 'Only Super Administrators can change the fraud check.'|trans }}</p>
+    <div class="card">
+        <div class="card-body">
+            <p class="text-secondary mb-0">{{ 'Only Super Administrators can change the fraud check.'|trans }}</p>
+        </div>
     </div>
 {% else %}
     {% set fraud = admin.clientfence_fraud_check_get %}
-    <form method="post" action="{{ 'clientfence/fraud_check_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceFraudCheckSaved' }) }}
+    <form class="card" method="post" action="{{ 'clientfence/fraud_check_save'|api_url }}" {{ fb_api_form({ callback: 'clientfenceFraudCheckSaved' }) }}
           data-cf-fraud-check data-saved-text="{{ 'Saved.'|trans }}">
         <div class="card-body">
-            <h3 class="card-title">{{ 'Fraud check on new orders'|trans }}</h3>
+            <h4 class="card-title">
+                {{ 'Fraud check on new orders'|trans }}
+                <span class="bf-chip{{ fraud.provider == 'off' ? '' : ' bf-tone-ok' }}">{{ fraud.provider == 'off' ? 'Off'|trans : 'On'|trans }}</span>
+            </h4>
             <p class="text-secondary">{{ 'Each order a client places in the client area is scored by the service before it is made (staff orders are not checked). An order scoring above the limit waits under Orders > Waiting for review: its invoice cannot be paid until you approve it. The client\'s email is sent hashed with its domain; card details are never sent. If the service cannot be reached or has no credit left, the order goes through and you get a notification.'|trans }}</p>
             <div class="row g-3">
                 <div class="col-lg-6">
@@ -44,7 +50,7 @@
             </label>
             <small class="form-hint">{{ 'MaxMind charges each check; FraudLabs Pro has a free plan of 500 checks a month. A check is kept for an hour, so a second try of the same order is not charged again.'|trans }}</small>
         </div>
-        <div class="card-footer d-flex flex-wrap justify-content-end gap-2">
+        <div class="card-footer cf-set-save">
             <button class="btn btn-outline-secondary" type="submit" name="do" value="test">{{ 'Test the connection'|trans }}</button>
             <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
         </div>

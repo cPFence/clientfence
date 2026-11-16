@@ -5,9 +5,19 @@
 {% set program_name = acct.programs[acct.program ~ '']|default('') %}
 {% set statuses = { queued: 'Waiting'|trans, sent: 'Sent'|trans, failed: 'Failed, will try again'|trans, stopped: 'Stopped'|trans, voided: 'Voided'|trans } %}
 {% set entities = { client: 'Client'|trans, invoice: 'Invoice'|trans, payment: 'Payment'|trans, credit: 'Credit note'|trans, surplus: 'Account credit'|trans } %}
-<div class="card mt-3 clientfence-settings" id="accounting" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
-	<div class="clientfence-settings-intro">
-		<h3>{{ 'Accounting'|trans }}</h3>
+{# ClientFence core patch: the section starts under a ruled heading with the connection as a chip, the sync log counts as chips, the Save row stays in view (CF-135 redesign). #}
+<div class="card clientfence-settings" id="accounting" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
+	<div class="clientfence-settings-intro cf-section-head border-0">
+		<h3 class="card-title">
+			{{ 'Accounting'|trans }}
+			{% if not acct.program %}
+				<span class="bf-chip">{{ 'Off'|trans }}</span>
+			{% elseif acct.connected %}
+				<span class="bf-chip bf-tone-ok">{{ 'Connected'|trans }}</span>
+			{% else %}
+				<span class="bf-chip bf-tone-warn">{{ 'Not connected'|trans }}</span>
+			{% endif %}
+		</h3>
 		<p>{{ 'Sends approved invoices with their clients, payments and refunds to your accounting program, one way: nothing comes back from it. Cron sends the changes every few minutes.'|trans }}</p>
 	</div>
 	{% if acct.notice %}
@@ -149,7 +159,7 @@
 				{% endfor %}
 			{% endif %}
 		{% endif %}
-		<div class="clientfence-settings-actions">
+		<div class="clientfence-settings-actions cf-set-save">
 			<button type="submit" class="btn btn-primary">{{ 'Save accounting settings'|trans }}</button>
 		</div>
 	</form>
@@ -194,8 +204,9 @@
 		<div class="clientfence-setting">
 			<div class="clientfence-setting-label">
 				<span class="form-label">{{ 'Sync log'|trans }}</span>
-				<div class="clientfence-setting-hint">
-					{% for status, count in acct.counts %}{{ statuses[status ~ '']|default(status) }}: {{ count }}{% if not loop.last %} · {% endif %}{% else %}{{ 'Nothing sent yet.'|trans }}{% endfor %}
+				{% set tones = { sent: ' bf-tone-ok', failed: ' bf-tone-bad', stopped: ' bf-tone-warn' } %}
+				<div class="clientfence-setting-hint cf-set-chips">
+					{% for status, count in acct.counts %}<span class="bf-chip{{ tones[status ~ '']|default('') }}">{{ statuses[status ~ '']|default(status) }}: {{ count }}</span>{% else %}{{ 'Nothing sent yet.'|trans }}{% endfor %}
 				</div>
 				{% if acct.counts.stopped|default(0) + acct.counts.failed|default(0) > 0 %}
 					<form class="mt-2" method="post" action="{{ 'invoice/accounting_resend_all'|api_url }}" {{ fb_api_form({ message: 'It will be sent on the next run.'|trans, reload: true }) }}>
@@ -220,7 +231,7 @@
 								<tr>
 									<td>{{ entities[row.entity ~ '']|default(row.entity) }} {{ row.number|default('#' ~ row.local_id) }}</td>
 									<td>
-										{{ statuses[row.status ~ '']|default(row.status) }}
+										<span class="bf-chip{{ tones[row.status ~ '']|default('') }}">{{ statuses[row.status ~ '']|default(row.status) }}</span>
 										{% if row.last_error %}<div class="text-secondary small">{{ row.last_error }}</div>{% endif %}
 									</td>
 									<td>{{ row.attempts }}</td>

@@ -1554,3 +1554,42 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
   button.bf-health-count { transition: none; }
   button.bf-health-count:hover { translate: none; }
 }
+
+/* ---- CF-135 part 5: billing settings ---- */
+/* Invoice, currency and order settings, fraud check, licences: the page title, a glass pill bar for the tabs,
+   each section its own glass card under a ruled heading, choices as tiles that tint when picked, and a Save row
+   on glass that stays at the bottom of the screen while its form is in view (form: to beat the tinted form footer). */
+.cf-set { display: flex; flex-direction: column; gap: 16px; }
+.cf-set .tab-pane > * + * { margin-top: 16px; }
+.cf-set .card { margin: 0; }
+.cf-set-tabs {
+  align-self: flex-start; flex-wrap: wrap; padding: 4px; border: 1px solid color-mix(in srgb, var(--bf-line) 85%, transparent);
+  border-radius: 16px; background: var(--bf-glass); box-shadow: var(--bf-shadow);
+}
+.bf-body form .cf-set-save {
+  position: sticky; bottom: 0; z-index: 2; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px;
+  background: color-mix(in srgb, var(--bf-surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.bf-body form.cf-set > .cf-set-save {
+  bottom: 12px; padding: 12px 16px; border: 1px solid color-mix(in srgb, var(--bf-line) 85%, transparent); border-radius: 14px;
+  box-shadow: 0 14px 32px -18px color-mix(in srgb, var(--bf-brand) 45%, transparent);
+}
+.bf-body .card > .cf-set-save:last-child, .bf-body .card > form:last-child > .cf-set-save:last-child { border-end-start-radius: 13px; border-end-end-radius: 13px; }
+.cf-choices { display: grid; gap: 8px; }
+.cf-choices > .form-check {
+  margin: 0; padding-block: 10px; padding-inline: 2.75rem 14px; border: 1px solid var(--bf-line); border-radius: 12px;
+  background: var(--bf-surface); transition: border-color .25s, background-color .25s, box-shadow .25s;
+}
+.cf-choices > .form-check:hover { border-color: color-mix(in srgb, var(--bf-teal) 40%, var(--bf-line)); }
+.cf-choices > .form-check:has(> .form-check-input:checked) {
+  border-color: color-mix(in srgb, var(--bf-teal) 55%, var(--bf-line)); background: color-mix(in srgb, var(--bf-teal) 8%, var(--bf-surface));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bf-teal) 10%, transparent);
+}
+.cf-choices .form-check-label { cursor: pointer; }
+.bf-body .alert-success.cf-notice { --cf-shade: var(--bf-ok); }
+.cf-set-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-choices > .form-check { transition: none; }
+}
