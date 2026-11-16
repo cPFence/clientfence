@@ -279,7 +279,7 @@
                     <div>
                         {% include 'partial_batch_delete.html.twig' with { 'action': 'order/batch_delete' } %}
                     </div>
-                    <div class="d-flex align-items-center gap-2 ms-auto">
+                    <div class="d-flex align-items-center gap-2 flex-grow-1">
                         {% include 'partial_pagination.html.twig' with { 'list': orders, 'url': 'order' } %}
                         {% if has_permission('order', 'export') %}
                         <a class="btn btn-secondary" href="{{ 'order/export_csv'|api_url(query: { CSRFToken: CSRFToken }) }}" title="{{ 'Export Orders'|trans }}">

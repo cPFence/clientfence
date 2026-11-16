@@ -282,7 +282,7 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-bf-bulk-action="remind" data-bf-bulk-call="invoice/batch_send_reminder">{{ 'Send Reminder'|trans }}</button>
                         <button type="button" class="btn btn-sm btn-danger" data-bf-bulk-action="delete" data-bf-bulk-call="invoice/batch_delete" data-bf-bulk-ask="Delete">{{ 'Delete'|trans }}</button>
                     </div>
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <div class="d-flex align-items-center gap-2 flex-wrap flex-grow-1">
                         {% include "partial_pagination.html.twig" with { 'list': invoices, 'url': 'invoice' } %}
                     </div>
                     <div class="d-flex align-items-center gap-2 ms-auto">

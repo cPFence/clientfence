@@ -240,8 +240,8 @@
 
     <div class="card-footer d-flex align-items-center justify-content-between">
         {% include 'partial_batch_delete.html.twig' with { 'action': 'invoice/batch_delete_transaction' } %}
-        {# ClientFence core patch: the pages sit on the right even while the hidden Delete Selected button is the footer's only other child. #}
-        <div class="d-flex align-items-center gap-2 ms-auto">
+        {# ClientFence core patch: the pagination box fills the footer, so its records selector sits at the start and its pages at the end, as on every list. #}
+        <div class="d-flex align-items-center gap-2 flex-grow-1">
             {% include 'partial_pagination.html.twig' with { 'list': transactions, 'url': 'invoice/transactions' } %}
         </div>
     </div>

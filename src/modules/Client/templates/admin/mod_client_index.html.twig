@@ -307,7 +307,7 @@
                             {% include 'partial_batch_delete.html.twig' with { 'action': 'client/batch_delete' } %}
                         {% endif %}
                     </div>
-                    <div class="d-flex align-items-center gap-2 ms-auto">
+                    <div class="d-flex align-items-center gap-2 flex-grow-1">
                         {% include 'partial_pagination.html.twig' with { 'list': clients, 'url': 'client' } %}
                         {% if has_permission('client', 'export') %}
                         <a class="btn btn-secondary" href="{{ 'client/export_csv'|api_url(query: { CSRFToken: CSRFToken }) }}" title="{{ 'Export Clients'|trans }}">

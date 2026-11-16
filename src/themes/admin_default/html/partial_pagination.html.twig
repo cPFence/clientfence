@@ -18,7 +18,8 @@
 {% set paginator = guest.system_paginator({ 'total': list.total, 'page_param': pageParam, (pageParam): currentPage, 'per_page': list.per_page }) %}
 {% set enablePerPageSelector = app_area == 'admin' and (show_per_page_selector|default(true)) %}
 {% set perPageOptions = per_page_options|default([10, 25, 50, 100]) %}
-{% set splitFooterControls = split_footer_controls|default(false) %}
+{# ClientFence core patch: admin lists split the footer by default, the records selector at the start and the pages at the end, the same on every page. #}
+{% set splitFooterControls = split_footer_controls|default(app_area == 'admin') %}
 {% set hasUrl = url is defined and url is not null %}
 {% set hash = hash|default('') %}
 {% if list.per_page not in perPageOptions %}
@@ -46,7 +47,7 @@
         {% endfor %}
     {% endif %}
 
-    <div class="{{ splitFooterControls ? 'd-flex align-items-center justify-content-between gap-2 w-100 flex-wrap' : 'd-flex align-items-center gap-2' }}">
+    <div class="{{ splitFooterControls ? 'd-flex align-items-center justify-content-between gap-2 flex-grow-1 flex-wrap' : 'd-flex align-items-center gap-2' }}">
         {% if showPerPageSelector %}
             {{ include('partial_record_selector.html.twig', {
                 record_selector_current: currentPerPage,

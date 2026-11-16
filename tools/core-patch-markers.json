@@ -7733,14 +7733,18 @@
     },
     {
         "file": "modules/Email/templates/admin/mod_email_history.html.twig",
-        "done": "{# ClientFence core patch: the pages sit on the right even while the hidden Delete Selected button is the footer's only other child. #}"
+        "done": "{# ClientFence core patch: the pagination box fills the footer, so its records selector sits at the start and its pages at the end, as on every list. #}"
     },
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_transactions.html.twig",
-        "done": "{# ClientFence core patch: the pages sit on the right even while the hidden Delete Selected button is the footer's only other child. #}"
+        "done": "{# ClientFence core patch: the pagination box fills the footer, so its records selector sits at the start and its pages at the end, as on every list. #}"
     },
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig",
-        "done": "{# ClientFence core patch: the pages sit on the right even while the hidden Delete Selected button is the footer's only other child. #}"
+        "done": "{# ClientFence core patch: the pagination box fills the footer, so its records selector sits at the start and its pages at the end, as on every list. #}"
+    },
+    {
+        "file": "themes/admin_default/html/partial_pagination.html.twig",
+        "done": "{# ClientFence core patch: admin lists split the footer by default, the records selector at the start and the pages at the end, the same on every page. #}"
     }
 ]
