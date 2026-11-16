@@ -7,8 +7,10 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'No access'|trans }}</li>{% endblock %}
 
 {% block content %}
-<div class="card" data-clientfence-no-access="{{ permission }}">
+{# ClientFence core patch: a centred card with a lock icon tile over the message (CF-135 redesign). #}
+<div class="card cf-acct-narrow" data-clientfence-no-access="{{ permission }}">
     <div class="empty-state">
+        <span class="cf-acct-icon cf-acct-icon-lg" aria-hidden="true"><svg class="icon"><use href="#lock"/></svg></span>
         <h1 class="h4">{{ 'You do not have access to this page'|trans }}</h1>
         <p>{{ 'Your user on this account cannot open this page. Ask the account owner for access.'|trans }}</p>
         <a class="btn btn-primary" href="{{ '/'|url }}">{{ 'Back to Dashboard'|trans }}</a>

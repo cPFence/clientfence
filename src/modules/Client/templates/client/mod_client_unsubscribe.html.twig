@@ -10,8 +10,10 @@
 {% block breadcrumb %}<li class="breadcrumb-item active" aria-current="page">{{ 'Unsubscribe'|trans }}</li>{% endblock %}
 
 {% block content %}
-    <div class="card">
-        <div class="card-header py-3">
+    {# ClientFence core patch: a centred card headed by a mail icon tile (CF-135 redesign). #}
+    <div class="card cf-acct-narrow">
+        <div class="card-header cf-acct-who py-3">
+            <span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#mail"/></svg></span>
             <h1 class="h5 mb-0">{{ 'Marketing Email'|trans }}</h1>
         </div>
         <div class="card-body">

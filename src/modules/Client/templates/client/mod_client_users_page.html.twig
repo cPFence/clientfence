@@ -67,31 +67,35 @@
     </div>
 </div>
 
-<div class="card mb-4">
+{# ClientFence core patch: users and invitations as rows with an avatar or mail tile, a tinted hover and an empty state with its icon (CF-135 redesign). #}
+<div class="card mb-4 cf-acct-list">
     <div class="card-header"><h2>{{ 'Users of this account'|trans }}</h2></div>
     {% if users_page.users is empty %}
-        <div class="empty-state">{{ 'No one else has access to this account yet.'|trans }}</div>
+        <div class="empty-state"><svg class="icon" aria-hidden="true"><use href="#users"/></svg>{{ 'No one else has access to this account yet.'|trans }}</div>
     {% else %}
         <div class="list-group list-group-flush">
             {% for user in users_page.users %}
                 {% set is_self = users_page.self == user.id %}
                 <div class="list-group-item py-3" data-clientfence-user="{{ user.id }}">
                     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
-                        <div class="min-w-0">
-                            <div class="fw-semibold">{{ user.first_name }} {{ user.last_name }}{% if is_self %} <span class="badge text-bg-secondary">{{ 'You'|trans }}</span>{% endif %}</div>
-                            <div class="small text-body-secondary text-truncate" dir="ltr">{{ user.email }}</div>
-                            <div class="small mt-1">
-                                {% if user.owner %}
-                                    <span class="badge text-bg-primary">{{ 'Full access, like the owner'|trans }}</span>
-                                {% elseif user.permissions is empty %}
-                                    <span class="text-body-secondary">{{ 'No permissions'|trans }}</span>
-                                {% else %}
-                                    {% for permission in user.permissions %}{% if labels[permission] is defined %}<span class="badge text-bg-secondary me-1 mb-1">{{ labels[permission]|trans }}</span>{% endif %}{% endfor %}
-                                {% endif %}
-                            </div>
-                            <div class="small text-body-secondary mt-1">
-                                {% if user.status != 'active' %}{{ 'Switched off by staff'|trans }} · {% endif %}
-                                {{ 'Last sign-in'|trans }}: {{ user.last_login_at ? user.last_login_at|format_date : 'Never'|trans }}
+                        <div class="cf-acct-who">
+                            {{ avatar(user.email, 40, 'rounded-circle', null, 'div') }}
+                            <div class="min-w-0">
+                                <div class="fw-semibold">{{ user.first_name }} {{ user.last_name }}{% if is_self %} <span class="badge text-bg-secondary">{{ 'You'|trans }}</span>{% endif %}</div>
+                                <div class="small text-body-secondary text-truncate" dir="ltr">{{ user.email }}</div>
+                                <div class="small mt-1">
+                                    {% if user.owner %}
+                                        <span class="badge text-bg-primary">{{ 'Full access, like the owner'|trans }}</span>
+                                    {% elseif user.permissions is empty %}
+                                        <span class="text-body-secondary">{{ 'No permissions'|trans }}</span>
+                                    {% else %}
+                                        {% for permission in user.permissions %}{% if labels[permission] is defined %}<span class="badge text-bg-secondary me-1 mb-1">{{ labels[permission]|trans }}</span>{% endif %}{% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="small text-body-secondary mt-1">
+                                    {% if user.status != 'active' %}{{ 'Switched off by staff'|trans }} · {% endif %}
+                                    {{ 'Last sign-in'|trans }}: {{ user.last_login_at ? user.last_login_at|format_date : 'Never'|trans }}
+                                </div>
                             </div>
                         </div>
                         {% if not is_self %}
@@ -123,14 +127,17 @@
 </div>
 
 {% if users_page.invites is not empty %}
-    <div class="card">
+    <div class="card cf-acct-list">
         <div class="card-header"><h2>{{ 'Pending invitations'|trans }}</h2></div>
         <div class="list-group list-group-flush">
             {% for invite in users_page.invites %}
                 <div class="list-group-item py-3 d-flex flex-wrap justify-content-between align-items-center gap-2" data-clientfence-invite="{{ invite.id }}">
-                    <div class="min-w-0">
-                        <div class="fw-semibold text-truncate" dir="ltr">{{ invite.email }}</div>
-                        <div class="small text-body-secondary">{{ 'Expires'|trans }} {{ invite.expires_at|format_date }}</div>
+                    <div class="cf-acct-who">
+                        <span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#mail"/></svg></span>
+                        <div class="min-w-0">
+                            <div class="fw-semibold text-truncate" dir="ltr">{{ invite.email }}</div>
+                            <div class="small text-body-secondary">{{ 'Expires'|trans }} {{ invite.expires_at|format_date }}</div>
+                        </div>
                     </div>
                     <div class="d-flex gap-2">
                         <form action="{{ 'client/users_invite_resend'|api_url }}" {{ fb_api_form({redirect: 'users'|url(query: { done: 'resent' })}) }}>

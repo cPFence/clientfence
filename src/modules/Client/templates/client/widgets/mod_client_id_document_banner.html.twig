@@ -4,8 +4,10 @@
 {% if client is defined and client %}
     {% set identity = client.client_id_document_status %}
     {% if identity.needed and (order is not defined or order.id in identity.held) %}
-        <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2 mb-4" role="alert">
-            <div class="flex-grow-1">
+        {# ClientFence core patch: the banner in the dashboard's due-invoice style, an amber panel with its icon tile (CF-135 redesign). #}
+        <div class="cf-due" role="alert">
+            <span class="cf-due-icon" aria-hidden="true"><svg class="icon"><use href="#user-circle"/></svg></span>
+            <div class="cf-due-text">
                 {% if identity.held %}{{ 'Upload an ID document to complete your order.'|trans }}{% else %}{{ 'Please upload an ID document to verify your account.'|trans }}{% endif %}
                 {% if identity.latest and identity.latest.status == 'refused' %}<div class="small">{{ 'Your last ID document was refused: :reason'|trans({ ':reason': identity.latest.reason }) }}</div>{% endif %}
             </div>

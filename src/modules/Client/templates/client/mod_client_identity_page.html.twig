@@ -12,9 +12,12 @@
 
 {% block content %}
     {% set latest = identity.latest %}
+    {# ClientFence core patch: the shared page head, the front and back uploads as dashed drop tiles (CF-135 redesign). #}
+    <div class="bf-page-head mb-4">
+        <h1 class="bf-page-title">{{ 'ID document'|trans }}</h1>
+    </div>
     <div class="card mb-4">
         <div class="card-body">
-            <h1 class="h3">{{ 'ID document'|trans }}</h1>
             {% if identity.text %}<div class="mb-3">{{ identity.text|markdown_to_html }}</div>{% endif %}
             {% if latest and latest.status == 'approved' %}
                 <div class="alert alert-success mb-0" role="status">{{ 'Your ID document was approved. Thank you.'|trans }}</div>
@@ -30,12 +33,16 @@
                 <form method="post" data-cf-identity enctype="multipart/form-data">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label" for="cf-identity-front">{{ 'Front'|trans }}</label>
-                            <input class="form-control" type="file" id="cf-identity-front" name="front" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" required>
+                            <div class="cf-id-drop">
+                                <label class="form-label" for="cf-identity-front">{{ 'Front'|trans }}</label>
+                                <input class="form-control" type="file" id="cf-identity-front" name="front" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf" required>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="cf-identity-back">{{ 'Back (if it has one)'|trans }}</label>
-                            <input class="form-control" type="file" id="cf-identity-back" name="back" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf">
+                            <div class="cf-id-drop">
+                                <label class="form-label" for="cf-identity-back">{{ 'Back (if it has one)'|trans }}</label>
+                                <input class="form-control" type="file" id="cf-identity-back" name="back" accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf">
+                            </div>
                         </div>
                     </div>
                     <button class="btn btn-primary mt-3" type="submit">{{ 'Send the ID document'|trans }}</button>
