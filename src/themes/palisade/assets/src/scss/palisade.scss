@@ -1373,6 +1373,16 @@ dd {
   --bs-btn-hover-bg: #{$navy-600};
 }
 
+// Secondary buttons hover in a soft accent tint instead of Bootstrap's flat grey fill.
+.btn-outline-secondary {
+  --bs-btn-hover-bg: rgba(var(--pal-accent-rgb), .1);
+  --bs-btn-hover-color: var(--pal-accent);
+  --bs-btn-hover-border-color: rgba(var(--pal-accent-rgb), .45);
+  --bs-btn-active-bg: rgba(var(--pal-accent-rgb), .16);
+  --bs-btn-active-color: var(--pal-accent);
+  --bs-btn-active-border-color: rgba(var(--pal-accent-rgb), .6);
+}
+
 .badge {
   font-weight: 600;
 }

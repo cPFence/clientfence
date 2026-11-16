@@ -1002,6 +1002,13 @@ a.bf-file-name:hover .icon { color: inherit; }
 .bf-shell .btn { transition: transform .2s var(--bf-ease), box-shadow .25s, background-color .25s, border-color .25s; }
 .bf-shell .btn:hover { transform: translateY(-1px); }
 .bf-shell .btn:active { transform: translateY(0) scale(.98); }
+/* Secondary buttons hover in the theme's soft teal instead of Tabler's flat grey fill. */
+.bf-shell :is(.btn-outline-secondary, .btn-ghost-secondary) {
+  --tblr-btn-hover-bg: var(--bf-soft); --tblr-btn-hover-color: var(--bf-soft-ink);
+  --tblr-btn-hover-border-color: color-mix(in srgb, var(--bf-teal) 45%, transparent);
+  --tblr-btn-active-bg: var(--bf-soft); --tblr-btn-active-color: var(--bf-soft-ink);
+  --tblr-btn-active-border-color: color-mix(in srgb, var(--bf-teal) 60%, transparent);
+}
 .bf-shell .btn-primary, .bf-shell .btn-primary:hover, .bf-shell .btn-primary:focus {
   background-image: linear-gradient(135deg, var(--bf-brand), color-mix(in srgb, var(--bf-teal) 80%, var(--bf-brand)));
   border-color: transparent; box-shadow: 0 6px 18px -8px var(--bf-brand);
