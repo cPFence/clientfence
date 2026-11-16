@@ -14,6 +14,7 @@
 
 {% block content %}
     {% set ticket = feedback.ticket %}
+    {% if client %}<a class="bf-linkbtn" href="{{ 'support'|url }}"><span class="flip-rtl d-inline-block" aria-hidden="true">←</span> {{ 'Back'|trans }}</a>{% endif %}
     {# ClientFence core patch: a centred card headed by its icon tile, the ticket's facts in a quiet band, each staff member's score as a row of round buttons (CF-135 redesign). #}
     <div class="card cf-acct-narrow">
         <div class="card-header cf-acct-who py-3">

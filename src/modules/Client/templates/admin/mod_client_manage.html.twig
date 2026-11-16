@@ -909,7 +909,7 @@
                     <div class="cf-kpi-value">{{ client.balance|format_currency(client.currency ?? default_currency) }}</div>
                     <div class="cf-kpi-sub">{{ 'Low balance alert'|trans }}: {{ balance_alert and balance_alert.threshold is not null ? 'Alert below :amount'|trans({ ':amount': balance_alert.threshold|format_currency(client.currency ?? default_currency) }) : 'Off'|trans }}</div>
                 </div>
-                <a class="btn btn-primary ms-auto" href="#inputAmount"><svg class="icon"><use href="#plus" /></svg>{{ 'Add Funds'|trans }}</a>
+                <label class="btn btn-primary ms-auto" for="inputAmount"><svg class="icon"><use href="#plus" /></svg>{{ 'Add Funds'|trans }}</label>
             </div>
             {% embed 'partial_admin_related_section.html.twig' with {
                 title: 'Credit History'|trans,
