@@ -54,7 +54,8 @@
         </div>
     {% endif %}
     {% if report.currency or report.filters.from|default('') or report.filters.to|default('') or report.filters.month|default('') %}
-        <div class="card-body py-2 text-secondary small">
+        {# ClientFence core patch: the period and currency as chips, the client with initials, the empty report gets the shared empty state (CF-135 redesign). #}
+        <div class="card-body py-2 cf-inv-chips">
             {% set facts = [] %}
             {% if report.filters.month|default('') %}{% set facts = facts|merge([(report.filters.month ~ '-01')|format_date(pattern: 'MMMM y')]) %}{% endif %}
             {% if report.filters.from|default('') or report.filters.to|default('') %}
@@ -63,14 +64,17 @@
                 {% set facts = facts|merge(['All dates'|trans]) %}
             {% endif %}
             {% if report.currency %}{% set facts = facts|merge([report.currency]) %}{% endif %}
-            {{ facts|join(' · ') }}
+            {% for fact in facts %}<span class="bf-chip">{{ fact }}</span>{% endfor %}
         </div>
     {% endif %}
     {% if report.client %}
-        <div class="card-body py-2 border-bottom">
-            <a href="{{ ('client/manage/' ~ report.client.id)|url }}" class="fw-medium">{{ report.client.company ?: report.client.name }}</a>
-            {% if report.client.company and report.client.name %}<span class="text-secondary"> · {{ report.client.name }}</span>{% endif %}
-            <span class="text-secondary"> · {{ report.client.email }} · #{{ report.client.id }}</span>
+        <div class="card-body py-2 border-bottom d-flex align-items-center gap-2">
+            <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (report.client.company ?: report.client.name)|first|upper }}</span>
+            <div>
+                <a href="{{ ('client/manage/' ~ report.client.id)|url }}" class="fw-medium">{{ report.client.company ?: report.client.name }}</a>
+                {% if report.client.company and report.client.name %}<span class="text-secondary"> · {{ report.client.name }}</span>{% endif %}
+                <span class="text-secondary"> · {{ report.client.email }} · <bdi>#{{ report.client.id }}</bdi></span>
+            </div>
         </div>
     {% endif %}
     {% if report.notice %}
@@ -96,7 +100,7 @@
                         {% endfor %}
                     </tr>
                 {% else %}
-                    {% if not report.notice %}<tr><td colspan="{{ report.columns|length }}" class="text-secondary">{{ 'Nothing to show for these filters.'|trans }}</td></tr>{% endif %}
+                    {% if not report.notice %}<tr><td colspan="{{ report.columns|length }}" class="text-muted">{{ 'Nothing to show for these filters.'|trans }}</td></tr>{% endif %}
                 {% endfor %}
             </tbody>
             {% if report.total and report.rows %}

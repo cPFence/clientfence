@@ -68,7 +68,8 @@
                         <td class="text-secondary">{{ quote.created_at|date('Y-m-d') }}</td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="7" class="text-secondary">{{ 'No quotes yet.'|trans }}</td></tr>
+                    {# ClientFence core patch: the empty list gets the shared empty state (CF-135 redesign). #}
+                    <tr><td colspan="7" class="text-muted">{{ 'No quotes yet.'|trans }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>

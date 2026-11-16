@@ -24,8 +24,7 @@
 
 {% block content %}
 {% embed 'partial_admin_detail_tabs.html.twig' with {
-    title: transaction.txn_id|default('#' ~ transaction.id),
-    subtitle: 'Review transaction details, correct payment metadata, and inspect the raw callback payload.'|trans
+    title: transaction.txn_id|default('#' ~ transaction.id)
 } %}
     {% block detail_tabs %}
                     <li class="nav-item" role="presentation">
@@ -48,92 +47,61 @@
             <div class="card-body">
                 {% embed 'partial_admin_summary_card.html.twig' with {
                     title: 'Transaction Details'|trans ~ ' #' ~ transaction.id,
-                    subtitle: 'Review the stored payment record, gateway response details, and current processing status.'|trans,
                     centered_actions: true
                 } %}
                     {% import 'macro_functions.html.twig' as mf %}
                     {% block summary_content %}
-                        {% if transaction.error %}
-                            <div class="px-3 pt-3">
-                                <strong class="text-danger">{{ transaction.error_code }} - {{ transaction.error }}</strong>
-                                <p class="mb-0">{{ 'If you are sure that this transaction is valid you can update transaction details in &quot;Manage&quot; tab and try processing transaction again'|trans }}</p>
+                        {# ClientFence core patch: the summary reads first: the amount in its status colour, the status chips, any error, then the facts (CF-135 redesign). #}
+                        {% set tone = transaction.error or transaction.status == 'error' ? 'bad' : (transaction.status == 'processed' ? 'ok' : 'warn') %}
+                        <div class="cf-inv cf-pay">
+                            <div class="cf-inv-hero">
+                                <div>
+                                    <div class="cf-inv-figure cf-tone-{{ tone }}">{{ (transaction.amount ?? 0)|format_currency(transaction.currency ?? default_currency) }}</div>
+                                    <div class="text-secondary">{{ transaction.gateway|default('-') }} · {{ transaction.created_at|format_date }}</div>
+                                </div>
+                                <div class="cf-inv-chips">
+                                    {{ mf.status_badge(transaction.status, 'transaction') }}
+                                </div>
                             </div>
-                        {% endif %}
-
-                        {# ClientFence: the details table scrolls on phones instead of running off the card. #}
-                        <div class="table-responsive">
-                        <table class="table card-table table-vcenter table-striped text-nowrap">
-                            <tbody>
-                                <tr>
-                                    <td class="w-50 text-end">{{ 'ID'|trans }}</td>
-                                    <td>{{ transaction.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Invoice ID'|trans }}</td>
-                                    <td>
-                                        <a href='{{ "invoice/manage/#{transaction.invoice_id}"|url }}'>{{ transaction.invoice_id|default('-') }}</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Amount'|trans }}</td>
-                                    <td>{{ (transaction.amount ?? 0)|format_currency(transaction.currency ?? default_currency) }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Payment Gateway'|trans }}</td>
-                                    <td>{{ transaction.gateway|default('-') }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Transaction ID on Payment Gateway'|trans }}</td>
-                                    <td>{{ transaction.txn_id|default('-') }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Transaction Status on Payment Gateway'|trans }}</td>
-                                    <td>
-                                        {% if transaction.txn_status %}
-                                            {{ mf.status_badge(transaction.txn_status, 'gateway_tx') }}
-                                        {% else %}
-                                            {{ mf.text_badge('-', 'text-bg-secondary') }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'Status'|trans }}</td>
-                                    <td>{{ mf.status_badge(transaction.status, 'transaction') }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">{{ 'IP'|trans }}</td>
-                                    <td>
-                                        {{ transaction.ip }}
-                                        {% set ip_country_code = transaction.ip|ip_country_code %}
-                                        {% set ip_country_name = transaction.ip|ip_country_name %}
-                                        {% if ip_country_code %}
-                                            <span class="flag flag-country-{{ ip_country_code }} ms-1" title="{{ ip_country_name|default('Unknown') }}"></span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% if transaction.note %}
-                                <tr>
-                                    <td class="text-end">{{ 'Note'|trans }}</td>
-                                    <td>
-                                        <svg class="icon">
-                                            <use href="#notes" />
-                                        </svg>
-                                        <a href="#tab-note" role="button" data-tab-jump>{{ transaction.note }}</a>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                                <tr>
-                                    <td class="text-end">{{ 'Received At'|trans }}</td>
-                                    <td>{{ transaction.created_at|format_date }}</td>
-                                </tr>
+                            {% if transaction.error %}
+                                <div class="cf-inv-note">
+                                    <strong class="text-danger">{{ transaction.error_code }} - {{ transaction.error }}</strong>
+                                    <p class="mb-0 text-secondary small">{{ 'If you are sure that this transaction is valid you can update transaction details in &quot;Manage&quot; tab and try processing transaction again'|trans }}</p>
+                                </div>
+                            {% endif %}
+                            <dl class="cf-facts">
+                                <div><dt>{{ 'ID'|trans }}</dt><dd>{{ transaction.id }}</dd></div>
+                                <div><dt>{{ 'Invoice ID'|trans }}</dt><dd><a href='{{ "invoice/manage/#{transaction.invoice_id}"|url }}'>{{ transaction.invoice_id|default('-') }}</a></dd></div>
+                                <div><dt>{{ 'Payment Gateway'|trans }}</dt><dd>{{ transaction.gateway|default('-') }}</dd></div>
+                                <div><dt>{{ 'Transaction ID on Payment Gateway'|trans }}</dt><dd>{{ transaction.txn_id|default('-') }}</dd></div>
+                                <div><dt>{{ 'Transaction Status on Payment Gateway'|trans }}</dt><dd>
+                                    {% if transaction.txn_status %}
+                                        {{ mf.status_badge(transaction.txn_status, 'gateway_tx') }}
+                                    {% else %}
+                                        {{ mf.text_badge('-', 'text-bg-secondary') }}
+                                    {% endif %}
+                                </dd></div>
+                                <div><dt>{{ 'IP'|trans }}</dt><dd>
+                                    {{ transaction.ip }}
+                                    {% set ip_country_code = transaction.ip|ip_country_code %}
+                                    {% set ip_country_name = transaction.ip|ip_country_name %}
+                                    {% if ip_country_code %}
+                                        <span class="flag flag-country-{{ ip_country_code }} ms-1" title="{{ ip_country_name|default('Unknown') }}"></span>
+                                    {% endif %}
+                                </dd></div>
+                                <div><dt>{{ 'Received At'|trans }}</dt><dd>{{ transaction.created_at|format_date }}</dd></div>
                                 {% if transaction.created_at != transaction.updated_at %}
-                                <tr>
-                                    <td class="text-end">{{ 'Updated At'|trans }}</td>
-                                    <td>{{ transaction.updated_at|format_date }}</td>
-                                </tr>
+                                <div><dt>{{ 'Updated At'|trans }}</dt><dd>{{ transaction.updated_at|format_date }}</dd></div>
                                 {% endif %}
-                            </tbody>
-                        </table>
+                                {% if transaction.note %}
+                                <div class="cf-facts-wide"><dt>{{ 'Note'|trans }}</dt><dd>
+                                    <svg class="icon">
+                                        <use href="#notes" />
+                                    </svg>
+                                    <a href="#tab-note" role="button" data-tab-jump>{{ transaction.note }}</a>
+                                </dd></div>
+                                {% endif %}
+                            </dl>
                         </div>
                     {% endblock %}
 

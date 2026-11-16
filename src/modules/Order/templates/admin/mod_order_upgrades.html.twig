@@ -65,7 +65,8 @@
                         <td class="text-end text-nowrap">{{ up.amount|format_currency(up.currency) }}</td>
                         <td class="text-nowrap">
                             <span class="badge {{ status_classes[up.status]|default('bg-secondary-lt') }}">{{ up.status|capitalize|trans }}</span>
-                            {% if up.invoice_id %}<a class="ms-1" href="{{ "invoice/manage/#{up.invoice_id}"|url }}">#{{ up.invoice_id }}</a>{% endif %}
+                            {# ClientFence core patch: the invoice number isolated for right-to-left languages (CF-135 redesign). #}
+                            {% if up.invoice_id %}<a class="ms-1" href="{{ "invoice/manage/#{up.invoice_id}"|url }}"><bdi>#{{ up.invoice_id }}</bdi></a>{% endif %}
                         </td>
                     </tr>
                     {% else %}

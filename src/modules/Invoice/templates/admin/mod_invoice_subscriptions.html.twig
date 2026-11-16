@@ -22,7 +22,6 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Subscriptions'|trans }}</h3>
-                <p class="card-subtitle">{{ 'Manage recurring billing subscriptions and create new subscription records.'|trans }}</p>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -131,6 +130,7 @@
                 </form>
             </section>
             <div class="table-responsive">
+            {# ClientFence core patch: initials avatars instead of the drawn identicons, amounts right-aligned with the period beside them (CF-135 redesign). #}
             <table class="table card-table table-vcenter table-striped text-nowrap">
                 <thead>
                     <tr>
@@ -140,7 +140,7 @@
                         <th class="w-1"></th>
                         <th>{{ 'Name'|trans }}</th>
                         <th class="w-1">{{ 'ID'|trans }}</th>
-                        <th>{{ 'Amount'|trans }}</th>
+                        <th class="text-end">{{ 'Amount'|trans }}</th>
                         <th>{{ 'Gateway'|trans }}</th>
                         <th>{{ 'Status'|trans }}</th>
                         <th class="w-1"></th>
@@ -155,14 +155,14 @@
                         </td>
                         <td>
                             <a href='{{ "client/manage/#{subscription.client.id}"|url }}'>
-                                {{ avatar(subscription.client.email, 24, 'avatar avatar-xs') }}
+                                <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ (subscription.client.first_name|first ~ subscription.client.last_name|first)|upper }}</span>
                             </a>
                         </td>
                         <td>
                             <a href='{{ "client/manage/#{subscription.client.id}"|url }}'>{{ subscription.client.first_name }} {{ subscription.client.last_name }}</a>
                         </td>
                         <td>{{ subscription.sid }}</td>
-                        <td>{{ subscription.amount|format_currency(subscription.currency ?? default_currency) }} {{ subscription.period|period_title }}</td>
+                        <td class="text-end">{{ subscription.amount|format_currency(subscription.currency ?? default_currency) }} <span class="text-secondary">{{ subscription.period|period_title }}</span></td>
                         <td>{{ subscription.gateway.title|default('') }}</td>
                         <td>{{ mf.status_badge(subscription.status, 'subscription') }}</td>
                         <td>

@@ -59,6 +59,7 @@
         </div>
     </div>
     <div class="table-responsive">
+        {# ClientFence core patch: the kind and each value as chips (CF-135 redesign). #}
         <table class="table card-table table-vcenter">
             <thead>
                 <tr>
@@ -76,10 +77,10 @@
                         {% if option.code %}<code class="ms-1">{{ option.code }}</code>{% endif %}
                         {% if option.hidden %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden'|trans }}</span>{% endif %}
                     </td>
-                    <td class="text-nowrap">{{ kinds[option.type]|default(option.type) }}</td>
+                    <td class="text-nowrap"><span class="bf-chip">{{ kinds[option.type]|default(option.type) }}</span></td>
                     <td>
                         {% if option.type in ['select', 'radio'] %}
-                            {% for value in option.values %}{{ value.title }}{% if value.hidden %} ({{ 'hidden'|trans }}){% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
+                            <div class="cf-inv-chips">{% for value in option.values %}<span class="bf-chip">{{ value.title }}{% if value.hidden %} ({{ 'hidden'|trans }}){% endif %}</span>{% endfor %}</div>
                         {% elseif option.type == 'quantity' %}
                             {{ option.qty_min }}–{{ option.qty_max ?: '∞' }} {{ option.unit }}
                         {% else %}

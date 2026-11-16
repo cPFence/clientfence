@@ -1,7 +1,8 @@
 {# ClientFence: the order's waiting cancellation request, on the order page (ClientFence\Mod\Order\CancelRequests). #}
 {% set cancel_request = admin.order_cancel_request_get({ 'id': order.id }) %}
 {% if cancel_request %}
-    <div class="alert alert-warning" role="alert">
+    {# ClientFence core patch: the notice as a tinted banner in its colour, matching the order page (CF-135 redesign). #}
+    <div class="cf-notice alert alert-warning" role="alert">
         <h4 class="alert-title">{{ 'The client asked to cancel this service'|trans }}</h4>
         <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
             <span class="badge bg-warning-lt">{{ cancel_request.type == 'end_of_period' ? 'End of billing period'|trans : 'Immediate'|trans }}</span>

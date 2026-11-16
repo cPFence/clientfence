@@ -6,7 +6,8 @@
 {% set fixed = admin.product_currency_prices_get({ kind: kind, id: id }) %}
 {% set with_setup = setup ?? true %}
 {% if fixed.currencies|length > 0 %}
-<details class="mt-4 border rounded p-3" data-cf-fixed-prices{% if fixed.currencies|filter(c => c.prices|length > 0)|length > 0 %} open{% endif %}>
+{# ClientFence core patch: the box as a tinted fold with a turning chevron, each currency code as a chip (CF-135 redesign). #}
+<details class="cf-fold mt-4 p-3" data-cf-fixed-prices{% if fixed.currencies|filter(c => c.prices|length > 0)|length > 0 %} open{% endif %}>
     <summary class="fw-medium">{{ 'Prices in other currencies'|trans }}</summary>
     <p class="text-secondary mt-2 mb-3">{{ 'Set a fixed price in a currency, or leave it blank to convert the default currency price at the rate (shown in grey). A fixed price stays the same when the rate changes. New orders get it; existing services keep their own price.'|trans }}</p>
     <p class="text-secondary mb-0" data-cf-fixed-free{% if (pricing_type ?? '') != 'free' %} hidden{% endif %}>{{ 'This product is free in every currency.'|trans }}</p>
@@ -15,7 +16,7 @@
         <table class="table card-table table-vcenter mb-0">
             <thead>
                 <tr>
-                    <th>{{ c.code }} <span class="text-secondary fw-normal">{{ 'Rate :rate'|trans({ ':rate': c.rate }) }}</span></th>
+                    <th><span class="bf-chip">{{ c.code }}</span> <span class="text-secondary fw-normal">{{ 'Rate :rate'|trans({ ':rate': c.rate }) }}</span></th>
                     {% if with_setup %}<th>{{ 'Setup Price'|trans }} ({{ c.code }})</th>{% endif %}
                     <th>{{ 'Price'|trans }} ({{ c.code }})</th>
                 </tr>

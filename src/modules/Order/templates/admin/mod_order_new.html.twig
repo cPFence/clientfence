@@ -51,18 +51,7 @@
 {% block content %}
 {# ClientFence core patch: Add New Order as WHMCS: products and domains for one client in one order with one invoice,
    and an Order Summary priced by order/quote, the same code that makes the order. #}
-<style>
-    .cf-order-summary { position: sticky; top: 1rem; }
-    .cf-order-item { border: 1px solid var(--tblr-border-color); border-radius: var(--tblr-border-radius); background: var(--tblr-bg-surface-secondary); }
-    .cf-order-item + .cf-order-item { margin-top: 1rem; }
-    .cf-order-lines li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 .75rem; padding: .625rem 0; border-bottom: 1px dashed var(--tblr-border-color); }
-    .cf-order-lines li > :first-child { overflow-wrap: anywhere; }
-    .cf-order-lines small { grid-column: 1 / -1; }
-    .cf-order-amount { font-variant-numeric: tabular-nums; text-align: end; }
-    .cf-order-totals { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .375rem .75rem; }
-    .cf-order-totals dd { margin: 0; }
-    @media (max-width: 991.98px) { .cf-order-summary { position: static; } }
-</style>
+{# ClientFence core patch: the page styles move to the admin stylesheet (CF-135 part 4); the item boxes and the Order Summary get the glass look, the total due today reads as the figure (CF-135 redesign). #}
 
 <form id="cf-new-order" novalidate data-products="{{ products|json_encode|e('html_attr') }}" data-tlds="{{ tlds|json_encode|e('html_attr') }}" data-periods="{{ periods|json_encode|e('html_attr') }}" data-today="{{ 'now'|date('Y-m-d', false) }}">
     <div class="row g-4">
