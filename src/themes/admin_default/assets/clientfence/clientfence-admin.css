@@ -1041,7 +1041,9 @@ a.bf-file-name:hover .icon { color: inherit; }
 }
 [data-bs-theme="dark"] .cf-avatar { color: var(--bf-soft-ink); }
 .cf-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); margin: 0; border-top: 1px solid var(--bf-line); }
-.cf-facts > div { padding: 14px 20px; border-bottom: 1px solid color-mix(in srgb, var(--bf-line) 60%, transparent); }
+/* Each fact spans two rows of the grid (label, value) as a subgrid, so a label that wraps to two lines moves its
+   whole row: the values of a row always start on the same line. */
+.cf-facts > div { display: grid; grid-row: span 2; grid-template-rows: subgrid; padding: 14px 20px; border-bottom: 1px solid color-mix(in srgb, var(--bf-line) 60%, transparent); }
 .cf-facts dt, .cf-label { margin-bottom: 4px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--bf-muted); }
 .cf-facts dd { margin: 0; font-weight: 500; }
 .cf-inv-notes { padding: 14px 20px; }
@@ -1483,7 +1485,7 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
    the chips line up whatever the length of the name. */
 .cf-signin-sum .cf-facts { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); border-top: 0; overflow: hidden; }
 /* The divider pokes 1px past its cell, so the outer column's one is clipped at the card edge. */
-.cf-signin-sum .cf-facts > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin-inline-end: -1px; border-inline-end: 1px solid color-mix(in srgb, var(--bf-line) 60%, transparent); }
+.cf-signin-sum .cf-facts > div { grid-row: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin-inline-end: -1px; border-inline-end: 1px solid color-mix(in srgb, var(--bf-line) 60%, transparent); }
 .cf-signin-sum .cf-facts dt { margin: 0; font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--bf-ink); }
 .cf-signin-sum .cf-facts dd { flex-shrink: 0; }
 .cf-signin-sum { background-image: radial-gradient(380px 160px at 100% 0%, color-mix(in srgb, var(--bf-teal) 10%, transparent), transparent 70%); }
