@@ -219,7 +219,8 @@ final class Reports
         $sums = array_fill_keys(array_keys($buckets), [0, 0.0]);
         $today = strtotime(date('Y-m-d', $now));
         $invoices = $db->fetchAllAssociative(
-            'SELECT i.id, COALESCE(i.due_at, i.created_at) AS due, ' . self::invoiceTotal() . ' AS total FROM invoice i WHERE i.status = ? AND i.currency = ?',
+            // An unpaid Mass Pay invoice is not owed again: the invoices it lists are here (MassPay.php).
+            'SELECT i.id, COALESCE(i.due_at, i.created_at) AS due, ' . self::invoiceTotal() . ' AS total FROM invoice i WHERE i.status = ? AND i.currency = ? AND NOT ' . MassPay::sql('i.id'),
             ['unpaid', $report['currency']]
         );
         foreach ($invoices as $invoice) {

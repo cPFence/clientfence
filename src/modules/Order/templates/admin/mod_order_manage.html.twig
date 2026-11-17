@@ -128,6 +128,10 @@
                                     {% if order.client.company|default('') %}<span class="text-secondary">{{ order.client.company }}</span>{% endif %}
                                     {% if order.client.email|default('') %}<span class="text-secondary small">{{ order.client.email }}</span>{% endif %}
                                 </div>
+                                {# ClientFence core patch: staff move the service to another client (Order/ClientMove.php, CF-183). #}
+                                {% if has_permission('order', 'manage') %}
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-auto" data-bs-toggle="modal" data-bs-target="#moveClientModal">{{ 'Move to Another Client'|trans }}</button>
+                                {% endif %}
                             </div>
                             <dl class="cf-facts">
                                 <div><dt>{{ 'Order'|trans }}</dt><dd><bdi>#{{ order.id }}</bdi></dd></div>
@@ -395,6 +399,31 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
                                 <button type="submit" class="btn btn-primary">{{ 'Assign'|trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if has_permission('order', 'manage') %}
+            <div class="modal modal-blur fade" id="moveClientModal" tabindex="-1" aria-labelledby="moveClientModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ 'order/move_client'|api_url }}" {{ fb_api_form({ reload: true }) }}>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="moveClientModalLabel">{{ 'Move to Another Client'|trans }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="id" value="{{ order.id }}">
+                                <label class="form-label" for="moveClientId">{{ 'New Client'|trans }}</label>
+                                <select class="form-control autocomplete-selector" id="moveClientId" name="client_id" placeholder="{{ 'Start typing the client name or ID'|trans }}" data-resturl="/api/admin/client/get_pairs" required></select>
+                                <p class="text-muted mt-3 mb-2">{{ 'The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client.'|trans }}</p>
+                                <p class="text-muted mb-0">{{ 'Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card.'|trans }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                                <button type="submit" class="btn btn-primary">{{ 'Move'|trans }}</button>
                             </div>
                         </form>
                     </div>

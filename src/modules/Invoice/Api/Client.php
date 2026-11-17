@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace ClientFence\Mod\Invoice\Api;
 
+use ClientFence\Mod\Invoice\MassPay;
 use ClientFence\Mod\Invoice\Receipts;
 use ClientFence\Mod\Invoice\SavedCards;
 use ClientFence\PaginationOptions;
@@ -77,6 +78,17 @@ class Client extends \ClientFence\Api\AbstractApi
         }
 
         return $this->getService()->applyCredit($model, (float) $data['amount']);
+    }
+
+    /**
+     * ClientFence core patch (CF-182): Mass Pay (WHMCS): one invoice that pays the chosen unpaid invoices (ids) or all that
+     * can be paid together (all), in one payment (Invoice/MassPay.php).
+     *
+     * @return string - the hash of the invoice to pay
+     */
+    public function mass_pay($data)
+    {
+        return MassPay::create($this->getDi(), $this->getIdentity(), (array) ($data['ids'] ?? []), !empty($data['all']))->hash;
     }
 
     /**

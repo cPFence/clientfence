@@ -351,10 +351,15 @@ body { font-family: var(--bf-font); }
 .bf-new { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 9px; font-weight: 600; }
 .bf-new .icon { width: 18px; height: 18px; margin: 0; }
 .bf-lang-code { font-size: 12px; font-weight: 600; letter-spacing: .04em; }
-.bf-lang-list { max-height: min(60vh, 24rem); overflow-y: auto; }
-/* The header's menu lists scroll without a visible scrollbar, as the side menu. */
-:is(.bf-lang-list, .bf-bell-list) { scrollbar-width: none; }
-:is(.bf-lang-list, .bf-bell-list)::-webkit-scrollbar { display: none; }
+.bf-lang-list { max-height: min(60vh, 24rem); overflow-y: auto; overflow-x: hidden; }
+/* The notifications list scrolls without a visible scrollbar, as the side menu. */
+.bf-bell-list { scrollbar-width: none; }
+.bf-bell-list::-webkit-scrollbar { display: none; }
+/* The language list shows a thin scrollbar so more languages below are seen (left side in RTL, by dir). */
+.bf-lang-list { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--bf-muted) 45%, transparent) transparent; }
+.bf-lang-list::-webkit-scrollbar { width: 6px; }
+.bf-lang-list::-webkit-scrollbar-track { background: transparent; }
+.bf-lang-list::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--bf-muted) 45%, transparent); border-radius: 6px; }
 .bf-profile { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; text-decoration: none; }
 .bf-initials {
   display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%;

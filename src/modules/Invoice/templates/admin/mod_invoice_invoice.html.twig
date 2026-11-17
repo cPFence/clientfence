@@ -495,6 +495,9 @@
                             <td>
                             {% if item.order_id %}
                             <a href='{{ "order/manage/#{item.order_id}"|url }}'>{{ item.title }} {% if item.quantity > 1 %} x {{ item.quantity }} {# item.unit #}{% endif %}</a>
+                            {# ClientFence core patch (CF-182): a Mass Pay line links to the invoice it pays (Invoice/MassPay.php). #}
+                            {% elseif item.type == 'deposit' and item.task starts with 'mass_pay:' %}
+                            <a href='{{ "invoice/manage/#{item.task|slice(9)}"|url }}'>{{ item.title }}</a>
                             {% else %}
                             {{ item.title }} {% if item.quantity > 1 %} x {{ item.quantity }} {# item.unit #}{% endif %}
                             {% endif %}

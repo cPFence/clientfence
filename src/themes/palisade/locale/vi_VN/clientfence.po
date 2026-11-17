@@ -31021,3 +31021,79 @@ msgstr "Mã giao dịch này đã được ghi nhận."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "Tổ chức :org: trong :panel: không có thuê bao :id:. Hãy kiểm tra cả hai ID trong bảng điều khiển."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Chuyển"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Chuyển sang khách hàng khác"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Không có gì thay đổi trên máy chủ hay nhà đăng ký tên miền: tài khoản hosting giữ nguyên tài khoản trong bảng điều khiển. Nếu cần, hãy chuyển thủ công trong bảng điều khiển rồi kiểm tra thẻ Liên kết Enhance."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Dịch vụ này đã thuộc về khách hàng này."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Dịch vụ và các tiện ích bổ sung của nó chuyển sang khách hàng mới, người sẽ được xuất hóa đơn cho các lần gia hạn tiếp theo. Hóa đơn, thanh toán và số dư có vẫn ở lại với khách hàng hiện tại."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Dịch vụ được tính phí bằng :currency, nhưng khách hàng mới thanh toán bằng :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Đây là tiện ích bổ sung: hãy chuyển dịch vụ chính của nó, các tiện ích bổ sung sẽ đi theo."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Dịch vụ này có yêu cầu hủy đang chờ. Hãy chấp nhận hoặc dừng yêu cầu trước."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Dịch vụ này có hóa đơn chưa thanh toán #:id. Hãy đánh dấu đã thanh toán hoặc hủy hóa đơn trước khi chuyển dịch vụ."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Dịch vụ này được thanh toán bằng một đăng ký định kỳ qua cổng thanh toán của khách hàng. Hãy hủy đăng ký trước để khách hàng cũ không tiếp tục trả tiền cho chủ sở hữu mới."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Dịch vụ này đang chờ xem xét. Hãy phê duyệt hoặc từ chối trước."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Một hóa đơn trong khoản thanh toán này đã được thanh toán hoặc thay đổi. Hãy chọn lại các hóa đơn cần thanh toán trong danh sách hóa đơn của bạn."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Chọn ít nhất hai hóa đơn chưa thanh toán để thanh toán cùng nhau."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Hóa đơn :number không thể được thanh toán cùng với các hóa đơn khác."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Thanh toán tất cả"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Thanh toán mục đã chọn"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Dịch vụ này có hóa đơn chưa thanh toán :number. Hãy đánh dấu đã thanh toán hoặc hủy hóa đơn trước khi chuyển dịch vụ."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Hóa đơn này đã thanh toán các hóa đơn được liệt kê trong đó bằng tín dụng của mình. Hãy đảo ngược thanh toán của chúng trước, rồi đến hóa đơn này."

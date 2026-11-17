@@ -30082,3 +30082,79 @@ msgstr "Questo ID transazione è già registrato."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "L'organizzazione :org: di :panel: non ha l'abbonamento :id:. Controlla entrambi gli ID nel pannello."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Sposta"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Sposta a un altro cliente"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Sui server e presso i registrar non cambia nulla: un account di hosting mantiene il suo account nel pannello. Se serve, spostalo a mano nel pannello e poi controlla la scheda Collegamento Enhance."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Il servizio appartiene già a questo cliente."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Il servizio e i suoi componenti aggiuntivi passano al nuovo cliente, a cui verranno fatturati i prossimi rinnovi. Fatture, pagamenti e credito restano al cliente attuale."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Il servizio è fatturato in :currency, ma il nuovo cliente paga in :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Questo è un componente aggiuntivo: sposta il suo servizio principale e i suoi componenti aggiuntivi lo seguono."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Questo servizio ha una richiesta di cancellazione in attesa. Accettala o fermala prima."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Questo servizio ha una fattura non pagata #:id. Segnala come pagata o annullala prima di spostare il servizio."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Questo servizio è pagato con un abbonamento al gateway del suo cliente. Annulla prima l’abbonamento, così il vecchio cliente non continua a pagare per il nuovo proprietario."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Questo servizio è in attesa di revisione. Approvalo o rifiutalo prima."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Una fattura di questo pagamento è stata pagata o modificata nel frattempo. Scegli di nuovo le fatture da pagare nell'elenco delle fatture."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Scegli almeno due fatture non pagate da pagare insieme."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "La fattura :number non può essere pagata insieme ad altre fatture."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Paga tutte"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Paga selezionate"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Questo servizio ha una fattura non pagata :number. Segnala come pagata o annullala prima di spostare il servizio."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Questa fattura ha pagato con il suo credito le fatture che elenca. Storna prima i loro pagamenti, poi quello di questa."

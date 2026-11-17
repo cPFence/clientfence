@@ -8184,5 +8184,37 @@
     {
         "file": "library/ClientFence/i18n.php",
         "done": "ClientFence core patch: a browser locale with a script (zh_Hant_HK, sr_Latn_RS) matches its language and region,"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch: staff move a service and its add-ons to another client, as Blesta (Order\\ClientMove)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "{# ClientFence core patch: staff move the service to another client (Order/ClientMove.php, CF-183). #}"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-182): a Mass Pay invoice whose invoices were paid or changed since is not paid."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch (CF-182): Mass Pay (WHMCS): one invoice that pays the chosen unpaid invoices (ids) or all that"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (CF-182): a Mass Pay line links to the invoice it pays (Invoice/MassPay.php)."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_index.html.twig",
+        "done": "ClientFence core patch (CF-182): Mass Pay, as WHMCS: tick invoices (or Pay all) and pay them in one payment (palisade.js)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-182): a Mass Pay invoice's lines (and its credit note's) are not income: each invoice it"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch (CF-182): nor an unpaid Mass Pay invoice: the invoices it lists are counted (Invoice/MassPay.php)."
     }
 ]

@@ -35,7 +35,7 @@ function feeWorld(string $status = 'unpaid', bool $deposit = false): object
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, gateway_id INTEGER, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
-    $db->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, price REAL, quantity INTEGER, taxed INTEGER, task TEXT)');
+    $db->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, price REAL, quantity INTEGER, taxed INTEGER, task TEXT)');
     $db->insert('invoice', ['id' => 5, 'status' => $status]);
     // Client 7 is in groups 5 and 2 (2 is exempt from the Stripe fee), client 8 in group 5 only (Client/Groups.php).
     $db->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) VALUES (7, 5), (7, 2), (8, 5)');

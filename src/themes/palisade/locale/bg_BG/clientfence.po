@@ -31502,3 +31502,79 @@ msgstr "Този ID на транзакция вече е записан."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "Организацията :org: в :panel: няма абонамент :id:. Проверете двата ID в панела."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Преместване"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Преместване към друг клиент"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Нищо не се променя на сървърите и при регистраторите: хостинг акаунтът запазва акаунта си в панела. При нужда го преместете ръчно в панела, след което проверете картата Връзка с Enhance."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Услугата вече принадлежи на този клиент."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Услугата и добавките ѝ преминават към новия клиент, на когото се издават фактури за следващите подновявания. Фактурите, плащанията и кредитът остават при текущия клиент."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Услугата се таксува в :currency, но новият клиент плаща в :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Това е добавка: преместете основната ѝ услуга, а добавките ѝ се местят с нея."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Тази услуга има чакаща заявка за прекратяване. Приемете или спрете заявката първо."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Тази услуга има неплатена фактура #:id. Отбележете я като платена или я отменете, преди да преместите услугата."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Тази услуга се плаща чрез абонамент през платежен шлюз на нейния клиент. Първо отменете абонамента, за да не продължава старият клиент да плаща за новия собственик."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Тази услуга чака преглед. Първо я одобрете или отхвърлете."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Фактура в това плащане е платена или променена междувременно. Изберете отново фактурите за плащане от списъка с фактури."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Изберете поне две неплатени фактури, за да ги платите заедно."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Фактура :number не може да се плати заедно с други фактури."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Плати всички"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Плати избраните"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Тази услуга има неплатена фактура :number. Отбележете я като платена или я отменете, преди да преместите услугата."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Тази фактура е платила изброените в нея фактури от кредита си. Първо анулирайте техните плащания, после това."

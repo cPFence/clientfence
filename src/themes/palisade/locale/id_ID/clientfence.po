@@ -31171,3 +31171,79 @@ msgstr "ID transaksi ini sudah tercatat."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "Organisasi :panel: :org: tidak memiliki langganan :id:. Periksa kedua ID di panel."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Pindahkan"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Pindahkan ke Klien Lain"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Tidak ada yang berubah di server atau registrar: akun hosting tetap memakai akun panelnya. Pindahkan secara manual di panel jika perlu, lalu periksa kartu Tautan Enhance."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Layanan ini sudah menjadi milik klien ini."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Layanan dan add-on-nya pindah ke klien baru, yang akan ditagih untuk perpanjangan berikutnya. Faktur, pembayaran, dan kredit tetap pada klien saat ini."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Layanan ini ditagih dalam :currency, tetapi klien baru membayar dalam :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Ini adalah add-on: pindahkan layanan utamanya, dan add-on-nya ikut pindah."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Layanan ini memiliki permintaan pembatalan yang menunggu. Terima atau hentikan terlebih dahulu."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Layanan ini memiliki faktur belum dibayar #:id. Tandai sebagai dibayar atau batalkan sebelum memindahkan layanan."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Layanan ini dibayar melalui langganan gateway milik kliennya. Batalkan langganan terlebih dahulu, agar klien lama tidak terus membayar untuk pemilik baru."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Layanan ini menunggu peninjauan. Setujui atau tolak terlebih dahulu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Salah satu faktur dalam pembayaran ini sudah dibayar atau berubah. Pilih kembali faktur yang akan dibayar di daftar faktur Anda."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Pilih setidaknya dua faktur belum dibayar untuk dibayar bersamaan."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Faktur :number tidak dapat dibayar bersama faktur lain."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Bayar semua"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Bayar yang dipilih"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Layanan ini memiliki faktur belum dibayar :number. Tandai sebagai dibayar atau batalkan sebelum memindahkan layanan."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Faktur ini membayar faktur yang dicantumkannya dari kreditnya. Balikkan pembayaran faktur tersebut terlebih dahulu, lalu faktur ini."

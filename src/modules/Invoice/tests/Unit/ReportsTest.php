@@ -24,7 +24,7 @@ function reportsDb(): Connection
         'CREATE TABLE currency (code TEXT PRIMARY KEY, is_default INTEGER, conversion_rate REAL)',
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, country TEXT, currency TEXT, status TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, serie TEXT, nr TEXT, currency TEXT, status TEXT, taxname TEXT, taxrate TEXT, tax_adjust REAL DEFAULT 0, buyer_first_name TEXT, buyer_last_name TEXT, buyer_company TEXT, due_at TEXT, paid_at TEXT, created_at TEXT)',
-        'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, task TEXT, rel_id TEXT, price REAL, quantity INTEGER, taxed INTEGER)',
+        'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, price REAL, quantity INTEGER, taxed INTEGER)',
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, amount TEXT, currency TEXT, type TEXT, status TEXT, created_at TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, type TEXT, amount REAL, description TEXT, created_at TEXT)',
         'CREATE TABLE product (id INTEGER PRIMARY KEY, type TEXT)',
@@ -101,6 +101,18 @@ test('aging invoices puts unpaid invoices by days overdue, in one currency', fun
 
     $egp = Reports::run(reportsContainer($db), 'aging_invoices', ['currency' => 'egp'], reportsNow());
     expect($egp['total'])->toBe(['Total', 1, 500.0]);
+});
+
+// CF-182: an unpaid Mass Pay invoice lists invoices that are counted on their own.
+test('aging invoices leaves out an unpaid Mass Pay invoice', function (): void {
+    $db = reportsDb();
+    reportsInvoice($db, 1, ['status' => 'unpaid', 'due_at' => '2026-10-01 00:00:00'], [100]);
+    reportsInvoice($db, 2, ['status' => 'unpaid', 'due_at' => '2026-10-01 00:00:00'], [50]);
+    reportsInvoice($db, 3, ['status' => 'unpaid', 'due_at' => '2026-10-01 00:00:00'], []);
+    $db->insert('invoice_item', ['invoice_id' => 3, 'type' => 'deposit', 'task' => 'mass_pay:1', 'price' => 100, 'quantity' => 1, 'taxed' => 0]);
+    $db->insert('invoice_item', ['invoice_id' => 3, 'type' => 'deposit', 'task' => 'mass_pay:2', 'price' => 50, 'quantity' => 1, 'taxed' => 0]);
+
+    expect(Reports::run(reportsContainer($db), 'aging_invoices', [], reportsNow())['total'])->toBe(['Total', 2, 150.0]);
 });
 
 test('monthly transactions sums payments in and refunds out per day', function (): void {

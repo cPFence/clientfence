@@ -30529,3 +30529,79 @@ msgstr "این شناسه تراکنش از قبل ثبت شده است."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "سازمان :org: در :panel: اشتراک :id: ندارد. هر دو شناسه را در پنل بررسی کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "انتقال"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "انتقال به مشتری دیگر"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "روی سرورها و ثبت‌کنندگان دامنه چیزی تغییر نمی‌کند: حساب هاستینگ حساب پنل خود را نگه می‌دارد. در صورت نیاز آن را به‌صورت دستی در پنل منتقل کنید و سپس کارت پیوند Enhance را بررسی کنید."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "این سرویس از قبل متعلق به همین مشتری است."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "سرویس و افزونه‌های آن به مشتری جدید منتقل می‌شود و تمدیدهای بعدی برای او فاکتور می‌شود. فاکتورها، پرداخت‌ها و اعتبار نزد مشتری فعلی می‌مانند."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "این سرویس با :currency صورتحساب می‌شود، اما مشتری جدید با :client_currency پرداخت می‌کند."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "این یک افزونه است: سرویس اصلی آن را منتقل کنید، افزونه‌ها همراه آن منتقل می‌شوند."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "این سرویس یک درخواست لغو در انتظار دارد. ابتدا آن را بپذیرید یا متوقف کنید."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "این سرویس یک فاکتور پرداخت‌نشده #:id دارد. پیش از انتقال سرویس، آن را پرداخت‌شده علامت بزنید یا لغو کنید."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "هزینه این سرویس با اشتراک درگاه پرداخت مشتری آن پرداخت می‌شود. ابتدا اشتراک را لغو کنید تا مشتری قبلی برای مالک جدید پرداخت نکند."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "این سرویس در انتظار بررسی است. ابتدا آن را تایید یا رد کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "یکی از فاکتورهای این پرداخت در این فاصله پرداخت یا تغییر کرده است. فاکتورهای مورد نظر برای پرداخت را دوباره از فهرست فاکتورهای خود انتخاب کنید."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "حداقل دو فاکتور پرداخت‌نشده را برای پرداخت یکجا انتخاب کنید."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "فاکتور :number را نمی‌توان همراه با فاکتورهای دیگر پرداخت کرد."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "پرداخت همه"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "پرداخت موارد انتخاب‌شده"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "این سرویس یک فاکتور پرداخت‌نشده :number دارد. پیش از انتقال سرویس، آن را پرداخت‌شده علامت بزنید یا لغو کنید."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "این فاکتور فاکتورهای فهرست‌شده در خود را از اعتبار خود پرداخت کرده است. ابتدا پرداخت آن‌ها را ابطال کنید، سپس پرداخت این فاکتور را."

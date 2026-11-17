@@ -230,6 +230,7 @@ test('Mark as Paid with an amount records a part payment, then the rest pays the
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, gateway_id INTEGER)');
     $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT, currency TEXT, created_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT)');
     $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
     $dbal->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, description TEXT, amount REAL, created_at TEXT, updated_at TEXT)');
     $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid', 'gateway_id' => 5]);
@@ -2140,12 +2141,13 @@ test('money received before the invoice came here counts as income', function ()
     $received->loadBean(new Tests\Helpers\DummyBean());
     $received->price = -20.0;
     $received->quantity = 1;
+    $received->unit = ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT;
 
     $currencyService = Mockery::mock(CurrencyService::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $currencyService->shouldReceive('toBaseCurrency')->once()->with('USD', 50.0)->andReturn(50.0);
 
     $dbMock = Mockery::mock('ClientFence\Database');
-    $dbMock->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ? AND unit = ?', [16, ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT])->andReturn([$received]);
+    $dbMock->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', [16])->andReturn([$received]);
     $dbMock->shouldReceive('store')->once();
 
     $di = container();
@@ -2156,6 +2158,48 @@ test('money received before the invoice came here counts as income', function ()
     $serviceMock->countIncome($invoiceModel);
     expect($invoiceModel->base_income)->toBe(50.0);
 });
+
+// CF-182: A 100 and B 50 paid on their own, then the Mass Pay invoice of both (155 with a 5 fee) paid: its 150 is account credit.
+test('a Mass Pay invoice and its credit note count only the fee as income, and a refund gives back its credit first', function (array $prices, ?float $refund, float $income, ?float $refunded): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getTotal')->andReturn(array_sum($prices));
+    $items = [];
+    foreach ($prices as $i => $price) {
+        $item = new Model_InvoiceItem();
+        $item->loadBean(new Tests\Helpers\DummyBean());
+        // The last line is the gateway fee, the others the Mass Pay lines of invoices #1 and #2.
+        [$item->type, $item->task] = $i < 2 ? [Model_InvoiceItem::TYPE_DEPOSIT, ClientFence\Mod\Invoice\MassPay::TASK . ($i + 1)] : [Model_InvoiceItem::TYPE_CUSTOM, ClientFence\Mod\Invoice\GatewayFees::TASK];
+        $item->price = $price;
+        $item->quantity = 1;
+        $items[] = $item;
+    }
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->id = 20;
+    $invoiceModel->currency = 'USD';
+    $invoiceModel->refund = $refund;
+
+    $currencyService = Mockery::mock(CurrencyService::class)->makePartial();
+    $currencyService->shouldReceive('toBaseCurrency')->andReturnUsing(fn (string $code, float $amount): float => $amount);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', [20])->andReturn($items);
+    $dbMock->shouldReceive('store')->once();
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $currencyService);
+    $serviceMock->setDi($di);
+
+    $serviceMock->countIncome($invoiceModel);
+
+    expect($invoiceModel->base_income)->toBe($income)
+        ->and($invoiceModel->base_refund)->toBe($refunded);
+})->with([
+    'paid' => [[100.0, 50.0, 5.0], null, 5.0, null],
+    // Refunded in full, its credit note takes the 5 back: income stays A 100 + B 50 + 5 - 5 = 150.
+    'credit note of a full refund' => [[-100.0, -50.0, -5.0], null, -5.0, null],
+    'part refund of 50 of its credit' => [[100.0, 50.0, 5.0], 50.0, 5.0, 0.0],
+    'part refund of all 155' => [[100.0, 50.0, 5.0], 155.0, 5.0, 5.0],
+]);
 
 test('prepares invoice with undefined currency', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
@@ -4937,6 +4981,7 @@ test('old unpaid invoice cleanup keeps live renewals, invoices with a bank debit
     $pdo->exec("CREATE TABLE client_order_hold (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT)");
     $pdo->exec("INSERT INTO client_order_hold VALUES (1, 5, 'held'), (2, 2, 'approved')");
     $pdo->exec('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, created_at TEXT)');
+    $pdo->exec('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT)');
     $pdo->prepare("INSERT INTO `transaction` VALUES (1, 4, 'received', 'processing', ?)")->execute([date('Y-m-d H:i:s')]);
     $pdo->prepare('INSERT INTO client_order VALUES (1, 1, ?), (2, 3, ?)')->execute([$status, Model_ClientOrder::STATUS_CANCELED]);
 
@@ -5296,10 +5341,6 @@ test('markAsPaid transitions a deposit invoice to paid status', function (string
     $dbMock->shouldReceive('find')
         ->with('InvoiceItem', 'invoice_id = ?', [89])
         ->andReturn([$depositItem]);
-    // (countIncome: no money received before the invoice came here)
-    $dbMock->shouldReceive('find')
-        ->with('InvoiceItem', 'invoice_id = ? AND unit = ?', [89, ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT])
-        ->andReturn([]);
     $dbMock->shouldReceive('store')
         ->atLeast()->once();
 

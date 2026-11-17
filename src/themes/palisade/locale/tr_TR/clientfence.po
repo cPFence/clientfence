@@ -28777,3 +28777,79 @@ msgstr "Bu işlem kimliği zaten kayıtlı."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr ":panel: kuruluşu :org: için :id: aboneliği yok. Panelde her iki ID'yi de kontrol edin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Taşı"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Başka Müşteriye Taşı"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Sunucularda veya alan adı kayıt kuruluşlarında hiçbir şey değişmez: hosting hesabı panel hesabını korur. Gerekirse panelde elle taşıyın, ardından Enhance Bağlantısı kartını kontrol edin."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Hizmet zaten bu müşteriye ait."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Hizmet ve eklentileri, sonraki yenilemeleri faturalandırılacak olan yeni müşteriye geçer. Faturalar, ödemeler ve alacak mevcut müşteride kalır."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Hizmet :currency cinsinden faturalandırılıyor, ancak yeni müşteri :client_currency ile ödüyor."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Bu bir eklenti: ana hizmetini taşıyın, eklentileri onunla birlikte taşınır."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Bu hizmetin bekleyen bir iptal talebi var. Önce talebi kabul edin veya durdurun."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Bu hizmetin ödenmemiş bir faturası var: #:id. Hizmeti taşımadan önce faturayı ödendi olarak işaretleyin veya iptal edin."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Bu hizmet, müşterisinin bir ödeme geçidi aboneliğiyle ödeniyor. Eski müşteri yeni sahip için ödemeye devam etmesin diye önce aboneliği iptal edin."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Bu hizmet incelemeyi bekliyor. Önce onaylayın veya reddedin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Bu ödemedeki bir fatura bu arada ödendi veya değiştirildi. Ödenecek faturaları fatura listenizden yeniden seçin."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Birlikte ödemek için en az iki ödenmemiş fatura seçin."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Fatura :number diğer faturalarla birlikte ödenemez."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Tümünü öde"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Seçilenleri öde"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Bu hizmetin ödenmemiş bir faturası var: :number. Hizmeti taşımadan önce faturayı ödendi olarak işaretleyin veya iptal edin."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Bu fatura, listelediği faturaları kendi kredisinden ödedi. Önce onların ödemelerini, sonra bunu geri alın."

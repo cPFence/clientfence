@@ -38,7 +38,8 @@
                 {% set all_unpaid = client.invoice_get_list({"status":"unpaid", "per_page":100}) %}
                 {% set due = {} %}
                 {% set late = false %}
-                {% for invoice in all_unpaid.list %}
+                {# ClientFence core patch (CF-182): an unpaid Mass Pay invoice is not counted again: the invoices it lists are. #}
+                {% for invoice in all_unpaid.list|filter(i => not (i.lines|filter(l => l.type == 'deposit' and l.task starts with 'mass_pay:')|length)) %}
                     {% set due = due|merge({ (invoice.currency ?? default_currency): due[invoice.currency ?? default_currency]|default(0) + invoice.balance_due }) %}
                     {% set late = late or (not invoice.pending_payment|default(null) and invoice.due_at and invoice.due_at|date('U') < 'now'|date('U')) %}
                 {% endfor %}
@@ -79,9 +80,18 @@
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active table-responsive" id="nav-unpaid" role="tabpanel"
                              aria-labelledby="nav-home-tab" tabindex="0">
+                            {# ClientFence core patch (CF-182): Mass Pay, as WHMCS: tick invoices (or Pay all) and pay them in one payment (palisade.js). #}
+                            <form data-cf-mass-pay data-invoice-url="{{ 'invoice/__hash__'|url }}">
+                            {% if unpaid_invoices.total > 1 %}
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <button type="submit" class="btn btn-sm btn-success" value="selected">{{ 'Pay selected'|trans }}</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-success" value="all">{{ 'Pay all'|trans }}</button>
+                                </div>
+                            {% endif %}
                             <table class="table table-bordered table-hover table-stack">
                                 <thead>
                                 <tr>
+                                    <th class="w-1"></th>
                                     <th>{{ 'Title'|trans }}</th>
                                     <th>{{ 'Invoice Date'|trans }}</th>
                                     <th>{{ 'Due Date'|trans }}</th>
@@ -95,6 +105,7 @@
                                     {% set pending = invoice.pending_payment|default(null) %}
                                     {% set row_late = not pending and invoice.due_at and invoice.due_at|date('U') < 'now'|date('U') %}
                                     <tr>
+                                        <td>{% if not pending and 'deposit' not in invoice.lines|map(l => l.type) %}<input class="form-check-input" type="checkbox" name="ids[]" value="{{ invoice.id }}" aria-label="{{ 'Invoice'|trans }} #{{ invoice.serie_nr }}">{% endif %}</td>
                                         <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td>{{ invoice.due_at|format_date }}</td>
@@ -105,11 +116,12 @@
                                     </tr>
                                 {% else %}
                                     <tr>
-                                        <td colspan="6" class="empty-state">{{ 'The list is empty'|trans }}</td>
+                                        <td colspan="7" class="empty-state">{{ 'The list is empty'|trans }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            </form>
                             {{ include('partial_pagination.html.twig', { 'list': unpaid_invoices, 'url': 'invoice' }) }}
                         </div>
                         <div class="tab-pane fade table-responsive" id="nav-paid" role="tabpanel" aria-labelledby="nav-profile-tab"

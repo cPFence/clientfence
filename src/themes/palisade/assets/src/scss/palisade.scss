@@ -694,12 +694,31 @@ dd {
   overflow-y: auto;
 }
 
-// The top bar's menu lists scroll without a visible scrollbar, as the side menu.
-:is(.lang-menu-list, .topbar-bell-list) {
+// The notifications list scrolls without a visible scrollbar, as the side menu.
+.topbar-bell-list {
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+// The language list shows a thin scrollbar so more languages below are seen (left side in RTL, by dir).
+.lang-menu-list {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--bs-secondary-color) 45%, transparent) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--bs-secondary-color) 45%, transparent);
+    border-radius: 6px;
   }
 }
 
