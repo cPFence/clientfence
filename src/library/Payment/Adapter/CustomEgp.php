@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Manual payment instructions with the invoice total converted to another currency, for
  * ClientFence. Invoices keep their currency; only the instructions show the amount in the
- * gateway's currency (its "currency" setting; EGP when empty, as before) at the current rate.
+ * gateway's currency (its "currency" setting; EUR when empty) at the current rate.
  *
  * Works like FOSSBilling's "Custom" gateway (an admin confirms the payment), and adds
  * a `converted` variable to the instruction template (`egp` is the same, for templates written before):
@@ -42,8 +42,8 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
         $config['description'] = 'Manual payment instructions with the invoice total converted to another currency at the current rate (ExchangeRate-API, refreshed daily). Use {{ converted.total }} {{ converted.currency }}, {{ converted.rate }} and {{ converted.updated }} inside {% if converted %} ... {% endif %}, with a "Rates by Exchange Rate API" link. HTML is supported.';
         $config['form']['currency'] = ['text', [
             'label' => __trans('Show the total in this currency:'),
-            'placeholder' => 'EGP',
-            'description' => __trans('A three-letter currency code, such as EUR or EGP. Empty: EGP.'),
+            'placeholder' => 'EUR',
+            'description' => __trans('A three-letter currency code, such as EUR or EGP. Empty: EUR.'),
         ]];
 
         return $config;
@@ -68,12 +68,12 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
         ]);
     }
 
-    /** The currency the instructions show: the setting, EGP when empty or not a currency code. */
+    /** The currency the instructions show: the setting, EUR when empty or not a currency code. */
     public function targetCurrency(): string
     {
         $code = strtoupper(trim((string) ($this->egpConfig['currency'] ?? '')));
 
-        return preg_match('/^[A-Z]{3}$/', $code) ? $code : 'EGP';
+        return preg_match('/^[A-Z]{3}$/', $code) ? $code : 'EUR';
     }
 
     /**

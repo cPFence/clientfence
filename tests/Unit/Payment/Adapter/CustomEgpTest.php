@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/** ClientFence: the converting manual gateway shows the total in the currency set on it, EGP when none is set. */
+/** ClientFence: the converting manual gateway shows the total in the currency set on it, EUR when none is set. */
 
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -32,9 +32,9 @@ test('the total is shown in the gateway currency, rounded up to a whole unit', f
 
     expect($converted === null ? null : [$converted['currency'], $converted['total'], $converted['rate'], $converted['factor']])->toBe($expected);
 })->with([
-    'no setting keeps EGP' => [[], ['EGP', '5,056', '50.5000', 50.5]],
-    'EUR' => [['currency' => ' eur '], ['EUR', '93', '0.9200', 0.92]],
-    'not a currency code falls back to EGP' => [['currency' => 'euro'], ['EGP', '5,056', '50.5000', 50.5]],
+    'no setting shows EUR' => [[], ['EUR', '93', '0.9200', 0.92]],
+    'EGP' => [['currency' => ' egp '], ['EGP', '5,056', '50.5000', 50.5]],
+    'not a currency code falls back to EUR' => [['currency' => 'pound'], ['EUR', '93', '0.9200', 0.92]],
     'a currency the provider does not list' => [['currency' => 'XYZ'], null],
     'a strong currency keeps its rate digits' => [['currency' => 'XAU'], ['XAU', '1', '0.0004123', 0.000412345]],
     'the invoice currency itself' => [['currency' => 'USD'], ['USD', '101', '1.0000', 1.0]],
