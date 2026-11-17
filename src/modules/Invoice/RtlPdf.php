@@ -10,12 +10,15 @@ namespace ClientFence\Mod\Invoice;
  *
  * TCPDF, not Dompdf (which invoice PDFs use): TCPDF joins Arabic letters and lays out right-to-left
  * text with the Unicode bidirectional algorithm. The font is DejaVu Sans (shipped with TCPDF),
- * which has Latin, Arabic and Hebrew letters.
+ * which has Latin, Arabic and Hebrew letters, or a TCPDF font from SCRIPT_FONTS for a script it lacks.
  */
 final class RtlPdf
 {
     /** Languages written right to left. */
     public const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur', 'yi'];
+
+    /** Fonts shipped with TCPDF for languages whose letters DejaVu Sans lacks (FreeSans has Devanagari). */
+    public const SCRIPT_FONTS = ['hi' => 'freesans'];
 
     public static function isRtl(string $locale): bool
     {
@@ -24,7 +27,7 @@ final class RtlPdf
 
     /**
      * A new document with one page: the paper size of invoice PDFs (invoice_document_format), no
-     * header or footer, DejaVu Sans 9 pt, 15 mm margins, right to left for those languages.
+     * header or footer, DejaVu Sans (or the SCRIPT_FONTS font) 9 pt, 15 mm margins, right to left for those languages.
      */
     public static function document(\Pimple\Container $di, string $locale, string $title): \TCPDF
     {
@@ -41,7 +44,7 @@ final class RtlPdf
         $pdf->SetTitle($title);
         $pdf->setRTL($rtl);
         $pdf->setLanguageArray(['a_meta_charset' => 'UTF-8', 'a_meta_dir' => $rtl ? 'rtl' : 'ltr', 'a_meta_language' => substr($locale, 0, 2), 'w_page' => '']);
-        $pdf->SetFont('dejavusans', '', 9);
+        $pdf->SetFont(self::SCRIPT_FONTS[strtolower(substr($locale, 0, 2))] ?? 'dejavusans', '', 9);
         $pdf->SetMargins(15, 15, 15);
         $pdf->SetAutoPageBreak(true, 15);
         $pdf->AddPage();

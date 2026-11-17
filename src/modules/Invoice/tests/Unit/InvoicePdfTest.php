@@ -25,6 +25,7 @@ function invoicePdfFixture(string $locale = 'ar_SA'): array
     $buyer = match ($locale) {
         'he_IL' => ['Company' => 'אחסון לדוגמה', 'Name' => 'לקוח לדוגמה', 'Address' => '7440 – רחוב הרצל – תל אביב'],
         'fa_IR' => ['Company' => 'میزبانی نمونه', 'Name' => 'مشتری نمونه', 'Address' => '7440 – خیابان آزادی – تهران'],
+        'hi_IN' => ['Company' => 'उदाहरण होस्टिंग', 'Name' => 'उदाहरण क्लाइंट', 'Address' => '7440 – महात्मा गांधी मार्ग – नई दिल्ली'],
         default => ['Company' => 'شركة قمة للمقاولات', 'Name' => 'عميل לקוח', 'Address' => 'الرياض'],
     };
 
@@ -82,7 +83,18 @@ test('invoice PDFs render buyers in the chosen language and restore the request 
     'Arabic' => ['ar_SA', true],
     'Hebrew' => ['he_IL', true],
     'Persian' => ['fa_IR', true],
+    'Hindi' => ['hi_IN', false],
     'English' => ['en_US', false],
+]);
+
+test('PDF documents use a font that has the letters of their language', function (string $locale, string $font): void {
+    [$di] = invoicePdfFixture($locale);
+
+    expect(ClientFence\Mod\Invoice\RtlPdf::document($di, $locale, 'Test')->getFontFamily())->toBe($font);
+})->with([
+    'Hindi (Devanagari, not in DejaVu Sans)' => ['hi_IN', 'freesans'],
+    'Arabic' => ['ar_SA', 'dejavusans'],
+    'English' => ['en_US', 'dejavusans'],
 ]);
 
 test('invoice PDF failures restore the request locale', function (): void {
