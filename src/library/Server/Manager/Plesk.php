@@ -179,7 +179,7 @@ class Server_Manager_Plesk extends Server_Manager
      */
     public function suspendAccount(Server_Account $account, bool $suspend = true): bool
     {
-        return $this->_client->customer()->setProperties('login', $account->getUsername(), ['status' => 16]);
+        return $this->setClientProperties($account, ['status' => 16]);
     }
 
     /**
@@ -192,7 +192,7 @@ class Server_Manager_Plesk extends Server_Manager
      */
     public function unsuspendAccount(Server_Account $account): bool
     {
-        return $this->_client->customer()->setProperties('login', $account->getUsername(), ['status' => 0]);
+        return $this->setClientProperties($account, ['status' => 0]);
     }
 
     /**
@@ -264,7 +264,7 @@ class Server_Manager_Plesk extends Server_Manager
     {
         $this->getLog()->info('Changing password for account ' . $account->getUsername());
 
-        return $this->_client->customer()->setProperties('login', $account->getUsername(), ['passwd' => $newPassword]);
+        return $this->setClientProperties($account, ['passwd' => $newPassword]);
     }
 
     /**
@@ -612,7 +612,38 @@ class Server_Manager_Plesk extends Server_Manager
      */
     private function modifyClient(Server_Account $account): mixed
     {
-        return $this->_client->customer()->setProperties('login', $account->getUsername(), $this->createClientProps($account));
+        return $this->setClientProperties($account, $this->createClientProps($account));
+    }
+
+    /**
+     * ClientFence core patch: a reseller account is a Plesk reseller, so its status, password and details are set
+     * through the reseller API (reseller set, gen-info), not the customer one, which does not find it.
+     */
+    private function setClientProperties(Server_Account $account, array $properties): bool
+    {
+        if (!$account->getReseller()) {
+            return $this->_client->customer()->setProperties('login', $account->getUsername(), $properties);
+        }
+
+        $response = $this->_client->reseller()->request(['set' => [
+            'filter' => ['login' => $account->getUsername()],
+            'values' => ['gen-info' => $properties],
+        ]]);
+
+        return 'ok' === (string) $response->status;
+    }
+
+    /**
+     * ClientFence core patch: Plesk's unlimited limit value is -1, so "unlimited" is sent as -1, and an empty plan field is
+     * left out (Plesk keeps the service plan's or the current value) instead of becoming a limit of 0.
+     */
+    private static function limitValue(mixed $value, int $unit = 1): ?int
+    {
+        if (is_string($value) && strtolower(trim($value)) === 'unlimited') {
+            return -1;
+        }
+
+        return is_numeric($value) ? (int) $value * $unit : null;
     }
 
     /**

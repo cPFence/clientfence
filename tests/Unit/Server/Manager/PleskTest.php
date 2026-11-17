@@ -134,3 +134,29 @@ test('createSubscriptionProps does not send plan-name on updates, since webspace
 
     expect($props['set']['values'])->not->toHaveKey('plan-name');
 });
+
+test('reseller accounts are suspended, unsuspended and given a password through the reseller API', function (): void {
+    $this->account->setReseller(true);
+    $sent = [];
+    $reseller = Mockery::mock(PleskX\Api\Operator\Reseller::class);
+    $reseller->shouldReceive('request')->times(3)->andReturnUsing(function (array $request) use (&$sent): PleskX\Api\XmlResponse {
+        $sent[] = $request;
+
+        return new PleskX\Api\XmlResponse('<result><status>ok</status></result>');
+    });
+    $client = Mockery::mock(PleskX\Api\Client::class);
+    $client->shouldReceive('reseller')->andReturn($reseller);
+    $client->shouldNotReceive('customer');
+    (new ReflectionProperty(Server_Manager_Plesk::class, '_client'))->setValue($this->manager, $client);
+    $this->manager->setLog(new ClientFence\Log());
+
+    expect($this->manager->suspendAccount($this->account))->toBeTrue()
+        ->and($this->manager->unsuspendAccount($this->account))->toBeTrue()
+        ->and($this->manager->changeAccountPassword($this->account, 'n3w-Pass'))->toBeTrue()
+        ->and(array_column(array_column($sent, 'set'), 'values'))->toBe([
+            ['gen-info' => ['status' => 16]],
+            ['gen-info' => ['status' => 0]],
+            ['gen-info' => ['passwd' => 'n3w-Pass']],
+        ])
+        ->and($sent[0]['set']['filter'])->toBe(['login' => 'example']);
+});
