@@ -179,6 +179,9 @@ test('the client language survives the account import', function (string $langua
 })->with([
     'Hebrew' => ['hebrew', 'he_IL'],
     'Hindi' => ['hindi', 'hi_IN'],
+    'Swedish' => ['swedish', 'sv_SE'],
+    'Croatian' => ['croatian', 'hr_HR'],
+    'Norwegian' => ['norwegian', 'nb_NO'],
 ]);
 
 test('a locale code as the Blesta and Upmind reads leave it becomes the client\'s locale; one this install lacks, or two fit, is none', function (): void {

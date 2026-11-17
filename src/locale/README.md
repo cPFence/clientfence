@@ -9,7 +9,10 @@ is built from two catalogues:
   (ClientFence's own texts and FOSSBilling texts it never translated), plus fixes. It wins where
   both have a text.
 
-Hebrew (`he_IL`) and Hindi (`hi_IN`) have a complete standalone ClientFence catalogue, without an upstream catalogue.
+Hebrew (`he_IL`), Hindi (`hi_IN`), Swedish (`sv_SE`), Danish (`da_DK`), Norwegian Bokmål (`nb_NO`), Estonian (`et_EE`),
+Slovak (`sk_SK`), Slovenian (`sl_SI`), Croatian (`hr_HR`), Bosnian (`bs_BA`), Serbian in Cyrillic (`sr_Cyrl_RS`), Georgian
+(`ka_GE`), Azerbaijani (`az_AZ`), Korean (`ko_KR`), Chinese (Hong Kong, `zh_HK`), Bengali (`bn_BD`) and Kannada (`kn_IN`)
+have a complete standalone ClientFence catalogue, without an upstream catalogue.
 The language menu lists installed locales, including regional English, Portuguese and Chinese variants.
 
 `src/themes/palisade/locale/clientfence.pot` lists every text the code translates.

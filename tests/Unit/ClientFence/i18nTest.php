@@ -46,6 +46,10 @@ test('a language without an upstream catalogue is installed and selected for its
 })->with([
     'Hebrew' => ['he_IL', 'he-IL,he;q=0.9'],
     'Hindi' => ['hi_IN', 'hi-IN,hi;q=0.9'],
+    'Swedish' => ['sv_SE', 'sv-SE,sv;q=0.9'],
+    'Korean' => ['ko_KR', 'ko-KR,ko;q=0.9'],
+    'Georgian' => ['ka_GE', 'ka-GE,ka;q=0.9'],
+    'Chinese (Hong Kong)' => ['zh_HK', 'zh-HK,zh;q=0.9'],
 ]);
 
 test('getTimezoneList returns every PHP timezone identifier sorted', function (): void {

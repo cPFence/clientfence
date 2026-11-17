@@ -53,11 +53,11 @@ final class Accounts
 
     /** WHMCS language names => this install's locales (only the ones it ships). */
     public const LANGUAGES = [
-        'arabic' => 'ar_SA', 'bulgarian' => 'bg_BG', 'chinese' => 'zh_CN', 'czech' => 'cs_CZ', 'dutch' => 'nl_NL',
-        'english' => 'en_US', 'farsi' => 'fa_IR', 'finnish' => 'fi_FI', 'french' => 'fr_FR', 'german' => 'de_DE',
-        'greek' => 'el_GR', 'hebrew' => 'he_IL', 'hindi' => 'hi_IN', 'hungarian' => 'hu_HU', 'indonesian' => 'id_ID', 'italian' => 'it_IT', 'persian' => 'fa_IR',
+        'arabic' => 'ar_SA', 'azerbaijani' => 'az_AZ', 'bengali' => 'bn_BD', 'bosnian' => 'bs_BA', 'bulgarian' => 'bg_BG', 'chinese' => 'zh_CN', 'croatian' => 'hr_HR', 'czech' => 'cs_CZ', 'danish' => 'da_DK', 'dutch' => 'nl_NL',
+        'english' => 'en_US', 'estonian' => 'et_EE', 'farsi' => 'fa_IR', 'finnish' => 'fi_FI', 'french' => 'fr_FR', 'georgian' => 'ka_GE', 'german' => 'de_DE',
+        'greek' => 'el_GR', 'hebrew' => 'he_IL', 'hindi' => 'hi_IN', 'hungarian' => 'hu_HU', 'indonesian' => 'id_ID', 'italian' => 'it_IT', 'kannada' => 'kn_IN', 'korean' => 'ko_KR', 'norwegian' => 'nb_NO', 'persian' => 'fa_IR',
         'polish' => 'pl_PL', 'portuguese-br' => 'pt_BR', 'portuguese-pt' => 'pt_PT', 'romanian' => 'ro_RO',
-        'russian' => 'ru_RU', 'serbian' => 'sr_RS', 'spanish' => 'es_ES', 'thai' => 'th_TH', 'turkish' => 'tr_TR',
+        'russian' => 'ru_RU', 'serbian' => 'sr_RS', 'slovak' => 'sk_SK', 'slovenian' => 'sl_SI', 'spanish' => 'es_ES', 'swedish' => 'sv_SE', 'thai' => 'th_TH', 'turkish' => 'tr_TR',
         'ukranian' => 'uk_UA', 'ukrainian' => 'uk_UA', 'uzbek' => 'uz_UZ', 'vietnamese' => 'vi_VN',
     ];
 

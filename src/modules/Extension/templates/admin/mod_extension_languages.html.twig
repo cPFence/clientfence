@@ -54,7 +54,8 @@
                                     {% for lang in admin.extension_languages %}
                                     <tr>
                                         <td class="w-1">
-                                            <span class="flag flag-country-{{ lang.locale|split('_')[1]|lower }}"></span>
+                                            {# ClientFence core patch: the country is the code's last part (sr_Cyrl_RS, CF-184). #}
+                                            <span class="flag flag-country-{{ lang.locale|split('_')|last|lower }}"></span>
                                         </td>
                                         <td>{{ lang.locale|locale_name }}</td>
                                         <td>
@@ -111,7 +112,8 @@
                                     {% for lang in admin.extension_languages({'disabled': true}) %}
                                     <tr>
                                         <td class="w-1">
-                                            <span class="flag flag-country-{{ lang.locale|split('_')[1]|lower }}"></span>
+                                            {# ClientFence core patch: the country is the code's last part (sr_Cyrl_RS, CF-184). #}
+                                            <span class="flag flag-country-{{ lang.locale|split('_')|last|lower }}"></span>
                                         </td>
                                         <td>{{ lang.locale|locale_name }}</td>
                                         <td>

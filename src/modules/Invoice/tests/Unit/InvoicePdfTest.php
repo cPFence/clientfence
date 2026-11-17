@@ -93,6 +93,7 @@ test('PDF documents use a font that has the letters of their language', function
     expect(ClientFence\Mod\Invoice\RtlPdf::document($di, $locale, 'Test')->getFontFamily())->toBe($font);
 })->with([
     'Hindi (Devanagari, not in DejaVu Sans)' => ['hi_IN', 'freesans'],
+    'Bengali (not in DejaVu Sans)' => ['bn_BD', 'freesans'],
     'Arabic' => ['ar_SA', 'dejavusans'],
     'English' => ['en_US', 'dejavusans'],
 ]);

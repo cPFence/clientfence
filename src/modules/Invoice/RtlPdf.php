@@ -17,8 +17,8 @@ final class RtlPdf
     /** Languages written right to left. */
     public const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur', 'yi'];
 
-    /** Fonts shipped with TCPDF for languages whose letters DejaVu Sans lacks (FreeSans has Devanagari). */
-    public const SCRIPT_FONTS = ['hi' => 'freesans'];
+    /** Fonts shipped with TCPDF for languages whose letters DejaVu Sans lacks (FreeSans has Devanagari and Bengali). */
+    public const SCRIPT_FONTS = ['hi' => 'freesans', 'bn' => 'freesans'];
 
     public static function isRtl(string $locale): bool
     {
