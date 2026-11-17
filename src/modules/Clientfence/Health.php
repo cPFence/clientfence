@@ -491,7 +491,7 @@ final class Health
             $mailer === '' => ['bad', self::msg('No mail transport: emails are not sent.')],
             default => ['warn', self::msg('Mail goes through :mailer, not SMTP over TLS.')],
         };
-        yield self::check('services', 'svc_mail', self::msg('Email delivery'), $state, $detail, 'extension/settings/email', [':port' => $port, ':mailer' => $mailer]);
+        yield self::check('services', 'svc_mail', self::msg('Email delivery'), $state, $detail, 'extension/settings/email', [':port' => $port, ':mailer' => [['custom' => 'Custom', 'sendmail' => 'SendMail'][$mailer] ?? $mailer]]); // the email settings page's names, translated when read
 
         // A help desk's new ticket notices go to its email address (Staff\Service::onAfterClientOpenTicket()): the installer's placeholder reaches nobody.
         foreach ($db->fetchAllAssociative('SELECT id, name FROM support_helpdesk WHERE email = ?', [Setup::PLACEHOLDER_EMAIL]) as $row) {
