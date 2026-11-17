@@ -213,7 +213,10 @@ class Client extends \ClientFence\Api\AbstractApi
      */
     public function statement_pdf($data): \Symfony\Component\HttpFoundation\Response
     {
-        return \ClientFence\Mod\Invoice\StatementPdf::response($this->getDi(), $this->statement($data), \Locale::getDefault());
+        // Its lines are written in the PDF's label language (RtlPdf::labels()), as the rest of the PDF.
+        $locale = \Locale::getDefault();
+
+        return \ClientFence\Translate::with(\ClientFence\Mod\Invoice\RtlPdf::labels($locale), fn (): \Symfony\Component\HttpFoundation\Response => \ClientFence\Mod\Invoice\StatementPdf::response($this->getDi(), $this->statement($data), $locale));
     }
 
     /**

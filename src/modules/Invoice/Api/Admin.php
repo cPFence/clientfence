@@ -1502,9 +1502,14 @@ class Admin extends \ClientFence\Api\AbstractApi
     public function statement_pdf($data): Response
     {
         $this->checkPermissions('invoice', 'view');
-        $statement = \ClientFence\Mod\Invoice\Statement::build($this->getDi(), (int) ($data['client_id'] ?? 0), trim((string) ($data['from'] ?? '')), trim((string) ($data['to'] ?? '')));
+        // Its lines are written in the PDF's label language (RtlPdf::labels()), as the rest of the PDF.
+        $locale = \Locale::getDefault();
 
-        return \ClientFence\Mod\Invoice\StatementPdf::response($this->getDi(), $statement, \Locale::getDefault());
+        return \ClientFence\Translate::with(\ClientFence\Mod\Invoice\RtlPdf::labels($locale), fn (): \Symfony\Component\HttpFoundation\Response => \ClientFence\Mod\Invoice\StatementPdf::response(
+            $this->getDi(),
+            \ClientFence\Mod\Invoice\Statement::build($this->getDi(), (int) ($data['client_id'] ?? 0), trim((string) ($data['from'] ?? '')), trim((string) ($data['to'] ?? ''))),
+            $locale,
+        ));
     }
 
     public function export_csv($data): Response

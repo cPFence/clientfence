@@ -156,3 +156,10 @@ test('Hindi, Bengali and Kannada PDFs are labelled in English, other languages i
     'Arabic' => ['ar_SA', 'ar_SA'],
     'Korean' => ['ko_KR', 'ko_KR'],
 ]);
+
+test('a PDF labelled in English writes its dates in English too', function (string $locale): void {
+    [$di, $data] = invoicePdfFixture($locale);
+    $html = (new ReflectionMethod(InvoicePdf::class, 'html'))->invoke(null, $di, $data, fn (mixed $amount): string => (string) $amount, $locale);
+
+    expect($html)->toContain('Oct 1, 2026')->toContain('Oct 15, 2026');
+})->with(['Bengali' => ['bn_BD'], 'Kannada' => ['kn_IN'], 'Hindi' => ['hi_IN']]);

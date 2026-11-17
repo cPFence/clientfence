@@ -58,7 +58,7 @@ final class InvoicePdf
         $start = $rtl ? 'right' : 'left';
         $end = $rtl ? 'left' : 'right';
         $invoice = $data['invoice'];
-        $date = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE);
+        $date = new \IntlDateFormatter(RtlPdf::labels($locale), \IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE);
         $taxLabel = (string) ($data['footer']['tax_label'] ?? '');
         // Palette: navy ink, teal accent, muted grey, hairline, soft tint.
         $ink = '#1b2433';
