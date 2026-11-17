@@ -13,9 +13,12 @@ if (php_sapi_name() !== 'cli') {
     exit('This script can only be run from the command line.');
 }
 
-// ClientFence core patch: system:update refuses root before loading, which already writes root-owned cache files that break later updates.
-if (in_array('system:update', $_SERVER['argv'] ?? [], true) && function_exists('posix_geteuid') && posix_geteuid() === 0) {
-    fwrite(STDERR, "Do not run system:update as root: the files it writes would belong to root, and later updates would fail. Run it as the site's user (for example with sudo -u).\n");
+// ClientFence core patch: every command refuses root on an install owned by another user, before loading: loading already
+// writes cache files into data/, and root-owned files break the site and later updates. system:update always refuses root.
+$siteOwner = fileowner(is_dir(__DIR__ . '/data') ? __DIR__ . '/data' : __FILE__);
+if (function_exists('posix_geteuid') && posix_geteuid() === 0 && ($siteOwner !== 0 || in_array('system:update', $_SERVER['argv'] ?? [], true))) {
+    $owner = $siteOwner !== 0 && function_exists('posix_getpwuid') ? (posix_getpwuid((int) $siteOwner)['name'] ?? '') : '';
+    fwrite(STDERR, "Do not run console.php as root: the files it writes would belong to root and break the site and later updates. Run it as the site's user: sudo -u " . ($owner !== '' ? $owner : '<site user>') . " php console.php ...\n");
     exit(1);
 }
 

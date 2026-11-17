@@ -156,9 +156,9 @@ test('as root it refuses before anything else, --check too', function (bool $che
         ->and($world->updates)->toBe(0);
 })->with([false, true]);
 
-test('console.php refuses system:update as root before it loads the site', function (): void {
+test('console.php refuses every command as root on an install owned by another user, before it loads the site', function (): void {
     $source = (string) file_get_contents(PATH_ROOT . '/console.php');
-    expect(strpos($source, "in_array('system:update', \$_SERVER['argv'] ?? [], true) && function_exists('posix_geteuid') && posix_geteuid() === 0"))
+    expect(strpos($source, "if (function_exists('posix_geteuid') && posix_geteuid() === 0 && (\$siteOwner !== 0 || in_array('system:update', \$_SERVER['argv'] ?? [], true))) {"))
         ->toBeInt()->toBeLessThan(strpos($source, "require_once __DIR__ . DIRECTORY_SEPARATOR . 'load.php';"));
 });
 
