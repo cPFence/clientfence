@@ -77,6 +77,28 @@ test('updates admin profile', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('a new sign-in email needs the current password', function (): void {
+    $di = container();
+    $tools = Mockery::mock(ClientFence\Tools::class);
+    $tools->shouldReceive('validateAndSanitizeEmail')->andReturnArg(0);
+    $di['tools'] = $tools;
+    $di['password'] = new ClientFence\PasswordManager();
+    $model = createEntity(ClientFence\Mod\Staff\Entity\Admin::class, ['id' => 1, 'email' => 'staff@example.com', 'pass' => $di['password']->hashIt('oldpw')]);
+
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('updateAdmin')->twice()->andReturn(true);
+
+    $adminApi = apiEndpoint(new Admin());
+    $adminApi->setDi($di);
+    $adminApi->setIdentity($model);
+    $adminApi->setService($serviceMock);
+
+    expect(fn () => $adminApi->update(['email' => 'new@example.com']))->toThrow(ClientFence\InformationException::class, 'Enter your current password to change your email address.')
+        ->and(fn () => $adminApi->update(['email' => 'new@example.com', 'current_password' => 'wrong']))->toThrow(ClientFence\InformationException::class)
+        ->and($adminApi->update(['email' => 'STAFF@example.com', 'name' => 'Root']))->toBeTrue()
+        ->and($adminApi->update(['email' => 'new@example.com', 'current_password' => 'oldpw']))->toBeTrue();
+});
+
 test('generates api key', function (): void {
     $model = createEntity(ClientFence\Mod\Staff\Entity\Admin::class);
 

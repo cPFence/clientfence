@@ -60,13 +60,18 @@
                     } %}
                         {% block form_content %}
                             <div class="row g-3">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <label class="form-label">{{ 'Name'|trans }}</label>
                                     <input class="form-control" type="text" name="name" value="{{ profile.name }}" required>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <label class="form-label">{{ 'Email'|trans }}</label>
                                     <input class="form-control" type="text" name="email" value="{{ profile.email }}" required>
+                                </div>
+                                {# ClientFence core patch: changing the email needs the current password (Profile Api update). #}
+                                <div class="col-lg-4">
+                                    <label class="form-label" for="current_password_email">{{ 'Current password (to change the email)'|trans }}</label>
+                                    <input class="form-control" type="password" id="current_password_email" name="current_password" autocomplete="current-password">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">{{ 'Signature'|trans }}</label>

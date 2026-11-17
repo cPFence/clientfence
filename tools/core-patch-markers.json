@@ -8402,5 +8402,13 @@
     {
         "file": "modules/Extension/Api/Guest.php",
         "done": "ClientFence core patch: templates pass a bool, the HTTP API an array (`details`); an array was a TypeError."
+    },
+    {
+        "file": "modules/Profile/Api/Admin.php",
+        "done": "ClientFence core patch: a new sign-in email needs the current password, as on the client side and change_password."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_profile.html.twig",
+        "done": "ClientFence core patch: changing the email needs the current password (Profile Api update)."
     }
 ]

@@ -77,6 +77,15 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         if (!is_null($data['email'] ?? null)) {
             $data['email'] = $this->getDi()['tools']->validateAndSanitizeEmail($data['email']);
+            // ClientFence core patch: a new sign-in email needs the current password, as on the client side and change_password.
+            $staff = $this->getAdminEntity();
+            if (strcasecmp((string) $data['email'], (string) $staff->getEmail()) !== 0) {
+                $this->getDi()['rate_limiter']->consumeOrThrow('profile_password_change_ip', (string) $this->getIp());
+                $this->getDi()['rate_limiter']->consumeOrThrow('profile_password_change_account', 'admin:' . $staff->getId());
+                if (!$this->getDi()['password']->verify((string) ($data['current_password'] ?? ''), (string) $staff->getPass())) {
+                    throw new InformationException('Enter your current password to change your email address.');
+                }
+            }
         }
 
         return $this->getService()->updateAdmin($this->getAdminEntity(), $data);
