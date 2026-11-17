@@ -37,7 +37,7 @@ test('get new loads the client from the query', function (): void {
 
     $boxAppMock = Mockery::mock('ClientFence\App');
     $boxAppMock->shouldReceive('getRequest')->once()->andReturn(Request::create('/order/new', 'GET', ['client_id' => '9']));
-    $boxAppMock->shouldReceive('render')->once()->with('mod_order_new', ['client' => $client])->andReturn('rendered');
+    $boxAppMock->shouldReceive('render')->once()->with('mod_order_new', ['client' => $client, 'today' => date('Y-m-d')])->andReturn('rendered');
 
     expect($controller->get_new($boxAppMock))->toBe('rendered');
 });
@@ -53,7 +53,7 @@ test('get new opens without a client', function (): void {
 
     $boxAppMock = Mockery::mock('ClientFence\App');
     $boxAppMock->shouldReceive('getRequest')->once()->andReturn(Request::create('/order/new'));
-    $boxAppMock->shouldReceive('render')->once()->with('mod_order_new', ['client' => null])->andReturn('rendered');
+    $boxAppMock->shouldReceive('render')->once()->with('mod_order_new', ['client' => null, 'today' => date('Y-m-d')])->andReturn('rendered');
 
     expect($controller->get_new($boxAppMock))->toBe('rendered');
 });

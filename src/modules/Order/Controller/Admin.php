@@ -119,7 +119,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $staff->checkPermissionsAndThrowException('product', 'view');
         $clientId = (int) $app->getRequest()->query->get('client_id');
 
-        return $app->render('mod_order_new', ['client' => $clientId > 0 ? $this->di['api_admin']->client_get(['id' => $clientId]) : null]);
+        // ClientFence core patch: the start date defaults to the server's today, the day the order check uses (not the staff browser's).
+        return $app->render('mod_order_new', ['client' => $clientId > 0 ? $this->di['api_admin']->client_get(['id' => $clientId]) : null, 'today' => date('Y-m-d')]);
     }
 
     public function get_order(\ClientFence\App $app, $id): string

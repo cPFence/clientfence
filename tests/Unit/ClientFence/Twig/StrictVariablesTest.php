@@ -111,6 +111,7 @@ test('order new only lists periods the product is actually priced for', function
             'invoice_gateway_get_pairs' => [],
         ]),
         'client' => ['id' => 1, 'first_name' => 'Jane', 'last_name' => 'Doe'],
+        'today' => '2026-11-18',
         'guest' => [
             'system_periods' => \ClientFence\Period::getPredefined(),
             'serviceDomain_tlds' => [],
@@ -119,6 +120,7 @@ test('order new only lists periods the product is actually priced for', function
 
     expect($html)
         ->toContain('&quot;code&quot;&#x3A;&quot;1Y&quot;')
+        ->toContain('data-today="2026-11-18"')
         ->not->toContain('&quot;code&quot;&#x3A;&quot;4Y&quot;')
         ->not->toContain('&quot;code&quot;&#x3A;&quot;5Y&quot;')
         // CF-141: the order starts with no product.

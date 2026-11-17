@@ -53,7 +53,7 @@
    and an Order Summary priced by order/quote, the same code that makes the order. #}
 {# ClientFence core patch: the page styles move to the admin stylesheet (CF-135 part 4); the item boxes and the Order Summary get the glass look, the total due today reads as the figure (CF-135 redesign). #}
 
-<form id="cf-new-order" novalidate data-products="{{ products|json_encode|e('html_attr') }}" data-tlds="{{ tlds|json_encode|e('html_attr') }}" data-periods="{{ periods|json_encode|e('html_attr') }}" data-today="{{ 'now'|date('Y-m-d', false) }}">
+<form id="cf-new-order" novalidate data-products="{{ products|json_encode|e('html_attr') }}" data-tlds="{{ tlds|json_encode|e('html_attr') }}" data-periods="{{ periods|json_encode|e('html_attr') }}" data-today="{{ today }}">
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card mb-4">
