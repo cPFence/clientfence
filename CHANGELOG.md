@@ -16,6 +16,8 @@ A new look for the admin and client areas, and new billing features.
 - Suspend all, Unsuspend all and Cancel all services of a client from its Overview; each service goes through its own action, as on its order page.
 - Send a client the welcome email or one of your own templates from its Overview.
 - **Database tab:** System → Settings → System lists the database tables by size. Optimize tables gives back the space of deleted rows, and Run clean-up now removes old logs and ticket files at once, following your retention settings. Super Administrators only.
+- **Payment method order:** arrows on System → Payment Gateways set the order clients see the payment methods in. The first one a client can use is picked at checkout and on Add Funds; an invoice keeps its own method. ([#43](https://github.com/cPFence/clientfence/issues/43))
+- **PO numbers:** a purchase order number per client, used on their new invoices, which staff can change on one invoice. Clients can set their own on their profile. It shows on the invoice, the print view, the PDF and the invoice emails, and invoice search finds it. ([#31](https://github.com/cPFence/clientfence/issues/31))
 
 ### Changed
 
@@ -38,6 +40,8 @@ A new look for the admin and client areas, and new billing features.
 - On the admin client page, the Credit Balance tab shows the balance in key figure cards and the Tickets tab counts filter the list.
 - **Brand color:** the default brand color is now the theme's own navy and teal. The quick setup wizard keeps the admin's colors and buttons, and its preview shows the new client area. Emails use the brand color when it is the default too.
 - On the admin client page, New Order only shows to staff who may create orders. The invoice page shows each action only to staff who have the right to use it.
+- New Order in the New menu and on the Orders list, and the invoice editing tabs, also show only to staff who may use them.
+- An invoice link opened without signing in shows the bank transfer and other manual payment details. Sending the transfer receipt still needs signing in. ([#41](https://github.com/cPFence/clientfence/issues/41))
 - Deleting a client also removes its quotes, service and order records, ticket messages and saved payment links. Payment history is kept.
 - The store's domain search runs straight away, with the chosen extension ticked first.
 - The client page's trust score counts unpaid invoices past their due date as paid late.
@@ -63,6 +67,10 @@ A new look for the admin and client areas, and new billing features.
 - Opening another client's email shows "not found" instead of an error page.
 - The ticket feedback page has a Back link, and the admin side menu arrows are smaller.
 - Service types and "MRR" are translated, and the email template list shows readable subjects.
+- Enhance: the client area shows this month's real bandwidth instead of 0 MB. ([#44](https://github.com/cPFence/clientfence/issues/44))
+- After a part payment, the payment fee is worked out on what is left, so the amount the invoice page asks for pays the invoice.
+- The Orders list no longer opens an error page for staff who may manage orders but not view products.
+- The checkout accepts only a payment method it offers.
 
 ## 1.0.55 (2026-11-16)
 
