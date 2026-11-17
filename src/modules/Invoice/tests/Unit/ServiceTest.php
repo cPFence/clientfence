@@ -5700,6 +5700,7 @@ test('a part refund keeps the invoice paid, can go to credit, the last part mark
     $di['db']->shouldReceive('getCell')->andReturn(false);
     $system = Mockery::mock(SystemService::class);
     $system->shouldReceive('getParamValue')->with('invoice_refund_logic', 'manual')->andReturn('credit_note');
+    $system->shouldReceive('getParamValue')->with('invoice_number_padding')->andReturn('5');
     // As WHMCS "Invoice Refund Confirmation": one email per refund, for the credit note's amount.
     $sent = [];
     $email = Mockery::mock(ClientFence\Mod\Email\Service::class);
@@ -5722,7 +5723,7 @@ test('a part refund keeps the invoice paid, can go to credit, the last part mark
     if ($error !== null) {
         $service->shouldNotReceive('creditNote');
     } else {
-        $service->shouldReceive('creditNote')->once()->with(10, 'Refund of invoice CF7', $amount ?? 15.0 - $refunded, false, Mockery::any(), null, $amount ?? 15.0 - $refunded)->andReturn(99);
+        $service->shouldReceive('creditNote')->once()->with(10, 'Refund of invoice CF00007', $amount ?? 15.0 - $refunded, false, Mockery::any(), null, $amount ?? 15.0 - $refunded)->andReturn(99);
     }
     if ($toCredit && $error === null) {
         $di['dbal']->shouldReceive('insert')->once()->with('client_balance', Mockery::on(fn (array $row): bool => $row['amount'] === $amount && $row['rel_id'] === '99' && $row['client_id'] === 20));
@@ -5797,6 +5798,7 @@ test('a refund sent back through PayPal notes its refund ID, and a refused one r
     $di['db']->shouldReceive('getCell')->andReturn(false);
     $system = Mockery::mock(SystemService::class);
     $system->shouldReceive('getParamValue')->with('invoice_refund_logic', 'manual')->andReturn('credit_note');
+    $system->shouldReceive('getParamValue')->with('invoice_number_padding')->andReturn('5');
     $email = Mockery::mock(ClientFence\Mod\Email\Service::class);
     $email->shouldReceive('sendTemplate')->times($accepted ? 1 : 0)->andReturnTrue();
     $di['mod_service'] = $di->protect(moduleService(['system' => $system, 'email' => $email]));

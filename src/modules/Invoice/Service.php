@@ -291,6 +291,14 @@ class Service implements InjectionAwareInterface
         ];
     }
 
+    /**
+     * ClientFence core patch: the invoice number as the invoice shows it (padded), for refund texts.
+     */
+    private function serieNr(\Model_Invoice $invoice): string
+    {
+        return $invoice->serie . sprintf('%0' . $this->getInvoiceNumberPadding() . 's', $invoice->nr);
+    }
+
     private function getInvoiceNumberPadding(): int
     {
         if ($this->invoiceNumberPadding === null) {
@@ -1935,7 +1943,7 @@ class Service implements InjectionAwareInterface
             throw new InformationException('An Add funds refund takes its amount back from the client\'s credit, and the client has spent it. Refund this invoice by hand.');
         }
 
-        $label = $invoice->serie . $invoice->nr;
+        $label = $this->serieNr($invoice);
         $rate = (float) $invoice->taxrate;
         // shortcut: the refund is taxed as a whole when the invoice has tax; mixed taxed and untaxed lines need a refund by hand.
         $taxed = $rate > 0 && $this->getTax($invoice) > 0;
@@ -1964,7 +1972,7 @@ class Service implements InjectionAwareInterface
             return;
         }
         $now = date('Y-m-d H:i:s');
-        $this->di['dbal']->insert('client_balance', ['client_id' => (int) $invoice->client_id, 'type' => 'invoice', 'rel_id' => (string) $creditNote, 'description' => 'Refund of invoice ' . $invoice->serie . $invoice->nr . ' to account credit', 'amount' => $amount, 'created_at' => $now, 'updated_at' => $now]);
+        $this->di['dbal']->insert('client_balance', ['client_id' => (int) $invoice->client_id, 'type' => 'invoice', 'rel_id' => (string) $creditNote, 'description' => 'Refund of invoice ' . $this->serieNr($invoice) . ' to account credit', 'amount' => $amount, 'created_at' => $now, 'updated_at' => $now]);
     }
 
     private function refundInvoiceLocked(\Model_Invoice $invoice, $note = null): ?int
@@ -2185,7 +2193,7 @@ class Service implements InjectionAwareInterface
                     $refundBalance->client_id = $invoice->client_id;
                     $refundBalance->type = 'invoice';
                     $refundBalance->rel_id = $new->id;
-                    $refundBalance->description = 'Refund of invoice ' . $invoice->serie . $invoice->nr;
+                    $refundBalance->description = 'Refund of invoice ' . $this->serieNr($invoice);
                     $refundBalance->amount = -round($deposit, 2);
                     $refundBalance->created_at = date('Y-m-d H:i:s');
                     $refundBalance->updated_at = date('Y-m-d H:i:s');
@@ -2197,7 +2205,7 @@ class Service implements InjectionAwareInterface
                     $back->client_id = $invoice->client_id;
                     $back->type = 'invoice';
                     $back->rel_id = $new->id;
-                    $back->description = 'Downgrade credit taken back with the refund of invoice ' . $invoice->serie . $invoice->nr;
+                    $back->description = 'Downgrade credit taken back with the refund of invoice ' . $this->serieNr($invoice);
                     $back->amount = -$takeBack;
                     $back->created_at = $back->updated_at = date('Y-m-d H:i:s');
                     $this->di['db']->store($back);
