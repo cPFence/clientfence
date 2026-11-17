@@ -646,7 +646,20 @@ class ServiceTransaction implements InjectionAwareInterface
             $ipn = [];
         }
 
-        return $adapter->processTransaction($this->di['api_system'], (int) $id, $ipn, (int) $tx->gateway_id);
+        $result = $adapter->processTransaction($this->di['api_system'], (int) $id, $ipn, (int) $tx->gateway_id);
+        // ClientFence core patch (CF-171): a part-paid invoice gets the fee on what is left, as after credit (GatewayFees.php); not while a payment is clearing.
+        $invoice = $tx->invoice_id ? $this->di['db']->load('Invoice', (int) $tx->invoice_id) : null;
+        if ($invoice instanceof \Model_Invoice && $invoice->gateway_id && PendingPayments::forInvoice($this->di, (int) $invoice->id) === null) {
+            try {
+                GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
+                // Without the fee, what was paid may now cover the invoice: settle it as the adapter tried to.
+                $this->di['mod_service']('Invoice')->tryPayWithCredits($this->di['db']->load('Invoice', (int) $invoice->id));
+            } catch (\Throwable $e) {
+                $this->di['logger']->error('Invoice #%s: payment fee not updated after transaction #%s: %s', $invoice->id, $id, $e->getMessage());
+            }
+        }
+
+        return $result;
     }
 
     public function process(\Model_Transaction $tx): \Model_Transaction

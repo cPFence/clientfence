@@ -875,6 +875,13 @@ class Service implements InjectionAwareInterface
 
     public function checkoutCart(Cart|\Model_Cart $cart, Client|\Model_Client $client, $gateway_id = null): array
     {
+        // ClientFence core patch (CF-172): only a payment method the checkout offers, as invoice/choose_gateway checks.
+        if ($gateway_id !== null && $gateway_id !== '') {
+            $currency = (string) $this->toApiArray($cart, false, $client)['currency']['code'];
+            if (!in_array((int) $gateway_id, array_column(\ClientFence\Mod\Invoice\Receipts::paymentMethods($this->di, 0, $currency, true), 'id'), true)) {
+                throw new \ClientFence\InformationException('Payment method not found', null, 813);
+            }
+        }
         $promoId = $this->cartPromoId($cart);
         if ($promoId) {
             $promo = $this->getProductService()->findPromoById($promoId);

@@ -8070,5 +8070,13 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch (GitHub #31): the credit note keeps the purchase order number."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch (CF-171): a part-paid invoice gets the fee on what is left, as after credit (GatewayFees.php); not while a payment is clearing."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch (CF-172): only a payment method the checkout offers, as invoice/choose_gateway checks."
     }
 ]

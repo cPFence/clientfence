@@ -749,6 +749,25 @@ test('checkoutCart returns array with expected keys', function (): void {
     expect($result)->toHaveKey('orders');
 });
 
+test('checkoutCart refuses a payment method the checkout does not offer (CF-172)', function (): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->allows('toApiArray')->andReturn(['currency' => ['code' => 'USD'], 'total' => 20.0]);
+    $serviceMock->shouldNotReceive('createFromCart');
+    $db = Mockery::mock(\ClientFence\Database::class);
+    // No enabled gateway takes this cart: a made-up or disabled id is not among the offered methods.
+    $db->allows('find')->andReturn([]);
+    $session = Mockery::mock();
+    $session->allows('get')->andReturn(7);
+    $di = container();
+    $di['db'] = $db;
+    $di['session'] = $session;
+    $di['mod_service'] = $di->protect(fn () => Mockery::mock());
+    $serviceMock->setDi($di);
+
+    expect(fn () => $serviceMock->checkoutCart(createEntity(Cart::class), createEntity(Client::class), 99999999))
+        ->toThrow(ClientFence\InformationException::class, 'Payment method not found');
+});
+
 test('checkoutCart throws exception when client is not able to use promo', function (): void {
     $cart = createEntity(Cart::class);
     $cart->promo_id = 1;

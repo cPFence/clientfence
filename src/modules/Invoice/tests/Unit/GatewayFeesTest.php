@@ -81,7 +81,12 @@ function feeWorld(string $status = 'unpaid', bool $deposit = false): object
     $client = new Model_Client();
     $client->loadBean(new Tests\Helpers\DummyBean());
     $client->id = 7;
-    $di['db']->allows('load')->andReturnUsing(fn (string $type, int $id): ?object => $type === 'Client' ? ($id === 7 ? $client : null) : ($gateways[$id] ?? null));
+    $di['db']->allows('load')->andReturnUsing(fn (string $type, int $id): ?object => match ($type) {
+        'Client' => $id === 7 ? $client : null,
+        'Invoice' => $id === 5 ? $world->invoice : null,
+        'Transaction' => $world->tx ?? null,
+        default => $gateways[$id] ?? null,
+    });
     $di['db']->allows('find')->andReturn(array_values($gateways));
     $world->invoices = $invoices;
     $world->di = $di;
@@ -271,3 +276,39 @@ test('the fee tax before the invoice exists is the same as the invoice adds, rou
         ->and(GatewayFees::taxOn(20.0, 10, 1.16))->toBe(0.12)
         ->and(GatewayFees::taxOn(20.0, 0, 1.16))->toBe(0.0);
 });
+
+test('a payment that leaves the invoice part-paid puts the fee on what is left, not while one is clearing (CF-171)', function (bool $clearing, float $fee): void {
+    $world = feeWorld();
+    $world->db->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, currency TEXT, status TEXT, txn_status TEXT, created_at TEXT)');
+    if ($clearing) {
+        $world->db->executeStatement('INSERT INTO "transaction" (invoice_id, amount, currency, status, txn_status, created_at) VALUES (5, 50, ?, ?, ?, ?)', ['AUD', 'received', 'processing', date('Y-m-d H:i:s')]);
+    }
+    $world->di['dbal'] = $world->db;
+    GatewayFees::apply($world->di, $world->invoice, 3);
+    // 100.00 + the 2.95 fee and its 0.30 tax; the adapter records a 20.00 transfer, which leaves 80.00 without the fee.
+    $world->due = 83.25;
+    $tx = new Model_Transaction();
+    $tx->loadBean(new Tests\Helpers\DummyBean());
+    $tx->id = 1;
+    $tx->gateway_id = 4;
+    $tx->invoice_id = 5;
+    $world->tx = $tx;
+    $world->invoices->allows('getPaymentAdapter')->andReturn(new class {
+        public function processTransaction($api, int $id, array $ipn, int $gatewayId): bool
+        {
+            return true;
+        }
+    });
+    $world->di['api_system'] = new stdClass();
+    // What the payment left due is settled again once the fee changed (a payment of the amount without the fee pays it).
+    $world->invoices->shouldReceive('tryPayWithCredits')->times($clearing ? 0 : 1)->andReturn(false);
+    $service = new ClientFence\Mod\Invoice\ServiceTransaction();
+    $service->setDi($world->di);
+
+    expect((new ReflectionMethod($service, 'processTransactionLocked'))->invoke($service, 1))->toBeTrue()
+        ->and((float) $world->line->price)->toBe($fee);
+})->with([
+    // 2.5% of 80 + 0.45.
+    'part-paid' => [false, 2.45],
+    'a payment still clearing' => [true, 2.95],
+]);
