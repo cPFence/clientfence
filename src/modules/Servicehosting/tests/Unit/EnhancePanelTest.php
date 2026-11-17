@@ -271,6 +271,7 @@ test('an unreachable panel names the reason and what to check', function (string
     'host name' => ['Could not resolve host: panel.test', 'its host name was not found'],
     'wrong port' => ['OpenSSL/3.0.13: error:0A00010B:SSL routines::wrong version number', 'nothing answers HTTPS on this port'],
     'refused' => ['Failed to connect to panel.test port 2087 after 3 ms: Couldn\'t connect to server', 'the connection was refused'],
+    'closed port, curl 8' => ['Failed to connect to 127.0.0.1 port 8444 after 0 ms: Could not connect to server', 'the connection was refused'],
     'timeout' => ['Idle timeout reached', 'the connection timed out'],
     'certificate' => ["SSL: no alternative certificate subject name matches target host name 'panel.test'", 'its TLS certificate could not be verified'],
     'self-signed' => ['SSL certificate problem: self-signed certificate', 'its TLS certificate could not be verified'],
