@@ -373,7 +373,7 @@
                                     <input class="form-check-input mt-0" type="checkbox" name="groups[]" value="{{ group.id }}" id="option_group_{{ group.id }}"{% if group.id in product_options.groups %} checked{% endif %}>
                                     <label class="mb-0 flex-grow-1" for="option_group_{{ group.id }}">
                                         {{ group.title }}
-                                        <span class="text-secondary small ms-1">{{ '%count% options'|trans({ '%count%': group.options }) }}</span>
+                                        <span class="text-secondary small ms-1">{{ group.options == 1 ? '1 option'|trans : '%count% options'|trans({ '%count%': group.options }) }}</span>
                                     </label>
                                     <a class="btn btn-icon" href="{{ ('product/option-group/' ~ group.id)|url }}" aria-label="{{ 'Edit'|trans }}"><svg class="icon"><use href="#edit" /></svg></a>
                                 </div>
