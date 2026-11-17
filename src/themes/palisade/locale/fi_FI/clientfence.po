@@ -31447,3 +31447,48 @@ msgstr "Tämä tapahtuman tunnus on jo kirjattu."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "Organisaatiolla :org: (:panel:) ei ole kestotilausta :id:. Tarkista molemmat ID:t paneelista."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Siirrä"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Siirrä toiselle asiakkaalle"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Palvelimilla tai rekisteröijillä ei muutu mikään: hosting-tili säilyttää paneelin tilinsä. Siirrä se tarvittaessa käsin paneelissa ja tarkista sitten Enhance-linkki-kortti."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Palvelu kuuluu jo tälle asiakkaalle."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Palvelu ja sen lisäosat siirtyvät uudelle asiakkaalle, jolle laskutetaan seuraavat uusinnat. Laskut, maksut ja hyvitys jäävät nykyiselle asiakkaalle."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Palvelu laskutetaan valuutassa :currency, mutta uusi asiakas maksaa valuutassa :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Tämä on lisäosa: siirrä sen pääpalvelu, niin lisäosat siirtyvät sen mukana."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Palvelulla on odottava peruutuspyyntö. Hyväksy tai pysäytä se ensin."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Palvelulla on maksamaton lasku #:id. Merkitse se maksetuksi tai peruuta se ennen palvelun siirtoa."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Palvelu maksetaan sen asiakkaan maksuyhdyskäytävän kestotilauksella. Peruuta kestotilaus ensin, jotta vanha asiakas ei jatka maksamista uuden omistajan puolesta."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Palvelu odottaa tarkistusta. Hyväksy tai hylkää se ensin."

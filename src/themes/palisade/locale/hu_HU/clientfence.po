@@ -31012,3 +31012,48 @@ msgstr "Ez a tranzakció-azonosító már rögzítve van."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "A(z) :panel: :org: szervezetnek nincs :id: előfizetése. Ellenőrizze mindkét azonosítót a panelen."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Áthelyezés"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Áthelyezés másik ügyfélhez"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "A szervereken és a regisztrátoroknál nem változik semmi: a tárhelyfiók megtartja a paneles fiókját. Szükség esetén helyezze át kézzel a panelben, majd ellenőrizze az Enhance-kapcsolat kártyát."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "A szolgáltatás már ehhez az ügyfélhez tartozik."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "A szolgáltatás és a kiegészítői az új ügyfélhez kerülnek, akinek a következő megújításokat számlázzuk. A számlák, a befizetések és a jóváírás a jelenlegi ügyfélnél marad."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "A szolgáltatás számlázási pénzneme :currency, az új ügyfél viszont :client_currency pénznemben fizet."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Ez egy kiegészítő: helyezze át a fő szolgáltatását, a kiegészítői vele együtt mozognak."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Ennek a szolgáltatásnak függőben lévő lemondási kérelme van. Fogadja el vagy állítsa le először."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Ennek a szolgáltatásnak van egy fizetetlen számlája: #:id. Jelölje fizetettnek vagy mondja le, mielőtt áthelyezi a szolgáltatást."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Ezt a szolgáltatást az ügyfele fizetési átjárós előfizetése fizeti. Először szüntesse meg az előfizetést, hogy a régi ügyfél ne fizessen tovább az új tulajdonosért."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Ez a szolgáltatás ellenőrzésre vár. Először hagyja jóvá vagy utasítsa el."

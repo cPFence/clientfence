@@ -16042,6 +16042,10 @@ msgstr ""
 msgid "Most domain names (except a few top-level domains like .EU and .UK) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Move :card down"
 msgstr ""
@@ -16072,6 +16076,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Move this account onto a different hosting plan available on the current server."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
@@ -16358,7 +16366,7 @@ msgstr ""
 msgid "New Category"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_index.html.twig src/themes/admin_default/html_custom/layout_default.html.twig
+#: src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig src/themes/admin_default/html_custom/layout_default.html.twig
 msgid "New Client"
 msgstr ""
 
@@ -17520,6 +17528,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Notes for the client"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig
@@ -25006,7 +25018,7 @@ msgstr ""
 msgid "Start typing the affiliate name or code"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_new_form.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_new_form.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig …
 msgid "Start typing the client name or ID"
 msgstr ""
 
@@ -27555,6 +27567,14 @@ msgstr ""
 msgid "The server has no plans."
 msgstr ""
 
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr ""
+
 #: src/modules/Order/FraudCheck.php
 msgid "The service answered: score :score, credit left: :credit."
 msgstr ""
@@ -27569,6 +27589,10 @@ msgstr ""
 
 #: src/modules/Order/FraudCheck.php
 msgid "The service did not answer: :error"
+msgstr ""
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_cancel_request_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig
@@ -28271,6 +28295,10 @@ msgstr ""
 msgid "This is a protected system group. Its permissions are controlled by ClientFence and cannot be edited."
 msgstr ""
 
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr ""
+
 #: src/library/ClientFence/IpSeats.php
 msgid "This is not a single IP address: :ip"
 msgstr ""
@@ -28583,6 +28611,14 @@ msgstr ""
 msgid "This service does not currently expose any editable configuration values."
 msgstr ""
 
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr ""
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr ""
+
 #: src/modules/Order/CancelRequests.php
 msgid "This service has no cancellation request waiting."
 msgstr ""
@@ -28603,12 +28639,20 @@ msgstr ""
 msgid "This service is paid by a PayPal subscription: cancel it in PayPal first, then change the plan."
 msgstr ""
 
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr ""
+
 #: src/modules/Order/Upgrades.php
 msgid "This service is set to be cancelled at the end of its period, so it cannot be changed."
 msgstr ""
 
 #: src/modules/Invoice/Api/Client.php
 msgid "This service is set to be cancelled at the end of its period, so it cannot be renewed."
+msgstr ""
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php

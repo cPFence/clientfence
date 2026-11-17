@@ -29109,3 +29109,48 @@ msgstr "Bu tranzaksiya identifikatori allaqachon qayd etilgan."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr ":panel: dagi :org: tashkilotida :id: obunasi yo'q. Paneldagi ikkala ID'ni tekshiring."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Ko'chirish"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Boshqa mijozga ko'chirish"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Serverlarda va registratorlarda hech narsa o'zgarmaydi: hosting akkaunti panel akkauntini saqlab qoladi. Kerak bo'lsa, uni panelda qo'lda ko'chiring, so'ng Enhance bog'lanishi kartasini tekshiring."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Xizmat allaqachon shu mijozga tegishli."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Xizmat va uning qo'shimchalari yangi mijozga o'tadi, keyingi uzaytirishlar uning nomiga hisob-faktura qilinadi. Hisob-fakturalar, to'lovlar va kredit joriy mijozda qoladi."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Xizmat :currency valyutasida hisoblanadi, lekin yangi mijoz :client_currency valyutasida to'laydi."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Bu qo'shimcha: uning asosiy xizmatini ko'chiring, qo'shimchalar u bilan birga ko'chadi."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Bu xizmatda kutilayotgan bekor qilish so'rovi bor. Avval uni qabul qiling yoki to'xtating."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Bu xizmatda to'lanmagan hisob-faktura bor: #:id. Xizmatni ko'chirishdan oldin uni to'langan deb belgilang yoki bekor qiling."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Bu xizmat mijozining to'lov shlyuzi obunasi orqali to'lanadi. Avval obunani bekor qiling, shunda eski mijoz yangi egasi uchun to'lashda davom etmaydi."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Bu xizmat ko'rib chiqishni kutmoqda. Avval uni tasdiqlang yoki rad eting."

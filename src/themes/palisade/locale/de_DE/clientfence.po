@@ -30496,3 +30496,48 @@ msgstr "Diese Transaktionsnummer ist bereits erfasst."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "Die :panel:-Organisation :org: hat kein Abonnement :id:. Prüfen Sie beide IDs im Panel."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Verschieben"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Zu anderem Kunden verschieben"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Auf Servern und bei Registraren ändert sich nichts: Ein Hosting-Konto behält sein Panel-Konto. Verschieben Sie es bei Bedarf von Hand im Panel und prüfen Sie dann die Karte Enhance-Verknüpfung."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Der Service gehört bereits diesem Kunden."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Der Service und seine Add-ons gehen an den neuen Kunden, dem die nächsten Verlängerungen berechnet werden. Rechnungen, Zahlungen und Haben bleiben beim bisherigen Kunden."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Der Service wird in :currency abgerechnet, der neue Kunde zahlt aber in :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Dies ist ein Add-on: Verschieben Sie den zugehörigen Hauptservice, dann gehen seine Add-ons mit."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Dieser Service hat eine offene Kündigungsanfrage. Akzeptieren oder stoppen Sie sie zuerst."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Dieser Service hat eine unbezahlte Rechnung #:id. Markieren Sie sie als bezahlt oder brechen Sie sie ab, bevor Sie den Service verschieben."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Dieser Service wird über ein Gateway-Abonnement seines Kunden bezahlt. Kündigen Sie zuerst das Abonnement, damit der alte Kunde nicht für den neuen Inhaber weiterzahlt."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Dieser Service wartet auf Prüfung. Bestätigen oder lehnen Sie ihn zuerst ab."

@@ -30511,3 +30511,48 @@ msgstr "此交易 ID 已记录。"
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr ":panel: 组织 :org: 没有订阅 :id:。请在面板中检查这两个 ID。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "转移"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "转移给其他客户"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "服务器和注册商处不会有任何变化：主机账户保留其面板账户。如有需要，请在面板中手动转移，然后检查 Enhance 关联卡片。"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "该服务已属于此客户。"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "服务及其附加项将转移给新客户，后续续费将向新客户开具发票。发票、付款和贷方仍保留在当前客户名下。"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "该服务以 :currency 计费，但新客户以 :client_currency 付款。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "这是一个附加项：请转移其主服务，其附加项会随之转移。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "该服务有一个待处理的取消请求。请先接受或停止该请求。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "该服务有一张未付款发票 #:id。转移服务前，请先将其标记为已付款或取消。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "该服务由其客户的支付网关订阅付款。请先取消订阅，以免原客户继续为新所有者付款。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "该服务正在等待审核。请先核准或拒绝。"

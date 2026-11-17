@@ -30514,3 +30514,48 @@ msgstr "Dit transactie-ID is al vastgelegd."
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "De :panel:-organisatie :org: heeft geen abonnement :id:. Controleer beide ID's in het paneel."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Verplaatsen"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Verplaatsen naar andere klant"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Er verandert niets op servers of bij registrars: een hostingaccount houdt zijn paneelaccount. Verplaats het zo nodig handmatig in het paneel en controleer daarna de kaart Enhance-koppeling."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "De dienst hoort al bij deze klant."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "De dienst en de bijbehorende add-ons gaan naar de nieuwe klant, die de volgende verlengingen gefactureerd krijgt. Facturen, betalingen en tegoed blijven bij de huidige klant."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "De dienst wordt gefactureerd in :currency, maar de nieuwe klant betaalt in :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Dit is een add-on: verplaats de hoofddienst, dan gaan de add-ons mee."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Deze dienst heeft een wachtend annuleringsverzoek. Accepteer of stop het eerst."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Deze dienst heeft een onbetaalde factuur #:id. Markeer die als betaald of annuleer die voordat u de dienst verplaatst."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Deze dienst wordt betaald via een gateway-abonnement van de klant. Annuleer eerst het abonnement, zodat de oude klant niet blijft betalen voor de nieuwe eigenaar."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Deze dienst wacht op controle. Keur hem eerst goed of weiger hem."

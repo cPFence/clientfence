@@ -31111,3 +31111,48 @@ msgstr "Αυτό το αναγνωριστικό συναλλαγής έχει �
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "The :panel: organization :org: has no subscription :id:. Check both IDs in the panel."
 msgstr "Ο οργανισμός :org: του :panel: δεν έχει συνδρομή :id:. Ελέγξτε και τα δύο ID στο πάνελ."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Μεταφορά"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Μεταφορά σε άλλον πελάτη"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Δεν αλλάζει τίποτα στους διακομιστές ή στους καταχωρητές: ο λογαριασμός φιλοξενίας κρατά τον λογαριασμό του στο πάνελ. Αν χρειάζεται, μεταφέρετέ τον χειροκίνητα στο πάνελ και ελέγξτε την κάρτα Σύνδεσμος Enhance."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Η υπηρεσία ανήκει ήδη σε αυτόν τον πελάτη."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Η υπηρεσία και τα πρόσθετά της περνούν στον νέο πελάτη, στον οποίο τιμολογούνται οι επόμενες ανανεώσεις. Τα παραστατικά, οι πληρωμές και η πίστωση παραμένουν στον τρέχοντα πελάτη."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Η υπηρεσία χρεώνεται σε :currency, αλλά ο νέος πελάτης πληρώνει σε :client_currency."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Αυτό είναι πρόσθετο: μεταφέρετε την κύρια υπηρεσία του και τα πρόσθετά της μεταφέρονται μαζί της."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Αυτή η υπηρεσία έχει αίτημα ακύρωσης σε αναμονή. Αποδεχτείτε το ή σταματήστε το πρώτα."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service."
+msgstr "Αυτή η υπηρεσία έχει απλήρωτο παραστατικό #:id. Σημειώστε το ως πληρωμένο ή ακυρώστε το πριν μεταφέρετε την υπηρεσία."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Αυτή η υπηρεσία πληρώνεται με συνδρομή πύλης πληρωμών του πελάτη της. Ακυρώστε πρώτα τη συνδρομή, ώστε ο παλιός πελάτης να μη συνεχίσει να πληρώνει για τον νέο κάτοχο."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Αυτή η υπηρεσία περιμένει έλεγχο. Εγκρίνετέ την ή απορρίψτε την πρώτα."
