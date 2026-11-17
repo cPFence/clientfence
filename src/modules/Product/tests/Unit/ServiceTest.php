@@ -1092,7 +1092,7 @@ test('delete product active order exception', function (): void {
     $service->setDi($di);
 
     expect(fn (): bool => $service->deleteProduct($model))
-        ->toThrow(ClientFence\Exception::class, 'Cannot remove product which has active orders.');
+        ->toThrow(ClientFence\Exception::class, 'Cannot remove a product that has orders.');
 });
 
 test('get product category pairs', function (): void {

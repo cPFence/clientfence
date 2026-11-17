@@ -748,7 +748,8 @@ class Service implements InjectionAwareInterface
     {
         $orderService = $this->di['mod_service']('order');
         if ($orderService->productHasOrders($product)) {
-            throw new \ClientFence\InformationException('Cannot remove product which has active orders.');
+            // ClientFence core patch: any order blocks it, not only active ones, so the message says so.
+            throw new \ClientFence\InformationException('Cannot remove a product that has orders.');
         }
         $id = $product->getId();
         $this->di['em']->remove($product);

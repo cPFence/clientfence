@@ -295,6 +295,12 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('product', 'manage_products');
 
+        // ClientFence core patch: an add-on only, as addon_get and addon_update (a main product went too).
+        $model = $this->getService()->findProductById((int) ($data['id'] ?? 0));
+        if (!$model instanceof Product || !$model->isAddon()) {
+            throw new \ClientFence\InformationException('Addon not found');
+        }
+
         return $this->delete($data);
     }
 
@@ -374,7 +380,8 @@ class Admin extends \ClientFence\Api\AbstractApi
     #[RequiredParams(['id' => 'Category ID was not passed'])]
     public function category_get($data)
     {
-        $this->checkPermissions('product', 'manage_categories');
+        // ClientFence core patch: reading a category needs the view permission, as reading a product.
+        $this->checkPermissions('product', 'view');
 
         $model = $this->getService()->findProductCategoryById((int) $data['id']);
 

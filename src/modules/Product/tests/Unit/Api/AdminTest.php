@@ -220,11 +220,18 @@ test('updates an addon', function (): void {
     expect($apiMock->addon_update($data))->toBeArray();
 });
 
-test('deletes an addon', function (): void {
+test('deletes an addon, never a main product', function (): void {
     $apiMock = apiEndpoint(Mockery::mock(Admin::class . '[delete]'));
-    $apiMock->shouldReceive('delete')->atLeast()->once()->andReturn(true);
+    $apiMock->shouldReceive('delete')->once()->with(['id' => 1])->andReturn(true);
 
-    expect($apiMock->addon_delete([]))->toBeTrue();
+    $addon = (new Product())->setIsAddon(true);
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('findProductById')->with(1)->andReturn($addon);
+    $serviceMock->shouldReceive('findProductById')->with(2)->andReturn(new Product());
+    $apiMock->setService($serviceMock);
+
+    expect($apiMock->addon_delete(['id' => 1]))->toBeTrue()
+        ->and(fn () => $apiMock->addon_delete(['id' => 2]))->toThrow(ClientFence\InformationException::class, 'Addon not found');
 });
 
 test('deletes a product', function (): void {
@@ -294,8 +301,11 @@ test('gets a category', function (): void {
     $serviceMock->shouldReceive('findProductCategoryById')->once()->with(1)->andReturn($model);
     $serviceMock->shouldReceive('toProductCategoryApiArray')->once()->andReturn([]);
 
+    // ClientFence: reading a category needs the view permission, as reading a product.
+    $di = container();
+    $di['mod_service']('staff')->shouldReceive('checkPermissionsAndThrowException')->once()->with('product', 'view', null, Mockery::any());
     $api->setService($serviceMock);
-    $api->setDi(container());
+    $api->setDi($di);
 
     expect($api->category_get($data))->toBeArray();
 });
