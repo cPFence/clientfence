@@ -301,6 +301,16 @@ class Receipts
     }
 
     /**
+     * A deleted or anonymized client's receipt files go with its tickets (Client\Users::clientDeleted()).
+     */
+    public static function forgetClient(int $clientId): void
+    {
+        $dir = self::dir() . '/' . $clientId;
+        array_map('unlink', glob($dir . '/*') ?: []);
+        @rmdir($dir);
+    }
+
+    /**
      * A stored receipt by id: ['path' => ..., 'meta' => [...]], or null.
      */
     public static function find(string $id): ?array

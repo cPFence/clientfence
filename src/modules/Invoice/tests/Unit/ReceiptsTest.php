@@ -156,3 +156,25 @@ test('a sent receipt sets the invoice to the transfer method, so the saved-card 
     expect($ticket)->toBe(55)
         ->and($updates)->toBe([['UPDATE invoice SET gateway_id = ?, updated_at = ? WHERE id = ? AND status = ?', 4, 30, 'unpaid']]);
 });
+
+test('a deleted client\'s receipt files are removed, other clients\' stay', function (): void {
+    $dir = sys_get_temp_dir() . '/cf-receipts-' . bin2hex(random_bytes(4));
+    putenv('CLIENTFENCE_RECEIPT_DIR=' . $dir);
+    foreach ([7, 8] as $clientId) {
+        mkdir($dir . '/' . $clientId, 0700, true);
+        file_put_contents($dir . '/' . $clientId . '/' . str_repeat('a', 32) . '.bin', 'x');
+        file_put_contents($dir . '/' . $clientId . '/' . str_repeat('a', 32) . '.json', '{}');
+    }
+
+    try {
+        Receipts::forgetClient(7);
+        expect(is_dir($dir . '/7'))->toBeFalse()
+            ->and(glob($dir . '/8/*') ?: [])->toHaveCount(2);
+        Receipts::forgetClient(9); // none stored: nothing to do
+    } finally {
+        putenv('CLIENTFENCE_RECEIPT_DIR');
+        array_map('unlink', glob($dir . '/*/*') ?: []);
+        array_map('rmdir', glob($dir . '/*') ?: []);
+        @rmdir($dir);
+    }
+});

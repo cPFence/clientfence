@@ -1235,6 +1235,7 @@ final class Users
      */
     public static function clientDeleted(\Pimple\Container $di, int $clientId): void
     {
+        \ClientFence\Mod\Invoice\Receipts::forgetClient($clientId);
         try {
             $db = $di['em']->getConnection();
             $users = $db->fetchFirstColumn('SELECT user_id FROM client_user_account WHERE client_id = ?', [$clientId]);
