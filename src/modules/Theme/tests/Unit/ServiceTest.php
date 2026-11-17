@@ -515,3 +515,22 @@ test('getCurrentClientAreaThemeCode falls back to palisade when the theme folder
     expect($service->getCurrentClientAreaThemeCode())->toBe('palisade');
     Service::clearThemeCache();
 });
+
+test('loadTheme lists html_custom first, as the template loader renders it', function (): void {
+    $root = sys_get_temp_dir() . '/cf_theme_paths_' . uniqid();
+    $filesystem = new Symfony\Component\Filesystem\Filesystem();
+    $filesystem->mkdir([$root . '/custom/html', $root . '/custom/html_custom']);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getThemesPath')->andReturn($root);
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('getCoreAndActiveModules')->andReturn([]);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $extension);
+    $service->setDi($di);
+
+    try {
+        expect($service->loadTheme('custom')['paths'])->toBe([$root . '/custom/html_custom', $root . '/custom/html']);
+    } finally {
+        $filesystem->remove($root);
+    }
+});

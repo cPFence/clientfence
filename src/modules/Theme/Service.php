@@ -476,6 +476,10 @@ class Service implements InjectionAwareInterface
         }
 
         $paths = [Path::join($theme_path, 'html')];
+        // ClientFence core patch: html_custom first, as the template loader renders it (TwigLoader), so template_exists agrees.
+        if ($this->filesystem->exists(Path::join($theme_path, 'html_custom'))) {
+            array_unshift($paths, Path::join($theme_path, 'html_custom'));
+        }
 
         if (isset($config['extends'])) {
             $ext = trim((string) $config['extends'], '/');
