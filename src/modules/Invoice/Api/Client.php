@@ -56,7 +56,8 @@ class Client extends \ClientFence\Api\AbstractApi
     public function get($data)
     {
         $identity = $this->getIdentity();
-        $model = $this->getDi()['db']->findOne('Invoice', 'hash = :hash AND client_id = :client_id', ['hash' => $data['hash'], 'client_id' => $identity->id]);
+        // ClientFence core patch: a draft (not yet issued) is not shown to the client, as WHMCS hides drafts.
+        $model = $this->getDi()['db']->findOne('Invoice', 'hash = :hash AND client_id = :client_id AND approved = 1', ['hash' => $data['hash'], 'client_id' => $identity->id]);
         if (!$model) {
             throw new \ClientFence\InformationException('Invoice was not found');
         }
@@ -347,7 +348,8 @@ class Client extends \ClientFence\Api\AbstractApi
         if (($user !== null && !$user['owner']) || $adapter->savedCard($clientId) === null) {
             throw new \ClientFence\InformationException('You cannot pay this invoice with a saved PayPal account.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        // ClientFence core patch: these payments take only an issued invoice (approved = 1): a draft is not the client's yet.
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $result = SavedCards::charge($di, $invoice, $adapter, true, true);
 
@@ -388,7 +390,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
             throw new \ClientFence\InformationException('You cannot pay this invoice with a saved PayPal account.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $result = SavedCards::charge($di, $invoice, $adapter, true, true);
 
@@ -426,7 +428,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
             throw new \ClientFence\InformationException('You cannot pay this invoice with a saved card.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $result = SavedCards::charge($di, $invoice, $adapter, true, true);
 
@@ -464,7 +466,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
             throw new \ClientFence\InformationException('You cannot pay this invoice with a saved card.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $result = SavedCards::charge($di, $invoice, $adapter, true, true);
 
@@ -502,7 +504,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
             throw new \ClientFence\InformationException('You cannot pay this invoice by Direct Debit.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $result = SavedCards::charge($di, $invoice, $adapter, true, true);
 
@@ -540,7 +542,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if (($user !== null && !$user['owner']) || !$adapter->option('pay_saved') || $adapter->savedCard($clientId) === null) {
             throw new \ClientFence\InformationException('You cannot pay this invoice with a saved card.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $result = SavedCards::charge($di, $invoice, $adapter, true, true);
 
@@ -557,7 +559,7 @@ class Client extends \ClientFence\Api\AbstractApi
         if ($user !== null && !$user['owner']) {
             throw new \ClientFence\InformationException('Only the account owner can save a payment method.');
         }
-        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
+        $invoice = $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $data['hash'], $clientId, \Model_Invoice::STATUS_UNPAID])
             ?? throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
         $gateway = $di['db']->findOne('PayGateway', 'id = ? AND gateway = ? AND enabled = 1', [(int) $data['gateway_id'], 'Stripe']);
         $adapter = $gateway instanceof \Model_PayGateway ? $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway) : null;

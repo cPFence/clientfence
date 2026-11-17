@@ -144,7 +144,8 @@ class Receipts
     public static function clientUnpaidInvoice(\Pimple\Container $di, int $clientId, string $hash): \Model_Invoice
     {
         $invoice = preg_match('/^[a-z0-9]{1,64}$/', $hash) === 1
-            ? $di['db']->findOne('Invoice', 'hash = ? AND client_id = ?', [$hash, $clientId])
+            // An issued invoice only (approved = 1): a draft is not the client's yet.
+            ? $di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1', [$hash, $clientId])
             : null;
         if (!$invoice instanceof \Model_Invoice) {
             throw new InformationException('Invoice not found');

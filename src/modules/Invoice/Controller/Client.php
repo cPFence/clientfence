@@ -115,7 +115,8 @@ class Client implements \ClientFence\InjectionAwareInterface
     {
         $adapter = \ClientFence\Mod\Invoice\SavedCards::gocardless($this->di) ?? throw new InformationException('GoCardless is not available.');
         $clientId = $this->ownerSignedIn();
-        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $hash, $clientId, \Model_Invoice::STATUS_UNPAID]);
+        // ClientFence core patch: these payment pages take only an issued invoice (approved = 1): a draft is not the client's yet.
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $hash, $clientId, \Model_Invoice::STATUS_UNPAID]);
         if (!$invoice instanceof \Model_Invoice) {
             return $app->redirect('invoice');
         }
@@ -181,7 +182,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             throw new InformationException('Mollie is not available.');
         }
         $clientId = $once ? null : $this->ownerSignedIn();
-        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND approved = 1 AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
         if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
             return $app->redirect('invoice');
         }
@@ -254,7 +255,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             throw new InformationException('eWAY is not available.');
         }
         $clientId = $once ? null : $this->ownerSignedIn();
-        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND approved = 1 AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
         if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
             return $app->redirect('invoice');
         }
@@ -326,7 +327,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             throw new InformationException('PayTabs is not available.');
         }
         $clientId = $once ? null : $this->ownerSignedIn();
-        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND approved = 1 AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
         if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
             return $app->redirect('invoice');
         }
@@ -410,7 +411,7 @@ class Client implements \ClientFence\InjectionAwareInterface
             throw new InformationException('PayPal is not available.');
         }
         $clientId = $once ? null : $this->ownerSignedIn();
-        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND approved = 1 AND status = ?', [(string) $hash, \Model_Invoice::STATUS_UNPAID]);
         if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
             return $app->redirect('invoice');
         }
@@ -507,7 +508,7 @@ class Client implements \ClientFence\InjectionAwareInterface
     public function get_invoice_paypal_save(\ClientFence\App $app, $hash): Response
     {
         $adapter = $this->paypalForClient();
-        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND status = ?', [(string) $hash, (int) $this->di['session']->get('client_id'), \Model_Invoice::STATUS_UNPAID]);
+        $invoice = $this->di['db']->findOne('Invoice', 'hash = ? AND client_id = ? AND approved = 1 AND status = ?', [(string) $hash, (int) $this->di['session']->get('client_id'), \Model_Invoice::STATUS_UNPAID]);
         if (!$invoice instanceof \Model_Invoice) {
             return $app->redirect('invoice');
         }

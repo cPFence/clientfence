@@ -816,6 +816,44 @@ PHP;
     'staff with invoice view' => [true, 200],
 ]);
 
+test('a draft is not shown or paid by its link', function (int $approved, int $expected): void {
+    $script = '<?php $approved = ' . $approved . ';' . <<<'PHP'
+require 'src/vendor/autoload.php';
+require 'tests/Helpers/Container.php';
+require 'tests/Helpers/DummyBean.php';
+define('DEBUG', false);
+Mockery::mock('alias:ClientFence\Environment')->shouldReceive('isCLI')->andReturn(false);
+Mockery::mock('alias:ClientFence\Config')->shouldReceive('getProperty')->andReturn(false);
+$di = Tests\Helpers\container();
+$di['auth'] = Mockery::mock(ClientFence\Authorization::class)
+    ->shouldReceive('isAdminLoggedIn')->andReturn(false)
+    ->shouldReceive('isClientLoggedIn')->andReturn(false)->getMock();
+$system = Mockery::mock(ClientFence\Mod\System\Service::class)
+    ->shouldReceive('getParamValue')->with('invoice_accessible_from_hash', '0')->andReturn('1')->getMock();
+$di['mod_service'] = $di->protect(static fn (string $name) => $system);
+$invoice = new Model_Invoice();
+$invoice->loadBean(new Tests\Helpers\DummyBean());
+$invoice->client_id = 5;
+$invoice->approved = $approved;
+$service = new ClientFence\Mod\Invoice\Service();
+$service->setDi($di);
+try {
+    $service->checkInvoiceAuth($invoice, ClientFence\Mod\Invoice\InvoiceOperation::PAYMENT);
+    echo 200;
+} catch (ClientFence\InformationException $exception) {
+    echo $exception->getCode();
+}
+Mockery::close();
+PHP;
+    $process = new Symfony\Component\Process\PhpProcess($script, dirname(PATH_ROOT));
+    $process->mustRun();
+
+    expect((int) $process->getOutput())->toBe($expected);
+})->with([
+    'draft' => [0, 404],
+    'issued' => [1, 200],
+]);
+
 test('checkInvoiceAuth applies invoice permissions to authorized users for reads and payments', function (?array $context, string $hashAccess, bool $expired, array $expected, bool $revoke = false): void {
     $script = '<?php $case = ' . var_export(compact('context', 'hashAccess', 'expired', 'revoke'), true) . ';' . <<<'PHP'
 require 'src/vendor/autoload.php';

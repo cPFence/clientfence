@@ -8612,12 +8612,12 @@
         "done": "ClientFence core patch: the reply itself, as WHMCS's ticket reply email (the newest message is the one just posted)."
     },
     {
-        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
-        "done": "ClientFence core patch: the same form removes credit (a negative amount), so not \"Funds Added\"."
-    },
-    {
         "file": "modules/Client/Api/Admin.php",
         "done": "ClientFence core patch: staff cannot remove more credit than the client has (the balance went below zero)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the same form removes credit (a negative amount), so not \"Funds Added\"."
     },
     {
         "file": "modules/Invoice/Api/Admin.php",
@@ -8636,11 +8636,27 @@
         "done": "ClientFence core patch: the refund counts without its tax, as the income does (a part refund of a taxed invoice"
     },
     {
-        "file": "modules/Extension/Api/Admin.php",
-        "done": "ClientFence core patch: a number or no id is looked up as text (a PHP TypeError with a file path was shown)."
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence core patch: these payment pages take only an issued invoice (approved = 1): a draft is not the client's yet."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: these payments take only an issued invoice (approved = 1): a draft is not the client's yet."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: a draft (not yet issued) is not shown to the client, as WHMCS hides drafts."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a draft (not yet issued) is not the client's yet: not shown or paid by its link (WHMCS hides drafts)."
     },
     {
         "file": "modules/Theme/Model/Theme.php",
         "done": "ClientFence core patch: a theme that is not installed is \"not found\" (404), not a server error page."
+    },
+    {
+        "file": "modules/Extension/Api/Admin.php",
+        "done": "ClientFence core patch: a number or no id is looked up as text (a PHP TypeError with a file path was shown)."
     }
 ]

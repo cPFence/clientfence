@@ -3758,6 +3758,11 @@ class Service implements InjectionAwareInterface
             return;
         }
 
+        // ClientFence core patch: a draft (not yet issued) is not the client's yet: not shown or paid by its link (WHMCS hides drafts).
+        if ($invoice->approved !== null && (int) $invoice->approved === 0) {
+            throw new InformationException('Invoice was not found', [], 404);
+        }
+
         $invoiceClientId = $invoice->client_id;
         $systemService = $this->di['mod_service']('system');
         $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '0');
