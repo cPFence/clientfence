@@ -1561,7 +1561,7 @@ test('updateServer replaces the stored secret when a new value is submitted', fu
     expect($hostingServerModel->accesshash)->toBe('cfsecret:enc(' . base64_encode('new-hash') . ')');
 });
 
-test('_performOnService rejects expired active order', function (): void {
+test('_performOnService applies changes to an expired active order on the panel', function (): void {
     $service = new Service();
 
     $reflection = new ReflectionMethod($service, '_performOnService');
@@ -1571,10 +1571,10 @@ test('_performOnService rejects expired active order', function (): void {
     $expiredOrder->status = Model_ClientOrder::STATUS_ACTIVE;
     $expiredOrder->expires_at = date('Y-m-d H:i:s', time() - 3600);
 
-    expect($reflection->invoke($service, $expiredOrder))->toBeFalse();
+    expect($reflection->invoke($service, $expiredOrder))->toBeTrue();
 });
 
-test('_performOnService rejects suspended order', function (): void {
+test('_performOnService applies changes to a suspended order on the panel', function (): void {
     $service = new Service();
 
     $reflection = new ReflectionMethod($service, '_performOnService');
@@ -1583,8 +1583,16 @@ test('_performOnService rejects suspended order', function (): void {
     $suspendedOrder->loadBean(new Tests\Helpers\DummyBean());
     $suspendedOrder->status = Model_ClientOrder::STATUS_SUSPENDED;
 
-    expect($reflection->invoke($service, $suspendedOrder))->toBeFalse();
+    expect($reflection->invoke($service, $suspendedOrder))->toBeTrue();
 });
+
+test('_performOnService keeps changes local while the account is not set up or is canceled', function (string $status): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->status = $status;
+
+    expect((new ReflectionMethod(Service::class, '_performOnService'))->invoke(new Service(), $order))->toBeFalse();
+})->with([Model_ClientOrder::STATUS_PENDING_SETUP, Model_ClientOrder::STATUS_FAILED_SETUP, Model_ClientOrder::STATUS_CANCELED]);
 
 test('_performOnService accepts active order with future expires_at', function (): void {
     $service = new Service();

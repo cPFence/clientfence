@@ -664,23 +664,14 @@ class Service implements InjectionAwareInterface
 
     private function _performOnService(\Model_ClientOrder $order): bool
     {
-        // If the order matches any of the following status, we should prevent actions such as PW resets or username changes from being performed
+        // ClientFence core patch: suspended and expired accounts still exist on the panel, so changes go there too (as in WHMCS).
         $badStatus = [
             \Model_ClientOrder::STATUS_FAILED_SETUP,
             \Model_ClientOrder::STATUS_PENDING_SETUP,
-            \Model_ClientOrder::STATUS_SUSPENDED,
             \Model_ClientOrder::STATUS_CANCELED,
         ];
 
-        if (in_array($order->status, $badStatus)) {
-            return false;
-        }
-
-        if ($order->expires_at !== null && strtotime((string) $order->expires_at) <= time()) {
-            return false;
-        }
-
-        return true;
+        return !in_array($order->status, $badStatus, true);
     }
 
     /**
