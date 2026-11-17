@@ -210,6 +210,8 @@
                             {% endif %}
                         </div>
                     </div>
+                    {# ClientFence core patch: the groups table scrolls inside its card on a phone, not the page. #}
+                    <div class="table-responsive">
                     <table class="table card-table table-vcenter table-striped text-nowrap">
                         <thead>
                         <tr>
@@ -274,6 +276,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
