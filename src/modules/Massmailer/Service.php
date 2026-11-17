@@ -388,7 +388,9 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         [$ps, $pc] = $this->getParsed($model, $client_id);
         if ($unsubscribe !== null) {
-            $pc .= \ClientFence\Mod\Client\Privacy::footer($unsubscribe);
+            // ClientFence core patch: in the client's language, as the email above it, not the sending staff member's.
+            $lang = $this->di['em']->getConnection()->fetchOne('SELECT lang FROM client WHERE id = ?', [$client_id]);
+            $pc .= \ClientFence\Mod\Client\Privacy::footer($unsubscribe, $lang ?: null);
         }
 
         $clientService = $this->di['mod_service']('client');

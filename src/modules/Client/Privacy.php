@@ -264,12 +264,14 @@ final class Privacy
         return $di['tools']->url('/unsubscribe/' . $clientId . '/' . self::token($di, $clientId));
     }
 
-    /** The footer every mass email gets while the opt-out is on (HTML, the link escaped). */
-    public static function footer(string $url): string
+    /** The footer every mass email gets while the opt-out is on (HTML, the link escaped), in the client's language. */
+    public static function footer(string $url, ?string $locale = null): string
     {
-        return '<p style="margin-top:24px;font-size:12px;color:#6c7a89">'
+        $footer = static fn (): string => '<p style="margin-top:24px;font-size:12px;color:#6c7a89">'
             . htmlspecialchars(__trans('You get this email because you are our client. Do not want these emails?'), ENT_QUOTES)
             . ' <a href="' . htmlspecialchars($url, ENT_QUOTES) . '">' . htmlspecialchars(__trans('Unsubscribe'), ENT_QUOTES) . '</a></p>';
+
+        return empty($locale) ? $footer() : \ClientFence\Translate::with($locale, $footer);
     }
 
     /** Keeps the unsubscribe link of a queued email (its List-Unsubscribe headers). */

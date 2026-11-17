@@ -244,6 +244,16 @@ test('the footer escapes its link and the queue keeps the unsubscribe link until
 
     expect(Privacy::footer('https://x.test/unsubscribe/7/ab"><script>'))->not->toContain('"><script>')
         ->and(Privacy::footer('https://x.test/u'))->toContain('href="https://x.test/u"');
+    // In the client's language, whatever language the sending staff member uses.
+    $previous = Locale::getDefault();
+    (new ClientFence\Translate())->setLocale('en_US')->setup();
+    try {
+        // (__trans is an English stub in tests; Translate::with() itself is covered by TranslateWithTest.)
+        expect(Privacy::footer('https://x.test/u', 'de_DE'))->toContain('href="https://x.test/u"')
+            ->and(Locale::getDefault())->toBe('en_US');
+    } finally {
+        (new ClientFence\Translate())->setLocale($previous ?: 'en_US')->setup();
+    }
 
     Privacy::rememberUnsubscribe($di, 41, 'https://x.test/unsubscribe/7/abc');
     expect(Privacy::queuedUnsubscribe($di, 41))->toBe('https://x.test/unsubscribe/7/abc')
