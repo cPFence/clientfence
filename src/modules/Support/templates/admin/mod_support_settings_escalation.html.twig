@@ -5,7 +5,8 @@
 {% set editing = rules|filter(r => r.id ~ '' == request.escalation|default(''))|first %}
 {% set rule = editing ?: { 'id': 0, 'name': '', 'active': true, 'helpdesks': [], 'statuses': ['open'], 'priorities': [], 'minutes': 240, 'new_helpdesk_id': null, 'new_status': '', 'new_priority': '', 'assign_to': null, 'notify': [], 'reply': '' } %}
 {% set helpdesks = admin.support_helpdesk_get_pairs %}
-{% set statuses = admin.support_ticket_get_statuses({ 'titles': true }) %}
+{# The status names in the staff member's language. #}
+{% set statuses = admin.support_ticket_get_statuses({ 'titles': true })|map(name => name|trans) %}
 {% set priorities = guest.support_ticket_priorities %}
 {% set staff = admin.support_ticket_assignable_staff %}
 {# ClientFence core patch: the rules in a tinted list with each action as a chip, the rule form as a card with small headings and a Save row that stays in view (CF-135 redesign). #}
