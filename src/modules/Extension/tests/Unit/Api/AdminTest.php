@@ -127,3 +127,10 @@ test('getNavigation returns admin navigation', function (): void {
     $result = $api->get_navigation([]);
     expect($result)->toBeArray();
 });
+
+test('locale completion takes a numeric locale id as text', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Extension\Api\Admin());
+
+    // A number was a PHP TypeError (with a file path) for staff.
+    expect($api->locale_completion(['locale_id' => 123]))->toBe(0);
+});

@@ -68,7 +68,8 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('extension', 'view');
 
-        $extensionInfo = $this->getDi()['extension_manager']->getExtension($data['extension_id']);
+        // ClientFence core patch: a number or no id is looked up as text (a PHP TypeError with a file path was shown).
+        $extensionInfo = $this->getDi()['extension_manager']->getExtension((string) ($data['extension_id'] ?? ''));
         $markdown = new \ClientFence\Twig\Markdown\ClientFenceMarkdown($this->di);
 
         return $markdown->convert($extensionInfo['readme']);
@@ -115,7 +116,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('extension', 'manage_extensions');
 
-        return \ClientFence\i18n::toggleLocale($data['locale_id']);
+        return \ClientFence\i18n::toggleLocale((string) $data['locale_id']);
     }
 
     /**
@@ -128,7 +129,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('extension', 'view');
 
-        return \ClientFence\i18n::getLocaleCompletionPercent($data['locale_id']);
+        return \ClientFence\i18n::getLocaleCompletionPercent((string) ($data['locale_id'] ?? ''));
     }
 
     /**
