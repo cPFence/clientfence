@@ -396,12 +396,13 @@ class Admin extends \ClientFence\Api\AbstractApi
      */
     public function update_core($data): bool
     {
+        // ClientFence core patch: the permission first, before asking the update feed.
+        $this->checkPermissions('system', 'system_update');
+
         $updater = $this->getDi()['updater'];
         if ($updater->getUpdateBranch() !== 'preview' && !$updater->isUpdateAvailable()) {
             throw new \ClientFence\InformationException('You have the latest version of ClientFence. You do not need to update.');
         }
-
-        $this->checkPermissions('system', 'system_update');
 
         if (function_exists('set_time_limit')) {
             set_time_limit(300);

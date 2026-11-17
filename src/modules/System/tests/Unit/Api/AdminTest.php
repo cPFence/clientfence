@@ -477,3 +477,16 @@ test('the default language must be an enabled one', function (): void {
         ->toThrow(ClientFence\InformationException::class, 'Invalid locale code: xx_XX')
         ->and(Config::getProperty('i18n.locale'))->toBe($before);
 });
+
+test('the core update checks the permission before asking for the latest version', function (): void {
+    $di = container();
+    $updater = Mockery::mock();
+    $updater->shouldNotReceive('getUpdateBranch', 'isUpdateAvailable');
+    $di['updater'] = $updater;
+    $di['mod_service']('staff')->shouldReceive('checkPermissionsAndThrowException')->once()->with('system', 'system_update', null, Mockery::any())
+        ->andThrow(new ClientFence\InformationException('You need the "system.system_update" permission to perform this action', [], 403));
+    $api = new ClientFence\Mod\System\Api\Admin();
+    $api->setDi($di);
+
+    expect(fn () => $api->update_core([]))->toThrow(ClientFence\InformationException::class);
+});
