@@ -201,15 +201,17 @@ class Service implements InjectionAwareInterface
             throw new \ClientFence\InformationException('Unfortunately field with this name exists in this form already. Form must have different field names.', null, 7628);
         }
 
-        // ClientFence core patch: a field saved without options or type keeps its choices instead of losing them.
-        $keepOptions = !isset($field['options']) && !isset($field['type']);
+        // ClientFence core patch: a field saved without options, or a choice or textarea field without its labels or sizes, keeps its choices.
+        $choice = in_array($field['type'] ?? null, ['checkbox', 'radio', 'select'], true) && isset($field['labels'], $field['values']);
+        $sized = ($field['type'] ?? null) === 'textarea' && isset($field['textarea_option'], $field['textarea_size']);
+        $keepOptions = !isset($field['options']) && (!isset($field['type']) || (in_array($field['type'], ['checkbox', 'radio', 'select', 'textarea'], true) && !$choice && !$sized));
         $field['options'] = isset($field['options']) ? json_encode($field['options']) : '';
         if (isset($field['default_value'])) {
             $field['default_value'] = is_array($field['default_value']) ? json_encode($field['default_value'], JSON_FORCE_OBJECT) : $field['default_value'];
         }
 
         if (isset($field['type'])) {
-            if ($field['type'] == 'checkbox' || $field['type'] == 'radio' || $field['type'] == 'select') {
+            if ($choice) {
                 if (!$this->isArrayUnique(array_filter($field['values'], fn ($v): bool => strlen((string) $v) > 0))) {
                     throw new \ClientFence\InformationException(ucfirst($field['type']) . ' values must be unique', null, 1597);
                 }
@@ -223,7 +225,7 @@ class Service implements InjectionAwareInterface
                 $field['options'] = json_encode($field['options'], JSON_FORCE_OBJECT);
             }
 
-            if ($field['type'] == 'textarea') {
+            if ($sized) {
                 if (\ClientFence\Tools::safeCount($field['textarea_size']) != count(array_filter($field['textarea_size'], is_numeric(...)))) {
                     throw new \ClientFence\InformationException('Textarea size options must be integer values', null, 3510);
                 }

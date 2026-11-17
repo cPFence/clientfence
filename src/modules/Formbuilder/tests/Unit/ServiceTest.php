@@ -502,7 +502,7 @@ test('a copied form keeps its style and the choices of its fields', function ():
     expect($service->duplicateForm(['form_id' => 1, 'name' => 'Copy']))->toBe(3);
 });
 
-test('a field saved without options or type keeps its choices', function (): void {
+test('a field saved without options or type keeps its choices', function (array $sent): void {
     $fieldResult = Mockery::mock(Result::class);
     $fieldResult->shouldReceive('fetchAssociative')->once()->andReturn(['id' => 2, 'form_id' => 1, 'options' => '{"Small":"s"}']);
     $existsResult = Mockery::mock(Result::class);
@@ -518,8 +518,12 @@ test('a field saved without options or type keeps its choices', function (): voi
     $service = new Service();
     $service->setDi($di);
 
-    expect($service->updateField(['id' => 2, 'name' => 'plan', 'label' => 'Plan']))->toBe(2);
-});
+    expect($service->updateField(['id' => 2, 'name' => 'plan', 'label' => 'Plan'] + $sent))->toBe(2);
+})->with([
+    'no type' => [[]],
+    'select without labels' => [['type' => 'select']],
+    'textarea without sizes' => [['type' => 'textarea']],
+]);
 
 test('a copied form keeps the field texts of installed languages and skips those of a removed one', function (): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
