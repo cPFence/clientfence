@@ -345,6 +345,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         if (!$helpdesk instanceof Helpdesk) {
             throw new \ClientFence\InformationException('Helpdesk invalid');
         }
+        // ClientFence core patch: a ticket for a client who does not exist is refused before it is saved.
+        $this->getDi()['db']->getExistingModelById('Client', (int) ($data['client_id'] ?? 0), 'Client not found.');
 
         return $this->getService()->ticketCreateForAdmin((int) $data['client_id'], $helpdesk, $data, $this->getIdentity());
     }

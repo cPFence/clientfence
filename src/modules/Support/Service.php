@@ -1193,7 +1193,7 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function ticketCreateForAdmin(int $clientId, Helpdesk $helpdesk, array $data, \Model_Admin $identity): int
     {
-        $status = $data['status'] ?? SupportTicket::STATUS_ONHOLD;
+        $status = $this->checkStatus($data['status'] ?? SupportTicket::STATUS_ONHOLD);
 
         SupportTicketValidator::validateContent($data['content'] ?? null);
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminOpenTicket', 'params' => $data]);

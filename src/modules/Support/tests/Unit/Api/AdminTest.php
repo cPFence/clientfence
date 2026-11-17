@@ -386,6 +386,27 @@ test('ticket create', function (): void {
     expect($result)->toEqual($randID);
 });
 
+test('ticket create refuses an unknown client', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Support\Api\Admin());
+    $repoMock = Mockery::mock(HelpdeskRepository::class);
+    $repoMock->shouldReceive('find')->andReturn(adminHelpdeskFixture());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Support\Service::class);
+    $serviceMock->shouldReceive('getHelpdeskRepository')->andReturn($repoMock);
+    $serviceMock->shouldNotReceive('ticketCreateForAdmin');
+    $dbMock = Mockery::mock(ClientFence\Database::class);
+    $dbMock->shouldReceive('getExistingModelById')->with('Client', 404, 'Client not found.')->once()
+        ->andThrow(new ClientFence\Exception('Client not found.'));
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+    $api->setIdentity(new Model_Admin());
+
+    expect(fn () => $api->ticket_create(['client_id' => 404, 'content' => 'Content', 'subject' => 'Subject', 'support_helpdesk_id' => 1]))
+        ->toThrow(ClientFence\Exception::class, 'Client not found.');
+});
+
 test('batch ticket auto close', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\Support\Api\Admin());
     $ticket = new SupportTicket();
