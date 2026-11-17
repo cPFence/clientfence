@@ -69,7 +69,8 @@
                                     <div class="text-secondary">{{ invoice.status == 'unpaid' ? 'Balance due'|trans : 'Total'|trans }}{% if invoice.paid_at %} · {{ 'Date Paid'|trans }} {{ invoice.paid_at|format_date }}{% endif %}</div>
                                 </div>
                                 <div class="cf-inv-chips">
-                                    {{ mf.status_badge(invoice.status, 'invoice') }}
+                                    {# ClientFence core patch: a draft (not yet issued) says Draft, not Unpaid. #}
+                                    {% if invoice.status == 'unpaid' and not invoice.approved %}{{ mf.text_badge('Draft'|trans, 'text-bg-secondary') }}{% else %}{{ mf.status_badge(invoice.status, 'invoice') }}{% endif %}
                                     {% if overdue %}<span class="badge bg-red-lt">{{ 'Overdue'|trans }} · {{ invoice.due_at|timeago }}</span>{% endif %}
                                     {# ClientFence core patch: a bank debit still clearing (Invoice/PendingPayments.php). #}
                                     {% if invoice.pending_payment|default(null) %}

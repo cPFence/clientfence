@@ -813,7 +813,8 @@
                                     <td>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</td>
                                     <td>{{ invoice.created_at|format_date }}</td>
                                     <td>{% if invoice.paid_at %}{{ invoice.paid_at|format_date }}{% else %}-{% endif %}</td>
-                                    <td>{{ mf.status_badge(invoice.status, 'invoice') }}</td>
+                                    {# ClientFence core patch: a draft (not yet issued) says Draft, not Unpaid. #}
+                                    <td>{% if invoice.status == 'unpaid' and not invoice.approved %}{{ mf.text_badge('Draft'|trans, 'text-bg-secondary') }}{% else %}{{ mf.status_badge(invoice.status, 'invoice') }}{% endif %}</td>
                                     <td>
                                         <a class="btn btn-icon" href='{{ "invoice/manage/#{invoice.id}"|url }}'>
                                             <svg class="icon">
