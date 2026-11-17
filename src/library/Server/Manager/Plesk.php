@@ -424,19 +424,7 @@ class Server_Manager_Plesk extends Server_Manager
     {
         $package = $account->getPackage();
         $maxMailLists = $package->getCustomValue('nemailml');
-        $manageMailLists = is_numeric($maxMailLists) && (int) $maxMailLists > 0;
-
-        // check if bandwidth quota is set as an integer. If so, convert it to bytes
-        $bandwidth = 0;
-        if (is_numeric($package->getBandwidth())) {
-            $bandwidth = intval($package->getBandwidth()) * 1024 * 1024;
-        }
-
-        // check if disk quota is set as an integer. If so, convert it to bytes
-        $quota = 0;
-        if (is_numeric($package->getQuota())) {
-            $quota = intval($package->getQuota()) * 1024 * 1024;
-        }
+        $manageMailLists = (self::limitValue($maxMailLists) ?? 0) !== 0;
 
         $genSetup = [
             'name' => $account->getDomain(),
@@ -480,40 +468,16 @@ class Server_Manager_Plesk extends Server_Manager
                 ],
             ],
             'limits' => [
-                'limit' => [
-                    [
-                        'name' => 'max_db',
-                        'value' => $package->getMaxSql() ?: 0,
-                    ],
-                    [
-                        'name' => 'max_maillists',
-                        'value' => $maxMailLists ?: 0,
-                    ],
-                    [
-                        'name' => 'max_box',
-                        'value' => $package->getMaxPop() ?: 0,
-                    ],
-                    [
-                        'name' => 'max_traffic',
-                        'value' => $bandwidth,
-                    ],
-                    [
-                        'name' => 'disk_space',
-                        'value' => $quota,
-                    ],
-                    [
-                        'name' => 'max_subdom',
-                        'value' => $package->getMaxSubdomains() ?: 0,
-                    ],
-                    [
-                        'name' => 'max_subftp_users',
-                        'value' => $package->getMaxFtp() ?: 0,
-                    ],
-                    [
-                        'name' => 'max_site',
-                        'value' => $package->getMaxDomains() ?: 0,
-                    ],
-                ],
+                'limit' => array_values(array_filter([
+                    ['name' => 'max_db', 'value' => self::limitValue($package->getMaxSql())],
+                    ['name' => 'max_maillists', 'value' => self::limitValue($maxMailLists)],
+                    ['name' => 'max_box', 'value' => self::limitValue($package->getMaxPop())],
+                    ['name' => 'max_traffic', 'value' => self::limitValue($package->getBandwidth(), 1024 * 1024)],
+                    ['name' => 'disk_space', 'value' => self::limitValue($package->getQuota(), 1024 * 1024)],
+                    ['name' => 'max_subdom', 'value' => self::limitValue($package->getMaxSubdomains())],
+                    ['name' => 'max_subftp_users', 'value' => self::limitValue($package->getMaxFtp())],
+                    ['name' => 'max_site', 'value' => self::limitValue($package->getMaxDomains())],
+                ], fn (array $limit): bool => $limit['value'] !== null)),
             ],
             'permissions' => [
                 'permission' => [
@@ -572,6 +536,10 @@ class Server_Manager_Plesk extends Server_Manager
                 ],
             ],
         ];
+
+        if ($values['limits']['limit'] === []) {
+            unset($values['limits']);
+        }
 
         if ($action === 'set') {
             $values['hosting']['vrt_hst']['property'] = array_values(array_filter(

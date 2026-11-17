@@ -23,7 +23,7 @@ beforeEach(function (): void {
         ->setIp('192.0.2.10')
         ->setPassword('secret')
         ->setClient(new Server_Client())
-        ->setPackage((new Server_Package())->setName('Business Hosting'));
+        ->setPackage((new Server_Package())->setName('Business Hosting')->setQuota('1000'));
 });
 
 test('changeAccountPackage sends customer properties without a password', function (): void {
@@ -104,7 +104,7 @@ test('createSubscriptionProps uses custom package limits and permissions', funct
     $limits = array_column($props['add']['limits']['limit'], 'value', 'name');
     $permissions = array_column($props['add']['permissions']['permission'], 'value', 'name');
 
-    expect($limits['max_maillists'])->toBe('25')
+    expect($limits['max_maillists'])->toBe(25)
         ->and($permissions['manage_crontab'])->toBe('true')
         ->and($permissions['manage_anonftp'])->toBe('true')
         ->and($permissions['manage_maillists'])->toBe('true')
@@ -133,6 +133,21 @@ test('createSubscriptionProps does not send plan-name on updates, since webspace
     $props = invokePleskCreateSubscriptionProps($this->manager, $this->account, 'set');
 
     expect($props['set']['values'])->not->toHaveKey('plan-name');
+});
+
+test('createSubscriptionProps sends unlimited as -1 and leaves empty limits to Plesk', function (): void {
+    $this->account->getPackage()->setBandwidth('unlimited')->setQuota('500')->setMaxSql('')->setMaxPop('0');
+
+    $props = invokePleskCreateSubscriptionProps($this->manager, $this->account, 'add');
+    $limits = array_column($props['add']['limits']['limit'], 'value', 'name');
+
+    expect($limits)->toBe(['max_box' => 0, 'max_traffic' => -1, 'disk_space' => 500 * 1024 * 1024]);
+});
+
+test('createSubscriptionProps leaves out the limits node when the plan sets no limit', function (): void {
+    $this->account->setPackage((new Server_Package())->setName('Plan only'));
+
+    expect(invokePleskCreateSubscriptionProps($this->manager, $this->account, 'add')['add'])->not->toHaveKey('limits');
 });
 
 test('reseller accounts are suspended, unsuspended and given a password through the reseller API', function (): void {
