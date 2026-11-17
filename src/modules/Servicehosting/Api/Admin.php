@@ -104,6 +104,23 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence: links an account on an Enhance server to its panel organization and subscription by hand,
+     * after checking them on the server.
+     *
+     * @optional string $panel_org_id          - with panel_subscription_id; both empty removes the link
+     * @optional int    $panel_subscription_id
+     * @optional string $username              - the control panel login (an email), kept when empty
+     */
+    public function panel_link($data): bool
+    {
+        $this->checkPermissions('servicehosting', 'manage_accounts');
+
+        [, $s] = $this->_getService($data);
+
+        return $this->getService()->linkPanelAccount($s, $data);
+    }
+
+    /**
      * Update account information on FOSSBilling database.
      * This does not send actions to real account on hosting server.
      *

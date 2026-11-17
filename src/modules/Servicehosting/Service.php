@@ -568,6 +568,63 @@ class Service implements InjectionAwareInterface
         return true;
     }
 
+    /**
+     * ClientFence core patch: staff link an account to its Enhance organization, subscription and panel login by
+     * hand (GitHub #47), checked on the server first; every action then uses them instead of matching by email.
+     */
+    public function linkPanelAccount(\Model_ServiceHosting $model, array $data): bool
+    {
+        $orgId = trim((string) ($data['panel_org_id'] ?? ''));
+        $subscription = trim((string) ($data['panel_subscription_id'] ?? ''));
+        $login = strtolower(trim((string) ($data['username'] ?? '')));
+        if ($login !== '' && filter_var($login, FILTER_VALIDATE_EMAIL) === false) {
+            throw new InformationException('The control panel login must be an email address.');
+        }
+        // Both empty removes the link: actions find the account by email again.
+        if ($orgId === '' && $subscription === '') {
+            $this->di['logger']->info('Removed the panel link of hosting account #%s, login %s (was %s, %s, %s)', $model->id, $login ?: $model->username, $model->panel_org_id ?? '-', $model->panel_subscription_id ?? '-', $model->username ?? '-');
+            $model->panel_org_id = null;
+            $model->panel_subscription_id = null;
+            if ($login !== '') {
+                $model->username = $login;
+            }
+            $model->updated_at = date('Y-m-d H:i:s');
+            $this->di['db']->store($model);
+
+            return true;
+        }
+        $subscriptionId = filter_var($subscription, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        // The organization ID goes into panel API paths.
+        if (preg_match('/^[A-Za-z0-9-]{1,64}$/', $orgId) !== 1 || $subscriptionId === false) {
+            throw new InformationException('Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link.');
+        }
+        // Cancelling one order removes its subscription: never two orders on the same one.
+        if ((int) $this->di['db']->getCell(
+            'SELECT COUNT(*) FROM service_hosting WHERE panel_org_id = :org AND panel_subscription_id = :subscription AND id != :id',
+            [':org' => $orgId, ':subscription' => $subscriptionId, ':id' => $model->id],
+        ) > 0) {
+            throw new InformationException('Another hosting order is already linked to this subscription.');
+        }
+
+        [$adapter, $account] = $this->_getAM($model, null, false);
+        if (!$adapter instanceof \Server_Manager_Enhance) {
+            throw new InformationException('Only hosting accounts on an Enhance server can be linked by hand.');
+        }
+        $account->setPanelOrgId($orgId)->setPanelSubscriptionId($subscriptionId);
+        $adapter->checkLink($account, $login);
+
+        $this->di['logger']->info('Linked hosting account #%s to panel organization %s, subscription %s, login %s (was %s, %s, %s)', $model->id, $orgId, $subscriptionId, $login ?: $model->username, $model->panel_org_id ?? '-', $model->panel_subscription_id ?? '-', $model->username ?? '-');
+        $model->panel_org_id = $orgId;
+        $model->panel_subscription_id = $subscriptionId;
+        if ($login !== '') {
+            $model->username = $login;
+        }
+        $model->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($model);
+
+        return true;
+    }
+
     public function sync(\Model_ClientOrder $order, \Model_ServiceHosting $model): bool
     {
         [$adapter, $account] = $this->_getAM($model);
@@ -747,7 +804,7 @@ class Service implements InjectionAwareInterface
         $server = $this->toHostingServerApiArray($serviceHostingServerModel, $deep, $identity);
         $hp = $this->toHostingHpApiArray($serviceHostingHpModel, $deep, $identity);
 
-        return [
+        $result = [
             'ip' => $model->ip,
             'sld' => $model->sld,
             'tld' => $model->tld,
@@ -758,6 +815,13 @@ class Service implements InjectionAwareInterface
             'hosting_plan' => $hp,
             'domain_order_id' => $this->_getDomainOrderId($model),
         ];
+        // ClientFence core patch: staff see the panel link of the account (GitHub #47).
+        if ($identity instanceof \Model_Admin) {
+            $result['panel_org_id'] = $model->panel_org_id;
+            $result['panel_subscription_id'] = $model->panel_subscription_id;
+        }
+
+        return $result;
     }
 
     public function toHostingServerApiArray(\Model_ServiceHostingServer $model, $deep = false, $identity = null): array

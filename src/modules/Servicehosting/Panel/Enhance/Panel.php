@@ -243,6 +243,18 @@ final class Panel
         return ['domain' => (string) $website['domain']['domain'], 'startedAt' => (string) $backup['startedAt']];
     }
 
+    /**
+     * A link staff set by hand (GitHub #47): the subscription is this panel's and the organization's, and the
+     * login (when given) is a member of that organization who is not staff.
+     */
+    public function checkLink(string $loginEmail): void
+    {
+        $this->resolveSubscription();
+        if ($loginEmail !== '' && $this->accountMember((string) $this->orgId, $loginEmail, $loginEmail) === null) {
+            throw new \Server_Exception('No :panel: login for :email: was found.', [':panel:' => Api::PANEL, ':email:' => $loginEmail]);
+        }
+    }
+
     /** @return ($allowMissing is true ? array|null : array) */
     private function resolveSubscription(bool $allowMissing = false): ?array
     {

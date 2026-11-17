@@ -231,3 +231,33 @@ test('usage reads this month\'s bandwidth from the subscription bandwidth call',
     'from the bandwidth call' => [new MockResponse('242610000'), 243],
     'older panel without the call' => [new MockResponse('', ['http_code' => 404]), 5],
 ]);
+
+// ClientFence (GitHub #47): a link set by hand is this panel's subscription of that organization, its login a member who is not staff.
+test('checkLink accepts the organization\'s own subscription and refuses another owner or a login that is not a client member', function (array|MockResponse $subscription, string $login, ?string $reason): void {
+    $requests = [];
+    $panel = enhancePanelFake([
+        '/api/orgs/B/subscriptions/7' => $subscription,
+        '/api/orgs/B/members' => [
+            ['id' => 'm1', 'email' => 'owner@example.test', 'roles' => ['Owner'], 'loginId' => 'L1'],
+            ['id' => 'm2', 'email' => 'staff@example.test', 'roles' => ['SuperAdmin'], 'loginId' => 'L2'],
+        ],
+        '/api/orgs/M/members' => [['id' => 's1', 'email' => 'staff@example.test', 'loginId' => 'L2']],
+    ], $requests);
+    $check = fn () => $panel->forAccount('B', 7)->checkLink($login);
+
+    if ($reason === null) {
+        $check();
+        expect($requests)->toContain('GET /api/orgs/B/subscriptions/7');
+    } else {
+        expect($check)->toThrow(Server_Exception::class, $reason);
+    }
+    expect(array_filter($requests, fn (string $r): bool => !str_starts_with($r, 'GET ')))->toBe([]);
+})->with([
+    'own subscription, no login' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], '', null],
+    'own subscription and member login' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'owner@example.test', null],
+    'another organization' => [['status' => 'active', 'subscriberId' => 'Other', 'vendorId' => 'M'], '', 'belongs to another organization or vendor'],
+    'another panel vendor' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'Other'], '', 'belongs to another organization or vendor'],
+    'no such subscription' => [new MockResponse('', ['http_code' => 404]), '', 'no longer exists'],
+    'login not a member' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'else@example.test', 'No Enhance login for else@example.test was found.'],
+    'staff login' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'staff@example.test', 'No Enhance login for staff@example.test was found.'],
+]);

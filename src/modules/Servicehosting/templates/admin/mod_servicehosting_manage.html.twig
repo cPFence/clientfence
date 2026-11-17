@@ -65,8 +65,40 @@
         </div>
     </div>
 
+    {# ClientFence core patch: link an account on an Enhance server to its panel organization and subscription by hand (GitHub #47). #}
+    {% if server and server.manager == 'Enhance' %}
     <div class="mb-5">
         <div class="mb-3 cf-section-head border-0 pt-0">
+            <h3 class="card-title mb-1">{{ 'Enhance Link'|trans }}</h3>
+            <p class="text-secondary mb-0">{{ 'Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link.'|trans }}</p>
+        </div>
+
+        <form method="post" action="{{ 'servicehosting/panel_link'|api_url }}" {{ fb_api_form({reload: true}) }}>
+            <div class="row g-3">
+                <div class="col-lg-4">
+                    <label class="form-label">{{ 'Organization ID'|trans }}</label>
+                    <input class="form-control font-monospace" type="text" name="panel_org_id" value="{{ service.panel_org_id }}" maxlength="64" pattern="[A-Za-z0-9\-]+">
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label">{{ 'Subscription ID'|trans }}</label>
+                    <input class="form-control" type="number" name="panel_subscription_id" value="{{ service.panel_subscription_id }}" min="1" step="1">
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label">{{ 'Control panel login'|trans }}</label>
+                    <input class="form-control" type="email" name="username" value="{{ '@' in service.username|default('') ? service.username }}">
+                </div>
+            </div>
+
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="mb-5">
+        <div class="mb-3 cf-section-head{% if not (server and server.manager == 'Enhance') %} border-0 pt-0{% endif %}">
             <h3 class="card-title mb-1">{{ 'Change Hosting Plan'|trans }}</h3>
             <p class="text-secondary mb-0">{{ 'Move this account onto a different hosting plan available on the current server.'|trans }}</p>
         </div>

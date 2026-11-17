@@ -202,6 +202,14 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
         return ['org' => (string) $org['id'], 'subscription' => $subscriptionId];
     }
 
+    /**
+     * Checks a panel link staff set by hand: the account's organization, subscription and the login, if given.
+     */
+    public function checkLink(Server_Account $account, string $loginEmail): void
+    {
+        $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->checkLink($loginEmail);
+    }
+
     public function synchronizeAccount(Server_Account $account): Server_Account
     {
         $found = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId())->sync($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));

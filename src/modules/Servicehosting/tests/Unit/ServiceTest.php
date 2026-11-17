@@ -1875,6 +1875,7 @@ test('_getAM trusts the client email by confirmation or a stored hosting login o
     $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderService->shouldReceive('getServiceOrder')->andReturn(null);
     $di = container();
+    $di['logger'] = new ClientFence\Log();
     $di['db'] = $db;
     $di['mod_service'] = $di->protect(fn () => $orderService);
 
@@ -1979,4 +1980,135 @@ test('get manager urls logs adapter failures and returns unavailable links', fun
     'exception' => [new Exception('Adapter credentials: secret')],
     'parse error' => [new ParseError('Adapter credentials: secret')],
     'type error' => [new TypeError('Adapter credentials: secret')],
+]);
+
+// ClientFence (GitHub #47): staff link an Enhance account by hand; the link is checked on the server, then stored and used.
+function hostingPanelLinkSetup(bool $accepted, int $duplicates = 0): array
+{
+    $hp = new Model_ServiceHostingHp();
+    $hp->loadBean(new Tests\Helpers\DummyBean());
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->email = 'b@example.test';
+    $client->email_approved = 1;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->id = 4;
+    $model->client_id = 9;
+    $model->sld = 'site';
+    $model->tld = '.example';
+    $model->username = 'b@example.test';
+
+    // Mockery cannot mock the manager (its `never` methods), so a stand-in records what it is asked.
+    $adapter = new class($accepted) extends Server_Manager_Enhance {
+        public array $seen = [];
+
+        public function __construct(private readonly bool $accepted)
+        {
+        }
+
+        public function checkLink(Server_Account $account, string $loginEmail): void
+        {
+            $this->seen[] = ['check', $account->getPanelOrgId(), $account->getPanelSubscriptionId(), $loginEmail];
+            if (!$this->accepted) {
+                throw new Server_Exception('The panel subscription 7 belongs to another organization or vendor.');
+            }
+        }
+
+        public function synchronizeAccount(Server_Account $account): Server_Account
+        {
+            $this->seen[] = ['sync', $account->getPanelOrgId(), $account->getPanelSubscriptionId(), $account->getUsername()];
+
+            return clone $account;
+        }
+    };
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->andReturnUsing(fn (string $type): object => ['ServiceHostingHp' => $hp, 'ServiceHostingServer' => $server, 'Client' => $client][$type]);
+    $db->shouldReceive('getCell')->with(Mockery::on(fn (string $sql): bool => str_contains($sql, 'panel_subscription_id = :subscription')), Mockery::any())->andReturn($duplicates);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('getServiceOrder')->andReturn(null);
+    $di = container();
+    $di['logger'] = new ClientFence\Log();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getServerPackage')->andReturn(new Server_Package());
+    $service->shouldReceive('getServerManager')->andReturn($adapter);
+    $service->setDi($di);
+
+    return [$service, $model, $adapter, $db, $di];
+}
+
+test('linkPanelAccount checks the link on the server, stores it, and Sync then uses it', function (): void {
+    [$service, $model, $adapter, $db] = hostingPanelLinkSetup(true);
+    $db->shouldReceive('store')->twice();
+
+    expect($service->linkPanelAccount($model, ['panel_org_id' => 'org-B', 'panel_subscription_id' => '7', 'username' => 'Owner@Example.test']))->toBeTrue()
+        ->and($model->panel_org_id)->toBe('org-B')
+        ->and($model->panel_subscription_id)->toBe(7)
+        ->and($model->username)->toBe('owner@example.test');
+
+    $service->sync(new Model_ClientOrder(), $model);
+    expect($adapter->seen)->toBe([
+        ['check', 'org-B', 7, 'owner@example.test'],
+        ['sync', 'org-B', 7, 'owner@example.test'],
+    ]);
+});
+
+test('linkPanelAccount refuses a subscription the server does not confirm and keeps the old link', function (): void {
+    [$service, $model, $adapter, $db] = hostingPanelLinkSetup(false);
+    $model->panel_org_id = 'org-A';
+    $model->panel_subscription_id = 3;
+    $db->shouldNotReceive('store');
+
+    expect(fn () => $service->linkPanelAccount($model, ['panel_org_id' => 'org-B', 'panel_subscription_id' => 7]))
+        ->toThrow(Server_Exception::class, 'belongs to another organization or vendor')
+        ->and($adapter->seen)->toBe([['check', 'org-B', 7, '']])
+        ->and($model->panel_org_id)->toBe('org-A')
+        ->and($model->panel_subscription_id)->toBe(3)
+        ->and($model->username)->toBe('b@example.test');
+});
+
+test('linkPanelAccount refuses bad input and a subscription another order uses without asking the server', function (array $data, int $duplicates, string $reason): void {
+    [$service, $model, $adapter, $db] = hostingPanelLinkSetup(true, $duplicates);
+    $db->shouldNotReceive('store');
+
+    expect(fn () => $service->linkPanelAccount($model, $data))->toThrow(ClientFence\InformationException::class, $reason)
+        ->and($adapter->seen)->toBe([]);
+})->with([
+    'a path in the organization ID' => [['panel_org_id' => '../M', 'panel_subscription_id' => 7], 0, 'Enter both the organization ID'],
+    'no subscription number' => [['panel_org_id' => 'org-B', 'panel_subscription_id' => 'x'], 0, 'Enter both the organization ID'],
+    'only the organization ID' => [['panel_org_id' => 'org-B', 'panel_subscription_id' => ''], 0, 'or leave both empty to remove the link'],
+    'only the subscription ID' => [['panel_org_id' => ' ', 'panel_subscription_id' => 7], 0, 'or leave both empty to remove the link'],
+    'a login that is not an email' => [['panel_org_id' => 'org-B', 'panel_subscription_id' => 7, 'username' => 'bob'], 0, 'must be an email address'],
+    'linked to another order' => [['panel_org_id' => 'org-B', 'panel_subscription_id' => 7], 1, 'Another hosting order is already linked'],
+]);
+
+test('linkPanelAccount with both IDs empty removes the link without asking the server and logs the old values', function (string $login, string $username): void {
+    [$service, $model, $adapter, $db, $di] = hostingPanelLinkSetup(true);
+    $model->panel_org_id = 'org-A';
+    $model->panel_subscription_id = 3;
+    $logger = new class {
+        public array $infos = [];
+
+        public function info(string $message, mixed ...$args): void
+        {
+            $this->infos[] = vsprintf($message, $args);
+        }
+    };
+    $di['logger'] = $logger;
+    $db->shouldReceive('store')->once()->with($model);
+
+    expect($service->linkPanelAccount($model, ['panel_org_id' => '', 'panel_subscription_id' => '', 'username' => $login]))->toBeTrue()
+        ->and($model->panel_org_id)->toBeNull()
+        ->and($model->panel_subscription_id)->toBeNull()
+        ->and($model->username)->toBe($username)
+        ->and($adapter->seen)->toBe([])
+        ->and($logger->infos)->toBe(["Removed the panel link of hosting account #4, login {$username} (was org-A, 3, b@example.test)"]);
+})->with([
+    'login kept' => ['', 'b@example.test'],
+    'login given' => ['New@Example.test', 'new@example.test'],
 ]);
