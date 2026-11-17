@@ -1030,7 +1030,9 @@ class Admin extends \ClientFence\Api\AbstractApi
      */
     public function user_create($data): int
     {
-        $this->checkPermissions('clientfence', 'manage_settings');
+        // ClientFence core patch: the permissions of the Users tab's invite, not a settings permission only Super Administrators hold.
+        $this->staffChange();
+        $this->checkPermissions('client', 'change_password');
 
         return Users::add($this->getDi(), (int) ($data['client_id'] ?? 0), $data);
     }

@@ -45,6 +45,7 @@ test('profile editors need password permission for account access changes', func
 })->with([
     'sign-in email' => ['update', ['id' => 1, 'email' => 'new@example.com'], false],
     'invite a user' => ['user_invite', ['client_id' => 1, 'email' => 'new@example.com'], false],
+    'add a user' => ['user_create', ['client_id' => 1, 'email' => 'new@example.com'], false],
     'make a user an owner' => ['user_update', ['client_id' => 1, 'user_id' => 2, 'owner' => true], false],
     'disable two-factor' => ['twofactor_disable', ['client_id' => 1], false],
     'ordinary profile edit' => ['update', ['id' => 1, 'first_name' => 'Updated'], true],
