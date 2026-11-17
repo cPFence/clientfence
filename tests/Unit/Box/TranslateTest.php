@@ -105,9 +105,12 @@ test('setup adds a module\'s own catalogue and keeps the main translation of a s
 });
 
 test('a locale code with a script loads its own catalogue', function (): void {
-    $translate = new \ClientFence\Translate();
-    $translate->setLocale('sr_Cyrl_RS');
-    $translate->setup();
+    $previous = \Locale::getDefault();
+    try {
+        (new \ClientFence\Translate())->setLocale('sr_Cyrl_RS')->setup();
 
-    expect(_gettext('Dashboard'))->not->toBe('Dashboard');
+        expect(_gettext('Dashboard'))->not->toBe('Dashboard');
+    } finally {
+        (new \ClientFence\Translate())->setLocale($previous ?: 'en_US')->setup();
+    }
 });
