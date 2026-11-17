@@ -104,7 +104,8 @@ class Translate
         if (!defined('LC_TIME')) {
             define('LC_TIME', 2);
         }
-        _setlocale(LC_MESSAGES, $locale . '.' . $codeset);
+        // ClientFence core patch: the catalogue loader does not parse a code with a script (sr_Cyrl_RS.UTF-8), so it gets the bare code (CF-184).
+        _setlocale(LC_MESSAGES, substr_count($locale, '_') > 1 ? $locale : $locale . '.' . $codeset);
         _setlocale(LC_TIME, $locale . '.' . $codeset);
         _bindtextdomain($this->domain, PATH_LANGS);
         _bind_textdomain_codeset($this->domain, $codeset);

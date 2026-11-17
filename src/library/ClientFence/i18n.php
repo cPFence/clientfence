@@ -121,11 +121,19 @@ class i18n
          * As a workaround, let's see if one of the available locales starts with the detected locale.
          * If it does, return that.
          */
+        // ClientFence core patch: a browser locale with a script (zh_Hant_HK, sr_Latn_RS) matches its language and region,
+        // and a bare language prefers a code without a script (sr: sr_RS, not sr_Cyrl_RS) (CF-184).
+        $region = \Locale::getPrimaryLanguage($detectedLocale) . '_' . \Locale::getRegion($detectedLocale);
+        if (empty($matchingLocale) && in_array($region, self::getLocales(), true)) {
+            $matchingLocale = $region;
+        }
         if (empty($matchingLocale)) {
             if (strlen($detectedLocale) < 2) {
                 return null;
             }
-            foreach (self::getLocales() as $locale) {
+            $locales = self::getLocales();
+            usort($locales, static fn (string $a, string $b): int => substr_count($a, '_') <=> substr_count($b, '_'));
+            foreach ($locales as $locale) {
                 if (str_starts_with((string) $locale, substr($detectedLocale, 0, 2))) {
                     $cookies?->queue(CookieNames::LOCALE, (string) $locale, strtotime('+1 month'), '/');
 

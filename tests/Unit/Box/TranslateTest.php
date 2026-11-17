@@ -103,3 +103,11 @@ test('setup adds a module\'s own catalogue and keeps the main translation of a s
         (new \ClientFence\Translate())->setLocale('en_US')->setup();
     }
 });
+
+test('a locale code with a script loads its own catalogue', function (): void {
+    $translate = new \ClientFence\Translate();
+    $translate->setLocale('sr_Cyrl_RS');
+    $translate->setup();
+
+    expect(_gettext('Dashboard'))->not->toBe('Dashboard');
+});
