@@ -348,8 +348,8 @@ test('sendTemplate masks secrets in saved previews while rendering the full vari
         return 'encrypted';
     });
     $system = Mockery::mock(ClientFence\Mod\System\Service::class);
-    $system->shouldReceive('renderEmailTplString')->once()->with('Body', $vars, null, 'en_US')->andReturn('Rendered body');
-    $system->shouldReceive('renderEmailSubjectString')->once()->with('Subject', $vars, null, 'en_US')->andReturn('Rendered subject');
+    $system->shouldReceive('renderEmailTplString')->once()->with('Body', $vars, (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), 'en_US')->andReturn('Rendered body');
+    $system->shouldReceive('renderEmailSubjectString')->once()->with('Subject', $vars, (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), 'en_US')->andReturn('Rendered subject');
     $system->shouldReceive('getParamValue')->with('company_email')->andReturn('billing@example.test');
     $system->shouldReceive('getParamValue')->with('company_name')->andReturn('Company');
     $module = Mockery::mock(ClientFence\Module::class);
@@ -1282,8 +1282,10 @@ test('sendTemplate renders in the recipient\'s language if it is turned on, else
     $locales = [];
     $system = Mockery::mock(ClientFence\Mod\System\Service::class);
     $system->shouldReceive('getParamValue')->andReturn('value');
-    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturnUsing(function (string $tpl, array $vars, ?string $timezone, ?string $locale) use (&$locales): string {
+    $timezones = [];
+    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturnUsing(function (string $tpl, array $vars, ?string $timezone, ?string $locale) use (&$locales, &$timezones): string {
         $locales[] = $locale;
+        $timezones[] = $timezone;
 
         return 'value';
     });
@@ -1302,7 +1304,9 @@ test('sendTemplate renders in the recipient\'s language if it is turned on, else
     $service->setDi($di);
 
     expect($service->sendTemplate(['code' => 'mod_email_test', 'default_subject' => 'S', 'default_template' => 'T', 'default_description' => 'D'] + $data))->toBeTrue()
-        ->and(array_values(array_unique($locales)))->toBe([$expected]);
+        ->and(array_values(array_unique($locales)))->toBe([$expected])
+        // No recipient here has a time zone: the system's, never the (test) request's.
+        ->and(array_values(array_unique($timezones)))->toBe([(string) ClientFence\Config::getProperty('i18n.timezone', 'UTC')]);
 })->with([
     'client with a turned-on language' => [['to_client' => 1], 'fr_FR', 'fr_FR'],
     'client with a language that is not installed' => [['to_client' => 1], 'ja_JP', null],

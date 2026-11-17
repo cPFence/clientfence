@@ -364,7 +364,8 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         $vars = ['c' => $clientArr];
         // ClientFence core patch (0.8.9 port): queued mail uses each recipient's date context.
-        $timezone = !empty($clientArr['timezone']) ? (string) $clientArr['timezone'] : null;
+        // ClientFence core patch: a client without a time zone gets the system's, not that of the staff member who sent it.
+        $timezone = !empty($clientArr['timezone']) ? (string) $clientArr['timezone'] : (string) \ClientFence\Config::getProperty('i18n.timezone', 'UTC');
         $locale = !empty($clientArr['lang']) ? (string) $clientArr['lang'] : null;
         $ps = $systemService->renderEmailSubjectString($model->getSubject(), $vars, $timezone, $locale);
         // ClientFence core patch (ext massmailer): the rich editor writes Markdown; the signature is HTML, so it goes after.

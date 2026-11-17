@@ -402,6 +402,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         } elseif (isset($oneStaff) && !empty($oneStaff['timezone'] ?? null)) {
             $recipientTimezone = (string) $oneStaff['timezone'];
         }
+        // ClientFence core patch: without the recipient's time zone, the system's (as cron sends), not that of the staff member who triggered it.
+        $systemTimezone = (string) Config::getProperty('i18n.timezone', 'UTC');
+        $recipientTimezone ??= $systemTimezone;
 
         // ClientFence core patch: the recipient's language if it is turned on (the client's, or `to_lang` for a
         // plain address such as an authorized user), else the default; staff get the default language (WHMCS).
@@ -432,7 +435,7 @@ class Service implements \ClientFence\InjectionAwareInterface
             foreach ($staff['list'] as $staff) {
                 $staffVars = $vars;
                 $staffVars['staff'] = $this->safeStaffTemplateVars($staff);
-                $staffTimezone = !empty($staff['timezone'] ?? null) ? (string) $staff['timezone'] : null;
+                $staffTimezone = !empty($staff['timezone'] ?? null) ? (string) $staff['timezone'] : $systemTimezone;
                 [$subject, $content] = $this->_parse($template, $staffVars, $staffTimezone, $recipientLocale);
 
                 $to = $staff['email'];
