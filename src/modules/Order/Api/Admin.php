@@ -809,6 +809,18 @@ class Admin extends \ClientFence\Api\AbstractApi
         return true;
     }
 
+    /**
+     * ClientFence core patch: staff move a service and its add-ons to another client, as Blesta (Order\ClientMove).
+     */
+    #[RequiredParams(['id' => 'Order ID was not passed', 'client_id' => 'Client ID was not passed'])]
+    public function move_client($data): bool
+    {
+        $this->checkPermissions('order', 'manage');
+        \ClientFence\Mod\Order\ClientMove::move($this->getDi(), (int) $data['id'], (int) $data['client_id'], (int) $this->adminId());
+
+        return true;
+    }
+
     /** ClientFence: the waiting cancellation requests (Orders > Cancellation Requests, Order\CancelRequests). */
     public function cancel_request_list($data): array
     {
