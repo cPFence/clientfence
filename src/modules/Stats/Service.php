@@ -193,7 +193,7 @@ class Service implements InjectionAwareInterface
         $result = $dbal->executeQuery($query, [
             'status' => 'active',
             'date_from' => date('Y-m-d', $time_from),
-            'date_to' => date('Y-m-d', $time_to),
+            'date_to' => date('Y-m-d 23:59:59', $time_to),
         ]);
 
         return $result->fetchAllKeyValue();
@@ -235,7 +235,7 @@ class Service implements InjectionAwareInterface
         $result = $dbal->executeQuery($query, [
             'status' => \Model_Invoice::STATUS_REFUNDED,
             'date_from' => date('Y-m-d', $time_from),
-            'date_to' => date('Y-m-d', $time_to),
+            'date_to' => date('Y-m-d 23:59:59', $time_to),
         ]);
 
         $results = $result->fetchAllKeyValue();
@@ -259,7 +259,7 @@ class Service implements InjectionAwareInterface
         $result = $dbal->executeQuery($query, [
             'status' => \Model_Invoice::STATUS_PAID,
             'date_from' => date('Y-m-d', $time_from),
-            'date_to' => date('Y-m-d', $time_to),
+            'date_to' => date('Y-m-d 23:59:59', $time_to),
         ]);
 
         $results = $result->fetchAllKeyValue();
@@ -302,8 +302,10 @@ class Service implements InjectionAwareInterface
 
     private function _getDateInterval($data): array
     {
-        $time_from = strtotime('-1 month');
-        $time_to = strtotime('+1 day');
+        // ClientFence core patch: charts show every day from the first to the last, and the queries count the whole last day
+        // (BETWEEN a day ended at its midnight); the default still shows the last month up to today.
+        $time_from = strtotime('-1 month +1 day');
+        $time_to = time();
 
         // ClientFence core patch: a date strtotime cannot read is refused, not a raw PHP error from date(); every chart uses this.
         if (!empty($data['date_from'])) {
@@ -336,7 +338,7 @@ class Service implements InjectionAwareInterface
 
         $result = $dbal->executeQuery($query, [
             'date_from' => date('Y-m-d', $time_from),
-            'date_to' => date('Y-m-d', $time_to),
+            'date_to' => date('Y-m-d 23:59:59', $time_to),
         ]);
 
         $results = $result->fetchAllKeyValue();
@@ -350,12 +352,11 @@ class Service implements InjectionAwareInterface
     private function _genFlotArrayInt(array $results, int $time_from, int $time_to): array
     {
         $data = [];
-        do {
-            $time_from = strtotime('+1 day', $time_from);
-            $dom = date('Y-m-d', $time_from);
-            $data[] = [$time_from * 1000, (int) ($results[$dom] ?? 0)];
-        } while ($time_to > $time_from);
-        array_pop($data);
+        // Days, not timestamps: where clocks jump at midnight a day starts at 01:00.
+        for ($day = strtotime(date('Y-m-d', $time_from)); date('Y-m-d', $day) <= date('Y-m-d', $time_to); $day = strtotime('+1 day', $day)) {
+            $dom = date('Y-m-d', $day);
+            $data[] = [$day * 1000, (int) ($results[$dom] ?? 0)];
+        }
 
         return $data;
     }
@@ -366,12 +367,11 @@ class Service implements InjectionAwareInterface
     private function _genFlotArrayFloat(array $results, int $time_from, int $time_to): array
     {
         $data = [];
-        do {
-            $time_from = strtotime('+1 day', $time_from);
-            $dom = date('Y-m-d', $time_from);
-            $data[] = [$time_from * 1000, round((float) ($results[$dom] ?? 0), 2)];
-        } while ($time_to > $time_from);
-        array_pop($data);
+        // Days, not timestamps: where clocks jump at midnight a day starts at 01:00.
+        for ($day = strtotime(date('Y-m-d', $time_from)); date('Y-m-d', $day) <= date('Y-m-d', $time_to); $day = strtotime('+1 day', $day)) {
+            $dom = date('Y-m-d', $day);
+            $data[] = [$day * 1000, round((float) ($results[$dom] ?? 0), 2)];
+        }
 
         return $data;
     }

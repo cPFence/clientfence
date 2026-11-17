@@ -338,3 +338,43 @@ test('a date that cannot be read is refused before any query', function (string 
     'refunds' => ['getRefunds', ['date_to' => 'nonsense']],
     'product sales' => ['getProductSales', ['date_from' => ['2026-01-01']]],
 ]);
+
+test('a chart shows every day of the range and counts the whole last day', function (): void {
+    $result = Mockery::mock(Doctrine\DBAL\Result::class);
+    $result->shouldReceive('fetchAllKeyValue')->andReturn(['2026-11-01' => '10.5', '2026-11-03' => '4']);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('executeQuery')->once()
+        ->withArgs(fn (string $sql, array $params): bool => $params['date_from'] === '2026-11-01' && $params['date_to'] === '2026-11-03 23:59:59')
+        ->andReturn($result);
+    $di = container();
+    $di['dbal'] = $dbal;
+    $service = new ClientFence\Mod\Stats\Service();
+    $service->setDi($di);
+
+    $points = $service->getIncome(['date_from' => '2026-11-01', 'date_to' => '2026-11-03']);
+
+    expect(array_map(fn (array $p): string => date('Y-m-d', intdiv($p[0], 1000)), $points))->toBe(['2026-11-01', '2026-11-02', '2026-11-03'])
+        ->and(array_column($points, 1))->toBe([10.5, 0.0, 4.0]);
+});
+
+test('a chart range over a midnight clock change keeps its last day', function (): void {
+    $zone = date_default_timezone_get();
+    date_default_timezone_set('America/Santiago');
+    try {
+        $result = Mockery::mock(Doctrine\DBAL\Result::class);
+        $result->shouldReceive('fetchAllKeyValue')->andReturn([]);
+        $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+        $dbal->shouldReceive('executeQuery')->andReturn($result);
+        $di = container();
+        $di['dbal'] = $dbal;
+        $service = new ClientFence\Mod\Stats\Service();
+        $service->setDi($di);
+
+        $points = $service->getIncome(['date_from' => '2026-08-15', 'date_to' => '2026-10-15']);
+
+        expect($points)->toHaveCount(62)
+            ->and(date('Y-m-d', intdiv(end($points)[0], 1000)))->toBe('2026-10-15');
+    } finally {
+        date_default_timezone_set($zone);
+    }
+});

@@ -217,7 +217,7 @@
            companion figure (clientfence_dashboard_totals): active clients, orders pending setup, the
            unpaid amount and the monthly recurring revenue. #}
         {% set all_time = admin.clientfence_dashboard_totals %}
-        {% set last30 = { 'date_from': '-30 days'|date('Y-m-d'), 'date_to': '+1 day'|date('Y-m-d') } %}
+        {% set last30 = { 'date_from': '-29 days'|date('Y-m-d'), 'date_to': 'now'|date('Y-m-d') } %}
         {% set kpis = [
             { 'label': 'Income this month'|trans, 'value': income.this_month|format_currency(currency.code), 'now': income.this_month, 'last': income.last_month, 'last_text': income.last_month|format_currency(currency.code), 'url': 'invoice'|url(query: { 'status': 'paid' }),
               'total': income.total|format_currency(currency.code), 'extra': all_time ? all_time.mrr|format_currency(currency.code) : '', 'extra_label': 'MRR'|trans, 'tip': true, 'spark': admin.stats_get_income(last30) },
@@ -263,8 +263,8 @@
     </section>
 
         {# Today (the default) is hour by hour from the ClientFence module; its amount is FOSSBilling's own
-           "today", as in the stock Statistics table. FOSSBilling's series start the day after
-           date_from, so "-N days" gives N days ending today. #}
+           "today", as in the stock Statistics table. The series run from date_from to date_to,
+           both included, so "-(N-1) days" to today gives N days ending today. #}
         {% set ranges = ['today', 7, 30, 90] %}
         {% set default_range = 'today' %}
         {% set series = {} %}
@@ -274,7 +274,7 @@
                 {% set series = series|merge({ 'today': admin.clientfence_dashboard_today({ 'metric': 'income' }) }) %}
                 {% set totals = totals|merge({ 'today': income.today }) %}
             {% else %}
-                {% set data = admin.stats_get_income({ 'date_from': ('-' ~ days ~ ' days')|date('Y-m-d'), 'date_to': '+1 day'|date('Y-m-d') }) %}
+                {% set data = admin.stats_get_income({ 'date_from': ('-' ~ (days - 1) ~ ' days')|date('Y-m-d'), 'date_to': 'now'|date('Y-m-d') }) %}
                 {% set series = series|merge({ ('d' ~ days): data }) %}
                 {% set totals = totals|merge({ ('d' ~ days): data|reduce((carry, point) => carry + point[1], 0) }) %}
             {% endif %}
@@ -297,8 +297,8 @@
              data-currency="{{ currency|json_encode|e('html_attr') }}"
              data-totals="{{ formatted|json_encode|e('html_attr') }}"
              data-metrics="{{ metrics|json_encode|e('html_attr') }}"
-             data-from="{{ '-90 days'|date('Y-m-d') }}"
-             data-to="{{ '+1 day'|date('Y-m-d') }}"
+             data-from="{{ '-89 days'|date('Y-m-d') }}"
+             data-to="{{ 'now'|date('Y-m-d') }}"
              data-label="{{ 'Income'|trans }}"
              data-error="{{ 'The figures could not be loaded.'|trans }}"
              data-range="{{ default_range }}">
