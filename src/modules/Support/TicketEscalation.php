@@ -333,7 +333,7 @@ final class TicketEscalation
                     'id' => (int) $ticket['id'],
                     'subject' => (string) $ticket['subject'],
                     'helpdesk' => (string) $ticket['helpdesk'],
-                    'status_title' => ['open' => 'Open', 'on_hold' => 'On hold', 'closed' => 'Closed'][(string) $ticket['status']] ?? (string) $ticket['status'],
+                    'status_title' => ['open' => 'Open', 'on_hold' => 'Answered', 'closed' => 'Closed'][(string) $ticket['status']] ?? (string) $ticket['status'],
                     'priority_title' => ucfirst(TicketPriority::level($ticket['priority'])),
                     'url' => $di['url']->adminLink('support/ticket/' . $ticketId),
                 ],

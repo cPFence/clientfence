@@ -181,7 +181,7 @@ final class TicketAssign
                     'id' => (int) $ticket['id'],
                     'subject' => (string) $ticket['subject'],
                     'status' => (string) $ticket['status'],
-                    'status_title' => ['open' => 'Open', 'on_hold' => 'On hold', 'closed' => 'Closed'][(string) $ticket['status']] ?? (string) $ticket['status'],
+                    'status_title' => ['open' => 'Open', 'on_hold' => 'Answered', 'closed' => 'Closed'][(string) $ticket['status']] ?? (string) $ticket['status'],
                     'priority' => TicketPriority::level($ticket['priority']),
                     'priority_title' => ucfirst(TicketPriority::level($ticket['priority'])),
                     'helpdesk' => $helpdesk === false ? '' : (string) $helpdesk,

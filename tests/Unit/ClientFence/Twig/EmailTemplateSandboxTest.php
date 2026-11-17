@@ -17,7 +17,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /** The email environment's own filters and functions (TwigFactory::createEmailEnvironment()), as stubs. */
-function emailSandboxEnvironment(): Environment
+function emailSandboxEnvironment(?Closure $trans = null): Environment
 {
     $twig = new Environment(new ArrayLoader(), ['autoescape' => 'html']);
     $twig->addExtension(new SandboxExtension(EmailPolicy::create(), true));
@@ -25,7 +25,7 @@ function emailSandboxEnvironment(): Environment
         'format_currency', 'format_date', 'format_datetime', 'format_number', 'format_time', 'currency_name',
         'currency_symbol', 'country_name', 'url', 'daysleft', 'trans', 'trans_html', 'period_title', 'markdown_to_html',
     ] as $filter) {
-        $twig->addFilter(new TwigFilter($filter, static fn (mixed $value, mixed ...$options): mixed => $value, ['is_variadic' => true]));
+        $twig->addFilter(new TwigFilter($filter, $filter === 'trans' && $trans ? $trans : static fn (mixed $value, mixed ...$options): mixed => $value, ['is_variadic' => true]));
     }
     $twig->addFunction(new TwigFunction('country_names', static fn (): array => []));
 
@@ -70,6 +70,27 @@ test('shipped emails show no empty box when the optional values are missing', fu
         expect(trim(html_entity_decode(strip_tags($box))))->not->toBe('');
     }
 })->with('shipped email templates');
+
+test('ticket emails translate the ticket status', function (string $file): void {
+    $twig = emailSandboxEnvironment(static fn (mixed $value, mixed ...$options): string => '[' . $value . ']');
+    $template = $twig->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/' . $file), basename($file));
+
+    expect($template->render(['ticket' => ['status' => 'closed']]))->toContain('[Closed]')
+        ->and($template->render(['ticket' => ['status' => 'on_hold']]))->toContain('[Answered]');
+})->with([
+    'Support/templates/email/mod_support_ticket_open.html.twig', 'Support/templates/email/mod_support_ticket_staff_open.html.twig',
+    'Support/templates/email/mod_support_ticket_staff_reply.html.twig', 'Support/templates/email/mod_support_ticket_staff_close.html.twig',
+    'Support/templates/email/mod_support_helpdesk_ticket_open.html.twig', 'Staff/templates/email/mod_staff_ticket_open.html.twig',
+    'Staff/templates/email/mod_staff_ticket_reply.html.twig',
+]);
+
+test('staff assigned and escalated emails translate the status and priority', function (string $file): void {
+    $twig = emailSandboxEnvironment(static fn (mixed $value, mixed ...$options): string => '[' . $value . ']');
+    $html = $twig->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/' . $file), $file)
+        ->render(['ticket' => ['status_title' => 'Answered', 'priority_title' => 'High']]);
+
+    expect($html)->toContain('[Answered]')->toContain('[High]');
+})->with(['mod_staff_ticket_assigned.html.twig', 'mod_staff_ticket_escalated.html.twig']);
 
 test('the check catches a disallowed filter', function (): void {
     expect(fn () => emailSandboxEnvironment()->createTemplate("{{ 'on_hold'|replace({'_': ' '})|capitalize }}", 'bad')->render([]))
