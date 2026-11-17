@@ -355,6 +355,16 @@ class Service implements \ClientFence\InjectionAwareInterface
         ];
     }
 
+    /** ClientFence core patch: only Open, On Hold or Closed (getStatuses). */
+    private function checkStatus(mixed $status): string
+    {
+        if (!is_string($status) || !array_key_exists($status, $this->getStatuses())) {
+            throw new InformationException('Unknown ticket status');
+        }
+
+        return $status;
+    }
+
     /**
      * Find ticket for client.
      */
@@ -1070,12 +1080,14 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         if (isset($data['support_helpdesk_id'])) {
             $helpdesk = $this->getHelpdeskRepository()->find((int) $data['support_helpdesk_id']);
-            if ($helpdesk instanceof Helpdesk) {
-                $model->setSupportHelpdesk($helpdesk);
+            // ClientFence core patch: an unknown help desk or status is refused, not ignored or saved as is.
+            if (!$helpdesk instanceof Helpdesk) {
+                throw new InformationException('Helpdesk invalid');
             }
+            $model->setSupportHelpdesk($helpdesk);
         }
         if (isset($data['status'])) {
-            $model->setStatus($data['status']);
+            $model->setStatus($this->checkStatus($data['status']));
         }
         if (isset($data['subject'])) {
             $model->setSubject($data['subject']);

@@ -273,8 +273,14 @@ final class TicketEscalation
         if ($rule['reply'] !== '') {
             $support->ticketReply($ticket, $di['mod_service']('staff')->getCronAdmin(), self::mergeFields($di, $ticketId, $rule['reply']));
         }
+        // A help desk deleted after the rule was saved: the ticket is not moved (ticketUpdate refuses it), the rest still applies.
+        $moveTo = $rule['new_helpdesk_id'];
+        if ($moveTo !== null && $di['em']->getConnection()->fetchOne('SELECT id FROM support_helpdesk WHERE id = ?', [$moveTo]) === false) {
+            self::log($di, 'escalation rule "' . $rule['name'] . '" moves tickets to help desk #' . $moveTo . ', which no longer exists: ticket #' . $ticketId . ' was not moved');
+            $moveTo = null;
+        }
         $changes = array_filter([
-            'support_helpdesk_id' => $rule['new_helpdesk_id'],
+            'support_helpdesk_id' => $moveTo,
             'priority' => $rule['new_priority'] !== '' ? $rule['new_priority'] : null,
             'status' => $rule['new_status'] !== '' ? $rule['new_status'] : null,
         ], static fn ($value): bool => $value !== null);

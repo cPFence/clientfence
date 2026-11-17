@@ -1914,6 +1914,11 @@ test('ticket update', function (): void {
 
     // ClientFence: only Low, Medium or High (TicketPriority).
     expect(fn () => $service->ticketUpdate($ticket, ['priority' => 1]))->toThrow(ClientFence\InformationException::class);
+
+    // ClientFence: an unknown status or help desk is refused, not saved or ignored.
+    expect(fn () => $service->ticketUpdate($ticket, ['status' => 'pending']))->toThrow(ClientFence\InformationException::class, 'Unknown ticket status')
+        ->and(fn () => $service->ticketUpdate($ticket, ['support_helpdesk_id' => 99]))->toThrow(ClientFence\InformationException::class, 'Helpdesk invalid')
+        ->and($ticket->getStatus())->toBe(SupportTicket::STATUS_OPEN);
 });
 
 test('ticket message update', function (): void {

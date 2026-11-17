@@ -229,6 +229,20 @@ test('a paused rule does nothing, and a failing ticket does not stop the others'
     TicketEscalation::delete($di, $active);
 });
 
+test('a rule whose help desk was deleted still applies its other changes, without the move', function (): void {
+    $mails = $calls = [];
+    $db = ticketEscalationDb();
+    $di = ticketEscalationContainer($db, $mails, $calls);
+    $id = TicketEscalation::save($di, ticketEscalationRule(['reply' => '', 'new_helpdesk_id' => 2, 'new_priority' => 'high']));
+    $made = strtotime((string) TicketEscalation::get($di, $id)['created_at']);
+    ticketEscalationTicket($db, 10, $made, 30);
+    $db->delete('support_helpdesk', ['id' => 2]);
+
+    expect(TicketEscalation::run($di, $made + 31 * 60))->toBe(1)
+        ->and($calls)->toBe([['update', 10, ['priority' => 'high']]])
+        ->and($di['logger']->warnings[0])->toContain('help desk #2, which no longer exists: ticket #10 was not moved');
+});
+
 test('marks of deleted tickets and rules are swept', function (): void {
     $mails = $calls = [];
     $db = ticketEscalationDb();
