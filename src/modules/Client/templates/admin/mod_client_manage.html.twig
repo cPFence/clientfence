@@ -971,7 +971,8 @@
             {% endembed %}
 
             <div class="p-3">
-                <form method="post" action="{{ 'client/balance_add_funds'|api_url }}" {{ fb_api_form({ message: 'Funds Added'|trans}) }}>
+                {# ClientFence core patch: the same form removes credit (a negative amount), so not "Funds Added". #}
+                <form method="post" action="{{ 'client/balance_add_funds'|api_url }}" {{ fb_api_form({ message: 'Credit balance updated'|trans}) }}>
                     {% embed 'partial_admin_form_card.html.twig' with {
                         title: 'Add Funds for Client'|trans,
                         subtitle: 'Record a manual balance credit on this client account.'|trans

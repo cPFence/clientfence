@@ -659,6 +659,7 @@ test('balanceAddFunds returns true', function (): void {
 
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
     $serviceMock->shouldReceive('revokeEmailConfirmations')->byDefault();
+    $serviceMock->shouldReceive('getClientBalance')->andReturn(0.0);
     $serviceMock->shouldReceive('addFunds')->atLeast()->once();
 
     $di = container();
@@ -672,6 +673,26 @@ test('balanceAddFunds returns true', function (): void {
     $result = $adminClient->balance_add_funds($data);
     expect($result)->toBeTrue();
 });
+
+test('balanceAddFunds removes at most the credit the client has', function (string $amount, bool $allowed, float $balance = 20.0): void {
+    $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('getClientBalance')->andReturn($balance);
+    $serviceMock->shouldReceive('addFunds')->times($allowed ? 1 : 0);
+    $di = container();
+    $di['mod_service'] = $di->protect(moduleService(['client' => $serviceMock]));
+    $di['validator'] = $this->createStub(ClientFence\Validate::class);
+    $adminClient->setDi($di);
+
+    $call = fn () => $adminClient->balance_add_funds(['id' => 1, 'amount' => $amount, 'description' => 'Correction']);
+    $allowed ? expect($call())->toBeTrue() : expect($call)->toThrow(ClientFence\InformationException::class, 'You cannot remove more than that.');
+})->with([
+    'whole balance' => ['-20.00', true],
+    'more than the balance' => ['-100', false],
+    'adding' => ['5', true],
+    // A payment a gateway adds to a client below zero (from before this check, or a deleted credit line).
+    'adding below zero' => ['5', true, -10.0],
+]);
 
 test('batchExpirePasswordReminders returns true', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());

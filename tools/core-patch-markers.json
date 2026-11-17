@@ -8610,5 +8610,13 @@
     {
         "file": "modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig",
         "done": "ClientFence core patch: the reply itself, as WHMCS's ticket reply email (the newest message is the one just posted)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the same form removes credit (a negative amount), so not \"Funds Added\"."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: staff cannot remove more credit than the client has (the balance went below zero)."
     }
 ]

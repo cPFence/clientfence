@@ -640,6 +640,11 @@ class Admin extends \ClientFence\Api\AbstractApi
         $client = $this->getDi()['em']->getRepository(Client::class)->find($data['id']) ?? throw new InformationException('Client not found');
 
         $service = $this->getDi()['mod_service']('client');
+        // ClientFence core patch: staff cannot remove more credit than the client has (the balance went below zero).
+        $balance = $service->getClientBalance($client);
+        if (is_numeric($data['amount']) && (float) $data['amount'] < 0 && round($balance + (float) $data['amount'], 2) < 0) {
+            throw new InformationException('The client has :amount :currency credit. You cannot remove more than that.', [':amount' => number_format(max($balance, 0), 2, '.', ''), ':currency' => (string) $client->getCurrency()]);
+        }
         $service->addFunds($client, $data['amount'], $data['description'], $data);
 
         return true;
