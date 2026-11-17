@@ -1067,6 +1067,37 @@ test('updates contacts', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('updates contacts without the optional company and address2', function (): void {
+    $adapter = Mockery::mock('Registrar_Adapter_Custom');
+    $adapter->shouldReceive('modifyContact')->once();
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('_getD')->andReturn([new Registrar_Domain(), $adapter]);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('store')->once()->andReturn(1);
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $serviceMock->setDi($di);
+
+    $contact = array_fill_keys(['first_name', 'last_name', 'email', 'address1', 'country', 'city', 'state', 'postcode', 'phone_cc', 'phone'], 'x');
+    $model = new Model_ServiceDomain();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->contact_company = 'Old Ltd';
+
+    set_error_handler(static function (int $number, string $message): never {
+        throw new ErrorException($message, 0, $number);
+    }, E_WARNING);
+    try {
+        $result = $serviceMock->updateContacts($model, ['contact' => $contact]);
+    } finally {
+        restore_error_handler();
+    }
+
+    expect($result)->toBeTrue()
+        ->and($model->contact_company)->toBeNull()
+        ->and($model->contact_address2)->toBeNull();
+});
+
 test('gets transfer code', function (): void {
     $service = new Service();
     $epp = 'EPPCODE';

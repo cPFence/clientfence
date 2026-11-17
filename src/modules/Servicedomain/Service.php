@@ -656,9 +656,10 @@ class Service implements \ClientFence\InjectionAwareInterface
         $model->contact_first_name = $contact['first_name'];
         $model->contact_last_name = $contact['last_name'];
         $model->contact_email = $contact['email'];
-        $model->contact_company = $contact['company'];
+        // ClientFence core patch: company and address2 are optional, so leaving them out no longer logs a PHP warning.
+        $model->contact_company = $contact['company'] ?? null;
         $model->contact_address1 = $contact['address1'];
-        $model->contact_address2 = $contact['address2'];
+        $model->contact_address2 = $contact['address2'] ?? null;
         $model->contact_country = $contact['country'];
         $model->contact_city = $contact['city'];
         $model->contact_state = $contact['state'];
