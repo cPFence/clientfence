@@ -50,36 +50,60 @@ function initSignIn(button) {
     return;
   }
   button.hidden = false;
+  // The pending request's (the autofill's or the button's); null while none is pending.
   let controller = null;
   const signIn = async (mediation) => {
     controller?.abort();
-    controller = new AbortController();
-    const o = await api('guest', button.dataset.options);
-    const credential = await navigator.credentials.get({
-      mediation,
-      signal: controller.signal,
-      publicKey: { challenge: bytes(o.challenge), rpId: o.rpId, userVerification: o.userVerification, timeout: o.timeout },
-    });
-    const r = credential.response;
-    await api('guest', button.dataset.signin, {
-      id: credential.id,
-      clientDataJSON: text(r.clientDataJSON),
-      authenticatorData: text(r.authenticatorData),
-      signature: text(r.signature),
-      userHandle: r.userHandle ? text(r.userHandle) : '',
-    });
-    window.location.assign(button.dataset.redirect);
+    const own = new AbortController();
+    controller = own;
+    try {
+      const o = await api('guest', button.dataset.options);
+      if (mediation === 'conditional') {
+        // Some browsers keep an autofill request past its timeout: end it with its challenge, then wait again.
+        setTimeout(() => own.abort(), o.timeout);
+      }
+      const credential = await navigator.credentials.get({
+        mediation,
+        signal: own.signal,
+        publicKey: { challenge: bytes(o.challenge), rpId: o.rpId, userVerification: o.userVerification, timeout: o.timeout },
+      });
+      const r = credential.response;
+      await api('guest', button.dataset.signin, {
+        id: credential.id,
+        clientDataJSON: text(r.clientDataJSON),
+        authenticatorData: text(r.authenticatorData),
+        signature: text(r.signature),
+        userHandle: r.userHandle ? text(r.userHandle) : '',
+      });
+      window.location.assign(button.dataset.redirect);
+    } finally {
+      if (controller === own) {
+        controller = null;
+      }
+    }
   };
   const failed = (error) => {
     if (!quiet(error)) {
       ClientFence.message(errorText(error), 'error');
     }
   };
+  // The email field's passkey list works only while a conditional request waits: keep one waiting.
   const autofill = () => {
+    if (controller) {
+      return;
+    }
     PublicKeyCredential.isConditionalMediationAvailable?.().then((available) => {
-      if (available) {
-        signIn('conditional').catch(failed);
+      if (!available || controller) {
+        return;
       }
+      const started = Date.now();
+      signIn('conditional').catch((error) => {
+        failed(error);
+        // Ended (timeout, the browser's abort): wait again; one that ended at once waits for the field's focus.
+        if (Date.now() - started > 5000) {
+          autofill();
+        }
+      });
     });
   };
   button.addEventListener('click', () => {
@@ -89,6 +113,9 @@ function initSignIn(button) {
       autofill();
     });
   });
+  document.querySelector('input[autocomplete~="webauthn"]')?.addEventListener('focus', autofill);
+  // Back from a password manager app (iPhone): the browser may have ended the request meanwhile.
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && autofill());
   autofill();
 }
 
