@@ -267,6 +267,32 @@ class Service implements \ClientFence\InjectionAwareInterface
     }
 
     /**
+     * The nameservers of the server that hosts the hosting order this domain was ordered with (the same cart family,
+     * Cart\Service::resolveFamilyGroupId()), or null.
+     *
+     * @return array<string, string>|null
+     */
+    private function hostingNameservers(\Model_ClientOrder $order): ?array
+    {
+        if ((string) $order->group_id === '') {
+            return null;
+        }
+        // Its service's server, else the server its order was placed for (manual setup, or a setup that failed early).
+        $hosting = $this->di['dbal']->fetchAssociative(
+            'SELECT o.config, h.service_hosting_server_id FROM client_order o LEFT JOIN service_hosting h ON h.id = o.service_id'
+            . " WHERE o.group_id = ? AND o.client_id = ? AND o.service_type = 'hosting' AND o.id <> ? ORDER BY o.id LIMIT 1",
+            [(string) $order->group_id, (int) $order->client_id, (int) $order->id],
+        );
+        $serverId = $hosting === false ? 0 : (int) ($hosting['service_hosting_server_id'] ?? json_decode((string) $hosting['config'], true)['server_id'] ?? 0);
+        $row = $serverId > 0 ? $this->di['dbal']->fetchAssociative('SELECT ns1, ns2, ns3, ns4 FROM service_hosting_server WHERE id = ?', [$serverId]) : false;
+        if ($row === false || trim((string) $row['ns1']) === '') {
+            return null;
+        }
+
+        return ['nameserver_1' => (string) $row['ns1'], 'nameserver_2' => (string) $row['ns2'], 'nameserver_3' => (string) $row['ns3'], 'nameserver_4' => (string) $row['ns4']];
+    }
+
+    /**
      * Creates domain service object from order.
      *
      * @return \Model_ServiceDomain
@@ -284,7 +310,8 @@ class Service implements \ClientFence\InjectionAwareInterface
 
         // @todo ?
         $systemService = $this->di['mod_service']('system');
-        $ns = $systemService->getNameservers();
+        // ClientFence core patch: a domain ordered with hosting gets the hosting server's nameservers (as WHMCS), else the defaults.
+        $ns = $this->hostingNameservers($order) ?? $systemService->getNameservers();
         if (empty($ns)) {
             throw new \ClientFence\InformationException('Default domain nameservers are not configured');
         }

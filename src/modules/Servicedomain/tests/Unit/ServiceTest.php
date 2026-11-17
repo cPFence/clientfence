@@ -513,6 +513,96 @@ test('creates a transfer service with one year despite client-supplied registrat
         ->and($result->period)->toBe(1);
 });
 
+test('a domain ordered with hosting gets the hosting server nameservers', function (): void {
+    $service = new Service();
+    $tldModel = new Model_Tld();
+    $tldModel->loadBean(new Tests\Helpers\DummyBean());
+    $tldModel->tld_registrar_id = 1;
+    $tldModel->tld = '.com';
+    $tldModel->active = true;
+
+    $data = [
+        'action' => 'transfer',
+        'transfer_sld' => 'example',
+        'transfer_tld' => '.com',
+        'register_years' => 5,
+    ];
+
+    $orderServiceMock = Mockery::mock(OrderService::class);
+    $orderServiceMock->shouldReceive('getConfig')
+        ->atLeast()->once()
+        ->andReturn($data);
+
+    $systemServiceMock = Mockery::mock(SystemService::class);
+    $systemServiceMock->shouldNotReceive('getNameservers');
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    // The hosting order has no service yet (manual setup): the server it was ordered for.
+    $dbalMock->shouldReceive('fetchAssociative')->once()
+        ->with(Mockery::pattern('/FROM client_order o/'), ['c9_1', 1, 7])
+        ->andReturn(['config' => '{"server_id":"4"}', 'service_hosting_server_id' => null]);
+    $dbalMock->shouldReceive('fetchAssociative')->once()
+        ->with(Mockery::pattern('/FROM service_hosting_server/'), [4])
+        ->andReturn(['ns1' => 'ns1.server-a.test', 'ns2' => 'ns2.server-a.test', 'ns3' => null, 'ns4' => null]);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('tldFindOneByTld')
+        ->atLeast()->once()
+        ->andReturn($tldModel);
+    $serviceMock->shouldReceive('canBeTransferred')->once()->andReturnTrue();
+    $serviceMock->shouldReceive('tldDomainFields')->andReturn([]);
+
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->first_name = 'first_name';
+    $client->last_name = 'last_name';
+    $client->email = 'email';
+    $client->company = 'company';
+    $client->address_1 = 'address_1';
+    $client->address_2 = 'address_2';
+    $client->country = 'country';
+    $client->city = 'city';
+    $client->state = 'state';
+    $client->postcode = 'postcode';
+    $client->phone_cc = 'phone_cc';
+    $client->phone = 'phone';
+
+    $serviceDomainModel = new Model_ServiceDomain();
+    $serviceDomainModel->loadBean(new Tests\Helpers\DummyBean());
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')
+        ->atLeast()->once()
+        ->andReturn($client);
+    $dbMock->shouldReceive('dispense')
+        ->atLeast()->once()
+        ->andReturn($serviceDomainModel);
+    $dbMock->shouldReceive('store')
+        ->atLeast()->once()
+        ->andReturn(1);
+
+    $di = container();
+    $di['mod_service'] = $di->protect(function ($name) use ($orderServiceMock, $systemServiceMock) {
+        if ($name == 'order') {
+            return $orderServiceMock;
+        }
+
+        return $systemServiceMock;
+    });
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbalMock;
+
+    $serviceMock->setDi($di);
+
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->client_id = 1;
+    $order->id = 7;
+    $order->group_id = 'c9_1';
+
+    $result = $serviceMock->action_create($order);
+    expect([$result->ns1, $result->ns2, $result->ns3])->toBe(['ns1.server-a.test', 'ns2.server-a.test', '']);
+});
+
 test('throws exception when creating action with missing nameservers', function (): void {
     $service = new Service();
     $tldModel = new Model_Tld();
