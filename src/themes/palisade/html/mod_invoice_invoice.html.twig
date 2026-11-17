@@ -49,7 +49,7 @@
 {% set status_chip = pending ? ['bf-chip-muted', 'Payment pending'|trans] : { unpaid: ['bf-chip-warn', 'Unpaid'|trans], paid: ['bf-chip-ok', 'Paid'|trans], refunded: ['bf-chip-muted', 'Refunded'|trans], canceled: ['bf-chip-muted', 'Canceled'|trans] }[invoice.status]|default(['bf-chip-muted', invoice.status|capitalize]) %}
 
 <div class="bf-pay-page" data-bf-invoice
-     data-hash="{{ invoice.hash }}" data-total="{{ due }}" data-currency="{{ currency }}"
+     data-hash="{{ invoice.hash }}" data-total="{{ due }}" data-currency="{{ currency }}" data-gateway="{{ saved }}"
      data-banklink="{{ ('invoice/banklink/' ~ invoice.hash)|url }}">
     <script nonce="{{ csp_nonce }}" type="application/json" data-bf-invoice-texts>{{ {
         egpLine: 'Pay :amount by :method.'|trans,

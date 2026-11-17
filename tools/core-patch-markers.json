@@ -144,6 +144,10 @@
         "done": "ClientFence core patch: signed-in account users need quote access to answer their account's quotes."
     },
     {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence core patch: the payment method picked on the invoice page becomes the invoice's, with its fee (GatewayFees::choose())."
+    },
+    {
         "file": "modules/Order/Service.php",
         "done": "ClientFence core patch: its unpaid first invoice is cancelled, as WHMCS, when no other open order is on it; otherwise only this order's lines go (an empty unpaid invoice was left)."
     },
@@ -650,6 +654,10 @@
     {
         "file": "modules/Invoice/Controller/Client.php",
         "done": "ClientFence: a payment receipt (Receipts.php), linked from its support ticket."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence core patch: read again after the payment set the gateway and its fee line, so the amount due shown is the one charged."
     },
     {
         "file": "modules/Invoice/Controller/Admin.php",

@@ -95,6 +95,26 @@ class Guest extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: the payment method picked on the invoice page becomes the invoice's, with its fee (GatewayFees::choose()).
+     */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed', 'gateway_id' => 'Payment method not found. Missing param gateway_id'])]
+    public function choose_gateway($data): bool
+    {
+        if (!preg_match('/^[a-f0-9]{30,60}$/', (string) $data['hash'])) {
+            throw new \ClientFence\Exception('Invalid invoice hash', null, 4001);
+        }
+        $this->limitUnlessOwner('invoice_payment', (string) $data['hash']);
+        $invoice = $this->getDi()['db']->findOne('Invoice', 'hash = ?', [(string) $data['hash']]);
+        if (!$invoice instanceof \Model_Invoice) {
+            throw new \ClientFence\InformationException('Invoice not found', null, 812);
+        }
+        $this->getService()->checkInvoiceAuth($invoice, InvoiceOperation::PAYMENT);
+        \ClientFence\Mod\Invoice\GatewayFees::choose($this->getDi(), $invoice, (int) $data['gateway_id']);
+
+        return true;
+    }
+
+    /**
      * Get whether the client add funds feature is enabled, or not.
      */
     public function funds_enabled(): bool
@@ -134,7 +154,10 @@ class Guest extends \ClientFence\Api\AbstractApi
 
         $invoice = isset($data['hash']) ? $this->getDi()['db']->findOne('Invoice', 'hash = ? AND status = ?', [(string) $data['hash'], \Model_Invoice::STATUS_UNPAID]) : null;
 
-        return \ClientFence\Mod\Invoice\Receipts::paymentMethods($this->getDi(), (float) $amount, $currency, (bool) ($data['subscribable'] ?? false), $invoice instanceof \Model_Invoice && strtoupper((string) $invoice->currency) === $currency ? $invoice : null);
+        // ClientFence: taxed: the taxed lines of an order before tax (the cart page), for the tax of a taxed fee.
+        $taxed = filter_var($data['taxed'] ?? null, FILTER_VALIDATE_FLOAT);
+
+        return \ClientFence\Mod\Invoice\Receipts::paymentMethods($this->getDi(), (float) $amount, $currency, (bool) ($data['subscribable'] ?? false), $invoice instanceof \Model_Invoice && strtoupper((string) $invoice->currency) === $currency ? $invoice : null, $taxed === false ? null : max(0.0, $taxed));
     }
 
     /**

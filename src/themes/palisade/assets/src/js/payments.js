@@ -27,7 +27,22 @@ function initInvoice(root) {
       egpLine.textContent = method?.dataset.rate ? fill(t.egpLine, { amount, method: method.dataset.title }) : '';
     }
   };
-  choose.addEventListener('change', render);
+  choose.addEventListener('change', (event) => {
+    render();
+    const method = selected();
+    // As in WHMCS, the method picked becomes the invoice's and its fee follows (GatewayFees::choose()); the reload shows
+    // the server's lines, total and balance due.
+    if (!method || event.target !== method || method.value === root.dataset.gateway) {
+      return;
+    }
+    api('guest', 'invoice/choose_gateway', { hash: root.dataset.hash, gateway_id: method.value })
+      .then(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('gateway', method.value);
+        window.location.assign(url);
+      })
+      .catch((error) => ClientFence.message(errorText(error), 'error'));
+  });
 
   root.querySelectorAll('[data-bf-receipt]').forEach((form) => {
     form.addEventListener('submit', (event) => {

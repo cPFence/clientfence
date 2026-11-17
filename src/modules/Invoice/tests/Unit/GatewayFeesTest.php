@@ -78,7 +78,10 @@ function feeWorld(string $status = 'unpaid', bool $deposit = false): object
     });
     $di['db'] = Mockery::mock();
     $di['db']->allows('findOne')->andReturnUsing(fn (): ?Model_InvoiceItem => $world->line);
-    $di['db']->allows('load')->andReturnUsing(fn (string $type, int $id): ?Model_PayGateway => $gateways[$id] ?? null);
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 7;
+    $di['db']->allows('load')->andReturnUsing(fn (string $type, int $id): ?object => $type === 'Client' ? ($id === 7 ? $client : null) : ($gateways[$id] ?? null));
     $di['db']->allows('find')->andReturn(array_values($gateways));
     $world->invoices = $invoices;
     $world->di = $di;
@@ -193,4 +196,78 @@ test('the staff order summary adds what the fee line will add: the fee and its t
     // The same as the line the approval adds.
     GatewayFees::apply($world->di, $world->invoice, 3);
     expect(round((float) $world->line->price * 1.1, 2))->toBe(3.25);
+});
+
+test('the method picked on the invoice page becomes the invoice\'s, and its fee follows', function (): void {
+    $world = feeWorld();
+    $world->invoice->status = 'unpaid';
+    foreach ($world->gateways as $gateway) {
+        $gateway->allow_single = 1;
+    }
+    $world->invoices->allows('getAcceptedCurrencies')->andReturn(['AUD']);
+    $world->invoices->allows('getAdapterClassName')->andReturn(stdClass::class);
+    $world->invoices->allows('isSubscribable')->andReturn(false);
+    $world->db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, currency TEXT, status TEXT, txn_status TEXT, created_at TEXT)');
+
+    GatewayFees::choose($world->di, $world->invoice, 3);
+    expect((float) $world->line->price)->toBe(2.95)
+        ->and((int) $world->db->fetchOne('SELECT gateway_id FROM invoice WHERE id = 5'))->toBe(3);
+
+    // Bank transfer has no fee: the fee line goes; picking PayPal again brings it back.
+    GatewayFees::choose($world->di, $world->invoice, 4);
+    expect($world->line)->toBeNull()
+        ->and((int) $world->db->fetchOne('SELECT gateway_id FROM invoice WHERE id = 5'))->toBe(4);
+    GatewayFees::choose($world->di, $world->invoice, 3);
+    expect((float) $world->line->price)->toBe(2.95);
+
+    // Not a method the page offers (disabled or not for this currency): the enabled list (find) does not have it.
+    expect(fn () => GatewayFees::choose($world->di, $world->invoice, 99))->toThrow(ClientFence\InformationException::class, 'Payment method not found');
+
+    // A payment still clearing.
+    $world->db->executeStatement("INSERT INTO `transaction` (invoice_id, amount, currency, status, txn_status, created_at) VALUES (5, 103.4, 'AUD', 'received', 'processing', ?)", [date('Y-m-d H:i:s')]);
+    expect(fn () => GatewayFees::choose($world->di, $world->invoice, 4))->toThrow(ClientFence\InformationException::class, 'A payment for this invoice is still clearing.');
+
+    // A paid invoice.
+    $world->invoice->status = 'paid';
+    expect(fn () => GatewayFees::choose($world->di, $world->invoice, 4))->toThrow(ClientFence\InformationException::class, 'This invoice is already paid or cancelled.');
+    expect((float) $world->line->price)->toBe(2.95);
+});
+
+test('without an invoice, the cart page\'s total per method adds the tax of a taxed fee at the client\'s rate', function (float $rate, float $paypal): void {
+    $world = feeWorld();
+    foreach ($world->gateways as $gateway) {
+        $gateway->allow_single = 1;
+    }
+    $world->invoices->allows('getAcceptedCurrencies')->andReturn(['AUD']);
+    $world->invoices->allows('getAdapterClassName')->andReturn(stdClass::class);
+    $world->invoices->allows('getTaxRateForClient')->andReturn($rate);
+    $session = Mockery::mock();
+    $session->allows('get')->with('client_id')->andReturn(7);
+    $world->di['session'] = $session;
+    // 100.00 of taxed lines, 110.00 due with 10% tax. PayPal: 2.5% of 110 + 0.45 = 3.20, taxed: 10.32 - 10.00 = 0.32 more.
+    $methods = array_column(ClientFence\Mod\Invoice\Receipts::paymentMethods($world->di, 110.0, 'AUD', false, null, 100.0), null, 'id');
+
+    expect([$methods[3]['fee'], $methods[3]['total']])->toBe([3.2, $paypal])
+        ->and($methods[3]['fee_terms']['taxable'])->toBeTrue()
+        // Bank transfer has no fee; client 7's group pays no Stripe fee.
+        ->and($methods[4]['total'])->toBe(110.0)
+        ->and($methods[6]['total'])->toBe(110.0)
+        // The page that does not know its taxed lines (no $taxed) adds no fee tax.
+        ->and(ClientFence\Mod\Invoice\Receipts::paymentMethods($world->di, 110.0, 'AUD')[0]['total'])->toBe(113.2);
+})->with([
+    'taxed client' => [10.0, 113.52],
+    'tax-exempt client' => [0.0, 113.2],
+]);
+
+test('the fee tax before the invoice exists is the same as the invoice adds, rounded once', function (): void {
+    $world = feeWorld();
+    $world->invoice->taxrate = 15;
+    $world->db->insert('invoice_item', ['invoice_id' => 5, 'price' => 10.36, 'quantity' => 1, 'taxed' => 1]);
+
+    // 10.36 + 2.95 at 15% is 2.00 tax, 0.45 more than 1.55 (0.44 alone).
+    expect(GatewayFees::taxOn(10.36, 15, 2.95))->toBe(0.45)
+        ->and(GatewayFees::tax($world->di, $world->invoice, 2.95))->toBe(0.45)
+        // The worked example: 20.00 at 10% with a 1.16 fee adds 0.12.
+        ->and(GatewayFees::taxOn(20.0, 10, 1.16))->toBe(0.12)
+        ->and(GatewayFees::taxOn(20.0, 0, 1.16))->toBe(0.0);
 });

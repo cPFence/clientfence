@@ -298,7 +298,7 @@
     <div class="cf-ov-col">
         {% if trust %}
         {% set trust_parts = {
-            on_time: ['Pays on time'|trans, 40, trust.counts.due ? 'Invoices due in the last 12 months and paid: :count, by the due date: :on_time.'|trans({ ':count': trust.counts.due, ':on_time': trust.counts.on_time }) : 'No paid invoice was due in the last 12 months: 20 of 40.'|trans],
+            on_time: ['Pays on time'|trans, 40, trust.counts.due ? 'Invoices due in the last 12 months: :count, paid by the due date: :on_time. Unpaid ones past their due date count as late.'|trans({ ':count': trust.counts.due, ':on_time': trust.counts.on_time }) : 'No invoice fell due in the last 12 months: 20 of 40.'|trans],
             since: ['Client since'|trans, 20, '1 point a full month, up to 20.'|trans],
             services: ['Active services'|trans, 15, '5 points each, up to 15.'|trans],
             paid: ['Total paid'|trans, 15, 'Paid invoices in the default currency: 15 at 2,000 or more, 11 at 1,000, 7 at 500, 3 at 100.'|trans],

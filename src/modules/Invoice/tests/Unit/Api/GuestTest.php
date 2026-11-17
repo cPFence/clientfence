@@ -134,6 +134,24 @@ test('throws exception when payment gateway id is missing', function (): void {
         ->toThrow(ClientFence\InformationException::class, 'Payment method not found. Missing param gateway_id');
 });
 
+test('choosing an invoice\'s payment method needs payment access to it', function (): void {
+    $api = apiEndpoint(new Guest());
+    $model = new Model_Invoice();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->once()->andReturn($model);
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('checkInvoiceAuth')->once()->with($model, ClientFence\Mod\Invoice\InvoiceOperation::PAYMENT)
+        ->andThrow(new ClientFence\InformationException('You do not have permission to perform this action', [], 403));
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect(fn () => $api->choose_gateway(['hash' => str_repeat('a', 32), 'gateway_id' => 4]))
+        ->toThrow(ClientFence\InformationException::class, 'You do not have permission to perform this action');
+});
+
 test('gets whether add funds is enabled', function (): void {
     $api = apiEndpoint(new Guest());
     $serviceMock = Mockery::mock(Service::class);

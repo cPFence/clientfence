@@ -36,7 +36,9 @@
     {% set tax_amount = not inclusive and tax.rate > 0 ? ((total * tax.rate)|round) / 100 : 0 %}
     {% set due = inclusive ? (tax.deduct > 0 ? (total * 100 / (100 + tax.deduct))|round(2) : total) : total + tax_amount %}
     {% set from_balance = client and due > 0 and client.profile_get.currency|default(cur.code) == cur.code and client.client_balance_get_total >= due %}
-    {% set methods = client and due > 0 and not from_balance ? guest.invoice_payment_methods({ amount: due, currency: cur.code }) : [] %}
+    {# The invoice's taxed lines before tax, for the tax of a taxed payment fee (checkout.js does the same). #}
+    {% set taxed = inclusive ? (tax.rate > 0 ? (total * 100 / (100 + tax.rate))|round(2) : 0) : total %}
+    {% set methods = client and due > 0 and not from_balance ? guest.invoice_payment_methods({ amount: due, currency: cur.code, taxed: taxed }) : [] %}
     {% set back = 'cart' %}
     <script nonce="{{ csp_nonce }}" type="application/json" data-bf-cart-data>{{ {
         urls: { invoice: 'invoice'|url, banklink: 'invoice/banklink'|url, service: 'order/service/manage'|url },
@@ -116,7 +118,10 @@
                         <div class="bf-line"><span>{{ tax.name ?: 'Tax'|trans }} ({{ tax.rate }}%)</span><span>{{ tax_amount|format_currency(cur.code) }}</span></div>
                     {% endif %}
                 </div>
-                <div class="bf-total"><span>{{ 'Due today'|trans }}</span><strong>{{ due|format_currency(cur.code) }}</strong></div>
+                {# ClientFence: as the Place order button, what the chosen method takes (its gateway fee and the fee's tax included). #}
+                {% set dues = {} %}
+                {% for m in methods %}{% set dues = dues|merge({ ('m' ~ m.id): (m.total ?? due)|format_currency(cur.code) }) %}{% endfor %}
+                <div class="bf-total"><span>{{ 'Due today'|trans }}</span><strong data-bf-cart-due data-dues="{{ dues|json_encode }}">{{ methods ? dues|first : due|format_currency(cur.code) }}</strong></div>
                 {% if not client and guest.clientfence_tax_enabled %}<span class="bf-hint bf-small">{{ 'Tax for your country, if any, is added on the invoice.'|trans }}</span>{% endif %}
 
                 {% if cart.promocode %}
@@ -144,7 +149,10 @@
                                 <label class="form-check-label" for="bf-tos">{{ 'I agree to the'|trans }} <a href="{{ 'tos'|url }}" target="_blank">{{ 'Terms of Service'|trans }}</a> {{ 'and'|trans }} <a href="{{ 'privacy-policy'|url }}" target="_blank">{{ 'Privacy Policy'|trans }}</a>.</label>
                             </div>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary bf-pay-btn" data-bf-cart-pay{% if due > 0 and not from_balance and not methods %} disabled{% endif %}>{{ 'Place order · :amount'|trans({ ':amount': due|format_currency(cur.code) }) }}</button>
+                        {# ClientFence: the button's amount is what the chosen method takes, its gateway fee included (Receipts::paymentMethods() total). #}
+                        {% set pay_labels = {} %}
+                        {% for m in methods %}{% set pay_labels = pay_labels|merge({ ('m' ~ m.id): 'Place order · :amount'|trans({ ':amount': (m.total ?? due)|format_currency(cur.code) }) }) %}{% endfor %}
+                        <button type="submit" class="btn btn-primary bf-pay-btn" data-bf-cart-pay data-labels="{{ pay_labels|json_encode }}"{% if due > 0 and not from_balance and not methods %} disabled{% endif %}>{{ methods ? pay_labels|first : 'Place order · :amount'|trans({ ':amount': due|format_currency(cur.code) }) }}</button>
                         <span class="bf-hint bf-small">{{ from_balance ? 'Your balance covers this order, so it is paid from your balance.'|trans : (due > 0 ? 'Next you pay the invoice with the method you chose.'|trans : 'Nothing to pay today.'|trans) }}</span>
                     </form>
                 {% else %}

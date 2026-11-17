@@ -1254,7 +1254,7 @@ msgstr ""
 msgid "A payment fee of :fee is added to the invoice."
 msgstr ""
 
-#: src/modules/Invoice/SavedCards.php
+#: src/modules/Invoice/GatewayFees.php src/modules/Invoice/SavedCards.php
 msgid "A payment for this invoice is still clearing."
 msgstr ""
 
@@ -13590,7 +13590,7 @@ msgstr ""
 msgid "Invoice lines"
 msgstr ""
 
-#: src/modules/Invoice/PaymentReversal.php src/modules/Invoice/Receipts.php src/modules/Invoice/Service.php
+#: src/modules/Invoice/Api/Guest.php src/modules/Invoice/PaymentReversal.php src/modules/Invoice/Receipts.php …
 msgid "Invoice not found"
 msgstr ""
 
@@ -13651,7 +13651,7 @@ msgid "Invoices are not generated for negative amount orders."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "Invoices due in the last 12 months and paid: :count, by the due date: :on_time."
+msgid "Invoices due in the last 12 months: :count, paid by the due date: :on_time. Unpaid ones past their due date count as late."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
@@ -16890,6 +16890,10 @@ msgstr ""
 msgid "No hosting server uses it yet. Add one under Hosting plans and servers with the manager “:label (ClientFence)”."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+msgid "No invoice fell due in the last 12 months: 20 of 40."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "No invoice is made. The service keeps its billing cycle and expiry date."
 msgstr ""
@@ -16980,10 +16984,6 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "No pack manifest: install the ClientFence release again."
-msgstr ""
-
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
-msgid "No paid invoice was due in the last 12 months: 20 of 40."
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
@@ -19702,7 +19702,7 @@ msgstr ""
 msgid "Payment method not enabled"
 msgstr ""
 
-#: src/modules/Invoice/Service.php
+#: src/modules/Invoice/GatewayFees.php src/modules/Invoice/Service.php
 msgid "Payment method not found"
 msgstr ""
 
@@ -27951,7 +27951,7 @@ msgstr ""
 msgid "This invoice is a draft. Approve it before charging it."
 msgstr ""
 
-#: src/modules/Invoice/Api/Client.php src/modules/Invoice/SavedCards.php
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/GatewayFees.php src/modules/Invoice/SavedCards.php
 msgid "This invoice is already paid or cancelled."
 msgstr ""
 

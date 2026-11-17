@@ -43,17 +43,24 @@ final class GatewayFees
     /** The fee of paying $base in $currency with $gateway (client $clientId, or a guest), before tax. */
     public static function fee(\Pimple\Container $di, \Model_PayGateway $gateway, float $base, string $currency, ?int $clientId): float
     {
-        $fee = self::settings($gateway);
-        if ($base <= 0 || ($fee['percent'] <= 0 && $fee['fixed'] <= 0)) {
+        if ($base <= 0) {
             return 0.0;
         }
-        if ($clientId !== null && $fee['exempt_groups'] !== []
-            && array_intersect(\ClientFence\Mod\Client\Groups::ids($di, $clientId), $fee['exempt_groups']) !== []) {
-            return 0.0;
-        }
-        $fixed = $fee['fixed'] > 0 ? $fee['fixed'] / $di['mod_service']('Currency')->getBaseCurrencyRate($currency) : 0.0;
+        $terms = self::terms($di, $gateway, $currency, $clientId);
 
-        return round($base * $fee['percent'] / 100 + $fixed, 2);
+        return round($base * $terms['percent'] / 100 + $terms['fixed'], 2);
+    }
+
+    /** What $gateway charges client $clientId (or a guest) in $currency: {percent, fixed, taxable}, no fee for an exempt group. */
+    public static function terms(\Pimple\Container $di, \Model_PayGateway $gateway, string $currency, ?int $clientId): array
+    {
+        $fee = self::settings($gateway);
+        if (($fee['percent'] <= 0 && $fee['fixed'] <= 0) || ($clientId !== null && $fee['exempt_groups'] !== []
+            && array_intersect(\ClientFence\Mod\Client\Groups::ids($di, $clientId), $fee['exempt_groups']) !== [])) {
+            return ['percent' => 0.0, 'fixed' => 0.0, 'taxable' => false];
+        }
+
+        return ['percent' => $fee['percent'], 'fixed' => $fee['fixed'] > 0 ? $fee['fixed'] / $di['mod_service']('Currency')->getBaseCurrencyRate($currency) : 0.0, 'taxable' => $fee['taxable']];
     }
 
     /** What paying $base of $invoice with gateway $gatewayId adds to it: the fee, and its tax when the fee is taxed. */
@@ -74,6 +81,15 @@ final class GatewayFees
         $line = self::line($di, (int) $invoice->id);
 
         return round($di['mod_service']('Invoice')->getBalanceDue($invoice) - ($line === null ? 0.0 : self::total($di, $invoice, $line)), 2);
+    }
+
+    /**
+     * The tax a taxed $fee adds to an invoice whose taxed lines come to $taxed (before tax) at $rate: the store pages'
+     * figure before the invoice exists (paymentMethods(), checkout.js). The tax_adjust cents of tax() cancel out.
+     */
+    public static function taxOn(float $taxed, float $rate, float $fee): float
+    {
+        return round(Service::taxOf($taxed + $fee, $rate, 0) - Service::taxOf($taxed, $rate, 0), 2);
     }
 
     /** The tax a taxed $fee adds to the invoice, rounded once over all its taxed lines as Service::getTax() does. */
@@ -122,6 +138,28 @@ final class GatewayFees
                 $items->remove($line);
             }
             $items->addNew($invoice, ['title' => $title, 'price' => $amount, 'quantity' => 1, 'taxed' => $taxed, 'task' => self::TASK]);
+        });
+    }
+
+    /**
+     * The payment method the client picks on the invoice page becomes the invoice's, with its fee (as in WHMCS): one
+     * the page offers for this unpaid invoice (paymentMethods()), never while a payment is clearing.
+     */
+    public static function choose(\Pimple\Container $di, \Model_Invoice $invoice, int $gatewayId): void
+    {
+        if ($invoice->status !== \Model_Invoice::STATUS_UNPAID) {
+            throw new \ClientFence\InformationException('This invoice is already paid or cancelled.');
+        }
+        $offered = Receipts::paymentMethods($di, 0, (string) $invoice->currency, $di['mod_service']('Invoice', 'Subscription')->isSubscribable($invoice->id), $invoice);
+        if (!in_array($gatewayId, array_column($offered, 'id'), true)) {
+            throw new \ClientFence\InformationException('Payment method not found', null, 813);
+        }
+        // Under the saved-card charge's lock: a charge records its payment only after the gateway took it, with the fee.
+        \ClientFence\Tools::withLock($di, 'cf:card-charge:' . (int) $invoice->id, static function () use ($di, $invoice, $gatewayId): void {
+            if (PendingPayments::forInvoice($di, (int) $invoice->id) !== null) {
+                throw new \ClientFence\InformationException('A payment for this invoice is still clearing.');
+            }
+            self::apply($di, $invoice, $gatewayId);
         });
     }
 

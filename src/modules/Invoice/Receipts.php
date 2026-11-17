@@ -52,15 +52,19 @@ class Receipts
      * invoice, a subscription (the theme's "one-time or subscription" choice). receipt: whether a manual method
      * takes receipt uploads (receiptUpload()). fee: the method's gateway fee
      * (GatewayFees.php), and total what the client pays with it: for $invoice, its balance without its fee line plus
-     * this method's fee and its tax.
+     * this method's fee and its tax. Without an invoice, $taxed is what the taxed lines of the order's invoice will come
+     * to before tax (the cart page): a taxed fee adds its tax at the client's rate. fee_terms: the method's
+     * {percent, fixed, taxable} for this client.
      */
-    public static function paymentMethods(\Pimple\Container $di, float $amount, string $currency, bool $subscribable = false, ?\Model_Invoice $invoice = null): array
+    public static function paymentMethods(\Pimple\Container $di, float $amount, string $currency, bool $subscribable = false, ?\Model_Invoice $invoice = null, ?float $taxed = null): array
     {
         $gatewayService = $di['mod_service']('Invoice', 'PayGateway');
         $methods = [];
         $clientId = $invoice !== null ? (int) $invoice->client_id : ((int) ($di['session']->get('client_id') ?? 0) ?: null);
         $amount = $invoice !== null ? GatewayFees::base($di, $invoice) : $amount;
         $deposit = $invoice !== null && $di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice);
+        $client = $invoice === null && $taxed !== null && $clientId !== null ? $di['db']->load('Client', $clientId) : null;
+        $rate = $client instanceof \Model_Client && $client->id ? (float) $di['mod_service']('Invoice', 'Tax')->getTaxRateForClient($client) : 0.0;
         foreach ($di['db']->find('PayGateway', 'enabled = 1 ORDER BY id') as $gateway) {
             if (!in_array($currency, $gatewayService->getAcceptedCurrencies($gateway), true)
                 || !($gateway->allow_single || ($subscribable && $gateway->allow_recurrent))) {
@@ -73,7 +77,8 @@ class Receipts
             $manual = is_a($class, \Payment_Adapter_Custom::class, true);
             // Add funds invoices carry no fee (GatewayFees::apply()).
             $fee = $deposit ? 0.0 : GatewayFees::fee($di, $gateway, $amount, $currency, $clientId);
-            $total = round($amount + $fee + ($invoice !== null && $fee > 0 && GatewayFees::settings($gateway)['taxable'] ? GatewayFees::tax($di, $invoice, $fee) : 0.0), 2);
+            $feeTax = $fee > 0 && GatewayFees::settings($gateway)['taxable'] ? ($invoice !== null ? GatewayFees::tax($di, $invoice, $fee) : GatewayFees::taxOn((float) $taxed, $rate, $fee)) : 0.0;
+            $total = round($amount + $fee + $feeTax, 2);
             $quote = null;
             if ($manual && method_exists($class, 'egpAmount')) {
                 try {
@@ -97,6 +102,8 @@ class Receipts
                 'single' => (bool) $gateway->allow_single,
                 'recurrent' => $subscribable && (bool) $gateway->allow_recurrent,
                 'fee' => $fee,
+                // The one-page checkout works out the fee of the total it shows (checkout.js).
+                'fee_terms' => $deposit ? ['percent' => 0.0, 'fixed' => 0.0, 'taxable' => false] : GatewayFees::terms($di, $gateway, $currency, $clientId),
                 'total' => $total,
             ];
         }

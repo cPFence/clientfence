@@ -124,6 +124,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             return $app->redirect('invoice/' . $invoice->hash);
         }
 
+        // A stale payment page of this method: its fee comes back on the invoice before the payment is set up (GatewayFees.php).
+        \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, $adapter->gatewayId());
         return $app->redirectUrl($adapter->checkout($invoice));
     }
 
@@ -188,6 +190,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             return $app->redirect('invoice/' . $invoice->hash);
         }
 
+        // A stale payment page of this method: its fee comes back on the invoice before the payment is set up (GatewayFees.php).
+        \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, $adapter->gatewayId());
         return $app->redirectUrl($adapter->checkout($invoice, !$once));
     }
 
@@ -259,6 +263,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             return $app->redirect('invoice/' . $invoice->hash);
         }
 
+        // A stale payment page of this method: its fee comes back on the invoice before the payment is set up (GatewayFees.php).
+        \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, $adapter->gatewayId());
         return $app->redirectUrl($adapter->checkout($invoice, !$once));
     }
 
@@ -329,6 +335,8 @@ class Client implements \ClientFence\InjectionAwareInterface
             return $app->redirect('invoice/' . $invoice->hash);
         }
 
+        // A stale payment page of this method: its fee comes back on the invoice before the payment is set up (GatewayFees.php).
+        \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, $adapter->gatewayId());
         return $app->redirectUrl($adapter->checkout($invoice, !$once));
     }
 
@@ -406,6 +414,8 @@ class Client implements \ClientFence\InjectionAwareInterface
         if (!$invoice instanceof \Model_Invoice || ($clientId !== null && (int) $invoice->client_id !== $clientId)) {
             return $app->redirect('invoice');
         }
+        // A stale payment page of this method: its fee comes back on the invoice before the payment is set up (GatewayFees.php).
+        \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, $adapter->gatewayId());
         $checkout = $adapter->checkout($invoice, !$once, (string) $this->di['url']->link('invoice/paypal-autopay-paid'), (string) $this->di['url']->link('invoice/' . $invoice->hash));
         $this->paypalBind($checkout['token'], ['invoice' => (int) $invoice->id]);
 
@@ -501,6 +511,8 @@ class Client implements \ClientFence\InjectionAwareInterface
         if (!$invoice instanceof \Model_Invoice) {
             return $app->redirect('invoice');
         }
+        // A stale payment page of this method: its fee comes back on the invoice before the payment is set up (GatewayFees.php).
+        \ClientFence\Mod\Invoice\GatewayFees::apply($this->di, $invoice, $adapter->gatewayId());
         $order = $adapter->vaultOrder($invoice, (string) $this->di['url']->link('invoice/paypal-paid'), (string) $this->di['url']->link('invoice/' . $invoice->hash));
         $this->paypalBind($order['id'], ['invoice' => (int) $invoice->id]);
 
@@ -685,6 +697,11 @@ class Client implements \ClientFence\InjectionAwareInterface
             }
 
             throw $e;
+        }
+        // ClientFence core patch: read again after the payment set the gateway and its fee line, so the amount due shown is the one charged.
+        $invoice = $this->getInvoiceOrRedirect($app, $data);
+        if ($invoice instanceof Response) {
+            return $invoice;
         }
 
         return $app->render('mod_invoice_banklink', ['payment' => $payment, 'invoice' => $invoice]);

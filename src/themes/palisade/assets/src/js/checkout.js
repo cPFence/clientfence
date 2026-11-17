@@ -253,7 +253,22 @@ export default function initCheckout(root) {
       $('[data-bf-tax-label]').textContent = `${data.tax?.name || t.tax} (${taxRate}%)`;
       $('[data-bf-tax-amount]').textContent = money(total - due);
     }
-    $$('[data-bf-due]').forEach((el) => { el.textContent = money(total); });
+    // Each method's gateway fee on this total, as the invoice will carry it (GatewayFees::fee()).
+    const feeOf = (radio) => (total > 0 && radio ? Math.round(total * Number(radio.dataset.feePercent || 0) + Number(radio.dataset.feeFixed || 0) * 100) / 100 : 0);
+    // What the fee adds to the invoice: a taxed fee adds its tax, rounded once with the order's taxed lines
+    // (GatewayFees::taxOn(); before tax, so the price less its tax when prices include it).
+    const realRate = Number(data.tax?.rate) || 0;
+    const taxed = inclusive ? Math.round(due * 10000 / (100 + realRate)) / 100 : due;
+    const taxOf = (amount) => (realRate > 0 && amount !== 0 ? Math.round(amount * realRate) / 100 : 0);
+    const chargeOf = (radio) => {
+      const fee = feeOf(radio);
+      return fee > 0 && radio.dataset.feeTaxable === '1' ? Math.round((fee + taxOf(taxed + fee) - taxOf(taxed)) * 100) / 100 : fee;
+    };
+    $$('[data-pay-fee]').forEach((out) => {
+      const fee = feeOf(out.closest('.bf-pay').querySelector('input[name="gateway_id"]'));
+      out.hidden = !(fee > 0);
+      out.textContent = fill(out.dataset.template, { fee: money(fee) });
+    });
     const then = $('[data-bf-then]');
     const renew = now.renew - (state.promo ? state.promo.renewDiscount * rate : 0);
     if (recurrent && renew > 0) {
@@ -282,6 +297,8 @@ export default function initCheckout(root) {
     const methods = $('[data-bf-methods]');
     methods.hidden = free || fromBalance;
     const method = selectedMethod();
+    // Due today as the Pay button: with the chosen method's fee (none when the balance pays).
+    $$('[data-bf-due]').forEach((el) => { el.textContent = money(total + (free || fromBalance ? 0 : chargeOf(method))); });
     const methodName = method?.dataset.title ?? '';
     const manual = method?.dataset.manual === '1';
 
@@ -309,9 +326,9 @@ export default function initCheckout(root) {
       label = t.placeFree;
       disabled = true;
     } else if (manual) {
-      label = fill(t.placeOrder, { amount: money(total) });
+      label = fill(t.placeOrder, { amount: money(total + chargeOf(method)) });
     } else {
-      label = fill(t.pay, { amount: money(total), method: methodName });
+      label = fill(t.pay, { amount: money(total + chargeOf(method)), method: methodName });
     }
     $$('[data-bf-pay]').forEach((button) => {
       button.textContent = label;

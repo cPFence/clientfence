@@ -24,11 +24,15 @@
         <label class="bf-pay">
             <input type="radio" name="gateway_id" value="{{ m.id }}"{% if m.id ~ '' == picked %} checked{% endif %}
                 data-title="{{ m.title|trans }}" data-manual="{{ m.manual ? 1 : 0 }}" data-code="{{ m.code }}"
-                {% if m.quote %}data-rate="{{ m.quote.rate }}" data-quote-currency="{{ m.quote.currency }}"{% endif %}>
+                {% if m.quote %}data-rate="{{ m.quote.rate }}" data-quote-currency="{{ m.quote.currency }}"{% endif %}
+                {% if context == 'checkout' %}data-fee-percent="{{ m.fee_terms.percent|default(0) }}" data-fee-fixed="{{ m.fee_terms.fixed|default(0) }}" data-fee-taxable="{{ m.fee_terms.taxable|default(false) ? 1 : 0 }}"{% endif %}>
             <span class="bf-pay-mark bf-tone-{{ m.tone }}" aria-hidden="true">{{ m.mark }}</span>
             <span class="bf-pay-text"><strong>{{ m.title|trans }}</strong><span>{{ note }}</span>
                 {# ClientFence: the method's gateway fee (GatewayFees.php); Add funds pays none. #}
-                {% if context != 'wallet' and m.fee|default(0) > 0 %}<span>{% if context == 'checkout' %}{{ 'A payment fee of :fee is added to the invoice.'|trans({ ':fee': sm.money(m.fee, currency) }) }}{% else %}{{ 'Includes a payment fee of :fee.'|trans({ ':fee': sm.money(m.fee, currency) }) }}{% endif %}</span>{% endif %}
+                {% if context == 'checkout' %}
+                    {# The one-page checkout fills in the fee of the total it shows (checkout.js). #}
+                    <span data-pay-fee data-template="{{ 'A payment fee of :fee is added to the invoice.'|trans }}"{% if m.fee|default(0) <= 0 %} hidden{% endif %}>{{ 'A payment fee of :fee is added to the invoice.'|trans({ ':fee': sm.money(m.fee|default(0), currency) }) }}</span>
+                {% elseif context != 'wallet' and m.fee|default(0) > 0 %}<span>{{ 'Includes a payment fee of :fee.'|trans({ ':fee': sm.money(m.fee, currency) }) }}</span>{% endif %}
             </span>
             {% if context != 'checkout' %}
                 <span class="bf-pay-amount" data-pay-amount>{% if m.quote %}{{ m.quote.currency }} {{ m.quote.total }}{% else %}{{ sm.money(context == 'invoice' ? (m.total ?? amount) : amount, currency) }}{% endif %}</span>

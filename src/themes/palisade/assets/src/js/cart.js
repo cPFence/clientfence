@@ -34,6 +34,20 @@ export default function initCart(root) {
   });
 
   const checkout = root.querySelector('[data-bf-cart-checkout]');
+  // The button shows what the chosen method takes, its gateway fee included.
+  const payButton = checkout?.querySelector('[data-bf-cart-pay]');
+  const labels = JSON.parse(payButton?.dataset.labels || '{}');
+  const dueOut = root.querySelector('[data-bf-cart-due]');
+  const dues = JSON.parse(dueOut?.dataset.dues || '{}');
+  root.querySelector('[data-bf-pay-list]')?.addEventListener('change', (event) => {
+    const key = `m${event.target.value}`;
+    if (labels[key]) {
+      payButton.textContent = labels[key];
+    }
+    if (dues[key]) {
+      dueOut.textContent = dues[key];
+    }
+  });
   checkout?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const pay = checkout.querySelector('[data-bf-cart-pay]');

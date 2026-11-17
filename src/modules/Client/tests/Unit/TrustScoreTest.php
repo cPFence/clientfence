@@ -19,7 +19,7 @@ function trustScoreDb(int $months = 0, int $services = 0, float $paid = 0, bool 
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, group_master INTEGER, group_id TEXT)',
         'CREATE TABLE client_id_document (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT)',
         'CREATE TABLE client_order_hold (id INTEGER PRIMARY KEY, client_id INTEGER, reason TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, due_at TEXT, paid_at TEXT, base_income REAL)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, due_at TEXT, paid_at TEXT, base_income REAL, approved INTEGER DEFAULT 1)',
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT)',
     ] as $sql) {
         $db->executeStatement($sql);
@@ -38,9 +38,9 @@ function trustScoreDb(int $months = 0, int $services = 0, float $paid = 0, bool 
     return $db;
 }
 
-function trustScoreInvoice(Connection $db, string $status, string $due, string $paid, float $income = 10): void
+function trustScoreInvoice(Connection $db, string $status, string $due, string $paid, float $income = 10, int $approved = 1): void
 {
-    $db->insert('invoice', ['client_id' => 7, 'status' => $status, 'due_at' => date('Y-m-d H:i:s', strtotime($due)), 'paid_at' => date('Y-m-d H:i:s', strtotime($paid)), 'base_income' => $income]);
+    $db->insert('invoice', ['client_id' => 7, 'status' => $status, 'due_at' => date('Y-m-d H:i:s', strtotime($due)), 'paid_at' => date('Y-m-d H:i:s', strtotime($paid)), 'base_income' => $income, 'approved' => $approved]);
 }
 
 test('trust score counts each part from the client data', function (): void {
@@ -50,13 +50,13 @@ test('trust score counts each part from the client data', function (): void {
     $db->insert('client_order', ['client_id' => 7, 'status' => 'suspended', 'group_master' => 1]);
     $db->insert('client_order', ['client_id' => 8, 'status' => 'active', 'group_master' => 1]);
     $db->insert('client_id_document', ['client_id' => 7, 'status' => 'refused']);
-    // Due in the last 12 months: two paid on time (one on the due day itself), one late; older, unpaid and other
+    // Due in the last 12 months: two paid on time (one on the due day itself), one late; older, draft and other
     // clients' invoices do not count.
     trustScoreInvoice($db, 'paid', '-20 days', '-25 days', 0);
     trustScoreInvoice($db, 'paid', '-40 days 10:00', '-40 days 18:00', 0);
     trustScoreInvoice($db, 'paid', '-60 days', '-50 days', 0);
     trustScoreInvoice($db, 'paid', '-14 months', '-10 months', 0);
-    trustScoreInvoice($db, 'unpaid', '-10 days', '-10 days', 0);
+    trustScoreInvoice($db, 'unpaid', '-10 days', '-10 days', 0, 0);
     $db->insert('invoice', ['client_id' => 8, 'status' => 'paid', 'due_at' => date('Y-m-d H:i:s', strtotime('-5 days')), 'paid_at' => date('Y-m-d H:i:s'), 'base_income' => 5000]);
 
     $score = TrustScore::get($db, 7);
@@ -73,6 +73,24 @@ test('trust score gives 20 of 40 for paying on time to a client without invoices
 
     expect($score['parts'])->toBe(['on_time' => 20, 'since' => 20, 'services' => 0, 'paid' => 0, 'verified' => 0])
         ->and($score['counts']['due'])->toBe(0);
+});
+
+test('trust score counts an unpaid invoice past its due date as late', function (): void {
+    $db = trustScoreDb(months: 30);
+    trustScoreInvoice($db, 'unpaid', '-10 days', '-10 days', 0);
+    // Not late yet: due today or later; a canceled invoice and a draft never fell due.
+    trustScoreInvoice($db, 'unpaid', 'today 00:00', 'today', 0);
+    trustScoreInvoice($db, 'unpaid', '+5 days', '+5 days', 0);
+    trustScoreInvoice($db, 'canceled', '-10 days', '-10 days', 0);
+    trustScoreInvoice($db, 'unpaid', '-10 days', '-10 days', 0, 0);
+
+    $score = TrustScore::get($db, 7);
+    expect($score['parts']['on_time'])->toBe(0)
+        ->and($score['counts'])->toMatchArray(['due' => 1, 'on_time' => 0]);
+
+    // With one invoice paid on time beside it: half.
+    trustScoreInvoice($db, 'paid', '-20 days', '-25 days', 0);
+    expect(TrustScore::get($db, 7)['parts']['on_time'])->toBe(20);
 });
 
 test('trust score steps total paid in the default currency', function (float $paid, int $points): void {

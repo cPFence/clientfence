@@ -10,8 +10,8 @@ use Doctrine\DBAL\Connection;
 
 /**
  * ClientFence: the trust score on the admin client page (owner's formula, 2026-11-16), out of 100. Staff see it;
- * nothing acts on it. Pays on time 40 (paid invoices due in the last 12 months, the share paid by the due date; none:
- * 20), client since 20 (a point a full month), active services 15 (5 each), total paid 15 (default currency: 15 at
+ * nothing acts on it. Pays on time 40 (invoices due in the last 12 months, paid or unpaid and overdue, the share paid
+ * by the due date; none: 20), client since 20 (a point a full month), active services 15 (5 each), total paid 15 (default currency: 15 at
  * 2,000, 11 at 1,000, 7 at 500, 3 at 100), verified 10 (email 5, approved ID document 5); minus 20 when the fraud check
  * ever held an order, 5 for each refunded invoice and reversed payment; never below 0. The page words the parts.
  */
@@ -37,14 +37,15 @@ final class TrustScore
         $now = new \DateTimeImmutable();
         $from = $now->modify('-12 months')->format('Y-m-d H:i:s');
         $to = $now->format('Y-m-d H:i:s');
-        // A refund invoice is "refunded" too, with a negative income: only the refunded invoice itself counts.
+        // A refund invoice is "refunded" too, with a negative income: only the refunded invoice itself counts. An unpaid
+        // invoice past its due date counts as not paid on time (owner decision); a draft never fell due.
         $invoices = $db->fetchAssociative(
-            "SELECT COALESCE(SUM(CASE WHEN status = 'paid' AND due_at >= ? AND due_at <= ? THEN 1 ELSE 0 END), 0) AS due,
+            "SELECT COALESCE(SUM(CASE WHEN due_at >= ? AND due_at <= ? AND (status = 'paid' OR (status = 'unpaid' AND approved = 1 AND DATE(due_at) < DATE(?))) THEN 1 ELSE 0 END), 0) AS due,
                     COALESCE(SUM(CASE WHEN status = 'paid' AND due_at >= ? AND due_at <= ? AND DATE(paid_at) <= DATE(due_at) THEN 1 ELSE 0 END), 0) AS on_time,
                     COALESCE(SUM(CASE WHEN status = 'paid' THEN base_income ELSE 0 END), 0) AS paid,
                     COALESCE(SUM(CASE WHEN status = 'refunded' AND base_income > 0 THEN 1 ELSE 0 END), 0) AS refunded
                FROM invoice WHERE client_id = ?",
-            [$from, $to, $from, $to, $clientId]
+            [$from, $to, $to, $from, $to, $clientId]
         );
 
         $due = (int) $invoices['due'];
