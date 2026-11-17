@@ -23,8 +23,9 @@
             </li>
             <li>
                 <h3>Configuration Permission</h3>
-                <p>Restrict write access to <b>config.php</b> after setup.</p>
-                <pre>chmod 644 {{ config_file_path }}</pre>
+                {# ClientFence core patch: config.php holds the database password, so 600 as System Health asks, not 644. #}
+                <p>Make <b>config.php</b> readable only by the user that runs PHP for this site (it holds the database password). Keep that user as its owner: ClientFence writes some settings to it.</p>
+                <pre>chmod 600 {{ config_file_path }}</pre>
             </li>
             <li>
                 <h3>Set up Cron Job</h3>
@@ -34,7 +35,7 @@
             {# ClientFence core patch: offer a captcha after setup (R8; Antispam module, off by default). #}
             <li>
                 <h3>Turn on a Captcha</h3>
-                <p>New installs have no captcha on the sign-up, sign-in and contact forms. Bots find a new billing site quickly: in the admin area, open <b>Extensions → Anti-Spam → Settings</b>, choose reCAPTCHA, hCaptcha or Cloudflare Turnstile and enter its keys. System → Health warns while it is off.</p>
+                <p>New installs have no captcha on the sign-up, sign-in and contact forms. Bots find a new billing site quickly: in the admin area, open <b>Extensions → Anti-Spam → Settings</b>, choose reCAPTCHA, hCaptcha or Cloudflare Turnstile and enter its keys. System Health (System → Settings → System → System Health) warns while it is off.</p>
                 <a href='{{ url_admin }}/extension/settings/antispam' target='_blank' data-tooltip="Opens in a new tab.">Anti-spam settings</a>
             </li>
             <li>
