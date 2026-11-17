@@ -3430,6 +3430,10 @@ msgstr ""
 msgid "An invitation to %account%."
 msgstr ""
 
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr ""
+
 #: src/modules/Product/Options.php
 msgid "An option can have at most :max values."
 msgstr ""
@@ -5584,6 +5588,10 @@ msgstr ""
 
 #: src/modules/Order/BulkPrices.php
 msgid "Choose at least one product."
+msgstr ""
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -13534,6 +13542,10 @@ msgstr ""
 msgid "Invoice :number (paid from account credit)"
 msgstr ""
 
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_manage.html.twig
 msgid "Invoice :number for :amount is waiting for payment. Your service renews when it is paid."
 msgstr ""
@@ -13714,7 +13726,7 @@ msgstr ""
 msgid "Invoice summary"
 msgstr ""
 
-#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php
+#: src/modules/Invoice/Api/Client.php src/modules/Invoice/Api/Guest.php src/modules/Invoice/MassPay.php
 msgid "Invoice was not found"
 msgstr ""
 
@@ -19370,6 +19382,10 @@ msgstr ""
 msgid "Pay Now with a One-Time Payment"
 msgstr ""
 
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalEmail.php
 msgid "Pay and save my PayPal account"
 msgstr ""
@@ -19452,6 +19468,10 @@ msgstr ""
 
 #: src/themes/palisade/html/partials/pay_methods.html.twig
 msgid "Pay online with PayPal or a card."
+msgstr ""
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_manage.html.twig
