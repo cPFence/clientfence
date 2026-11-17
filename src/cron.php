@@ -24,7 +24,6 @@ $di['translate']();
 $success = false;
 
 try {
-    $interval = $argv[1] ?? null;
     $service = $di['mod_service']('cron');
 
     if (Environment::isCLI()) {
@@ -32,7 +31,7 @@ try {
         echo "\e[34mLast executed: {$service->getLastExecutionTime()}.\e[0m";
     }
 
-    $success = $service->runCrons($interval);
+    $success = $service->runCrons();
 } catch (Exception $exception) {
     throw new Exception($exception->getMessage(), $exception->getCode(), $exception);
 } finally {

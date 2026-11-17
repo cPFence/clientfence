@@ -38,13 +38,13 @@ class Run extends Command implements \ClientFence\InjectionAwareInterface
 
     protected function configure(): void
     {
-        $this->addArgument('interval', InputArgument::OPTIONAL, 'Interval in minutes');
+        // ClientFence core patch: the interval is not used: every run does all due jobs; kept so older cron lines that pass it still work.
+        $this->addArgument('interval', InputArgument::OPTIONAL, 'Not used (accepted for older cron lines)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $service = $this->di['mod_service']('cron');
-        $interval = $input->getArgument('interval') ?? null;
 
         $output->writeln([
             'ClientFence Cron Job Runner',
@@ -54,7 +54,7 @@ class Run extends Command implements \ClientFence\InjectionAwareInterface
         ]);
 
         try {
-            $success = $service->runCrons($interval);
+            $success = $service->runCrons();
         } catch (\Exception $e) {
             $output->writeln("<error>An error occurred: {$e->getMessage()}</error>");
 
