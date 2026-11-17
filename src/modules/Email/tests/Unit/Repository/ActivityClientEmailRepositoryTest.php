@@ -35,3 +35,14 @@ test('an email of another client or a missing one is a 404', function (): void {
     expect(fn () => $repository->findOneForClientByIdOrFail(1, 99))
         ->toThrow(fn (ClientFence\InformationException $e) => expect($e->getCode())->toBe(404));
 });
+
+test('an unreadable date in the email history filter is refused with a clear message', function (string $field): void {
+    $queryBuilder = Mockery::mock(QueryBuilder::class);
+    $queryBuilder->shouldReceive('select', 'andWhere', 'orderBy')->andReturn($queryBuilder);
+
+    $repository = Mockery::mock(ActivityClientEmailRepository::class)->makePartial();
+    $repository->shouldReceive('createQueryBuilder')->andReturn($queryBuilder);
+
+    expect(fn () => $repository->getSearchQueryBuilder([$field => 'nonsense']))
+        ->toThrow(ClientFence\InformationException::class, 'Enter a valid date.');
+})->with(['date_from', 'date_to']);

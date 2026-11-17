@@ -159,14 +159,15 @@ class SupportTicketRepository extends EntityRepository
             }
         }
 
+        // ClientFence core patch: an unreadable date is refused with a message (new DateTime() threw a raw error).
         if (!empty($data['date_from'])) {
             $qb->andWhere('t.createdAt >= :date_from')
-                ->setParameter('date_from', new \DateTime($data['date_from'] . ' 00:00:00'));
+                ->setParameter('date_from', new \DateTime(date('Y-m-d 00:00:00', strtotime((string) $data['date_from']) ?: throw new \ClientFence\InformationException('Enter a valid date.'))));
         }
 
         if (!empty($data['date_to'])) {
             $qb->andWhere('t.createdAt <= :date_to')
-                ->setParameter('date_to', new \DateTime($data['date_to'] . ' 23:59:59'));
+                ->setParameter('date_to', new \DateTime(date('Y-m-d 23:59:59', strtotime((string) $data['date_to']) ?: throw new \ClientFence\InformationException('Enter a valid date.'))));
         }
 
         return $qb;
