@@ -41,6 +41,9 @@ class Guest extends \ClientFence\Api\AbstractApi
     {
         $data['products_only'] = true;
         $data['active_only'] = true;
+        // ClientFence core patch: only what the store shows, as get_list (enabled, not hidden).
+        $data['status'] = 'enabled';
+        $data['show_hidden'] = false;
         $service = $this->getService();
 
         return $service->getPairs($data);

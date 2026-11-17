@@ -115,3 +115,14 @@ test('gets category pairs', function (): void {
     $result = $api->category_get_pairs([]);
     expect($result)->toBeArray();
 });
+
+test('the store pairs list only enabled, visible products', function (): void {
+    $api = apiEndpoint(new Guest());
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('getPairs')->once()
+        ->with(Mockery::on(fn (array $data): bool => $data['status'] === 'enabled' && $data['show_hidden'] === false && $data['active_only'] === true))
+        ->andReturn([1 => 'Hosting']);
+    $api->setService($serviceMock);
+
+    expect($api->get_pairs(['status' => 'disabled', 'show_hidden' => true]))->toBe([1 => 'Hosting']);
+});

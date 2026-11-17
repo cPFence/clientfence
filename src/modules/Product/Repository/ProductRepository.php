@@ -69,6 +69,17 @@ class ProductRepository extends EntityRepository
                 ->setParameter('type', $data['type']);
         }
 
+        // ClientFence core patch: the same status and hidden filters as the product list (the store's pairs listed disabled and hidden products).
+        if (!empty($data['status'])) {
+            $qb->andWhere('p.status = :status')
+                ->setParameter('status', $data['status']);
+        }
+
+        if (!($data['show_hidden'] ?? true)) {
+            $qb->andWhere('p.hidden = :hidden')
+                ->setParameter('hidden', false);
+        }
+
         $rows = $qb->orderBy('p.id', 'ASC')
             ->getQuery()
             ->getArrayResult();
