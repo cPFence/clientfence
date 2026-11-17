@@ -173,6 +173,10 @@
 
                                     <input class="btn-check" id="invoiceStatusRefunded" type="radio" name="status" value="refunded"{% if request.status == 'refunded' %} checked{% endif %}>
                                     <label class="btn btn-outline-primary" for="invoiceStatusRefunded">{{ 'Refunded'|trans }}</label>
+
+                                    {# ClientFence core patch (CF-179): issued unpaid invoices that went out without their email. #}
+                                    <input class="btn-check" id="invoiceStatusNotSent" type="radio" name="status" value="not_sent"{% if request.status == 'not_sent' %} checked{% endif %}>
+                                    <label class="btn btn-outline-primary" for="invoiceStatusNotSent">{{ 'Not sent'|trans }}</label>
                                 </div>
                             </div>
                         </div>

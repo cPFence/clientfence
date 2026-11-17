@@ -93,6 +93,8 @@
                         </div>
                         <div class="col-12 d-flex flex-wrap gap-3">
                             <label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="invoice" checked> <span class="form-check-label">{{ 'Generate invoice'|trans }}</span></label>
+                            {# ClientFence core patch (CF-179): the invoice can stay a draft for staff to check; Approve on its page issues and emails it. #}
+                            <label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="draft"> <span class="form-check-label">{{ 'Leave the invoice as a draft'|trans }}</span></label>
                             <label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="send_email" checked> <span class="form-check-label">{{ 'Send invoice email'|trans }}</span></label>
                             {% if has_permission('invoice') %}
                             <label class="form-check mb-0" id="cf-credit-wrap" hidden><input class="form-check-input" type="checkbox" id="use_credit" checked> <span class="form-check-label" id="cf-credit-label"></span></label>
@@ -323,7 +325,7 @@
         $('cf-quote-error').hidden = true;
         const paid = $('mark_invoice_paid')?.checked;
         if ($('cf-credit-wrap')) {
-            $('cf-credit-wrap').hidden = !(q.credit > 0) || !$('invoice').checked || paid;
+            $('cf-credit-wrap').hidden = !(q.credit > 0) || !$('invoice').checked || paid || $('draft').checked;
             $('cf-credit-label').textContent = fill(text.creditLabel, { amount: money(q.credit) });
         }
         const credit = $('use_credit')?.checked && !$('cf-credit-wrap').hidden ? Math.min(q.credit, q.total) : 0;
@@ -365,7 +367,10 @@
     function schedule() { clearTimeout(timer); timer = setTimeout(quote, 350); }
 
     function syncOptions() {
-        const invoice = $('invoice').checked;
+        $('draft').disabled = !$('invoice').checked;
+        if ($('draft').disabled) $('draft').checked = false;
+        // A draft is neither emailed nor paid until staff approve it.
+        const invoice = $('invoice').checked && !$('draft').checked;
         $('send_email').disabled = !invoice;
         if ($('mark_invoice_paid')) {
             $('mark_invoice_paid').disabled = !invoice;
@@ -422,7 +427,7 @@
     $('cf-add-product').addEventListener('click', () => addProduct(PRODUCTS[0]?.id));
     $('cf-add-domain').addEventListener('click', () => addDomain());
     ['client_id', 'gateway_id', 'promocode'].forEach((id) => $(id)?.addEventListener('change', schedule));
-    ['invoice', 'mark_invoice_paid'].forEach((id) => $(id)?.addEventListener('change', syncOptions));
+    ['invoice', 'draft', 'mark_invoice_paid'].forEach((id) => $(id)?.addEventListener('change', syncOptions));
     $('use_credit')?.addEventListener('change', schedule);
 
     form.addEventListener('submit', (e) => {
@@ -430,6 +435,7 @@
         const data = Object.assign(payload(), {
             activate: $('activate').value,
             invoice: $('invoice').checked ? 1 : 0,
+            draft: $('draft').checked ? 1 : 0,
             send_email: $('send_email').checked ? 1 : 0,
             use_credit: $('use_credit') && !$('use_credit').checked ? 0 : 1,
             mark_invoice_paid: $('mark_invoice_paid')?.checked ? 1 : 0,

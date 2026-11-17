@@ -116,6 +116,10 @@ class Client extends \ClientFence\Api\AbstractApi
             if ($model->expires_at !== null && $model->expires_at !== $seenExpiry) {
                 throw new \ClientFence\InformationException('This order was renewed a moment ago. Reload the page to see it.');
             }
+            // ClientFence core patch (CF-179): a draft invoice staff hold back on the order is issued by staff, not by Renew Now.
+            if (!empty($model->unpaid_invoice_id) && $this->getDi()['dbal']->fetchOne('SELECT 1 FROM invoice WHERE id = ? AND status = ? AND approved = 0', [(int) $model->unpaid_invoice_id, \Model_Invoice::STATUS_UNPAID])) {
+                throw new \ClientFence\InformationException('The invoice for this service is being prepared. You will receive it by email.');
+            }
             $invoice = $service->generateForOrder($model);
             $service->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
 

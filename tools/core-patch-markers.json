@@ -8094,5 +8094,49 @@
     {
         "file": "modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig",
         "done": "ClientFence core patch: link an account on an Enhance server to its panel organization and subscription by hand (GitHub #47)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (CF-179): staff may leave the invoice a draft to check first; Approve issues and emails it."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "@optional bool $draft - Leave the new invoice a draft (not approved, no email); Default: false"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
+        "done": "ClientFence core patch (CF-179): the invoice can stay a draft for staff to check; Approve on its page issues and emails it."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-179): an invoice issued without its email gets \"Send invoice\" on its page."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-179): staff send the invoice created email of an issued, unpaid invoice (\"Send invoice\")."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-179): \"Not sent\", the issued unpaid invoices that went out without their email."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-179): issued without its email, so the page offers Send invoice instead of Send Reminder."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-179): send the invoice email (invoice created) of an issued, unpaid invoice, for one"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (CF-179): an invoice issued without its email is sent first; a draft gets no reminder."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_index.html.twig",
+        "done": "ClientFence core patch (CF-179): issued unpaid invoices that went out without their email."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch (CF-179): a draft invoice staff hold back on the order is issued by staff, not by Renew Now."
     }
 ]

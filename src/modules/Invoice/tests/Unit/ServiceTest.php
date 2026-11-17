@@ -5631,3 +5631,64 @@ test('keeps a purchase order number short and empty as none (GitHub #31)', funct
         ->and(Service::poNumber(null))->toBeNull()
         ->and(mb_strlen((string) Service::poNumber(str_repeat('é', 70))))->toBe(64);
 });
+
+/** CF-179: an approved, unpaid invoice #4 of client #7, the extension_meta table in SQLite and the emails sent. */
+function notSentSetup(array &$sent): array
+{
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE extension_meta (id INTEGER PRIMARY KEY, client_id INTEGER, extension TEXT, rel_type TEXT, rel_id TEXT, meta_key TEXT, meta_value TEXT, created_at TEXT, updated_at TEXT)');
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 4;
+    $invoice->client_id = 7;
+    $invoice->approved = 1;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+
+    $email = Mockery::mock(EmailService::class);
+    $email->shouldReceive('sendTemplate')->andReturnUsing(function (array $e) use (&$sent): bool {
+        $sent[] = $e['code'];
+
+        return true;
+    });
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('toApiArray')->andReturn(['id' => 4]);
+    $service->shouldReceive('getInvoicePdfAttachment')->andReturnNull();
+    $service->shouldReceive('extendInvoiceHashLifetime');
+    $di = container();
+    $di['dbal'] = $db;
+    $di['db']->shouldReceive('load')->with('Invoice', 4)->andReturn($invoice);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $service, 'email' => $email]));
+    $service->setDi($di);
+
+    return [$di, $service, $invoice];
+}
+
+test('an invoice approved without its email is not sent until Send invoice sends the created email once (CF-179)', function (): void {
+    $sent = [];
+    [$di, $service, $invoice] = notSentSetup($sent);
+    $event = Mockery::mock(ClientFence\Event::class);
+    $event->shouldReceive('getDi')->andReturn($di);
+    $event->shouldReceive('getParameters')->andReturn(['id' => 4, 'total' => 50, 'status' => 'unpaid', 'client' => ['id' => 7], 'skip_email' => true]);
+
+    Service::onAfterAdminInvoiceApprove($event);
+    expect($sent)->toBe([])
+        ->and($service->isInvoiceNotSent($invoice))->toBeTrue();
+
+    expect($service->sendInvoice($invoice))->toBeTrue()
+        ->and($sent)->toBe(['mod_invoice_created'])
+        ->and($service->isInvoiceNotSent($invoice))->toBeFalse();
+});
+
+test('Send invoice refuses a draft or a paid invoice (CF-179)', function (int $approved, string $status): void {
+    $sent = [];
+    [, $service, $invoice] = notSentSetup($sent);
+    $invoice->approved = $approved;
+    $invoice->status = $status;
+
+    expect(fn () => $service->sendInvoice($invoice))->toThrow(ClientFence\InformationException::class);
+    expect($sent)->toBe([]);
+})->with([
+    'draft' => [0, Model_Invoice::STATUS_UNPAID],
+    'paid' => [1, Model_Invoice::STATUS_PAID],
+]);

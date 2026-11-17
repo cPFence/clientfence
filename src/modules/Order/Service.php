@@ -1315,10 +1315,14 @@ class Service implements InjectionAwareInterface
 
     /**
      * ClientFence core patch: approves the invoice of a staff order (`use_credit`, `mark_invoice_paid` and its payment
-     * fields, `send_email`), for Add New Order with one product or several.
+     * fields, `send_email`, `draft`), for Add New Order with one product or several.
      */
     public function approveStaffInvoice(\Model_Invoice $invoice, array $data): void
     {
+        // ClientFence core patch (CF-179): staff may leave the invoice a draft to check first; Approve issues and emails it.
+        if (\ClientFence\Tools::normalizeBoolean($data['draft'] ?? false)) {
+            return;
+        }
         $markInvoicePaid = \ClientFence\Tools::normalizeBoolean($data['mark_invoice_paid'] ?? false);
         $invoiceService = $this->di['mod_service']('invoice');
 

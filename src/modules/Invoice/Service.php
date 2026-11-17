@@ -178,7 +178,10 @@ class Service implements InjectionAwareInterface
             $params['approved'] = (int) $approved;
         }
 
-        if (is_array($status)) {
+        // ClientFence core patch (CF-179): "Not sent", the issued unpaid invoices that went out without their email.
+        if ($status === 'not_sent') {
+            $sql .= " AND p.status = 'unpaid' AND p.approved = 1 AND EXISTS (SELECT 1 FROM extension_meta m WHERE m.extension = 'mod_invoice' AND m.rel_type = 'invoice' AND m.meta_key = 'not_sent' AND m.rel_id = p.id)";
+        } elseif (is_array($status)) {
             // ClientFence core patch: several statuses (the client's cancelled and refunded invoices); only real ones reach the SQL.
             $statuses = array_intersect([\Model_Invoice::STATUS_UNPAID, \Model_Invoice::STATUS_PAID, \Model_Invoice::STATUS_REFUNDED, \Model_Invoice::STATUS_CANCELED], $status);
             $sql .= " AND p.status IN ('" . implode("', '", $statuses ?: ['']) . "')";
@@ -548,7 +551,12 @@ class Service implements InjectionAwareInterface
             ) {
                 if ($invoiceModel instanceof \Model_Invoice) {
                     $service->sendInvoiceEmail($invoiceModel, $params, 'mod_invoice_created', (int) $params['client']['id']);
+                    $service->setInvoiceSent($invoiceModel, true);
                 }
+            }
+            // ClientFence core patch (CF-179): an invoice issued without its email gets "Send invoice" on its page.
+            if (!empty($params['skip_email']) && $invoiceModel instanceof \Model_Invoice) {
+                $service->setInvoiceSent($invoiceModel, false);
             }
 
             // Sending the created-email extends the hash lifetime so the
@@ -578,6 +586,35 @@ class Service implements InjectionAwareInterface
         }
 
         $this->di['mod_service']('email')->sendTemplate($email);
+    }
+
+    /** ClientFence core patch (CF-179): whether an issued invoice went out without its invoice email. */
+    public function isInvoiceNotSent(\Model_Invoice $invoice): bool
+    {
+        return $this->di['dbal']->fetchOne("SELECT 1 FROM extension_meta WHERE extension = 'mod_invoice' AND rel_type = 'invoice' AND rel_id = ? AND meta_key = 'not_sent'", [(string) $invoice->id]) !== false;
+    }
+
+    /** ClientFence core patch (CF-179): staff send the invoice created email of an issued, unpaid invoice ("Send invoice"). */
+    public function sendInvoice(\Model_Invoice $invoice): bool
+    {
+        if (!$invoice->approved || $invoice->status !== \Model_Invoice::STATUS_UNPAID) {
+            throw new InformationException('Only an approved, unpaid invoice can be sent.');
+        }
+        $this->sendInvoiceEmail($invoice, $this->toApiArray($invoice, true, null, true), 'mod_invoice_created');
+        $this->extendInvoiceHashLifetime($invoice);
+        $this->setInvoiceSent($invoice, true);
+        $this->di['logger']->info('Sent invoice #%s', $invoice->id);
+
+        return true;
+    }
+
+    private function setInvoiceSent(\Model_Invoice $invoice, bool $sent): void
+    {
+        $key = ['extension' => 'mod_invoice', 'rel_type' => 'invoice', 'rel_id' => (string) $invoice->id, 'meta_key' => 'not_sent'];
+        $this->di['dbal']->delete('extension_meta', $key);
+        if (!$sent) {
+            $this->di['dbal']->insert('extension_meta', $key + ['client_id' => $invoice->client_id, 'meta_value' => '1', 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')]);
+        }
     }
 
     public static function onAfterAdminInvoiceReminderSent(\ClientFence\Event $event): void

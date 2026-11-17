@@ -194,6 +194,41 @@ test('renewal invoices use the order reloaded inside the lock', function (): voi
     expect($api->renewal_invoice(['order_id' => 1]))->toBe('renewal-hash');
 });
 
+test('Renew Now leaves a draft invoice staff hold back on the order alone (CF-179)', function (): void {
+    $api = apiEndpoint(new Client());
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldNotReceive('generateForOrder');
+    $serviceMock->shouldNotReceive('approveInvoice');
+
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 1;
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->period = '1M';
+    $order->expires_at = '2026-12-01 10:00:00';
+    $order->unpaid_invoice_id = 9;
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->twice()->andReturn($order, $order);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, approved INTEGER)');
+    // Invoice 9 is the order's unpaid invoice, left a draft (not approved) by staff.
+    $dbal->insert('invoice', ['id' => 9, 'status' => Model_Invoice::STATUS_UNPAID, 'approved' => 0]);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbal;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+    $identity = new Model_Client();
+    $identity->loadBean(new Tests\Helpers\DummyBean());
+    $identity->id = 3;
+    $api->setIdentity($identity);
+
+    expect(fn () => $api->renewal_invoice(['order_id' => 1]))
+        ->toThrow(ClientFence\InformationException::class, 'being prepared');
+});
+
 test('refuses a renewal click made before another click renewed the order', function (): void {
     $api = apiEndpoint(new Client());
     $serviceMock = Mockery::mock(Service::class);

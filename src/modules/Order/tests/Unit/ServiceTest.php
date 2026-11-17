@@ -4723,3 +4723,16 @@ test('a prorata order runs to its first due date, then renews on its prorata day
     $serviceMock->renewFromOrder($order);
     expect($order->getExpiresAt()->format('Y-m-d'))->toBe('2027-04-30');
 })->with(['keep', 'calendar']);
+
+test('a staff order can leave its invoice a draft: not approved, no credit, no email (CF-179)', function (): void {
+    $di = container();
+    // A draft never reaches the invoice service: no approval (so no invoice email), no credit, no payment.
+    $di['mod_service'] = $di->protect(function (): never {
+        throw new LogicException('The invoice service was used for a draft.');
+    });
+    $service = new ClientFence\Mod\Order\Service();
+    $service->setDi($di);
+
+    $service->approveStaffInvoice(orderServiceCreateInvoiceModel(10), ['draft' => '1', 'send_email' => true, 'use_credit' => true]);
+    expect(true)->toBeTrue();
+});

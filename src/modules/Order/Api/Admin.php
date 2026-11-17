@@ -90,6 +90,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional bool $mark_invoice_paid - Mark the generated invoice as paid after the order is created
      * @optional int $gateway_id - Payment gateway to associate with the invoice when mark_invoice_paid is used
      * @optional bool $use_credit - Pay the new invoice from the client's credit, up to its total; Default: true
+     * @optional bool $draft - Leave the new invoice a draft (not approved, no email); Default: false
      * @optional string $transactionId - Custom transaction ID to use when the selected gateway is Custom
      * @optional string $created_at - date when order was created. Default: now
      * @optional string $updated_at - date when order was updated. Default: now
@@ -113,6 +114,9 @@ class Admin extends \ClientFence\Api\AbstractApi
 
             if (($data['invoice_option'] ?? 'no-invoice') !== 'issue-invoice') {
                 throw new InformationException('Marking an invoice as paid requires the order to issue an invoice.');
+            }
+            if (Tools::normalizeBoolean($data['draft'] ?? false)) {
+                throw new InformationException('A draft invoice cannot be marked as paid.');
             }
 
             $this->getDi()['mod_service']('Invoice')->validateAdminMarkAsPaidRequest($data);
@@ -143,8 +147,8 @@ class Admin extends \ClientFence\Api\AbstractApi
      * ClientFence: Add New Order as WHMCS: several products and domains in one order with one invoice.
      *
      * @param array $data client_id; items: [{product_id (none: a domain), period, quantity, config, price, domain_price}];
-     *                    promocode, gateway_id, invoice (issue one), send_email, use_credit, mark_invoice_paid and
-     *                    its payment fields, activate. An item's config (and its `domain`) may hold `_start_date`
+     *                    promocode, gateway_id, invoice (issue one), draft (leave it unapproved), send_email, use_credit,
+     *                    mark_invoice_paid and its payment fields, activate. An item's config (and its `domain`) may hold `_start_date`
      *                    (Y-m-d, today or a past day: the service starts then; the invoice is dated today) and `import`
      *                    (already set up: no module or registrar action; a registered domain is an existing one)
      *
@@ -161,6 +165,9 @@ class Admin extends \ClientFence\Api\AbstractApi
             $this->checkPermissions('invoice', 'manage_invoices');
             if (!$data['invoice']) {
                 throw new InformationException('Marking an invoice as paid requires the order to issue an invoice.');
+            }
+            if (Tools::normalizeBoolean($data['draft'] ?? false)) {
+                throw new InformationException('A draft invoice cannot be marked as paid.');
             }
             $this->getDi()['mod_service']('Invoice')->validateAdminMarkAsPaidRequest($data);
         }

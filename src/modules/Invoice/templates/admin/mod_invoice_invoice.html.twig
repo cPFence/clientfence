@@ -145,12 +145,22 @@
                         {% endif %}
                         {% if invoice.status == 'unpaid' %}
                         {% if has_permission('invoice', 'manage_invoices') %}
+                        {# ClientFence core patch (CF-179): an invoice issued without its email is sent first; a draft gets no reminder. #}
+                        {% if invoice.not_sent|default(false) %}
+                        <a class="btn btn-primary" {{ fb_api_link({href: 'invoice/send_invoice'|api_url(query: {id: invoice.id}), message: 'Invoice sent'|trans, reload: true}) }}>
+                            <svg class="icon" width="24" height="24">
+                                <use href="#mail" />
+                            </svg>
+                            <span>{{ 'Send invoice'|trans }}</span>
+                        </a>
+                        {% elseif invoice.approved %}
                         <a class="btn btn-primary" {{ fb_api_link({href: 'invoice/send_reminder'|api_url(query: {id: invoice.id}), message: 'Payment Reminder Sent'|trans}) }}>
                             <svg class="icon" width="24" height="24">
                                 <use href="#mail" />
                             </svg>
                             <span>{{ 'Send Reminder'|trans }}</span>
                         </a>
+                        {% endif %}
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
                             <svg class="icon" width="24" height="24">
                                 <use href="#check" />

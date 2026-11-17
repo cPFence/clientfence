@@ -72,6 +72,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         $invoice['client_credit'] = $model->client_id ? $this->getService()->getFreeCredit((int) $model->client_id) : 0.0;
         // ClientFence core patch (CF-144): whether Reverse payment applies (a payment staff recorded, nothing since).
         $invoice['payment_reversible'] = $model->status === \Model_Invoice::STATUS_PAID && PaymentReversal::allowed($this->getDi(), $model);
+        // ClientFence core patch (CF-179): issued without its email, so the page offers Send invoice instead of Send Reminder.
+        $invoice['not_sent'] = $model->approved && $model->status === \Model_Invoice::STATUS_UNPAID && $this->getService()->isInvoiceNotSent($model);
 
         return $invoice;
     }
@@ -523,6 +525,18 @@ class Admin extends \ClientFence\Api\AbstractApi
         $invoice = $this->_getInvoice($data);
 
         return $this->getService()->sendInvoiceReminder($invoice);
+    }
+
+    /**
+     * ClientFence core patch (CF-179): send the invoice email (invoice created) of an issued, unpaid invoice, for one
+     * issued without it.
+     */
+    #[RequiredParams(['id' => 'Invoice ID is missing'])]
+    public function send_invoice($data): bool
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+
+        return $this->getService()->sendInvoice($this->_getInvoice($data));
     }
 
     /**
