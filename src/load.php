@@ -123,7 +123,8 @@ function hasDatabaseTables(): bool
 
         return $statement !== false && $statement->fetchColumn() !== false;
     } catch (Throwable $e) {
-        if ((bool) Config::getProperty('debug', false)) {
+        // ClientFence core patch: the debug setting is debug_and_monitoring.debug (a top-level debug key is never written).
+        if ((bool) Config::getProperty('debug_and_monitoring.debug', false)) {
             error_log(sprintf(
                 'hasDatabaseTables() failed to inspect configured database tables: %s in %s on line %d',
                 $e->getMessage(),
