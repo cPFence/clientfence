@@ -1111,15 +1111,8 @@ class Service implements InjectionAwareInterface
             return $result;
         }
 
-        if (!$isDeposit) {
-            $this->useRecordedPayments($invoice, $credited);
-        }
-        $result = $this->markAsPaid($invoice, false);
-        if ($result && $isDeposit) {
-            $this->creditDepositBalanceIfNeeded($invoice, $payGateway, $transactionId, $invoiceTotal);
-        }
-
-        return $result;
+        // An Add funds invoice already fully paid by recorded transfers: nothing more to credit or record.
+        return $this->markAsPaid($invoice, false);
     }
 
     /**
