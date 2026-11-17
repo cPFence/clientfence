@@ -318,8 +318,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         unset($vars['to'], $vars['to_client'], $vars['to_staff'], $vars['to_staff_permission'], $vars['to_name'], $vars['from'], $vars['from_name'], $vars['to_admin'], $vars['client_billing_email']);
         unset($vars['default_description'], $vars['default_subject'], $vars['default_template'], $vars['code'], $vars['send_now'], $vars['throw_exceptions'], $vars['attachment']);
 
-        $send_now = $data['send_now'] ?? false;
-        $throw_exceptions = $data['throw_exceptions'] ?? false;
+        // ClientFence core patch: API callers send 1/0 for these flags; sendMail() takes bool (a 1 threw a TypeError).
+        $send_now = (bool) ($data['send_now'] ?? false);
+        $throw_exceptions = (bool) ($data['throw_exceptions'] ?? false);
         $attachment = $data['attachment'] ?? null;
         // ClientFence core patch: page emails should arrive promptly while cron keeps its batch limit.
         $after_response = !(isset($this->di['is_cron']) && $this->di['is_cron']);

@@ -2719,3 +2719,28 @@ test('custom templates are checked with the client and staff variables every ema
     expect($service->getVars($template))->toHaveKeys(['c.first_name', 'c.email', 'staff.name'])
         ->and($service->getVars(emailTemplate('mod_client_signup')))->toBe([]);
 });
+
+test('sendTemplate takes 1 for send_now as API callers send it', function (): void {
+    $template = emailTemplate('mod_email_test', data: ['enabled' => true, 'is_custom' => true, 'subject' => 'Subject', 'content' => 'Body']);
+    $templateRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateRepository::class);
+    $templateRepo->shouldReceive('findOneByActionCode')->once()->andReturn($template);
+    $em = emailBuildEm(templateRepo: $templateRepo);
+    $em->shouldReceive('flush');
+    $crypt = Mockery::mock(ClientFence\Crypt::class);
+    $crypt->shouldReceive('encrypt')->andReturn('encrypted');
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailTplString', 'renderEmailSubjectString')->andReturn('Rendered');
+    $system->shouldReceive('getParamValue')->andReturn('value');
+    $module = Mockery::mock(ClientFence\Module::class);
+    $module->shouldReceive('getConfig')->andReturn([]);
+    $di = container();
+    $di['em'] = $em;
+    $di['crypt'] = $crypt;
+    $di['mod'] = $di->protect(fn () => $module);
+    $di['mod_service'] = $di->protect(fn () => $system);
+    $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $service->shouldReceive('sendMail')->once()->withArgs(fn (...$args): bool => $args[8] === true && $args[9] === false)->andReturn(true);
+    $service->setDi($di);
+
+    expect($service->sendTemplate(['code' => 'mod_email_test', 'to' => 'someone@example.test', 'send_now' => 1, 'throw_exceptions' => 0]))->toBeTrue();
+});
