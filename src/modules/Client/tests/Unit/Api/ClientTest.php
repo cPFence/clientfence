@@ -112,3 +112,17 @@ test('isTaxable returns boolean', function (): void {
     expect($result)->toBeBool();
     expect($result)->toEqual($clientIsTaxable);
 });
+
+test('resend email verification returns true once sent', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\Client\Api\Client());
+    $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 7, 'email_approved' => false]);
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $serviceMock->shouldReceive('sendEmailConfirmationForClient')->once()->with($client);
+
+    $api->setDi(container());
+    $api->setService($serviceMock);
+    $api->setIdentity($client);
+
+    expect($api->resend_email_verification())->toBeTrue();
+});

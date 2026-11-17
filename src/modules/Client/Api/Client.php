@@ -79,7 +79,10 @@ class Client extends \ClientFence\Api\AbstractApi
         $clientId = $client->getId();
         $this->getDi()['rate_limiter']->consumeOrThrow('client_email_verification_resend_account', 'client:' . $clientId);
 
-        return $this->getService()->sendEmailConfirmationForClient($client);
+        $this->getService()->sendEmailConfirmationForClient($client);
+
+        // ClientFence core patch: true once sent, as when the email was already confirmed (the service returns nothing).
+        return true;
     }
 
     private function getClientEntity(object $identity): ClientEntity
