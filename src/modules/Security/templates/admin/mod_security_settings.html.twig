@@ -72,7 +72,7 @@
                         </div>
                         <label class="form-label mt-3" for="cf-sec-headers">{{ 'Header the proxy sends'|trans }}</label>
                         <select class="form-select" id="cf-sec-headers" name="headers">
-                            {% for mode, label in { 'aws_elb': 'X-Forwarded-For (Cloudflare and most proxies)'|trans, 'x_forwarded': 'X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)'|trans, 'forwarded': 'Forwarded (RFC 7239)'|trans } %}
+                            {% for mode, label in { 'aws_elb': 'X-Forwarded-For (Cloudflare and most proxies)'|trans, 'x_forwarded': 'X-Forwarded-For, Host and Prefix (only if your proxy sets all of them)'|trans, 'forwarded': 'Forwarded (RFC 7239)'|trans, 'traefik': 'Traefik' } %}
                                 <option value="{{ mode }}"{% if sec.headers == mode %} selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>

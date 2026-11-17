@@ -40,7 +40,11 @@ test('each section saves its own config.php keys', function (): void {
             ->and(ClientFence\Mod\Antispam\Networks::settings())->toBe(['mode' => 'hold', 'always' => [24940], 'never' => [13335, 54113]])
             ->and(fn () => SecuritySettings::save($di, ['section' => 'networks', 'mode' => 'flag'], 1))->toThrow(InformationException::class)
             ->and(fn () => SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => ''], 1))->toThrow(InformationException::class)
-            ->and(fn () => SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => '10.0.0.1', 'headers' => 'traefik'], 1))->toThrow(InformationException::class);
+            ->and(fn () => SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => '10.0.0.1', 'headers' => 'x_real_ip'], 1))->toThrow(InformationException::class);
+
+        // Traefik, which the installer offers, is kept when the page saves.
+        SecuritySettings::save($di, ['section' => 'proxies', 'proxies_on' => '1', 'proxies' => '10.0.0.1', 'headers' => 'traefik'], 1);
+        expect(Config::getProperty('security.trusted_proxies.headers'))->toBe('traefik');
     } finally {
         Config::setConfig($before, false);
     }

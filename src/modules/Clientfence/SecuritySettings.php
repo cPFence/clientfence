@@ -34,7 +34,8 @@ final class SecuritySettings
     ];
 
     /** RequestFactory header modes offered: aws_elb trusts X-Forwarded-For/Proto/Port, not the Host header. */
-    public const HEADERS = ['aws_elb', 'x_forwarded', 'forwarded'];
+    // Traefik too: the installer offers it, and a page without it would switch it to aws_elb on the next save.
+    public const HEADERS = ['aws_elb', 'x_forwarded', 'forwarded', 'traefik'];
 
     public static function forPage(\Pimple\Container $di): array
     {
