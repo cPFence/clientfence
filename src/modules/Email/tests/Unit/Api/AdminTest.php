@@ -761,3 +761,25 @@ test('batch template delete skips built-in templates with defaults', function ()
     $result = $adminApi->batch_template_delete(['ids' => [1]]);
     expect($result)->toBeTrue();
 });
+
+test('batch template delete removes the staff-group links of each deleted template', function (): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
+    $model = (new EmailTemplate('custom_email_test', 7))->setIsCustom(true);
+
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldReceive('getTemplate')->once()->with(7)->andReturn($model);
+    $templateGroupRepo = Mockery::mock(ClientFence\Mod\Email\Repository\EmailTemplateGroupRepository::class);
+    $templateGroupRepo->shouldReceive('deleteAssociationsForTemplate')->once()->with(7);
+    $emailService->shouldReceive('getTemplateGroupRepository')->andReturn($templateGroupRepo);
+
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('remove')->once()->with($model);
+    $em->shouldReceive('flush')->once();
+
+    $di = container();
+    $di['em'] = $em;
+    $adminApi->setDi($di);
+    $adminApi->setService($emailService);
+
+    expect($adminApi->batch_template_delete(['ids' => [7]]))->toBeTrue();
+});

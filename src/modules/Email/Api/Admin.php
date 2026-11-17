@@ -513,6 +513,8 @@ class Admin extends \ClientFence\Api\AbstractApi
             if (!$template->isCustom() && $this->getService()->hasDefaultTemplate($template->getActionCode())) {
                 continue;
             }
+            // ClientFence core patch: its staff-group links go too, as in template_delete.
+            $this->getService()->getTemplateGroupRepository()->deleteAssociationsForTemplate((int) $template->getId());
             // ClientFence core patch: deleted with its language versions.
             \ClientFence\Mod\Email\Translations::forget($this->getDi(), (int) $template->getId());
             $this->getDi()['em']->remove($template);
