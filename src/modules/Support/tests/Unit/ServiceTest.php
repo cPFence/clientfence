@@ -890,6 +890,38 @@ test('removes a ticket, its messages, and their edit history', function (): void
     expect($removed)->toContain($note, $message, $history, $ticket);
 });
 
+test('a deleted ticket takes its ClientFence rows with it, also those of messages merged into it', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE support_ticket_message (id INTEGER PRIMARY KEY, support_ticket_id INTEGER)');
+    foreach (['support_ticket_message_rating', 'support_ticket_message_unverified', 'support_ticket_author'] as $table) {
+        $db->executeStatement('CREATE TABLE ' . $table . ' (message_id INTEGER PRIMARY KEY, ticket_id INTEGER)');
+    }
+    foreach (['support_ticket_feedback', 'support_ticket_feedback_request', 'support_ticket_assignment', 'support_ticket_pin', 'support_mail_import'] as $table) {
+        $db->executeStatement('CREATE TABLE ' . $table . ' (ticket_id INTEGER)');
+    }
+    $db->executeStatement('CREATE TABLE support_ticket_merge (ticket_id INTEGER PRIMARY KEY, merged_into INTEGER)');
+    // Ticket 1 holds message 10 and message 11 merged in from ticket 3; ticket 2 is another ticket.
+    $db->executeStatement('INSERT INTO support_ticket_message VALUES (10, 1), (11, 1), (20, 2)');
+    foreach (['support_ticket_message_rating', 'support_ticket_message_unverified', 'support_ticket_author'] as $table) {
+        $db->executeStatement('INSERT INTO ' . $table . ' VALUES (10, 1), (11, 3), (20, 2)');
+    }
+    foreach (['support_ticket_feedback', 'support_ticket_feedback_request', 'support_ticket_assignment', 'support_ticket_pin', 'support_mail_import'] as $table) {
+        $db->executeStatement('INSERT INTO ' . $table . ' VALUES (1), (2)');
+    }
+    $db->executeStatement('INSERT INTO support_ticket_merge VALUES (3, 1), (4, 2)');
+
+    Service::forgetTicketRows($db, 1);
+
+    foreach (['support_ticket_message_rating', 'support_ticket_message_unverified', 'support_ticket_author'] as $table) {
+        expect($db->fetchFirstColumn('SELECT message_id FROM ' . $table))->toEqual([20]);
+    }
+    foreach (['support_ticket_feedback', 'support_ticket_feedback_request', 'support_ticket_assignment', 'support_ticket_pin'] as $table) {
+        expect($db->fetchFirstColumn('SELECT ticket_id FROM ' . $table))->toEqual([2]);
+    }
+    expect($db->fetchFirstColumn('SELECT ticket_id FROM support_mail_import'))->toEqual([1, 2])
+        ->and($db->fetchFirstColumn('SELECT ticket_id FROM support_ticket_merge'))->toEqual([4]);
+});
+
 test('converts ticket to api array', function (): void {
     $service = new Service();
     $helpdesk = helpdeskFixture();

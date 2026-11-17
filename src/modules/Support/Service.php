@@ -486,6 +486,31 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
     }
 
+    /**
+     * A deleted ticket's ClientFence rows: reply ratings, unverified senders and authors (also of messages merged in
+     * from other tickets, which keep their old ticket id), feedback, assignment, pin and the links of tickets merged
+     * into it. support_mail_import stays: it stops the same email from being imported again.
+     */
+    public static function forgetTicketRows(\Doctrine\DBAL\Connection $db, int $ticketId): void
+    {
+        $byMessage = 'WHERE ticket_id = ? OR message_id IN (SELECT id FROM support_ticket_message WHERE support_ticket_id = ?)';
+        $statements = [];
+        foreach (['support_ticket_message_rating', 'support_ticket_message_unverified', 'support_ticket_author'] as $table) {
+            $statements[] = ['DELETE FROM ' . $table . ' ' . $byMessage, [$ticketId, $ticketId]];
+        }
+        foreach (['support_ticket_feedback', 'support_ticket_feedback_request', 'support_ticket_assignment', 'support_ticket_pin'] as $table) {
+            $statements[] = ['DELETE FROM ' . $table . ' WHERE ticket_id = ?', [$ticketId]];
+        }
+        $statements[] = ['DELETE FROM support_ticket_merge WHERE merged_into = ?', [$ticketId]];
+        foreach ($statements as [$sql, $params]) {
+            try {
+                $db->executeStatement($sql, $params);
+            } catch (\Doctrine\DBAL\Exception\TableNotFoundException) {
+                // A table this install does not have yet (TicketFeedback::moveForMerge() does the same).
+            }
+        }
+    }
+
     public function rm(SupportTicket $model): bool
     {
         $em = $this->di['em'];
@@ -495,6 +520,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         TicketSecrets::forgetTicket($em->getConnection(), (int) $id, true);
         // ClientFence core patch: nor bell notifications, whose link would open a "not found" page.
         \ClientFence\Mod\Clientfence\Notifications::ticketDeleted($this->di, (int) $id);
+        // ClientFence core patch: nor ClientFence's own rows about it and its messages (they were left behind).
+        self::forgetTicketRows($em->getConnection(), (int) $id);
         foreach ($this->getSupportTicketNoteRepository()->findByTicketId($id ?? 0) as $note) {
             $em->remove($note);
         }
