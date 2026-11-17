@@ -30587,3 +30587,24 @@ msgstr "该服务有一张未付款发票 :number。转移服务前，请先将�
 #: src/modules/Invoice/PaymentReversal.php
 msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
 msgstr "此发票用其余额支付了其中列出的发票。请先撤销那些发票的付款，再撤销此发票的付款。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Product/Service.php
+msgid "Cannot remove a product that has orders."
+msgstr "无法删除已有订单的产品。"
+
+#: src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php src/library/Server/Manager/Whm.php
+msgid "Could not connect to the :type: server. Check the server address, port and API configuration."
+msgstr "无法连接到 :type: 服务器。请检查服务器地址、端口和 API 配置。"
+
+#: src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php src/library/Server/Manager/Whm.php
+msgid "The :type: server returned HTTP status :status. Check server availability and API configuration."
+msgstr "服务器 :type: 返回了 HTTP 状态 :status。请检查服务器可用性和 API 配置。"
+
+#: src/library/Server/Manager/CWP.php
+msgid "The CWP server returned an error: :message"
+msgstr "CWP 服务器返回了错误：:message"
+
+#: src/modules/Support/Service.php
+msgid "Unknown ticket status"
+msgstr "未知的工单状态"

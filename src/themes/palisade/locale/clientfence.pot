@@ -4910,6 +4910,10 @@ msgstr ""
 msgid "Cannot refund invoice with negative amount"
 msgstr ""
 
+#: src/modules/Product/Service.php
+msgid "Cannot remove a product that has orders."
+msgstr ""
+
 #: src/modules/Support/Service.php
 msgid "Cannot remove category which has articles"
 msgstr ""
@@ -4948,10 +4952,6 @@ msgstr ""
 
 #: src/modules/Product/Service.php
 msgid "Cannot remove product category with products"
-msgstr ""
-
-#: src/modules/Product/Service.php
-msgid "Cannot remove product which has active orders."
 msgstr ""
 
 #: src/modules/Currency/Service.php
@@ -7234,6 +7234,10 @@ msgstr ""
 msgid "Could not connect to the :name database: :error"
 msgstr ""
 
+#: src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php src/library/Server/Manager/Whm.php
+msgid "Could not connect to the :type: server. Check the server address, port and API configuration."
+msgstr ""
+
 #: src/library/Server/Manager/CWP.php
 msgid "Could not connect to the CWP server. Check the server address, port and API configuration."
 msgstr ""
@@ -7778,7 +7782,7 @@ msgstr ""
 msgid "Current password"
 msgstr ""
 
-#: src/themes/palisade/html/mod_client_profile.html.twig
+#: src/modules/Staff/templates/admin/mod_staff_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Current password (to change the email)"
 msgstr ""
 
@@ -7906,7 +7910,7 @@ msgstr ""
 msgid "Custom page deleted."
 msgstr ""
 
-#: src/modules/Custompages/Service.php
+#: src/modules/Custompages/Api/Admin.php src/modules/Custompages/Service.php
 msgid "Custom page not found"
 msgstr ""
 
@@ -10030,7 +10034,7 @@ msgstr ""
 msgid "Enter a valid business email address."
 msgstr ""
 
-#: src/modules/News/Service.php
+#: src/modules/Activity/Service.php src/modules/Client/Repository/ClientRepository.php src/modules/Client/Service.php …
 msgid "Enter a valid date."
 msgstr ""
 
@@ -10350,7 +10354,7 @@ msgstr ""
 msgid "Enter your current password and choose a new one for this staff account."
 msgstr ""
 
-#: src/modules/Profile/Api/Client.php
+#: src/modules/Profile/Api/Admin.php src/modules/Profile/Api/Client.php
 msgid "Enter your current password to change your email address."
 msgstr ""
 
@@ -12612,10 +12616,6 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "How would you rate how :name handled your ticket?"
-msgstr ""
-
-#: src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Whm.php
-msgid "HttpClientException: :error"
 msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_quote.html.twig
@@ -26182,6 +26182,10 @@ msgstr ""
 msgid "The :program total of :number is :total instead of :expected: check the tax rates in the accounting settings."
 msgstr ""
 
+#: src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php src/library/Server/Manager/Whm.php
+msgid "The :type: server returned HTTP status :status. Check server availability and API configuration."
+msgstr ""
+
 #: src/modules/Invoice/Quotes.php
 msgid "The :what can be at most :max characters."
 msgstr ""
@@ -26192,6 +26196,10 @@ msgstr ""
 
 #: src/library/Server/Manager/CWP.php
 msgid "The CWP server returned HTTP status :status. Check server availability and API configuration."
+msgstr ""
+
+#: src/library/Server/Manager/CWP.php
+msgid "The CWP server returned an error: :message"
 msgstr ""
 
 #: src/library/Server/Manager/CWP.php
@@ -30003,12 +30011,16 @@ msgstr ""
 msgid "Unknown status or visibility."
 msgstr ""
 
-#: src/modules/Client/Users.php src/modules/Order/Api/Admin.php
+#: src/modules/Client/Users.php src/modules/Order/Api/Admin.php src/modules/Staff/Service.php
 msgid "Unknown status."
 msgstr ""
 
 #: src/modules/Servicedomain/PriceSync.php
 msgid "Unknown sync mode or rounding."
+msgstr ""
+
+#: src/modules/Support/Service.php
+msgid "Unknown ticket status"
 msgstr ""
 
 #: src/modules/Invoice/ServiceTransaction.php
