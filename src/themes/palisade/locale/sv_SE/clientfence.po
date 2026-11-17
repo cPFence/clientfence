@@ -33501,3 +33501,72 @@ msgstr "år"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "dindomän"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "En faktura i den här betalningen har betalats eller ändrats sedan dess. Välj fakturorna att betala igen i din fakturalista."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Välj minst två obetalda fakturor att betala tillsammans."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Faktura :number kan inte betalas tillsammans med andra fakturor."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Flytta"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Flytta till en annan kund"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Ingenting ändras på servrar eller hos registrarer: ett hostingkonto behåller sitt panelkonto. Flytta det manuellt i panelen vid behov och kontrollera sedan kortet Enhance-länk."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Betala alla"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Betala valda"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Tjänsten tillhör redan den här kunden."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Tjänsten och dess tillägg flyttas till den nya kunden, som faktureras för nästa förnyelser. Fakturor, betalningar och tillgodohavande stannar hos den nuvarande kunden."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Tjänsten faktureras i :currency, men den nya kunden betalar i :client_currency."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Den här fakturan betalade fakturorna den listar med sitt tillgodohavande. Återför deras betalningar först, sedan den här."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "Det här är ett tillägg: flytta dess huvudtjänst, så följer dess tillägg med."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Den här tjänsten har en väntande avslutsbegäran. Acceptera eller stoppa den först."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Den här tjänsten har en obetald faktura :number. Markera den som betald eller avbryt den innan du flyttar tjänsten."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Den här tjänsten betalas via en gatewayprenumeration hos dess kund. Avsluta prenumerationen först, så att den gamla kunden inte fortsätter att betala för den nya ägaren."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Den här tjänsten väntar på granskning. Godkänn eller avslå den först."

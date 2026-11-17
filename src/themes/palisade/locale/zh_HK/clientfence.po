@@ -33493,3 +33493,72 @@ msgstr "年"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "yourdomain"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "此付款中的一張發票其後已付款或已更改。請在您的發票列表中重新選擇要付款的發票。"
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "請選擇至少兩張未付款的發票一併付款。"
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "發票 :number 不能與其他發票一併付款。"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "轉移"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "轉移至其他客戶"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "伺服器或註冊商上不會有任何變更：寄存帳戶會保留其控制台帳戶。如有需要，請在控制台人手轉移，然後檢查「Enhance 連結」卡。"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "全部付款"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "支付所選"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "此服務已屬於此客戶。"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "服務及其附加服務會轉移至新客戶，之後的續期會向新客戶發出發票。發票、付款及帳戶餘額會留在目前的客戶。"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "此服務以 :currency 收費，但新客戶以 :client_currency 付款。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "此發票已用其帳戶餘額支付其列出的發票。請先撤回這些發票的付款，然後再撤回此發票的付款。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "這是附加服務：請轉移其主服務，其附加服務會隨之轉移。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "此服務有一個等候處理的取消請求。請先接受或終止該請求。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "此服務有一張未付款的發票 :number。轉移服務前，請先將其標記為已付款或取消。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "此服務由其客戶的付款網關訂閱支付。請先取消訂閱，以免舊客戶繼續為新擁有人付款。"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "此服務正等候審核。請先批准或拒絕。"

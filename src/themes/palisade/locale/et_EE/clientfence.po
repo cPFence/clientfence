@@ -33501,3 +33501,72 @@ msgstr "aastat"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "teiedomeen"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Selle makse üks arve on vahepeal makstud või muutunud. Valige makstavad arved oma arvete loendis uuesti."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Valige koos maksmiseks vähemalt kaks maksmata arvet."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Arvet :number ei saa maksta koos teiste arvetega."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Teisalda"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Teisalda teisele kliendile"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Serverites ega registripidajate juures midagi ei muutu: majutuskonto säilitab oma paneelikonto. Vajaduse korral teisaldage see paneelis käsitsi ja kontrollige seejärel kaarti Enhance'i link."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Maksa kõik"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Maksa valitud"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Teenus kuulub juba sellele kliendile."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Teenus ja selle lisateenused lähevad üle uuele kliendile, kellele esitatakse arved järgmiste pikendamiste eest. Arved, maksed ja krediit jäävad praegusele kliendile."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Teenust arveldatakse valuutas :currency, kuid uus klient maksab valuutas :client_currency."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "See arve maksis oma krediidist selles loetletud arved. Tühistage kõigepealt nende maksed, seejärel selle arve makse."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "See on lisateenus: teisaldage selle põhiteenus ja lisateenused liiguvad koos sellega."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Sellel teenusel on ootel tühistamistaotlus. Kinnitage või peatage see kõigepealt."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Sellel teenusel on maksmata arve :number. Märkige see makstuks või tühistage see enne teenuse teisaldamist."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Seda teenust makstakse selle kliendi makselüüsi püsimaksega. Tühistage kõigepealt püsimakse, et vana klient ei jätkaks uue omaniku eest maksmist."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "See teenus ootab ülevaatust. Kinnitage see või keelduge sellest kõigepealt."

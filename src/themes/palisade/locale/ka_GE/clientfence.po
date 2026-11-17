@@ -33501,3 +33501,72 @@ msgstr "წელი"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "tqvenidomeni"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "ამ გადახდის ერთ-ერთი ინვოისი მას შემდეგ გადახდილია ან შეცვლილია. თქვენს ინვოისების სიაში ხელახლა აირჩიეთ გადასახდელი ინვოისები."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "ერთად გადასახდელად აირჩიეთ მინიმუმ ორი გადაუხდელი ინვოისი."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "ინვოისი :number სხვა ინვოისებთან ერთად ვერ გადაიხდება."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "გადატანა"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "სხვა კლიენტზე გადატანა"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "სერვერებზე და რეგისტრატორებთან არაფერი იცვლება: ჰოსტინგის ანგარიში ინარჩუნებს თავის პანელის ანგარიშს. საჭიროების შემთხვევაში გადაიტანეთ ის პანელში ხელით, შემდეგ შეამოწმეთ ბარათი „Enhance-ის ბმული“."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "ყველას გადახდა"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "არჩეულის გადახდა"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "სერვისი უკვე ამ კლიენტს ეკუთვნის."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "სერვისი და მისი დანამატები გადადის ახალ კლიენტზე, რომელსაც შემდეგი განახლებების ინვოისები გამოეწერება. ინვოისები, გადახდები და კრედიტი რჩება მიმდინარე კლიენტთან."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "სერვისის ფასი :currency-შია, მაგრამ ახალი კლიენტი :client_currency-ში იხდის."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "ამ ინვოისმა თავისი კრედიტიდან გადაიხადა მასში ჩამოთვლილი ინვოისები. ჯერ გააუქმეთ მათი გადახდები, შემდეგ კი — ამის."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "ეს დანამატია: გადაიტანეთ მისი მთავარი სერვისი და მისი დანამატებიც მასთან ერთად გადავა."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "ამ სერვისს აქვს მოლოდინში მყოფი გაუქმების მოთხოვნა. ჯერ მიიღეთ ან შეაჩერეთ ის."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "ამ სერვისს აქვს გადაუხდელი ინვოისი :number. სერვისის გადატანამდე მონიშნეთ ის გადახდილად ან გააუქმეთ."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "ეს სერვისი იხდება მისი კლიენტის გადახდის სისტემის გამოწერით. ჯერ გააუქმეთ გამოწერა, რომ ძველმა კლიენტმა ახალი მფლობელისთვის გადახდა არ გააგრძელოს."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "ეს სერვისი შემოწმებას ელოდება. ჯერ დაამტკიცეთ ან უარყავით ის."

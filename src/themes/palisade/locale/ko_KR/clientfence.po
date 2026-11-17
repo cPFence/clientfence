@@ -33493,3 +33493,72 @@ msgstr "년"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "yourdomain"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "이 결제에 포함된 청구서가 그사이 결제되었거나 변경되었습니다. 청구서 목록에서 결제할 청구서를 다시 선택하세요."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "함께 결제할 미결제 청구서를 두 개 이상 선택하세요."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "청구서 :number은(는) 다른 청구서와 함께 결제할 수 없습니다."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "이동"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "다른 고객에게 이동"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "서버나 등록 대행업체에서는 아무것도 바뀌지 않습니다. 호스팅 계정은 기존 패널 계정을 그대로 유지합니다. 필요하면 패널에서 직접 옮긴 다음 Enhance 링크 카드를 확인하세요."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "모두 결제"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "선택 항목 결제"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "이 서비스는 이미 이 고객의 것입니다."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "서비스와 부가 서비스가 새 고객에게 옮겨지며, 다음 갱신부터는 새 고객에게 청구됩니다. 청구서, 결제, 크레딧은 현재 고객에게 남습니다."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "서비스는 :currency(으)로 청구되지만 새 고객은 :client_currency(으)로 결제합니다."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "이 청구서는 자체 크레딧으로 목록에 있는 청구서를 결제했습니다. 해당 결제를 먼저 되돌린 다음 이 청구서의 결제를 되돌리세요."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "부가 서비스입니다. 주 서비스를 이동하면 부가 서비스도 함께 이동합니다."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "이 서비스에 대기 중인 취소 요청이 있습니다. 먼저 수락하거나 중단하세요."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "이 서비스에 미결제 청구서 :number이(가) 있습니다. 서비스를 이동하기 전에 결제 완료로 표시하거나 취소하세요."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "이 서비스는 고객의 게이트웨이 구독으로 결제됩니다. 이전 고객이 새 소유자를 위해 계속 결제하지 않도록 먼저 구독을 취소하세요."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "이 서비스는 검토를 기다리고 있습니다. 먼저 승인하거나 거부하세요."

@@ -33501,3 +33501,72 @@ msgstr "বছর"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "yourdomain"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "এই পেমেন্টের একটি ইনভয়েস এর মধ্যে পরিশোধিত হয়েছে বা বদলে গেছে। আপনার ইনভয়েস তালিকা থেকে পরিশোধের জন্য ইনভয়েসগুলো আবার বেছে নিন।"
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "একসাথে পরিশোধ করতে অন্তত দুটি অপরিশোধিত ইনভয়েস বেছে নিন।"
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "ইনভয়েস :number অন্য ইনভয়েসের সাথে একসাথে পরিশোধ করা যাবে না।"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "সরান"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "অন্য ক্লায়েন্টের কাছে সরান"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "সার্ভার বা রেজিস্ট্রারে কিছুই বদলায় না: হোস্টিং অ্যাকাউন্ট তার প্যানেল অ্যাকাউন্ট রেখে দেয়। প্রয়োজন হলে প্যানেলে এটি হাতে সরান, তারপর Enhance লিংক কার্ডটি দেখুন।"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "সব পরিশোধ করুন"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "নির্বাচিতগুলো পরিশোধ করুন"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "সার্ভিসটি ইতিমধ্যে এই ক্লায়েন্টের।"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "সার্ভিস ও এর অ্যাড-অনগুলো নতুন ক্লায়েন্টের কাছে চলে যায়, যাকে পরবর্তী নবায়নগুলোর ইনভয়েস করা হবে। ইনভয়েস, পেমেন্ট ও ক্রেডিট বর্তমান ক্লায়েন্টের কাছেই থাকে।"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "সার্ভিসটি :currency-এ বিল করা হয়, কিন্তু নতুন ক্লায়েন্ট :client_currency-এ পরিশোধ করেন।"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "এই ইনভয়েসটি এতে তালিকাভুক্ত ইনভয়েসগুলো নিজের ক্রেডিট থেকে পরিশোধ করেছে। আগে সেগুলোর পেমেন্ট ফেরত নিন, তারপর এটির।"
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "এটি একটি অ্যাড-অন: এর মূল সার্ভিসটি সরান, এর অ্যাড-অনগুলোও সেটির সাথে সরে যাবে।"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "এই সার্ভিসের একটি বাতিলের অনুরোধ অপেক্ষায় আছে। আগে সেটি গ্রহণ বা বন্ধ করুন।"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "এই সার্ভিসের একটি অপরিশোধিত ইনভয়েস :number আছে। সার্ভিসটি সরানোর আগে সেটি পরিশোধিত হিসেবে চিহ্নিত করুন বা বাতিল করুন।"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "এই সার্ভিসটি এর ক্লায়েন্টের একটি গেটওয়ে সাবস্ক্রিপশনে পরিশোধ হয়। আগে সাবস্ক্রিপশনটি বাতিল করুন, যাতে পুরোনো ক্লায়েন্ট নতুন মালিকের জন্য পরিশোধ করে না যান।"
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "এই সার্ভিসটি পর্যালোচনার অপেক্ষায় আছে। আগে এটি অনুমোদন বা প্রত্যাখ্যান করুন।"

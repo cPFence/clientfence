@@ -33517,3 +33517,72 @@ msgstr "let"
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
 msgstr "vasadomena"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Invoice/MassPay.php
+msgid "An invoice in this payment was paid or changed since. Choose the invoices to pay again on your invoice list."
+msgstr "Eden od računov v tem plačilu je bil medtem plačan ali spremenjen. Na svojem seznamu računov znova izberite račune za plačilo."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Choose at least two unpaid invoices to pay together."
+msgstr "Izberite vsaj dva neplačana računa za skupno plačilo."
+
+#: src/modules/Invoice/MassPay.php
+msgid "Invoice :number cannot be paid together with other invoices."
+msgstr "Računa :number ni mogoče plačati skupaj z drugimi računi."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move"
+msgstr "Premakni"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Move to Another Client"
+msgstr "Premakni k drugi stranki"
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Nothing changes on servers or registrars: a hosting account keeps its panel account. Move it on the panel by hand if needed, then check the Enhance Link card."
+msgstr "Na strežnikih in pri registrarjih se nič ne spremeni: račun gostovanja obdrži svoj račun na nadzorni plošči. Po potrebi ga ročno premaknite na nadzorni plošči, nato preverite kartico Povezava Enhance."
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay all"
+msgstr "Plačaj vse"
+
+#: src/themes/palisade/html/mod_invoice_index.html.twig
+msgid "Pay selected"
+msgstr "Plačaj izbrane"
+
+#: src/modules/Order/ClientMove.php
+msgid "The service already belongs to this client."
+msgstr "Storitev že pripada tej stranki."
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "The service and its add-ons move to the new client, who is invoiced for the next renewals. Invoices, payments and credit stay with the current client."
+msgstr "Storitev in njeni dodatki preidejo k novi stranki, ki se ji zaračunajo naslednja podaljšanja. Računi, plačila in dobroimetje ostanejo pri trenutni stranki."
+
+#: src/modules/Order/ClientMove.php
+msgid "The service is billed in :currency, but the new client pays in :client_currency."
+msgstr "Storitev se obračunava v :currency, nova stranka pa plačuje v :client_currency."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one."
+msgstr "Ta račun je iz svojega dobroimetja plačal račune, ki jih navaja. Najprej razveljavite njihova plačila, nato plačilo tega računa."
+
+#: src/modules/Order/ClientMove.php
+msgid "This is an add-on: move its main service, and its add-ons move with it."
+msgstr "To je dodatek: premaknite njegovo glavno storitev in njeni dodatki se premaknejo z njo."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has a waiting cancellation request. Accept or stop it first."
+msgstr "Ta storitev ima čakajočo zahtevo za preklic. Najprej jo sprejmite ali ustavite."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service."
+msgstr "Ta storitev ima neplačan račun :number. Označite ga kot plačanega ali ga prekličite, preden premaknete storitev."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service is paid by a gateway subscription of its client. Cancel the subscription first, so the old client does not keep paying for the new owner."
+msgstr "Ta storitev se plačuje z naročnino pri prehodu njene stranke. Najprej prekličite naročnino, da stara stranka ne bo še naprej plačevala za novega lastnika."
+
+#: src/modules/Order/ClientMove.php
+msgid "This service waits for review. Approve or refuse it first."
+msgstr "Ta storitev čaka na pregled. Najprej jo odobrite ali zavrnite."
