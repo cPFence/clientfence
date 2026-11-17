@@ -1488,17 +1488,27 @@ dataset('searchQueryData', fn (): array => [
     ],
     'search string' => [
         ['search' => 'John'],
-        '(c.first_name LIKE :first_name OR c.last_name LIKE :last_name OR co.title LIKE :title)',
+        '(c.first_name LIKE :first_name OR c.last_name LIKE :last_name OR co.title LIKE :search_title)',
         [
             'first_name' => '%John%',
             'last_name' => '%John%',
-            'title' => '%John%',
+            'search_title' => '%John%',
+        ],
+    ],
+    'search string with a title filter' => [
+        ['search' => 'John', 'title' => 'Hosting'],
+        'co.title LIKE :title',
+        [
+            'title' => '%Hosting%',
+            'first_name' => '%John%',
+            'last_name' => '%John%',
+            'search_title' => '%John%',
         ],
     ],
     'ids' => [
-        ['ids' => [1, 2, 3]],
-        'co.id IN (:ids)',
-        ['ids' => '1, 2, 3'],
+        ['ids' => [1, 2, '3']],
+        'co.id IN (:ids0, :ids1, :ids2)',
+        ['ids0' => 1, 'ids1' => 2, 'ids2' => 3],
     ],
     'promo_id' => [
         ['promo_id' => 9],

@@ -1054,16 +1054,22 @@ class Service implements InjectionAwareInterface
                 $where[] = 'co.id = :search';
                 $bindings['search'] = $search;
             } else {
-                $where[] = '(c.first_name LIKE :first_name OR c.last_name LIKE :last_name OR co.title LIKE :title)';
+                // ClientFence core patch: its own placeholder, so a search no longer replaces the title filter.
+                $where[] = '(c.first_name LIKE :first_name OR c.last_name LIKE :last_name OR co.title LIKE :search_title)';
                 $bindings['first_name'] = "%$search%";
                 $bindings['last_name'] = "%$search%";
-                $bindings['title'] = "%$search%";
+                $bindings['search_title'] = "%$search%";
             }
         }
 
         if ($ids) {
-            $where[] = 'co.id IN (:ids)';
-            $bindings['ids'] = implode(', ', $ids);
+            // ClientFence core patch: one placeholder per id (one bound "1, 2, 3" string matched only the first id).
+            $placeholders = [];
+            foreach (array_values($ids) as $i => $orderId) {
+                $placeholders[] = ':ids' . $i;
+                $bindings['ids' . $i] = (int) $orderId;
+            }
+            $where[] = 'co.id IN (' . implode(', ', $placeholders) . ')';
         }
         if ($meta) {
             $i = 1;
