@@ -18,7 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'system:version',
-    description: 'Returns the current version of FOSSBilling',
+    // ClientFence core patch: the ClientFence version, not the FOSSBilling base it started from.
+    description: 'Shows the ClientFence version',
     hidden: false
 )]
 class Version extends Command implements \ClientFence\InjectionAwareInterface
@@ -37,7 +38,7 @@ class Version extends Command implements \ClientFence\InjectionAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln(\ClientFence\Version::VERSION);
+        $output->writeln(\ClientFence\Version::CLIENTFENCE);
 
         return Command::SUCCESS;
     }
