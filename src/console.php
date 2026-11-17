@@ -15,6 +15,11 @@ if (php_sapi_name() !== 'cli') {
 
 // ClientFence core patch: every command refuses root on an install owned by another user, before loading: loading already
 // writes cache files into data/, and root-owned files break the site and later updates. system:update always refuses root.
+// cron:run switches to that user instead, as cron.php does.
+if (in_array('cron:run', $_SERVER['argv'] ?? [], true)) {
+    require_once __DIR__ . '/library/ClientFence/SiteUser.php';
+    ClientFence\SiteUser::switchFromRoot(__DIR__);
+}
 $siteOwner = fileowner(is_dir(__DIR__ . '/data') ? __DIR__ . '/data' : __FILE__);
 if (function_exists('posix_geteuid') && posix_geteuid() === 0 && ($siteOwner !== 0 || in_array('system:update', $_SERVER['argv'] ?? [], true))) {
     $owner = $siteOwner !== 0 && function_exists('posix_getpwuid') ? (posix_getpwuid((int) $siteOwner)['name'] ?? '') : '';

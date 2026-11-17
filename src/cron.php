@@ -12,6 +12,10 @@ if (php_sapi_name() !== 'cli') {
     exit('This script can only be run from the command line.');
 }
 
+// ClientFence core patch: run from a root crontab, cron switches to the user that owns the install before loading.
+require_once __DIR__ . '/library/ClientFence/SiteUser.php';
+ClientFence\SiteUser::switchFromRoot(__DIR__);
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'load.php';
 
 use ClientFence\Environment;
