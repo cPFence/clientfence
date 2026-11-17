@@ -68,6 +68,11 @@ class Guest extends \ClientFence\Api\AbstractApi
      */
     public function languages($deep = false)
     {
-        return \ClientFence\i18n::getLocales($deep);
+        // ClientFence core patch: templates pass a bool, the HTTP API an array (`details`); an array was a TypeError.
+        if (is_array($deep)) {
+            $deep = $deep['details'] ?? false;
+        }
+
+        return \ClientFence\i18n::getLocales(\ClientFence\Tools::normalizeBoolean($deep));
     }
 }
