@@ -259,6 +259,30 @@ test('update page applies setters and returns id', function (): void {
     expect($page->getSortOrder())->toBe(3);
 });
 
+test('update page keeps description and keywords that are left out', function (): void {
+    $page = Tests\Helpers\createEntity(CustomPage::class, ['id' => 5, 'title' => 'Old', 'description' => 'meta', 'keywords' => 'kw', 'content' => 'old', 'slug' => 'old']);
+    $repo = Mockery::mock(ClientFence\Mod\Custompages\Repository\CustomPageRepository::class);
+    $repo->allows('find')->with(5)->andReturn($page);
+    $repo->allows('findOneBySlugExcludingId')->andReturn(null);
+    $em = Mockery::mock(EntityManagerInterface::class);
+    $em->allows('persist');
+    $em->allows('flush');
+
+    buildCustompagesService($repo, $em)->updatePage(5, ['title' => 'New', 'content' => 'new', 'slug' => 'old']);
+
+    expect($page->getDescription())->toBe('meta')
+        ->and($page->getKeywords())->toBe('kw');
+});
+
+test('the admin page lookup refuses an unknown page', function (): void {
+    $repo = Mockery::mock(ClientFence\Mod\Custompages\Repository\CustomPageRepository::class);
+    $repo->allows('find')->with(99)->andReturn(null);
+    $api = apiEndpoint(new ClientFence\Mod\Custompages\Api\Admin());
+    $api->setService(buildCustompagesService($repo));
+
+    expect(fn () => $api->get_page(['page_id' => 99]))->toThrow(ClientFence\InformationException::class, 'Custom page not found');
+});
+
 test('delete page by scalar removes the entity', function (): void {
     $page = Tests\Helpers\createEntity(CustomPage::class, ['id' => 3, 'title' => 'T', 'description' => '', 'keywords' => '', 'content' => 'C', 'slug' => 's']);
 

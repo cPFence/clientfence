@@ -186,9 +186,11 @@ class Service
             throw new \ClientFence\Exception('You need to set unique slug.', null, 9999);
         }
 
+        // ClientFence core patch: an update that leaves out description or keywords keeps them instead of emptying them.
+        $saved = $page->getId() !== null;
         $page->setTitle($title)
-            ->setDescription((string) ($data['description'] ?? ''))
-            ->setKeywords((string) ($data['keywords'] ?? ''))
+            ->setDescription((string) ($data['description'] ?? ($saved ? $page->getDescription() : '')))
+            ->setKeywords((string) ($data['keywords'] ?? ($saved ? $page->getKeywords() : '')))
             ->setContent((string) $data['content'])
             ->setSlug($slug)
             ->setStatus($status)

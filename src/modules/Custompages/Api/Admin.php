@@ -101,10 +101,12 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @return array
      */
+    #[RequiredParams(['page_id' => 'Custom page ID was not passed'])]
     public function get_page($data)
     {
         $this->checkPermissions('custompages', 'view');
 
-        return $this->getService()->getPage($data['page_id']);
+        // ClientFence core patch: an unknown page is an error, as update, not an empty result.
+        return $this->getService()->getPage($data['page_id']) ?? throw new \ClientFence\InformationException('Custom page not found');
     }
 }
