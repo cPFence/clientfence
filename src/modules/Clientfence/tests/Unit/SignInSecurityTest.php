@@ -579,6 +579,16 @@ test('"When to ask" and the sign-in history are saved, checked and kept by saves
         ->and(SignInSecurity::turnOff($world->di, true, false, false, false, false))->toMatchArray(['pin' => 'off', 'pin_when' => 'every', 'history' => true]);
 });
 
+test('a save that leaves out the country fields keeps the country rule', function (): void {
+    $world = new SignInSecurityTestWorld();
+
+    expect($world->save(['countries_on' => '1', 'countries' => ['DE']]))->toBe(['saved' => true])
+        ->and($world->save(['pin' => 'clients']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di))->toMatchArray(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE']])
+        ->and($world->save(['countries_on' => '0']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di)['countries_on'])->toBeFalse();
+});
+
 test('the browser label names the browser and the system', function (string $agent, ?string $label): void {
     expect(SignInHistory::browser($agent))->toBe($label);
 })->with([

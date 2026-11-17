@@ -140,7 +140,9 @@ final class SignInSecurity
         if ($passkeys !== 'off' && !\ClientFence\Mod\Client\Passkeys::secureUrl(SYSTEM_URL)) {
             throw new InformationException('Passkeys need the portal on HTTPS: browsers refuse them on an http:// address. Set the portal URL to https:// first.');
         }
-        $countries = $data['countries'] ?? [];
+        // A call that sends neither countries_on nor countries keeps the country rule, as the other settings.
+        $saveCountries = array_key_exists('countries_on', $data) || array_key_exists('countries', $data);
+        $countries = $saveCountries ? ($data['countries'] ?? []) : $old['countries'];
         $countries = is_array($countries) ? $countries : preg_split('/[\s,]+/', (string) $countries);
         $countries = array_values(array_unique(array_filter(array_map(fn ($c): string => strtoupper(trim((string) $c)), $countries), fn (string $c): bool => $c !== '')));
         foreach ($countries as $code) {
@@ -148,7 +150,7 @@ final class SignInSecurity
                 throw new InformationException('Unknown country code: :code', [':code' => $code]);
             }
         }
-        $countriesOn = !empty($data['countries_on']);
+        $countriesOn = $saveCountries ? !empty($data['countries_on']) : $old['countries_on'];
         if ($countriesOn && $countries === []) {
             throw new InformationException('Choose at least one country staff may sign in from.');
         }
