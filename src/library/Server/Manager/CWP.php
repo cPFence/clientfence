@@ -294,8 +294,9 @@ class Server_Manager_CWP extends Server_Manager
     {
         $this->getLog()->info('Changing package on account ' . $account->getUsername());
 
+        // ClientFence core patch: CWP's changepack action is "udp" (its API documentation), as for changepass.
         $data = [
-            'action' => 'upd',
+            'action' => 'udp',
             'user' => $account->getUsername(),
             'package' => $account->getPackage()->getName(),
         ];
