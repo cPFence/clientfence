@@ -26,7 +26,8 @@ class Theme
     public function __construct(private $name)
     {
         if (!self::getFilesystem()->exists($this->getPath())) {
-            throw new \ClientFence\Exception("Theme ':name' does not exist.", [':name' => $name]);
+            // ClientFence core patch: a theme that is not installed is "not found" (404), not a server error page.
+            throw new \ClientFence\InformationException("Theme ':name' does not exist.", [':name' => $name], 404);
         }
     }
 

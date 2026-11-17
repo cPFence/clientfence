@@ -22,6 +22,14 @@ test('not existing theme', function (): void {
     expect(function () use ($themeName): void {
         new ClientFence\Mod\Theme\Model\Theme($themeName);
     })->toThrow(ClientFence\Exception::class, "Theme '{$themeName}' does not exist.");
+
+    // "Not found", not a server error page.
+    try {
+        new ClientFence\Mod\Theme\Model\Theme($themeName);
+    } catch (ClientFence\InformationException $e) {
+        expect($e->getCode())->toBe(404);
+    }
+    expect($e ?? null)->toBeInstanceOf(ClientFence\InformationException::class);
 });
 
 test('is admin area theme', function () use ($existingTheme): void {
