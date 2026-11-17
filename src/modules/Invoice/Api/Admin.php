@@ -318,7 +318,13 @@ class Admin extends \ClientFence\Api\AbstractApi
             if ($this->getService()->isBooked($invoice)) {
                 throw new \ClientFence\InformationException('The lines and tax rate of a paid invoice cannot be changed. Refund it and make a new invoice.');
             }
-            return $invoiceItemService->remove($model);
+            $invoiceItemService->remove($model);
+            // ClientFence core patch: the gateway fee follows the new amount, as an amount change on Manage does (not when staff delete the fee line itself).
+            if ($invoice->gateway_id && $model->task !== \ClientFence\Mod\Invoice\GatewayFees::TASK) {
+                \ClientFence\Mod\Invoice\GatewayFees::apply($this->getDi(), $invoice, (int) $invoice->gateway_id);
+            }
+
+            return true;
         });
     }
 

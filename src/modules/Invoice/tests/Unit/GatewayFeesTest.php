@@ -48,8 +48,11 @@ function feeWorld(string $status = 'unpaid', bool $deposit = false): object
     $invoices->allows('isInvoiceTypeDeposit')->andReturn($deposit);
     $items = Mockery::mock();
     $items->allows('getTotalWithTax')->andReturnUsing($lineTotal);
-    $items->allows('remove')->andReturnUsing(function () use ($world): bool {
-        $world->line = null;
+    $items->allows('remove')->andReturnUsing(function (?Model_InvoiceItem $item = null) use ($world): bool {
+        // Only the fee line is kept here; another line's removal changes nothing in this world.
+        if ($item === null || $item === $world->line) {
+            $world->line = null;
+        }
 
         return true;
     });
@@ -142,6 +145,46 @@ test('the fee line follows the invoice\'s gateway, once', function (): void {
     GatewayFees::apply($world->di, $world->invoice, 3);
     GatewayFees::remove($world->di, $world->invoice);
     expect($world->line)->toBeNull();
+});
+
+test('a line deleted by staff puts the fee on the new amount; the fee line deleted by staff stays off', function (): void {
+    $world = feeWorld();
+    $world->invoice->gateway_id = 3;
+    $world->db->update('invoice', ['gateway_id' => 3], ['id' => 5]);
+    $world->invoices->allows('refreshStatus');
+    $world->invoices->allows('isBooked')->andReturnFalse();
+    // The world answers every other module, Staff's permission check too.
+    $world->invoices->allows('checkPermissionsAndThrowException');
+    $api = apiEndpoint(new ClientFence\Mod\Invoice\Api\Admin());
+    $api->setDi($world->di);
+    $api->setService($world->invoices);
+    $line = static function (string $task, float $price, bool $taxed = true): Model_InvoiceItem {
+        $item = new Model_InvoiceItem();
+        $item->loadBean(new Tests\Helpers\DummyBean());
+        $item->invoice_id = 5;
+        $item->task = $task;
+        $item->price = $price;
+        $item->quantity = 1;
+        $item->taxed = $taxed;
+
+        return $item;
+    };
+    // The fee of the amount before a 50.00 line was deleted (2.5% of 150 + 0.45), untaxed here to keep the sums plain.
+    $world->line = $line(GatewayFees::TASK, 4.2, false);
+    $deleted = $line('void', 50.0);
+    $world->di['db']->allows('getExistingModelById')->andReturnUsing(function () use (&$deleted): Model_InvoiceItem {
+        return $deleted;
+    });
+
+    expect($api->item_delete(['id' => 9]))->toBeTrue()
+        ->and((float) $world->line->price)->toBe(2.95);
+
+    $deleted = $world->line;
+    $deleted->invoice_id = 5;
+    $added = $world->added;
+    expect($api->item_delete(['id' => 10]))->toBeTrue()
+        ->and($world->line)->toBeNull()
+        ->and($world->added)->toBe($added);
 });
 
 test('a paid invoice and an Add funds invoice get no fee line', function (string $status, bool $deposit): void {
