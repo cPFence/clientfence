@@ -1188,6 +1188,20 @@ test('canned category update', function (): void {
     expect($model->getTitle())->toBe('Title');
 });
 
+test('canned reply and category updates refuse an empty title', function (): void {
+    $service = new Service();
+    $service->setDi(container());
+    $reply = supportCannedResponseFixture();
+    $category = supportCannedCategoryFixture();
+    $replyTitle = $reply->getTitle();
+    $categoryTitle = $category->getTitle();
+
+    expect(fn () => $service->cannedUpdate($reply, ['title' => ' ']))->toThrow(ClientFence\InformationException::class, 'Canned reply title is missing')
+        ->and(fn () => $service->cannedCategoryUpdate($category, ''))->toThrow(ClientFence\InformationException::class, 'Canned category title is missing')
+        ->and($reply->getTitle())->toBe($replyTitle)
+        ->and($category->getTitle())->toBe($categoryTitle);
+});
+
 /*
  * Helpdesk Tests
  */

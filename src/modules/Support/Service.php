@@ -1605,6 +1605,10 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function cannedUpdate(CannedResponse $model, array $data): bool
     {
+        // ClientFence core patch: an update cannot clear the title that create requires.
+        if (isset($data['title']) && trim((string) $data['title']) === '') {
+            throw new \ClientFence\InformationException('Canned reply title is missing');
+        }
         if (isset($data['category_id'])) {
             $category = $this->getCannedResponseCategoryRepository()->find((int) $data['category_id']);
             if (!$category instanceof CannedResponseCategory) {
@@ -1646,6 +1650,10 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function cannedCategoryUpdate(CannedResponseCategory $model, ?string $title = null): bool
     {
+        // ClientFence core patch: an update cannot clear the category title that create requires.
+        if (isset($title) && trim($title) === '') {
+            throw new \ClientFence\InformationException('Canned category title is missing');
+        }
         if (isset($title)) {
             $model->setTitle($title);
         }
