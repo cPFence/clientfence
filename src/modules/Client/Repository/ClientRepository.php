@@ -120,7 +120,8 @@ class ClientRepository extends EntityRepository
         }
 
         if ($createdAt) {
-            $date = date('Y-m-d', strtotime((string) $createdAt));
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $date = date('Y-m-d', (strtotime((string) $createdAt) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
             $start = new \DateTimeImmutable($date);
             $qb->andWhere('c.createdAt >= :created_from AND c.createdAt < :created_to')
                 ->setParameter('created_from', $start)
@@ -129,12 +130,12 @@ class ClientRepository extends EntityRepository
 
         if ($dateFrom) {
             $qb->andWhere('c.createdAt >= :date_from')
-                ->setParameter('date_from', new \DateTimeImmutable(date('Y-m-d H:i:s', strtotime((string) $dateFrom))));
+                ->setParameter('date_from', new \DateTimeImmutable(date('Y-m-d H:i:s', (strtotime((string) $dateFrom) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
         }
 
         if ($dateTo) {
             $qb->andWhere('c.createdAt <= :date_to')
-                ->setParameter('date_to', new \DateTimeImmutable(date('Y-m-d H:i:s', strtotime((string) $dateTo))));
+                ->setParameter('date_to', new \DateTimeImmutable(date('Y-m-d H:i:s', (strtotime((string) $dateTo) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
         }
 
         if ($search) {

@@ -2381,3 +2381,11 @@ test('i18n::validateTimezone accepts any IANA identifier', function (): void {
 test('i18n::validateTimezone throws InformationException for unknown identifier', function (): void {
     expect(fn (): ?string => ClientFence\i18n::validateTimezone('Not/A_Zone'))->toThrow(ClientFence\InformationException::class);
 });
+
+test('getActivityAdminHistorySearchQuery refuses an unreadable date with a clear message', function (): void {
+    $service = new Service();
+    $service->setDi(container());
+
+    expect(fn (): array => $service->getActivityAdminHistorySearchQuery(['date_from' => 'nonsense']))
+        ->toThrow(ClientFence\InformationException::class, 'Enter a valid date.');
+});

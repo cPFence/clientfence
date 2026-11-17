@@ -173,12 +173,13 @@ class ServiceSubscription implements InjectionAwareInterface
 
         if ($date_from) {
             $sql .= ' AND UNIX_TIMESTAMP(created_at) >= :date_from';
-            $params[':date_from'] = ctype_digit((string) $date_from) ? $date_from : strtotime($date_from . ' 00:00:00');
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $params[':date_from'] = ctype_digit((string) $date_from) ? $date_from : (strtotime($date_from . ' 00:00:00') ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         if ($date_to) {
             $sql .= ' AND UNIX_TIMESTAMP(created_at) <= :date_to';
-            $params[':date_to'] = ctype_digit((string) $date_to) ? $date_to : strtotime($date_to . ' 23:59:59');
+            $params[':date_to'] = ctype_digit((string) $date_to) ? $date_to : (strtotime($date_to . ' 23:59:59') ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         if ($search) {

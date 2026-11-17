@@ -186,12 +186,13 @@ class Service implements InjectionAwareInterface
 
         if ($date_from) {
             $where[] = 'm.created_at >= :date_from';
-            $params[':date_from'] = date('Y-m-d 00:00:00', strtotime((string) $date_from));
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $params[':date_from'] = date('Y-m-d 00:00:00', (strtotime((string) $date_from) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($date_to) {
             $where[] = 'm.created_at <= :date_to';
-            $params[':date_to'] = date('Y-m-d 23:59:59', strtotime((string) $date_to));
+            $params[':date_to'] = date('Y-m-d 23:59:59', (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($ip) {

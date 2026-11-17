@@ -311,17 +311,18 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
         if ($created_at) {
             $where[] = "DATE_FORMAT(c.created_at, '%Y-%m-%d') = :created_at";
-            $params[':created_at'] = date('Y-m-d', strtotime((string) $created_at));
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $params[':created_at'] = date('Y-m-d', (strtotime((string) $created_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($date_from) {
             $where[] = 'UNIX_TIMESTAMP(c.created_at) >= :date_from';
-            $params[':date_from'] = strtotime((string) $date_from);
+            $params[':date_from'] = (strtotime((string) $date_from) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         if ($date_to) {
             $where[] = 'UNIX_TIMESTAMP(c.created_at) <= :date_to';
-            $params[':date_to'] = strtotime((string) $date_to);
+            $params[':date_to'] = (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         // smartSearch
@@ -501,12 +502,12 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
         if ($date_from !== null && $date_from !== '') {
             $where[] = 'ach.created_at >= :date_from';
-            $params[':date_from'] = date('Y-m-d 00:00:00', strtotime((string) $date_from));
+            $params[':date_from'] = date('Y-m-d 00:00:00', (strtotime((string) $date_from) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($date_to !== null && $date_to !== '') {
             $where[] = 'ach.created_at <= :date_to';
-            $params[':date_to'] = date('Y-m-d 23:59:59', strtotime((string) $date_to));
+            $params[':date_to'] = date('Y-m-d 23:59:59', (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if (!empty($where)) {

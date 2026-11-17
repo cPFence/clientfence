@@ -3043,7 +3043,8 @@ class Service implements InjectionAwareInterface
 
     private function normalizePromoDateTime(mixed $value): ?string
     {
-        return !empty($value) ? date('Y-m-d H:i:s', strtotime((string) $value)) : null;
+        // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+        return !empty($value) ? date('Y-m-d H:i:s', (strtotime((string) $value) ?: throw new \ClientFence\InformationException('Enter a valid date.'))) : null;
     }
 
     private function normalizePromoDateTimeObject(mixed $value): ?\DateTime

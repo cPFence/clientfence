@@ -97,12 +97,12 @@ class ServiceBalance implements InjectionAwareInterface
 
         if ($dateFrom !== null && $dateFrom !== '') {
             $queryBuilder->andWhere('m.createdAt >= :date_from')
-                ->setParameter('date_from', new \DateTimeImmutable(date('Y-m-d H:i:s', strtotime((string) $dateFrom))));
+                ->setParameter('date_from', new \DateTimeImmutable(date('Y-m-d H:i:s', (strtotime((string) $dateFrom) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
         }
 
         if ($dateTo !== null && $dateTo !== '') {
             $queryBuilder->andWhere('m.createdAt <= :date_to')
-                ->setParameter('date_to', new \DateTimeImmutable(date('Y-m-d H:i:s', strtotime((string) $dateTo))));
+                ->setParameter('date_to', new \DateTimeImmutable(date('Y-m-d H:i:s', (strtotime((string) $dateTo) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
         }
 
         return $queryBuilder->orderBy('m.id', 'DESC');
@@ -135,12 +135,13 @@ class ServiceBalance implements InjectionAwareInterface
         // ClientFence core patch: created_at is a datetime column, so compare with dates, not unix timestamps.
         if ($date_from !== null && $date_from !== '') {
             $where[] = 'm.created_at >= :date_from';
-            $params[':date_from'] = date('Y-m-d 00:00:00', strtotime((string) $date_from));
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $params[':date_from'] = date('Y-m-d 00:00:00', (strtotime((string) $date_from) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($date_to !== null && $date_to !== '') {
             $where[] = 'm.created_at <= :date_to';
-            $params[':date_to'] = date('Y-m-d 23:59:59', strtotime((string) $date_to));
+            $params[':date_to'] = date('Y-m-d 23:59:59', (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if (!empty($where)) {

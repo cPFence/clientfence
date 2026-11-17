@@ -208,22 +208,23 @@ class Service implements InjectionAwareInterface
 
         if ($created_at) {
             $sql .= " AND DATE_FORMAT(p.created_at, '%Y-%m-%d') = :created_at";
-            $params['created_at'] = date('Y-m-d', (int) strtotime((string) $created_at));
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $params['created_at'] = date('Y-m-d', (strtotime((string) $created_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($date_from) {
             $sql .= ' AND UNIX_TIMESTAMP(p.created_at) >= :date_from';
-            $params['date_from'] = strtotime((string) $date_from);
+            $params['date_from'] = (strtotime((string) $date_from) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         if ($date_to) {
             $sql .= ' AND UNIX_TIMESTAMP(p.created_at) <= :date_to';
-            $params['date_to'] = strtotime((string) $date_to);
+            $params['date_to'] = (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         if ($paid_at) {
             $sql .= " AND DATE_FORMAT(p.paid_at, '%Y-%m-%d') = :paid_at";
-            $params['paid_at'] = date('Y-m-d', (int) strtotime((string) $paid_at));
+            $params['paid_at'] = date('Y-m-d', (strtotime((string) $paid_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($search) {
@@ -2326,7 +2327,7 @@ class Service implements InjectionAwareInterface
      */
     private function formTime(string $posted, ?string $stored): string
     {
-        $at = date('Y-m-d H:i:s', (int) strtotime($posted));
+        $at = date('Y-m-d H:i:s', (strtotime($posted) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
 
         return strlen(trim($posted)) === 10 && $stored !== null && substr($stored, 0, 10) === substr($at, 0, 10) ? $stored : $at;
     }
@@ -2425,7 +2426,7 @@ class Service implements InjectionAwareInterface
         if (empty($due_at)) {
             $model->due_at = null;
         } else {
-            $model->due_at = date('Y-m-d H:i:s', strtotime((string) $due_at));
+            $model->due_at = date('Y-m-d H:i:s', (strtotime((string) $due_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         $model->serie = $data['serie'] ?? (empty($model->serie) ? null : $model->serie);

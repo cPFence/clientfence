@@ -1035,17 +1035,18 @@ class Service implements InjectionAwareInterface
 
         if ($created_at) {
             $where[] = "DATE_FORMAT(co.created_at, '%Y-%m-%d') = :created_at";
-            $bindings['created_at'] = date('Y-m-d', strtotime((string) $created_at));
+            // ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError).
+            $bindings['created_at'] = date('Y-m-d', (strtotime((string) $created_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
         }
 
         if ($date_from) {
             $where[] = 'UNIX_TIMESTAMP(co.created_at) >= :date_from';
-            $bindings['date_from'] = strtotime((string) $date_from);
+            $bindings['date_from'] = (strtotime((string) $date_from) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         if ($date_to) {
             $where[] = 'UNIX_TIMESTAMP(co.created_at) <= :date_to';
-            $bindings['date_to'] = strtotime((string) $date_to);
+            $bindings['date_to'] = (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
         }
 
         // smartSearch
@@ -1241,13 +1242,13 @@ class Service implements InjectionAwareInterface
 
             $order->setNotes($data['notes'] ?? null);
             if (isset($data['created_at'])) {
-                $order->setCreatedAt(new \DateTime(date('Y-m-d H:i:s', strtotime((string) $data['created_at']))));
+                $order->setCreatedAt(new \DateTime(date('Y-m-d H:i:s', (strtotime((string) $data['created_at']) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
             } else {
                 $order->setCreatedAt(new \DateTime());
             }
 
             if (isset($data['updated_at'])) {
-                $order->setUpdatedAt(new \DateTime(date('Y-m-d H:i:s', strtotime((string) $data['updated_at']))));
+                $order->setUpdatedAt(new \DateTime(date('Y-m-d H:i:s', (strtotime((string) $data['updated_at']) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
             } else {
                 $order->setUpdatedAt(new \DateTime());
             }
@@ -1745,7 +1746,7 @@ class Service implements InjectionAwareInterface
 
         $created_at = $data['created_at'] ?? '';
         if (!empty($created_at)) {
-            $createdAtDate = date('Y-m-d H:i:s', strtotime((string) $created_at));
+            $createdAtDate = date('Y-m-d H:i:s', (strtotime((string) $created_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
             if ($order instanceof Order) {
                 $order->setCreatedAt(new \DateTime($createdAtDate));
             } else {
@@ -1757,7 +1758,7 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: the order page sends the activation day only: the same day keeps the stored time.
         $activatedDay = $order instanceof Order ? $order->getActivatedAt()?->format('Y-m-d') : substr((string) $order->activated_at, 0, 10);
         if (!empty($activated_at) && date('Y-m-d', (int) strtotime((string) $activated_at)) !== $activatedDay) {
-            $activatedAtDate = date('Y-m-d H:i:s', strtotime((string) $activated_at));
+            $activatedAtDate = date('Y-m-d H:i:s', (strtotime((string) $activated_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
             if ($order instanceof Order) {
                 $order->setActivatedAt(new \DateTime($activatedAtDate));
             } else {
@@ -1767,7 +1768,7 @@ class Service implements InjectionAwareInterface
 
         $expires_at = $data['expires_at'] ?? null;
         if (!empty($expires_at)) {
-            $expiresAtDate = date('Y-m-d H:i:s', strtotime((string) $expires_at));
+            $expiresAtDate = date('Y-m-d H:i:s', (strtotime((string) $expires_at) ?: throw new \ClientFence\InformationException('Enter a valid date.')));
             if ($order instanceof Order) {
                 $order->setExpiresAt(new \DateTime($expiresAtDate));
             } else {
