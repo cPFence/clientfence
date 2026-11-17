@@ -1416,6 +1416,30 @@ test('update rejects deactivating own staff account', function (): void {
         ->toThrow(ClientFence\InformationException::class, 'You cannot deactivate your own staff account');
 });
 
+test('update refuses an unknown staff status', function (): void {
+    $adminModel = new Model_Admin();
+    $adminModel->loadBean(new Tests\Helpers\DummyBean());
+    $adminModel->id = 11;
+    $adminModel->status = Model_Admin::STATUS_ACTIVE;
+
+    $eventsMock = Mockery::mock('ClientFence\EventManager');
+    $eventsMock->shouldReceive('fire');
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('store')->never();
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('hasPermission')->andReturn(true);
+
+    $di = container();
+    $di['events_manager'] = $eventsMock;
+    $di['db'] = $dbMock;
+    $di['loggedin_admin'] = staffRegularAdmin();
+    $serviceMock->setDi($di);
+
+    expect(fn () => $serviceMock->update($adminModel, ['status' => 'blocked']))
+        ->toThrow(ClientFence\InformationException::class, 'Unknown status.');
+});
+
 test('delete removes admin account', function (): void {
     $adminModel = new Model_Admin();
     $adminModel->loadBean(new Tests\Helpers\DummyBean());

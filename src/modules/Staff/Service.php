@@ -546,6 +546,10 @@ class Service implements InjectionAwareInterface
 
         $previousStatus = $model->status;
         $newStatus = $data['status'] ?? $model->status;
+        // ClientFence core patch: active or inactive only; another value was saved and kept the API key working.
+        if (!in_array($newStatus, [\Model_Admin::STATUS_ACTIVE, \Model_Admin::STATUS_INACTIVE], true)) {
+            throw new \ClientFence\InformationException('Unknown status.');
+        }
 
         if ((int) $this->di['loggedin_admin']->id === (int) $model->id && $previousStatus === \Model_Admin::STATUS_ACTIVE && $newStatus !== \Model_Admin::STATUS_ACTIVE) {
             throw new \ClientFence\InformationException('You cannot deactivate your own staff account');
