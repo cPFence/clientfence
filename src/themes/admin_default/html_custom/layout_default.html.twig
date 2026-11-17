@@ -91,7 +91,7 @@
                 {# The popups open on this page (their forms read lists that need the module's "view" permission). #}
                 {% set can_new = {
                     'client': has_permission('client', 'create') and has_permission('client', 'view'),
-                    'order': has_permission('order', 'manage'),
+                    'order': has_permission('order', 'manage') and has_permission('product', 'view'),
                     'invoice': has_permission('invoice', 'manage_invoices'),
                     'support': has_permission('support', 'manage_tickets') and has_permission('support', 'view') and guest.support_tickets_enabled
                 } %}

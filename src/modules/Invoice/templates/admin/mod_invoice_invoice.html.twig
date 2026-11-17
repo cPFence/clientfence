@@ -31,6 +31,8 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" href="#tab-info" data-bs-toggle="tab" role="tab">{{ 'Details'|trans }}</a>
                     </li>
+                    {# ClientFence core patch: the editing tabs only for staff who may change invoices (invoice/update checks it). #}
+                    {% if has_permission('invoice', 'manage_invoices') %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-manage" data-bs-toggle="tab" role="tab">{{ 'Manage'|trans }}</a>
                     </li>
@@ -43,6 +45,7 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-seller-credentials" data-bs-toggle="tab" role="tab">{{ 'Company Credentials'|trans }}</a>
                     </li>
+                    {% endif %}
     {% endblock %}
 
     {% block detail_tab_content %}
@@ -362,7 +365,7 @@
                 {% block section_content %}
                 {# ClientFence core patch: keep wide invoice items inside the card on phones. #}
                 <div class="table-responsive">
-                {% if not invoice.approved %}
+                {% if not invoice.approved and has_permission('invoice', 'manage_invoices') %}
                 <form method="post" action="{{ 'invoice/update'|api_url }}" {{ fb_api_form({reload: true}) }}>
                     <table class="table card-table table-vcenter table-striped text-nowrap">
                         <thead>
@@ -555,6 +558,7 @@
         </div>
         </div>
 
+        {% if has_permission('invoice', 'manage_invoices') %}
         <div class="tab-pane fade" id="tab-manage" role="tabpanel">
             <div class="card-body">
                 <form method="post" action="{{ 'invoice/update'|api_url }}" {{ fb_api_form({ reload: true}) }}>
@@ -839,6 +843,7 @@
                 </form>
             </div>
         </div>
+        {% endif %}
     </div>
     {% endblock %}
 {% endembed %}

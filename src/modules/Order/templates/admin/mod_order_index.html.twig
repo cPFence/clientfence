@@ -8,12 +8,15 @@
 {# ClientFence core patch: a status filter alone keeps the counter cards (the ClientFence admin frame filters the list in place). #}
 {% set filter_panel_open = request_has_filters and request_query|filter((v, k) => k not in ['status', 'page', 'per_page', 'search'])|length > 0 %}
 {% set new_order_action %}
+    {# ClientFence core patch: New Order only for staff it lets in (order manage and product view). #}
+    {% if has_permission('order', 'manage') and has_permission('product', 'view') %}
     <a class="btn btn-primary" href="{{ 'order/new'|url }}">
         <svg class="icon">
             <use href="#plus" />
         </svg>
         {{ 'New Order'|trans }}
     </a>
+    {% endif %}
 {% endset %}
 
 {% block meta_title %}{{ 'Orders'|trans }}{% endblock %}
@@ -143,6 +146,8 @@
                                     {{ mf.selectbox('status', admin.order_get_status_pairs, request.status, 0, 'All Statuses'|trans) }}
                                 </div>
                             </div>
+                            {# ClientFence core patch: the product filters only for staff who may read the products (else the list failed). #}
+                            {% if has_permission('product', 'view') %}
                             <div class="col-md-6 col-xl-3">
                                 <div>
                                     <label class="form-label text-muted small mb-1" for="type">{{ 'Type'|trans }}</label>
@@ -155,6 +160,7 @@
                                     {{ mf.selectbox('product_id', admin.product_get_pairs, request.product_id, 0, 'All Products'|trans) }}
                                 </div>
                             </div>
+                            {% endif %}
                             <div class="col-md-6 col-xl-4">
                                 <div>
                                     <label class="form-label text-muted small mb-1" for="promo_id">{{ 'Promo ID'|trans }}</label>

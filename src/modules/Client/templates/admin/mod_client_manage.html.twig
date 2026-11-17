@@ -20,6 +20,8 @@
 {% set can_view_tickets = has_permission('support', 'view') and guest.support_tickets_enabled %}
 {% set can_view_transactions = has_permission('invoice', 'manage_transactions') %}
 {% set can_manage_orders = has_permission('order', 'manage') %}
+{# ClientFence core patch: New Order also needs the products it lists (order/new checks both). #}
+{% set can_new_order = can_manage_orders and has_permission('product', 'view') %}
 {% set can_manage_invoices = has_permission('invoice', 'manage_invoices') %}
 {% set can_send_emails = has_permission('email', 'send_emails') %}
 {% set has_profile_edit_actions = can_edit_profile or can_change_password %}
@@ -83,7 +85,7 @@
                 <svg class="icon"><use href="#mail" /></svg>{{ 'Send Email'|trans }}
             </a>
             {% endif %}
-            {% if can_manage_orders %}
+            {% if can_new_order %}
             <a class="btn" href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}">
                 <svg class="icon"><use href="#plus" /></svg>{{ 'New Order'|trans }}
             </a>
@@ -605,7 +607,7 @@
             } %}
                 {% block section_action %}
                     {# ClientFence core patch: New Order only for staff who may create orders, as the header button. #}
-                    {% if can_manage_orders %}
+                    {% if can_new_order %}
                     <a href="{{ 'order/new'|url(query: { 'client_id': client.id }) }}" class="btn btn-primary">
                         <svg class="icon">
                             <use href="#plus" />

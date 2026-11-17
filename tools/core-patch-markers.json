@@ -7978,5 +7978,21 @@
     {
         "file": "modules/Invoice/Controller/Client.php",
         "done": "ClientFence core patch: a signed-out visitor goes to the sign-in page and then back to this invoice"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: New Order also needs the products it lists (order/new checks both)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_index.html.twig",
+        "done": "ClientFence core patch: New Order only for staff it lets in (order manage and product view)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the editing tabs only for staff who may change invoices (invoice/update checks it)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_index.html.twig",
+        "done": "ClientFence core patch: the product filters only for staff who may read the products (else the list failed)."
     }
 ]
