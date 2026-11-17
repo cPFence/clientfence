@@ -553,7 +553,6 @@ final class ClientFence_Installer
             'password' => $this->session->get('database_password'),
         ];
         $data['twig']['cache'] = PATH_CACHE;
-        $data['disable_auto_cron'] = !ClientFence\Version::isPreviewVersion() && !Environment::isDevelopment();
 
         // Build and return data
         $output = '<?php ' . PHP_EOL;

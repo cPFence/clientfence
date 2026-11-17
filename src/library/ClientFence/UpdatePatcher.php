@@ -120,12 +120,9 @@ class UpdatePatcher implements InjectionAwareInterface
         $newConfig['security']['perform_session_fingerprinting'] ??= true;
         $newConfig['security']['debug_fingerprint'] ??= false;
         $newConfig['update_branch'] ??= 'release';
-        $newConfig['log_stacktrace'] ??= true;
-        $newConfig['stacktrace_length'] ??= 25;
         $newConfig['maintenance_mode']['enabled'] ??= false;
         $newConfig['maintenance_mode']['allowed_urls'] ??= [];
         $newConfig['maintenance_mode']['allowed_ips'] ??= [];
-        $newConfig['disable_auto_cron'] = !Version::isPreviewVersion() && !Environment::isDevelopment();
         $newConfig['i18n']['locale'] ??= $currentConfig['locale'] ?? 'en_US';
         $newConfig['i18n']['auto_detect_locale'] ??= true;
         $newConfig['i18n']['timezone'] ??= $currentConfig['timezone'] ?? 'UTC';
@@ -148,9 +145,11 @@ class UpdatePatcher implements InjectionAwareInterface
         $newConfig['rate_limiter']['whitelist_ips'] = array_values(array_unique(array_merge($newConfig['rate_limiter']['whitelist_ips'], $currentConfig['api']['rate_limit_whitelist'] ?? [])));
         $newConfig['debug_and_monitoring'] ??= [];
         $newConfig['debug_and_monitoring']['debug'] ??= $newConfig['debug'] ?? false;
-        $newConfig['debug_and_monitoring']['log_stacktrace'] ??= $newConfig['log_stacktrace'];
-        $newConfig['debug_and_monitoring']['stacktrace_length'] ??= $newConfig['stacktrace_length'];
-        $newConfig['debug_and_monitoring']['report_errors'] ??= false;
+        // ClientFence core patch: the old top-level keys move into debug_and_monitoring and are removed below, with the unused
+        // report_errors and disable_auto_cron.
+        $newConfig['debug_and_monitoring']['log_stacktrace'] ??= $newConfig['log_stacktrace'] ?? true;
+        $newConfig['debug_and_monitoring']['stacktrace_length'] ??= $newConfig['stacktrace_length'] ?? 25;
+        unset($newConfig['debug_and_monitoring']['report_errors']);
 
         // Instance ID handling
         $this->refreshComposerAutoloader();
@@ -161,7 +160,7 @@ class UpdatePatcher implements InjectionAwareInterface
         $newConfig['url'] = str_replace(['https://', 'http://'], '', $newConfig['url']);
 
         // Remove deprecated config keys/subkeys.
-        $deprecatedConfigKeys = ['guzzle', 'locale', 'locale_date_format', 'locale_time_format', 'timezone', 'sef_urls', 'salt', 'path_logs', 'log_to_db'];
+        $deprecatedConfigKeys = ['guzzle', 'locale', 'locale_date_format', 'locale_time_format', 'timezone', 'sef_urls', 'salt', 'path_logs', 'log_to_db', 'debug', 'log_stacktrace', 'stacktrace_length', 'disable_auto_cron'];
         $deprecatedConfigSubkeys = [
             'security' => 'cookie_lifespan',
             'db' => 'type',

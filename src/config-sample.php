@@ -60,7 +60,7 @@ return [
     ],
 
     /*
-     * Full URL where FOSSBilling is installed with trailing slash.
+     * Full URL where ClientFence is installed with trailing slash.
      */
     'url' => 'localhost/',
 
@@ -95,11 +95,6 @@ return [
          */
         'allowed_ips' => [],
     ],
-
-    /*
-     * FOSSBilling will automatically execute cron when you login to the admin panel if it hasn't been executed in awhile. You can disable this fallback here.
-     */
-    'disable_auto_cron' => true,
 
     /*
      * These configuration options allow you to configure the default localisation.
@@ -137,7 +132,7 @@ return [
         'host' => getenv('DB_HOST') ?: '127.0.0.1',
 
         /*
-         * The name of the database for FOSSBilling.
+         * The name of the database for ClientFence.
          */
         'name' => getenv('DB_NAME') ?: 'clientfence',
 
@@ -219,7 +214,7 @@ return [
     ],
 
     'api' => [
-        // All requests made to the API must have referrer request header with the same URL as the FOSSBilling installation
+        // All requests made to the API must have referrer request header with the same URL as the ClientFence installation
         'require_referrer_header' => false,
 
         // Addresses or ranges API keys may be used from; empty allows all. The admin and client pages are not affected.
@@ -236,7 +231,7 @@ return [
 
         /**
          * Any IP address within this list will not be put through the rate-limiter system.
-         * This is useful if you have an application with a static IP address that needs to make frequent API requests to FOSSBilling.
+         * This is useful if you have an application with a static IP address that needs to make frequent API requests to ClientFence.
          */
         'whitelist_ips' => [],
 
