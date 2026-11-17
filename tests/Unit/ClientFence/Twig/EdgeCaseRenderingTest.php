@@ -430,7 +430,7 @@ test('support admin ticket renders with no notes and no rel', function (): void 
 });
 
 test('support admin ticket renders admin and client messages, including an edited one', function (): void {
-    $html = (new StrictTemplateRenderer())->renderTemplate(
+    $render = static fn (bool $manage): string => (new StrictTemplateRenderer())->renderTemplate(
         PATH_MODS . '/Support/templates/admin/mod_support_ticket.html.twig',
         [
             'app_area' => 'admin',
@@ -496,7 +496,9 @@ test('support admin ticket renders admin and client messages, including an edite
                 'author' => ['id' => 1, 'role' => 'client', 'name' => 'Test Client', 'first_name' => 'Test', 'last_name' => 'Client', 'email' => 'client@example.com'],
             ],
         ],
+        hasPermission: static fn (string $module, ?string $permission = null): bool => $manage,
     );
+    $html = $render(true);
 
     expect($html)->toBeString();
     expect($html)->toContain('editMessage2');
@@ -505,6 +507,14 @@ test('support admin ticket renders admin and client messages, including an edite
     expect($html)->toContain('messageHistory3');
     expect($html)->not->toContain('messageHistory2');
     expect($html)->not->toContain('messageHistory1');
+
+    // Staff who may only view tickets get the messages and their history, but no reply box or edit/close controls.
+    $viewOnly = $render(false);
+    expect($viewOnly)->toContain('messageHistory3')
+        ->not->toContain('editMessage2')
+        ->not->toContain('id="reply-box"')
+        ->not->toContain('support/ticket_close')
+        ->not->toContain('support/note_create');
 });
 
 test('support admin ticket renders with a related order and a note', function (): void {

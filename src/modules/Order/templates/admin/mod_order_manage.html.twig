@@ -48,12 +48,15 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" href="#tab-info" data-bs-toggle="tab" role="tab">{{ 'Details'|trans }}</a>
                     </li>
+                    {# ClientFence core patch: staff who may only view orders get no edit tabs or action buttons (the API refuses them). #}
+                    {% if has_permission('order', 'manage') %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-manage" data-bs-toggle="tab" role="tab">{{ 'Edit Order'|trans }}</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-config" data-bs-toggle="tab" role="tab">{{ 'Edit Order Config'|trans }}</a>
                     </li>
+                    {% endif %}
                     {% if admin.system_template_exists({ "file": service_partial }) %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-service" data-bs-toggle="tab" role="tab">{{ 'Service Management'|trans }}</a>
@@ -191,6 +194,7 @@
 
                     {% block summary_actions %}
                         {% set order_actions %}
+                    {% if has_permission('order', 'manage') %}
                     {% if order.status == 'pending_setup' or order.status == 'failed_setup' %}
                     <a class="btn btn-primary"
                         {{ fb_api_link({href: 'order/activate'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>
@@ -273,7 +277,9 @@
                         <span>{{ 'Delete'|trans }}</span>
                     </button>
 
+                    {% endif %}
                     {% if not order.unpaid_invoice_id %}
+                    {% if has_permission('invoice', 'manage_invoices') %}
                     <a class="btn btn-primary"
                         {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>
                         <svg class="icon" width="24" height="24">
@@ -281,6 +287,7 @@
                         </svg>
                         <span>{{ 'Issue Invoice'|trans }}</span>
                     </a>
+                    {% endif %}
                     {% else %}
                     {# ClientFence core patch: a promotion for this order goes on its unpaid invoice (Invoice/Promotions.php). #}
                     {{ include('mod_invoice_promo_modal.html.twig', { promo_invoice_id: order.unpaid_invoice_id, promo_orders: [{ rel_id: order.id, title: order.title }] }) }}
@@ -505,6 +512,7 @@
             {% endif %}
         {% endif %}
 
+        {% if has_permission('order', 'manage') %}
         <div class="tab-pane fade" id="tab-manage" role="tabpanel">
             <div class="card-body">
                 <form method="post" action="{{ 'order/update'|api_url }}" {{ fb_api_form({ reload: true}) }}>
@@ -695,6 +703,7 @@
                 </form>
             </div>
         </div>
+        {% endif %}
 
         <div class="tab-pane fade" id="tab-addons" role="tabpanel">
             {% embed 'partial_admin_related_section.html.twig' with {
@@ -736,7 +745,7 @@
                             </tbody>
                         </table>
                     </div>
-                    {% if addon_offers|length > 0 %}
+                    {% if addon_offers|length > 0 and has_permission('order', 'manage') %}
                     <form method="post" action="{{ 'order/create_many'|api_url }}" class="card-body border-top" {{ fb_api_form({ reload: true }) }}>
                         <input type="hidden" name="client_id" value="{{ order.client_id }}">
                         <input type="hidden" name="items[0][addon_for]" value="{{ order.id }}">

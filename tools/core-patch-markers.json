@@ -8560,6 +8560,10 @@
         "done": "{# ClientFence core patch: a draft (not yet issued) says Draft, not Unpaid. #}"
     },
     {
+        "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
+        "done": "{# ClientFence core patch: the groups table scrolls inside its card on a phone, not the page. #}"
+    },
+    {
         "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
         "done": "{# ClientFence core patch: a draft (not yet issued) says Draft, not Unpaid. #}"
     },
@@ -8576,11 +8580,15 @@
         "done": "{# ClientFence core patch: a draft (not yet issued) says Draft, not Unpaid. #}"
     },
     {
-        "file": "modules/Staff/templates/admin/mod_staff_settings.html.twig",
-        "done": "{# ClientFence core patch: the groups table scrolls inside its card on a phone, not the page. #}"
-    },
-    {
         "file": "modules/Staff/templates/admin/mod_staff_group.html.twig",
         "done": "{# ClientFence core patch: an info tooltip only for a permission with a description (an empty one threw a script error). #}"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "{# ClientFence core patch: staff who may only view orders get no edit tabs or action buttons (the API refuses them). #}"
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "{# ClientFence core patch: staff who may only view tickets get no reply, edit, close, delete, merge or note controls (the API refuses them). #}"
     }
 ]

@@ -34,9 +34,12 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" href="#tab-index" data-bs-toggle="tab" role="tab">{{ 'Ticket'|trans }}</a>
                     </li>
+                    {# ClientFence core patch: staff who may only view tickets get no reply, edit, close, delete, merge or note controls (the API refuses them). #}
+                    {% if has_permission('support', 'manage_tickets') %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-manage" data-bs-toggle="tab" role="tab">{{ 'Manage'|trans }}</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-notes" data-bs-toggle="tab" role="tab">{{ 'Notes'|trans }} {% if ticket.notes is defined and ticket.notes|length > 0 %}({{ ticket.notes|length }}){% endif %}</a>
                     </li>
@@ -107,6 +110,7 @@
                     {% endblock %}
 
                     {% block summary_actions %}
+                        {% if has_permission('support', 'manage_tickets') %}
                         {% if ticket.status != 'closed' %}
                         <a class="btn btn-primary" href="{{ 'support/ticket_close'|api_url(query: { 'id': ticket.id }) }}"
                             {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'support'|url(query: { status: 'open' }) }) }}>
@@ -124,6 +128,7 @@
                             <svg class="icon"><use href="#check" /></svg>
                             {{ 'Set Task Complete'|trans }}
                         </a>
+                        {% endif %}
                         {% endif %}
                         {% if ticket.author.role|default('') == 'guest' and ticket.hash is defined %}
                         <a class="btn btn-secondary" href='{{ "support/ticket/#{ticket.hash}"|url(area: 'client') }}' target="_blank">
@@ -211,7 +216,7 @@
                                             {{ 'Edited'|trans }}
                                         </a>
                                         {% endif %}
-                                        {% if role == 'admin' %}
+                                        {% if role == 'admin' and has_permission('support', 'manage_tickets') %}
                                         <a href="#" title="{{ 'Edit'|trans }}" data-bs-toggle="modal" data-bs-target="#editMessage{{ message.id }}">
                                             <svg class="icon">
                                                 <use href="#edit" />
@@ -231,7 +236,7 @@
                                 </div>
                             </div>
 
-                            {% if message.author.role|default('') == 'admin' %}
+                            {% if message.author.role|default('') == 'admin' and has_permission('support', 'manage_tickets') %}
                             <div class="modal modal-blur fade" id="editMessage{{ message.id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen-md-down">
                                     <form class="modal-content" method="post" action="{{ 'support/ticket_message_update'|api_url }}" {{ fb_api_form({reload: true}) }}>
@@ -272,6 +277,7 @@
                     </div>
                 </div>
 
+                {% if has_permission('support', 'manage_tickets') %}
                 <div class="card mb-0" id="reply-box">
                     <form method="post" action="{{ 'support/ticket_reply'|api_url }}" {{ fb_api_form({ reload: true }) }}>
                         <div class="card-body">
@@ -312,9 +318,11 @@
                         </div>
                     </form>
                 </div>
+                {% endif %}
             </div>
         </div>
 
+        {% if has_permission('support', 'manage_tickets') %}
         <div class="tab-pane fade" id="tab-manage" role="tabpanel">
             <div class="card-body">
                 <form method="post" action="{{ 'support/ticket_update'|api_url }}" {{ fb_api_form({ reload: true}) }}>
@@ -397,6 +405,7 @@
                 </form>
             </div>
         </div>
+        {% endif %}
 
         <div class="tab-pane fade" id="tab-notes" role="tabpanel">
             <div class="p-3 d-flex flex-column gap-3">
@@ -413,10 +422,12 @@
                                     <td class="w-1"><a href='{{ "staff/manage/#{note.admin_id}"|url }}'>{{ note.author.name }}</a></td>
                                     <td>{{ note.note }}</td>
                                     <td class="w-1">
+                                        {% if has_permission('support', 'manage_tickets') %}
                                         <a class="btn btn-icon" href="{{ 'support/note_delete'|api_url(query: { 'id': note.id }) }}"
                                             {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true }) }}>
                                             <svg class="icon"><use href="#trash" /></svg>
                                         </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% else %}
@@ -427,6 +438,7 @@
                     {% endblock %}
                 {% endembed %}
 
+                {% if has_permission('support', 'manage_tickets') %}
                 <form method="post" action="{{ 'support/note_create'|api_url }}" {{ fb_api_form({ reload: true}) }}>
                     {% embed 'partial_admin_form_card.html.twig' with {
                         title: 'Add Internal Note'|trans,
@@ -449,6 +461,7 @@
                         {% endblock %}
                     {% endembed %}
                 </form>
+                {% endif %}
             </div>
         </div>
 
@@ -524,12 +537,13 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector('#reply-box textarea').focus();
-
+        // The reply box is only there for staff who may answer tickets.
         var ta = document.getElementById('rt');
-        var pos = ta.innerHTML.indexOf('\n') + 2;
-
-        setSelRange(ta, pos, pos);
+        if (ta) {
+            document.querySelector('#reply-box textarea').focus();
+            var pos = ta.innerHTML.indexOf('\n') + 2;
+            setSelRange(ta, pos, pos);
+        }
 
         document.querySelectorAll('.shd select').forEach(function(select) {
             select.addEventListener('change', function() {

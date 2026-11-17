@@ -114,13 +114,13 @@ final class StrictTemplateRenderer
     /**
      * @param array<string, mixed> $contextOverrides
      */
-    public function renderTemplate(string $templatePath, array $contextOverrides = [], bool $emailMode = false): string
+    public function renderTemplate(string $templatePath, array $contextOverrides = [], bool $emailMode = false, ?\Closure $hasPermission = null): string
     {
         $previousLevel = error_reporting();
         error_reporting($this->suppressNoticesAndWarnings($previousLevel));
 
         try {
-            $twig = $this->buildEnvironment($emailMode, stringifyUrls: true);
+            $twig = $this->buildEnvironment($emailMode, stringifyUrls: true, hasPermission: $hasPermission);
             $context = array_replace($this->buildContext($emailMode), $contextOverrides);
 
             try {
@@ -250,7 +250,7 @@ final class StrictTemplateRenderer
     /**
      * @param list<string> $themes
      */
-    private function buildEnvironment(bool $emailMode, bool $stringifyUrls = false, array $themes = ['admin_default', 'palisade']): Environment
+    private function buildEnvironment(bool $emailMode, bool $stringifyUrls = false, array $themes = ['admin_default', 'palisade'], ?\Closure $hasPermission = null): Environment
     {
         $loader = new CombinedTwigLoader(PATH_THEMES, $themes);
         // Also register every module template directory under the unnamed path
@@ -291,6 +291,30 @@ final class StrictTemplateRenderer
         // test environment. A PermissiveContainer absorbs every `$di['x']`
         // access so the extensions can render without a live DI graph.
         $di = $stringifyUrls ? $this->buildUrlAwareContainer() : new PermissiveContainer();
+        // A signed-in staff member with the rights $hasPermission gives; without it has_permission() is false.
+        if ($hasPermission !== null) {
+            $di['auth'] = new class {
+                public function isAdminLoggedIn(): bool
+                {
+                    return true;
+                }
+            };
+            $di['mod_service'] = static fn (string $name): object => new class($hasPermission) {
+                public function __construct(private \Closure $hasPermission)
+                {
+                }
+
+                public function hasPermission(mixed $admin, string $module, ?string $permission = null): bool
+                {
+                    return ($this->hasPermission)($module, $permission);
+                }
+
+                public function __call(string $name, array $arguments): PermissiveStub
+                {
+                    return new PermissiveStub();
+                }
+            };
+        }
         $twig->addRuntimeLoader(new readonly class($di) implements \Twig\RuntimeLoader\RuntimeLoaderInterface {
             public function __construct(private \Pimple\Container $di)
             {
@@ -526,6 +550,10 @@ final class StrictTemplateRenderer
             // limitation, not a template bug. The class-name check keeps a
             // genuine "Unsupported operand types" bug elsewhere in a
             // template (unrelated to the stub) classified as real-bug.
+            return 'test-infra';
+        }
+        if (str_contains($message, 'Cannot access offset of type ' . PermissiveStub::class)) {
+            // A stub used as an array key (`pairs[ticket.helpdesk_id]`): real pages pass an id.
             return 'test-infra';
         }
         if (str_contains($message, 'NumberFormatter::formatCurrency')) {
