@@ -439,6 +439,7 @@ test('duplicates a form', function (): void {
     ];
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getForm')->with(1)->andReturn(['style' => ['type' => 'default', 'show_title' => '1']]);
     /** @var Mockery\Expectation $expectation1 */
     $expectation1 = $serviceMock->shouldReceive('getFormFields');
     $expectation1->atLeast()->once();
@@ -478,4 +479,67 @@ test('updates form settings', function (): void {
     $service->setDi($di);
     $result = $service->updateFormSettings($data);
     expect($result)->toBeTrue();
+});
+
+test('a copied form keeps its style and the choices of its fields', function (): void {
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getForm')->with(1)->andReturn(['style' => ['type' => 'default', 'show_title' => '1']]);
+    $service->shouldReceive('getFormFields')->with(1)->andReturn([
+        ['id' => 5, 'form_id' => 1, 'name' => 'plan', 'label' => 'Plan', 'type' => 'select', 'options' => '{"Small":"s","Large":"l"}'],
+    ]);
+    $service->shouldReceive('getFormFieldsCount')->andReturn(0);
+
+    $dbal = Mockery::mock(Connection::class);
+    $dbal->shouldReceive('insert')->once()->with('form', Mockery::on(fn (array $row): bool => $row['style'] === '{"type":"default","show_title":"1"}'));
+    $dbal->shouldReceive('insert')->once()->with('form_field', Mockery::on(fn (array $row): bool => $row['form_id'] === 3 && $row['options'] === '{"Small":"s","Large":"l"}'));
+    $dbal->shouldReceive('lastInsertId')->andReturn(3, 9);
+
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service->setDi($di);
+
+    expect($service->duplicateForm(['form_id' => 1, 'name' => 'Copy']))->toBe(3);
+});
+
+test('a field saved without options or type keeps its choices', function (): void {
+    $fieldResult = Mockery::mock(Result::class);
+    $fieldResult->shouldReceive('fetchAssociative')->once()->andReturn(['id' => 2, 'form_id' => 1, 'options' => '{"Small":"s"}']);
+    $existsResult = Mockery::mock(Result::class);
+    $existsResult->shouldReceive('fetchOne')->once()->andReturn(0);
+
+    $dbal = Mockery::mock(Connection::class);
+    $dbal->shouldReceive('executeQuery')->twice()->andReturn($fieldResult, $existsResult);
+    $dbal->shouldReceive('update')->once()->with('form_field', Mockery::on(fn (array $row): bool => !array_key_exists('options', $row) && $row['label'] === 'Plan'), ['id' => 2]);
+
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->updateField(['id' => 2, 'name' => 'plan', 'label' => 'Plan']))->toBe(2);
+});
+
+test('a copied form keeps the field texts of installed languages and skips those of a removed one', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('product_translation', ['kind' => 'field', 'ref_id' => 5, 'lang' => 'de_DE', 'title' => 'Tarif', 'description' => null]);
+    $db->insert('product_translation', ['kind' => 'field', 'ref_id' => 5, 'lang' => 'xx_XX', 'title' => 'Old', 'description' => null]);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getForm')->andReturn(['style' => ['type' => 'default', 'show_title' => '1']]);
+    $service->shouldReceive('getFormFields')->andReturn([['id' => 5, 'form_id' => 1, 'name' => 'plan', 'label' => 'Plan', 'type' => 'text']]);
+    $service->shouldReceive('addNewForm')->andReturn(3);
+    $service->shouldReceive('addNewField')->andReturn(9);
+
+    $di = container();
+    $di['em'] = $em;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service->setDi($di);
+
+    expect($service->duplicateForm(['form_id' => 1, 'name' => 'Copy']))->toBe(3)
+        ->and($db->fetchAllAssociative('SELECT lang, title FROM product_translation WHERE ref_id = 9'))->toBe([['lang' => 'de_DE', 'title' => 'Tarif']]);
 });

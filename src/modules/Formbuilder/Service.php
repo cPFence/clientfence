@@ -119,7 +119,8 @@ class Service implements InjectionAwareInterface
         $label = $field['label'] ?? $types[$type] . ' ' . $fieldNumber;
         $name = $field['name'] ?? $this->slugify('new_' . $type) . '_' . $fieldNumber;
 
-        if ($type == 'select' || $type == 'checkbox' || $type == 'radio') {
+        // ClientFence core patch: sample choices only when none are given (a copied form kept losing its choices).
+        if (($type == 'select' || $type == 'checkbox' || $type == 'radio') && empty($field['options'])) {
             $field['options'] = '{"First option":"1", "Second option": "2", "Third option":"3"}';
         }
 
@@ -200,6 +201,8 @@ class Service implements InjectionAwareInterface
             throw new \ClientFence\InformationException('Unfortunately field with this name exists in this form already. Form must have different field names.', null, 7628);
         }
 
+        // ClientFence core patch: a field saved without options or type keeps its choices instead of losing them.
+        $keepOptions = !isset($field['options']) && !isset($field['type']);
         $field['options'] = isset($field['options']) ? json_encode($field['options']) : '';
         if (isset($field['default_value'])) {
             $field['default_value'] = is_array($field['default_value']) ? json_encode($field['default_value'], JSON_FORCE_OBJECT) : $field['default_value'];
@@ -230,7 +233,7 @@ class Service implements InjectionAwareInterface
             }
         }
 
-        $this->getDbal()->update('form_field', [
+        $this->getDbal()->update('form_field', array_diff_key([
             'name' => $name,
             'label' => $label,
             'hide_label' => $field['hide_label'] ?? null,
@@ -248,7 +251,7 @@ class Service implements InjectionAwareInterface
             'show_suffix' => $field['show_suffix'] ?? null,
             'text_size' => $field['text_size'] ?? null,
             'updated_at' => date('Y-m-d H:i:s'),
-        ], ['id' => $fieldId]);
+        ], $keepOptions ? ['options' => true] : []), ['id' => $fieldId]);
 
         $this->di['logger']->info('Updated custom form %s', $fieldId);
 
@@ -395,14 +398,22 @@ class Service implements InjectionAwareInterface
 
     public function duplicateForm($data): int
     {
+        // ClientFence core patch: the copy keeps the form's style, its fields' choices and their texts in other languages.
+        $form = $this->getForm((int) $data['form_id']);
         $fields = $this->getFormFields($data['form_id']);
-        $newFormId = $this->addNewForm([
-            'name' => $data['name'],
-        ]);
+        $newFormId = $this->addNewForm(['name' => $data['name']] + $form['style']);
 
         foreach ($fields as $fieldData) {
             $fieldData['form_id'] = $newFormId;
-            $this->addNewField($fieldData);
+            $newFieldId = $this->addNewField($fieldData);
+            // Texts in a language no longer installed are left out: save() refuses them, and the copy must not fail on old data.
+            $texts = array_intersect_key(
+                \ClientFence\Mod\Product\Translations::forItem($this->di, 'field', (int) ($fieldData['id'] ?? 0)),
+                array_flip(array_merge(\ClientFence\i18n::getLocales(), \ClientFence\i18n::getLocales(false, true)))
+            );
+            if ($texts !== []) {
+                \ClientFence\Mod\Product\Translations::save($this->di, 'field', $newFieldId, $texts);
+            }
         }
 
         $this->di['logger']->info('Copied form with id %s to new form %s with id %s', $data['form_id'], $data['name'], $newFormId);
