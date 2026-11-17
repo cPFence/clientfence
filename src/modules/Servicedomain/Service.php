@@ -1473,7 +1473,8 @@ class Service implements \ClientFence\InjectionAwareInterface
      */
     public function registrarGetAvailable(): array
     {
-        $query = "SELECT 'registrar', 'name' FROM tld_registrar GROUP BY registrar";
+        // ClientFence core patch: the columns, not two string literals, so installed registrars are left out.
+        $query = 'SELECT registrar, MIN(name) FROM tld_registrar GROUP BY registrar';
 
         $exists = $this->di['db']->getAssoc($query);
 

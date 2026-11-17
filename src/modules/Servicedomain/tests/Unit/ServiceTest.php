@@ -2104,6 +2104,7 @@ test('gets available registrars', function (): void {
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getAssoc')
         ->atLeast()->once()
+        ->with('SELECT registrar, MIN(name) FROM tld_registrar GROUP BY registrar')
         ->andReturn($registrars);
 
     $di = container();
@@ -2111,7 +2112,9 @@ test('gets available registrars', function (): void {
     $service->setDi($di);
 
     $result = $service->registrarGetAvailable();
-    expect($result)->toBeArray();
+    expect($result)->toBeArray()
+        ->not->toContain('Resellerclub')
+        ->toContain('Custom');
 });
 
 test('gets registrar pairs', function (): void {
