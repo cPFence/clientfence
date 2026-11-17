@@ -8622,5 +8622,13 @@
     {
         "file": "modules/Invoice/Api/Admin.php",
         "done": "ClientFence core patch: the gateway fee follows the new amount, as an amount change on Manage does (not when staff delete the fee line itself)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: an unpaid invoice that staff lowered to what was already paid on it is paid from those payments,"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: a delete that leaves nothing due pays the invoice from what was paid on it (after the lock)."
     }
 ]

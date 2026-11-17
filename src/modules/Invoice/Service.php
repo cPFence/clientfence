@@ -2324,10 +2324,25 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: under the client's credit lock, with the status and paid date as they are now. A save
         // that raced a credit payment wrote back what it loaded before it: the paid invoice was unpaid again (and
         // charged again later), or showed a payment it never had.
-        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $model->client_id, function () use ($model, $data): bool {
+        $result = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $model->client_id, function () use ($model, $data): bool {
             $this->refreshStatus($model);
             return $this->updateInvoiceLocked($model, $data);
         });
+        // After the lock: tryPayWithCredits() takes it itself.
+        $this->payIfCovered($model);
+
+        return $result;
+    }
+
+    /**
+     * ClientFence core patch: an unpaid invoice that staff lowered to what was already paid on it is paid from those payments,
+     * as Mark as Paid does; the rest stays the client's credit (it stayed unpaid with nothing due, open to reminders).
+     */
+    public function payIfCovered(\Model_Invoice $invoice): void
+    {
+        if ($invoice->status === \Model_Invoice::STATUS_UNPAID && $this->getAmountPaid($invoice) > 0 && $this->getBalanceDue($invoice) <= 0) {
+            $this->tryPayWithCredits($invoice);
+        }
     }
 
     /**

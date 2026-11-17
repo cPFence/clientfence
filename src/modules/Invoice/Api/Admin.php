@@ -313,7 +313,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             return $invoiceItemService->remove($model);
         }
 
-        return \ClientFence\Tools::withLock($this->getDi(), 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $model, $invoiceItemService) {
+        $result = \ClientFence\Tools::withLock($this->getDi(), 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $model, $invoiceItemService) {
             $this->getService()->refreshStatus($invoice);
             if ($this->getService()->isBooked($invoice)) {
                 throw new \ClientFence\InformationException('The lines and tax rate of a paid invoice cannot be changed. Refund it and make a new invoice.');
@@ -326,6 +326,10 @@ class Admin extends \ClientFence\Api\AbstractApi
 
             return true;
         });
+        // ClientFence core patch: a delete that leaves nothing due pays the invoice from what was paid on it (after the lock).
+        $this->getService()->payIfCovered($invoice);
+
+        return $result;
     }
 
     /**

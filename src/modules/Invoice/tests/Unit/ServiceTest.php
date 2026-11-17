@@ -5945,3 +5945,20 @@ test('Send invoice refuses a draft or a paid invoice (CF-179)', function (int $a
     'draft' => [0, Model_Invoice::STATUS_UNPAID],
     'paid' => [1, Model_Invoice::STATUS_PAID],
 ]);
+
+test('an unpaid invoice lowered to what was paid on it is paid from those payments', function (string $status, float $paid, float $due, bool $pays): void {
+    $service = Mockery::mock(ClientFence\Mod\Invoice\Service::class)->makePartial();
+    $service->allows('getAmountPaid')->andReturn($paid);
+    $service->allows('getBalanceDue')->andReturn($due);
+    $service->shouldReceive('tryPayWithCredits')->times($pays ? 1 : 0)->andReturnTrue();
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->status = $status;
+
+    $service->payIfCovered($invoice);
+})->with([
+    'covered by its payments' => ['unpaid', 80.0, 0.0, true],
+    'still due' => ['unpaid', 30.0, 20.0, false],
+    'nothing paid on it' => ['unpaid', 0.0, 0.0, false],
+    'already paid' => ['paid', 60.0, 0.0, false],
+]);

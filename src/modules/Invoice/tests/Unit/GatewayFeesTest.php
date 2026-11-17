@@ -153,6 +153,7 @@ test('a line deleted by staff puts the fee on the new amount; the fee line delet
     $world->db->update('invoice', ['gateway_id' => 3], ['id' => 5]);
     $world->invoices->allows('refreshStatus');
     $world->invoices->allows('isBooked')->andReturnFalse();
+    $world->invoices->allows('payIfCovered');
     // The world answers every other module, Staff's permission check too.
     $world->invoices->allows('checkPermissionsAndThrowException');
     $api = apiEndpoint(new ClientFence\Mod\Invoice\Api\Admin());
