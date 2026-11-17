@@ -221,16 +221,7 @@ class Service implements InjectionAwareInterface
 
     public function getRefunds($data)
     {
-        $time_from = strtotime('-1 month');
-        $time_to = strtotime('+1 day');
-
-        if (isset($data['date_from']) && !empty($data['date_from'])) {
-            $time_from = strtotime((string) $data['date_from']);
-        }
-
-        if (isset($data['date_to']) && !empty($data['date_to'])) {
-            $time_to = strtotime((string) $data['date_to']);
-        }
+        [$time_from, $time_to] = $this->_getDateInterval($data);
 
         $dbal = $this->di['dbal'];
 
@@ -254,16 +245,7 @@ class Service implements InjectionAwareInterface
 
     public function getIncome($data)
     {
-        $time_from = strtotime('-1 month');
-        $time_to = strtotime('+1 day');
-
-        if (isset($data['date_from']) && !empty($data['date_from'])) {
-            $time_from = strtotime((string) $data['date_from']);
-        }
-
-        if (isset($data['date_to']) && !empty($data['date_to'])) {
-            $time_to = strtotime((string) $data['date_to']);
-        }
+        [$time_from, $time_to] = $this->_getDateInterval($data);
 
         $dbal = $this->di['dbal'];
 
@@ -323,12 +305,15 @@ class Service implements InjectionAwareInterface
         $time_from = strtotime('-1 month');
         $time_to = strtotime('+1 day');
 
-        if (isset($data['date_from']) && !empty($data['date_from'])) {
-            $time_from = strtotime((string) $data['date_from']);
+        // ClientFence core patch: a date strtotime cannot read is refused, not a raw PHP error from date(); every chart uses this.
+        if (!empty($data['date_from'])) {
+            $time_from = strtotime(is_scalar($data['date_from']) ? (string) $data['date_from'] : '');
         }
-
-        if (isset($data['date_to']) && !empty($data['date_to'])) {
-            $time_to = strtotime((string) $data['date_to']);
+        if (!empty($data['date_to'])) {
+            $time_to = strtotime(is_scalar($data['date_to']) ? (string) $data['date_to'] : '');
+        }
+        if ($time_from === false || $time_to === false) {
+            throw new \ClientFence\InformationException('Enter a valid date.');
         }
 
         return [$time_from, $time_to];
@@ -340,16 +325,7 @@ class Service implements InjectionAwareInterface
         if (!in_array($table, $allowedTables, true)) {
             throw new \ClientFence\Exception('Invalid table name: :table', [':table' => $table]);
         }
-        $time_from = strtotime('-1 month');
-        $time_to = strtotime('+1 day');
-
-        if (isset($data['date_from']) && !empty($data['date_from'])) {
-            $time_from = strtotime((string) $data['date_from']);
-        }
-
-        if (isset($data['date_to']) && !empty($data['date_to'])) {
-            $time_to = strtotime((string) $data['date_to']);
-        }
+        [$time_from, $time_to] = $this->_getDateInterval($data);
 
         $dbal = $this->di['dbal'];
 

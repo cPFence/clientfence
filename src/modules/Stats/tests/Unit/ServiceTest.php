@@ -323,3 +323,18 @@ test('gets table stats', function (): void {
     $result = $service->getTableStats('client', $data);
     expect($result)->toBeArray();
 });
+
+test('a date that cannot be read is refused before any query', function (string $method, array $data): void {
+    $service = new ClientFence\Mod\Stats\Service();
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldNotReceive('executeQuery');
+    $di = container();
+    $di['dbal'] = $dbalMock;
+    $service->setDi($di);
+
+    expect(fn () => $service->{$method}($data))->toThrow(ClientFence\InformationException::class, 'Enter a valid date.');
+})->with([
+    'income' => ['getIncome', ['date_from' => 'nonsense']],
+    'refunds' => ['getRefunds', ['date_to' => 'nonsense']],
+    'product sales' => ['getProductSales', ['date_from' => ['2026-01-01']]],
+]);
