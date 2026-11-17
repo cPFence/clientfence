@@ -36,17 +36,33 @@ A new look for the admin and client areas, and new billing features.
 - Users, Contacts and Support tickets show the list first; the add form opens from its button.
 - Table rows hover with one flat tint, secondary buttons hover in soft teal, and admin primary buttons in dark mode use the client area's brand colour.
 - On the admin client page, the Credit Balance tab shows the balance in key figure cards and the Tickets tab counts filter the list.
+- **Brand color:** the default brand color is now the theme's own navy and teal. The quick setup wizard keeps the admin's colors and buttons, and its preview shows the new client area. Emails use the brand color when it is the default too.
+- On the admin client page, New Order only shows to staff who may create orders. The invoice page shows each action only to staff who have the right to use it.
+- Deleting a client also removes its quotes, service and order records, ticket messages and saved payment links. Payment history is kept.
+- The store's domain search runs straight away, with the chosen extension ticked first.
+- The client page's trust score counts unpaid invoices past their due date as paid late.
 
 ### Fixed
 
 - Add New Order no longer adds the first product on its own. ([#35](https://github.com/cPFence/clientfence/issues/35))
 - The admin back-to-top button no longer covers the version number. ([#36](https://github.com/cPFence/clientfence/issues/36))
 - Email history shows emails with their styling. ([#39](https://github.com/cPFence/clientfence/issues/39))
+- A payment fee no longer stays on an invoice when the client picks another payment method: the fee follows the chosen method on the invoice, the store checkout and the cart page, and Due today and the pay button show it. ([#42](https://github.com/cPFence/clientfence/issues/42))
 - The store no longer shows a free billing cycle as a saving.
 - System Health no longer says the database backup is kept only on this server when cloud storage keeps a copy.
 - The empty-list icon no longer covers its text, and the Security sign-in summary rows line up.
 - Behind Cloudflare, email addresses on pages no longer show as "[email protected]".
 - In client area dark mode, the language, notification and account menus are readable.
+- The account statement shows the payment for an invoice paid partly from account credit and partly by a payment that staff recorded.
+- A draft invoice can no longer be charged to a saved card.
+- Add Funds on the admin client page's Credit Balance tab no longer opens an error page.
+- The quote page of a deleted client opens again, showing "Deleted client".
+- In client area dark mode, outline buttons are readable.
+- The checkout no longer shows a "Discount −$0" line after an automatic promotion ends.
+- An invoice link opened while signed out returns to that invoice after sign-in.
+- Opening another client's email shows "not found" instead of an error page.
+- The ticket feedback page has a Back link, and the admin side menu arrows are smaller.
+- Service types and "MRR" are translated, and the email template list shows readable subjects.
 
 ## 1.0.55 (2026-11-16)
 
