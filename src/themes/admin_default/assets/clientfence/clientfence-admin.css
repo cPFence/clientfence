@@ -351,7 +351,7 @@ body { font-family: var(--bf-font); }
 .bf-new { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 9px; font-weight: 600; }
 .bf-new .icon { width: 18px; height: 18px; margin: 0; }
 .bf-lang-code { font-size: 12px; font-weight: 600; letter-spacing: .04em; }
-.bf-lang-list { max-height: min(60vh, 24rem); overflow-y: auto; }
+.bf-lang-list { max-height: min(60vh, 24rem); overflow-y: auto; overflow-x: hidden; }
 /* The notifications list scrolls without a visible scrollbar, as the side menu. */
 .bf-bell-list { scrollbar-width: none; }
 .bf-bell-list::-webkit-scrollbar { display: none; }
