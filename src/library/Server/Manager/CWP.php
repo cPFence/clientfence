@@ -423,11 +423,11 @@ class Server_Manager_CWP extends Server_Manager
         $result = $response['result'] ?? null;
         $msg = $response['msg'] ?? 'CWP did not return a message in it\'s response.';
 
-        // If the status is not 'OK', log an error message and return false
+        // ClientFence core patch: CWP's error message reaches staff and the order log, not only the PHP error log.
         if ($status !== 'OK') {
-            error_log('CWP Server manager error. Status: ' . $status . '. Message: ' . $msg);
+            $this->getLog()->error('CWP Server manager error. Status: ' . $status . '. Message: ' . $msg);
 
-            return false;
+            throw new Server_Exception('The CWP server returned an error: :message', [':message' => $msg]);
         }
 
         // If the function called is 'accountdetail', return the result from the response

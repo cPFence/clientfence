@@ -586,12 +586,15 @@ class Server_Manager_Directadmin extends Server_Manager
             }
 
             $data = $request->getContent();
-        } catch (TransportExceptionInterface|HttpExceptionInterface $error) {
-            // If there is an error while sending the request, throw an exception
-            $exception = new Server_Exception('HttpClientException: :error', [':error' => $error->getMessage()]);
-            $this->getLog()->error($exception->getMessage());
+        } catch (HttpExceptionInterface $error) {
+            // ClientFence core patch: HTTP and connection errors become a clear message instead of the raw HTTP client one.
+            $this->getLog()->error('DirectAdmin HTTP error: ' . $error->getMessage());
 
-            throw $exception;
+            throw new Server_Exception('The :type: server returned HTTP status :status. Check server availability and API configuration.', [':type:' => 'DirectAdmin', ':status' => $error->getResponse()->getStatusCode()]);
+        } catch (TransportExceptionInterface $error) {
+            $this->getLog()->error('DirectAdmin connection error: ' . $error->getMessage());
+
+            throw new Server_Exception('Could not connect to the :type: server. Check the server address, port and API configuration.', [':type:' => 'DirectAdmin']);
         }
 
         // Check if the response data contains HTML, as some endpoints return HTML if the request fails (such as auth requests)

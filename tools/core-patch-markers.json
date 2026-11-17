@@ -8286,5 +8286,21 @@
     {
         "file": "modules/Theme/Service.php",
         "done": "ClientFence core patch: a missing client theme folder falls back to palisade, as the admin area falls back to admin_default."
+    },
+    {
+        "file": "library/Server/Manager/CWP.php",
+        "done": "ClientFence core patch: CWP's error message reaches staff and the order log, not only the PHP error log."
+    },
+    {
+        "file": "library/Server/Manager/Whm.php",
+        "done": "ClientFence core patch: the response is read inside the try (the client sends lazily), and HTTP and connection"
+    },
+    {
+        "file": "library/Server/Manager/Hestia.php",
+        "done": "ClientFence core patch: HTTP and connection errors become a clear message instead of the raw HTTP client one,"
+    },
+    {
+        "file": "library/Server/Manager/Directadmin.php",
+        "done": "ClientFence core patch: HTTP and connection errors become a clear message instead of the raw HTTP client one."
     }
 ]

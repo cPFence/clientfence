@@ -181,3 +181,13 @@ test('DirectAdmin read-only commands go as GET with their fields in the query st
         ->and((new ReflectionMethod($manager, 'getUserPackages'))->invoke($manager))->toBe(['basic'])
         ->and($requests[2]['method'])->toBe('GET');
 });
+
+test('DirectAdmin HTTP and connection errors give a clear message, not the raw HTTP client one', function (MockResponse $response, string $message): void {
+    $manager = createDirectadminManager(new MockHttpClient($response));
+    $manager->setLog(new ClientFence\Log());
+
+    expect(fn (): bool => $manager->testConnection())->toThrow(Server_Exception::class, $message);
+})->with([
+    'HTTP 500' => [new MockResponse('oops', ['http_code' => 500]), 'The DirectAdmin server returned HTTP status 500.'],
+    'no connection' => [new MockResponse('', ['error' => 'Could not resolve host']), 'Could not connect to the DirectAdmin server.'],
+]);

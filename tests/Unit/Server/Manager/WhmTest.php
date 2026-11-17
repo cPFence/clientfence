@@ -172,3 +172,12 @@ test('generated WHM packages handle typed existing-package responses and surface
             ->and($requests)->toBe(['listpkgs', 'addpkg']);
     }
 })->with([['Package already exists', true], ['Permission denied', false]]);
+
+test('WHM HTTP and connection errors give a clear message, not the raw HTTP client one', function (MockResponse $response, string $message): void {
+    $manager = createWhmManager(new MockHttpClient($response));
+
+    expect(fn (): bool => $manager->testConnection())->toThrow(Server_Exception::class, $message);
+})->with([
+    'HTTP 401' => [new MockResponse('denied', ['http_code' => 401]), 'The cPanel server returned HTTP status 401.'],
+    'no connection' => [new MockResponse('', ['error' => 'Could not resolve host']), 'Could not connect to the cPanel server.'],
+]);

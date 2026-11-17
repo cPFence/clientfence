@@ -31,6 +31,13 @@ test('CWP reports invalid JSON as a server error', function (string $body): void
     expect(fn () => $manager->testConnection())->toThrow(Server_Exception::class, 'The CWP server returned an invalid JSON response');
 })->with(['empty' => '', 'HTML' => '<html>Not found</html>']);
 
+test('CWP shows the panel error message instead of a generic failure', function (): void {
+    $manager = createCwpManager('{"status":"Error","msg":"User does not exist"}');
+
+    expect(fn () => $manager->changeAccountPassword((new Server_Account())->setUsername('example'), 'secret'))
+        ->toThrow(Server_Exception::class, 'The CWP server returned an error: User does not exist');
+});
+
 test('CWP changes the package with the documented udp action', function (): void {
     $sent = [];
     $manager = createCwpManager(function (string $method, string $url, array $options) use (&$sent): MockResponse {

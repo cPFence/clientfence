@@ -8,6 +8,10 @@ declare(strict_types=1);
  * @copyright FOSSBilling (https://www.fossbilling.org)
  * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache-2.0
  */
+
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+
 class Server_Manager_Hestia extends Server_Manager
 {
     /**
@@ -370,16 +374,26 @@ class Server_Manager_Hestia extends Server_Manager
             'timeout' => 120,
         ]);
 
-        $response = $client->request('POST', $host, [
-            'body' => $params,
-        ]);
+        // ClientFence core patch: HTTP and connection errors become a clear message instead of the raw HTTP client one,
+        // and Hestia's error codes go to the ClientFence log (the order's log), not only the PHP error log.
+        try {
+            $result = $client->request('POST', $host, [
+                'body' => $params,
+            ])->getContent();
+        } catch (HttpExceptionInterface $error) {
+            $this->getLog()->error('HestiaCP HTTP error: ' . $error->getMessage());
 
-        $result = $response->getContent();
+            throw new Server_Exception('The :type: server returned HTTP status :status. Check server availability and API configuration.', [':type:' => 'HestiaCP', ':status' => $error->getResponse()->getStatusCode()]);
+        } catch (TransportExceptionInterface $error) {
+            $this->getLog()->error('HestiaCP connection error: ' . $error->getMessage());
+
+            throw new Server_Exception('Could not connect to the :type: server. Check the server address, port and API configuration.', [':type:' => 'HestiaCP']);
+        }
 
         if (str_contains($result, 'Error')) {
             throw new Server_Exception('Failed to connect to the :type: server. Please verify your credentials and configuration', [':type:' => 'HestiaCP']);
         } elseif (intval($result) !== 0) {
-            error_log("HestiaCP returned error code $result for the " . $params['cmd'] . 'command');
+            $this->getLog()->error(sprintf('HestiaCP returned error code %s for the %s command', trim($result), $params['cmd']));
         }
 
         return $result;

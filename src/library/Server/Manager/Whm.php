@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 use Random\RandomException;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * cPanel API.
@@ -610,21 +611,25 @@ class Server_Manager_Whm extends Server_Manager
         // Log the request
         $this->getLog()->debug(sprintf('Requesting WHM server action "%s" with params "%s" ', $action, print_r($params, true)));
 
-        // Send the request and handle any errors
+        // ClientFence core patch: the response is read inside the try (the client sends lazily), and HTTP and connection
+        // errors become a clear message instead of the raw HTTP client one.
         try {
             $response = $client->request('POST', $url, [
                 'headers' => ['Authorization' => $authHeader],
                 'body' => $params,
             ]);
+            $body = $response->getContent();
         } catch (HttpExceptionInterface $error) {
-            $e = new Server_Exception('HttpClientException: :error', [':error' => $error->getMessage()]);
-            $this->getLog()->error($e->getMessage());
+            $this->getLog()->error('WHM HTTP error: ' . $error->getMessage());
 
-            throw $e;
+            throw new Server_Exception('The :type: server returned HTTP status :status. Check server availability and API configuration.', [':type:' => 'cPanel', ':status' => $error->getResponse()->getStatusCode()]);
+        } catch (TransportExceptionInterface $error) {
+            $this->getLog()->error('WHM connection error: ' . $error->getMessage());
+
+            throw new Server_Exception('Could not connect to the :type: server. Check the server address, port and API configuration.', [':type:' => 'cPanel']);
         }
 
         // Decode the response from JSON into a PHP variable
-        $body = $response->getContent();
         $json = json_decode($body);
 
         // Check the response for errors and throw a Server_Exception if any are found
