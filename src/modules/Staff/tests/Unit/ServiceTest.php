@@ -2389,3 +2389,29 @@ test('getActivityAdminHistorySearchQuery refuses an unreadable date with a clear
     expect(fn (): array => $service->getActivityAdminHistorySearchQuery(['date_from' => 'nonsense']))
         ->toThrow(ClientFence\InformationException::class, 'Enter a valid date.');
 });
+
+test('a staff member who manages everyone still changes their own email and password only on the Profile page', function (): void {
+    $own = new Model_Admin();
+    $own->loadBean(new Tests\Helpers\DummyBean());
+    $own->id = 99;
+    $own->email = 'me@example.com';
+    $own->status = Model_Admin::STATUS_ACTIVE;
+
+    $eventsMock = Mockery::mock('ClientFence\EventManager');
+    $eventsMock->shouldReceive('fire');
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('store')->never();
+
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('hasPermission')->andReturn(true);
+    $di = container();
+    $di['events_manager'] = $eventsMock;
+    $di['db'] = $dbMock;
+    $di['loggedin_admin'] = staffHierarchyBypassAdmin();
+    $service->setDi($di);
+
+    expect(fn () => $service->update($own, ['email' => 'thief@example.com']))
+        ->toThrow(ClientFence\InformationException::class, 'You cannot manage your own staff account here')
+        ->and(fn () => $service->changePassword($own, 'N3w-password!'))
+        ->toThrow(ClientFence\InformationException::class, 'You cannot manage your own staff account here');
+});

@@ -561,6 +561,11 @@ class Service implements InjectionAwareInterface
             $this->assertCanRemoveActiveSuperAdministrator($model);
         }
 
+        // ClientFence core patch: your own sign-in email and password change only on the Profile page, which asks for the current password.
+        if ((int) $this->di['loggedin_admin']->id === (int) $model->id && isset($data['email']) && $data['email'] !== $model->email) {
+            throw new \ClientFence\InformationException('You cannot manage your own staff account here');
+        }
+
         $oldEmail = $model->email;
         $model->email = $data['email'] ?? $oldEmail;
         $model->name = $data['name'] ?? $model->name;
@@ -624,6 +629,9 @@ class Service implements InjectionAwareInterface
     {
         $this->checkPermissionsAndThrowException('staff', 'reset_staff_password');
         $this->assertCanManageAdmin($model);
+        if ((int) $this->di['loggedin_admin']->id === (int) $model->id) {
+            throw new \ClientFence\InformationException('You cannot manage your own staff account here');
+        }
 
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminStaffPasswordChange', 'params' => ['id' => $model->id]]);
 
