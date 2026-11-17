@@ -226,7 +226,11 @@ class Client implements InjectionAwareInterface
         $this->isRoleAllowed($role);
 
         if ($role !== 'guest') {
-            $this->checkPreAuthRateLimit($role, $method);
+            // ClientFence core patch: a request signed in with a session has its account's limit below; the address limit
+            // is for requests that are not signed in yet (API keys), so a team behind one address does not share it.
+            if (!$this->hasAuthenticatedSession($role)) {
+                $this->checkPreAuthRateLimit($role, $method);
+            }
 
             if ($this->shouldPreferSessionAuth($method) && $this->hasAuthenticatedSession($role)) {
                 $this->requireSessionAuth($role);

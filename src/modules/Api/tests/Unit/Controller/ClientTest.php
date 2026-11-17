@@ -275,7 +275,8 @@ test('session authenticated request still requires CSRF token', function (): voi
         expect($e->getCode())->toBe(403);
     }
 
-    expect($rateLimitCalls->getArrayCopy())->toBe([['api_authenticated_ip', '127.0.0.1', 1]]);
+    // Signed in with a session: no address limit; the account's limit comes after the CSRF check.
+    expect($rateLimitCalls->getArrayCopy())->toBe([]);
     expect($controller->calls)->toBe(['csrf']);
 });
 
@@ -343,7 +344,6 @@ test('admin impersonation of client login is not throttled under the guest api_l
     invokeApiCall($controller, 'admin', 'client', 'client_login', []);
 
     expect($rateLimitCalls->getArrayCopy())->toBe([
-        ['api_authenticated_ip', '127.0.0.1', 1],
         ['api_authenticated_account', 'admin:7', 1],
     ]);
 });
