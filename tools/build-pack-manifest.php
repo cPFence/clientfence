@@ -31,7 +31,7 @@ $paths = [
     'locale/sr_Cyrl_RS/LC_MESSAGES/messages.mo',
     'locale/sv_SE/LC_MESSAGES/messages.mo',
     'locale/zh_HK/LC_MESSAGES/messages.mo',
-    'library/Payment/Adapter/CustomEgp.php',
+    'library/Payment/Adapter/CustomConvert.php',
     'library/Payment/Adapter/PayPalAutoPay.php',
     'library/Payment/Adapter/PayTabs.php',
     'library/Payment/Adapter/Eway.php',

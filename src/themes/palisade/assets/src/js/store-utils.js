@@ -30,7 +30,7 @@ export function moneyFormatter(currency) {
   };
 }
 
-/** An amount converted at an EGP method's rate, as CustomEgp shows it: rounded up to a whole pound. */
+/** An amount converted at an EGP method's rate, as CustomConvert shows it: rounded up to a whole pound. */
 export function quoteText(amount, rate, currency) {
   const total = Math.ceil((Number(amount) || 0) * Number(rate));
   return `${currency} ${total.toLocaleString(pageLocale())}`;

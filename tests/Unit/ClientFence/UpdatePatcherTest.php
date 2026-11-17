@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(14)
+    expect($patches)->toHaveCount(15)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -48,7 +48,8 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[124][1])->toBe('patch124')
         ->and($patches[125][1])->toBe('patch125')
         ->and($patches[126][1])->toBe('patch126')
-        ->and($patches[127][1])->toBe('patch127');
+        ->and($patches[127][1])->toBe('patch127')
+        ->and($patches[128][1])->toBe('patch128');
 });
 
 test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {
@@ -84,6 +85,25 @@ test('paid invoice prefix patch keeps the numbers of installs that left it empty
     'paid prefix set' => ['PROFORMA-', 'INV-', null],
     'no invoice prefix' => ['', '', null],
 ]);
+
+test('converting gateway patch moves CustomEgp gateways to CustomConvert and removes the old adapter', function (): void {
+    $rename = Mockery::mock(PDOStatement::class);
+    $rename->expects('execute')->with([])->andReturnTrue();
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->expects('prepare')->with("UPDATE pay_gateway SET gateway = 'CustomConvert' WHERE gateway = 'CustomEgp'")->andReturn($rename);
+
+    $old = Path::join(PATH_LIBRARY, 'Payment', 'Adapter', 'CustomEgp.php');
+    $filesystem = Mockery::mock(Filesystem::class);
+    $filesystem->expects('exists')->with($old)->andReturnTrue();
+    $filesystem->expects('remove')->with($old);
+
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+    $di['filesystem'] = $filesystem;
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+    (new ReflectionMethod($patcher, 'patch128'))->invoke($patcher);
+});
 
 test('hosting subscription patch adds both panel identifiers for existing installs', function (): void {
     $columns = Mockery::mock(PDOStatement::class);

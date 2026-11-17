@@ -4553,6 +4553,8 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .bf-chip-bad { background: rgba(var(--bs-danger-rgb), .12); color: var(--bs-danger-text-emphasis); }
 // The chosen method's panel carries an accent edge and a larger pay button (full width on a phone).
 .bf-pay-page [data-bf-panel] { border-inline-start: 3px solid var(--pal-accent); }
+// The payment method cards and their instructions sit in one wrapper: the same space between them as between the page's cards.
+.bf-pay-page [data-bf-pay-choose]:not([hidden]) { display: flex; flex-direction: column; gap: 1.125rem; }
 .bf-pay-page [data-bf-panel] .btn-primary.bf-btn-lg {
   min-height: 52px; padding-inline: 1.75rem; font-size: 1.0625rem;
   @include media-breakpoint-down(sm) { align-self: stretch; }

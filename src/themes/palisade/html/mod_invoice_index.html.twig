@@ -60,9 +60,9 @@
                 </section>
             {% endif %}
             <div class="card mb-4 cf-inv-list">
-                <div class="card-body">
+                <div class="card-header">
                     <nav>
-                        <div class="nav nav-tabs" id="invoice-tab" role="tablist">
+                        <div class="nav nav-tabs card-header-tabs" id="invoice-tab" role="tablist">
                             <button class="nav-link active" id="unpaid-tab" data-bs-toggle="tab"
                                     data-bs-target="#nav-unpaid" type="button" role="tab" aria-controls="nav-unpaid"
                                     aria-selected="true">{{ 'Unpaid'|trans }}{% if unpaid_invoices.total %}<span
@@ -77,6 +77,8 @@
                                     class="badge text-bg-secondary">{{ closed_invoices.total }}</span>{% endif %}</button>
                         </div>
                     </nav>
+                </div>
+                <div class="card-body">
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active table-responsive" id="nav-unpaid" role="tabpanel"
                              aria-labelledby="nav-home-tab" tabindex="0">
@@ -106,7 +108,7 @@
                                     {% set row_late = not pending and invoice.due_at and invoice.due_at|date('U') < 'now'|date('U') %}
                                     <tr>
                                         <td>{% if not pending and 'deposit' not in invoice.lines|map(l => l.type) %}<input class="form-check-input" type="checkbox" name="ids[]" value="{{ invoice.id }}" aria-label="{{ 'Invoice'|trans }} #{{ invoice.serie_nr }}">{% endif %}</td>
-                                        <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
+                                        <td><a href='{{ "invoice/#{invoice.hash}"|url }}'>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></a></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td>{{ invoice.due_at|format_date }}</td>
                                         <td><span class="bf-chip {{ pending ? 'bf-chip-muted' : (row_late ? 'bf-chip-bad' : 'bf-chip-warn') }}">{{ pending ? 'Payment pending'|trans : (row_late ? 'Overdue'|trans : 'Unpaid'|trans) }}</span></td>
@@ -140,7 +142,7 @@
                                 <tbody>
                                 {% for i, invoice in paid_invoices.list %}
                                     <tr>
-                                        <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
+                                        <td><a href='{{ "invoice/#{invoice.hash}"|url }}'>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></a></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td>{{ invoice.paid_at|format_date }}</td>
                                         <td><span class="bf-chip bf-chip-ok">{{ 'Paid'|trans }}</span></td>
@@ -171,7 +173,7 @@
                                 <tbody>
                                 {% for i, invoice in closed_invoices.list %}
                                     <tr>
-                                        <td>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></td>
+                                        <td><a href='{{ "invoice/#{invoice.hash}"|url }}'>{{ 'Invoice'|trans }} <bdi>#{{ invoice.serie_nr }}</bdi></a></td>
                                         <td>{{ invoice.created_at|format_date }}</td>
                                         <td><span class="bf-chip bf-chip-muted" data-bf-status>{{ invoice.status == 'refunded' ? 'Refunded'|trans : 'Canceled'|trans }}</span></td>
                                         <td><strong>{{ invoice.total|format_currency(invoice.currency ?? default_currency) }}</strong></td>

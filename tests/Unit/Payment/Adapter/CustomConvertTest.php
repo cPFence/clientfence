@@ -8,10 +8,10 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
-require_once PATH_LIBRARY . '/Payment/Adapter/CustomEgp.php';
+require_once PATH_LIBRARY . '/Payment/Adapter/CustomConvert.php';
 
 /** An adapter with $config whose rate provider answers 1 USD = 50.5 EGP = 0.92 EUR = 0.000412345 XAU. */
-function customEgpAdapter(array $config): Payment_Adapter_CustomEgp
+function customConvertAdapter(array $config): Payment_Adapter_CustomConvert
 {
     $di = new Pimple\Container();
     $di['cache'] = new ArrayAdapter();
@@ -21,14 +21,14 @@ function customEgpAdapter(array $config): Payment_Adapter_CustomEgp
         'time_next_update_utc' => 'Tue, 01 Jan 2030 00:00:00 +0000',
         'rates' => ['USD' => 1, 'EGP' => 50.5, 'EUR' => 0.92, 'XAU' => 0.000412345],
     ])));
-    $adapter = new Payment_Adapter_CustomEgp($config);
+    $adapter = new Payment_Adapter_CustomConvert($config);
     $adapter->setDi($di);
 
     return $adapter;
 }
 
 test('the total is shown in the gateway currency, rounded up to a whole unit', function (array $config, ?array $expected): void {
-    $converted = customEgpAdapter($config)->convertedAmount(100.10, 'usd');
+    $converted = customConvertAdapter($config)->convertedAmount(100.10, 'usd');
 
     expect($converted === null ? null : [$converted['currency'], $converted['total'], $converted['rate'], $converted['factor']])->toBe($expected);
 })->with([

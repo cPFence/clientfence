@@ -1,7 +1,7 @@
 {# Payment method cards (checkout, invoice and wallet pages).
    methods: guest.invoice_payment_methods(...); context: 'checkout', 'invoice' or 'wallet';
    amount: the amount in `currency`, shown on each card unless context is 'checkout'.
-   Methods that convert (CustomEgp) show the amount in their currency at today's rate (rounded up, as the invoice shows it).
+   Methods that convert (CustomConvert) show the amount in their currency at today's rate (rounded up, as the invoice shows it).
    selected: the method id to select (optional); otherwise the first card is selected. #}
 {% import 'partials/store_macros.html.twig' as sm %}
 {% set ids = methods|map(m => m.id ~ '') %}

@@ -46,7 +46,7 @@ class Receipts
     /**
      * The payment methods a client can use for an amount, as the theme shows them, in the order
      * set on Payment Gateways (GitHub #43). Each has a two-letter mark and a colour (tone 0-4) for its card, and manual methods
-     * that show the amount in another currency (CustomEgp, in the currency set on it) carry that quote and its rate.
+     * that show the amount in another currency (CustomConvert, in the currency set on it) carry that quote and its rate.
      * single and recurrent: whether the method takes a one-time payment and, for a subscribable
      * invoice, a subscription (the theme's "one-time or subscription" choice). receipt: whether a manual method
      * takes receipt uploads (receiptUpload()). fee: the method's gateway fee

@@ -576,6 +576,7 @@ class UpdatePatcher implements InjectionAwareInterface
             125 => 'patch125',
             126 => 'patch126',
             127 => 'patch127',
+            128 => 'patch128',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2723,6 +2724,13 @@ class UpdatePatcher implements InjectionAwareInterface
         $this->restoreLegacyDefaultEmailTemplates([
             'mod_servicedomain_activated' => ['d126c5677d78ff411aff745f05b1933ba13578e61c1a2af91fec708af7e6a54c', '94a6b068271de1b56207ff4bc63365ccd3dcf690b34a5c42e50e3adf26b2cea1'],
         ]);
+    }
+
+    private function patch128(): void
+    {
+        // ClientFence core patch: the converting manual gateway is CustomConvert since 1.0.57 (it was CustomEgp).
+        $this->executeSql("UPDATE pay_gateway SET gateway = 'CustomConvert' WHERE gateway = 'CustomEgp'");
+        $this->executeFileActions([Path::join(PATH_LIBRARY, 'Payment', 'Adapter', 'CustomEgp.php') => 'unlink']);
     }
 
     /**

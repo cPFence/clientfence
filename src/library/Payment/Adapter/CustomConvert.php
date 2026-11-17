@@ -18,7 +18,7 @@ declare(strict_types=1);
  * currency module uses), cached until the provider's next daily update. Their terms
  * ask for attribution: keep a "Rates by Exchange Rate API" link in the template.
  *
- * Optional and off by default: a new install has no Custom EGP gateway. Staff add it under
+ * Optional and off by default: a new install has no CustomConvert gateway. Staff add it under
  * Payment gateways only if they take payments in another currency.
  */
 use Symfony\Contracts\Cache\ItemInterface;
@@ -26,13 +26,13 @@ use Symfony\Contracts\Cache\ItemInterface;
 // FOSSBilling requires adapter files directly, so load the parent adapter here.
 require_once __DIR__ . '/Custom.php';
 
-class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
+class Payment_Adapter_CustomConvert extends Payment_Adapter_Custom
 {
     private const RATES_URL = 'https://open.er-api.com/v6/latest/';
 
-    public function __construct(private $egpConfig)
+    public function __construct(private $convertConfig)
     {
-        parent::__construct($egpConfig);
+        parent::__construct($convertConfig);
     }
 
     public static function getConfig(): array
@@ -54,9 +54,9 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
         $invoiceModel = $this->di['db']->load('Invoice', $invoice_id);
         $invoice = $this->di['mod_service']('Invoice')->toApiArray($invoiceModel, true);
 
-        $tpl = $subscription ? ($this->egpConfig['recurrent'] ?? '') : ($this->egpConfig['single'] ?? '');
+        $tpl = $subscription ? ($this->convertConfig['recurrent'] ?? '') : ($this->convertConfig['single'] ?? '');
         if (trim((string) $tpl) === '') {
-            $tpl = '"CustomEgp" payment adapter is not fully configured.';
+            $tpl = '"CustomConvert" payment adapter is not fully configured.';
         }
 
         $converted = $this->convertedAmount((float) $invoice['total'], (string) $invoice['currency']);
@@ -71,7 +71,7 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
     /** The currency the instructions show: the setting, EUR when empty or not a currency code. */
     public function targetCurrency(): string
     {
-        $code = strtoupper(trim((string) ($this->egpConfig['currency'] ?? '')));
+        $code = strtoupper(trim((string) ($this->convertConfig['currency'] ?? '')));
 
         return preg_match('/^[A-Z]{3}$/', $code) ? $code : 'EUR';
     }
@@ -113,14 +113,14 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
             try {
                 $data = $this->di['http_client']->request('GET', self::RATES_URL . $base, ['timeout' => 10])->toArray();
             } catch (Throwable $e) {
-                error_log('CustomEgp: rate fetch failed: ' . $e->getMessage());
+                error_log('CustomConvert: rate fetch failed: ' . $e->getMessage());
                 $item->expiresAfter(15 * 60);
 
                 return [];
             }
 
             if (($data['result'] ?? '') !== 'success' || !is_array($data['rates'] ?? null)) {
-                error_log('CustomEgp: rate provider returned ' . ($data['error-type'] ?? 'no rates'));
+                error_log('CustomConvert: rate provider returned ' . ($data['error-type'] ?? 'no rates'));
                 $item->expiresAfter(15 * 60);
 
                 return [];

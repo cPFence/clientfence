@@ -249,7 +249,7 @@ final class PaymentReversal
         $db->update($db->quoteSingleIdentifier('transaction'), ['status' => \Model_Transaction::STATUS_REVERSED, 'note' => trim($tx['note'] . "\nReversed by staff on " . $now . '.'), 'updated_at' => $now], ['id' => $tx['id']]);
     }
 
-    /** A Custom payment method (CustomEgp extends it): staff record its payments, no gateway takes money. */
+    /** A Custom payment method (CustomConvert extends it): staff record its payments, no gateway takes money. */
     private static function isCustom(\Pimple\Container $di, int $gatewayId): bool
     {
         $gateway = $di['db']->load('PayGateway', $gatewayId);

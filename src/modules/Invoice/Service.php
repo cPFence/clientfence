@@ -1069,8 +1069,8 @@ class Service implements InjectionAwareInterface
         }
 
         // ClientFence core patch: every method records a transaction (WHMCS Add Payment). Without one, the payment was missing
-        // from the transaction list and income by method (the Egyptian CustomEgp methods; CF-177: the rest of a part-paid
-        // invoice on a card gateway). getAdapterClassName loads the adapter file: CustomEgp is not autoloaded.
+        // from the transaction list and income by method (the converting CustomConvert methods; CF-177: the rest of a part-paid
+        // invoice on a card gateway). getAdapterClassName loads the adapter file: CustomConvert is not autoloaded.
         $gatewayCode = (string) ($payGateway->gateway ?? '');
         $manual = $gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class));
         if (!$isDeposit || $invoiceTotal > 0) {
@@ -1216,7 +1216,7 @@ class Service implements InjectionAwareInterface
         if ((int) ($payGateway->enabled ?? 0) !== 1) {
             throw new InformationException('Payment gateway is not enabled');
         }
-        // ClientFence core patch: CustomEgp extends Custom, so its payments need the receipt reference too.
+        // ClientFence core patch: CustomConvert extends Custom, so its payments need the receipt reference too.
         $gatewayCode = (string) ($payGateway->gateway ?? '');
         if ($needsReference && ($gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class)))) {
             $transactionId = trim((string) ($data['transactionId'] ?? ''));
