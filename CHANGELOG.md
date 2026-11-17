@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.0.57 (2026-11-17)
+
+Mass Pay, moving a service to another client, part payments, draft invoices and 16 more languages.
+
+### Added
+
+- **Mass Pay:** clients tick unpaid invoices (or Pay all) and pay them in one payment with any payment method. One invoice lists them, and each one is marked paid when it is paid. One gateway fee for the one payment.
+- **Move a service to another client:** staff move a service and its add-ons to another client from its order page. Invoices, payments and credit stay with the old client, and renewals invoice the new one. A service with an unpaid invoice or a gateway subscription is refused until that is settled. Nothing changes on servers or registrars.
+- **Part payments:** Mark as Paid has an Amount field, so staff record part of a payment on any payment method and the rest stays due. A part payment recorded by mistake can be reversed. ([#46](https://github.com/cPFence/clientfence/issues/46))
+- **Draft invoices:** Add New Order can leave the new invoice as a draft for staff to check; Approve sends it to the client. An invoice whose email was not sent shows Send invoice, and the invoice list has a Not sent filter. ([#48](https://github.com/cPFence/clientfence/issues/48))
+- **Enhance Link:** link a hosting order to an existing Enhance organization and subscription by hand, on its Service Management tab. ([#47](https://github.com/cPFence/clientfence/issues/47))
+- **16 new languages:** Swedish, Danish, Norwegian Bokmål, Estonian, Slovak, Slovenian, Croatian, Bosnian, Serbian in Cyrillic, Georgian, Azerbaijani, Korean, Chinese (Hong Kong), Hindi, Bengali and Kannada. Invoice, quote and statement PDFs in Hindi, Bengali and Kannada are in English.
+- **Import from FOSSBilling and Paymenter:** two new importers on the Migration page. ([#40](https://github.com/cPFence/clientfence/issues/40))
+- The converting bank transfer gateway now works with all currencies: it shows the invoice total in the currency you set on it. Set the currency after updating: with none set it shows euros.
+
+### Changed
+
+- Mark as Paid records the payment on every payment method, without charging the gateway. A draft invoice cannot be marked as paid.
+- When an Enhance panel cannot be reached, the error says why: host name not found, connection refused, timed out or a certificate problem.
+- The store's billing cycles fit on a phone screen.
+- Korean, Chinese and Thai invoice, quote and statement PDFs show their letters instead of empty boxes.
+- Browsers set to Chinese for Hong Kong or Taiwan get Traditional Chinese.
+- The language menu shows a scroll bar when more languages are below.
+
+### Fixed
+
+- Passkey sign-in from the email field's autofill works on iPhone. ([#45](https://github.com/cPFence/clientfence/issues/45))
+
 ## 1.0.56 (2026-11-16)
 
 A new look for the admin and client areas, and new billing features.
