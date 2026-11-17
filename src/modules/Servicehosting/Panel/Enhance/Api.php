@@ -170,10 +170,10 @@ final class Api
 
                 break;
             } catch (ExceptionInterface $e) {
-                // Host, DNS, TLS or timeout: the details go to the log only.
+                // Host, DNS, TLS or timeout: the full error goes to the log, its short reason to staff.
                 $this->log?->error(sprintf('%s API %s %s could not be sent (try %d): %s', self::PANEL, $method, $path, $try, $e->getMessage()));
                 if ($method !== 'GET' || $try >= self::GET_TRIES) {
-                    throw new \Server_Exception('Could not reach the :panel: server. Please try again later.', [':panel:' => self::PANEL]);
+                    throw self::unreachable($e->getMessage());
                 }
                 usleep(500_000);
             }
@@ -211,6 +211,27 @@ final class Api
         }
 
         return $decoded;
+    }
+
+    /**
+     * CF-181: the short reason the HTTP client (curl) could not reach the panel, with what to check, instead of only "try
+     * again later". The client's error is not shown: it holds the request URL.
+     */
+    private static function unreachable(string $error): \Server_Exception
+    {
+        $panel = [':panel:' => self::PANEL];
+        // Symfony adds ` for "<url>"`: the host name must not decide the reason (ssl.example.com).
+        $error = explode(' for "', $error, 2)[0];
+
+        return match (true) {
+            preg_match('/resolve host|getaddrinfo|name or service not known|no such host/i', $error) === 1 => new \Server_Exception('Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at.', $panel),
+            preg_match('/wrong version number|packet length too long|unknown protocol|record layer failure/i', $error) === 1 => new \Server_Exception('Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings.', $panel),
+            preg_match('/refused|couldn\'t connect/i', $error) === 1 => new \Server_Exception('Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel\'s firewall lets this server connect.', $panel),
+            preg_match('/timed out|timeout/i', $error) === 1 => new \Server_Exception('Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect.', $panel),
+            // Only a failed certificate check: a connection dropped inside TLS (SSL_read, SSL_ERROR_SYSCALL) is not one.
+            preg_match('/certificate|subject name|self.signed|issuer|verify failed/i', $error) === 1 => new \Server_Exception('Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings.', $panel),
+            default => new \Server_Exception('Could not reach the :panel: server. Please try again later.', $panel),
+        };
     }
 
     private static function reason(string $content): string

@@ -261,3 +261,20 @@ test('checkLink accepts the organization\'s own subscription and refuses another
     'login not a member' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'else@example.test', 'No Enhance login for else@example.test was found.'],
     'staff login' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'staff@example.test', 'No Enhance login for staff@example.test was found.'],
 ]);
+
+// CF-181: a panel that cannot be reached says why and what to check (the request URL stays in the log).
+test('an unreachable panel names the reason and what to check', function (string $error, string $expected): void {
+    $api = new Api(new MockHttpClient(fn (): MockResponse => new MockResponse('', ['error' => $error . ' for "https://ssl.panel.test/api/orgs/M"'])), 'https://panel.test', 'token');
+
+    expect(fn () => $api->get('/orgs/M'))->toThrow(Server_Exception::class, $expected);
+})->with([
+    'host name' => ['Could not resolve host: panel.test', 'its host name was not found'],
+    'wrong port' => ['OpenSSL/3.0.13: error:0A00010B:SSL routines::wrong version number', 'nothing answers HTTPS on this port'],
+    'refused' => ['Failed to connect to panel.test port 2087 after 3 ms: Couldn\'t connect to server', 'the connection was refused'],
+    'timeout' => ['Idle timeout reached', 'the connection timed out'],
+    'certificate' => ["SSL: no alternative certificate subject name matches target host name 'panel.test'", 'its TLS certificate could not be verified'],
+    'self-signed' => ['SSL certificate problem: self-signed certificate', 'its TLS certificate could not be verified'],
+    'reset inside TLS' => ['OpenSSL SSL_read: Connection reset by peer, errno 104', 'Please try again later.'],
+    'end of stream inside TLS' => ['OpenSSL SSL_read: SSL_ERROR_SYSCALL, errno 0', 'Please try again later.'],
+    'other, host name with ssl' => ['Recv failure: Connection reset by peer', 'Please try again later.'],
+]);
