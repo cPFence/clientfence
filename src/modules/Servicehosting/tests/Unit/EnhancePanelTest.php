@@ -214,3 +214,20 @@ test('find accepts a website by domain in the organization of the account\'s log
     expect($found['org']['id'])->toBe('O')
         ->and(Panel::subscriptionOf($found['website']))->toBe(7);
 });
+
+// ClientFence: Enhance leaves the subscription's transfer usage at 0; the month's bandwidth comes from its own call (GitHub #44).
+test('usage reads this month\'s bandwidth from the subscription bandwidth call', function (MockResponse $bandwidth, int $used): void {
+    $requests = [];
+    $usage = enhancePanelFake([
+        '/api/orgs/M/websites' => [['id' => 'W', 'orgId' => 'O', 'status' => 'active', 'subscriptionId' => 7, 'domain' => ['domain' => 'site.example']]],
+        '/api/orgs/O' => ['id' => 'O', 'ownerEmail' => 'a@example.test'],
+        '/api/orgs/O/subscriptions/7' => ['id' => 7, 'resources' => [['name' => 'transfer', 'usage' => 5_000_000, 'total' => 40_000_000_000]]],
+        '/api/orgs/O/subscriptions/7/bandwidth' => $bandwidth,
+    ], $requests)->usage('a@example.test', 'site.example');
+
+    expect($usage['bandwidth_used_mb'])->toBe($used)
+        ->and($usage['bandwidth_limit_mb'])->toBe(40_000);
+})->with([
+    'from the bandwidth call' => [new MockResponse('242610000'), 243],
+    'older panel without the call' => [new MockResponse('', ['http_code' => 404]), 5],
+]);

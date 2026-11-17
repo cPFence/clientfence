@@ -490,6 +490,8 @@ final class Panel
         $subscriptionId = self::subscriptionOf($website) ?? throw new \Server_Exception('The website :domain: has no subscription on the :panel: server.', [':domain:' => $domain, ':panel:' => Api::PANEL]);
         $subscription = $this->api->get("/orgs/{$orgId}/subscriptions/{$subscriptionId}");
         $resources = self::resources(is_array($subscription) ? ($subscription['resources'] ?? []) : []);
+        // Enhance leaves the subscription's transfer usage at 0: its own panel reads this month's bytes here (GitHub #44).
+        $bandwidth = $this->api->find("/orgs/{$orgId}/subscriptions/{$subscriptionId}/bandwidth");
 
         $counts = [];
         foreach (self::COUNTS as $name => $key) {
@@ -503,7 +505,7 @@ final class Panel
             'suspended' => ($subscription['status'] ?? '') === 'suspended' || self::suspended($website),
             'disk_used_mb' => self::mb($resources['diskspace']['usage'] ?? 0) ?? 0,
             'disk_quota_mb' => self::mb($resources['diskspace']['total'] ?? null),
-            'bandwidth_used_mb' => self::mb($resources['transfer']['usage'] ?? 0) ?? 0,
+            'bandwidth_used_mb' => self::mb(is_numeric($bandwidth) ? $bandwidth : ($resources['transfer']['usage'] ?? 0)) ?? 0,
             'bandwidth_limit_mb' => self::mb($resources['transfer']['total'] ?? null),
             'counts' => $counts,
             'websites' => $this->websitesOf($orgId, $subscriptionId, $domain),
