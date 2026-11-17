@@ -263,7 +263,25 @@ final class ActionFailures
      */
     public static function retry(\Pimple\Container $di, int $id, ?int $adminId): bool
     {
+        // One retry per order at a time: two clicks at once both ran the panel create.
         $db = self::db($di);
+        $lock = 'clientfence_order_retry_' . (int) self::openEntry($db, $id)['client_order_id'];
+        $mysql = $db->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+        if ($mysql && (int) $db->fetchOne('SELECT GET_LOCK(?, 0)', [$lock]) !== 1) {
+            throw new InformationException('This order is being retried already. Please wait a moment and reload the page.');
+        }
+        try {
+            return self::retryNow($di, $db, $id, $adminId);
+        } finally {
+            if ($mysql) {
+                $db->fetchOne('SELECT RELEASE_LOCK(?)', [$lock]);
+            }
+        }
+    }
+
+    private static function retryNow(\Pimple\Container $di, Connection $db, int $id, ?int $adminId): bool
+    {
+        // Read again under the lock: a retry that just finished has closed the entry and moved the order.
         $entry = self::openEntry($db, $id);
         $orderId = (int) $entry['client_order_id'];
         $order = $di['db']->load('ClientOrder', $orderId);
