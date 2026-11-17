@@ -179,6 +179,9 @@ test('Health warns with no method on, needs attention after a failure and warns 
     // A Back up now run keeps the cron's ran_at: it is running by its own time.
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => date('Y-m-d H:i:s', time() - 7200), 'results_at' => ['email' => date('Y-m-d H:i:s')]] + $running]);
     expect(Backups::health($di)[1])->toContain('being made now');
+    // A failed SFTP run names its own time, not a later Back up now that only kept a local copy.
+    [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => '2026-11-16 22:52:00', 'ok' => false, 'results' => ['ftp' => 'Login failed', 'local' => 'ok'], 'results_at' => ['ftp' => '2026-11-16 22:52:00', 'local' => '2026-11-17 02:46:45']]]);
+    expect(Backups::health($di)[2][':time'])->toBe('2026-11-16 22:52:00');
 });
 
 test('Health counts cloud copies of the database as a copy off this server', function (): void {

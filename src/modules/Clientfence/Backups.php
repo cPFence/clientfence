@@ -360,13 +360,16 @@ final class Backups
         }
         if (empty($status['ok'])) {
             $why = [];
+            $failedAt = [];
             foreach ((array) ($status['results'] ?? []) as $method => $result) {
                 if ($result !== 'ok') {
                     $why[] = $method . ': ' . $result;
+                    // The failed method's own run, not a later Back up now of another method.
+                    $failedAt[] = (string) ($status['results_at'][$method] ?? $status['ran_at']);
                 }
             }
 
-            return ['bad', Health::msg('The backup of :time failed (:why).'), [':time' => $latest, ':why' => implode('; ', $why)]];
+            return ['bad', Health::msg('The backup of :time failed (:why).'), [':time' => $failedAt === [] ? $latest : max($failedAt), ':why' => implode('; ', $why)]];
         }
         $age = time() - (int) strtotime((string) ($status['last_ok_at'] ?? $latest));
 
