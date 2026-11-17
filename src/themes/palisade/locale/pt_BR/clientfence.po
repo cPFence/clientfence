@@ -23784,3 +23784,120 @@ msgstr "O que não é importado do FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "O que não é importado do Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Uma fatura em rascunho não pode ser marcada como paga."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Valores em :currency têm no máximo :digits casas decimais."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Uma fatura de Adicionar fundos só é paga integralmente."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Outro pedido de hospedagem já está vinculado a esta assinatura."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Login do painel de controle"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Não foi possível conectar ao servidor :panel:: não foi possível verificar o certificado TLS. Use o hostname para o qual o certificado foi emitido ou desative Verificar certificado TLS nas configurações do servidor."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Não foi possível conectar ao servidor :panel:: o hostname não foi encontrado. O Hostname deve ser o endereço em que o painel de controle :panel: abre."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Não foi possível conectar ao servidor :panel:: nada responde por HTTPS nesta porta. Verifique a Porta de conexão nas configurações do servidor."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Não foi possível conectar ao servidor :panel:: a conexão expirou. Verifique o Hostname e a Porta de conexão, e se um firewall permite que este servidor se conecte."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Não foi possível conectar ao servidor :panel:: a conexão foi recusada. Verifique a Porta de conexão e se o firewall do painel permite que este servidor se conecte."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Vínculo com Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Informe o ID da organização e o ID da assinatura do painel Enhance, ou deixe ambos vazios para remover o vínculo."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Fatura enviada"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Deixar a fatura como rascunho"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Um valor menor que o saldo devedor é registrado como pagamento parcial; a fatura continua não paga até que o restante seja pago."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Não enviada"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Somente um pagamento registrado pela equipe em uma fatura não paga pode ser estornado aqui, e apenas uma vez."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Somente uma fatura aprovada e não paga pode ser enviada."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Somente contas de hospedagem em um servidor Enhance podem ser vinculadas manualmente."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Estornar"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Estornar este pagamento de :amount? Ele deixa de contar como pago e o crédito é retirado do cliente. Nenhum dinheiro é enviado a lugar algum."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Enviar fatura"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Defina a organização e a assinatura Enhance desta conta quando o painel não a encontrar pelo e-mail do cliente. Elas são verificadas no servidor antes de serem salvas e, depois, todas as ações as usam. Deixe ambos vazios para remover o vínculo."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID da assinatura"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "O valor é maior que o saldo devedor (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "O cliente gastou o crédito que este pagamento adicionou, ou outras faturas o reservaram, então ele não pode ser estornado."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "O login do painel de controle deve ser um endereço de e-mail."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "A fatura deste serviço está sendo preparada. Você a receberá por e-mail."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Este ID de transação já está registrado."

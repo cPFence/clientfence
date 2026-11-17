@@ -31325,3 +31325,120 @@ msgstr "Mitä FOSSBillingistä ei tuoda"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Mitä Paymenteristä ei tuoda"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Luonnoslaskua ei voi merkitä maksetuksi."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Valuutan :currency summissa on enintään :digits desimaalia."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Lisää varoja -lasku maksetaan vain kokonaan."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Toinen hosting-tilaus on jo liitetty tähän kestotilaukseen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Hallintapaneelin tunnus"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Palvelimeen :panel: ei saatu yhteyttä: sen TLS-varmennetta ei voitu vahvistaa. Käytä isäntänimeä, jolle varmenne on myönnetty, tai poista Vahvista TLS-varmenne käytöstä palvelimen asetuksissa."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Palvelimeen :panel: ei saatu yhteyttä: sen isäntänimeä ei löytynyt. Isännän on oltava osoite, jossa :panel:-hallintapaneeli aukeaa."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Palvelimeen :panel: ei saatu yhteyttä: tähän porttiin ei vastata HTTPS:llä. Tarkista Yhteyden portti palvelimen asetuksista."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Palvelimeen :panel: ei saatu yhteyttä: yhteys aikakatkaistiin. Tarkista Isäntä ja Yhteyden portti sekä että palomuuri sallii tämän palvelimen yhteyden."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Palvelimeen :panel: ei saatu yhteyttä: yhteys evättiin. Tarkista Yhteyden portti sekä että paneelin palomuuri sallii tämän palvelimen yhteyden."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance-linkki"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Syötä sekä organisaation ID että kestotilauksen ID Enhance-paneelista tai jätä molemmat tyhjiksi poistaaksesi linkin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Lasku lähetetty"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Jätä lasku luonnokseksi"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Maksamatonta määrää pienempi summa kirjataan osamaksuksi; lasku pysyy maksamattomana, kunnes loput on maksettu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Ei lähetetty"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Tässä voi peruuttaa vain maksun, jonka henkilökunta kirjasi maksamattomalle laskulle, ja vain kerran."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Vain hyväksytyn, maksamattoman laskun voi lähettää."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Vain Enhance-palvelimella olevat hosting-tilit voi linkittää käsin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Peruuta"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Peruutetaanko tämä :amount maksu? Se ei enää ole maksettu, ja sen hyvitys otetaan takaisin asiakkaalta. Rahaa ei lähetetä minnekään."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Lähetä lasku"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Aseta tämän tilin Enhance-organisaatio ja -kestotilaus, kun paneeli ei löydä sitä asiakkaan sähköpostin perusteella. Ne tarkistetaan palvelimella ennen tallennusta, ja sen jälkeen jokainen toiminto käyttää niitä. Jätä molemmat tyhjiksi poistaaksesi linkin."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "Kestotilauksen ID"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Summa on suurempi kuin maksamaton määrä (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Asiakas on käyttänyt tämän maksun lisäämän hyvityksen tai muut laskut on varannut sen, joten sitä ei voi peruuttaa."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Hallintapaneelin tunnuksen on oltava sähköpostiosoite."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Tämän palvelun laskua valmistellaan. Saat sen sähköpostitse."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Tämä tapahtuman tunnus on jo kirjattu."

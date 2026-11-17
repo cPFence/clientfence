@@ -34561,3 +34561,120 @@ msgstr "מה לא מיובא מ-FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "מה לא מיובא מ-Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "לא ניתן לסמן חשבונית טיוטה כשולמה."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "לסכומים ב-:currency יש לכל היותר :digits ספרות אחרי הנקודה העשרונית."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "חשבונית של הוספת כספים משולמת במלואה בלבד."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "הזמנת אחסון אחרת כבר מקושרת למינוי הזה."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "כניסה ללוח הבקרה"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "לא ניתן להגיע לשרת :panel:: לא ניתן היה לאמת את אישור ה-TLS שלו. השתמשו בשם המארח שעבורו הונפק האישור, או כבו את אימות אישור TLS בהגדרות השרת."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "לא ניתן להגיע לשרת :panel:: שם המארח שלו לא נמצא. שם המארח חייב להיות הכתובת שבה נפתח לוח הבקרה של :panel:."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "לא ניתן להגיע לשרת :panel:: דבר אינו עונה ב-HTTPS ביציאה הזו. בדקו את יציאת חיבור בהגדרות השרת."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "לא ניתן להגיע לשרת :panel:: זמן החיבור פג. בדקו את שם מארח ואת יציאת חיבור, ושחומת אש מאפשרת לשרת הזה להתחבר."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "לא ניתן להגיע לשרת :panel:: החיבור נדחה. בדקו את יציאת חיבור, ושחומת האש של הלוח מאפשרת לשרת הזה להתחבר."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "קישור Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "הזינו גם את מזהה הארגון וגם את מזהה המינוי מלוח Enhance, או השאירו את שניהם ריקים כדי להסיר את הקישור."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "החשבונית נשלחה"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "השאר את החשבונית כטיוטה"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "סכום הנמוך מהיתרה לתשלום נרשם כתשלום חלקי; החשבונית נשארת לא שולמה עד שהיתרה תשולם."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "לא נשלחה"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "כאן אפשר לבטל רק תשלום שהצוות רשם בחשבונית שלא שולמה, ורק פעם אחת."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "אפשר לשלוח רק חשבונית מאושרת שלא שולמה."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "אפשר לקשר ידנית רק חשבונות אחסון בשרת Enhance."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "ביטול"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "לבטל את התשלום הזה על סך :amount? הוא לא ייחשב עוד כשולם והזיכוי שלו יילקח בחזרה מהלקוח. לא נשלח כסף לשום מקום."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "שליחת חשבונית"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "הגדירו את ארגון ה-Enhance והמינוי של החשבון הזה כשהלוח אינו מוצא אותו לפי האימייל של הלקוח. הם נבדקים בשרת לפני השמירה, ואז כל פעולה משתמשת בהם. השאירו את שניהם ריקים כדי להסיר את הקישור."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "מזהה מינוי"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "הסכום גבוה מהיתרה לתשלום (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "הלקוח כבר ניצל את הזיכוי שהתשלום הזה הוסיף, או שחשבוניות אחרות שמרו אותו, ולכן אי אפשר לבטל אותו."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "הכניסה ללוח הבקרה חייבת להיות כתובת אימייל."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "החשבונית לשירות הזה בהכנה. תקבלו אותה באימייל."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "מזהה העסקה הזה כבר נרשם."

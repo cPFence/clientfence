@@ -30885,3 +30885,120 @@ msgstr "Šta se ne uvozi iz FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Šta se ne uvozi iz Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Račun u nacrtu ne može se označiti kao plaćen."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Iznosi u :currency imaju najviše :digits decimala."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Račun za Dodaj sredstva plaća se samo u celosti."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Druga porudžbina hostinga je već povezana sa ovom pretplatom."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Prijava na kontrolnu tablu"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Nije moguće povezati se sa :panel: serverom: njegov TLS sertifikat nije mogao da se proveri. Koristite hostname za koji je sertifikat izdat ili isključite Proveri TLS sertifikat u podešavanjima servera."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Nije moguće povezati se sa :panel: serverom: njegov hostname nije pronađen. Hostname mora biti adresa na kojoj se otvara :panel: kontrolna tabla."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Nije moguće povezati se sa :panel: serverom: ništa ne odgovara preko HTTPS na ovom portu. Proverite Port za povezivanje u podešavanjima servera."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Nije moguće povezati se sa :panel: serverom: veza je istekla. Proverite Hostname i Port za povezivanje, kao i da li firewall dozvoljava ovom serveru da se poveže."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Nije moguće povezati se sa :panel: serverom: veza je odbijena. Proverite Port za povezivanje i da li firewall panela dozvoljava ovom serveru da se poveže."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance veza"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Unesite i ID organizacije i ID pretplate iz Enhance panela ili ostavite oba prazna da biste uklonili vezu."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Račun poslat"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Ostavi račun kao nacrt"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Iznos manji od preostalog za plaćanje beleži se kao delimična uplata; račun ostaje neplaćen dok se ne plati ostatak."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Nije poslato"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Ovde se može stornirati samo uplata koju je osoblje zabeležilo na neplaćenom računu, i to samo jednom."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Može se poslati samo odobren, neplaćen račun."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Ručno se mogu povezati samo hosting nalozi na Enhance serveru."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Storniraj"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Stornirati ovu uplatu od :amount? Više se ne računa kao plaćena, a njen kredit se oduzima klijentu. Novac se nigde ne šalje."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Pošalji račun"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Podesite Enhance organizaciju i pretplatu ovog naloga kada ih panel ne nalazi preko imejla klijenta. Proveravaju se na serveru pre čuvanja, a zatim ih koristi svaka radnja. Ostavite oba prazna da biste uklonili vezu."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID pretplate"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Iznos je veći od preostalog za plaćanje (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Klijent je potrošio kredit koji je ova uplata dodala, ili su ga drugi računi rezervisali, pa se ne može stornirati."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Prijava na kontrolnu tablu mora biti imejl adresa."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Račun za ovu uslugu se priprema. Dobićete ga imejlom."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Ovaj ID transakcije je već zabeležen."

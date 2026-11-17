@@ -28655,3 +28655,120 @@ msgstr "FOSSBilling'ten içe aktarılmayanlar"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Paymenter'ten içe aktarılmayanlar"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Taslak bir fatura ödendi olarak işaretlenemez."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr ":currency cinsinden tutarlar en fazla :digits ondalık basamak içerir."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Bakiye Ekle faturası yalnızca tam olarak ödenir."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Başka bir hosting siparişi bu aboneliğe zaten bağlı."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Kontrol paneli girişi"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr ":panel: sunucusuna ulaşılamadı: TLS sertifikası doğrulanamadı. Sertifikanın düzenlendiği sunucu adını kullanın veya sunucu ayarlarında TLS Sertifikasını Doğrula seçeneğini kapatın."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr ":panel: sunucusuna ulaşılamadı: sunucu adı bulunamadı. Sunucu Adı, :panel: kontrol panelinin açıldığı adres olmalıdır."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr ":panel: sunucusuna ulaşılamadı: bu bağlantı noktasında HTTPS ile yanıt veren yok. Sunucu ayarlarındaki Bağlantı Noktasını kontrol edin."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr ":panel: sunucusuna ulaşılamadı: bağlantı zaman aşımına uğradı. Sunucu Adını ve Bağlantı Noktasını, ayrıca bir güvenlik duvarının bu sunucunun bağlanmasına izin verip vermediğini kontrol edin."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr ":panel: sunucusuna ulaşılamadı: bağlantı reddedildi. Bağlantı Noktasını ve panelin güvenlik duvarının bu sunucunun bağlanmasına izin verip vermediğini kontrol edin."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance Bağlantısı"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Enhance panelindeki kuruluş ID'sini ve abonelik ID'sini birlikte girin veya bağlantıyı kaldırmak için ikisini de boş bırakın."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Fatura gönderildi"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Faturayı taslak olarak bırak"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Kalan borçtan düşük bir tutar kısmi ödeme olarak kaydedilir; kalan ödenene kadar fatura ödenmemiş kalır."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Gönderilmedi"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Burada yalnızca personelin ödenmemiş bir faturaya kaydettiği ödeme geri alınabilir ve yalnızca bir kez."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Yalnızca onaylanmış, ödenmemiş bir fatura gönderilebilir."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Yalnızca bir Enhance sunucusundaki hosting hesapları elle bağlanabilir."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Geri al"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Bu :amount tutarındaki ödeme geri alınsın mı? Artık ödenmiş sayılmaz ve eklediği alacak müşteriden geri alınır. Hiçbir yere para gönderilmez."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Faturayı gönder"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Panel bu hesabı müşteri e-postasıyla bulamadığında hesabın Enhance kuruluşunu ve aboneliğini ayarlayın. Kaydedilmeden önce sunucuda kontrol edilirler ve sonra her işlem bunları kullanır. Bağlantıyı kaldırmak için ikisini de boş bırakın."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "Abonelik ID'si"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Tutar kalan borçtan fazla (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Müşteri bu ödemenin eklediği alacağı harcamış veya diğer faturalar için ayrılmış, bu yüzden geri alınamaz."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Kontrol paneli girişi bir e-posta adresi olmalıdır."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Bu hizmetin faturası hazırlanıyor. E-posta ile alacaksınız."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Bu işlem kimliği zaten kayıtlı."

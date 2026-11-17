@@ -30899,3 +30899,120 @@ msgstr "Những gì không được nhập từ FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Những gì không được nhập từ Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Hóa đơn nháp không thể đánh dấu là đã thanh toán."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Số tiền bằng :currency có tối đa :digits chữ số thập phân."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Hóa đơn Nạp tiền chỉ được thanh toán đủ một lần."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Một đơn hàng hosting khác đã được liên kết với thuê bao này."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Tài khoản đăng nhập bảng điều khiển"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Không thể kết nối tới máy chủ :panel:: không xác minh được chứng chỉ TLS của máy chủ. Hãy dùng tên máy chủ mà chứng chỉ được cấp, hoặc tắt Xác minh chứng chỉ TLS trong cài đặt máy chủ."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Không thể kết nối tới máy chủ :panel:: không tìm thấy tên máy chủ. Tên máy chủ phải là địa chỉ mà bảng điều khiển :panel: mở ra."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Không thể kết nối tới máy chủ :panel:: không có phản hồi HTTPS trên cổng này. Hãy kiểm tra Cổng kết nối trong cài đặt máy chủ."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Không thể kết nối tới máy chủ :panel:: kết nối bị quá thời gian. Hãy kiểm tra Tên máy chủ và Cổng kết nối, và xem tường lửa có cho phép máy chủ này kết nối không."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Không thể kết nối tới máy chủ :panel:: kết nối bị từ chối. Hãy kiểm tra Cổng kết nối, và xem tường lửa của bảng điều khiển có cho phép máy chủ này kết nối không."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Liên kết Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Nhập cả ID tổ chức và ID thuê bao từ bảng điều khiển Enhance, hoặc để trống cả hai để gỡ liên kết."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Đã gửi hóa đơn"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Giữ hóa đơn ở dạng nháp"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Số tiền thấp hơn số dư cần thanh toán sẽ được ghi nhận là thanh toán một phần; hóa đơn vẫn chưa thanh toán cho đến khi trả hết phần còn lại."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Chưa gửi"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Chỉ có thể đảo ngược tại đây khoản thanh toán do nhân viên ghi nhận trên hóa đơn chưa thanh toán, và chỉ một lần."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Chỉ có thể gửi hóa đơn đã phê duyệt và chưa thanh toán."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Chỉ các tài khoản hosting trên máy chủ Enhance mới có thể liên kết thủ công."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Đảo ngược"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Đảo ngược khoản thanh toán :amount này? Khoản này không còn được tính là đã thanh toán và khoản có của nó bị thu hồi khỏi khách hàng. Không có tiền nào được gửi đi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Gửi hóa đơn"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Đặt tổ chức và thuê bao Enhance của tài khoản này khi bảng điều khiển không tìm thấy theo email của khách hàng. Chúng được kiểm tra trên máy chủ trước khi lưu, rồi mọi thao tác sẽ dùng chúng. Để trống cả hai để gỡ liên kết."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID thuê bao"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Số tiền lớn hơn số dư cần thanh toán (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Khách hàng đã dùng hết khoản có do thanh toán này thêm vào, hoặc các hóa đơn khác đã giữ lại, nên không thể đảo ngược."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Tài khoản đăng nhập bảng điều khiển phải là địa chỉ email."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Hóa đơn cho dịch vụ này đang được chuẩn bị. Bạn sẽ nhận được qua email."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Mã giao dịch này đã được ghi nhận."

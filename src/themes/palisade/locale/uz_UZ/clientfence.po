@@ -28987,3 +28987,120 @@ msgstr "FOSSBilling'dan nima import qilinmaydi"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Paymenter'dan nima import qilinmaydi"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Qoralama hisob-fakturani to'langan deb belgilab bo'lmaydi."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr ":currency dagi summalarda ko'pi bilan :digits ta kasr raqami bo'ladi."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Mablag' qo'shish hisob-fakturasi faqat to'liq to'lanadi."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Boshqa hosting buyurtmasi allaqachon bu obunaga bog'langan."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Boshqaruv paneli logini"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr ":panel: serveriga ulanib bo'lmadi: uning TLS sertifikatini tekshirib bo'lmadi. Sertifikat berilgan xost nomidan foydalaning yoki server sozlamalarida TLS sertifikatini tekshirish ni o'chiring."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr ":panel: serveriga ulanib bo'lmadi: uning xost nomi topilmadi. Xost nomi :panel: boshqaruv paneli ochiladigan manzil bo'lishi kerak."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr ":panel: serveriga ulanib bo'lmadi: bu portda HTTPS orqali hech narsa javob bermayapti. Server sozlamalaridagi Ulanish portini tekshiring."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr ":panel: serveriga ulanib bo'lmadi: ulanish vaqti tugadi. Xost nomi va Ulanish portini hamda xavfsizlik devori bu serverning ulanishiga ruxsat berishini tekshiring."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr ":panel: serveriga ulanib bo'lmadi: ulanish rad etildi. Ulanish portini hamda panelning xavfsizlik devori bu serverning ulanishiga ruxsat berishini tekshiring."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance bog'lanishi"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Enhance panelidagi tashkilot ID'si va obuna ID'sini ikkalasini ham kiriting yoki bog'lanishni olib tashlash uchun ikkalasini ham bo'sh qoldiring."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Hisob-faktura yuborildi"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Hisob-fakturani qoralama sifatida qoldirish"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "To'lanishi kerak bo'lgan summadan kam miqdor qisman to'lov sifatida qayd etiladi; qolgan qismi to'langunga qadar hisob-faktura to'lanmagan bo'lib qoladi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Yuborilmagan"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Bu yerda faqat xodim to'lanmagan hisob-fakturaga qayd etgan to'lovni bekor qilish mumkin, va faqat bir marta."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Faqat tasdiqlangan, to'lanmagan hisob-fakturani yuborish mumkin."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Faqat Enhance serveridagi hosting hisoblarini qo'lda bog'lash mumkin."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Bekor qilish"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Ushbu :amount to'lovni bekor qilasizmi? U endi to'langan hisoblanmaydi va uning krediti mijozdan qaytarib olinadi. Hech qayerga pul yuborilmaydi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Hisob-fakturani yuborish"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Panel bu hisobni mijozning emaili bo'yicha topa olmasa, uning Enhance tashkiloti va obunasini belgilang. Ular saqlashdan oldin serverda tekshiriladi, keyin har bir amal ulardan foydalanadi. Bog'lanishni olib tashlash uchun ikkalasini ham bo'sh qoldiring."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "Obuna ID'si"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Summa to'lanishi kerak bo'lgan summadan katta (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Mijoz bu to'lov qo'shgan kreditni sarflab bo'lgan yoki uni boshqa hisob-fakturalar zaxiraga olgan, shuning uchun uni bekor qilib bo'lmaydi."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Boshqaruv paneli logini email manzil bo'lishi kerak."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Ushbu xizmat uchun hisob-faktura tayyorlanmoqda. Uni email orqali olasiz."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Bu tranzaksiya identifikatori allaqachon qayd etilgan."

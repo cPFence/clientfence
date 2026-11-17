@@ -30392,3 +30392,120 @@ msgstr "Wat niet uit FOSSBilling wordt geïmporteerd"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Wat niet uit Paymenter wordt geïmporteerd"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Een conceptfactuur kan niet als betaald worden gemarkeerd."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Bedragen in :currency hebben maximaal :digits decimalen."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Een factuur voor Tegoed toevoegen wordt alleen volledig betaald."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Een andere hostingbestelling is al aan dit abonnement gekoppeld."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Login controlepaneel"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Kan de :panel:-server niet bereiken: het TLS-certificaat kon niet worden geverifieerd. Gebruik de hostnaam waarvoor het certificaat is uitgegeven, of zet TLS-certificaat verifiëren uit in de serverinstellingen."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Kan de :panel:-server niet bereiken: de hostnaam is niet gevonden. De Hostnaam moet het adres zijn waarop het :panel:-controlepaneel opent."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Kan de :panel:-server niet bereiken: er antwoordt niets via HTTPS op deze poort. Controleer de Verbindingspoort in de serverinstellingen."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Kan de :panel:-server niet bereiken: de verbinding is verlopen. Controleer de Hostnaam en de Verbindingspoort, en of een firewall deze server laat verbinden."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Kan de :panel:-server niet bereiken: de verbinding is geweigerd. Controleer de Verbindingspoort, en of de firewall van het paneel deze server laat verbinden."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance-koppeling"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Voer zowel de organisatie-ID als de abonnements-ID uit het Enhance-paneel in, of laat beide leeg om de koppeling te verwijderen."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Factuur verzonden"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Factuur als concept laten staan"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Een bedrag lager dan het openstaande bedrag wordt als deelbetaling vastgelegd; de factuur blijft onbetaald tot de rest is betaald."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Niet verzonden"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Alleen een betaling die medewerkers op een onbetaalde factuur hebben vastgelegd kan hier worden teruggedraaid, en slechts één keer."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Alleen een goedgekeurde, onbetaalde factuur kan worden verzonden."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Alleen hostingaccounts op een Enhance-server kunnen handmatig worden gekoppeld."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Terugdraaien"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Deze betaling van :amount terugdraaien? Ze telt niet meer als betaald en het tegoed wordt bij de klant weggehaald. Er wordt nergens geld naartoe gestuurd."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Factuur verzenden"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Stel de Enhance-organisatie en het Enhance-abonnement van dit account in als het paneel het niet vindt via het e-mailadres van de klant. Ze worden op de server gecontroleerd voordat ze worden opgeslagen, en elke actie gebruikt ze daarna. Laat beide leeg om de koppeling te verwijderen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "Abonnements-ID"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Het bedrag is hoger dan het openstaande bedrag (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "De klant heeft het tegoed dat deze betaling toevoegde uitgegeven, of andere facturen hebben het gereserveerd, dus ze kan niet worden teruggedraaid."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "De login van het controlepaneel moet een e-mailadres zijn."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "De factuur voor deze dienst wordt voorbereid. U ontvangt hem per e-mail."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Dit transactie-ID is al vastgelegd."

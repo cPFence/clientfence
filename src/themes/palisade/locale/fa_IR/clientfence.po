@@ -30407,3 +30407,120 @@ msgstr "آنچه از FOSSBilling درون‌ریزی نمی‌شود"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "آنچه از Paymenter درون‌ریزی نمی‌شود"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "فاکتور پیش‌نویس را نمی‌توان پرداخت‌شده علامت زد."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "مبالغ به :currency حداکثر :digits رقم اعشار دارند."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "فاکتور افزودن اعتبار فقط به‌صورت کامل پرداخت می‌شود."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "سفارش هاستینگ دیگری از قبل به این اشتراک پیوند شده است."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "ورود به پنل کنترل"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "دسترسی به سرور :panel: ممکن نشد: گواهی TLS آن قابل تأیید نبود. از نام هاستی استفاده کنید که گواهی برای آن صادر شده است، یا گزینه تأیید گواهی TLS را در تنظیمات سرور خاموش کنید."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "دسترسی به سرور :panel: ممکن نشد: نام هاست آن پیدا نشد. هاست نیم باید همان آدرسی باشد که پنل کنترل :panel: در آن باز می‌شود."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "دسترسی به سرور :panel: ممکن نشد: هیچ چیز روی این درگاه با HTTPS پاسخ نمی‌دهد. درگاه اتصال را در تنظیمات سرور بررسی کنید."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "دسترسی به سرور :panel: ممکن نشد: زمان اتصال تمام شد. هاست نیم و درگاه اتصال را بررسی کنید و ببینید فایروال به این سرور اجازه اتصال می‌دهد."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "دسترسی به سرور :panel: ممکن نشد: اتصال رد شد. درگاه اتصال را بررسی کنید و ببینید فایروال پنل به این سرور اجازه اتصال می‌دهد."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "پیوند Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "هم شناسهٔ سازمان و هم شناسهٔ اشتراک را از پنل Enhance وارد کنید، یا برای حذف پیوند هر دو را خالی بگذارید."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "فاکتور ارسال شد"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "فاکتور به‌صورت پیش‌نویس بماند"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "مبلغ کمتر از مانده قابل پرداخت به‌صورت پرداخت جزئی ثبت می‌شود؛ فاکتور تا پرداخت باقی‌مانده پرداخت‌نشده می‌ماند."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "ارسال نشده"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "در اینجا فقط پرداختی را می‌توان ابطال کرد که کارمند روی فاکتور پرداخت‌نشده ثبت کرده است، و فقط یک بار."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "فقط فاکتور تأییدشده و پرداخت‌نشده را می‌توان ارسال کرد."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "فقط حساب‌های هاستینگ روی سرور Enhance را می‌توان دستی پیوند داد."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "ابطال"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "این پرداخت :amount ابطال شود؟ دیگر پرداخت‌شده به حساب نمی‌آید و اعتبار آن از مشتری برگردانده می‌شود. هیچ پولی به جایی فرستاده نمی‌شود."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "ارسال فاکتور"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "وقتی پنل این حساب را با ایمیل مشتری پیدا نمی‌کند، سازمان و اشتراک Enhance آن را تعیین کنید. پیش از ذخیره روی سرور بررسی می‌شوند و سپس هر اقدام از آن‌ها استفاده می‌کند. برای حذف پیوند هر دو را خالی بگذارید."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "شناسهٔ اشتراک"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "مبلغ بیشتر از مانده قابل پرداخت (:due) است."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "مشتری اعتباری را که این پرداخت اضافه کرده خرج کرده یا فاکتورهای دیگر آن را کنار گذاشته‌اند، بنابراین ابطال ممکن نیست."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "نام ورود پنل کنترل باید یک آدرس ایمیل باشد."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "فاکتور این سرویس در حال آماده‌سازی است. آن را با ایمیل دریافت می‌کنید."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "این شناسه تراکنش از قبل ثبت شده است."

@@ -30989,3 +30989,120 @@ msgstr "Τι δεν εισάγεται από το FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Τι δεν εισάγεται από το Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Ένα προσχέδιο παραστατικού δεν μπορεί να σημανθεί ως πληρωμένο."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Τα ποσά σε :currency έχουν το πολύ :digits δεκαδικά ψηφία."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Ένα παραστατικό Προσθήκη χρημάτων πληρώνεται μόνο στο σύνολό του."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Άλλη παραγγελία φιλοξενίας είναι ήδη συνδεδεμένη με αυτή τη συνδρομή."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Σύνδεση στο πάνελ ελέγχου"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή :panel:: το πιστοποιητικό TLS του δεν μπόρεσε να επαληθευτεί. Χρησιμοποιήστε το όνομα κεντρικού υπολογιστή για το οποίο εκδόθηκε το πιστοποιητικό ή απενεργοποιήστε το Επαλήθευση πιστοποιητικού TLS στις ρυθμίσεις του διακομιστή."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή :panel:: το όνομα κεντρικού υπολογιστή του δεν βρέθηκε. Το Όνομα κεντρικού υπολογιστή πρέπει να είναι η διεύθυνση στην οποία ανοίγει το πάνελ ελέγχου :panel:."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή :panel:: τίποτα δεν απαντά μέσω HTTPS σε αυτή τη θύρα. Ελέγξτε τη Θύρα σύνδεσης στις ρυθμίσεις του διακομιστή."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή :panel:: η σύνδεση έληξε. Ελέγξτε το Όνομα κεντρικού υπολογιστή και τη Θύρα σύνδεσης, καθώς και αν ένα firewall επιτρέπει τη σύνδεση αυτού του διακομιστή."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή :panel:: η σύνδεση απορρίφθηκε. Ελέγξτε τη Θύρα σύνδεσης και αν το firewall του πάνελ επιτρέπει τη σύνδεση αυτού του διακομιστή."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Σύνδεσμος Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Εισαγάγετε και το ID οργανισμού και το ID συνδρομής από το πάνελ Enhance ή αφήστε και τα δύο κενά για να αφαιρέσετε τη σύνδεση."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Το παραστατικό στάλθηκε"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Διατήρηση του παραστατικού ως προσχέδιο"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Ποσό μικρότερο από το υπόλοιπο πληρωμής καταγράφεται ως μερική πληρωμή· το παραστατικό παραμένει απλήρωτο μέχρι να πληρωθεί το υπόλοιπο."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Δεν στάλθηκε"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Εδώ μπορεί να αντιστραφεί μόνο πληρωμή που κατέγραψε το προσωπικό σε απλήρωτο παραστατικό, και μόνο μία φορά."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Μπορεί να σταλεί μόνο εγκεκριμένο, απλήρωτο παραστατικό."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Μόνο λογαριασμοί φιλοξενίας σε διακομιστή Enhance μπορούν να συνδεθούν χειροκίνητα."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Αντιστροφή"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Αντιστροφή αυτής της πληρωμής :amount; Δεν θεωρείται πλέον πληρωμένη και η πίστωσή της αφαιρείται από τον πελάτη. Δεν στέλνονται χρήματα πουθενά."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Αποστολή παραστατικού"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Ορίστε τον οργανισμό και τη συνδρομή Enhance αυτού του λογαριασμού όταν το πάνελ δεν τον βρίσκει από το email του πελάτη. Ελέγχονται στον διακομιστή πριν αποθηκευτούν και στη συνέχεια κάθε ενέργεια τα χρησιμοποιεί. Αφήστε και τα δύο κενά για να αφαιρέσετε τη σύνδεση."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID συνδρομής"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Το ποσό είναι μεγαλύτερο από το υπόλοιπο πληρωμής (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Ο πελάτης έχει ξοδέψει την πίστωση που πρόσθεσε αυτή η πληρωμή ή άλλα παραστατικά την έχουν δεσμεύσει, οπότε δεν μπορεί να αντιστραφεί."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Η σύνδεση στο πάνελ ελέγχου πρέπει να είναι διεύθυνση email."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Το παραστατικό για αυτή την υπηρεσία ετοιμάζεται. Θα το λάβετε με email."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Αυτό το αναγνωριστικό συναλλαγής έχει ήδη καταγραφεί."

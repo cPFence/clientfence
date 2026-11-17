@@ -28715,3 +28715,120 @@ msgstr "สิ่งที่ไม่นำเข้าจาก FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "สิ่งที่ไม่นำเข้าจาก Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "ไม่สามารถทำเครื่องหมายใบแจ้งหนี้ฉบับร่างว่าชำระเงินแล้วได้"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "จำนวนเงินใน :currency มีทศนิยมได้ไม่เกิน :digits ตำแหน่ง"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "ใบแจ้งหนี้เติมเงินชำระได้เต็มจำนวนเท่านั้น"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "มีคำสั่งซื้อโฮสติ้งอื่นผูกกับการสมัครสมาชิกนี้อยู่แล้ว"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "การเข้าสู่ระบบแผงควบคุม"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "เชื่อมต่อเซิร์ฟเวอร์ :panel: ไม่ได้: ตรวจสอบใบรับรอง TLS ของเซิร์ฟเวอร์ไม่ได้ ใช้ชื่อโฮสต์ที่ออกใบรับรองให้ หรือปิด ตรวจสอบใบรับรอง TLS ในการตั้งค่าเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "เชื่อมต่อเซิร์ฟเวอร์ :panel: ไม่ได้: ไม่พบชื่อโฮสต์ของเซิร์ฟเวอร์ ชื่อโฮสต์ต้องเป็นที่อยู่ที่ใช้เปิดแผงควบคุม :panel:"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "เชื่อมต่อเซิร์ฟเวอร์ :panel: ไม่ได้: ไม่มีสิ่งใดตอบกลับผ่าน HTTPS ที่พอร์ตนี้ ตรวจสอบ พอร์ตการเชื่อมต่อ ในการตั้งค่าเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "เชื่อมต่อเซิร์ฟเวอร์ :panel: ไม่ได้: การเชื่อมต่อหมดเวลา ตรวจสอบ ชื่อโฮสต์ และ พอร์ตการเชื่อมต่อ และตรวจสอบว่าไฟร์วอลล์อนุญาตให้เซิร์ฟเวอร์นี้เชื่อมต่อ"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "เชื่อมต่อเซิร์ฟเวอร์ :panel: ไม่ได้: การเชื่อมต่อถูกปฏิเสธ ตรวจสอบ พอร์ตการเชื่อมต่อ และตรวจสอบว่าไฟร์วอลล์ของแผงควบคุมอนุญาตให้เซิร์ฟเวอร์นี้เชื่อมต่อ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "การเชื่อมโยง Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "กรอกทั้ง ID องค์กรและ ID การสมัครสมาชิกจากแผงควบคุม Enhance หรือเว้นว่างทั้งคู่เพื่อลบการเชื่อมโยง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "ส่งใบแจ้งหนี้แล้ว"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "คงใบแจ้งหนี้เป็นฉบับร่าง"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "จำนวนเงินที่น้อยกว่ายอดค้างชำระจะถูกบันทึกเป็นการชำระเงินบางส่วน ใบแจ้งหนี้จะยังไม่ได้ชำระจนกว่าจะชำระส่วนที่เหลือ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "ยังไม่ได้ส่ง"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "ย้อนรายการได้เฉพาะการชำระเงินที่เจ้าหน้าที่บันทึกไว้ในใบแจ้งหนี้ที่ยังไม่ได้ชำระ และทำได้เพียงครั้งเดียว"
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "ส่งได้เฉพาะใบแจ้งหนี้ที่อนุมัติแล้วและยังไม่ได้ชำระ"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "เชื่อมโยงด้วยตนเองได้เฉพาะบัญชีโฮสติ้งบนเซิร์ฟเวอร์ Enhance"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "ย้อนรายการ"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "ย้อนรายการชำระเงิน :amount นี้หรือไม่ รายการจะไม่นับเป็นชำระแล้ว และเครดิตของรายการจะถูกหักคืนจากลูกค้า ไม่มีการส่งเงินไปที่ใด"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "ส่งใบแจ้งหนี้"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "ตั้งค่าองค์กรและการสมัครสมาชิก Enhance ของบัญชีนี้เมื่อแผงควบคุมหาไม่พบจากอีเมลของลูกค้า ระบบจะตรวจสอบบนเซิร์ฟเวอร์ก่อนบันทึก จากนั้นทุกการดำเนินการจะใช้ค่าเหล่านี้ เว้นว่างทั้งคู่เพื่อลบการเชื่อมโยง"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID การสมัครสมาชิก"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "จำนวนเงินมากกว่ายอดค้างชำระ (:due)"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "ลูกค้าใช้เครดิตที่การชำระเงินนี้เพิ่มไปแล้ว หรือใบแจ้งหนี้อื่นกันไว้ จึงย้อนรายการไม่ได้"
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "การเข้าสู่ระบบแผงควบคุมต้องเป็นที่อยู่อีเมล"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "กำลังเตรียมใบแจ้งหนี้สำหรับบริการนี้ คุณจะได้รับทางอีเมล"
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "บันทึกรหัสธุรกรรมนี้ไว้แล้ว"

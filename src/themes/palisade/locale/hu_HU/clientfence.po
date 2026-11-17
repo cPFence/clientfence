@@ -30890,3 +30890,120 @@ msgstr "Mi nem importálódik a FOSSBillingből"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Mi nem importálódik a Paymenterből"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "A számlavázlat nem jelölhető kifizetettként."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "A(z) :currency összegeknek legfeljebb :digits tizedesjegyük lehet."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Az Egyenleg feltöltése számlát csak teljes egészében lehet kifizetni."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Ehhez az előfizetéshez már egy másik tárhelyrendelés van kapcsolva."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Vezérlőpult-bejelentkezés"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "A(z) :panel: szerver nem érhető el: a TLS-tanúsítványát nem sikerült ellenőrizni. Használja azt a hosztnevet, amelyre a tanúsítványt kiállították, vagy kapcsolja ki a TLS-tanúsítvány ellenőrzése beállítást a szerverbeállításokban."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "A(z) :panel: szerver nem érhető el: a hosztneve nem található. A Hosztnév legyen az a cím, amelyen a(z) :panel: vezérlőpult megnyílik."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "A(z) :panel: szerver nem érhető el: ezen a porton semmi sem válaszol HTTPS-en. Ellenőrizze a Kapcsolódási portot a szerverbeállításokban."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "A(z) :panel: szerver nem érhető el: a kapcsolat időtúllépéssel megszakadt. Ellenőrizze a Hosztnevet és a Kapcsolódási portot, valamint hogy a tűzfal engedi-e e szerver csatlakozását."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "A(z) :panel: szerver nem érhető el: a kapcsolatot elutasították. Ellenőrizze a Kapcsolódási portot, valamint hogy a panel tűzfala engedi-e e szerver csatlakozását."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance-kapcsolat"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Adja meg a szervezetazonosítót és az előfizetés azonosítóját is az Enhance panelből, vagy hagyja mindkettőt üresen a kapcsolat törléséhez."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Számla elküldve"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "A számla maradjon vázlat"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "A fennmaradó összegnél kisebb összeg részfizetésként kerül rögzítésre; a számla fizetetlen marad, amíg a többit ki nem fizetik."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Nincs elküldve"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Itt csak olyan fizetés vonható vissza, amelyet munkatárs rögzített fizetetlen számlán, és csak egyszer."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Csak jóváhagyott, fizetetlen számla küldhető el."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Csak Enhance szerveren lévő tárhelyfiókok kapcsolhatók kézzel."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Visszavonás"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Visszavonja ezt a :amount összegű fizetést? Már nem számít kifizetettnek, és a jóváírását visszavonjuk az ügyféltől. Sehová nem küldünk pénzt."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Számla küldése"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Adja meg a fiók Enhance-szervezetét és -előfizetését, ha a panel nem találja meg az ügyfél e-mail-címe alapján. Mentés előtt ellenőrizzük őket a szerveren, utána minden művelet ezeket használja. Hagyja mindkettőt üresen a kapcsolat törléséhez."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "Előfizetés-azonosító"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Az összeg nagyobb a fennmaradó összegnél (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Az ügyfél elköltötte a fizetés által jóváírt összeget, vagy más számlák lefoglalták, ezért nem vonható vissza."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "A vezérlőpult-bejelentkezésnek e-mail-címnek kell lennie."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "A szolgáltatás számlája készül. E-mailben megkapja."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Ez a tranzakció-azonosító már rögzítve van."

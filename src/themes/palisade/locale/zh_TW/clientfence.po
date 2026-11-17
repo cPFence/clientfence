@@ -31403,3 +31403,120 @@ msgstr "不會從 FOSSBilling 匯入的內容"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "不會從 Paymenter 匯入的內容"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "草稿應收付憑單不能標示為已付款。"
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "以 :currency 計的金額最多有 :digits 位小數。"
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "儲值應收付憑單只能一次全額付清。"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "另一筆主機訂單已連結到此訂閱方案。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "控制面板登入帳號"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "無法連線到 :panel: 伺服器：無法驗證其 TLS 憑證。請使用憑證簽發對象的主機名稱，或在伺服器設定中關閉驗證 TLS 憑證。"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "無法連線到 :panel: 伺服器：找不到其主機名稱。主機名稱必須是 :panel: 控制面板開啟時使用的位址。"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "無法連線到 :panel: 伺服器：此連接埠上沒有任何服務透過 HTTPS 回應。請檢查伺服器設定中的連線連接埠。"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "無法連線到 :panel: 伺服器：連線逾時。請檢查主機名稱和連線連接埠，以及防火牆是否允許此伺服器連線。"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "無法連線到 :panel: 伺服器：連線被拒絕。請檢查連線連接埠，以及面板的防火牆是否允許此伺服器連線。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Enhance 連結"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "請同時填寫 Enhance 面板中的組織 ID 和訂閱 ID，或將兩者都留空以移除連結。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "應收付憑單已寄出"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "將應收付憑單保留為草稿"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "低於待付餘額的金額將記錄為部分付款；在付清其餘款項之前，應收付憑單仍為未付款。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "未寄出"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "這裡只能撤銷員工在未付款應收付憑單上記錄的付款，且只能撤銷一次。"
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "只能寄出已批准且未付款的應收付憑單。"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "只有 Enhance 伺服器上的主機帳號才能手動連結。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "撤銷"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "撤銷這筆 :amount 的付款嗎？它將不再算作已付款，其貸方金額會從客戶處收回。不會向任何地方轉出資金。"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "寄出應收付憑單"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "當面板無法透過客戶電子郵件找到此帳號時，請設定其 Enhance 組織和訂閱。儲存前會在伺服器上檢查，之後所有操作都會使用它們。將兩者都留空可移除連結。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "訂閱 ID"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "金額超過待付餘額（:due）。"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "客戶已花掉此筆付款增加的貸方金額，或其他應收付憑單已將其預留，因此無法撤銷。"
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "控制面板登入帳號必須是電子郵件地址。"
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "此服務的應收付憑單正在準備中。您將透過電子郵件收到。"
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "此交易編號已記錄。"

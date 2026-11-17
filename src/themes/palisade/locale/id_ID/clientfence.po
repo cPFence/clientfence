@@ -31049,3 +31049,120 @@ msgstr "Yang tidak diimpor dari FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Yang tidak diimpor dari Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Faktur draf tidak dapat ditandai lunas."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Jumlah dalam :currency memiliki paling banyak :digits desimal."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Faktur Tambah Dana hanya dibayar penuh."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Pesanan hosting lain sudah ditautkan ke langganan ini."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Login panel kontrol"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Tidak dapat menjangkau server :panel:: sertifikat TLS-nya tidak dapat diverifikasi. Gunakan nama host yang menjadi tujuan penerbitan sertifikat, atau nonaktifkan Verifikasi Sertifikat TLS di pengaturan server."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Tidak dapat menjangkau server :panel:: nama hostnya tidak ditemukan. Nama host harus berupa alamat tempat panel kontrol :panel: dibuka."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Tidak dapat menjangkau server :panel:: tidak ada yang menjawab HTTPS di port ini. Periksa Port Koneksi di pengaturan server."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Tidak dapat menjangkau server :panel:: koneksi habis waktu. Periksa Nama host dan Port Koneksi, serta apakah firewall mengizinkan server ini terhubung."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Tidak dapat menjangkau server :panel:: koneksi ditolak. Periksa Port Koneksi, serta apakah firewall panel mengizinkan server ini terhubung."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Tautan Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Masukkan ID organisasi dan ID langganan dari panel Enhance, atau kosongkan keduanya untuk menghapus tautan."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Faktur terkirim"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Biarkan faktur sebagai draf"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Jumlah yang kurang dari sisa tagihan dicatat sebagai pembayaran sebagian; faktur tetap belum dibayar sampai sisanya dilunasi."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Belum terkirim"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Hanya pembayaran yang dicatat staf pada faktur yang belum dibayar yang dapat dibalikkan di sini, dan hanya sekali."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Hanya faktur yang disetujui dan belum dibayar yang dapat dikirim."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Hanya akun hosting di server Enhance yang dapat ditautkan secara manual."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Balikkan"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Balikkan pembayaran :amount ini? Pembayaran tidak lagi dihitung lunas dan kreditnya diambil kembali dari klien. Tidak ada uang yang dikirim ke mana pun."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Kirim faktur"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Atur organisasi dan langganan Enhance akun ini jika panel tidak dapat menemukannya melalui email klien. Keduanya diperiksa di server sebelum disimpan, lalu setiap tindakan menggunakannya. Kosongkan keduanya untuk menghapus tautan."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID langganan"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Jumlah melebihi sisa tagihan (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Klien telah menggunakan kredit yang ditambahkan pembayaran ini, atau faktur lain telah mencadangkannya, sehingga tidak dapat dibalikkan."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Login panel kontrol harus berupa alamat email."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Faktur untuk layanan ini sedang disiapkan. Anda akan menerimanya melalui email."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "ID transaksi ini sudah tercatat."

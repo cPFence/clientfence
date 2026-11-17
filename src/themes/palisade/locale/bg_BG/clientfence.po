@@ -31380,3 +31380,120 @@ msgstr "Какво не се импортира от FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "Какво не се импортира от Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "Фактура чернова не може да бъде маркирана като платена."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "Сумите в :currency имат най-много :digits знака след десетичната запетая."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "Фактура за Добавяне на средства се плаща само изцяло."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "Друга поръчка за хостинг вече е свързана с този абонамент."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "Вход в контролния панел"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "Не може да се свърже със сървъра на :panel:: TLS сертификатът му не можа да бъде проверен. Използвайте хост името, за което е издаден сертификатът, или изключете Проверка на TLS сертификата в настройките на сървъра."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "Не може да се свърже със сървъра на :panel:: хост името му не беше намерено. Хост името трябва да е адресът, на който се отваря контролният панел :panel:."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "Не може да се свърже със сървъра на :panel:: нищо не отговаря по HTTPS на този порт. Проверете Порт за връзка в настройките на сървъра."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "Не може да се свърже със сървъра на :panel:: връзката изтече. Проверете Хост името и Порт за връзка и дали защитна стена позволява на този сървър да се свърже."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "Не може да се свърже със сървъра на :panel:: връзката беше отказана. Проверете Порт за връзка и дали защитната стена на панела позволява на този сървър да се свърже."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "Връзка с Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "Въведете и ID на организацията, и ID на абонамента от панела Enhance или оставете и двете празни, за да премахнете връзката."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "Фактурата е изпратена"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "Остави фактурата като чернова"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "Сума, по-малка от дължимата, се записва като частично плащане; фактурата остава неплатена, докато не се плати остатъкът."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "Неизпратени"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "Тук може да се анулира само плащане, записано от персонала по неплатена фактура, и само веднъж."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "Може да се изпрати само одобрена, неплатена фактура."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "Само хостинг акаунти на Enhance сървър могат да се свързват ръчно."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "Анулиране"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "Да се анулира ли това плащане от :amount? То вече не се счита за платено, а кредитът му се връща от клиента. Пари не се изпращат никъде."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "Изпращане на фактурата"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "Задайте организацията и абонамента в Enhance на този акаунт, когато панелът не го намира по имейла на клиента. Проверяват се на сървъра преди запазване, а след това всяко действие ги използва. Оставете и двете празни, за да премахнете връзката."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "ID на абонамента"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "Сумата е по-голяма от дължимата (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "Клиентът е изразходвал кредита, добавен от това плащане, или други фактури са го резервирали, затова не може да бъде анулирано."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "Входът в контролния панел трябва да е имейл адрес."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "Фактурата за тази услуга се подготвя. Ще я получите по имейл."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "Този ID на транзакция вече е записан."

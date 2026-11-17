@@ -30279,3 +30279,120 @@ msgstr "ما لا يُستورد من FOSSBilling"
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "What is not imported from Paymenter"
 msgstr "ما لا يُستورد من Paymenter"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr "لا يمكن تحديد فاتورة مسودة كمدفوعة."
+
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr "المبالغ بعملة :currency لها :digits خانات عشرية كحد أقصى."
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr "فاتورة إضافة رصيد تُدفع بالكامل فقط."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr "طلب استضافة آخر مرتبط بهذا الاشتراك بالفعل."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr "تسجيل الدخول إلى لوحة تحكم الاستضافة"
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr "تعذر الوصول إلى خادم :panel:: تعذر التحقق من شهادة TLS الخاصة به. استخدم اسم المضيف الذي صدرت له الشهادة، أو عطّل التحقق من شهادة TLS في إعدادات الخادم."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr "تعذر الوصول إلى خادم :panel:: لم يُعثر على اسم المضيف الخاص به. يجب أن يكون اسم المضيف هو العنوان الذي تُفتح عليه لوحة تحكم :panel:."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr "تعذر الوصول إلى خادم :panel:: لا شيء يستجيب عبر HTTPS على هذا المنفذ. تحقق من منفذ الاتصال في إعدادات الخادم."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr "تعذر الوصول إلى خادم :panel:: انتهت مهلة الاتصال. تحقق من اسم المضيف ومنفذ الاتصال، ومن أن جدار الحماية يسمح لهذا الخادم بالاتصال."
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr "تعذر الوصول إلى خادم :panel:: رُفض الاتصال. تحقق من منفذ الاتصال، ومن أن جدار حماية اللوحة يسمح لهذا الخادم بالاتصال."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr "ربط Enhance"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
+msgstr "أدخل معرّف المؤسسة ومعرّف الاشتراك من لوحة Enhance معًا، أو اتركهما فارغين لإزالة الربط."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr "تم إرسال الفاتورة"
+
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr "إبقاء الفاتورة كمسودة"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
+msgstr "يُسجَّل المبلغ الأقل من المبلغ المتبقي كدفعة جزئية؛ وتبقى الفاتورة غير مدفوعة حتى يُدفع الباقي."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr "لم تُرسل"
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr "يمكن هنا عكس دفعة سجّلها الموظفون على فاتورة غير مدفوعة فقط، ولمرة واحدة فقط."
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
+msgstr "لا يمكن إرسال سوى فاتورة مقبولة وغير مدفوعة."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
+msgstr "لا يمكن ربط حسابات الاستضافة يدويًا إلا إذا كانت على خادم Enhance."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr "عكس"
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
+msgstr "هل تريد عكس هذه الدفعة البالغة :amount؟ لن تُحتسب كمدفوعة بعد الآن وسيُسحب رصيدها من العميل. لا يُرسل أي مال إلى أي جهة."
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr "إرسال الفاتورة"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
+msgstr "حدّد مؤسسة Enhance واشتراكها لهذا الحساب عندما لا تعثر عليه اللوحة بالبريد الإلكتروني للعميل. يتم التحقق منهما على الخادم قبل الحفظ، ثم تستخدمهما كل الإجراءات. اتركهما فارغين لإزالة الربط."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
+msgstr "معرّف الاشتراك"
+
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr "المبلغ أكبر من المبلغ المتبقي (:due)."
+
+#: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr "أنفق العميل الرصيد الذي أضافته هذه الدفعة، أو حجزته فواتير أخرى، لذلك لا يمكن عكسها."
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
+msgstr "يجب أن يكون تسجيل الدخول إلى لوحة التحكم عنوان بريد إلكتروني."
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
+msgstr "يجري تجهيز فاتورة هذه الخدمة. ستصلك بالبريد الإلكتروني."
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
+msgstr "معرّف العملية هذا مسجَّل بالفعل."

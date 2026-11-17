@@ -1098,6 +1098,10 @@ msgstr ""
 msgid "A downgrade gave account credit for this service. Refund this invoice by hand."
 msgstr ""
 
+#: src/modules/Order/Api/Admin.php
+msgid "A draft invoice cannot be marked as paid."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "A few more things you may want to look at:"
 msgstr ""
@@ -3350,6 +3354,14 @@ msgstr ""
 msgid "Amounts are in the affiliate's currency. Pending commissions clear after the clearing days if the service is still active."
 msgstr ""
 
+#: src/modules/Invoice/Api/Admin.php
+msgid "Amounts in :currency have at most :digits decimals."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "An Add funds invoice is paid in full only."
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "An Add funds refund takes its amount back from the client's credit, and the client has spent it. Refund this invoice by hand."
 msgstr ""
@@ -3490,7 +3502,11 @@ msgstr ""
 msgid "Anonymizing keeps orders, invoices and payments for your records and erases the person: names, email, address, phone, IP addresses, ticket messages and sent emails. It is refused while the client has live services or unpaid invoices."
 msgstr ""
 
-#: src/library/ClientFence/Tools.php src/modules/Order/Upgrades.php
+#: src/modules/Servicehosting/Service.php
+msgid "Another hosting order is already linked to this subscription."
+msgstr ""
+
+#: src/library/ClientFence/Tools.php src/modules/Invoice/Service.php src/modules/Order/Upgrades.php
 msgid "Another request is being processed. Please try again."
 msgstr ""
 
@@ -7034,6 +7050,10 @@ msgstr ""
 msgid "Control panel"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Control panel login"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Control the invoice lifecycle, approval state, and displayed numbering."
 msgstr ""
@@ -7268,6 +7288,26 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Api.php
 msgid "Could not reach the :panel: server. Please try again later."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its TLS certificate could not be verified. Use the host name the certificate was issued for, or turn off Verify TLS Certificate in the server settings."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: its host name was not found. The Hostname must be the address the :panel: control panel opens at."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: nothing answers HTTPS on this port. Check the Connection Port in the server settings."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection timed out. Check the Hostname and the Connection Port, and that a firewall lets this server connect."
+msgstr ""
+
+#: src/modules/Servicehosting/Panel/Enhance/Api.php
+msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -9854,6 +9894,10 @@ msgstr ""
 msgid "Enhance (ClientFence) is switched off. Turn it on under System → Hosting Plans and Servers (Hosting panels)."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Enhance Link"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "Enhance could not be reached to read the global webmail domain."
 msgstr ""
@@ -10014,7 +10058,7 @@ msgstr ""
 msgid "Enter an amount from :min to :max."
 msgstr ""
 
-#: src/modules/Invoice/Service.php
+#: src/modules/Invoice/Api/Admin.php src/modules/Invoice/Service.php
 msgid "Enter an amount greater than zero."
 msgstr ""
 
@@ -10028,6 +10072,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php
 msgid "Enter both Stripe keys (Developers → API keys in your Stripe dashboard)."
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter both the organization ID and the subscription ID from the Enhance panel, or leave both empty to remove the link."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
@@ -13658,6 +13706,10 @@ msgstr ""
 msgid "Invoice refund"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Invoice sent"
+msgstr ""
+
 #: src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "Invoice summary"
 msgstr ""
@@ -14330,6 +14382,10 @@ msgstr ""
 msgid "Leave every filter empty to send this message to all clients."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_new.html.twig
+msgid "Leave the invoice as a draft"
+msgstr ""
+
 #: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
 msgid "Leave these fields blank to use the standard format for the active language and currency. These settings affect display only; calculations and payment gateway values are unchanged."
 msgstr ""
@@ -14360,6 +14416,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Less than a month"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid."
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
@@ -17374,6 +17434,10 @@ msgstr ""
 msgid "Not recurrent"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_index.html.twig
+msgid "Not sent"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Not set up"
 msgstr ""
@@ -17910,6 +17974,10 @@ msgstr ""
 msgid "Only a paid invoice can be refunded, and only once."
 msgstr ""
 
+#: src/modules/Invoice/PaymentReversal.php
+msgid "Only a payment staff recorded on an unpaid invoice can be reversed here, and only once."
+msgstr ""
+
 #: src/modules/Client/Affiliates/Affiliates.php
 msgid "Only a pending commission can be cancelled."
 msgstr ""
@@ -17944,6 +18012,10 @@ msgstr ""
 
 #: src/modules/Order/CancelRequests.php
 msgid "Only an active service can be cancelled."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "Only an approved, unpaid invoice can be sent."
 msgstr ""
 
 #: src/modules/Invoice/ServiceTransaction.php
@@ -17988,6 +18060,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Only from a new country or network"
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Only hosting accounts on an Enhance server can be linked by hand."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -18630,7 +18706,7 @@ msgstr ""
 msgid "Organisation"
 msgstr ""
 
-#: src/library/Server/Manager/Enhance.php
+#: src/library/Server/Manager/Enhance.php src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Organization ID"
 msgstr ""
 
@@ -22599,11 +22675,19 @@ msgid "Reversal"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Reverse payment"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Reverse payment?"
+msgstr ""
+
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere."
 msgstr ""
 
 #: src/themes/admin_default/html/macro_functions.html.twig
@@ -23586,6 +23670,10 @@ msgstr ""
 msgid "Send invitation"
 msgstr ""
 
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+msgid "Send invoice"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Send invoice email"
 msgstr ""
@@ -24052,6 +24140,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Set status"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Set the Enhance organization and subscription of this account when the panel cannot find it by the client email. They are checked on the server before they are saved, and every action then uses them. Leave both empty to remove the link."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -25148,6 +25240,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig
 msgid "Subscription Details"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Subscription ID"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig
@@ -26270,6 +26366,10 @@ msgstr ""
 msgid "The affiliate sees this note in its commission history."
 msgstr ""
 
+#: src/modules/Invoice/Service.php
+msgid "The amount is more than the balance due (:due)."
+msgstr ""
+
 #: src/modules/Invoice/templates/email/mod_invoice_refunded.html.twig
 msgid "The amount was added to your account credit."
 msgstr ""
@@ -26467,6 +26567,10 @@ msgid "The client has no saved payment method."
 msgstr ""
 
 #: src/modules/Invoice/PaymentReversal.php
+msgid "The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed."
+msgstr ""
+
+#: src/modules/Invoice/PaymentReversal.php
 msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
 msgstr ""
 
@@ -26528,6 +26632,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "The control panel did not answer."
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "The control panel login must be an email address."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
@@ -26909,6 +27017,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
 msgid "The invoice could not be created: :error"
+msgstr ""
+
+#: src/modules/Invoice/Api/Client.php
+msgid "The invoice for this service is being prepared. You will receive it by email."
 msgstr ""
 
 #: src/library/Payment/Adapter/Custom.php
@@ -28545,6 +28657,10 @@ msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_ticket.html.twig src/themes/palisade/html/mod_support_ticket.html.twig
 msgid "This ticket was closed, but you can still reopen it by replying."
+msgstr ""
+
+#: src/modules/Invoice/Service.php
+msgid "This transaction ID is already recorded."
 msgstr ""
 
 #: src/modules/Client/Files.php src/modules/Support/TicketFiles.php src/modules/Support/templates/admin/mod_support_ticket_reply_files.html.twig …
