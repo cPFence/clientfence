@@ -940,6 +940,10 @@ class Service implements InjectionAwareInterface
         if ($invoice->status === \Model_Invoice::STATUS_PAID) {
             return true;
         }
+        // ClientFence core patch: a draft is approved first; paid, the client got the payment email for an invoice never sent.
+        if ($invoice->approved !== null && (int) $invoice->approved === 0) {
+            throw new InformationException('A draft invoice cannot be marked as paid.');
+        }
 
         // ClientFence core patch: under the client's credit lock, and the status is read again there: two
         // clicks, or a click during a credit payment, paid the invoice and credited an Add funds twice; a
@@ -1053,11 +1057,12 @@ class Service implements InjectionAwareInterface
             $this->di['db']->store($invoice);
         }
 
-        // ClientFence core patch: the Egyptian methods use CustomEgp, which extends Custom. Without a
-        // transaction their payments were missing from the transaction list and income by method.
-        // getAdapterClassName loads the adapter file: CustomEgp is not autoloaded.
+        // ClientFence core patch: every method records a transaction (WHMCS Add Payment). Without one, the payment was missing
+        // from the transaction list and income by method (the Egyptian CustomEgp methods; CF-177: the rest of a part-paid
+        // invoice on a card gateway). getAdapterClassName loads the adapter file: CustomEgp is not autoloaded.
         $gatewayCode = (string) ($payGateway->gateway ?? '');
-        if ((!$isDeposit || $invoiceTotal > 0) && ($gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class)))) {
+        $manual = $gatewayCode === 'Custom' || (preg_match('/^[A-Za-z0-9_]+$/', $gatewayCode) === 1 && is_subclass_of($this->di['mod_service']('Invoice', 'PayGateway')->getAdapterClassName($payGateway), \Payment_Adapter_Custom::class));
+        if (!$isDeposit || $invoiceTotal > 0) {
             $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
             $newtx = $transactionService->create([
                 'invoice_id' => $invoice->id,
@@ -1080,6 +1085,10 @@ class Service implements InjectionAwareInterface
             if ($transaction->status === \Model_Transaction::STATUS_PROCESSED) {
                 throw new InformationException('This transaction ID is already recorded.');
             }
+            // Cron hands a received transaction to its gateway's adapter: claimed at once, so the card gateway is never called.
+            if (!$manual && !$this->di['mod_service']('Invoice', 'Transaction')->claimForProcessing((int) $transaction->id)) {
+                throw new InformationException('Another request is being processed. Please try again.');
+            }
 
             if (!$isDeposit) {
                 $this->useRecordedPayments($invoice, $credited);
@@ -1094,7 +1103,7 @@ class Service implements InjectionAwareInterface
                 $transaction->status = \Model_Transaction::STATUS_PROCESSED;
                 // ClientFence core patch: pay_gateway has no title column; name is the method's label.
                 $gatewayTitle = $payGateway->name ?: $payGateway->gateway;
-                $transaction->note = sprintf('%s transaction No: %s', $gatewayTitle, $transactionId);
+                $transaction->note = (string) $transactionId !== '' ? sprintf('%s transaction No: %s', $gatewayTitle, $transactionId) : sprintf('%s manual payment', $gatewayTitle);
                 $transaction->updated_at = date('Y-m-d H:i:s');
                 $this->di['db']->store($transaction);
             }

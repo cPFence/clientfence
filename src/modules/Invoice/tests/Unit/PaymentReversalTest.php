@@ -254,6 +254,18 @@ test('a reversed staff transaction no longer counts as paid, so the invoice is d
     expect($service->getAmountPaid(reversalInvoice()))->toBe(0.0);
 });
 
+// Mark as Paid records a payment on a card gateway too (staff chose the invoice's Stripe method): still reversible.
+test('a payment staff marked paid on a card gateway is reversed', function (): void {
+    $db = reversalDb();
+    reversalTx($db, 2, 100.0, true, '2026-11-10 10:00:00', 6);
+    [$di, $service] = reversalService($db);
+
+    expect(PaymentReversal::allowed($di, reversalInvoice($db)))->toBeTrue();
+    PaymentReversal::reverse($di, reversalInvoice());
+    expect($db->fetchOne('SELECT status FROM invoice WHERE id = 10'))->toBe(Model_Invoice::STATUS_UNPAID)
+        ->and($service->getAmountPaid(reversalInvoice()))->toBe(0.0);
+});
+
 // CF-177: a payment staff recorded on an unpaid invoice (a part payment, here on a card gateway) is taken back on its own.
 test('a part payment on an unpaid invoice is reversed once: unpaid, no longer paid, its credit taken back', function (): void {
     $db = reversalDb();

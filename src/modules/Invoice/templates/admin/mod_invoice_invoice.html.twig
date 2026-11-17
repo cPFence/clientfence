@@ -161,12 +161,15 @@
                             <span>{{ 'Send Reminder'|trans }}</span>
                         </a>
                         {% endif %}
+                        {# ClientFence core patch: a draft is approved before it is marked paid (Service::markAsPaidByAdmin()). #}
+                        {% if invoice.approved %}
                         <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
                             <svg class="icon" width="24" height="24">
                                 <use href="#check" />
                             </svg>
                             <span>{{ 'Mark as Paid'|trans }}</span>
                         </a>
+                        {% endif %}
                         {% endif %}
                         {# ClientFence core patch: WHMCS "Attempt Capture": charge the client's saved card or PayPal account (Invoice/SavedCards.php). #}
                         {% set saved_card = admin.invoice_card_get({ id: invoice.id }) %}

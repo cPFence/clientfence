@@ -594,3 +594,29 @@ test('sums a client\'s processed payments and refunds per currency', function ()
         ['currency' => 'USD', 'in' => 105.0, 'out' => 0.01, 'balance' => 104.99],
     ]);
 });
+
+// CF-177: Mark as Paid's record (post[invoice_id]) on a reversed invoice has the same notice hash as the reversed one; a staff
+// record is never matched by hash, so the invoice can be marked paid again.
+test('a staff transaction is not deduplicated by notice hash', function (): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, ipn_hash TEXT)');
+    $dbal->executeStatement('CREATE INDEX transaction_ipn_hash_idx ON "transaction" (ipn_hash)');
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $new = new Model_Transaction();
+    $new->loadBean(new Tests\Helpers\DummyBean());
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['events_manager'] = Mockery::mock('ClientFence\EventManager');
+    $di['events_manager']->shouldReceive('fire');
+    $di['db']->shouldReceive('getExistingModelById')->andReturn($gateway);
+    $di['db']->shouldNotReceive('findOne');
+    $di['db']->shouldReceive('dispense')->with('Transaction')->andReturn($new);
+    $di['db']->shouldReceive('store')->once()->with($new)->andReturn(8);
+    $service = new ServiceTransaction();
+    $service->setDi($di);
+
+    expect($service->create(['invoice_id' => 10, 'gateway_id' => 6, 'source' => 'admin', 'status' => 'received', 'post' => ['invoice_id' => 10, 'txn_id' => ''], 'txn_id' => '']))->toBe(8)
+        ->and($new->ipn_hash)->not->toBeNull();
+});

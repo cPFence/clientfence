@@ -257,7 +257,7 @@ test('checkLink accepts the organization\'s own subscription and refuses another
     'own subscription and member login' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'owner@example.test', null],
     'another organization' => [['status' => 'active', 'subscriberId' => 'Other', 'vendorId' => 'M'], '', 'belongs to another organization or vendor'],
     'another panel vendor' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'Other'], '', 'belongs to another organization or vendor'],
-    'no such subscription' => [new MockResponse('', ['http_code' => 404]), '', 'no longer exists'],
+    'no such subscription in this organization' => [new MockResponse('', ['http_code' => 404]), '', 'The Enhance organization B has no subscription 7. Check both IDs in the panel.'],
     'login not a member' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'else@example.test', 'No Enhance login for else@example.test was found.'],
     'staff login' => [['status' => 'active', 'subscriberId' => 'B', 'vendorId' => 'M'], 'staff@example.test', 'No Enhance login for staff@example.test was found.'],
 ]);

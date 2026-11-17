@@ -174,7 +174,9 @@ class ServiceTransaction implements InjectionAwareInterface
         // payment method had the same hash and the second one returned the first (already paid)
         // transaction. Only real gateway notices are deduplicated by hash.
         $hasNotice = !empty($ipn['get']) || !empty($ipn['post']) || !empty($ipn['http_raw_post_data']);
-        if ($hasNotice && $supportsIpnHash && !empty($data['gateway_id']) && !empty($ipn_hash)) {
+        // ClientFence core patch (CF-177): Mark as Paid's record carries post[invoice_id], so marking a reversed invoice paid again
+        // found the reversed record and could never be recorded. Staff records are never deduplicated by hash.
+        if ($hasNotice && ($ipn['source'] ?? null) !== 'admin' && $supportsIpnHash && !empty($data['gateway_id']) && !empty($ipn_hash)) {
             $existingByHash = $this->di['db']->findOne('Transaction', 'gateway_id = ? AND ipn_hash = ?', [$data['gateway_id'], $ipn_hash]);
             if ($existingByHash instanceof \Model_Transaction) {
                 $this->di['logger']->info('Duplicate transaction detected by IPN hash, returning existing transaction #%s', $existingByHash->id);

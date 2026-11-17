@@ -249,7 +249,10 @@ final class Panel
      */
     public function checkLink(string $loginEmail): void
     {
-        $this->resolveSubscription();
+        // Staff typed both IDs: a subscription the panel does not find under this organization may well exist under another.
+        if ($this->resolveSubscription(true) === null) {
+            throw new \Server_Exception('The :panel: organization :org: has no subscription :id:. Check both IDs in the panel.', [':panel:' => Api::PANEL, ':org:' => $this->orgId, ':id:' => $this->subscriptionId]);
+        }
         if ($loginEmail !== '' && $this->accountMember((string) $this->orgId, $loginEmail, $loginEmail) === null) {
             throw new \Server_Exception('No :panel: login for :email: was found.', [':panel:' => Api::PANEL, ':email:' => $loginEmail]);
         }

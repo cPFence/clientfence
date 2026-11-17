@@ -477,7 +477,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: the Egyptian methods use CustomEgp, which extends Custom."
+        "done": "ClientFence core patch: every method records a transaction (WHMCS Add Payment)."
     },
     {
         "file": "modules/Invoice/Service.php",
@@ -8160,5 +8160,17 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch (CF-177): create() returns a part payment that already has this ID; storing the rest on it"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a draft is approved first; paid, the client got the payment email for an invoice never sent."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: a draft is approved before it is marked paid (Service::markAsPaidByAdmin())."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch (CF-177): Mark as Paid's record carries post[invoice_id], so marking a reversed invoice paid again"
     }
 ]

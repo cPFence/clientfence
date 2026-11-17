@@ -132,7 +132,9 @@ final class PaymentReversal
         $staff = [];
         foreach ($db->fetchAllAssociative("SELECT id, gateway_id, amount, ipn, note, created_at FROM `transaction` WHERE invoice_id = ? AND status = 'processed' ORDER BY id", [$id]) as $tx) {
             $ipn = json_decode((string) $tx['ipn'], true);
-            if (($ipn['source'] ?? null) !== 'admin' || !self::isCustom($di, (int) $tx['gateway_id'])) {
+            // Mark as Paid records the payment on any method (Service::markAsPaidByAdmin()): no gateway took that money.
+            $markedPaid = ($ipn['source'] ?? null) === 'admin' && isset($ipn['post']['invoice_id']);
+            if (($ipn['source'] ?? null) !== 'admin' || (!$markedPaid && !self::isCustom($di, (int) $tx['gateway_id']))) {
                 throw new InformationException('This invoice has a payment through a payment gateway or an imported payment. Refund it instead.');
             }
             if ((string) $tx['created_at'] > (string) $invoice->paid_at) {

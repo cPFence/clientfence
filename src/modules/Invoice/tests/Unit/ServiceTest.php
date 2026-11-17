@@ -250,6 +250,7 @@ test('Mark as Paid with an amount records a part payment, then the rest pays the
     $part->status = Model_Transaction::STATUS_RECEIVED;
     $rest = new Model_Transaction();
     $rest->loadBean(new Tests\Helpers\DummyBean());
+    $rest->id = 5;
     $rest->invoice_id = 10;
     $di = container();
     $di['logger'] = new Tests\Helpers\TestLogger();
@@ -262,7 +263,8 @@ test('Mark as Paid with an amount records a part payment, then the rest pays the
 
         return 4;
     });
-    $di['db']->shouldReceive('store')->times($code === 'Custom' ? 1 : 0)->with($rest)->andReturn(5);
+    // The rest is recorded on every method; a card gateway's is claimed at once, so cron never hands it to the adapter.
+    $di['db']->shouldReceive('store')->once()->with($rest)->andReturn(5);
     $transactions = Mockery::mock(ClientFence\Mod\Invoice\ServiceTransaction::class);
     $transactions->shouldReceive('create')->once()->with(Mockery::on(fn (array $data): bool => ($data['amount'] ?? null) === 40.0 && $data['source'] === 'admin' && $data['txn_id'] === 'bank-1' && (int) $data['invoice_id'] === 10))->andReturn(4);
     $transactions->shouldReceive('claimForProcessing')->once()->with(4)->andReturnTrue();
@@ -273,7 +275,8 @@ test('Mark as Paid with an amount records a part payment, then the rest pays the
     // Nothing goes to the gateway: its adapter never processes the payment.
     $transactions->shouldNotReceive('preProcessTransaction');
     $transactions->shouldNotReceive('processTransaction');
-    $transactions->shouldReceive('create')->times($code === 'Custom' ? 1 : 0)->with(Mockery::on(fn (array $data): bool => $data['txn_id'] === 'bank-2'))->andReturn(5);
+    $transactions->shouldReceive('create')->once()->with(Mockery::on(fn (array $data): bool => $data['txn_id'] === 'bank-2'))->andReturn(5);
+    $transactions->shouldReceive('claimForProcessing')->times($code === 'Custom' ? 0 : 1)->with(5)->andReturnTrue();
     $gateways = Mockery::mock(ClientFence\Mod\Invoice\ServicePayGateway::class);
     $gateways->shouldReceive('getAdapterClassName')->andReturn(stdClass::class);
     $gateways->shouldNotReceive('getPaymentAdapter');
@@ -302,9 +305,7 @@ test('Mark as Paid with an amount records a part payment, then the rest pays the
         ->and($invoice->status)->toBe(Model_Invoice::STATUS_PAID)
         ->and((float) $dbal->fetchOne("SELECT SUM(amount) FROM client_balance WHERE type = 'invoice' AND rel_id = '10'"))->toBe(-40.0)
         ->and((float) $dbal->fetchOne('SELECT SUM(amount) FROM client_balance WHERE client_id = 7'))->toBe(0.0);
-    if ($code === 'Custom') {
-        expect($rest->amount)->toBe(60.0);
-    }
+    expect($rest->amount)->toBe(60.0)->and($rest->status)->toBe(Model_Transaction::STATUS_PROCESSED);
 })->with(['manual method' => ['Custom'], 'card gateway' => ['Stripe']]);
 
 // CF-177: the rest recorded with the part payment's own transaction ID would overwrite that payment's amount.
@@ -347,6 +348,21 @@ test('Mark as Paid settles an invoice that a part payment covers once the fee is
     $service->setDi($di);
 
     expect($service->markAsPaidByAdmin($invoice, ['gateway_id' => 5, 'transactionId' => 'bank-1'], true, 100.0))->toBeTrue();
+});
+
+// A draft is approved first: paid as a draft, the client got the payment email for an invoice it was never sent.
+test('Mark as Paid refuses a draft invoice', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 0] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldNotReceive('markAsPaid');
+    $service->setDi(container());
+
+    expect(fn () => $service->markAsPaidByAdmin($invoice, ['transactionId' => 'bank-1']))
+        ->toThrow(ClientFence\InformationException::class, 'A draft invoice cannot be marked as paid.');
 });
 
 test('Mark as Paid refuses the transaction ID of a recorded part payment', function (): void {
