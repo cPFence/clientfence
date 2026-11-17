@@ -13,6 +13,7 @@ namespace ClientFence\Twig\Extension;
 
 use DebugBar\JavascriptRenderer;
 use DebugBar\StandardDebugBar;
+use ClientFence\Csp;
 use ClientFence\Environment;
 use Twig\Attribute\AsTwigFunction;
 
@@ -36,20 +37,26 @@ class DebugBarExtension
         $js = $this->debugbarRenderer->dumpJsAssets(echo: false);
         $head = $this->debugbarRenderer->dumpHeadAssets(echo: false);
 
+        // ClientFence core patch: the debug bar's own tags carry the script policy nonce, or the browser blocks them.
+        $nonce = ' nonce="' . Csp::nonce() . '"';
         $html = '';
         if ($css) {
-            $html .= '<style>' . $css . '</style>';
+            $html .= '<style' . $nonce . '>' . $css . '</style>';
         }
         if ($js) {
-            $html .= '<script type="text/javascript">' . $js . '</script>';
+            $html .= '<script type="text/javascript"' . $nonce . '>' . $js . '</script>';
         }
 
-        return $html . $head;
+        return $html . preg_replace('/<(script|style)(?![^>]*nonce=)/i', '<$1' . $nonce, $head);
     }
 
     #[AsTwigFunction('debug_bar_render', isSafe: ['html'])]
     public function render(): string
     {
-        return (Environment::isDevelopment()) ? $this->debugbarRenderer->render() : '';
+        if (!Environment::isDevelopment()) {
+            return '';
+        }
+
+        return $this->debugbarRenderer->setCspNonce(Csp::nonce())->render();
     }
 }
