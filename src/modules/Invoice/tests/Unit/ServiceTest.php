@@ -223,6 +223,200 @@ test('Mark as Paid records and credits only the unpaid deposit remainder', funct
     }
 })->with(['partly paid' => [40.0, 60.0], 'fully credited' => [100.0, 0.0]]);
 
+// CF-177: an amount below the balance due on Mark as Paid is a part payment on any payment method, recorded without the
+// gateway (a processed staff transaction whose amount waits on the client's balance); the rest then pays the invoice
+// through the usual Mark as Paid path, which takes the recorded part from the balance (counted once).
+test('Mark as Paid with an amount records a part payment, then the rest pays the invoice', function (string $code): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, gateway_id INTEGER)');
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT, currency TEXT, created_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, description TEXT, amount REAL, created_at TEXT, updated_at TEXT)');
+    $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid', 'gateway_id' => 5]);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 7, 'gateway_id' => 5, 'currency' => 'USD', 'status' => 'unpaid'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 5, 'enabled' => 1, 'gateway' => $code, 'name' => $code] as $key => $value) {
+        $gateway->{$key} = $value;
+    }
+    $part = new Model_Transaction();
+    $part->loadBean(new Tests\Helpers\DummyBean());
+    $part->id = 4;
+    $part->invoice_id = 10;
+    $part->status = Model_Transaction::STATUS_RECEIVED;
+    $rest = new Model_Transaction();
+    $rest->loadBean(new Tests\Helpers\DummyBean());
+    $rest->invoice_id = 10;
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('getExistingModelById')->with('PayGateway', 5, Mockery::any())->andReturn($gateway);
+    $di['db']->shouldReceive('getExistingModelById')->with('Transaction', 4, Mockery::any())->andReturn($part);
+    $di['db']->shouldReceive('getExistingModelById')->with('Transaction', 5, Mockery::any())->andReturn($rest);
+    $di['db']->shouldReceive('store')->once()->with($part)->andReturnUsing(function (Model_Transaction $tx) use ($dbal): int {
+        $dbal->insert('"transaction"', ['id' => 4, 'invoice_id' => 10, 'amount' => $tx->amount, 'status' => $tx->status]);
+
+        return 4;
+    });
+    $di['db']->shouldReceive('store')->times($code === 'Custom' ? 1 : 0)->with($rest)->andReturn(5);
+    $transactions = Mockery::mock(ClientFence\Mod\Invoice\ServiceTransaction::class);
+    $transactions->shouldReceive('create')->once()->with(Mockery::on(fn (array $data): bool => ($data['amount'] ?? null) === 40.0 && $data['source'] === 'admin' && $data['txn_id'] === 'bank-1' && (int) $data['invoice_id'] === 10))->andReturn(4);
+    $transactions->shouldReceive('claimForProcessing')->once()->with(4)->andReturnTrue();
+    // As a gateway payment's: the amount goes to the client's balance.
+    $transactions->shouldReceive('debitTransaction')->once()->with($part)->andReturnUsing(function (Model_Transaction $tx) use ($dbal): void {
+        $dbal->insert('client_balance', ['client_id' => 7, 'type' => 'transaction', 'rel_id' => '4', 'amount' => $tx->amount]);
+    });
+    // Nothing goes to the gateway: its adapter never processes the payment.
+    $transactions->shouldNotReceive('preProcessTransaction');
+    $transactions->shouldNotReceive('processTransaction');
+    $transactions->shouldReceive('create')->times($code === 'Custom' ? 1 : 0)->with(Mockery::on(fn (array $data): bool => $data['txn_id'] === 'bank-2'))->andReturn(5);
+    $gateways = Mockery::mock(ClientFence\Mod\Invoice\ServicePayGateway::class);
+    $gateways->shouldReceive('getAdapterClassName')->andReturn(stdClass::class);
+    $gateways->shouldNotReceive('getPaymentAdapter');
+    $di['mod_service'] = $di->protect(moduleService(['invoice:transaction' => $transactions, 'invoice:paygateway' => $gateways]));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(100.0);
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
+    $service->shouldReceive('markAsPaid')->once()->with($invoice, false)->andReturnUsing(function (Model_Invoice $model): bool {
+        $model->status = Model_Invoice::STATUS_PAID;
+
+        return true;
+    });
+    // 60 is still due after the part payment: the client's other credit does not pay it.
+    $service->shouldNotReceive('tryPayWithCredits');
+    $service->setDi($di);
+
+    expect($service->markAsPaidByAdmin($invoice, ['transactionId' => 'bank-1'], true, 40.0))->toBeTrue()
+        ->and($invoice->status)->toBe(Model_Invoice::STATUS_UNPAID)
+        ->and($part->status)->toBe(Model_Transaction::STATUS_PROCESSED)
+        ->and($part->amount)->toBe(40.0)
+        ->and($service->getAmountPaid($invoice))->toBe(40.0)
+        ->and($service->getBalanceDue($invoice))->toBe(60.0);
+
+    // The rest: the recorded 40.00 is taken from the balance (which ends at zero), and the invoice is paid.
+    expect($service->markAsPaidByAdmin($invoice, ['transactionId' => 'bank-2'], true, 60.0))->toBeTrue()
+        ->and($invoice->status)->toBe(Model_Invoice::STATUS_PAID)
+        ->and((float) $dbal->fetchOne("SELECT SUM(amount) FROM client_balance WHERE type = 'invoice' AND rel_id = '10'"))->toBe(-40.0)
+        ->and((float) $dbal->fetchOne('SELECT SUM(amount) FROM client_balance WHERE client_id = 7'))->toBe(0.0);
+    if ($code === 'Custom') {
+        expect($rest->amount)->toBe(60.0);
+    }
+})->with(['manual method' => ['Custom'], 'card gateway' => ['Stripe']]);
+
+// CF-177: the rest recorded with the part payment's own transaction ID would overwrite that payment's amount.
+// CF-177: a part payment that removes the gateway fee on what is left (100 + 3.30 fee, 100 recorded) covers the invoice,
+// which is then settled with that payment, as after a gateway part payment.
+test('Mark as Paid settles an invoice that a part payment covers once the fee is gone', function (): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, gateway_id INTEGER)');
+    $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid', 'gateway_id' => null]);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 7, 'gateway_id' => null, 'currency' => 'USD', 'status' => 'unpaid'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 5, 'enabled' => 1, 'gateway' => 'Custom', 'name' => 'Custom'] as $key => $value) {
+        $gateway->{$key} = $value;
+    }
+    $part = new Model_Transaction();
+    $part->loadBean(new Tests\Helpers\DummyBean());
+    $part->id = 4;
+    $part->status = Model_Transaction::STATUS_RECEIVED;
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('getExistingModelById')->with('PayGateway', 5, Mockery::any())->andReturn($gateway);
+    $di['db']->shouldReceive('getExistingModelById')->with('Transaction', 4, Mockery::any())->andReturn($part);
+    $di['db']->shouldReceive('store')->andReturn(4);
+    $transactions = Mockery::mock(ClientFence\Mod\Invoice\ServiceTransaction::class);
+    $transactions->shouldReceive('create')->once()->andReturn(4);
+    $transactions->shouldReceive('claimForProcessing')->once()->andReturnTrue();
+    $transactions->shouldReceive('debitTransaction')->once();
+    $di['mod_service'] = $di->protect(moduleService(['invoice:transaction' => $transactions]));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
+    // 103.30 due when recorded; nothing once the fee on what is left is gone.
+    $service->shouldReceive('getBalanceDue')->with($invoice)->andReturn(103.30, 0.0);
+    $service->shouldReceive('tryPayWithCredits')->once()->with($invoice)->andReturnTrue();
+    $service->setDi($di);
+
+    expect($service->markAsPaidByAdmin($invoice, ['gateway_id' => 5, 'transactionId' => 'bank-1'], true, 100.0))->toBeTrue();
+});
+
+test('Mark as Paid refuses the transaction ID of a recorded part payment', function (): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
+    $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
+    $dbal->insert('"transaction"', ['id' => 4, 'invoice_id' => 10, 'amount' => 40, 'status' => 'processed']);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 7, 'gateway_id' => 5, 'currency' => 'USD', 'status' => 'unpaid'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 5, 'enabled' => 1, 'gateway' => 'Custom', 'name' => 'Custom'] as $key => $value) {
+        $gateway->{$key} = $value;
+    }
+    $part = new Model_Transaction();
+    $part->loadBean(new Tests\Helpers\DummyBean());
+    $part->id = 4;
+    $part->invoice_id = 10;
+    $part->amount = 40.0;
+    $part->status = Model_Transaction::STATUS_PROCESSED;
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('getExistingModelById')->with('PayGateway', 5, Mockery::any())->andReturn($gateway);
+    $di['db']->shouldReceive('getExistingModelById')->with('Transaction', 4, Mockery::any())->andReturn($part);
+    $di['db']->shouldNotReceive('store');
+    $transactions = Mockery::mock(ClientFence\Mod\Invoice\ServiceTransaction::class);
+    $transactions->shouldReceive('create')->once()->andReturn(4);
+    $di['mod_service'] = $di->protect(moduleService(['invoice:transaction' => $transactions]));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(100.0);
+    $service->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
+    $service->shouldNotReceive('markAsPaid');
+    $service->setDi($di);
+
+    expect(fn () => $service->markAsPaidByAdmin($invoice, ['transactionId' => 'bank-1'], true, 60.0))
+        ->toThrow(ClientFence\InformationException::class, 'This transaction ID is already recorded.')
+        ->and($part->amount)->toBe(40.0);
+});
+
+test('Mark as Paid refuses an amount above the balance due', function (): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, status TEXT, txn_status TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)');
+    $dbal->insert('invoice', ['id' => 10, 'status' => 'unpaid']);
+    $dbal->insert('"transaction"', ['id' => 1, 'invoice_id' => 10, 'amount' => 40, 'status' => 'processed']);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    foreach (['id' => 10, 'client_id' => 7, 'gateway_id' => 5, 'currency' => 'USD', 'status' => 'unpaid'] as $key => $value) {
+        $invoice->{$key} = $value;
+    }
+    $di = container();
+    $di['dbal'] = $dbal;
+    $transactions = Mockery::mock(ClientFence\Mod\Invoice\ServiceTransaction::class);
+    $transactions->shouldNotReceive('create');
+    $di['mod_service'] = $di->protect(moduleService(['invoice:transaction' => $transactions]));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(100.0);
+    $service->shouldNotReceive('markAsPaid');
+    $service->setDi($di);
+
+    expect(fn () => $service->markAsPaidByAdmin($invoice, ['gateway_id' => 5, 'transactionId' => 'bank-1'], true, 60.01))
+        ->toThrow(ClientFence\InformationException::class, 'more than the balance due (60.00)');
+});
+
 test('Manage marks a partly paid invoice paid with its recorded payments', function (float $totalAfterSave, float $debit): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, paid_at TEXT)');

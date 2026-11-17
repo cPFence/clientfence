@@ -931,8 +931,11 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    /** ClientFence core patch: $needsReference false (bulk Mark Paid, as WHMCS) records a Custom payment without a transaction ID. */
-    public function markAsPaidByAdmin(\Model_Invoice $invoice, array $data = [], bool $needsReference = true): bool
+    /**
+     * ClientFence core patch: $needsReference false (bulk Mark Paid, as WHMCS) records a Custom payment without a transaction ID.
+     * $amount (CF-177): what was received; below the balance due it is a part payment (recordPartPaymentByAdmin()).
+     */
+    public function markAsPaidByAdmin(\Model_Invoice $invoice, array $data = [], bool $needsReference = true, ?float $amount = null): bool
     {
         if ($invoice->status === \Model_Invoice::STATUS_PAID) {
             return true;
@@ -941,7 +944,8 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: under the client's credit lock, and the status is read again there: two
         // clicks, or a click during a credit payment, paid the invoice and credited an Add funds twice; a
         // refunded invoice was paid (and credited) again.
-        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $data, $needsReference): bool {
+        $partPaid = false;
+        $result = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $data, $needsReference, $amount, &$partPaid): bool {
             $status = $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]);
             if ($status === \Model_Invoice::STATUS_PAID) {
                 return true;
@@ -950,8 +954,80 @@ class Service implements InjectionAwareInterface
                 throw new InformationException('A paid or refunded invoice keeps its status, and only Refund marks an invoice refunded.');
             }
 
+            if ($amount !== null) {
+                $due = $this->getBalanceDue($invoice);
+                if (round($amount, 2) > $due) {
+                    throw new InformationException('The amount is more than the balance due (:due).', [':due' => number_format($due, 2, '.', '')]);
+                }
+                if (round($amount, 2) < $due) {
+                    return $partPaid = $this->recordPartPaymentByAdmin($invoice, $this->validateAdminMarkAsPaidRequest($data, $invoice, $needsReference), round($amount, 2), trim((string) ($data['transactionId'] ?? '')));
+                }
+            }
+
             return $this->markAsPaidByAdminLocked($invoice, $data, $needsReference);
         });
+        // As after a gateway part payment (ServiceTransaction::processTransaction()): without the fee, what was paid may now
+        // cover the invoice. Only then: other credit never pays it here ("Do not apply credit", a reversed invoice). It takes
+        // the credit lock itself, so after the one above is released.
+        if ($partPaid && $this->getBalanceDue($invoice) <= 0) {
+            $this->tryPayWithCredits($invoice);
+        }
+
+        return $result;
+    }
+
+    /**
+     * ClientFence core patch (CF-177): a part payment staff record on Mark as Paid (WHMCS/Blesta Add Payment), on any payment
+     * method: money already received, so the gateway is never called. As a gateway part payment (ServiceTransaction::_debit()),
+     * a processed transaction on the invoice whose amount goes to the client's balance, where it waits for the invoice
+     * (getAmountPaid(), getReservedCredit()); the invoice stays unpaid until the rest is recorded.
+     */
+    private function recordPartPaymentByAdmin(\Model_Invoice $invoice, \Model_PayGateway $payGateway, float $amount, string $transactionId): bool
+    {
+        if ($this->isInvoiceTypeDeposit($invoice)) {
+            throw new InformationException('An Add funds invoice is paid in full only.');
+        }
+        $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
+        $id = (int) $transactionService->create([
+            'invoice_id' => $invoice->id,
+            'gateway_id' => (int) $payGateway->id,
+            'currency' => $invoice->currency,
+            'amount' => $amount,
+            'txn_id' => $transactionId,
+            'source' => 'admin',
+        ]);
+        $transaction = $this->di['db']->getExistingModelById('Transaction', $id, 'Transaction not found');
+        // create() returns the processed transaction that already has this ID on the method.
+        if ($transaction->status === \Model_Transaction::STATUS_PROCESSED) {
+            throw new InformationException('This transaction ID is already recorded.');
+        }
+        // Claimed at once, so cron never hands it to the gateway's adapter; a failure leaves it an error, which cron skips.
+        if (!$transactionService->claimForProcessing($id)) {
+            throw new InformationException('Another request is being processed. Please try again.');
+        }
+        try {
+            $transaction->amount = $amount;
+            $transaction->currency = $invoice->currency;
+            $transactionService->debitTransaction($transaction);
+            $transaction->status = \Model_Transaction::STATUS_PROCESSED;
+            $transaction->note = sprintf('%s transaction No: %s', $payGateway->name ?: $payGateway->gateway, $transactionId);
+            $transaction->updated_at = date('Y-m-d H:i:s');
+            $this->di['db']->store($transaction);
+        } catch (\Throwable $e) {
+            $transaction->status = \Model_Transaction::STATUS_ERROR;
+            $transaction->error = $e->getMessage();
+            $transaction->updated_at = date('Y-m-d H:i:s');
+            $this->di['db']->store($transaction);
+
+            throw $e;
+        }
+        // As after a gateway part payment (CF-171): the fee is on what is left.
+        if ($invoice->gateway_id && PendingPayments::forInvoice($this->di, (int) $invoice->id) === null) {
+            GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
+        }
+        $this->di['logger']->info('Invoice #%s: part payment of %s %s recorded by staff (transaction #%s).', $invoice->id, number_format($amount, 2, '.', ''), $invoice->currency, $id);
+
+        return true;
     }
 
     private function markAsPaidByAdminLocked(\Model_Invoice $invoice, array $data, bool $needsReference): bool
@@ -998,6 +1074,11 @@ class Service implements InjectionAwareInterface
             $transaction = $this->di['db']->getExistingModelById('Transaction', $newtx, 'Transaction not found');
             if ((int) $transaction->invoice_id !== (int) $invoice->id) {
                 throw new InformationException('Transaction ID is already associated with another invoice.');
+            }
+            // ClientFence core patch (CF-177): create() returns a part payment that already has this ID; storing the rest on it
+            // would overwrite that payment's amount.
+            if ($transaction->status === \Model_Transaction::STATUS_PROCESSED) {
+                throw new InformationException('This transaction ID is already recorded.');
             }
 
             if (!$isDeposit) {

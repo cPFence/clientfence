@@ -74,6 +74,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         $invoice['payment_reversible'] = $model->status === \Model_Invoice::STATUS_PAID && PaymentReversal::allowed($this->getDi(), $model);
         // ClientFence core patch (CF-179): issued without its email, so the page offers Send invoice instead of Send Reminder.
         $invoice['not_sent'] = $model->approved && $model->status === \Model_Invoice::STATUS_UNPAID && $this->getService()->isInvoiceNotSent($model);
+        // ClientFence core patch (CF-177): the staff-recorded payments of an unpaid invoice that Reverse can take back.
+        $invoice['reversible_payments'] = $model->status === \Model_Invoice::STATUS_UNPAID ? array_keys(PaymentReversal::partPayments($this->getDi(), (int) $model->id)) : [];
 
         return $invoice;
     }
@@ -86,6 +88,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @optional int $gateway_id - Payment gateway to associate with the invoice. Required when the invoice has no gateway.
      * @optional string $transactionId - Custom transaction ID to use when the selected gateway is Custom
+     * @optional float $amount - Amount received; below the balance due it is recorded as a part payment (the gateway is not called)
      *
      * @return bool
      */
@@ -94,10 +97,25 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('invoice', 'manage_invoices');
 
-        return $this->markPaid($this->_getInvoice($data), $data, true);
+        $invoice = $this->_getInvoice($data);
+        // ClientFence core patch (CF-177): an optional amount received, in the invoice's currency (WHMCS Add Payment).
+        $amount = null;
+        if (isset($data['amount']) && $data['amount'] !== '') {
+            $amount = is_numeric($data['amount']) ? (float) $data['amount'] : 0.0;
+            if ($amount <= 0) {
+                throw new InformationException('Enter an amount greater than zero.');
+            }
+            $currency = (string) $invoice->currency;
+            $digits = min(2, \Symfony\Component\Intl\Currencies::exists($currency) ? \Symfony\Component\Intl\Currencies::getFractionDigits($currency) : 2);
+            if (abs($amount * 10 ** $digits - round($amount * 10 ** $digits)) > 0.000001) {
+                throw new InformationException('Amounts in :currency have at most :digits decimals.', [':currency' => $currency, ':digits' => $digits]);
+            }
+        }
+
+        return $this->markPaid($invoice, $data, true, $amount);
     }
 
-    private function markPaid(\Model_Invoice $invoice, array $data, bool $needsReference): bool
+    private function markPaid(\Model_Invoice $invoice, array $data, bool $needsReference, ?float $amount = null): bool
     {
         // Marking a deposit invoice as paid credits the client balance, so it
         // requires the same permission as crediting the balance directly.
@@ -105,7 +123,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             $this->checkPermissions('client', 'manage_balance');
         }
 
-        return $this->getService()->markAsPaidByAdmin($invoice, $data, $needsReference);
+        return $this->getService()->markAsPaidByAdmin($invoice, $data, $needsReference, $amount);
     }
 
     /**
@@ -167,6 +185,25 @@ class Admin extends \ClientFence\Api\AbstractApi
         }
 
         return PaymentReversal::reverse($this->getDi(), $invoice);
+    }
+
+    /**
+     * ClientFence core patch (CF-177): take back one payment staff recorded on an unpaid invoice by mistake (a part payment
+     * from Mark as Paid, or a staff transaction): the transaction is marked reversed and what it credited is taken off the
+     * client's balance; the invoice stays unpaid and no gateway is called (Invoice/PaymentReversal.php).
+     *
+     * @return bool
+     */
+    #[RequiredParams(['id' => 'Invoice ID is missing', 'transaction_id' => 'Transaction ID is missing'])]
+    public function reverse_part_payment($data): bool
+    {
+        $this->checkPermissions('invoice', 'manage_invoices');
+        $invoice = $this->_getInvoice($data);
+        if ($this->getService()->isInvoiceTypeDeposit($invoice)) {
+            $this->checkPermissions('client', 'manage_balance');
+        }
+
+        return PaymentReversal::reversePartPayment($this->getDi(), $invoice, (int) $data['transaction_id']);
     }
 
     /**

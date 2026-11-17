@@ -8137,6 +8137,28 @@
     },
     {
         "file": "modules/Invoice/Api/Client.php",
-        "done": "ClientFence core patch (CF-179): a draft invoice staff hold back on the order is issued by staff, not by Renew Now."
+        "done": "ClientFence core patch (CF-179): a draft invoice staff hold back on the order is issued by staff, not by Renew Now.",
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-177): a part payment staff record on Mark as Paid (WHMCS/Blesta Add Payment), on any payment"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-177): an optional amount received, in the invoice's currency (WHMCS Add Payment)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (CF-177): the amount received; less than the balance due is a part payment (Service::markAsPaidByAdmin())."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (CF-177): take back one payment staff recorded on an unpaid invoice by mistake"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (CF-177): take back a payment staff recorded on this unpaid invoice (Invoice/PaymentReversal.php)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (CF-177): create() returns a part payment that already has this ID; storing the rest on it"
     }
 ]

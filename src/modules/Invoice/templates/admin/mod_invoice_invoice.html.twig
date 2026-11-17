@@ -233,6 +233,14 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    {# ClientFence core patch (CF-177): the amount received; less than the balance due is a part payment (Service::markAsPaidByAdmin()). #}
+                                    {% if invoice.balance_due > 0 and 'deposit' not in invoice.lines|map(l => l.type) %}
+                                    <div>
+                                        <label class="form-label" for="transaction-amount">{{ 'Amount'|trans }}</label>
+                                        <input class="form-control" type="number" name="amount" id="transaction-amount" min="0.01" step="0.01" max="{{ invoice.balance_due }}" value="{{ invoice.balance_due }}" required>
+                                        <div class="form-hint">{{ 'Less than the balance due is recorded as a part payment; the invoice stays unpaid until the rest is paid.'|trans }}</div>
+                                    </div>
+                                    {% endif %}
                                     <div>
                                         <label class="form-label" for="transaction-id">{{ 'Transaction ID'|trans }}</label>
                                         <input class="form-control" type="text" name="transactionId" id="transaction-id">
@@ -553,6 +561,14 @@
                             <td>{{ mf.status_badge(tx.status, 'transaction') }}</td>
                             <td>{{ tx.created_at|format_datetime }}</td>
                             <td>
+                                {# ClientFence core patch (CF-177): take back a payment staff recorded on this unpaid invoice (Invoice/PaymentReversal.php). #}
+                                {% if tx.id in invoice.reversible_payments|default([]) and has_permission('invoice', 'manage_invoices') %}
+                                <a class="btn btn-icon" title="{{ 'Reverse'|trans }}" {{ fb_api_link({href: 'invoice/reverse_part_payment'|api_url(query: {id: invoice.id, transaction_id: tx.id}), modal: {type: 'confirm', title: 'Reverse this payment of :amount? It no longer counts as paid and its credit is taken back from the client. No money is sent anywhere.'|trans({':amount': (tx.amount ?? 0)|format_currency(tx.currency ?? default_currency)})}, reload: true}) }}>
+                                    <svg class="icon">
+                                        <use href="#arrow-left" />
+                                    </svg>
+                                </a>
+                                {% endif %}
                                 <a class="btn btn-icon" href='{{ "invoice/transaction/#{tx.id}"|url }}'>
                                     <svg class="icon">
                                         <use href="#edit" />

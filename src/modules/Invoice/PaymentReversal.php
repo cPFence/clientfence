@@ -76,10 +76,7 @@ final class PaymentReversal
             // Removed, not offset: a line's debit is unique per line, and the sync tells a credit payment by its row.
             $db->executeStatement("DELETE FROM client_balance WHERE type = 'invoice' AND rel_id = ?", [(string) $id]);
             foreach ($plan['staff'] as $tx) {
-                if ($tx['funded']) {
-                    $db->insert('client_balance', ['client_id' => (int) $invoice->client_id, 'type' => 'transaction', 'rel_id' => (string) $tx['id'], 'description' => sprintf('Payment reversed: transaction #%d', $tx['id']), 'amount' => -$tx['amount'], 'created_at' => $now, 'updated_at' => $now]);
-                }
-                $db->update($db->quoteSingleIdentifier('transaction'), ['status' => \Model_Transaction::STATUS_REVERSED, 'note' => trim($tx['note'] . "\nReversed by staff on " . $now . '.'), 'updated_at' => $now], ['id' => $tx['id']]);
+                self::takeBack($di, (int) $invoice->client_id, $tx, $now);
             }
             $db->delete('invoice_credit', ['invoice_id' => $id]);
             $db->executeStatement("UPDATE promo_redemption SET status = 'reserved', committed_at = NULL WHERE invoice_id = ? AND status = 'committed'", [$id]);
@@ -174,6 +171,73 @@ final class PaymentReversal
         }
 
         return ['total' => round($service->getTotalWithTax($invoice), 2), 'staff' => $staff, 'rows' => $rows, 'give' => $give, 'take' => $take];
+    }
+
+    /**
+     * ClientFence (CF-177): the payments staff recorded on an unpaid invoice that Reverse takes back one by one (WHMCS
+     * "Manual refund processed externally"): processed, made by staff (Mark as Paid with an amount, or the transactions
+     * page) and credited to the client's balance, where they wait for the invoice. [id => {id, amount, note, funded}]
+     */
+    public static function partPayments(\Pimple\Container $di, int $invoiceId): array
+    {
+        $payments = [];
+        foreach ($di['dbal']->fetchAllAssociative("SELECT t.id, t.amount, t.note, t.ipn FROM `transaction` t JOIN invoice i ON i.id = t.invoice_id
+            WHERE t.invoice_id = ? AND t.status = 'processed' AND i.status = ? ORDER BY t.id", [$invoiceId, \Model_Invoice::STATUS_UNPAID]) as $tx) {
+            $ipn = json_decode((string) $tx['ipn'], true);
+            // Mark as Paid's full record (post[invoice_id]) added nothing to the balance, so there is nothing to take back.
+            if (($ipn['source'] ?? null) === 'admin' && !isset($ipn['post']['invoice_id'])) {
+                $payments[(int) $tx['id']] = ['id' => (int) $tx['id'], 'amount' => round((float) $tx['amount'], 2), 'note' => (string) $tx['note'], 'funded' => true];
+            }
+        }
+
+        return $payments;
+    }
+
+    /** ClientFence (CF-177): takes back one payment of partPayments(); the invoice stays unpaid and the gateway is never called. */
+    public static function reversePartPayment(\Pimple\Container $di, \Model_Invoice $invoice, int $transactionId): bool
+    {
+        $db = $di['dbal'];
+        $service = $di['mod_service']('Invoice');
+        $clientId = (int) $invoice->client_id;
+        $id = (int) $invoice->id;
+        [$tx, $paid, $due] = Tools::withLock($di, 'fb:credit_payment:client:' . $clientId, function () use ($di, $db, $service, $invoice, $clientId, $id, $transactionId): array {
+            $current = $db->fetchAssociative('SELECT * FROM invoice WHERE id = ?', [$id]) ?: throw new InformationException('Invoice not found');
+            foreach ($current as $column => $value) {
+                $invoice->{$column} = $value;
+            }
+            $tx = self::partPayments($di, $id)[$transactionId] ?? throw new InformationException('Only a payment staff recorded on an unpaid invoice can be reversed here, and only once.');
+            $paid = $service->getAmountPaid($invoice);
+            $due = $service->getBalanceDue($invoice);
+            // What stays set aside afterwards (this invoice's other payments, other unpaid invoices) must still be on the balance.
+            $kept = $service->isInvoiceTypeDeposit($invoice) ? 0.0 : min(max(0.0, round($paid - $tx['amount'], 2)), round($service->getTotalWithTax($invoice), 2));
+            $balance = (float) $db->fetchOne('SELECT COALESCE(SUM(amount), 0) FROM client_balance WHERE client_id = ?', [$clientId]);
+            if (round($balance - $tx['amount'] - $service->getReservedCredit($clientId, $id) - $kept, 2) < 0) {
+                throw new InformationException('The client has spent the credit this payment added, or other invoices have it set aside, so it cannot be reversed.');
+            }
+            $db->transactional(function () use ($di, $clientId, $tx, $id): void {
+                self::takeBack($di, $clientId, $tx, date('Y-m-d H:i:s'));
+                Sync::paymentReversed($di, $id, [$tx['id']]);
+            });
+
+            return [$tx, $paid, $due];
+        });
+        // As after a gateway part payment (CF-171): the fee follows what is due now.
+        if ($invoice->gateway_id && PendingPayments::forInvoice($di, $id) === null) {
+            GatewayFees::apply($di, $invoice, (int) $invoice->gateway_id);
+        }
+        $di['logger']->info('Invoice #%s: payment transaction #%s of %s %s reversed by staff (amount paid was %s, balance due was %s).', $id, $tx['id'], number_format($tx['amount'], 2, '.', ''), $invoice->currency, number_format($paid, 2, '.', ''), number_format($due, 2, '.', ''));
+
+        return true;
+    }
+
+    /** Marks a staff transaction reversed (kept as a record) and takes back from the balance what it credited there. */
+    private static function takeBack(\Pimple\Container $di, int $clientId, array $tx, string $now): void
+    {
+        $db = $di['dbal'];
+        if ($tx['funded']) {
+            $db->insert('client_balance', ['client_id' => $clientId, 'type' => 'transaction', 'rel_id' => (string) $tx['id'], 'description' => sprintf('Payment reversed: transaction #%d', $tx['id']), 'amount' => -$tx['amount'], 'created_at' => $now, 'updated_at' => $now]);
+        }
+        $db->update($db->quoteSingleIdentifier('transaction'), ['status' => \Model_Transaction::STATUS_REVERSED, 'note' => trim($tx['note'] . "\nReversed by staff on " . $now . '.'), 'updated_at' => $now], ['id' => $tx['id']]);
     }
 
     /** A Custom payment method (CustomEgp extends it): staff record its payments, no gateway takes money. */

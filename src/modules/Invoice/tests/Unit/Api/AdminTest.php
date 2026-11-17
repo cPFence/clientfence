@@ -231,6 +231,49 @@ test('marking a deposit invoice as paid requires the balance permission', functi
         ->toThrow(ClientFence\InformationException::class, 'client balance');
 });
 
+// CF-177: the amount received is checked before any payment is recorded: above zero, and no more decimals than the currency has.
+test('Mark as Paid refuses an amount of zero or with more decimals than the currency has', function (string $currency, mixed $amount, string $error): void {
+    $api = apiEndpoint(new Admin());
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->currency = $currency;
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->andReturn($invoiceModel);
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('markAsPaidByAdmin')->never();
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $serviceMock]));
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect(fn (): bool => $api->mark_as_paid(['id' => 1, 'amount' => $amount]))->toThrow(ClientFence\InformationException::class, $error);
+})->with([
+    'zero' => ['USD', '0', 'greater than zero'],
+    'not a number' => ['USD', 'abc', 'greater than zero'],
+    'three decimals' => ['USD', '10.005', 'at most'],
+    'decimals in yen' => ['JPY', '10.5', 'at most'],
+]);
+
+test('Mark as Paid passes a valid amount to the service', function (): void {
+    $api = apiEndpoint(new Admin());
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->currency = 'USD';
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->andReturn($invoiceModel);
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
+    $serviceMock->shouldReceive('markAsPaidByAdmin')->once()->with($invoiceModel, Mockery::type('array'), true, 40.5)->andReturnTrue();
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(moduleService(['invoice' => $serviceMock]));
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect($api->mark_as_paid(['id' => 1, 'amount' => '40.50']))->toBeTrue();
+});
+
 // CF-144: Reverse payment is behind Mark as Paid's permissions: taking back an Add funds invoice's credit needs the balance one.
 test('reversing the payment of a deposit invoice requires the balance permission', function (): void {
     $api = apiEndpoint(new Admin());
@@ -1488,7 +1531,7 @@ test('the With Selected actions run each invoice through its single action and l
     // Bulk Mark Paid needs no transaction ID (as WHMCS), the single one does.
     $service = Mockery::mock(Service::class);
     $service->shouldReceive('isInvoiceTypeDeposit')->andReturnFalse();
-    $service->shouldReceive('markAsPaidByAdmin')->with(Mockery::type(Model_Invoice::class), [], false)
+    $service->shouldReceive('markAsPaidByAdmin')->with(Mockery::type(Model_Invoice::class), [], false, null)
         ->andReturnUsing(fn (Model_Invoice $invoice): bool => $invoice->id === 2 ? throw new ClientFence\InformationException('Payment gateway not found') : true);
     // A paid invoice in the middle of a bulk Delete is skipped; the ones after it are still deleted.
     $service->shouldReceive('deleteInvoiceByAdmin')->andReturnUsing(fn (Model_Invoice $invoice): bool => $invoice->id === 2 ? throw new ClientFence\InformationException('A paid or refunded invoice cannot be deleted. Refund it instead.') : true);

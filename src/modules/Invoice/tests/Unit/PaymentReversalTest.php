@@ -253,3 +253,38 @@ test('a reversed staff transaction no longer counts as paid, so the invoice is d
     // Service::getAmountPaid() counts processed transactions and applied credit only.
     expect($service->getAmountPaid(reversalInvoice()))->toBe(0.0);
 });
+
+// CF-177: a payment staff recorded on an unpaid invoice (a part payment, here on a card gateway) is taken back on its own.
+test('a part payment on an unpaid invoice is reversed once: unpaid, no longer paid, its credit taken back', function (): void {
+    $db = reversalDb();
+    $db->update('invoice', ['status' => 'unpaid', 'paid_at' => null], ['id' => 10]);
+    reversalTx($db, 3, 40.0, false, '2026-11-10 10:00:00', 6);
+    $db->insert('client_balance', ['client_id' => 7, 'type' => 'transaction', 'rel_id' => '3', 'amount' => 40, 'description' => 'Invoice #10 payment received from transaction #3']);
+    [$di, $service] = reversalService($db); // its container logs to Tests\Helpers\TestLogger
+    $service->shouldReceive('getReservedCredit')->with(7, 10)->andReturn(0.0);
+    $invoice = reversalInvoice($db);
+
+    expect(PaymentReversal::partPayments($di, 10))->toHaveKey(3)
+        ->and(PaymentReversal::reversePartPayment($di, $invoice, 3))->toBeTrue()
+        ->and($db->fetchOne('SELECT status FROM invoice WHERE id = 10'))->toBe('unpaid')
+        ->and($db->fetchOne('SELECT status FROM "transaction" WHERE id = 3'))->toBe(Model_Transaction::STATUS_REVERSED)
+        ->and($service->getAmountPaid($invoice))->toBe(0.0)
+        ->and($db->fetchAllAssociative('SELECT rel_id, amount FROM client_balance WHERE amount < 0'))->toBe([['rel_id' => '3', 'amount' => -40.0]])
+        ->and(PaymentReversal::partPayments($di, 10))->toBe([]);
+    expect(fn () => PaymentReversal::reversePartPayment($di, reversalInvoice($db), 3))->toThrow(ClientFence\InformationException::class, 'only once');
+    expect((int) $db->fetchOne('SELECT COUNT(*) FROM client_balance WHERE amount < 0'))->toBe(1);
+});
+
+test('a part payment whose credit other unpaid invoices have set aside is not reversed', function (): void {
+    $db = reversalDb();
+    $db->update('invoice', ['status' => 'unpaid', 'paid_at' => null], ['id' => 10]);
+    reversalTx($db, 3, 40.0, false);
+    $db->insert('client_balance', ['client_id' => 7, 'type' => 'transaction', 'rel_id' => '3', 'amount' => 40, 'description' => 'Invoice #10 payment received from transaction #3']);
+    [$di, $service] = reversalService($db); // its container logs to Tests\Helpers\TestLogger
+    // The client's other unpaid invoice holds 30.00 of the 40.00 on the balance.
+    $service->shouldReceive('getReservedCredit')->with(7, 10)->andReturn(30.0);
+
+    expect(fn () => PaymentReversal::reversePartPayment($di, reversalInvoice($db), 3))->toThrow(ClientFence\InformationException::class, 'set aside');
+    expect($db->fetchOne('SELECT status FROM "transaction" WHERE id = 3'))->toBe('processed')
+        ->and((float) $db->fetchOne('SELECT SUM(amount) FROM client_balance'))->toBe(40.0);
+});
