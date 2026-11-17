@@ -19,7 +19,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $config = $this->getDi()['mod_config']('Antispam');
 
-        return [
+        $result = [
             'block_ips' => $config['block_ips'] ?? false,
             'blocked_ips' => $config['blocked_ips'] ?? '',
             'captcha_enabled' => $config['captcha_enabled'] ?? false,
@@ -36,6 +36,13 @@ class Admin extends \ClientFence\Api\AbstractApi
             'honeypot_enabled' => $config['honeypot_enabled'] ?? true,
             'honeypot_field' => $config['honeypot_field'] ?? 'bio',
         ];
+
+        // ClientFence core patch: CAPTCHA secret keys only for staff who may change the settings (manage_settings, as config_get).
+        if (!$this->getDi()['mod_service']('Staff')->hasPermission($this->identity, 'antispam', 'manage_settings')) {
+            unset($result['captcha_recaptcha_privatekey'], $result['turnstile_secret_key'], $result['hcaptcha_secret_key']);
+        }
+
+        return $result;
     }
 
     private function normalizeIp(mixed $ip): string
