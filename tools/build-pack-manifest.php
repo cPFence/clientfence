@@ -15,6 +15,7 @@ $manifest = 'modules/Clientfence/pack-manifest.json';
 // The pack's files: these folders and files, at their install paths.
 $paths = [
     'locale/he_IL/LC_MESSAGES/messages.mo',
+    'locale/hi_IN/LC_MESSAGES/messages.mo',
     'library/Payment/Adapter/CustomEgp.php',
     'library/Payment/Adapter/PayPalAutoPay.php',
     'library/Payment/Adapter/PayTabs.php',

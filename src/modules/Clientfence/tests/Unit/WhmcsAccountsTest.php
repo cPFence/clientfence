@@ -169,14 +169,17 @@ test('clients keep their ids, details, currency, group, notes and custom fields'
         ]);
 });
 
-test('Hebrew client language survives the account import', function (): void {
+test('the client language survives the account import', function (string $language, string $locale): void {
     $source = whmcsAccountsSource();
-    $source->update('tblusers', ['language' => 'hebrew'], ['id' => 10]);
+    $source->update('tblusers', ['language' => $language], ['id' => 10]);
     $target = whmcsAccountsTarget();
     whmcsImportAll($source, $target, Cipher::withKey(WHMCS_TEST_KEY));
 
-    expect($target->fetchOne('SELECT lang FROM client WHERE id = 1'))->toBe('he_IL');
-});
+    expect($target->fetchOne('SELECT lang FROM client WHERE id = 1'))->toBe($locale);
+})->with([
+    'Hebrew' => ['hebrew', 'he_IL'],
+    'Hindi' => ['hindi', 'hi_IN'],
+]);
 
 test('a locale code as the Blesta and Upmind reads leave it becomes the client\'s locale; one this install lacks, or two fit, is none', function (): void {
     $source = whmcsAccountsSource();

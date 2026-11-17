@@ -32,6 +32,7 @@ return [
     'fi_FI' => 'Suomi',
     'fr_FR' => 'Français',
     'he_IL' => 'עִברִית',
+    'hi_IN' => 'हिन्दी',
     'hu_HU' => 'Magyar',
     'id_ID' => 'Bahasa Indonesia',
     'is_IS' => 'Íslenska',
