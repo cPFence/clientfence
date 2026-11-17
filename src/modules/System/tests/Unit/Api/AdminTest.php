@@ -468,3 +468,12 @@ test('maintenance settings refuse a bad IP and a redirect that would loop', func
     'not a web address' => [['redirect_url' => 'javascript:alert(1)'], 'must be a full address'],
     'this portal' => [['redirect_url' => rtrim(SYSTEM_URL, '/') . '/status'], 'must be on another site'],
 ]);
+
+test('the default language must be an enabled one', function (): void {
+    $api = apiEndpoint(new ClientFence\Mod\System\Api\Admin());
+    $before = Config::getProperty('i18n.locale');
+
+    expect(fn () => $api->update_localization_settings(['locale' => 'xx_XX']))
+        ->toThrow(ClientFence\InformationException::class, 'Invalid locale code: xx_XX')
+        ->and(Config::getProperty('i18n.locale'))->toBe($before);
+});

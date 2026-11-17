@@ -71,6 +71,10 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('system', 'update_params');
 
         if (isset($data['locale']) && $data['locale'] !== '') {
+            // ClientFence core patch: only an enabled language can be the default (any text was written to config.php).
+            if (!in_array($data['locale'], \ClientFence\i18n::getLocales(), true)) {
+                throw new \ClientFence\InformationException('Invalid locale code: :code', [':code' => (string) (is_scalar($data['locale']) ? $data['locale'] : '')]);
+            }
             Config::setProperty('i18n.locale', $data['locale']);
         }
 
