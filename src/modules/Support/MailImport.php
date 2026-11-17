@@ -1004,9 +1004,12 @@ final class MailImport
                 return;
             }
             $helpdesk = self::db($di)->fetchAssociative('SELECT name, email FROM support_helpdesk WHERE id = ?', [$helpdeskId]) ?: ['name' => '', 'email' => ''];
+            // A known client reads it in their language (a plain address has no language of its own).
+            $lang = $db->fetchOne('SELECT lang FROM client WHERE LOWER(email) = ? ORDER BY id LIMIT 1', [strtolower((string) $message->from['email'])]);
             $di['mod_service']('email')->sendTemplate([
                 'to' => $message->from['email'],
                 'to_name' => $message->from['name'],
+                'to_lang' => $lang ?: null,
                 'code' => 'mod_support_mail_rejected',
                 'rejected' => [
                     'reason' => $result['status'],

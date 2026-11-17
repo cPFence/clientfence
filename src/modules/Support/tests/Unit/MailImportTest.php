@@ -379,3 +379,31 @@ test('staff see the unverified flags of the messages now on a ticket', function 
         ->toStartWith('[Unverified sender: this email may not come from alice@client.test (the email has no DKIM signature).]')
         ->and(MailImport::unverifiedMessages($di, 12))->toBe([]);
 });
+
+test('the "not imported" notice goes out in a known client\'s language', function (?string $lang, string $from): void {
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, email TEXT, lang TEXT)');
+    $db->executeStatement('CREATE TABLE support_helpdesk (id INTEGER PRIMARY KEY, name TEXT, email TEXT)');
+    $db->executeStatement('CREATE TABLE ' . MailImport::LOG_TABLE . ' (id INTEGER PRIMARY KEY, from_email TEXT, status TEXT, created_at TEXT)');
+    $db->insert('client', ['id' => 5, 'email' => 'alice@client.test', 'lang' => $lang]);
+    $db->insert('support_helpdesk', ['id' => 1, 'name' => 'Support', 'email' => 'support@clientfence.test']);
+    $sent = [];
+    $email = Mockery::mock();
+    $email->shouldReceive('sendTemplate')->once()->andReturnUsing(function (array $params) use (&$sent): bool {
+        $sent = $params;
+
+        return true;
+    });
+    $di = mailImportContainer($db);
+    $di['mod_service'] = $di->protect(fn (string $mod): ?object => $mod === 'email' ? $email : null);
+    $tell = new ReflectionMethod(MailImport::class, 'tellSender');
+
+    $tell->invoke(null, $di, MimeMessage::parse(mailImportEmail($from, 'Re: [#14] Hi', 'Hello')), 1, ['status' => 'closed', 'note' => '', 'ticket_id' => 14]);
+
+    expect($sent['to_lang'])->toBe($lang);
+})->with([
+    'Arabic client, any letter case' => ['ar_SA', 'Alice@Client.test'],
+    'client without a language' => [null, 'alice@client.test'],
+    'unknown sender' => [null, 'someone@else.test'],
+]);
+
