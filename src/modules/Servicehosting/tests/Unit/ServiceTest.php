@@ -1298,9 +1298,11 @@ test('create hp', function (): void {
 
     $service->setDi($di);
 
-    $result = $service->createHp('Free Plan', []);
+    $result = $service->createHp('Free Plan', ['config' => ['plan' => 'starter', 'unused' => '']]);
     expect($result)->toBeInt();
     expect($result)->toBe($newId);
+    // ClientFence: the given config is kept (it was ignored), empty values left out.
+    expect(json_decode((string) $model->config, true))->toBe(['plan' => 'starter']);
 });
 
 test('get server package', function (): void {

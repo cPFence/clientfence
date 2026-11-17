@@ -1661,6 +1661,8 @@ class Service implements InjectionAwareInterface
         $model->max_pop = $data['max_pop'] ?? 1;
         $model->max_sql = $data['max_sql'] ?? 1;
         $model->max_ftp = $data['max_ftp'] ?? 1;
+        // ClientFence core patch: the plan's config is saved when given (it was ignored); empty values left out, as updateHp does.
+        $model->config = json_encode(array_filter(is_array($data['config'] ?? null) ? $data['config'] : []));
 
         $model->created_at = date('Y-m-d H:i:s');
         $model->updated_at = date('Y-m-d H:i:s');
