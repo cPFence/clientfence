@@ -36,7 +36,7 @@ final class QuotePdf
     public static function render(\Pimple\Container $di, array $quote, string $locale): string
     {
         $previous = \Locale::getDefault();
-        (new \ClientFence\Translate())->setLocale($locale)->setup();
+        (new \ClientFence\Translate())->setLocale(RtlPdf::labels($locale))->setup();
         try {
             $title = __trans('Quote #:id', [':id' => $quote['id']]);
             $pdf = RtlPdf::document($di, $locale, $title);

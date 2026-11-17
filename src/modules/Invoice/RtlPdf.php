@@ -17,8 +17,23 @@ final class RtlPdf
     /** Languages written right to left. */
     public const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur', 'yi'];
 
-    /** Fonts shipped with TCPDF for languages whose letters DejaVu Sans lacks (FreeSans has Devanagari and Bengali). */
-    public const SCRIPT_FONTS = ['hi' => 'freesans', 'bn' => 'freesans'];
+    /**
+     * Fonts shipped with TCPDF for scripts DejaVu Sans lacks, by locale or language: FreeSans (Devanagari, Bengali, for
+     * names in a PDF labelled in English), FreeSerif (Thai) and the CID fonts whose letters the PDF reader supplies.
+     */
+    public const SCRIPT_FONTS = [
+        'hi' => 'freesans', 'bn' => 'freesans', 'th' => 'freeserif', 'ko' => 'cid0kr', 'ja' => 'cid0jp',
+        'zh' => 'cid0cs', 'zh_TW' => 'cid0ct', 'zh_HK' => 'cid0ct',
+    ];
+
+    /** Languages whose PDFs are labelled in English: TCPDF cannot join their letters (or has no font for them). */
+    public const ENGLISH_LANGUAGES = ['hi', 'bn', 'kn'];
+
+    /** The locale a PDF's labels are written in. */
+    public static function labels(string $locale): string
+    {
+        return in_array(strtolower(substr($locale, 0, 2)), self::ENGLISH_LANGUAGES, true) ? 'en_US' : $locale;
+    }
 
     public static function isRtl(string $locale): bool
     {
@@ -44,7 +59,7 @@ final class RtlPdf
         $pdf->SetTitle($title);
         $pdf->setRTL($rtl);
         $pdf->setLanguageArray(['a_meta_charset' => 'UTF-8', 'a_meta_dir' => $rtl ? 'rtl' : 'ltr', 'a_meta_language' => substr($locale, 0, 2), 'w_page' => '']);
-        $pdf->SetFont(self::SCRIPT_FONTS[strtolower(substr($locale, 0, 2))] ?? 'dejavusans', '', 9);
+        $pdf->SetFont(self::SCRIPT_FONTS[$locale] ?? self::SCRIPT_FONTS[strtolower(substr($locale, 0, 2))] ?? 'dejavusans', '', 9);
         $pdf->SetMargins(15, 15, 15);
         $pdf->SetAutoPageBreak(true, 15);
         $pdf->AddPage();

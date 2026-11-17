@@ -29,12 +29,14 @@ final class StatementPdf
 
     public static function render(\Pimple\Container $di, array $statement, string $locale): string
     {
-        $pdf = RtlPdf::document($di, $locale, __trans('Account statement'));
-        $company = $di['mod_service']('system')->getCompany();
-        $money = static fn (float $amount): string => RtlPdf::money($di, $amount, $statement['currency']);
-        $pdf->writeHTML(self::html($statement, $company, $money, RtlPdf::isRtl($locale)), true, false, true, false, '');
+        return \ClientFence\Translate::with(RtlPdf::labels($locale), static function () use ($di, $statement, $locale): string {
+            $pdf = RtlPdf::document($di, $locale, __trans('Account statement'));
+            $company = $di['mod_service']('system')->getCompany();
+            $money = static fn (float $amount): string => RtlPdf::money($di, $amount, $statement['currency']);
+            $pdf->writeHTML(self::html($statement, $company, $money, RtlPdf::isRtl($locale)), true, false, true, false, '');
 
-        return $pdf->Output('statement.pdf', 'S');
+            return $pdf->Output('statement.pdf', 'S');
+        });
     }
 
     public static function isRtl(string $locale): bool

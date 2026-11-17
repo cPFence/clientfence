@@ -94,6 +94,10 @@ test('PDF documents use a font that has the letters of their language', function
 })->with([
     'Hindi (Devanagari, not in DejaVu Sans)' => ['hi_IN', 'freesans'],
     'Bengali (not in DejaVu Sans)' => ['bn_BD', 'freesans'],
+    'Thai' => ['th_TH', 'freeserif'],
+    'Korean' => ['ko_KR', 'cid0kr'],
+    'Chinese (Simplified)' => ['zh_CN', 'cid0cs'],
+    'Chinese (Hong Kong)' => ['zh_HK', 'cid0ct'],
     'Arabic' => ['ar_SA', 'dejavusans'],
     'English' => ['en_US', 'dejavusans'],
 ]);
@@ -141,4 +145,14 @@ test('invoice PDFs use the Document Title and Tax Number Label settings when set
 })->with([
     'set' => ['Tax Invoice', 'ABN', ['>Tax Invoice CF-00001</h1>', 'ABN: 12 345 678 901', 'ABN: 98 765 432 109', '<b>ABN</b> VAT-123']],
     'empty' => ['', '', ['>Invoice Number: CF-00001</h1>', 'VAT Number: 12 345 678 901', '<b>VAT ID</b> VAT-123']],
+]);
+
+test('Hindi, Bengali and Kannada PDFs are labelled in English, other languages in their own', function (string $locale, string $labels): void {
+    expect(ClientFence\Mod\Invoice\RtlPdf::labels($locale))->toBe($labels);
+})->with([
+    'Hindi' => ['hi_IN', 'en_US'],
+    'Bengali' => ['bn_BD', 'en_US'],
+    'Kannada' => ['kn_IN', 'en_US'],
+    'Arabic' => ['ar_SA', 'ar_SA'],
+    'Korean' => ['ko_KR', 'ko_KR'],
 ]);

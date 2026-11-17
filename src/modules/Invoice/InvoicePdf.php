@@ -11,7 +11,7 @@ final class InvoicePdf
     public static function render(\Pimple\Container $di, array $data, string $locale): string
     {
         $previous = \Locale::getDefault();
-        (new \ClientFence\Translate())->setLocale($locale)->setup();
+        (new \ClientFence\Translate())->setLocale(RtlPdf::labels($locale))->setup();
         try {
             $pdf = RtlPdf::document($di, $locale, self::heading($data));
             $logo = $data['logo_source'];
