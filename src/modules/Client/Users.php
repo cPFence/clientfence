@@ -192,6 +192,8 @@ final class Users
         'hosting' => 'products',
         'servicedownloadable' => 'products',
         'users' => 'owner',
+        // Saved cards and bank debits (Invoice/SavedCards.php): their calls are the owner's.
+        'payment-methods' => 'owner',
         'contacts' => 'contacts',
         'affiliates' => 'affiliates',
         // The ID document page (IdDocuments.php).

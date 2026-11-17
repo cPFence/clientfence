@@ -49,6 +49,14 @@ test('authorized users see the Support PIN but need the profile permission for a
         ->toThrow(InformationException::class, 'Ask the account owner for access.');
 });
 
+test('the payment methods pages are the owner\'s, like their saved card calls', function (): void {
+    // The user has invoices: the page used to open and fail on its card call with a "page not found" heading.
+    expect(Users::pageDenied($this->di, '/payment-methods'))->toBe('owner')
+        ->and(Users::pageDenied($this->di, '/payment-methods/paypal'))->toBe('owner')
+        ->and(fn () => Users::checkCall($this->di, $this->client, 'invoice', 'card_list'))
+        ->toThrow(InformationException::class, 'Ask the account owner for access.');
+});
+
 test('invoice access does not allow a sub-user to list or accept quotes', function (): void {
     expect(fn () => Users::checkCall($this->di, $this->client, 'invoice', 'quote_get_list'))
         ->toThrow(InformationException::class, 'Ask the account owner for access.');
