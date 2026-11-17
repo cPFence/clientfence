@@ -4450,18 +4450,16 @@ body::before {
 .cf-due-amount { font-family: $headings-font-family; font-size: 1.6rem; font-weight: 800; }
 .cf-due.is-late .cf-due-amount { color: var(--bs-danger-text-emphasis); }
 .stat-card.is-alert { background-image: linear-gradient(110deg, rgba(var(--bs-warning-rgb), .12), transparent 65%); }
-// Store billing cycles: one even row (it scrolls sideways on a phone instead of wrapping), the saving as
-// a quiet line under each label so every item has the same height.
+// Store billing cycles: even items that wrap when they do not fit, the saving as a line under each label. On a phone two
+// columns (CF-180: a sideways-scrolling row hid the longest cycles, which save the most).
 .bf-store-bar .bf-seg-cycles {
-  flex: 0 1 auto; flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  flex: 0 1 auto; max-width: 100%;
   background: var(--pal-glass); border: 1px solid var(--bs-border-color);
-  &::-webkit-scrollbar { display: none; }
-  // On a phone the end fades out, a hint that more cycles sit past the edge.
-  @include media-breakpoint-down(md) { mask-image: linear-gradient(90deg, #000 78%, transparent); }
-  @include media-breakpoint-down(md) { [dir="rtl"] & { mask-image: linear-gradient(270deg, #000 78%, transparent); } }
+  @include media-breakpoint-down(sm) { flex: 1 1 100%; }
   .bf-seg-item { flex: 0 0 auto; min-width: 104px; min-height: 54px; gap: 2px; padding: 8px 14px; white-space: nowrap; transition: background-color .25s, color .25s, box-shadow .25s; }
+  @include media-breakpoint-down(sm) { .bf-seg-item { flex: 1 1 calc(50% - 3px); min-width: 0; padding-inline: 8px; white-space: normal; text-align: center; } }
   .bf-seg-item.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); color: #fff; box-shadow: 0 6px 16px -8px var(--pal-brand); }
-  .bf-save { padding: 0; background: none; color: var(--bs-success-text-emphasis); font-size: .72rem; font-weight: 600; }
+  .bf-save { padding: 0; background: none; color: var(--bs-success-text-emphasis); font-size: .8rem; font-weight: 700; }
   .bf-seg-item.is-on .bf-save { color: rgba(255, 255, 255, .85); }
 }
 .bf-tab.is-on { background: linear-gradient(135deg, var(--pal-brand), color-mix(in srgb, var(--pal-accent) 80%, var(--pal-brand))); border-color: transparent; color: #fff; }
@@ -4861,14 +4859,11 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   h2 { font-size: 1.25rem; font-weight: 700; overflow-wrap: anywhere; }
 }
 .cf-order-options:not(:has([data-cf-options])) { display: none; }
+// Wrapping as the store's, two columns on a phone (CF-180).
 .bf-checkout [data-bf-cycles] {
-  flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
   background: var(--pal-glass); border: 1px solid var(--bs-border-color);
-  &::-webkit-scrollbar { display: none; }
-  // From three cycles a phone fades the end, a hint that more sit past the edge.
-  @include media-breakpoint-down(md) { &:has(> :nth-child(3)) { mask-image: linear-gradient(90deg, #000 78%, transparent); } }
-  @include media-breakpoint-down(md) { [dir="rtl"] &:has(> :nth-child(3)) { mask-image: linear-gradient(270deg, #000 78%, transparent); } }
   .bf-seg-item { flex: 1 0 auto; min-width: 104px; min-height: 54px; gap: 2px; padding: 8px 14px; white-space: nowrap; transition: background-color .25s, color .25s, box-shadow .25s; }
+  @include media-breakpoint-down(sm) { .bf-seg-item { flex: 1 1 calc(50% - 3px); min-width: 0; padding-inline: 8px; white-space: normal; text-align: center; } }
 }
 .cf-order-addons .bf-addon {
   padding: .875rem 1rem; border: 1px solid var(--bf-line); border-radius: 14px;
