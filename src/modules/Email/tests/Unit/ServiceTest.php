@@ -2697,3 +2697,25 @@ test('sendTemplate with to_staff_permission sends a staff email only to the staf
     'every staff member of the template groups' => [null, ['support@example.com', 'manager@example.com']],
     'only the staff with the permission' => [['client', 'manage_affiliates'], ['manager@example.com']],
 ]);
+
+test('custom templates are checked with the client and staff variables every email gets', function (): void {
+    $service = new ClientFence\Mod\Email\Service();
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailTplString')->twice()
+        ->with(Mockery::any(), Mockery::on(fn (array $vars): bool => $vars['c']['first_name'] === 'Example' && $vars['staff']['name'] === 'Staff Member'))
+        ->andReturn('');
+    $em = emailBuildEm();
+    $em->shouldReceive('persist');
+    $em->shouldReceive('flush');
+
+    $di = container();
+    $di['em'] = $em;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system]));
+    $service->setDi($di);
+
+    $template = $service->templateCreate('custom_hello', 'Hello {{ c.first_name }}', 'Dear {{ c.first_name }}', 1);
+
+    expect($service->getVars($template))->toHaveKeys(['c.first_name', 'c.email', 'staff.name'])
+        ->and($service->getVars(emailTemplate('mod_client_signup')))->toBe([]);
+});

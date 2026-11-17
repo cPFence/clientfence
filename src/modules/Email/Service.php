@@ -197,7 +197,7 @@ class Service implements \ClientFence\InjectionAwareInterface
             $vars['invoice'] = $invoice;
         }
 
-        $defaults = $this->getTemplateVarDefaults($template->getActionCode());
+        $defaults = $this->getTemplateVarDefaults($template->getActionCode(), $this->isCustomTemplate($template));
         if ($defaults !== []) {
             $vars = array_replace_recursive($defaults, $vars);
         }
@@ -205,7 +205,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         return $vars;
     }
 
-    private function getTemplateVarDefaults(string $actionCode): array
+    private function getTemplateVarDefaults(string $actionCode, bool $custom = false): array
     {
         $staff = [
             'id' => 1,
@@ -279,6 +279,12 @@ class Service implements \ClientFence\InjectionAwareInterface
         ];
         $staffTicket = $ticket;
         $staffTicket['client'] = $client;
+
+        // ClientFence core patch: a custom template is checked with what sendTemplate() gives every email (the client
+        // `c`, the `staff` member), as built-in ones are with theirs; "c" no longer "does not exist" before a first send.
+        if ($custom) {
+            return ['c' => $client, 'staff' => $staff];
+        }
 
         return match ($actionCode) {
             'mod_support_ticket_staff_open',
@@ -1091,12 +1097,13 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         $systemService = $this->di['mod_service']('System');
 
+        $vars = $this->getTemplateVarDefaults((string) $actionCode, true);
         if ($subject !== null && $subject !== '') {
-            $systemService->renderEmailTplString($subject, []);
+            $systemService->renderEmailTplString($subject, $vars);
         }
 
         if ($content !== null && $content !== '') {
-            $systemService->renderEmailTplString($content, []);
+            $systemService->renderEmailTplString($content, $vars);
         }
 
         $template = new EmailTemplate($actionCode);
