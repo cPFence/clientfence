@@ -18,7 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'system:releasenotes',
-    description: 'Returns the release notes of all newer versions of FOSSBilling',
+    // ClientFence core patch: the updater reads only the latest release's notes.
+    description: 'Shows the release notes of the latest ClientFence release',
     hidden: false
 )]
 class ReleaseNotes extends Command implements \ClientFence\InjectionAwareInterface
