@@ -115,6 +115,36 @@ class Guest extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch (GitHub #41): a manual method's transfer details on the invoice link, without signing in, for
+     * whoever may pay the invoice from it (as online gateways can). Empty for an invoice not waiting for payment or a
+     * method that takes no transfers. The receipt upload still needs signing in (Api\Client::receipt_send()).
+     */
+    #[RequiredParams(['hash' => 'Invoice hash was not passed', 'gateway_id' => 'Payment method not found. Missing param gateway_id'])]
+    public function payment_details($data): string
+    {
+        if (!preg_match('/^[a-f0-9]{30,60}$/', (string) $data['hash'])) {
+            throw new \ClientFence\Exception('Invalid invoice hash', null, 4001);
+        }
+        $this->limitUnlessOwner('invoice_details', (string) $data['hash']);
+        $di = $this->getDi();
+        $invoice = $di['db']->findOne('Invoice', 'hash = ?', [(string) $data['hash']]);
+        if (!$invoice instanceof \Model_Invoice) {
+            throw new \ClientFence\InformationException('Invoice not found', null, 812);
+        }
+        $this->getService()->checkInvoiceAuth($invoice, InvoiceOperation::PAYMENT);
+        try {
+            $gateway = \ClientFence\Mod\Invoice\Receipts::manualGateway($di, (int) $data['gateway_id']);
+        } catch (\ClientFence\InformationException) {
+            return '';
+        }
+        if ($invoice->status !== \Model_Invoice::STATUS_UNPAID) {
+            return '';
+        }
+
+        return (string) $di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway)->getHtml($di['api_system'], (int) $invoice->id, false);
+    }
+
+    /**
      * Get whether the client add funds feature is enabled, or not.
      */
     public function funds_enabled(): bool

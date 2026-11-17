@@ -44,9 +44,8 @@ class Receipts
     }
 
     /**
-     * The payment methods a client can use for an amount, as the theme shows them: online
-     * methods first, then manual ones (Custom and adapters built on it) in the order they were
-     * added. Each has a two-letter mark and a colour (tone 0-4) for its card, and manual methods
+     * The payment methods a client can use for an amount, as the theme shows them, in the order
+     * set on Payment Gateways (GitHub #43). Each has a two-letter mark and a colour (tone 0-4) for its card, and manual methods
      * that show the amount in another currency (CustomEgp) carry that quote and its rate.
      * single and recurrent: whether the method takes a one-time payment and, for a subscribable
      * invoice, a subscription (the theme's "one-time or subscription" choice). receipt: whether a manual method
@@ -65,7 +64,8 @@ class Receipts
         $deposit = $invoice !== null && $di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice);
         $client = $invoice === null && $taxed !== null && $clientId !== null ? $di['db']->load('Client', $clientId) : null;
         $rate = $client instanceof \Model_Client && $client->id ? (float) $di['mod_service']('Invoice', 'Tax')->getTaxRateForClient($client) : 0.0;
-        foreach ($di['db']->find('PayGateway', 'enabled = 1 ORDER BY id') as $gateway) {
+        // ClientFence (GitHub #43): in the order set on Payment Gateways; the first one is picked by default.
+        foreach ($di['db']->find('PayGateway', 'enabled = 1 ORDER BY position, id') as $gateway) {
             if (!in_array($currency, $gatewayService->getAcceptedCurrencies($gateway), true)
                 || !($gateway->allow_single || ($subscribable && $gateway->allow_recurrent))) {
                 continue;
@@ -107,7 +107,6 @@ class Receipts
                 'total' => $total,
             ];
         }
-        usort($methods, static fn (array $a, array $b): int => [$a['manual'], $a['id']] <=> [$b['manual'], $b['id']]);
         foreach ($methods as $i => &$method) {
             $method['tone'] = $i % 5;
         }

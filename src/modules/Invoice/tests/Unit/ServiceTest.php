@@ -370,7 +370,7 @@ test('gets search query with various parameters', function (array $data, string 
     ],
     [
         ['search' => 'trend'],
-        'AND (p.id = :search_numeric_id OR p.nr LIKE :search_like OR p.id LIKE :search OR pi.title LIKE :search_like)',
+        'AND (p.id = :search_numeric_id OR p.nr LIKE :search_like OR p.id LIKE :search OR pi.title LIKE :search_like OR p.po_number LIKE :search_like)',
         [
             'search' => 'trend',
             'search_like' => '%trend%',
@@ -379,7 +379,7 @@ test('gets search query with various parameters', function (array $data, string 
     ],
     [
         ['search' => 'FOSS00040'],
-        "OR pi.title LIKE :search_like OR (COALESCE(p.serie, '') = :search_serie AND p.nr = :search_nr))",
+        "OR pi.title LIKE :search_like OR p.po_number LIKE :search_like OR (COALESCE(p.serie, '') = :search_serie AND p.nr = :search_nr))",
         [
             'search' => 'FOSS00040',
             'search_like' => '%FOSS00040%',
@@ -2023,6 +2023,7 @@ test('sets invoice defaults', function (): void {
 
     $clientModel = new Model_Client();
     $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $clientModel->po_number = 'PO-31';
 
     $buyer = [
         'first_name' => '',
@@ -2098,6 +2099,8 @@ test('sets invoice defaults', function (): void {
     $service->setDi($di);
 
     $service->setInvoiceDefaults($invoiceModel);
+    // GitHub #31: a new invoice starts with the client's purchase order number.
+    expect($invoiceModel->po_number)->toBe('PO-31');
 });
 
 test('approves an invoice', function (): void {
@@ -2631,6 +2634,7 @@ test('a refund takes back the downgrade credit given from the invoice, or refuse
     $invoice->status = Model_Invoice::STATUS_PAID;
     $invoice->paid_at = '2026-09-01 10:00:00';
     $invoice->taxrate = 19;
+    $invoice->po_number = 'PO-31';
     $creditNote = new Model_Invoice();
     $creditNote->loadBean(new Tests\Helpers\DummyBean());
     $creditNote->id = 8;
@@ -2701,6 +2705,8 @@ test('a refund takes back the downgrade credit given from the invoice, or refuse
     }
     expect($serviceMock->refundInvoice($invoice))->toBe(9)
         ->and($invoice->status)->toBe(Model_Invoice::STATUS_REFUNDED)
+        // GitHub #31: the credit note keeps the purchase order number.
+        ->and($new->po_number)->toBe('PO-31')
         ->and($balances)->toBe([[-47.6, 'Downgrade credit taken back with the refund of invoice INV-7']])
         ->and($marked)->toBe([['UPDATE invoice_item SET task = ? WHERE task = ? AND invoice_id IN (8)', [Service::CREDIT_NOTE_TAKEN_BACK_TASK, Service::CREDIT_NOTE_TASK]]]);
 })->with([
@@ -3194,6 +3200,7 @@ test('updates an invoice', function (): void {
     $service = new Service();
     $data = [
         'gateway_id' => '',
+        'po_number' => '  PO-77  ',
         'taxname' => '',
         'taxrate' => '',
         'status' => '',
@@ -3270,7 +3277,8 @@ test('updates an invoice', function (): void {
 
     $result = $serviceMock->updateInvoice($invoiceModel, $data);
     expect($result)->toBeTrue()
-        ->and($dbal->fetchAllAssociative('SELECT client_order_id, name FROM client_order_meta'))->toBe([]);
+        ->and($dbal->fetchAllAssociative('SELECT client_order_id, name FROM client_order_meta'))->toBe([])
+        ->and($invoiceModel->po_number)->toBe('PO-77');
 });
 
 test('removes an invoice', function (): void {
@@ -5615,4 +5623,11 @@ test('a list of statuses finds those invoices of the client only, and only real 
     [$sql, $params] = $service->getSearchQuery(['client_id' => 1, 'approved' => true, 'status' => ['canceled', 'refunded', "x') OR ('1"]]);
 
     expect($db->fetchFirstColumn($sql, $params))->toEqual([2, 1]);
+});
+
+test('keeps a purchase order number short and empty as none (GitHub #31)', function (): void {
+    expect(Service::poNumber('  PO 12  '))->toBe('PO 12')
+        ->and(Service::poNumber('   '))->toBeNull()
+        ->and(Service::poNumber(null))->toBeNull()
+        ->and(mb_strlen((string) Service::poNumber(str_repeat('é', 70))))->toBe(64);
 });

@@ -7994,5 +7994,81 @@
     {
         "file": "modules/Order/templates/admin/mod_order_index.html.twig",
         "done": "ClientFence core patch: the product filters only for staff who may read the products (else the list failed)."
+    },
+    {
+        "file": "library/ClientFence/Security/RateLimiter.php",
+        "done": "ClientFence core patch (GitHub #41): the transfer details on an invoice link"
+    },
+    {
+        "file": "modules/Invoice/Api/Guest.php",
+        "done": "ClientFence core patch (GitHub #41): a manual method's transfer details on the invoice link"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (GitHub #41): a guest on the invoice link sees the details too"
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch (GitHub #43): the order clients see the payment methods in."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch (GitHub #43): moves a gateway one place up or down"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (GitHub #43): moves a payment gateway one place up or down"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateways.html.twig",
+        "done": "ClientFence core patch (GitHub #43): the order clients see the payment methods in; the first is picked by default."
+    },
+    {
+        "file": "modules/Clientfence/Migrations.php",
+        "done": "ClientFence core patch: pay_gateway.position, the order of the payment methods (GitHub #43)"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number is searched too."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #31): the client's purchase order number, which staff can change per invoice."
+    },
+    {
+        "file": "modules/Client/Entity/Client.php",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number new invoices start with."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number new invoices start with."
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "ClientFence core patch (GitHub #31): the client sets the purchase order number their new invoices start with."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number new invoices start with."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number, from the client's by default."
+    },
+    {
+        "file": "themes/palisade/html/mod_client_profile.html.twig",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number the client's new invoices start with."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_print.html.twig",
+        "done": "ClientFence core patch (GitHub #31): the purchase order number."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #31): the credit note keeps the purchase order number."
     }
 ]

@@ -83,6 +83,8 @@ final class InvoicePdf
             . $fact($text(__trans('Invoice Date')), $text($date->format(new \DateTimeImmutable((string) $invoice['created_at']))))
             . $fact($text(__trans('Due Date')), $text($date->format(new \DateTimeImmutable((string) $invoice['due_at']))))
             . $fact($text(__trans('Invoice Status')), $text(__trans(ucfirst($invoice['status']))), 'background-color:' . $statusBg . ';color:' . $statusInk . ';border:0.5px solid ' . $statusInk . ';')
+            // ClientFence (GitHub #31): the purchase order number, when the invoice has one.
+            . (($invoice['po_number'] ?? '') !== '' ? $fact($text(__trans('PO number')), $text((string) $invoice['po_number'])) : '')
             . '</table><br><br>'
             . '<table cellpadding="6"><tr>';
 

@@ -124,11 +124,6 @@
                                     <a class="btn btn-primary bf-btn-lg bf-self-start" href="{{ banklink }}">{{ 'Pay :amount with :method'|trans({ ':amount': amount_text, ':method': m.title|trans }) }}</a>
                                 {% endif %}
                             </section>
-                        {% elseif not client %}
-                            <section class="card bf-card bf-section" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
-                                <p class="mb-0">{{ 'Sign in to see the :method details and send us the receipt.'|trans({ ':method': m.title|trans }) }}</p>
-                                <a class="btn btn-primary bf-btn-lg bf-self-start" href="{{ 'login'|url({ back: '/invoice/' ~ invoice.hash }) }}">{{ 'Sign in'|trans }}</a>
-                            </section>
                         {% else %}
                             <section class="card bf-card bf-section" aria-labelledby="bf-h-steps-{{ m.id }}" data-bf-panel="{{ m.id }}"{% if m.id ~ '' != picked %} hidden{% endif %}>
                                 <h2 id="bf-h-steps-{{ m.id }}">{{ 'Pay by :method'|trans({ ':method': m.title|trans }) }}</h2>
@@ -137,13 +132,16 @@
                                     <li>{{ 'Use the details below and write :ref as the reference.'|trans({ ':ref': '<strong class="bf-mono" dir="ltr">' ~ (nr|e) ~ '</strong>' })|raw }}</li>
                                     {# ClientFence core patch: the receipt upload opens a ticket, so while tickets are off (Support settings) the outside help desk link instead, if any. #}
                                     {# ClientFence core patch: a method whose "Clients can upload a receipt" setting is off shows no upload (Receipts.php receiptUpload()). #}
-                                    {% set receipt_upload = guest.support_tickets_enabled and m.receipt %}
+                                    {# ClientFence core patch (GitHub #41): a guest on the invoice link sees the details too; the upload needs signing in. #}
+                                    {% set receipt_upload = client and guest.support_tickets_enabled and m.receipt %}
                                     <li>{{ receipt_upload ? 'Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid.'|trans : (guest.support_tickets_enabled ? 'We confirm the payment when it arrives and mark the invoice paid.'|trans : 'Send the receipt to our support. We confirm the payment and mark the invoice paid.'|trans) }}</li>
                                 </ol>
                                 {# ClientFence: plain-text instructions keep their line breaks (bank name, IBAN, reference). #}
-                                {% set details = client.invoice_payment_details({ hash: invoice.hash, gateway_id: m.id }) %}
+                                {% set details = client ? client.invoice_payment_details({ hash: invoice.hash, gateway_id: m.id }) : guest.invoice_payment_details({ hash: invoice.hash, gateway_id: m.id }) %}
                                 <div class="bf-details{{ '<' in details ? '' : ' bf-details-text' }}">{{ details|raw }}</div>
-                                {% if not receipt_upload and guest.support_support_url %}
+                                {% if not client and guest.support_tickets_enabled and m.receipt %}
+                                <a class="btn bf-btn-ghost bf-btn-lg bf-self-start" href="{{ 'login'|url({ back: '/invoice/' ~ invoice.hash }) }}">{{ 'Sign in to upload your transfer receipt'|trans }}</a>
+                                {% elseif not receipt_upload and guest.support_support_url %}
                                 <a class="btn btn-primary bf-btn-lg bf-self-start" href="{{ guest.support_support_url }}" target="_blank" rel="noopener">{{ 'Open Support'|trans }}</a>
                                 {% endif %}
                                 {% if receipt_upload %}
@@ -190,6 +188,8 @@
                             {% if buyer.first_name|trim or buyer.last_name|trim %}<strong>{{ buyer.first_name }} {{ buyer.last_name }}</strong><br>{% endif %}
                             {% if buyer.company|trim %}{{ buyer.company }}<br>{% endif %}
                             {% if buyer.company_number|trim %}{{ 'Company Number'|trans }} {{ buyer.company_number }}<br>{% endif %}
+                            {# ClientFence core patch (GitHub #31): the purchase order number. #}
+                            {% if invoice.po_number|default('')|trim %}{{ 'PO number'|trans }} <bdi dir="ltr">{{ invoice.po_number }}</bdi><br>{% endif %}
                             {% if buyer.company_vat|trim %}{{ company.tax_label|default('') ?: 'Company VAT'|trans }} {{ buyer.company_vat }}<br>{% endif %}
                             {% if buyer.address|trim %}{{ buyer.address }}<br>{{ buyer.city }}{% if buyer.state|trim %}, {{ buyer.state }}{% endif %}<br>{{ buyer.zip }}{% if buyer.country|trim %}, {{ buyer.country|country_name }}{% endif %}<br>{% endif %}
                             {% if buyer.phone|trim %}<bdi dir="ltr">{{ buyer.phone }}</bdi>{% endif %}

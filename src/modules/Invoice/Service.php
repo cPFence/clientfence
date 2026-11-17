@@ -47,7 +47,7 @@ class Service implements InjectionAwareInterface
         'buyer_company_number', 'buyer_address', 'buyer_city', 'buyer_state',
         'buyer_country', 'buyer_zip', 'buyer_phone', 'buyer_phone_cc',
         'buyer_email', 'gateway_id', 'approved', 'taxname', 'taxrate',
-        'due_at', 'reminded_at', 'paid_at', 'created_at', 'updated_at',
+        'due_at', 'reminded_at', 'paid_at', 'created_at', 'updated_at', 'po_number',
     ];
 
     /** Subset of EXPORTABLE_COLUMNS used when the caller passes no headers. */
@@ -224,7 +224,8 @@ class Service implements InjectionAwareInterface
         }
 
         if ($search) {
-            $sql .= ' AND (p.id = :search_numeric_id OR p.nr LIKE :search_like OR p.id LIKE :search OR pi.title LIKE :search_like';
+            // ClientFence core patch (GitHub #31): the purchase order number is searched too.
+            $sql .= ' AND (p.id = :search_numeric_id OR p.nr LIKE :search_like OR p.id LIKE :search OR pi.title LIKE :search_like OR p.po_number LIKE :search_like';
             // ClientFence core patch: also the printed number, series and padded number (FOSS00040 is serie FOSS, nr 40).
             if (preg_match('/^\s*(.*?)0*(\d+)\s*$/', (string) $search, $printed) === 1) {
                 $sql .= ' OR (COALESCE(p.serie, \'\') = :search_serie AND p.nr = :search_nr)';
@@ -369,6 +370,7 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: a bank debit still clearing shows the invoice as "Payment pending" (Invoice/PendingPayments.php).
         $result['pending_payment'] = $unpaid ? PendingPayments::forInvoice($this->di, (int) $invoice->id) : null;
         $result['notes'] = $row['notes'] ?? null;
+        $result['po_number'] = $row['po_number'] ?? null;
         $result['text_1'] = $row['text_1'] ?? null;
         $result['text_2'] = $row['text_2'] ?? null;
         $result['due_at'] = $row['due_at'];
@@ -1224,6 +1226,14 @@ class Service implements InjectionAwareInterface
         return $model;
     }
 
+    /** ClientFence (GitHub #31): a purchase order number as saved, at most 64 characters; empty is none. */
+    public static function poNumber(mixed $value): ?string
+    {
+        $value = trim(mb_substr(trim((string) $value), 0, 64));
+
+        return $value === '' ? null : $value;
+    }
+
     public function setInvoiceDefaults(\Model_Invoice $model): void
     {
         $clientService = $this->di['mod_service']('Client');
@@ -1252,6 +1262,8 @@ class Service implements InjectionAwareInterface
         $model->buyer_phone = trim(($buyer['phone_cc'] ?? '') . ' ' . ($buyer['phone'] ?? ''));
         $model->buyer_email = $buyer['email'] ?? null;
         $model->buyer_zip = $buyer['postcode'] ?? null;
+        // ClientFence core patch (GitHub #31): the client's purchase order number, which staff can change per invoice.
+        $model->po_number = $client->po_number ?: null;
 
         $invoice_due_days = $systemService->getParamValue('invoice_due_days');
         if (!is_numeric($invoice_due_days)) {
@@ -1992,6 +2004,8 @@ class Service implements InjectionAwareInterface
                 $new->buyer_phone = $invoice->buyer_phone;
                 $new->buyer_email = $invoice->buyer_email;
                 $new->buyer_zip = $invoice->buyer_zip;
+                // ClientFence core patch (GitHub #31): the credit note keeps the purchase order number.
+                $new->po_number = $invoice->po_number;
 
                 $new->paid_at = date('Y-m-d H:i:s');
                 $new->created_at = date('Y-m-d H:i:s');
@@ -2118,7 +2132,7 @@ class Service implements InjectionAwareInterface
         $source = $this->di['db']->getExistingModelById('Invoice', $sourceId, 'Invoice not found');
         $new = $this->di['db']->dispense('Invoice');
         foreach (['client_id', 'currency', 'taxname', 'taxrate', 'seller_company', 'seller_company_vat', 'seller_company_number', 'seller_address', 'seller_phone', 'seller_email',
-            'buyer_first_name', 'buyer_last_name', 'buyer_company', 'buyer_company_vat', 'buyer_company_number', 'buyer_address', 'buyer_city', 'buyer_state', 'buyer_country', 'buyer_phone', 'buyer_email', 'buyer_zip'] as $field) {
+            'buyer_first_name', 'buyer_last_name', 'buyer_company', 'buyer_company_vat', 'buyer_company_number', 'buyer_address', 'buyer_city', 'buyer_state', 'buyer_country', 'buyer_phone', 'buyer_email', 'buyer_zip', 'po_number'] as $field) {
             $new->{$field} = $source->{$field};
         }
         $new->hash = bin2hex(random_bytes(random_int(15, 30)));
@@ -2284,6 +2298,9 @@ class Service implements InjectionAwareInterface
         $model->taxname = $data['taxname'] ?? (empty($model->taxname) ? null : $model->taxname);
         $model->approved = (int) ($data['approved'] ?? (empty($model->approved) ? null : $model->approved));
         $model->notes = $data['notes'] ?? (empty($model->notes) ? null : $model->notes);
+        if (array_key_exists('po_number', $data)) {
+            $model->po_number = self::poNumber($data['po_number']);
+        }
 
         $created_at = $data['created_at'] ?? '';
         if (!empty($created_at)) {

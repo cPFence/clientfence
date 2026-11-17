@@ -206,3 +206,26 @@ test('invoice links are rate limited except for the signed-in owner', function (
 
     $api->pdf(['hash' => str_repeat('a', 32)]);
 })->with(['own invoice' => [5, 0], 'another client' => [6, 2]]);
+
+// ClientFence (GitHub #41): transfer details on the invoice link follow the invoice link's payment access.
+test('transfer details on the invoice link need payment access, and none for a method without transfers', function (bool $allowed): void {
+    $api = apiEndpoint(new Guest());
+    $model = new Model_Invoice();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->status = Model_Invoice::STATUS_UNPAID;
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->with('Invoice', Mockery::any(), Mockery::any())->once()->andReturn($model);
+    $dbMock->shouldReceive('findOne')->with('PayGateway', Mockery::any(), Mockery::any())->andReturn(null);
+    $serviceMock = Mockery::mock(Service::class);
+    $auth = $serviceMock->shouldReceive('checkInvoiceAuth')->once()->with($model, ClientFence\Mod\Invoice\InvoiceOperation::PAYMENT);
+    if (!$allowed) {
+        $auth->andThrow(new ClientFence\InformationException('You do not have permission to perform this action', [], 403));
+    }
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    $call = fn () => $api->payment_details(['hash' => str_repeat('a', 32), 'gateway_id' => 4]);
+    $allowed ? expect($call())->toBe('') : expect($call)->toThrow(ClientFence\InformationException::class, 'You do not have permission');
+})->with(['no access' => [false], 'gateway without transfers' => [true]]);

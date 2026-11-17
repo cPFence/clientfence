@@ -41,6 +41,7 @@ final class Migrations
         15 => 'm15IdDocuments',
         16 => 'm16ApiLog',
         17 => 'm17BalanceAlert',
+        18 => 'm18GatewayOrderPoNumber',
     ];
 
     public static function latest(): int
@@ -284,6 +285,36 @@ final class Migrations
     {
         if (!$di['dbal']->createSchemaManager()->tablesExist(['client_balance_alert'])) {
             $di['dbal']->executeStatement(Service::tables()['client_balance_alert']);
+        }
+    }
+
+    /**
+     * 18: ClientFence core patch: pay_gateway.position, the order of the payment methods (GitHub #43); client.po_number and
+     * invoice.po_number, the purchase order number (GitHub #31). Safe to run again: each column is added only once.
+     */
+    private static function m18GatewayOrderPoNumber(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $columns = static fn (string $table): array => array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns($table));
+        if (!in_array('position', $columns('pay_gateway'), true)) {
+            $db->executeStatement("ALTER TABLE `pay_gateway` ADD COLUMN `position` int(11) NOT NULL DEFAULT '0'");
+            // Existing gateways keep the order clients saw before: online methods first, then manual ones, each by id.
+            $gateways = $di['mod_service']('Invoice', 'PayGateway');
+            $order = [];
+            foreach ($db->fetchAllKeyValue('SELECT id, gateway FROM pay_gateway ORDER BY id') as $id => $code) {
+                $model = $di['db']->dispense('PayGateway');
+                $model->gateway = (string) $code;
+                $order[] = [is_a($gateways->getAdapterClassName($model), \Payment_Adapter_Custom::class, true), (int) $id];
+            }
+            sort($order);
+            foreach ($order as $i => [, $id]) {
+                $db->update('pay_gateway', ['position' => $i + 1], ['id' => $id]);
+            }
+        }
+        foreach (['client', 'invoice'] as $table) {
+            if (!in_array('po_number', $columns($table), true)) {
+                $db->executeStatement("ALTER TABLE `{$table}` ADD COLUMN `po_number` varchar(64) DEFAULT NULL");
+            }
         }
     }
 }

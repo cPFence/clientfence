@@ -114,6 +114,11 @@
                     <dt>{{ 'Company Number'|trans }}</dt>
                     <dd>{{ buyer.company_number }}</dd>
                 {% endif %}
+                {# ClientFence core patch (GitHub #31): the purchase order number. #}
+                {% if invoice.po_number|default('') %}
+                    <dt>{{ 'PO number'|trans }}</dt>
+                    <dd><bdi dir="ltr">{{ invoice.po_number }}</bdi></dd>
+                {% endif %}
                 {% if buyer.company_vat %}
                     <dt>{{ company.tax_label|default('') ?: 'Company VAT'|trans }}</dt>
                     <dd>{{ buyer.company_vat }}</dd>

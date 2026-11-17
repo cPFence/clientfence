@@ -83,7 +83,8 @@ class ServicePayGateway implements InjectionAwareInterface
             $params[':test_mode'] = (int) $testMode;
         }
 
-        $sql .= ' ORDER by gateway ASC';
+        // ClientFence core patch (GitHub #43): the order clients see the payment methods in.
+        $sql .= ' ORDER BY position, id';
 
         return [$sql, $params];
     }
@@ -178,6 +179,7 @@ class ServicePayGateway implements InjectionAwareInterface
         $new->accepted_currencies = null;
         $new->test_mode = 0;
         $new->config = null;
+        $new->position = $this->lastPosition();
         $this->di['db']->store($new);
 
         $this->di['logger']->info('Installed new payment gateway %s', $code);
@@ -266,10 +268,39 @@ class ServicePayGateway implements InjectionAwareInterface
         $new->accepted_currencies = $model->accepted_currencies;
         $new->test_mode = $model->test_mode;
         $new->config = $model->config;
+        $new->position = $this->lastPosition();
         $newId = $this->di['db']->store($new);
         $this->di['logger']->info('Copied payment gateway #%s - %s', $newId, $model->gateway);
 
         return $newId;
+    }
+
+    /**
+     * ClientFence core patch (GitHub #43): moves a gateway one place up or down in the order clients see the payment methods
+     * (the first one offered is picked by default); the order is renumbered 1..n. False at either end.
+     */
+    public function move(\Model_PayGateway $model, bool $up): bool
+    {
+        $db = $this->di['dbal'];
+        $ids = array_map('intval', $db->fetchFirstColumn('SELECT id FROM pay_gateway ORDER BY position, id'));
+        $at = array_search((int) $model->id, $ids, true);
+        $to = $at === false ? null : $at + ($up ? -1 : 1);
+        if ($to === null || !isset($ids[$to])) {
+            return false;
+        }
+        [$ids[$at], $ids[$to]] = [$ids[$to], $ids[$at]];
+        foreach ($ids as $i => $id) {
+            $db->update('pay_gateway', ['position' => $i + 1], ['id' => $id]);
+        }
+        $this->di['logger']->info('Moved payment gateway #%s %s', $model->id, $up ? 'up' : 'down');
+
+        return true;
+    }
+
+    /** A new gateway goes last in the order (GitHub #43). */
+    private function lastPosition(): int
+    {
+        return (int) $this->di['dbal']->fetchOne('SELECT COALESCE(MAX(position), 0) + 1 FROM pay_gateway');
     }
 
     public function update(\Model_PayGateway $model, array $data): bool
@@ -431,7 +462,7 @@ class ServicePayGateway implements InjectionAwareInterface
     {
         $format = $data['format'] ?? null;
 
-        $gateways = $this->di['db']->find('PayGateway', 'enabled = 1 ORDER BY id desc');
+        $gateways = $this->di['db']->find('PayGateway', 'enabled = 1 ORDER BY position, id');
         $result = [];
         foreach ($gateways as $gtw) {
             if ($format == 'pairs') {

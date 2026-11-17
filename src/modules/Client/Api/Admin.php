@@ -478,6 +478,10 @@ class Admin extends \ClientFence\Api\AbstractApi
                 $client->{$setter}($data[$field]);
             }
         }
+        // ClientFence core patch (GitHub #31): the purchase order number new invoices start with.
+        if (array_key_exists('po_number', $data)) {
+            $client->setPoNumber(\ClientFence\Mod\Invoice\Service::poNumber($data['po_number']));
+        }
 
         $groupField = array_key_exists('group_id', $data)
             ? 'group_id'

@@ -97,6 +97,7 @@
                                 <div><dt>{{ 'Number'|trans }}</dt><dd>{{ invoice.serie }}{{ "%05s"|format(invoice.nr) }} <span class="text-secondary">#{{ invoice.id }}</span></dd></div>
                                 <div><dt>{{ 'Date Created'|trans }}</dt><dd>{{ invoice.created_at|format_datetime }}</dd></div>
                                 <div><dt>{{ 'Date Due'|trans }}</dt><dd>{{ invoice.due_at|format_datetime }}</dd></div>
+                                {% if invoice.po_number %}<div><dt>{{ 'PO number'|trans }}</dt><dd><bdi dir="ltr">{{ invoice.po_number }}</bdi></dd></div>{% endif %}
                                 <div><dt>{{ 'Date Paid'|trans }}</dt><dd>{% if invoice.paid_at %}{{ invoice.paid_at|format_datetime }}{% else %}-{% endif %}</dd></div>
                                 <div><dt>{{ 'Last Reminded'|trans }}</dt><dd>{% if invoice.reminded_at %}<span title="{{ invoice.reminded_at|format_datetime }}">{{ invoice.reminded_at|timeago }} {{ 'ago'|trans }}</span>{% else %}-{% endif %}</dd></div>
                                 <div><dt>{{ 'Currency'|trans }}</dt><dd>{{ invoice.currency|currency_name }}</dd></div>
@@ -672,6 +673,11 @@
                                             </svg>
                                         </span>
                                     </div>
+                                </div>
+                                {# ClientFence core patch (GitHub #31): the purchase order number, from the client's by default. #}
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="po_number">{{ 'PO number'|trans }}</label>
+                                    <input class="form-control" id="po_number" type="text" name="po_number" maxlength="64" value="{{ invoice.po_number }}">
                                 </div>
                             </div>
                         {% endblock %}

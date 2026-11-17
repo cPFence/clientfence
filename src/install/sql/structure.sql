@@ -289,6 +289,7 @@ CREATE TABLE `client` (
   `custom_20` mediumtext,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `po_number` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `alternative_id_idx` (`aid`),
@@ -637,6 +638,7 @@ CREATE TABLE `invoice` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `hash_expires_at` datetime DEFAULT NULL,
+  `po_number` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `client_id_idx` (`client_id`),
@@ -812,6 +814,7 @@ CREATE TABLE `pay_gateway` (
   `allow_recurrent` tinyint(1) DEFAULT '1',
   `test_mode` tinyint(1) DEFAULT '0',
   `config` mediumtext,
+  `position` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

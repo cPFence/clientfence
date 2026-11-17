@@ -28,7 +28,7 @@ test('maps client tables without changing their columns', function (): void {
             'gender', 'birthday', 'phone_cc', 'phone', 'company', 'company_vat',
             'company_number', 'address_1', 'address_2', 'city', 'state', 'postcode',
             'country', 'notes', 'currency', 'lang', 'timezone', 'ip', 'api_token',
-            'referred_by', 'billing_email', 'custom_1', 'custom_2', 'custom_3', 'custom_4',
+            'referred_by', 'billing_email', 'po_number', 'custom_1', 'custom_2', 'custom_3', 'custom_4',
             'custom_5', 'custom_6', 'custom_7', 'custom_8', 'custom_9', 'custom_10',
             'custom_11', 'custom_12', 'custom_13', 'custom_14', 'custom_15', 'custom_16',
             'custom_17', 'custom_18', 'custom_19', 'custom_20', 'created_at', 'updated_at',

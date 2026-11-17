@@ -687,3 +687,41 @@ test('returns null when description is empty', function (): void {
     $result = $serviceMock->getDescription($payGatewayModel);
     expect($result)->toBeNull();
 });
+
+// ClientFence (GitHub #43): the order clients see the payment methods in.
+test('moves a gateway up or down in the order and puts a copied one last', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, position INTEGER NOT NULL DEFAULT 0)');
+    foreach ([1, 2, 3] as $id) {
+        $db->insert('pay_gateway', ['id' => $id]);
+    }
+    $di = container();
+    $di['dbal'] = $db;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service = new ServicePayGateway();
+    $service->setDi($di);
+    $gateway = static function (int $id): Model_PayGateway {
+        $model = new Model_PayGateway();
+        $model->loadBean(new Tests\Helpers\DummyBean());
+        $model->id = $id;
+
+        return $model;
+    };
+    $order = static fn (): array => array_map('intval', $db->fetchFirstColumn('SELECT id FROM pay_gateway ORDER BY position, id'));
+
+    expect($service->move($gateway(3), true))->toBeTrue()
+        ->and($order())->toBe([1, 3, 2])
+        ->and($service->move($gateway(1), true))->toBeFalse()
+        ->and($service->move($gateway(2), false))->toBeFalse()
+        ->and($service->move($gateway(1), false))->toBeTrue()
+        ->and($order())->toBe([3, 1, 2]);
+
+    $copy = $gateway(0);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('dispense')->andReturn($copy);
+    $dbMock->shouldReceive('store')->andReturn(4);
+    $di['db'] = $dbMock;
+    $service->copy($gateway(1));
+
+    expect($copy->position)->toBe(4);
+});

@@ -67,6 +67,9 @@ class RateLimiter implements InjectionAwareInterface
                 'domain_lookup_batch_ip' => ['policy' => 'fixed_window', 'limit' => 180, 'interval' => '1 hour'],
                 'invoice_payment_ip' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 'invoice_payment_hash' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
+                // ClientFence core patch (GitHub #41): the transfer details on an invoice link, one call per manual method on each view.
+                'invoice_details_ip' => ['policy' => 'fixed_window', 'limit' => 60, 'interval' => '1 hour'],
+                'invoice_details_hash' => ['policy' => 'fixed_window', 'limit' => 60, 'interval' => '1 hour'],
                 'invoice_pdf_ip' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 'invoice_pdf_hash' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 'invoice_get_ip' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],

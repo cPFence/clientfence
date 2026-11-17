@@ -919,6 +919,20 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch (GitHub #43): moves a payment gateway one place up or down (direction "up" or "down") in the
+     * order clients see the payment methods.
+     */
+    #[RequiredParams(['id' => 'Gateway ID was not passed'])]
+    public function gateway_move($data): bool
+    {
+        $this->checkPermissions('invoice', 'manage_gateways');
+
+        $model = $this->getDi()['db']->getExistingModelById('PayGateway', $data['id'], 'Gateway not found');
+
+        return $this->getDi()['mod_service']('Invoice', 'PayGateway')->move($model, ($data['direction'] ?? '') === 'up');
+    }
+
+    /**
      * Remove payment gateway from system.
      *
      * @return bool

@@ -290,6 +290,12 @@
                                     <label class="form-label">{{ 'Company VAT Number'|trans }}</label>
                                     <input class="form-control" type="text" name="company_vat" value="{{ client.company_vat }}">
                                 </div>
+                                {# ClientFence core patch (GitHub #31): the purchase order number new invoices start with. #}
+                                <div class="col-xl-4">
+                                    <label class="form-label" for="client-po-number">{{ 'PO number'|trans }}</label>
+                                    <input class="form-control" type="text" id="client-po-number" name="po_number" maxlength="64" value="{{ client.po_number }}">
+                                    <div class="form-hint">{{ 'Shown on new invoices; change it on an invoice for a new purchase order.'|trans }}</div>
+                                </div>
                                 <div class="col-12">
                                     <label class="form-label">{{ 'Address Line 1'|trans }}</label>
                                     <input class="form-control" type="text" name="address_1" value="{{ client.address_1 }}">

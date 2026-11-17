@@ -41,7 +41,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         'gender', 'birthday', 'phone_cc', 'phone', 'company', 'company_vat',
         'company_number', 'address_1', 'address_2', 'city', 'state', 'postcode',
         'country', 'notes', 'currency', 'lang', 'timezone', 'ip', 'referred_by',
-        'billing_email',
+        'billing_email', 'po_number',
         'custom_1', 'custom_2', 'custom_3', 'custom_4', 'custom_5', 'custom_6',
         'custom_7', 'custom_8', 'custom_9', 'custom_10', 'custom_11', 'custom_12',
         'custom_13', 'custom_14', 'custom_15', 'custom_16', 'custom_17', 'custom_18',
@@ -567,6 +567,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
         if ($isAdmin || $isSelf) {
             $details['billing_email'] = $model instanceof Client ? $model->getBillingEmail() : $client->getBillingEmail();
+            // ClientFence (GitHub #31): the client's purchase order number, for staff and the client.
+            $details['po_number'] = $model instanceof Client ? $model->getPoNumber() : $client->getPoNumber();
         }
 
         if ($deep) {
@@ -676,6 +678,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         $isSelf = $this->isClientIdentity($identity) && $this->getIdentityId($identity) === (int) $client->id;
         if ($isAdmin || $isSelf) {
             $details['billing_email'] = $client->billing_email;
+            $details['po_number'] = $client->po_number;
         }
 
         if ($deep) {

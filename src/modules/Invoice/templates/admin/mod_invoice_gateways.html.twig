@@ -22,6 +22,7 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Payment Gateways'|trans }}</h3>
+                <div class="text-secondary small">{{ 'Clients see the payment methods in this order; the first one they can use is picked by default.'|trans }}</div>
             </div>
         </div>
         <div class="card-body pt-3 pb-0 px-0">
@@ -114,6 +115,13 @@
                                     <td>{{ mf.boolean_badge(gateway.enabled, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                     <td>{{ mf.boolean_badge(gateway.allow_single, 'Yes'|trans, 'No'|trans, 'text-bg-success', 'text-bg-secondary') }}</td>
                                     <td>
+                                        {# ClientFence core patch (GitHub #43): the order clients see the payment methods in; the first is picked by default. #}
+                                        <a class="btn btn-icon{% if loop.first %} invisible{% endif %}" href="{{ 'invoice/gateway_move'|api_url(query: { 'id': gateway.id, 'direction': 'up' }) }}" title="{{ 'Move up'|trans }}" aria-label="{{ 'Move up'|trans }}" {{ fb_api_link({reload: true}) }}>
+                                            <svg class="icon"><use href="#bf-chevron-up" /></svg>
+                                        </a>
+                                        <a class="btn btn-icon{% if loop.last %} invisible{% endif %}" href="{{ 'invoice/gateway_move'|api_url(query: { 'id': gateway.id, 'direction': 'down' }) }}" title="{{ 'Move down'|trans }}" aria-label="{{ 'Move down'|trans }}" {{ fb_api_link({reload: true}) }}>
+                                            <svg class="icon"><use href="#chevron-down" /></svg>
+                                        </a>
                                         <a class="btn btn-icon" href="{{ 'invoice/gateway_copy'|api_url(query: { 'id': gateway.id }) }}" title="{{ 'Copy'|trans }}"
                                             {{ fb_api_link({redirect: 'invoice/gateways'|url}) }}>
                                             <svg class="icon">

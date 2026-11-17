@@ -120,6 +120,12 @@
                                     <label class="form-label" for="company_number">{{ 'Company Number'|trans }}</label>
                                     <input type="text" class="form-control" name="company_number" id="company_number" value="{{ profile.company_number }}">
                                 </div>
+                                {# ClientFence core patch (GitHub #31): the purchase order number the client's new invoices start with. #}
+                                <div class="col-md-6">
+                                    <label class="form-label" for="po_number">{{ 'PO number'|trans }}</label>
+                                    <input type="text" class="form-control" name="po_number" id="po_number" maxlength="64" value="{{ profile.po_number }}">
+                                    <div class="form-text">{{ 'Shown on your new invoices, for your purchasing team.'|trans }}</div>
+                                </div>
                             </div>
                             <h3 class="cf-pf-section">{{ 'Address'|trans }}</h3>
                             <div class="row g-3">

@@ -144,6 +144,10 @@ class Client implements ApiArrayInterface
     #[ORM\Column(name: 'billing_email', type: Types::STRING, length: 255, nullable: true)]
     private ?string $billingEmail = null;
 
+    // ClientFence core patch (GitHub #31): the purchase order number new invoices start with.
+    #[ORM\Column(name: 'po_number', type: Types::STRING, length: 64, nullable: true)]
+    private ?string $poNumber = null;
+
     #[ORM\Column(name: 'custom_1', type: Types::TEXT, nullable: true)]
     private ?string $custom1 = null;
 
@@ -629,6 +633,18 @@ class Client implements ApiArrayInterface
     public function setBillingEmail(?string $billingEmail): self
     {
         $this->billingEmail = $billingEmail;
+
+        return $this;
+    }
+
+    public function getPoNumber(): ?string
+    {
+        return $this->poNumber;
+    }
+
+    public function setPoNumber(?string $poNumber): self
+    {
+        $this->poNumber = $poNumber;
 
         return $this;
     }

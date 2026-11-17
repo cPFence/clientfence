@@ -198,6 +198,10 @@ class Service implements InjectionAwareInterface
         $oldCountry = $client->getCountry();
         $client->setCompanyVat($data['company_vat'] ?? $client->getCompanyVat());
         $client->setCompanyNumber($data['company_number'] ?? $client->getCompanyNumber());
+        // ClientFence core patch (GitHub #31): the client sets the purchase order number their new invoices start with.
+        if (array_key_exists('po_number', $data)) {
+            $client->setPoNumber(\ClientFence\Mod\Invoice\Service::poNumber($data['po_number']));
+        }
         $client->setType($data['type'] ?? $client->getType());
         $client->setAddress1($data['address_1'] ?? $client->getAddress1());
         $client->setAddress2($data['address_2'] ?? $client->getAddress2());
