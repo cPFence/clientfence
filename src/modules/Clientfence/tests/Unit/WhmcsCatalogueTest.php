@@ -779,7 +779,7 @@ test('invoices keep their ids, numbers and lines; unpaid ones renew their orders
         // Partly paid: only the rest is due.
         ->and($target->fetchAllAssociative('SELECT title, price, unit FROM invoice_item WHERE invoice_id = 16 ORDER BY id'))->toBe([['title' => 'Migration work', 'price' => 50.0, 'unit' => null], ['title' => 'Payments received', 'price' => -20.0, 'unit' => Money::RECEIVED_UNIT]])
         ->and($target->fetchOne('SELECT nr FROM invoice WHERE id = 16'))->toBe('104')
-        ->and($target->fetchAssociative('SELECT base_income, base_refund, refund, taxrate FROM invoice WHERE id = 17'))->toBe(['base_income' => 100.0, 'base_refund' => 100.0, 'refund' => 100.0, 'taxrate' => '20'])
+        ->and($target->fetchAssociative('SELECT base_income, base_refund, refund, taxrate FROM invoice WHERE id = 17'))->toBe(['base_income' => 100.0, 'base_refund' => 100.0, 'refund' => 120.0, 'taxrate' => '20'])
         ->and($target->fetchOne('SELECT nr FROM invoice WHERE id = 14'))->toBeNull();
 
     // New invoices continue WHMCS's numbering, without a prefix.

@@ -1302,7 +1302,16 @@ class Service implements InjectionAwareInterface
         }
         $invoice->base_income = $table->toBaseCurrency($invoice->currency, $this->getTotal($invoice) + $received - $lines);
         if ($invoice->refund !== null) {
-            $invoice->base_refund = $table->toBaseCurrency($invoice->currency, max(0.0, (float) $invoice->refund - $lines));
+            // ClientFence core patch: the refund counts without its tax, as the income does (a part refund of a taxed invoice
+            // took the tax off the income too; the WHMCS import counts it the same way).
+            // The tax's share is taken against the income (Mass Pay lines and money received before are not income).
+            $refund = max(0.0, (float) $invoice->refund - $lines);
+            $income = $this->getTotal($invoice) + $received - $lines;
+            $tax = $refund > 0 ? $this->getTotalWithTax($invoice) - $this->getTotal($invoice) : 0.0;
+            if ($tax > 0 && $income > 0) {
+                $refund = round($refund * $income / ($income + $tax), 2);
+            }
+            $invoice->base_refund = $table->toBaseCurrency($invoice->currency, $refund);
         } else {
             $invoice->base_refund = null;
         }

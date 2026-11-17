@@ -261,7 +261,8 @@ final class Money
             'credit' => null,
             'base_income' => $paid ? round($subtotal / ($rate ?: 1), 2) : null,
             'base_refund' => $paid && $refunded > 0 ? round($refunded / ($rate ?: 1), 2) : null,
-            'refund' => $paid && $refunded > 0 ? $refunded : null,
+            // The money given back, as Invoice\Service::refundPartLocked() keeps it (with tax); base_refund is its share without.
+            'refund' => $paid && $refunded > 0 ? ($subtotal > 0 && $total > $subtotal ? min($total, round($refunded * $total / $subtotal, 2)) : $refunded) : null,
             'notes' => trim((string) ($row['notes'] ?? '')) ?: null,
             'status' => $status,
             'gateway_id' => $this->gateway((string) ($row['paymentmethod'] ?? '')),

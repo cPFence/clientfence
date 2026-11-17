@@ -2159,6 +2159,46 @@ test('money received before the invoice came here counts as income', function ()
     expect($invoiceModel->base_income)->toBe(50.0);
 });
 
+test('a refund of a taxed invoice counts without its tax, as the income does', function (float $refund, float $counted, float $received = 0.0, float $income = 50.0): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    // 50.00 at 24%: 62.00 paid (or the rest of one a WHMCS import found partly paid: a "received" line).
+    $serviceMock->shouldReceive('getTotal')->andReturn(50.0 - $received);
+    $serviceMock->shouldReceive('getTotalWithTax')->andReturn(62.0 - $received);
+    $items = [];
+    if ($received > 0) {
+        $line = new Model_InvoiceItem();
+        $line->loadBean(new Tests\Helpers\DummyBean());
+        $line->price = -$received;
+        $line->quantity = 1;
+        $line->unit = ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT;
+        $items[] = $line;
+    }
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->id = 21;
+    $invoiceModel->currency = 'USD';
+    $invoiceModel->refund = $refund;
+    $currencyService = Mockery::mock(CurrencyService::class)->makePartial();
+    $currencyService->shouldReceive('toBaseCurrency')->andReturnUsing(fn (string $code, float $amount): float => $amount);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('find')->andReturn($items);
+    $dbMock->shouldReceive('store')->once();
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $currencyService);
+    $serviceMock->setDi($di);
+
+    $serviceMock->countIncome($invoiceModel);
+
+    expect($invoiceModel->base_income)->toBe($income)->and($invoiceModel->base_refund)->toBe($counted);
+})->with([
+    'part refund' => [20.0, 16.13],
+    // Refunded in two parts to the full 62.00: income 50 - 50 = 0.
+    'whole amount' => [62.0, 50.0],
+    // 12.00 paid in WHMCS, the other 50.00 here, all 50 refunded: its share of the 50.00 income without tax.
+    'rest of a WHMCS invoice' => [50.0, 40.32, 12.0],
+]);
+
 // CF-182: A 100 and B 50 paid on their own, then the Mass Pay invoice of both (155 with a 5 fee) paid: its 150 is account credit.
 test('a Mass Pay invoice and its credit note count only the fee as income, and a refund gives back its credit first', function (array $prices, ?float $refund, float $income, ?float $refunded): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
