@@ -386,16 +386,12 @@ class Service implements InjectionAwareInterface
 
     public function getCurrentClientAreaThemeCode()
     {
-        if (self::$clientThemeCache !== null) {
-            // Apply default logic when returning from cache
-            return !empty(self::$clientThemeCache) ? self::$clientThemeCache : 'palisade';
-        }
-
-        $theme = $this->di['db']->getCell("SELECT value FROM setting WHERE param = 'theme' ");
         // Cache the raw database value (use empty string instead of null to mark as cached)
-        self::$clientThemeCache = $theme ?? '';
+        self::$clientThemeCache ??= $this->di['db']->getCell("SELECT value FROM setting WHERE param = 'theme' ") ?? '';
+        $theme = self::$clientThemeCache;
 
-        return !empty($theme) ? $theme : 'palisade';
+        // ClientFence core patch: a missing client theme folder falls back to palisade, as the admin area falls back to admin_default.
+        return !empty($theme) && $this->filesystem->exists(Path::join(PATH_THEMES, $theme)) ? $theme : 'palisade';
     }
 
     /**

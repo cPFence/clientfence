@@ -502,3 +502,16 @@ test('getCurrentClientAreaThemeCode returns theme code', function (): void {
     expect($result)->toBeString();
     expect($result)->toBe('palisade');
 });
+
+test('getCurrentClientAreaThemeCode falls back to palisade when the theme folder is missing', function (): void {
+    Service::clearThemeCache();
+    $service = new Service();
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('getCell')->once()->andReturn('removed_theme_' . uniqid());
+    $di = container();
+    $di['db'] = $db;
+    $service->setDi($di);
+
+    expect($service->getCurrentClientAreaThemeCode())->toBe('palisade');
+    Service::clearThemeCache();
+});
