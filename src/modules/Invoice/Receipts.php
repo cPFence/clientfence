@@ -46,7 +46,7 @@ class Receipts
     /**
      * The payment methods a client can use for an amount, as the theme shows them, in the order
      * set on Payment Gateways (GitHub #43). Each has a two-letter mark and a colour (tone 0-4) for its card, and manual methods
-     * that show the amount in another currency (CustomEgp) carry that quote and its rate.
+     * that show the amount in another currency (CustomEgp, in the currency set on it) carry that quote and its rate.
      * single and recurrent: whether the method takes a one-time payment and, for a subscribable
      * invoice, a subscription (the theme's "one-time or subscription" choice). receipt: whether a manual method
      * takes receipt uploads (receiptUpload()). fee: the method's gateway fee
@@ -80,11 +80,11 @@ class Receipts
             $feeTax = $fee > 0 && GatewayFees::settings($gateway)['taxable'] ? ($invoice !== null ? GatewayFees::tax($di, $invoice, $fee) : GatewayFees::taxOn((float) $taxed, $rate, $fee)) : 0.0;
             $total = round($amount + $fee + $feeTax, 2);
             $quote = null;
-            if ($manual && method_exists($class, 'egpAmount')) {
+            if ($manual && method_exists($class, 'convertedAmount')) {
                 try {
-                    $egp = $gatewayService->getPaymentAdapter($gateway)->egpAmount($total, $currency);
-                    if (is_array($egp)) {
-                        $quote = ['currency' => 'EGP', 'total' => $egp['total'], 'rate' => (float) $egp['rate']];
+                    $converted = $gatewayService->getPaymentAdapter($gateway)->convertedAmount($total, $currency);
+                    if (is_array($converted)) {
+                        $quote = ['currency' => $converted['currency'], 'total' => $converted['total'], 'rate' => $converted['factor']];
                     }
                 } catch (\Throwable $e) {
                     $di['logger']->error('Invoice: no quote for payment method #%s: %s', $gateway->id, $e->getMessage());
@@ -96,7 +96,7 @@ class Receipts
                 'title' => (string) $gateway->name,
                 'manual' => $manual,
                 'receipt' => $manual && self::receiptUpload($gateway),
-                'converts' => $manual && method_exists($class, 'egpAmount'),
+                'converts' => $manual && method_exists($class, 'convertedAmount'),
                 'quote' => $quote,
                 'mark' => self::paymentMark((string) $gateway->name),
                 'single' => (bool) $gateway->allow_single,

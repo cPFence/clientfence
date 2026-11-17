@@ -2,23 +2,24 @@
 
 declare(strict_types=1);
 /**
- * Manual payment instructions with the invoice total in Egyptian pounds, for
- * ClientFence. Invoices stay in USD; only the instructions show the EGP
- * equivalent at the current rate.
+ * Manual payment instructions with the invoice total converted to another currency, for
+ * ClientFence. Invoices keep their currency; only the instructions show the amount in the
+ * gateway's currency (its "currency" setting; EGP when empty, as before) at the current rate.
  *
  * Works like FOSSBilling's "Custom" gateway (an admin confirms the payment), and adds
- * an `egp` variable to the instruction template:
- *   egp.total    invoice total in EGP, rounded up to a whole pound, e.g. "5,075"
- *   egp.rate     EGP per one unit of the invoice currency, e.g. "50.7432"
- *   egp.updated  date of the rate, e.g. "2026-10-08"
- * `egp` is null when no rate is available, so templates should use {% if egp %}.
+ * a `converted` variable to the instruction template (`egp` is the same, for templates written before):
+ *   converted.total     invoice total in that currency, rounded up to a whole unit, e.g. "5,075"
+ *   converted.currency  the currency code, e.g. "EGP"
+ *   converted.rate      units per one unit of the invoice currency, e.g. "50.7432" (converted.factor: the same, unrounded)
+ *   converted.updated   date of the rate, e.g. "2026-10-08"
+ * `converted` is null when no rate is available, so templates should use {% if converted %}.
  *
  * Rates come from ExchangeRate-API's open endpoint (the same source FOSSBilling's
  * currency module uses), cached until the provider's next daily update. Their terms
  * ask for attribution: keep a "Rates by Exchange Rate API" link in the template.
  *
  * Optional and off by default: a new install has no Custom EGP gateway. Staff add it under
- * Payment gateways only if they take payments in Egyptian pounds.
+ * Payment gateways only if they take payments in another currency.
  */
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -38,7 +39,12 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
     {
         $config = parent::getConfig();
         $config['supports_subscriptions'] = false;
-        $config['description'] = 'Manual payment instructions with the invoice total converted to Egyptian pounds at the current rate (ExchangeRate-API, refreshed daily). Use {{ egp.total }}, {{ egp.rate }} and {{ egp.updated }} inside {% if egp %} ... {% endif %}, with a "Rates by Exchange Rate API" link. HTML is supported.';
+        $config['description'] = 'Manual payment instructions with the invoice total converted to another currency at the current rate (ExchangeRate-API, refreshed daily). Use {{ converted.total }} {{ converted.currency }}, {{ converted.rate }} and {{ converted.updated }} inside {% if converted %} ... {% endif %}, with a "Rates by Exchange Rate API" link. HTML is supported.';
+        $config['form']['currency'] = ['text', [
+            'label' => __trans('Show the total in this currency:'),
+            'placeholder' => 'EGP',
+            'description' => __trans('A three-letter currency code, such as EUR or EGP. Empty: EGP.'),
+        ]];
 
         return $config;
     }
@@ -50,30 +56,45 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
 
         $tpl = $subscription ? ($this->egpConfig['recurrent'] ?? '') : ($this->egpConfig['single'] ?? '');
         if (trim((string) $tpl) === '') {
-            $tpl = '"Custom EGP" payment adapter is not fully configured.';
+            $tpl = '"CustomEgp" payment adapter is not fully configured.';
         }
+
+        $converted = $this->convertedAmount((float) $invoice['total'], (string) $invoice['currency']);
 
         return $this->di['mod_service']('System')->renderAdapterTplString($tpl, [
             'invoice' => $invoice,
-            'egp' => $this->egpAmount((float) $invoice['total'], (string) $invoice['currency']),
+            'converted' => $converted,
+            'egp' => $converted,
         ]);
     }
 
+    /** The currency the instructions show: the setting, EGP when empty or not a currency code. */
+    public function targetCurrency(): string
+    {
+        $code = strtoupper(trim((string) ($this->egpConfig['currency'] ?? '')));
+
+        return preg_match('/^[A-Z]{3}$/', $code) ? $code : 'EGP';
+    }
+
     /**
-     * The invoice total in EGP, or null when the rate cannot be fetched.
+     * The invoice total in the gateway's currency, or null when the rate cannot be fetched.
      */
-    public function egpAmount(float $total, string $currency): ?array
+    public function convertedAmount(float $total, string $currency): ?array
     {
         $currency = strtoupper($currency);
+        $target = $this->targetCurrency();
         $rates = $this->rates($currency);
-        $rate = $currency === 'EGP' ? 1.0 : ($rates['rates']['EGP'] ?? null);
+        $rate = $currency === $target ? 1.0 : ($rates['rates'][$target] ?? null);
         if (!is_numeric($rate) || (float) $rate <= 0) {
             return null;
         }
 
         return [
             'total' => number_format(ceil($total * (float) $rate), 0, '.', ','),
-            'rate' => number_format((float) $rate, 4, '.', ''),
+            'currency' => $target,
+            // Small rates (into a strong currency) keep four significant digits; factor is the exact rate for sums.
+            'rate' => number_format((float) $rate, max(4, 3 - (int) floor(log10((float) $rate))), '.', ''),
+            'factor' => (float) $rate,
             'updated' => isset($rates['time_last_update_unix']) ? gmdate('Y-m-d', (int) $rates['time_last_update_unix']) : '',
         ];
     }
@@ -88,7 +109,7 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
             return [];
         }
 
-        return $this->di['cache']->get('clientfence.egp_rates.' . $base, function (ItemInterface $item) use ($base): array {
+        return $this->di['cache']->get('clientfence.rates.' . $base, function (ItemInterface $item) use ($base): array {
             try {
                 $data = $this->di['http_client']->request('GET', self::RATES_URL . $base, ['timeout' => 10])->toArray();
             } catch (Throwable $e) {
@@ -98,8 +119,8 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
                 return [];
             }
 
-            if (($data['result'] ?? '') !== 'success' || !isset($data['rates']['EGP'])) {
-                error_log('CustomEgp: rate provider returned ' . ($data['error-type'] ?? 'no EGP rate'));
+            if (($data['result'] ?? '') !== 'success' || !is_array($data['rates'] ?? null)) {
+                error_log('CustomEgp: rate provider returned ' . ($data['error-type'] ?? 'no rates'));
                 $item->expiresAfter(15 * 60);
 
                 return [];
@@ -113,7 +134,7 @@ class Payment_Adapter_CustomEgp extends Payment_Adapter_Custom
             }
 
             return [
-                'rates' => ['EGP' => (float) $data['rates']['EGP']],
+                'rates' => array_map('floatval', array_filter($data['rates'], 'is_numeric')),
                 'time_last_update_unix' => (int) ($data['time_last_update_unix'] ?? time()),
             ];
         });
