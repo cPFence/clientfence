@@ -84,6 +84,14 @@ test('ticket emails translate the ticket status', function (string $file): void 
     'Staff/templates/email/mod_staff_ticket_reply.html.twig',
 ]);
 
+test('the staff reply email shows the reply just posted', function (): void {
+    $file = dirname(__DIR__, 4) . '/src/modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig';
+    $html = emailSandboxEnvironment()->createTemplate((string) file_get_contents($file), 'reply')
+        ->render(['ticket' => ['messages' => [['content' => 'The question'], ['content' => 'The <b>answer</b>']]]]);
+
+    expect($html)->toContain('The &lt;b&gt;answer&lt;/b&gt;')->not->toContain('The question');
+});
+
 test('staff assigned and escalated emails translate the status and priority', function (string $file): void {
     $twig = emailSandboxEnvironment(static fn (mixed $value, mixed ...$options): string => '[' . $value . ']');
     $html = $twig->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/' . $file), $file)
