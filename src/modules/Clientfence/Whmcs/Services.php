@@ -646,7 +646,8 @@ final class Services
         $this->db->insert('client_order', $values + [
             'promo_recurring' => 0,
             'promo_used' => null,
-            'invoice_option' => 'issue-invoice',
+            // donotrenew on a service or add-on: only a snapshot sets it (FOSSBilling's "no-invoice" orders).
+            'invoice_option' => (int) ($row['donotrenew'] ?? 0) === 1 ? 'no-invoice' : 'issue-invoice',
             'unpaid_invoice_id' => null,
             'unit' => 'product',
             'discount' => 0,

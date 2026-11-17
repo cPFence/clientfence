@@ -48,12 +48,16 @@ final class Import
         'blesta_key' => '',
         // 1: import from a ClientExec database (the database fields above; Clientexec/Snapshot.php).
         'clientexec' => 0,
+        // 1: import from a FOSSBilling database (the database fields above; Fossbilling/Snapshot.php).
+        'fossbilling' => 0,
+        // 1: import from a Paymenter database (the database fields above; Paymenter/Snapshot.php).
+        'paymenter' => 0,
     ];
 
     /** ClientFence tables that must be empty: the import keeps WHMCS's ids and numbers. */
     private const TARGET_TABLES = ['client' => 'clients', 'client_order' => 'orders', 'invoice' => 'invoices', 'support_ticket' => 'tickets'];
 
-    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string, blesta: int, blesta_key: string, clientexec: int} */
+    /** @return array{host: string, port: int, database: string, username: string, password: string, encryption_key: string, attachments_dir: string, paypal_agreements: int, upmind: int, upmind_token: string, blesta: int, blesta_key: string, clientexec: int, fossbilling: int, paymenter: int} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di, self::SETTINGS) ?? [];
@@ -91,7 +95,7 @@ final class Import
             $archive = ['name' => $name, 'dir' => dirname($path), 'bytes' => (int) filesize($path)];
         }
 
-        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di), 'clientexec' => \ClientFence\Mod\Clientfence\Clientexec\Snapshot::state($di)];
+        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di), 'clientexec' => \ClientFence\Mod\Clientfence\Clientexec\Snapshot::state($di), 'fossbilling' => \ClientFence\Mod\Clientfence\Fossbilling\Snapshot::state($di), 'paymenter' => \ClientFence\Mod\Clientfence\Paymenter\Snapshot::state($di)];
     }
 
     /**
@@ -111,6 +115,8 @@ final class Import
             'upmind' => 0,
             'blesta' => 0,
             'clientexec' => 0,
+            'fossbilling' => 0,
+            'paymenter' => 0,
         ] + $old;
 
         $source = Source::open($di, $new);
@@ -146,7 +152,7 @@ final class Import
             throw new InformationException('Enter the Upmind API token.');
         }
         [, $clients] = (new \ClientFence\Mod\Clientfence\Upmind\Api($di, $token))->page('clients', 0, 1);
-        self::saveSettings($di, $old, ['upmind' => 1, 'blesta' => 0, 'clientexec' => 0, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
+        self::saveSettings($di, $old, ['upmind' => 1, 'blesta' => 0, 'clientexec' => 0, 'fossbilling' => 0, 'paymenter' => 0, 'upmind_token' => (string) $di['crypt']->encrypt($token)] + $old);
 
         return ['clients' => $clients];
     }
@@ -181,6 +187,8 @@ final class Import
             $settings['upmind'] => 'Upmind',
             $settings['blesta'] => 'Blesta',
             $settings['clientexec'] => 'ClientExec',
+            $settings['fossbilling'] => 'FOSSBilling',
+            $settings['paymenter'] => 'Paymenter',
             default => 'WHMCS',
         };
     }
@@ -205,6 +213,8 @@ final class Import
             'upmind' => 0,
             'blesta' => 1,
             'clientexec' => 0,
+            'fossbilling' => 0,
+            'paymenter' => 0,
             'blesta_key' => $key !== '' ? (string) $di['crypt']->encrypt($key) : $old['blesta_key'],
         ] + $old;
 
@@ -253,7 +263,7 @@ final class Import
     public static function saveClientexec(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
     {
         $old = self::settings($di);
-        $new = self::database($di, $data, $old, 'ClientExec') + ['upmind' => 0, 'blesta' => 0, 'clientexec' => 1] + $old;
+        $new = self::database($di, $data, $old, 'ClientExec') + ['upmind' => 0, 'blesta' => 0, 'clientexec' => 1, 'fossbilling' => 0, 'paymenter' => 0] + $old;
 
         $source = Source::mysql($di, $new, 'ClientExec');
         try {
@@ -287,6 +297,105 @@ final class Import
         }
 
         return \ClientFence\Mod\Clientfence\Clientexec\Snapshot::fetch($di, $settings, $seconds, $restart);
+    }
+
+    /**
+     * Imports from a FOSSBilling database instead (Fossbilling/Snapshot.php): saves its details once
+     * the database answers as FOSSBilling's. Answers {version, clients}: its database patch level.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array{version: string, clients: int}
+     */
+    public static function saveFossbilling(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
+    {
+        $old = self::settings($di);
+        $new = self::database($di, $data, $old, 'FOSSBilling') + ['upmind' => 0, 'blesta' => 0, 'clientexec' => 0, 'fossbilling' => 1, 'paymenter' => 0] + $old;
+
+        $source = Source::mysql($di, $new, 'FOSSBilling');
+        try {
+            if (!\ClientFence\Mod\Clientfence\Fossbilling\Snapshot::isFossbilling($source)) {
+                throw new InformationException('This database has no FOSSBilling tables. Check the database name.');
+            }
+            $version = (string) $source->value("SELECT value FROM setting WHERE param = 'last_patch'");
+            $clients = $source->count('client');
+        } finally {
+            $source->close();
+        }
+        self::saveSettings($di, $old, $new);
+
+        return ['version' => $version, 'clients' => $clients];
+    }
+
+    /**
+     * Reads FOSSBilling into the import's snapshot for up to $seconds (Fossbilling/Snapshot.php);
+     * $restart reads it again from the start.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fetchFossbilling(\Pimple\Container $di, float $seconds, bool $restart = false): array
+    {
+        $settings = self::settings($di);
+        if ($settings['fossbilling'] !== 1) {
+            throw new InformationException('Save the FOSSBilling database details first.');
+        }
+        if (Run::state($di) !== null) {
+            throw new InformationException('The import has started: :name can no longer be read again.', [':name' => 'FOSSBilling']);
+        }
+
+        return \ClientFence\Mod\Clientfence\Fossbilling\Snapshot::fetch($di, $settings, $seconds, $restart);
+    }
+
+    /**
+     * Imports from a Paymenter database instead (Paymenter/Snapshot.php): saves its details once
+     * the database answers as Paymenter 1.4's or newer. Answers {version, clients}: the version is
+     * its newest database migration, as Paymenter keeps no version in its database.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return array{version: string, clients: int}
+     */
+    public static function savePaymenter(\Pimple\Container $di, #[\SensitiveParameter] array $data): array
+    {
+        $old = self::settings($di);
+        $new = self::database($di, $data, $old, 'Paymenter') + ['upmind' => 0, 'blesta' => 0, 'clientexec' => 0, 'fossbilling' => 0, 'paymenter' => 1] + $old;
+
+        $source = Source::mysql($di, $new, 'Paymenter');
+        try {
+            if (!\ClientFence\Mod\Clientfence\Paymenter\Snapshot::isPaymenter($source)) {
+                throw new InformationException('This database has no Paymenter tables. Check the database name.');
+            }
+            // Before 1.4 a payment from credit looks like any other payment: it would count twice.
+            if (!in_array('is_credit_transaction', $source->columns('invoice_transactions'), true)) {
+                throw new InformationException('The import reads Paymenter 1.4 or newer. Update Paymenter first, then try again.');
+            }
+            $version = (string) $source->value('SELECT MAX(migration) FROM migrations');
+            $clients = $source->count('users', 'role_id IS NULL');
+        } finally {
+            $source->close();
+        }
+        self::saveSettings($di, $old, $new);
+
+        return ['version' => $version, 'clients' => $clients];
+    }
+
+    /**
+     * Reads Paymenter into the import's snapshot for up to $seconds (Paymenter/Snapshot.php);
+     * $restart reads it again from the start.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fetchPaymenter(\Pimple\Container $di, float $seconds, bool $restart = false): array
+    {
+        $settings = self::settings($di);
+        if ($settings['paymenter'] !== 1) {
+            throw new InformationException('Save the Paymenter database details first.');
+        }
+        if (Run::state($di) !== null) {
+            throw new InformationException('The import has started: :name can no longer be read again.', [':name' => 'Paymenter']);
+        }
+
+        return \ClientFence\Mod\Clientfence\Paymenter\Snapshot::fetch($di, $settings, $seconds, $restart);
     }
 
     /**

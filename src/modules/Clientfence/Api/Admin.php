@@ -682,6 +682,48 @@ class Admin extends \ClientFence\Api\AbstractApi
         return WhmcsImport::fetchClientexec($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
     }
 
+    /** Imports from a FOSSBilling database instead of WHMCS: saves and tests its details. Answers {version, clients}. */
+    public function whmcs_import_fossbilling_save($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+        $result = WhmcsImport::saveFossbilling($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: FOSSBilling import database details saved (%d clients)', $result['clients']);
+
+        return $result;
+    }
+
+    /**
+     * Reads FOSSBilling for a few seconds (Fossbilling/Snapshot.php) and answers how far it got;
+     * restart = 1 reads it again from the start. The tab calls it until it finishes.
+     */
+    public function whmcs_import_fossbilling_fetch($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+
+        return WhmcsImport::fetchFossbilling($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
+    }
+
+    /** Imports from a Paymenter database instead of WHMCS: saves and tests its details. Answers {version, clients}. */
+    public function whmcs_import_paymenter_save($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+        $result = WhmcsImport::savePaymenter($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: Paymenter import database details saved (%d clients)', $result['clients']);
+
+        return $result;
+    }
+
+    /**
+     * Reads Paymenter for a few seconds (Paymenter/Snapshot.php) and answers how far it got;
+     * restart = 1 reads it again from the start. The tab calls it until it finishes.
+     */
+    public function whmcs_import_paymenter_fetch($data): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+
+        return WhmcsImport::fetchPaymenter($this->getDi(), 8.0, (string) ($data['restart'] ?? '0') === '1');
+    }
+
     /** Reads WHMCS (read only) and stores the import plan: what WHMCS holds and what happens to it. */
     public function whmcs_import_plan(): array
     {

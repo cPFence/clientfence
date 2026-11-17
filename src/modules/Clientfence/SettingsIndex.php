@@ -30,7 +30,7 @@ final class SettingsIndex
         'system#tab-database' => 'database tables size optimize clean-up cleanup prune logs',
         'system#tab-health' => 'health status check problems',
         'system#tab-licences' => 'license licence ban',
-        'system#tab-whmcs' => 'import migrate migration Upmind Blesta ClientExec',
+        'system#tab-whmcs' => 'import migrate migration Upmind Blesta ClientExec FOSSBilling Paymenter',
         'system#tab-localization' => 'language locale translation',
         'antispam' => 'captcha reCAPTCHA hCaptcha Turnstile spam bots honeypot block IP ban banned email domain phone blacklist CIDR',
         'email' => 'SMTP mail sendmail mailer sender DKIM',

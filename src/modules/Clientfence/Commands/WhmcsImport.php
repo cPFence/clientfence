@@ -40,8 +40,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
 
     protected function configure(): void
     {
-        $this->addArgument('step', InputArgument::REQUIRED, 'upmind, blesta or clientexec (read that system first, with the details saved on the admin tab), plan, apply or verify');
-        $this->addOption('restart', null, InputOption::VALUE_NONE, 'upmind, blesta, clientexec: read it again from the start');
+        $this->addArgument('step', InputArgument::REQUIRED, 'upmind, blesta, clientexec, fossbilling or paymenter (read that system first, with the details saved on the admin tab), plan, apply or verify');
+        $this->addOption('restart', null, InputOption::VALUE_NONE, 'upmind, blesta, clientexec, fossbilling, paymenter: read it again from the start');
         $this->addOption('json', null, InputOption::VALUE_NONE, 'Print the result as JSON');
         $this->addOption('attachments', null, InputOption::VALUE_REQUIRED, 'WHMCS\'s ticket attachments folder on this server (saved for the import, as on the admin tab)');
     }
@@ -49,8 +49,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $step = (string) $input->getArgument('step');
-        if (!in_array($step, ['upmind', 'blesta', 'clientexec', 'plan', 'apply', 'verify'], true)) {
-            $output->writeln('<error>Unknown step "' . $step . '". Steps: upmind, blesta, clientexec, plan, apply, verify</error>');
+        if (!in_array($step, ['upmind', 'blesta', 'clientexec', 'fossbilling', 'paymenter', 'plan', 'apply', 'verify'], true)) {
+            $output->writeln('<error>Unknown step "' . $step . '". Steps: upmind, blesta, clientexec, fossbilling, paymenter, plan, apply, verify</error>');
 
             return Command::INVALID;
         }
@@ -64,7 +64,7 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
             }
             $output->writeln($folder === '' ? 'Attachments folder: none' : 'Attachments folder: ' . $folder);
         }
-        if (in_array($step, ['upmind', 'blesta', 'clientexec'], true)) {
+        if (in_array($step, ['upmind', 'blesta', 'clientexec', 'fossbilling', 'paymenter'], true)) {
             return $this->readSnapshot($step, (bool) $input->getOption('restart'), $output);
         }
         if ($step !== 'plan') {
@@ -130,7 +130,7 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
         return Command::SUCCESS;
     }
 
-    /** Reads Upmind, Blesta or ClientExec into the import's snapshot (Snapshot.php), a line per page. */
+    /** Reads Upmind, Blesta, ClientExec, FOSSBilling or Paymenter into the import's snapshot (Snapshot.php), a line per page. */
     private function readSnapshot(string $step, bool $restart, OutputInterface $output): int
     {
         try {
@@ -138,6 +138,8 @@ class WhmcsImport extends Command implements \ClientFence\InjectionAwareInterfac
                 $state = match ($step) {
                     'blesta' => Import::fetchBlesta($this->di, 20.0, $restart),
                     'clientexec' => Import::fetchClientexec($this->di, 20.0, $restart),
+                    'fossbilling' => Import::fetchFossbilling($this->di, 20.0, $restart),
+                    'paymenter' => Import::fetchPaymenter($this->di, 20.0, $restart),
                     default => Import::fetchUpmind($this->di, 20.0, $restart),
                 };
                 $restart = false;
