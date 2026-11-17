@@ -238,6 +238,9 @@ final class Money
         // Income leaves tax out (as countIncome() does), so a refund counts its share without tax.
         $refunded = round((float) ($money['paid_out'] ?? 0), 2);
         $total = round((float) ($row['total'] ?? 0), 2);
+        // The money given back as WHMCS recorded it (with tax), kept for invoice.refund: rebuilt from the rounded net share it lost a cent.
+        $cap = $total > 0 ? $total : max(0.0, $subtotal);
+        $refundedGross = $status === 'refunded' && $refunded <= 0 ? $cap : min($refunded, $cap);
         if ($refunded > 0 && $total > $subtotal && $total > 0) {
             $refunded = round($refunded * $subtotal / $total, 2);
         }
@@ -262,7 +265,7 @@ final class Money
             'base_income' => $paid ? round($subtotal / ($rate ?: 1), 2) : null,
             'base_refund' => $paid && $refunded > 0 ? round($refunded / ($rate ?: 1), 2) : null,
             // The money given back, as Invoice\Service::refundPartLocked() keeps it (with tax); base_refund is its share without.
-            'refund' => $paid && $refunded > 0 ? ($subtotal > 0 && $total > $subtotal ? min($total, round($refunded * $total / $subtotal, 2)) : $refunded) : null,
+            'refund' => $paid && $refunded > 0 ? $refundedGross : null,
             'notes' => trim((string) ($row['notes'] ?? '')) ?: null,
             'status' => $status,
             'gateway_id' => $this->gateway((string) ($row['paymentmethod'] ?? '')),
