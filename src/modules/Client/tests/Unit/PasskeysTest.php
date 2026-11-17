@@ -329,3 +329,14 @@ test('passkeys need an https portal address, or localhost as browsers allow', fu
     expect(array_map(Passkeys::secureUrl(...), ['https://billing.example.test/', 'http://billing.example.test/', 'http://localhost:8080/', 'http://clientfence.localhost:8090/', 'http://localhost.example.test/']))
         ->toBe([true, false, true, true, false]);
 });
+
+test('renaming a passkey that is not the login\'s own is refused', function (): void {
+    $world = new PasskeysTestWorld();
+    $world->db->insert('client_passkey', ['id' => 5, 'kind' => 'staff', 'subject_id' => 1, 'credential_id' => 'c5', 'public_key' => 'k', 'alg' => -7, 'name' => 'Laptop', 'user_handle' => 'h', 'created_at' => '2026-11-15 10:00:00']);
+
+    Passkeys::rename($world->di, 'staff', 1, 5, 'Phone');
+
+    expect($world->db->fetchOne('SELECT name FROM client_passkey WHERE id = 5'))->toBe('Phone')
+        ->and(fn () => Passkeys::rename($world->di, 'staff', 1, 99, 'Phone'))->toThrow(InformationException::class, 'Passkey not found.')
+        ->and(fn () => Passkeys::rename($world->di, 'staff', 2, 5, 'Phone'))->toThrow(InformationException::class, 'Passkey not found.');
+});

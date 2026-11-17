@@ -309,7 +309,12 @@ final class Passkeys
         if ($name === '') {
             throw new InformationException('Enter a name for the passkey.');
         }
-        $di['em']->getConnection()->update('client_passkey', ['name' => $name], ['id' => $passkeyId, 'kind' => $kind, 'subject_id' => $id]);
+        $db = $di['em']->getConnection();
+        // An unknown id (or another login's passkey) is an error, as in remove(), not a silent success.
+        if ($db->fetchOne('SELECT id FROM client_passkey WHERE id = ? AND kind = ? AND subject_id = ?', [$passkeyId, $kind, $id]) === false) {
+            throw new InformationException('Passkey not found.', null, 404);
+        }
+        $db->update('client_passkey', ['name' => $name], ['id' => $passkeyId, 'kind' => $kind, 'subject_id' => $id]);
     }
 
     /** Removes one of the login's passkeys (`password`); a client login may then have to set up two-factor sign-in again. */
