@@ -132,14 +132,15 @@ class ServiceBalance implements InjectionAwareInterface
             $params[':client_id'] = $client_id;
         }
 
-        if ($date_from !== null) {
+        // ClientFence core patch: created_at is a datetime column, so compare with dates, not unix timestamps.
+        if ($date_from !== null && $date_from !== '') {
             $where[] = 'm.created_at >= :date_from';
-            $params[':date_from'] = strtotime($date_from);
+            $params[':date_from'] = date('Y-m-d 00:00:00', strtotime((string) $date_from));
         }
 
-        if ($date_to !== null) {
+        if ($date_to !== null && $date_to !== '') {
             $where[] = 'm.created_at <= :date_to';
-            $params[':date_to'] = strtotime($date_to);
+            $params[':date_to'] = date('Y-m-d 23:59:59', strtotime((string) $date_to));
         }
 
         if (!empty($where)) {

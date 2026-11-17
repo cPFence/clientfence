@@ -488,12 +488,12 @@ dataset('searchBalanceQueryData', [
     [
         ['date_from' => '2012-12-10'],
         'm.created_at >= :date_from',
-        [':date_from' => 1355097600],
+        [':date_from' => '2012-12-10 00:00:00'],
     ],
     [
         ['date_to' => '2012-12-11'],
         'm.created_at <= :date_to',
-        [':date_to' => 1355184000],
+        [':date_to' => '2012-12-11 23:59:59'],
     ],
 ]);
 
@@ -510,6 +510,7 @@ test('getBalanceSearchQuery returns correct query and params', function ($data, 
 
     expect(str_contains((string) $sql, (string) $expectedStr))->toBeTrue($sql);
     expect(array_diff_key($params, $expectedParams))->toEqual([]);
+    expect($params)->toEqual($expectedParams);
 })->with('searchBalanceQueryData');
 
 test('addFunds returns true', function (): void {
