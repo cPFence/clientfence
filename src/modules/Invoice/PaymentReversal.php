@@ -171,6 +171,11 @@ final class PaymentReversal
         $take = round(array_sum(array_filter($amounts, fn (float $a): bool => $a > 0)) + array_sum(array_map(fn (array $tx): float => $tx['funded'] ? $tx['amount'] : 0.0, $staff)), 2);
         // The invoice holds no credit afterwards (its applied credit is freed), so the free credit changes by give - take.
         if ($take > $give && round($service->getFreeCredit((int) $invoice->client_id) + $give - $take, 2) < 0) {
+            // A Mass Pay invoice's credit paid the invoices it lists: those payments are reversed first (Invoice/MassPay.php).
+            if (MassPay::is($di, $id)) {
+                throw new InformationException('This invoice paid the invoices it lists from its credit. Reverse their payments first, then this one.');
+            }
+
             throw new InformationException('The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand.');
         }
 

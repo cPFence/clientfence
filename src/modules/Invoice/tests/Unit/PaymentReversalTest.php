@@ -160,7 +160,8 @@ test('a staff transaction that credited more than the total has the rest taken b
     } else {
         // An Add funds invoice of 100.00 marked paid: the 100.00 went to the client's credit.
         reversalTx($db, 3, 100.0, true);
-        $db->insert('invoice_item', ['id' => 1, 'invoice_id' => 10, 'type' => 'deposit', 'status' => 'executed', 'charged' => 1]);
+        // A Mass Pay invoice is an Add funds invoice whose line pays another invoice (CF-182).
+        $db->insert('invoice_item', ['id' => 1, 'invoice_id' => 10, 'type' => 'deposit', 'task' => $case === 'mass pay' ? 'mass_pay:11' : null, 'status' => 'executed', 'charged' => 1]);
         $db->insert('client_balance', ['client_id' => 7, 'type' => 'invoice', 'rel_id' => '10', 'amount' => 100, 'description' => 'Bank transfer transaction No: REF3']);
     }
     $before = (float) $db->fetchOne('SELECT SUM(amount) FROM client_balance');
@@ -186,6 +187,7 @@ test('a staff transaction that credited more than the total has the rest taken b
     'overpaid, the client spent 15.00 of it' => ['overpaid', 5.0, 'The client has spent the credit this payment added', 0.0],
     'Add funds, its credit still there' => ['deposit', 100.0, null, 0.0],
     'Add funds, the client spent it' => ['deposit', 30.0, 'The client has spent the credit this payment added', 0.0],
+    'Mass Pay, its credit paid the invoices it lists' => ['mass pay', 0.0, 'Reverse their payments first, then this one.', 0.0],
 ]);
 
 test('a payment that is not only staff money, or that more happened to since, is refused with what to do instead', function (callable $setup, string $message): void {

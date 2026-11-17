@@ -20,9 +20,10 @@ function clientMoveDb(): Connection
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, currency TEXT, updated_at TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, title TEXT, status TEXT, currency TEXT, group_id TEXT, group_master INTEGER, service_id INTEGER, service_type TEXT, updated_at TEXT)',
-        'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, client_id INTEGER)',
+        'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, client_id INTEGER, service_hosting_server_id INTEGER)',
+        'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, manager TEXT)',
         'CREATE TABLE service_license (id INTEGER PRIMARY KEY, client_id INTEGER)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, serie TEXT, nr TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id TEXT)',
         'CREATE TABLE client_order_upgrade (id INTEGER PRIMARY KEY, order_id INTEGER, client_id INTEGER, invoice_id INTEGER, status TEXT)',
         'CREATE TABLE subscription (id INTEGER PRIMARY KEY, client_id INTEGER, sid TEXT, rel_type TEXT, rel_id INTEGER, status TEXT)',
@@ -44,9 +45,11 @@ function clientMoveDb(): Connection
     $db->insert('client_order', ['id' => 70, 'client_id' => 5, 'title' => 'Hosting', 'status' => 'active', 'currency' => 'EUR', 'group_id' => 'g1', 'group_master' => 1, 'service_id' => 1, 'service_type' => 'hosting']);
     $db->insert('client_order', ['id' => 71, 'client_id' => 5, 'title' => 'Licence', 'status' => 'active', 'currency' => 'EUR', 'group_id' => 'g1', 'group_master' => 0, 'service_id' => 2, 'service_type' => 'license']);
     $db->insert('client_order', ['id' => 72, 'client_id' => 5, 'title' => 'Other', 'status' => 'active', 'currency' => 'EUR', 'group_id' => 'g2', 'group_master' => 1, 'service_id' => 3, 'service_type' => 'hosting']);
-    $db->insert('service_hosting', ['id' => 1, 'client_id' => 5]);
+    $db->insert('service_hosting_server', ['id' => 1, 'manager' => 'Enhance']);
+    $db->insert('service_hosting_server', ['id' => 2, 'manager' => 'Custom']);
+    $db->insert('service_hosting', ['id' => 1, 'client_id' => 5, 'service_hosting_server_id' => 1]);
     $db->insert('service_license', ['id' => 2, 'client_id' => 5]);
-    $db->insert('service_hosting', ['id' => 3, 'client_id' => 5]);
+    $db->insert('service_hosting', ['id' => 3, 'client_id' => 5, 'service_hosting_server_id' => 2]);
     // History stays with the old client: a paid invoice of the service.
     $db->insert('invoice', ['id' => 8, 'client_id' => 5, 'status' => 'paid']);
     $db->insert('invoice_item', ['invoice_id' => 8, 'type' => 'order', 'rel_id' => '70']);
@@ -95,6 +98,14 @@ test('a move gives the service, its add-ons and their service records to the new
         ->and($di['logger']->lines)->toHaveCount(1);
 });
 
+test('only a hosting account on an Enhance server is pointed to the Enhance Link card', function (): void {
+    $db = clientMoveDb();
+    ClientMove::move(clientMoveContainer($db), 72, 9, 3);
+
+    expect((string) $db->fetchOne('SELECT note FROM client_note WHERE client_id = 9'))->toContain('move it on the panel by hand if needed.')
+        ->not->toContain('Enhance Link card');
+});
+
 test('the affiliate keeps the moved service, unless the new client is the affiliate', function (): void {
     $db = clientMoveDb();
     $db->insert('client_affiliate', ['id' => 1, 'client_id' => 11]);
@@ -121,13 +132,13 @@ test('a move is refused, and nothing changes', function (int $orderId, int $clie
     'same client' => [70, 5, null, 'already belongs to this client'],
     'unknown client' => [70, 404, null, 'Client not found'],
     'unpaid invoice of an add-on' => [70, 9, function (Connection $db): void {
-        $db->insert('invoice', ['id' => 9, 'client_id' => 5, 'status' => 'unpaid']);
+        $db->insert('invoice', ['id' => 9, 'client_id' => 5, 'status' => 'unpaid', 'serie' => 'FOSS']);
         $db->insert('invoice_item', ['invoice_id' => 9, 'type' => 'order', 'rel_id' => '71']);
-    }, 'unpaid invoice #9'],
+    }, 'unpaid invoice FOSS00009'],
     'unpaid upgrade invoice' => [70, 9, function (Connection $db): void {
-        $db->insert('invoice', ['id' => 12, 'client_id' => 5, 'status' => 'unpaid']);
+        $db->insert('invoice', ['id' => 12, 'client_id' => 5, 'status' => 'unpaid', 'serie' => 'FOSS', 'nr' => '4']);
         $db->insert('client_order_upgrade', ['order_id' => 70, 'client_id' => 5, 'invoice_id' => 12, 'status' => 'pending']);
-    }, 'unpaid invoice #12'],
+    }, 'unpaid invoice FOSS00004'],
     'other currency' => [70, 11, null, 'billed in EUR, but the new client pays in USD'],
     'gateway subscription' => [70, 9, function (Connection $db): void {
         $db->insert('subscription', ['client_id' => 5, 'sid' => 'sub_1', 'rel_type' => 'invoice', 'rel_id' => 8, 'status' => 'active']);

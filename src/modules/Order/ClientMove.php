@@ -63,8 +63,10 @@ final class ClientMove
             }
             $db->executeStatement('UPDATE client_order SET client_id = ?, updated_at = ? WHERE id IN (?)', [$clientId, $now, $ids], [ParameterType::INTEGER, ParameterType::STRING, ArrayParameterType::INTEGER]);
             $hosting = false;
+            $enhance = false;
             foreach ($db->fetchAllAssociative('SELECT service_id, service_type FROM client_order WHERE id IN (?) AND service_id IS NOT NULL', $in, $types) as $service) {
                 $type = (string) $service['service_type'];
+                $enhance = $enhance || ($type === 'hosting' && $db->fetchOne("SELECT 1 FROM service_hosting h JOIN service_hosting_server s ON s.id = h.service_hosting_server_id WHERE h.id = ? AND s.manager = 'Enhance'", [(int) $service['service_id']]) !== false);
                 $hosting = $hosting || $type === 'hosting';
                 if (preg_match('/^[a-z0-9_]+$/', $type) && self::hasClientColumn($db, 'service_' . $type)) {
                     $db->update('service_' . $type, ['client_id' => $clientId], ['id' => (int) $service['service_id']]);
@@ -86,7 +88,7 @@ final class ClientMove
             $what = sprintf('Service #%d "%s"', $orderId, $order['title']) . (count($ids) > 1 ? ' with its add-ons #' . implode(', #', array_slice($ids, 1)) : '');
             $who = sprintf('from client #%d %s to client #%d %s by %s', $fromId, trim($from['first_name'] . ' ' . $from['last_name']), $clientId, trim($to['first_name'] . ' ' . $to['last_name']), $admin !== '' ? $admin : 'staff #' . $adminId);
             $note = sprintf('%s moved %s. Invoices, payments and credit stay with the old client. Nothing was changed on servers or registrars', $what, $who)
-                . ($hosting ? ': the hosting account keeps its panel account; move it on the panel by hand if needed and check the Enhance Link card.' : '.') . $affiliateNote;
+                . ($hosting ? ': the hosting account keeps its panel account; move it on the panel by hand if needed' . ($enhance ? ' and check the Enhance Link card.' : '.') : '.') . $affiliateNote;
             foreach ($db->fetchAllAssociative('SELECT id, status FROM client_order WHERE id IN (?)', $in, $types) as $row) {
                 $db->insert('client_order_status', ['client_order_id' => (int) $row['id'], 'status' => $row['status'], 'notes' => $note, 'created_at' => $now, 'updated_at' => $now]);
             }
@@ -101,14 +103,14 @@ final class ClientMove
     {
         $in = [$ids];
         $types = [ArrayParameterType::INTEGER];
-        $invoice = $db->fetchOne(
-            "SELECT i.id FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = 'unpaid' AND ii.type = 'order' AND ii.rel_id IN (?)
-             UNION SELECT i.id FROM invoice i JOIN client_order_upgrade u ON u.invoice_id = i.id WHERE i.status = 'unpaid' AND u.order_id IN (?)",
+        $invoice = $db->fetchAssociative(
+            "SELECT i.id, i.serie, i.nr FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id WHERE i.status = 'unpaid' AND ii.type = 'order' AND ii.rel_id IN (?)
+             UNION SELECT i.id, i.serie, i.nr FROM invoice i JOIN client_order_upgrade u ON u.invoice_id = i.id WHERE i.status = 'unpaid' AND u.order_id IN (?) LIMIT 1",
             [array_map('strval', $ids), $ids],
             [ArrayParameterType::STRING, ArrayParameterType::INTEGER],
         );
         if ($invoice !== false) {
-            throw new InformationException('This service has an unpaid invoice #:id. Mark it paid or cancel it before you move the service.', [':id' => $invoice]);
+            throw new InformationException('This service has an unpaid invoice :number. Mark it paid or cancel it before you move the service.', [':number' => \ClientFence\Mod\Invoice\Statement::number($db, $invoice)]);
         }
         if ((string) $to['currency'] !== '') {
             foreach ($db->fetchFirstColumn('SELECT DISTINCT currency FROM client_order WHERE id IN (?)', $in, $types) as $currency) {
