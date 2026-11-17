@@ -38,7 +38,18 @@ class ReleaseNotes extends Command implements \ClientFence\InjectionAwareInterfa
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln($this->di['updater']->getLatestReleaseNotes());
+        // ClientFence core patch: the feed gives notes only for a newer release; say so instead of printing an empty line.
+        $info = $this->di['updater']->getLatestVersionInfo();
+        if (!empty($info['check_error']) || $info['last_check'] === null) {
+            $output->writeln('<error>' . \Symfony\Component\Console\Formatter\OutputFormatter::escape(!empty($info['check_error']) ? 'The update check failed: ' . $info['check_error'] : 'No update check has run yet: turn on the update check or run system:update --check.') . '</error>');
+
+            return Command::FAILURE;
+        }
+        if ($info['version'] === \ClientFence\Version::CLIENTFENCE) {
+            $output->writeln('ClientFence ' . \ClientFence\Version::CLIENTFENCE . ' is the latest release: there are no newer release notes.');
+        } else {
+            $output->writeln($info['release_notes'] !== '' ? $info['release_notes'] : 'ClientFence ' . $info['version'] . ' has no release notes.');
+        }
 
         return Command::SUCCESS;
     }
