@@ -23,6 +23,8 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
     return;
   }
 
+  // ClientFence core patch: the modal puts these texts into HTML; they can hold client data (an email address).
+  const text = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
   const modal = apiData.modal;
 
   if (!modalsLib || typeof modalsLib.create !== 'function') {
@@ -37,9 +39,9 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
   } else if (modal.type === 'prompt') {
     modalsLib.create({
       type: modal.type,
-      title: modal.title,
-      label: modal.label ?? 'Label',
-      value: modal.value ?? '',
+      title: text(modal.title),
+      label: text(modal.label ?? 'Label'),
+      value: text(modal.value),
       promptConfirmCallback: (value) => {
         if (value) {
           onRequest('GET', rawHref, { [modal.key]: value });
@@ -49,10 +51,10 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
   } else {
     modalsLib.create({
       type: modal.type === 'confirm' ? 'small-confirm' : modal.type,
-      title: modal.title,
-      content: modal.content ?? '',
+      title: text(modal.title),
+      content: text(modal.content),
       // ClientFence core patch: without a button text, the modal's own default (in the page language).
-      confirmButton: modal.button ?? modalsLib.defaultOptions?.confirmButton ?? 'Confirm',
+      confirmButton: modal.button !== undefined ? text(modal.button) : (modalsLib.defaultOptions?.confirmButton ?? 'Confirm'),
       confirmButtonColor: modal.buttonColor ?? 'primary',
       confirmCallback: () => {
         onRequest('GET', rawHref);

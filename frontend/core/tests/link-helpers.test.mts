@@ -119,6 +119,20 @@ describe('dispatchLinkAction', () => {
       ['GET', '/rename', { name: 'New name' }],
     ]);
   });
+
+  test('escapes the modal texts, which can hold client data', () => {
+    const created: any[] = [];
+    const modals = { create: (config: any) => created.push(config) };
+
+    dispatchLinkAction(
+      { modal: { type: 'confirm', title: 'Ban "x"?', content: '<img src=x>@example.com' } },
+      '/ban',
+      modals,
+      () => {},
+    );
+    assert.equal(created[0].title, 'Ban &#34;x&#34;?');
+    assert.equal(created[0].content, '&#60;img src=x&#62;@example.com');
+  });
 });
 
 describe('createLinkLoadingState', () => {
