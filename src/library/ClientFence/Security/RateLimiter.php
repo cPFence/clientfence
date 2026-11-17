@@ -117,7 +117,8 @@ class RateLimiter implements InjectionAwareInterface
             $limited ? RateLimitResult::REASON_LIMITED : RateLimitResult::REASON_ALLOWED,
         );
 
-        if ($tokens > 0 && $result->isLimited() && $this->isIpAddress($subject)) {
+        // ClientFence core patch: a refused peek is tracked too, so a sign-in lockout (checked with 0 tokens) shows on Rate limits.
+        if ($result->isLimited() && $this->isIpAddress($subject)) {
             $this->trackIpSubject($policyName, $subject);
         }
 

@@ -8270,5 +8270,13 @@
     {
         "file": "library/Server/Manager/CWP.php",
         "done": "ClientFence core patch: CWP's changepack action is \"udp\" (its API documentation), as for changepass."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: a sign-in only checks its limit here and counts when it fails (_apiCall()), so staff and"
+    },
+    {
+        "file": "library/ClientFence/Security/RateLimiter.php",
+        "done": "ClientFence core patch: a refused peek is tracked too, so a sign-in lockout (checked with 0 tokens) shows on Rate limits."
     }
 ]

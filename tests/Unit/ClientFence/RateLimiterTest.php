@@ -165,6 +165,16 @@ test('lists limited IP counters with retry information', function (): void {
     expect($counters[0]['retry_after_seconds'])->toBeGreaterThan(0);
 });
 
+test('a refused zero-token check tracks the IP counter, as a sign-in lockout is checked', function (): void {
+    $limiter = createRateLimiter(requestIp: '1.1.1.1');
+
+    $limiter->consume('api_login', '1.1.1.1', 10);
+    expect($limiter->listIpCounters())->toBe([]);
+
+    expect($limiter->consume('api_login', '1.1.1.1', 0)->isLimited())->toBeTrue()
+        ->and($limiter->listIpCounters('1.1.1.1'))->toHaveCount(1);
+});
+
 test('reset IP clears tracked counters and limiter state', function (): void {
     $limiter = createRateLimiter(requestIp: '1.1.1.1');
 

@@ -43,6 +43,10 @@ class ClientTestApiDispatcherDouble
 
     public function dispatch(object $identity, string $method, array $params): mixed
     {
+        if ($this->result instanceof Throwable) {
+            throw $this->result;
+        }
+
         return $this->result;
     }
 }
@@ -326,7 +330,16 @@ test('guest client login is throttled under the anti-brute-force api_login polic
 
     invokeApiCall($controller, 'guest', 'client', 'client_login', ['CSRFToken' => 'test-token']);
 
-    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 1]]);
+    // A successful sign-in only checks the limit (0 tokens).
+    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 0]]);
+});
+
+test('a failed sign-in counts against the api_login policy', function (): void {
+    [$controller, $rateLimitCalls] = createTestController(dispatcherResult: new InformationException('Please check your login details.', [], 401));
+
+    expect(fn () => invokeApiCall($controller, 'guest', 'client', 'client_login', ['CSRFToken' => 'test-token']))
+        ->toThrow(InformationException::class, 'Please check your login details.');
+    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 0], ['api_login', '127.0.0.1', 1]]);
 });
 
 test('login calls in any letter case are throttled under the api_login policy', function (string $call): void {
@@ -334,7 +347,7 @@ test('login calls in any letter case are throttled under the api_login policy', 
 
     invokeApiCall($controller, 'guest', 'staff', $call, ['CSRFToken' => 'test-token']);
 
-    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 1]]);
+    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 0]]);
 })->with(['Staff_login', 'staff_LOGIN', 'CLIENT_Login']);
 
 test('admin impersonation of client login is not throttled under the guest api_login policy', function (): void {
@@ -359,7 +372,7 @@ test('an unauthenticated request to the admin client_login route is still thrott
         expect($e->getCode())->toBe(201);
     }
 
-    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 1]]);
+    expect($rateLimitCalls->getArrayCopy())->toBe([['api_login', '127.0.0.1', 0]]);
 });
 
 class ClientTestThrowingDispatcherDouble

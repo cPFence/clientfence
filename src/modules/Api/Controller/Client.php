@@ -28,6 +28,8 @@ class Client implements InjectionAwareInterface
     private ?array $apiConfig = null;
     // ClientFence core patch: whether this request signed in with a staff API key (Activity/ApiLog.php).
     private bool $viaKey = false;
+    // The address a sign-in call is checked for: a failed sign-in counts against api_login (see _apiCall()).
+    private ?string $loginSubject = null;
     protected ?\Pimple\Container $di = null;
 
     public function setDi(\Pimple\Container $di): void
@@ -168,6 +170,15 @@ class Client implements InjectionAwareInterface
             }
         }
 
+        // ClientFence core patch: a sign-in only checks its limit here and counts when it fails (_apiCall()), so staff and
+        // clients signing in from one office address do not use up the brute-force limit.
+        if ($policy === 'api_login') {
+            $this->di['rate_limiter']->consumeOrThrow($policy, $subject, 0);
+            $this->loginSubject = $subject;
+
+            return true;
+        }
+
         $this->di['rate_limiter']->consumeOrThrow($policy, $subject);
 
         return true;
@@ -248,7 +259,15 @@ class Client implements InjectionAwareInterface
 
         $api = $this->di['api_identity']($role);
         unset($params['CSRFToken']);
-        $result = $this->di['api_dispatcher']->dispatch($api->getIdentity(), $method, $params);
+        try {
+            $result = $this->di['api_dispatcher']->dispatch($api->getIdentity(), $method, $params);
+        } catch (\Throwable $e) {
+            if ($this->loginSubject !== null) {
+                $this->di['rate_limiter']->consume('api_login', $this->loginSubject);
+            }
+
+            throw $e;
+        }
 
         if ($result instanceof Response) {
             return $this->sendResponse($result);
