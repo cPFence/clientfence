@@ -286,6 +286,27 @@ test('getExtensionsList returns only installed extensions', function (): void {
     expect($result)->toBeArray();
 });
 
+test('getExtensionsList gives icon URLs with one slash after the site URL', function (): void {
+    $service = new Service();
+    $query = Mockery::mock(Doctrine\ORM\Query::class);
+    $query->shouldReceive('getResult')->andReturn([extensionCreateEntity(1, 'mod', 'extensionName', 'installed', '1')]);
+    $qb = Mockery::mock(Doctrine\ORM\QueryBuilder::class);
+    $qb->shouldReceive('getQuery')->andReturn($query);
+    $extensionRepository = Mockery::mock(ExtensionRepository::class);
+    $extensionRepository->shouldReceive('getSearchQueryBuilder')->andReturn($qb);
+    $extensionRepository->shouldReceive('findByType')->andReturn([]);
+    $modMock = Mockery::mock(ClientFence\Module::class);
+    $modMock->shouldReceive('getManifest')->andReturn(['icon_url' => '/modules/Example/icon.svg']);
+    $modMock->shouldReceive('hasSettingsPage')->andReturn(false);
+
+    $di = container();
+    $di['em'] = extensionBuildEm($extensionRepository);
+    $di['mod'] = $di->protect(fn ($name): Mockery\MockInterface => $modMock);
+    $service->setDi($di);
+
+    expect($service->getExtensionsList(['installed' => true])[0]['icon_url'])->toBe(rtrim(SYSTEM_URL, '/') . '/modules/Example/icon.svg');
+});
+
 test('getAdminNavigation returns admin navigation', function (): void {
     $service = new Service();
     $modMock = Mockery::mock(ClientFence\Module::class);
