@@ -662,7 +662,8 @@ class Service implements InjectionAwareInterface
                 return;
             }
             // ClientFence core patch: no reminder before the due date while a bank debit of the invoice is clearing.
-            if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null) {
+            // ClientFence core patch (CF-182): nor for a Mass Pay invoice: the invoices it lists send their own.
+            if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null || MassPay::is($di, (int) ($params['id'] ?? 0))) {
                 return;
             }
 
@@ -743,7 +744,8 @@ class Service implements InjectionAwareInterface
                 return;
             }
             // ClientFence core patch: no overdue reminder while a bank debit of the invoice is clearing.
-            if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null) {
+            // ClientFence core patch (CF-182): nor for a Mass Pay invoice: the invoices it lists send their own.
+            if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null || MassPay::is($di, (int) ($params['id'] ?? 0))) {
                 return;
             }
 
@@ -812,7 +814,8 @@ class Service implements InjectionAwareInterface
     public function markAsPaid(\Model_Invoice $invoice, $charge = true, $execute = true, bool $deferEvents = false): bool
     {
         // ClientFence core patch: settlement must see payments completed while it waited for the client's credit lock.
-        return Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $charge, $execute, $deferEvents): bool {
+        $massPay = false;
+        $paid = Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $invoice->client_id, function () use ($invoice, $charge, $execute, $deferEvents, &$massPay): bool {
             $current = $this->di['dbal']->fetchAssociative('SELECT * FROM invoice WHERE id = ?', [$invoice->id]);
             if ($current === false) {
                 throw new InformationException('Invoice not found');
@@ -821,17 +824,25 @@ class Service implements InjectionAwareInterface
                 $invoice->{$column} = $value;
             }
 
-            return $this->markAsPaidLocked($invoice, $charge, $execute, $deferEvents);
+            return $this->markAsPaidLocked($invoice, $charge, $execute, $deferEvents, $massPay);
         });
+        // ClientFence core patch (CF-182): gateways credit a Mass Pay invoice's payment to the balance, then mark it paid with
+        // $charge: it now pays the invoices it lists. Mark as paid credits it afterwards (creditDepositBalanceIfNeeded()).
+        if ($charge && $massPay) {
+            MassPay::settle($this->di, $invoice);
+        }
+
+        return $paid;
     }
 
-    private function markAsPaidLocked(\Model_Invoice $invoice, $charge, $execute, bool $deferEvents): bool
+    private function markAsPaidLocked(\Model_Invoice $invoice, $charge, $execute, bool $deferEvents, bool &$massPay = false): bool
     {
         if ($invoice->status == \Model_Invoice::STATUS_PAID) {
             return true;
         }
 
         $invoiceItems = $this->di['db']->find('InvoiceItem', 'invoice_id = ?', [$invoice->id]);
+        $massPay = MassPay::inItems($invoiceItems ?? []);
         $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
         $amounts = [];
         if ($charge) {
@@ -1188,6 +1199,10 @@ class Service implements InjectionAwareInterface
             'type' => 'invoice',
             'rel_id' => (string) $invoice->id,
         ]);
+        // ClientFence core patch (CF-182): a Mass Pay invoice's payment is on the balance now: it pays the invoices it lists.
+        if (MassPay::inItems($items)) {
+            MassPay::settle($this->di, $invoice);
+        }
     }
 
     public function validateAdminMarkAsPaidRequest(array $data, ?\Model_Invoice $invoice = null, bool $needsReference = true): \Model_PayGateway
@@ -1265,12 +1280,19 @@ class Service implements InjectionAwareInterface
         // a WHMCS import found on a partly paid invoice: a negative line of unit "received", which
         // keeps the amount due right) is income too, though not due again.
         $received = 0.0;
-        foreach ($this->di['db']->find('InvoiceItem', 'invoice_id = ? AND unit = ?', [$invoice->id, \ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT]) ?? [] as $item) {
-            $received -= (float) $item->price * (float) $item->quantity;
+        // ClientFence core patch (CF-182): a Mass Pay invoice's lines (and its credit note's) are not income: each invoice it
+        // pays counts its own, and a refund gives back account credit first (Invoice/MassPay.php). Only its fee is income.
+        $lines = 0.0;
+        foreach ($this->di['db']->find('InvoiceItem', 'invoice_id = ?', [$invoice->id]) ?? [] as $item) {
+            if ($item->unit === \ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT) {
+                $received -= (float) $item->price * (float) $item->quantity;
+            } elseif (MassPay::inItems([$item])) {
+                $lines += (float) $item->price * (float) $item->quantity;
+            }
         }
-        $invoice->base_income = $table->toBaseCurrency($invoice->currency, $this->getTotal($invoice) + $received);
+        $invoice->base_income = $table->toBaseCurrency($invoice->currency, $this->getTotal($invoice) + $received - $lines);
         if ($invoice->refund !== null) {
-            $invoice->base_refund = $table->toBaseCurrency($invoice->currency, $invoice->refund);
+            $invoice->base_refund = $table->toBaseCurrency($invoice->currency, max(0.0, (float) $invoice->refund - $lines));
         } else {
             $invoice->base_refund = null;
         }
@@ -3236,6 +3258,8 @@ class Service implements InjectionAwareInterface
         }
 
         $this->checkInvoiceAuth($invoice, InvoiceOperation::PAYMENT);
+        // ClientFence core patch (CF-182): a Mass Pay invoice whose invoices were paid or changed since is not paid.
+        MassPay::check($this->di, $invoice);
 
         $gtw = $this->di['db']->load('PayGateway', $data['gateway_id']);
         if (!$gtw instanceof \Model_PayGateway) {

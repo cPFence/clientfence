@@ -254,6 +254,18 @@ test('a reversed staff transaction no longer counts as paid, so the invoice is d
     expect($service->getAmountPaid(reversalInvoice()))->toBe(0.0);
 });
 
+// CF-182: a Mass Pay invoice paid again after its payment was reversed pays the invoices it lists then (MassPay::settle()).
+test('a reversed Mass Pay invoice is no longer settled, so paying it again pays its invoices', function (): void {
+    $db = reversalDb();
+    reversalTx($db, 2, 100.0, true);
+    $db->insert('extension_meta', ['client_id' => 7, 'extension' => 'mod_invoice', 'rel_type' => 'invoice', 'rel_id' => '10', 'meta_key' => ClientFence\Mod\Invoice\MassPay::SETTLED, 'meta_value' => '1']);
+    [$di] = reversalService($db);
+
+    PaymentReversal::reverse($di, reversalInvoice());
+
+    expect($db->fetchOne('SELECT COUNT(*) FROM extension_meta WHERE meta_key = ?', [ClientFence\Mod\Invoice\MassPay::SETTLED]))->toEqual(0);
+});
+
 // Mark as Paid records a payment on a card gateway too (staff chose the invoice's Stripe method): still reversible.
 test('a payment staff marked paid on a card gateway is reversed', function (): void {
     $db = reversalDb();

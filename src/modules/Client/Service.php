@@ -1041,7 +1041,9 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                             FROM invoice_item ii JOIN invoice ci ON ci.id = ii.invoice_id
                            WHERE ci.client_id = ? GROUP BY ii.invoice_id) li ON li.invoice_id = i.id
               WHERE i.client_id = ? AND i.currency = ?
-                AND NOT (i.status = 'refunded' AND COALESCE(li.subtotal, 0) < 0) GROUP BY 1",
+                AND NOT (i.status = 'refunded' AND COALESCE(li.subtotal, 0) < 0)"
+            // ClientFence core patch (CF-182): nor an unpaid Mass Pay invoice: the invoices it lists are counted (Invoice/MassPay.php).
+            . " AND NOT (i.status = 'unpaid' AND " . \ClientFence\Mod\Invoice\MassPay::sql('i.id') . ') GROUP BY 1',
             [$clientId, $clientId, $client['currency']]
         );
         $invoices = array_replace(array_fill_keys(['paid', 'unpaid', 'draft', 'cancelled', 'refunded'], ['count' => 0, 'total' => 0.0]), array_column(array_map(

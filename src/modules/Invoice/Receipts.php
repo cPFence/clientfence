@@ -61,7 +61,8 @@ class Receipts
         $methods = [];
         $clientId = $invoice !== null ? (int) $invoice->client_id : ((int) ($di['session']->get('client_id') ?? 0) ?: null);
         $amount = $invoice !== null ? GatewayFees::base($di, $invoice) : $amount;
-        $deposit = $invoice !== null && $di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice);
+        // Add funds invoices carry no fee; a Mass Pay one carries its payment's (MassPay.php).
+        $deposit = $invoice !== null && $di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice) && !MassPay::is($di, (int) $invoice->id);
         $client = $invoice === null && $taxed !== null && $clientId !== null ? $di['db']->load('Client', $clientId) : null;
         $rate = $client instanceof \Model_Client && $client->id ? (float) $di['mod_service']('Invoice', 'Tax')->getTaxRateForClient($client) : 0.0;
         // ClientFence (GitHub #43): in the order set on Payment Gateways; the first one is picked by default.

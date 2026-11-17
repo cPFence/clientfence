@@ -104,13 +104,13 @@ final class GatewayFees
 
     /**
      * Sets the fee line of an unpaid invoice for the gateway that is to take its payment ($gatewayId; null removes it)
-     * and makes that gateway the invoice's. Add funds invoices carry no fee.
+     * and makes that gateway the invoice's. Add funds invoices carry no fee; a Mass Pay one carries its payment's (MassPay.php).
      */
     public static function apply(\Pimple\Container $di, \Model_Invoice $invoice, ?int $gatewayId): void
     {
         \ClientFence\Tools::withLock($di, 'cf:gateway-fee:' . (int) $invoice->id, static function () use ($di, $invoice, $gatewayId): void {
             $row = $di['dbal']->fetchAssociative('SELECT status, gateway_id FROM invoice WHERE id = ?', [(int) $invoice->id]) ?: [];
-            if (($row['status'] ?? null) !== \Model_Invoice::STATUS_UNPAID || $di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice)) {
+            if (($row['status'] ?? null) !== \Model_Invoice::STATUS_UNPAID || ($di['mod_service']('Invoice')->isInvoiceTypeDeposit($invoice) && !MassPay::is($di, (int) $invoice->id))) {
                 return;
             }
             if ($gatewayId !== null && (int) $row['gateway_id'] !== $gatewayId) {

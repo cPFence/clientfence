@@ -211,6 +211,7 @@ final class SavedCards
                     AND (i.gateway_id IS NULL OR i.gateway_id IN (" . implode(',', $gatewayIds) . ')) AND COALESCE(c.attempts, 0) < ?
                     AND (c.last_attempt_at IS NULL OR c.last_attempt_at < ?)
                     AND NOT ' . PendingPayments::sql('i.id') . '
+                    AND NOT ' . MassPay::sql('i.id') . '
                     AND NOT EXISTS (SELECT 1 FROM invoice_item ii
                           JOIN invoice_item si ON si.type = ii.type AND si.rel_id = ii.rel_id
                           JOIN subscription s ON s.rel_type = \'invoice\' AND s.rel_id = si.invoice_id AND s.status = \'active\'

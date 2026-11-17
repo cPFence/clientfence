@@ -79,6 +79,8 @@ final class PaymentReversal
                 self::takeBack($di, (int) $invoice->client_id, $tx, $now);
             }
             $db->delete('invoice_credit', ['invoice_id' => $id]);
+            // A Mass Pay invoice unpaid again pays its invoices when it is paid again (MassPay::settle() runs once per payment).
+            $db->delete('extension_meta', ['extension' => 'mod_invoice', 'rel_type' => 'invoice', 'rel_id' => (string) $id, 'meta_key' => MassPay::SETTLED]);
             $db->executeStatement("UPDATE promo_redemption SET status = 'reserved', committed_at = NULL WHERE invoice_id = ? AND status = 'committed'", [$id]);
             $db->executeStatement("UPDATE client_order SET unpaid_invoice_id = ? WHERE unpaid_invoice_id IS NULL AND id IN (SELECT rel_id FROM invoice_item WHERE invoice_id = ? AND type = 'order')", [$id, $id]);
             if ($db->fetchOne("SELECT 1 FROM extension_meta WHERE extension = 'mod_invoice' AND meta_key = 'no_auto_credit' AND rel_id = ?", [(string) $id]) === false) {

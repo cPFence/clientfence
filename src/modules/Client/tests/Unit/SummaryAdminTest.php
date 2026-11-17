@@ -28,7 +28,7 @@ function clientSummaryDi(): Pimple\Container
         'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, currency TEXT, status TEXT, approved INTEGER, taxrate TEXT, tax_adjust REAL DEFAULT 0)',
-        'CREATE TABLE invoice_item (invoice_id INTEGER, price REAL, quantity INTEGER, taxed INTEGER)',
+        'CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, task TEXT, price REAL, quantity INTEGER, taxed INTEGER)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, service_type TEXT, status TEXT, group_master INTEGER, group_id TEXT, price REAL, quantity INTEGER, period TEXT, expires_at TEXT, currency TEXT)',
         'CREATE TABLE client_balance (client_id INTEGER, amount REAL)',
         'CREATE TABLE invoice_quote (client_id INTEGER, stage TEXT)',

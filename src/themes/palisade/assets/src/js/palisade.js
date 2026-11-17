@@ -533,6 +533,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Mass Pay (CF-182; invoice list): the ticked unpaid invoices, or all of them, become one invoice to pay, which opens.
+  document.querySelectorAll('form[data-cf-mass-pay]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const buttons = form.querySelectorAll('button[type="submit"]');
+      const params = event.submitter?.value === 'all'
+        ? { all: 1 }
+        : { ids: [...form.querySelectorAll('input[name="ids[]"]:checked')].map((box) => box.value) };
+      buttons.forEach((button) => { button.disabled = true; });
+      ClientFence.api.client.post('invoice/mass_pay', params,
+        (hash) => window.location.assign(form.dataset.invoiceUrl.replace('__hash__', hash)),
+        (error) => {
+          buttons.forEach((button) => { button.disabled = false; });
+          ClientFence.message(errorText(error), 'error');
+        });
+    });
+  });
+
   document.querySelectorAll('select.currency_selector').forEach((select) => {
     select.addEventListener('change', () => {
       ClientFence.api.guest.post('cart/set_currency', { currency: select.value },

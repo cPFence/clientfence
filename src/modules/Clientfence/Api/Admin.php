@@ -58,7 +58,8 @@ class Admin extends \ClientFence\Api\AbstractApi
             );
         }
         if ($can('invoice', 'view')) {
-            $out['invoices_overdue'] = (int) $db->fetchOne("SELECT COUNT(*) FROM invoice WHERE status = 'unpaid' AND due_at < NOW()");
+            // Not an unpaid Mass Pay invoice: the invoices it lists are counted (Invoice/MassPay.php).
+            $out['invoices_overdue'] = (int) $db->fetchOne("SELECT COUNT(*) FROM invoice WHERE status = 'unpaid' AND due_at < NOW() AND NOT " . \ClientFence\Mod\Invoice\MassPay::sql('invoice.id'));
         }
         if ($can('system', 'manage_settings')) {
             $last = $di['mod_service']('system')->getParamValue('last_cron_exec');
@@ -167,7 +168,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $unpaid = 0.0;
         // Per invoice as Invoice\Service::getTotalWithTax: items price × quantity, plus the
-        // invoice's tax rate on the taxed items, rounded to cents.
+        // invoice's tax rate on the taxed items, rounded to cents. Not an unpaid Mass Pay invoice: its invoices are counted.
         $owed = $db->fetchAllKeyValue(
             "SELECT t.currency, SUM(t.total + t.tax)
                FROM (SELECT i.currency,
@@ -176,9 +177,9 @@ class Admin extends \ClientFence\Api\AbstractApi
                                  THEN ROUND(CAST(SUM(CASE WHEN ii.taxed THEN ii.price * ii.quantity ELSE 0 END) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) + CAST(i.tax_adjust AS DECIMAL(20, 2))
                                  ELSE 0 END AS tax
                        FROM invoice i JOIN invoice_item ii ON ii.invoice_id = i.id
-                      WHERE i.status = 'unpaid'
+                      WHERE i.status = 'unpaid' AND NOT " . \ClientFence\Mod\Invoice\MassPay::sql('i.id') . '
                       GROUP BY i.id, i.currency, i.taxrate, i.tax_adjust) t
-              GROUP BY t.currency"
+              GROUP BY t.currency'
         );
         foreach ($owed as $code => $amount) {
             $unpaid += $currencyService->toBaseCurrency((string) $code, (float) $amount);
