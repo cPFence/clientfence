@@ -413,7 +413,10 @@ test('gets all forms', function (): void {
     $dbalResult->shouldReceive('fetchAllAssociative')->once()->andReturn([]);
 
     $dbal = Mockery::mock(Connection::class);
-    $dbal->shouldReceive('executeQuery')->once()->andReturn($dbalResult);
+    // ClientFence: each count on its own, not multiplied by the other join.
+    $dbal->shouldReceive('executeQuery')->once()
+        ->with(Mockery::on(fn (string $sql): bool => str_contains($sql, 'COUNT(DISTINCT p.id)') && str_contains($sql, 'COUNT(DISTINCT co.id)')))
+        ->andReturn($dbalResult);
 
     $di = container();
     $di['dbal'] = $dbal;

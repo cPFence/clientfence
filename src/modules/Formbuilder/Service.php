@@ -384,7 +384,8 @@ class Service implements InjectionAwareInterface
     public function getForms()
     {
         return $this->getDbal()->executeQuery(
-            'SELECT f.id, f.name, COUNT(p.id) AS product_count, COUNT(co.id) AS order_count
+            // ClientFence core patch: DISTINCT, as the two joins multiplied each count by the other.
+            'SELECT f.id, f.name, COUNT(DISTINCT p.id) AS product_count, COUNT(DISTINCT co.id) AS order_count
             FROM form f
             LEFT JOIN product p ON f.id = p.form_id
             LEFT JOIN client_order co ON f.id = co.form_id
