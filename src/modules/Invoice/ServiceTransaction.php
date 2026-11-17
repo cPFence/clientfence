@@ -392,7 +392,8 @@ class ServiceTransaction implements InjectionAwareInterface
 
         if ($date_to) {
             $sql .= ' AND UNIX_TIMESTAMP(m.created_at) <= :date_to';
-            $params['date_to'] = (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
+            // ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start).
+            $params['date_to'] = strtotime('tomorrow', (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'))) - 1;
         }
 
         if ($search) {

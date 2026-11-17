@@ -239,7 +239,7 @@ test('gets search query with various parameters', function (array $data, array $
         ['date_from' => '2012-12-12'], ['date_from' => strtotime('2012-12-12 00:00:00 UTC')], 'AND UNIX_TIMESTAMP(m.created_at) >= :date_from',
     ],
     [
-        ['date_to' => '2012-12-12'], ['date_to' => strtotime('2012-12-12 00:00:00 UTC')], 'AND UNIX_TIMESTAMP(m.created_at) <= :date_to',
+        ['date_to' => '2012-12-12'], ['date_to' => strtotime('2012-12-12 23:59:59')], 'AND UNIX_TIMESTAMP(m.created_at) <= :date_to',
     ],
 ]);
 

@@ -8478,5 +8478,29 @@
     {
         "file": "modules/Product/Service.php",
         "done": "// ClientFence core patch: an unreadable date is refused with a message (with strict types date() got false and threw a TypeError)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "// ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "// ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start)."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "// ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "// ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start)."
+    },
+    {
+        "file": "modules/Client/ServiceBalance.php",
+        "done": "// ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start)."
+    },
+    {
+        "file": "modules/Client/Repository/ClientRepository.php",
+        "done": "// ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start)."
     }
 ]

@@ -1479,7 +1479,7 @@ dataset('searchQueryData', fn (): array => [
     'date_to' => [
         ['date_to' => '2012-12-11'],
         'UNIX_TIMESTAMP(co.created_at) <= :date_to',
-        ['date_to' => strtotime('2012-12-11')],
+        ['date_to' => strtotime('2012-12-11 23:59:59')],
     ],
     'search numeric' => [
         ['search' => 120],

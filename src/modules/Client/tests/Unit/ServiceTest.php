@@ -281,7 +281,7 @@ dataset('searchQueryData', [
     [
         ['date_to' => '2012-12-11'],
         'UNIX_TIMESTAMP(c.created_at) <= :date_to',
-        [':date_to' => 1355184000],
+        [':date_to' => strtotime('2012-12-11 23:59:59')],
     ],
     [
         ['search' => '2'],

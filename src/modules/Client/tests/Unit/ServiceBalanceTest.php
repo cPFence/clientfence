@@ -33,7 +33,7 @@ test('builds a Doctrine query for balance searches', function (): void {
     ))->andReturnSelf();
     $queryBuilder->shouldReceive('andWhere')->once()->with('m.createdAt <= :date_to')->andReturnSelf();
     $queryBuilder->shouldReceive('setParameter')->once()->with('date_to', Mockery::on(
-        static fn (mixed $date): bool => $date instanceof DateTimeImmutable && $date->format('Y-m-d H:i:s') === '2012-12-11 00:00:00',
+        static fn (mixed $date): bool => $date instanceof DateTimeImmutable && $date->format('Y-m-d H:i:s') === '2012-12-11 23:59:59',
     ))->andReturnSelf();
     $queryBuilder->shouldReceive('orderBy')->once()->with('m.id', 'DESC')->andReturnSelf();
 

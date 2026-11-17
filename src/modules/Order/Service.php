@@ -1046,7 +1046,8 @@ class Service implements InjectionAwareInterface
 
         if ($date_to) {
             $where[] = 'UNIX_TIMESTAMP(co.created_at) <= :date_to';
-            $bindings['date_to'] = (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'));
+            // ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start).
+            $bindings['date_to'] = strtotime('tomorrow', (strtotime((string) $date_to) ?: throw new \ClientFence\InformationException('Enter a valid date.'))) - 1;
         }
 
         // smartSearch

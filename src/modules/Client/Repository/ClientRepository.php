@@ -134,8 +134,9 @@ class ClientRepository extends EntityRepository
         }
 
         if ($dateTo) {
+            // ClientFence core patch: the to date includes that whole day (it was compared with midnight at its start).
             $qb->andWhere('c.createdAt <= :date_to')
-                ->setParameter('date_to', new \DateTimeImmutable(date('Y-m-d H:i:s', (strtotime((string) $dateTo) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
+                ->setParameter('date_to', new \DateTimeImmutable(date('Y-m-d 23:59:59', (strtotime((string) $dateTo) ?: throw new \ClientFence\InformationException('Enter a valid date.')))));
         }
 
         if ($search) {

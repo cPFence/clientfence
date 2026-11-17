@@ -569,7 +569,7 @@ test('gets search query with various parameters', function (array $data, string 
         ['date_to' => '2012-11-23 12:34:56'],
         'AND UNIX_TIMESTAMP(p.created_at) <= :date_to',
         [
-            'date_to' => 1353674096,
+            'date_to' => strtotime('2012-11-23 23:59:59'),
         ],
     ],
     [
