@@ -52,6 +52,11 @@ final class Dispatcher implements InjectionAwareInterface
             throw new Exception('Invalid module name', null, 714);
         }
 
+        // ClientFence core patch: methods starting with "_" are helpers of the API class (such as _getService), not calls.
+        if (str_starts_with($methodName, '_')) {
+            throw new Exception(':type API call :method does not exist in module :module', [':type' => ucfirst($role), ':method' => $methodName, ':module' => $mod], 740);
+        }
+
         $extensionService = $this->getDi()['mod']('extension')->getService();
         if (!$extensionService->isExtensionActive('mod', $mod)) {
             throw new Exception('ClientFence module :mod is not installed/activated', [':mod' => $mod], 715);
