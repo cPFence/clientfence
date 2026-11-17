@@ -13,7 +13,7 @@ Mass Pay, moving a service to another client, part payments, draft invoices and 
 - **Enhance Link:** link a hosting order to an existing Enhance organization and subscription by hand, on its Service Management tab. ([#47](https://github.com/cPFence/clientfence/issues/47))
 - **16 new languages:** Swedish, Danish, Norwegian Bokmål, Estonian, Slovak, Slovenian, Croatian, Bosnian, Serbian in Cyrillic, Georgian, Azerbaijani, Korean, Chinese (Hong Kong), Hindi, Bengali and Kannada. Invoice, quote and statement PDFs in Hindi, Bengali and Kannada are in English.
 - **Import from FOSSBilling and Paymenter:** two new importers on the Migration page. ([#40](https://github.com/cPFence/clientfence/issues/40))
-- The converting bank transfer gateway now works with all currencies: it shows the invoice total in the currency you set on it. Set the currency after updating: with none set it shows euros.
+- The converting bank transfer gateway is now called CustomConvert and works with all currencies: it shows the invoice total in the currency you set on it. Set the currency after updating: with none set it shows euros.
 
 ### Changed
 
