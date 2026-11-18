@@ -533,8 +533,9 @@ final class SignInSecurity
     private static function sendPin(\Pimple\Container $di, string $area, string $email, string $name, string $pin, string $ip, string $timezone, string $lang = ''): void
     {
         $country = self::countryOf($di, $ip);
-        $vars = ['pin' => $pin, 'minutes' => intdiv(self::PIN_SECONDS, 60), 'ip' => $ip, 'country' => $country !== null ? Countries::getName($country) : '', 'name' => $name];
-        $preview = ['pin' => '123456', 'minutes' => intdiv(self::PIN_SECONDS, 60), 'ip' => '203.0.113.7', 'country' => 'Germany', 'name' => 'Example Name'];
+        // `c.email` fills the footer's sign-in link, as in the other sign-in emails.
+        $vars = ['pin' => $pin, 'minutes' => intdiv(self::PIN_SECONDS, 60), 'ip' => $ip, 'country' => $country !== null ? Countries::getName($country) : '', 'name' => $name, 'c' => ['email' => $email]];
+        $preview = ['pin' => '123456', 'minutes' => intdiv(self::PIN_SECONDS, 60), 'ip' => '203.0.113.7', 'country' => 'Germany', 'name' => 'Example Name', 'c' => ['email' => 'client@example.com']];
         // In the client's language (not the sign-in page's); staff get the default language (no $lang).
         $emails = $di['mod_service']('email');
         [$subject, $content] = $emails->renderTemplate(self::TEMPLATES[$area], $vars, $preview, $timezone !== '' ? $timezone : null, $emails->recipientLocale($lang !== '' ? $lang : null));

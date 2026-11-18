@@ -343,7 +343,9 @@ test('a sign-in waits for its PIN, which works once and stops after five wrong o
 
     expect(SignInSecurity::challenge($world->di, 'client', $login, ['client_id' => 7], '192.0.2.5'))->toBeTrue()
         ->and(SignInSecurity::pending($world->di, 'staff'))->toBeNull()
-        ->and(SignInSecurity::pageInfo($world->di, 'client'))->toMatchArray(['email' => 'c•••••@example.test', 'minutes' => 10]);
+        ->and(SignInSecurity::pageInfo($world->di, 'client'))->toMatchArray(['email' => 'c•••••@example.test', 'minutes' => 10])
+        // The email's footer link fills in the address, as in the other sign-in emails.
+        ->and(end($world->pins)['c'] ?? null)->toBe(['email' => 'client@example.test']);
 
     $pin = $world->lastPin();
     $wrong = $pin === '000000' ? '111111' : '000000';
