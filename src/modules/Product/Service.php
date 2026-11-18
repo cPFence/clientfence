@@ -678,7 +678,9 @@ class Service implements InjectionAwareInterface
         $config = json_decode($model->getConfig() ?? '', true) ?? [];
 
         if (isset($data['config']) && is_array($data['config'])) {
-            $config = array_intersect_key((array) $config, $data['config']);
+            // ClientFence core patch: the General tab saves prorata and affiliate keys through update(); this form keeps them.
+            $general = array_intersect_key((array) $config, array_flip(['prorata_day', 'prorata_charge_next', 'affiliate_payout', 'affiliate_amount', 'affiliate_onetime']));
+            $config = array_intersect_key((array) $config, $data['config']) + $general;
             foreach ($data['config'] as $key => $val) {
                 $config[$key] = $val;
                 if (isset($config[$key]) && empty($val) && !is_numeric($val)) {

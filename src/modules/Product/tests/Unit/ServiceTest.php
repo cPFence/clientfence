@@ -1034,6 +1034,20 @@ test('update config', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('a Configuration tab save keeps the prorata and affiliate settings of the General tab', function (): void {
+    $service = new Service();
+    $modelProduct = productTestCreateProductEntity(1)->setConfig('{"server_id":1,"reseller":"1","prorata_day":1,"prorata_charge_next":20,"affiliate_payout":"percentage","affiliate_amount":"10","affiliate_onetime":"1"}');
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories();
+    $di['logger'] = new \ClientFence\Log();
+    $service->setDi($di);
+
+    // The hosting Configuration form posts only its own fields; an unticked box drops its key as before.
+    $service->updateConfig($modelProduct, ['config' => ['server_id' => 2]]);
+
+    expect(json_decode($modelProduct->getConfig(), true))->toBe(['server_id' => 2, 'prorata_day' => 1, 'prorata_charge_next' => 20, 'affiliate_payout' => 'percentage', 'affiliate_amount' => '10', 'affiliate_onetime' => '1']);
+});
+
 test('get addons', function (): void {
     $service = new Service();
     $expected = [
