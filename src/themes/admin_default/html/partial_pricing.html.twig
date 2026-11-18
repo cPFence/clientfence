@@ -1,5 +1,6 @@
 {% if product.type != 'domain' %}
-{% set currency_code = admin.currency_get_default.code %}
+{# ClientFence core patch: the default currency without the Currency right (product staff price their pricing, as in WHMCS). #}
+{% set currency_code = guest.currency_get.code %}
 {% set recurrent_periods = {
     '1W': 'Weekly',
     '1M': 'Monthly',

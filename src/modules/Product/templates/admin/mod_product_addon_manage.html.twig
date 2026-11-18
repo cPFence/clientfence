@@ -26,7 +26,8 @@
 {% block content %}
 <div class="p-3">
     {# ClientFence core patch: the addon reads first: name, status, its price and each billing period as facts, then the form (CF-135 redesign). #}
-    {% set cur = admin.currency_get_default.code %}
+    {# ClientFence core patch: the default currency without the Currency right (product staff price add-ons, as in WHMCS). #}
+    {% set cur = guest.currency_get.code %}
     {% set prices = [] %}
     {% if product.pricing.type == 'once' %}
         {% set prices = [{ label: 'One Time'|trans, price: product.pricing.once.price, setup: product.pricing.once.setup }] %}
