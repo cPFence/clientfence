@@ -285,7 +285,8 @@
                                                 <strong>{{ member.name }}</strong>
                                                 <span class="text-secondary">{{ member.email }}</span>
                                             </span>
-                                            <span class="badge {% if member.status == 'active' %}bg-green-lt{% else %}bg-secondary-lt{% endif %}">{{ member.status|title }}</span>
+                                            {# ClientFence core patch: the member's status in the staff member's language. #}
+                                            <span class="badge {% if member.status == 'active' %}bg-green-lt{% else %}bg-secondary-lt{% endif %}">{{ member.status|title|trans }}</span>
                                         </a>
                                     {% endfor %}
                                 </div>
