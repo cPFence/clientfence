@@ -74,6 +74,16 @@ test('the first invoice charges the days left to the service due date', function
     expect(AddonOrders::factor(addonOrdersDi(), $order))->toBe(15 / $days);
 });
 
+test('a service renewed ahead charges its add-on for every day to the due date, beyond one period', function (): void {
+    // The renewal was paid early: the add-on runs 45 days to the service's due date, so it is charged for 45 days.
+    $order = addonOrdersService('active', '+45 days');
+    $expiry = new DateTimeImmutable(substr((string) $order->expires_at, 0, 10));
+    $start = $expiry->modify('first day of last month');
+    $start = $start->setDate((int) $start->format('Y'), (int) $start->format('m'), min((int) $expiry->format('d'), (int) $start->format('t')));
+
+    expect(AddonOrders::factor(addonOrdersDi(), $order))->toBe(45 / (int) $start->diff($expiry)->days);
+});
+
 test('offers are priced in the service currency, the first charge to its due date', function (): void {
     $order = addonOrdersService();
     $factor = AddonOrders::factor(addonOrdersDi(), $order);

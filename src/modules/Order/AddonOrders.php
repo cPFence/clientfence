@@ -87,12 +87,12 @@ final class AddonOrders
         return self::products($di, $order)[$productId] ?? throw new InformationException('This add-on cannot be ordered for this service.');
     }
 
-    /** The part of a period the first invoice charges: the days left to the service's due date over its period's days. */
+    /** The part of a period the first invoice charges: the days left to the service's due date over its period's days (more than one when the service was renewed ahead). */
     public static function factor(\Pimple\Container $di, \Model_ClientOrder $order): float
     {
         $expires = (string) $order->expires_at;
         $total = Proration::daysTotal((string) $order->period, $expires, Upgrades::anchorFor($di, $order), Service::keepsRenewalDay($di));
 
-        return min(1.0, Proration::daysLeft($expires, date('Y-m-d H:i:s')) / $total);
+        return Proration::daysLeft($expires, date('Y-m-d H:i:s')) / $total;
     }
 }
