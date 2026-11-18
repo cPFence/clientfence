@@ -84,7 +84,7 @@
     {% else %}
         {% for lang in langs %}
             {% set own = texts.translations[lang] ?? {} %}
-            {% set rtl = lang[:2] in ['ar', 'he', 'fa'] %}
+            {% set rtl = lang is rtl %}
             <div data-cf-text-pane="{{ lang }}" hidden>
                 {% if part == 'title' %}
                     {% if language_names[lang] is not defined %}

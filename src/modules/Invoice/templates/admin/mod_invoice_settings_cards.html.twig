@@ -1,7 +1,7 @@
 {# ClientFence: automatic payments with saved cards and PayPal accounts, on the Invoices settings page
    (Invoice/SavedCards.php). Kept in mod_invoice; saved with invoice/card_settings_update. #}
 {% set cards = admin.extension_config_get({ 'ext': 'mod_invoice' }) %}
-{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+{% set is_rtl = active_locale|default('en_US') is rtl %}
 {# ClientFence core patch: the section starts under a ruled heading, its Save row stays in view (CF-135 redesign). #}
 <div class="card clientfence-settings" id="saved-cards" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form method="post" action="{{ 'invoice/card_settings_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>

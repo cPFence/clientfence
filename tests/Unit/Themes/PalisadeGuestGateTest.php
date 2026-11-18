@@ -46,6 +46,7 @@ function renderPalisadeGatedPage(string $layout, bool $guestTickets, string $loc
     ]);
     $twig = new Environment($loader, ['strict_variables' => true, 'autoescape' => 'html']);
     $twig->addExtension(new IntlExtension());
+    $twig->addTest(new Twig\TwigTest('rtl', static fn (?string $locale): bool => ClientFence\Twig\Extension\RtlDateExtension::isRtl((string) $locale)));
     $twig->addFilter(new TwigFilter('trans', static fn (string $text): string => $text));
     $twig->addFilter(new TwigFilter('url', static fn (string $path): string => '/' . ltrim($path, '/')));
     $twig->addFilter(new TwigFilter('api_url', static fn (string $path): string => '/api/client/' . $path));

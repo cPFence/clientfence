@@ -19,6 +19,7 @@ use ClientFence\Twig\Enum\AppArea;
 use Symfony\Component\Filesystem\Path;
 use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
+use Twig\Attribute\AsTwigTest;
 use Twig\Environment;
 
 class ClientFenceExtension
@@ -172,6 +173,13 @@ class ClientFenceExtension
             'enabled' => false,
             'field' => 'bio',
         ];
+    }
+
+    /** ClientFence core patch: `locale is rtl`, the one list of right-to-left languages (RtlDateExtension) for every template. */
+    #[AsTwigTest('rtl')]
+    public function isRtl(?string $locale): bool
+    {
+        return RtlDateExtension::isRtl((string) $locale);
     }
 
     /**

@@ -44,6 +44,7 @@ test('invalid websites are refused', function (string $text): void {
 test('the sign-in embed sends the visitor to the sign-in page in the top window, in the chosen theme and direction', function (string $locale, string $direction): void {
     $twig = new Environment(new FilesystemLoader(PATH_MODS . '/Embed/templates/client'), ['autoescape' => 'html']);
     $twig->addFilter(new TwigFilter('trans', static fn (string $text): string => $text));
+    $twig->addTest(new Twig\TwigTest('rtl', static fn (?string $locale): bool => ClientFence\Twig\Extension\RtlDateExtension::isRtl((string) $locale)));
     $twig->addFilter(new TwigFilter('url', static fn (string $path): string => '/' . $path));
 
     $html = $twig->render('mod_embed_loginform.html.twig', ['guest' => ['system_locale' => $locale], 'request' => ['theme' => 'dark']]);

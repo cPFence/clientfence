@@ -45,3 +45,23 @@ test('right-to-left languages are told by their language code', function (): voi
         ->and(RtlDateExtension::isRtl('en_US'))->toBeFalse()
         ->and(RtlDateExtension::isRtl('de_DE'))->toBeFalse();
 });
+
+// CF-194: every page tells right-to-left languages from the one list, so Urdu and Yiddish pages read right to left too.
+test('templates tell right-to-left languages with the rtl test', function (): void {
+    $twig = new Environment(new ArrayLoader(['t' => '{{ ["ar_SA", "ur_PK", "yi", "fa", "en_US", "de", null]|map(l => l is rtl ? 1 : 0)|join }}']));
+    $twig->addExtension(new Twig\Extension\AttributeExtension(ClientFence\Twig\Extension\ClientFenceExtension::class));
+    $twig->addRuntimeLoader(new Twig\RuntimeLoader\FactoryRuntimeLoader([ClientFence\Twig\Extension\ClientFenceExtension::class => fn () => new ClientFence\Twig\Extension\ClientFenceExtension(null)]));
+    expect($twig->render('t'))->toBe('1111000');
+
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_MODS, FilesystemIterator::SKIP_DOTS));
+    $themes = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(PATH_THEMES, FilesystemIterator::SKIP_DOTS));
+    $lists = [];
+    foreach ([$files, $themes] as $tree) {
+        foreach ($tree as $file) {
+            if (str_ends_with($file->getFilename(), '.twig') && preg_match("/\\['ar', '(fa|he)'/", file_get_contents($file->getPathname()))) {
+                $lists[] = $file->getPathname();
+            }
+        }
+    }
+    expect($lists)->toBe([]);
+});

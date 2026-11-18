@@ -7,7 +7,7 @@
 {% set company = guest.system_company %}
 {% set locale = guest.system_locale|default('en_US') %}
 
-{% set is_rtl = locale|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+{% set is_rtl = locale is rtl %}
 
 <!DOCTYPE html>
 <html lang="{{ locale|replace({'_': '-'}) }}" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">

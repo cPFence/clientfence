@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 label.htmlFor = input.id;
                 input.lang = lang.slice(0, 2);
                 // The message is HTML code: only the subject reads right to left.
-                if (field === 'subject' && ['ar', 'he', 'fa'].includes(input.lang)) {
+                if (field === 'subject' && {{ constant('ClientFence\\Twig\\Extension\\RtlDateExtension::RTL_LANGUAGES')|json_encode|raw }}.includes(input.lang)) {
                     input.dir = 'rtl';
                 }
                 input.value = panes.querySelector('[data-cf-lang-pane=""] [data-cf-field="' + field + '"]').value;

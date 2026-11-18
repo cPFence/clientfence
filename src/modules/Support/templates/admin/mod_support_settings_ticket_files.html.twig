@@ -2,7 +2,7 @@
    settings page. Kept in mod_support; saved with support/ticket_files_update, never with the
    tab's main form. #}
 {% set files = admin.extension_config_get({ 'ext': 'mod_support' }) %}
-{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+{% set is_rtl = active_locale|default('en_US') is rtl %}
 {{ include('mod_clientfence_settings_style.html.twig') }}
 {# ClientFence core patch: a card of its own with the accent-bar heading, rows that tint on hover and a Save row that stays in view (CF-135 redesign). #}
 <div class="card clientfence-settings cf-set" id="ticket-files" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">

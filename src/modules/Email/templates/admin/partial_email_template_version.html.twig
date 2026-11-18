@@ -1,7 +1,7 @@
 {# ClientFence: one language version of an email template (Email/Translations.php) on mod_email_template.html.twig.
    Gets `lang` ('' for the empty copy the page's script fills in for a new version), `name`, `subject`, `content`,
    `off` (the language is turned off) and `can_edit`. #}
-{% set rtl = lang[:2] in ['ar', 'he', 'fa'] %}
+{% set rtl = lang is rtl %}
 <div data-cf-lang-pane="{{ lang }}" hidden>
     {% if lang == '' %}
         <div class="alert alert-warning" role="alert">{{ 'Copied from the default text: translate it and click Update.'|trans }}</div>

@@ -56,6 +56,7 @@ test('product settings only load forms when staff can view them', function (bool
         $twig->addFilter(new TwigFilter($filter, static fn (mixed $value, mixed ...$arguments): string => (string) $value));
     }
     $twig->addFilter(new TwigFilter('url', static fn (string $value, ?array $query = null, ?string $area = null): string => '/' . $value));
+    $twig->addTest(new Twig\TwigTest('rtl', static fn (?string $locale): bool => ClientFence\Twig\Extension\RtlDateExtension::isRtl((string) $locale)));
     foreach (['fb_api_form', 'wysiwyg'] as $function) {
         $twig->addFunction(new TwigFunction($function, static fn (mixed ...$arguments): string => ''));
     }

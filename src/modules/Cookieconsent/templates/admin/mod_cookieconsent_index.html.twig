@@ -50,7 +50,7 @@
                         </div>
                         {% for lang, title in language_names|filter((t, l) => l != notice.default_locale) %}
                             {% set own = notice.translations[lang] ?? {} %}
-                            {% set rtl = lang[:2] in ['ar', 'he', 'fa'] %}
+                            {% set rtl = lang is rtl %}
                             <div data-cf-pane="{{ lang }}" hidden>
                                 <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
                                     <label class="form-label mb-0" for="cookie-message-{{ lang }}">{{ 'Message'|trans }} <span class="badge bg-blue-lt ms-1">{{ title }}</span></label>

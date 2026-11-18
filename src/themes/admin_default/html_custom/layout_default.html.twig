@@ -7,7 +7,7 @@
 {% set company = guest.system_company %}
 {% set active_locale = guest.system_locale|default('en')|replace({'_': '-'}) %}
 {% set current_active_menu = active_menu|default('') %}
-{% set frame_dir = guest.system_locale|default('en')|lower|slice(0, 2) in ['ar', 'fa', 'he'] ? 'rtl' : 'ltr' %}
+{% set frame_dir = guest.system_locale|default('en') is rtl ? 'rtl' : 'ltr' %}
 
 <!DOCTYPE html>
 <html lang="{{ active_locale }}" dir="{{ frame_dir }}" data-bs-theme="dark">

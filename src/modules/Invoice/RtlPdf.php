@@ -15,7 +15,7 @@ namespace ClientFence\Mod\Invoice;
 final class RtlPdf
 {
     /** Languages written right to left. */
-    public const RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur', 'yi'];
+    public const RTL_LANGUAGES = \ClientFence\Twig\Extension\RtlDateExtension::RTL_LANGUAGES;
 
     /**
      * Fonts shipped with TCPDF for scripts DejaVu Sans lacks, by locale or language: FreeSans (Devanagari, Bengali, for

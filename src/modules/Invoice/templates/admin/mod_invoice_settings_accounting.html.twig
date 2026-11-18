@@ -1,7 +1,7 @@
 {# ClientFence: the accounting sync, on the Invoices settings page (Invoice/Accounting/Sync.php). Kept in mod_invoice;
    saved with invoice/accounting_save. #}
 {% set acct = admin.invoice_accounting_get %}
-{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+{% set is_rtl = active_locale|default('en_US') is rtl %}
 {% set program_name = acct.programs[acct.program ~ '']|default('') %}
 {% set statuses = { queued: 'Waiting'|trans, sent: 'Sent'|trans, failed: 'Failed, will try again'|trans, stopped: 'Stopped'|trans, voided: 'Voided'|trans } %}
 {% set entities = { client: 'Client'|trans, invoice: 'Invoice'|trans, payment: 'Payment'|trans, credit: 'Credit note'|trans, surplus: 'Account credit'|trans } %}

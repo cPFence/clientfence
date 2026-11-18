@@ -2,7 +2,7 @@
    settings page under the ticket attachments. Kept in mod_support; saved with
    support/mail_settings_update, never with the tab's main form. Mailboxes are set per help desk. #}
 {% set mail = admin.extension_config_get({ 'ext': 'mod_support' }) %}
-{% set is_rtl = active_locale|default('en_US')|lower|slice(0, 2) in ['ar', 'fa', 'he'] %}
+{% set is_rtl = active_locale|default('en_US') is rtl %}
 {# ClientFence core patch: a card of its own with the accent-bar heading, rows that tint on hover and a Save row that stays in view (CF-135 redesign). #}
 <div class="card clientfence-settings cf-set" id="email-import" dir="{{ is_rtl ? 'rtl' : 'ltr' }}">
 	<form method="post" action="{{ 'support/mail_settings_update'|api_url }}" {{ fb_api_form({ message: 'Settings Updated'|trans, reload: true }) }}>
