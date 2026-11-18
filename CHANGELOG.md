@@ -4,8 +4,15 @@
 
 A fixes release from the QA rounds: renewal invoices use part of the account credit, view-only staff see fewer controls they cannot use, and many billing, ticket, date and language fixes.
 
+### Added
+
+- A "Support ClientFence" button on System → Update opens clientfence.com/sponsor in a new tab.
+
 ### Changed
 
+- When an update finishes, a welcome screen shows the new version; Continue opens the sign-in page.
+- Check for Updates and other actions that reload the page keep the loading animation until the next page shows.
+- With several Enhance servers, an order's Change Hosting Plan list leaves out plans imported from another server. Plans made by hand, and plans imported before 1.0.58 while several Enhance servers were set up, are still listed for every account.
 - Renewal invoices take part of the account credit: when the credit does not cover a renewal invoice (from the cron, a staff renewal or the client's Renew Now), it is applied and only the rest is due. Checkout is unchanged.
 - An add-on bought for a service that is already paid ahead is charged up to the service's due date; the recurring price stays one period.
 - The cron no longer suspends an expired service while its renewal invoice is still a draft, which the client cannot see or pay; it waits until the invoice is approved.
@@ -66,6 +73,8 @@ A fixes release from the QA rounds: renewal invoices use part of the account cre
 - Custom pages keep their description and keywords when an update leaves them out.
 - The staff groups table scrolls inside its card on a phone, and the knowledge base category filter's label works.
 - API: calls with numbers or lists where text is expected answer a clear message instead of a PHP error; methods starting with `_` are not calls; `template_send` takes 1 and 0; only an enabled language can be the default; an unknown staff status or passkey is refused; `user_create` needs the same rights as inviting a user; the core update checks the right before asking the update feed.
+- A hosting order can use a subdomain such as shop.example.com as its domain; the staff order form no longer says "TLD is invalid".
+- An action that returns to another tab of the same page now reloads it, so the list is up to date.
 
 ## 1.0.57 (2026-11-17)
 
