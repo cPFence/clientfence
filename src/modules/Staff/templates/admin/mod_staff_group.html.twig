@@ -212,7 +212,8 @@
                                         <section class="mb-4 pb-4 border-bottom">
                                             <div class="row g-3">
                                                 <div class="col-lg-3">
-                                                    <h6 class="card-title mb-0">{{ modName|replace({'_': ' '})|title|trim }}</h6>
+                                                    {# ClientFence core patch: the module's translated name (Staff controller), else its folder name. #}
+                                                    <h6 class="card-title mb-0">{{ mod.name|default('') ? mod.name|trans : modName|replace({'_': ' '})|title|trim }}</h6>
                                                 </div>
                                                 <div class="col-lg-9">
                                                     {% if not mod.permissions.can_always_access|default(false) %}

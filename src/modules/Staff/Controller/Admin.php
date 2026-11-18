@@ -128,6 +128,14 @@ class Admin implements InjectionAwareInterface
 
         $extensionService = $this->di['mod_service']('Extension');
         $mods = $extensionService->getCoreAndActiveModulesAndPermissions();
+        // ClientFence core patch: each permission heading is the module's name from its manifest (translated), not its folder name.
+        foreach ($mods as $name => &$mod) {
+            try {
+                $mod['name'] = (string) ($this->di['mod']($name)->getManifest()['name'] ?? '');
+            } catch (\ClientFence\InformationException) {
+            }
+        }
+        unset($mod);
 
         return $app->render('mod_staff_group', [
             'group' => $group,

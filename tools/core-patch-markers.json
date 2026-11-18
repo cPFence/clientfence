@@ -8694,5 +8694,13 @@
     {
         "file": "modules/Email/templates/admin/mod_email_template.html.twig",
         "done": "ClientFence core patch: the staff groups are listed only to staff who may see them (the page failed for template staff without Staff access)."
+    },
+    {
+        "file": "modules/Staff/Controller/Admin.php",
+        "done": "ClientFence core patch: each permission heading is the module's name from its manifest (translated), not its folder name."
+    },
+    {
+        "file": "modules/Staff/templates/admin/mod_staff_group.html.twig",
+        "done": "ClientFence core patch: the module's translated name (Staff controller), else its folder name."
     }
 ]
