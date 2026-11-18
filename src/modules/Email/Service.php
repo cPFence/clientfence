@@ -295,6 +295,8 @@ class Service implements \ClientFence\InjectionAwareInterface
             'mod_staff_ticket_close' => ['staff' => $staff, 'ticket' => $staffTicket],
             'mod_staff_password_reset_approve' => ['c' => $staff],
             'mod_staff_client_signup' => ['c' => $client, 'staff' => $staff],
+            // ClientFence core patch: the price change email previews and saves before its first send (BulkPrices::emailClients() gives `services`).
+            'mod_order_price_changed' => ['c' => $client, 'services' => [['id' => 1, 'title' => 'Example Hosting', 'currency' => '', 'period' => '1M', 'old_total' => 10.0, 'new_total' => 12.0, 'discount' => 0.0, 'next_invoice' => date('Y-m-d', strtotime('+30 days')), 'unpaid_invoice_id' => null]]],
             default => [],
         };
     }

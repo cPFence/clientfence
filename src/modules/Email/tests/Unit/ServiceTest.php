@@ -287,6 +287,10 @@ test('getVars supplies preview variables for support and staff templates before 
 
     $signupVars = $service->getVars(emailTemplate('mod_staff_client_signup'));
     expect($signupVars)->toHaveKeys(['c.email', 'c.first_name', 'c.last_name', 'staff.email']);
+
+    // Issue #50: the price change email could not be previewed or saved before its first send.
+    expect($service->getVars(emailTemplate('mod_order_price_changed')))
+        ->toHaveKeys(['c.first_name', 'services.0.title', 'services.0.old_total', 'services.0.new_total', 'services.0.period']);
 });
 
 test('getVars merges stored examples over preview defaults', function (): void {
