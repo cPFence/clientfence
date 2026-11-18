@@ -1,5 +1,67 @@
 # Changelog
 
+## 1.0.58 (2026-11-18)
+
+A fixes release from the QA rounds: renewal invoices use part of the account credit, view-only staff see fewer controls they cannot use, and many billing, ticket, date and language fixes.
+
+### Changed
+
+- Renewal invoices take part of the account credit: when the credit does not cover a renewal invoice (from the cron, a staff renewal or the client's Renew Now), it is applied and only the rest is due. Checkout is unchanged.
+- An add-on bought for a service that is already paid ahead is charged up to the service's due date; the recurring price stays one period.
+- The cron no longer suspends an expired service while its renewal invoice is still a draft, which the client cannot see or pay; it waits until the invoice is approved.
+- Console commands refuse to run as root when the site's data folder belongs to another user, and `system:update` always refuses root. `cron.php` and `cron:run` started as root switch to the site's user, and stop with a message when they cannot.
+- Updating removes unused keys from `config.php` (`debug`, `log_stacktrace`, `stacktrace_length`, `disable_auto_cron`, `report_errors`); the stack trace settings move under `debug_and_monitoring`. New installs no longer write `disable_auto_cron`.
+- Staff change their own sign-in email and password only on the Profile page, and a new email needs the current password. Saving your own row on the Staff page keeps your email.
+- View-only staff no longer see controls they cannot use on these pages: order and ticket actions, the reply box, the save, delete and switch buttons of the product and promotion edit pages and of the knowledge base, extension, language and System → Update pages, and New Invoice and New Support Ticket.
+- Draft invoices: a draft is "not found" for clients and guests by its link (invoice page, PDF and pay pages); staff with invoice access still see it. The admin pages, the client's invoice lists and the dashboard show it as Draft, not Unpaid.
+- Only a Super Administrator can change the text of the emails that carry a sign-in link, password reset link, invitation, email confirmation or sign-in PIN. Staff with the template right can still reset them and switch them on or off.
+- Staff cannot remove more credit than the client can spend (the credit the client page shows); part payments kept for an invoice cannot be removed as credit. The credit form says "Credit balance updated".
+- The client's emails for a staff reply and for a ticket opened by staff show the message formatted as on the ticket page, and the reply email shows the reply itself. Built-in emails you never edited get this on their own. If you edited one of these two emails, Reset on its page (System → Settings → Email) brings the new version and replaces your text.
+- A domain ordered together with a hosting plan is registered with the nameservers of the plan's server, as in WHMCS.
+- Staff password, username, domain and IP changes on a suspended or expired hosting account now reach the control panel too.
+- Deleting or anonymizing a client also removes the bank transfer receipts they uploaded. Deleting a ticket also removes its ratings, feedback, assignment, pin and the other records ClientFence keeps about it.
+- The CAPTCHA secret keys are shown only to staff who may change the settings.
+- The API's per-address limit applies only to requests without a signed-in session, and only failed sign-ins count against the sign-in limit, so a team behind one office address is no longer locked out.
+- The installer advises `config.php` mode 600 and names the System Health page.
+- Console: `system:version` shows the ClientFence version, and `system:releasenotes` says when the site is on the latest version or the update check failed.
+
+### Fixed
+
+- Dates: an unreadable date in a search filter, a list, a statistics chart, an order, an invoice or a promotion is refused with "Enter a valid date." instead of an error.
+- Lists: the "to" date includes that whole day on the order, invoice, transaction, client and credit lists, and the client credit list's date filter works. The order list's filter by several order ids matches all of them, and a search keeps the title filter.
+- Statistics charts show every day of the chosen range and count the whole last day.
+- A gateway payment is credited only once when its notice comes again (Stripe, Mollie, eWAY, GoCardless, PayTabs, PayPal Auto-Pay and PayPal Email), so a retried notice no longer leaves free credit.
+- Stripe: Process on a failed payment row no longer deletes the row that holds the credit, or shows the payment twice on the invoice.
+- A card payment pays its invoice when the client's balance was already below zero.
+- Deleting an invoice line works out the gateway fee again on the new amount.
+- An invoice that staff lower to what was already paid on it is marked paid, and the rest stays the client's credit.
+- Refunds: a part refund of a taxed invoice counts without its tax in income figures, credit notes use the invoice number as the invoice shows it, and the WHMCS import keeps the refund amount WHMCS recorded.
+- The account statement lists a paid Mass Pay invoice by its fee only, so its totals no longer count the money twice.
+- Saving a product's Configuration tab no longer clears the Prorata Billing days and the affiliate commission set on its General tab.
+- Failed actions: two Retry clicks at once no longer set up the account twice; the second is refused with a message.
+- Suspending, cancelling or deleting a domain ordered with hosting no longer does the same to the hosting's add-on.
+- Add New Order: the start date defaults to the server's today, so orders are no longer refused when the staff browser's day is ahead of the server's.
+- Emails to a recipient without a time zone use the system time zone, so dates match the client area and the PDF.
+- Emails in the reader's language: ticket status and priority, the mail import "not added" notice and the mass mail unsubscribe line.
+- Admin labels in the staff member's language: escalation rule statuses, failed actions on the order page, staff status, staff group permission headings and the System Health email check.
+- Arabic: a percentage promotion line keeps its "%".
+- The sign-in PIN email's link to the sign-in page carries the email address.
+- Pages that failed for staff with fewer rights now open: product and add-on pages without the Currency, server or licence rights, the email template page without Staff access, and the staff group page (a script error from an empty tooltip).
+- Account users without access get the usual no-access page on Payment methods, services and emails, and the invoice list opens for users without quotes access.
+- Control panels: Plesk reseller accounts can be suspended, unsuspended and changed, Plesk unlimited limits are sent as unlimited and empty ones are left out, the CWP package change works, and cPanel, HestiaCP, DirectAdmin and CWP errors say clearly whether the panel answered an error or could not be reached. A new hosting plan keeps the settings given when it is created.
+- Form builder: product and order counts are right, a copied form keeps its choices, style and texts, and saving a field without options keeps its choices.
+- Products: the delete message is right, deleting an add-on can no longer delete a main product, staff with the view right can read categories, the store pairs only enabled and visible products, and an option group with one option reads "1 option".
+- Tickets: an unknown help desk or status is refused, staff cannot open a ticket for a client who does not exist, an escalation rule whose help desk was deleted still applies its other changes, and a canned reply's title cannot be cleared.
+- Domains: installed registrars are no longer offered as available, and a contact's company and second address line are optional.
+- Email templates: your own templates can use the client and staff variables (for example `{{ c.first_name }}`), and a bulk delete also removes their staff group links.
+- System Health: a failed backup shows the time of its own run.
+- Security → Settings offers the Traefik proxy header and keeps it on save. A sign-in security save without the country fields keeps the staff country rule.
+- Themes: a theme is only a folder name, a theme that is not installed answers "not found", and the client area falls back to the default theme when its folder is missing.
+- Confirm boxes in the admin area show their texts as plain text, so a client's sign-up email cannot add HTML to them.
+- Custom pages keep their description and keywords when an update leaves them out.
+- The staff groups table scrolls inside its card on a phone, and the knowledge base category filter's label works.
+- API: calls with numbers or lists where text is expected answer a clear message instead of a PHP error; methods starting with `_` are not calls; `template_send` takes 1 and 0; only an enabled language can be the default; an unknown staff status or passkey is refused; `user_create` needs the same rights as inviting a user; the core update checks the right before asking the update feed.
+
 ## 1.0.57 (2026-11-17)
 
 Mass Pay, moving a service to another client, part payments, draft invoices and 16 more languages.
