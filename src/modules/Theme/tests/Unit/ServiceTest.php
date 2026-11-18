@@ -516,6 +516,42 @@ test('getCurrentClientAreaThemeCode falls back to palisade when the theme folder
     Service::clearThemeCache();
 });
 
+test('a stored theme setting that is a path falls back to the default theme', function (string $stored): void {
+    Service::clearThemeCache();
+    $service = new Service();
+    $db = Mockery::mock('ClientFence\Database');
+    // Staff with the settings right can store any value; '..' and '../modules' exist next to the themes folder (CF-189).
+    $db->shouldReceive('getCell')->andReturn($stored);
+    $di = container();
+    $di['db'] = $db;
+    $service->setDi($di);
+
+    try {
+        expect($service->getCurrentClientAreaThemeCode())->toBe('palisade')
+            ->and($service->getCurrentAdminAreaTheme()['code'])->toBe('admin_default');
+    } finally {
+        Service::clearThemeCache();
+    }
+})->with(['..', '../modules']);
+
+test('loadTheme refuses a path and shows no server path', function (): void {
+    $root = sys_get_temp_dir() . '/cf_theme_paths_' . uniqid();
+    $filesystem = new Symfony\Component\Filesystem\Filesystem();
+    // A folder with a manifest beside the themes folder: ../ read it as a theme (CF-189).
+    $filesystem->mkdir([$root . '/themes', $root . '/other']);
+    $filesystem->dumpFile($root . '/other/manifest.json', '{"name":"other"}');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getThemesPath')->andReturn($root . '/themes');
+    $service->setDi(container());
+
+    try {
+        expect(fn () => $service->loadTheme('../other'))->toThrow(ClientFence\InformationException::class, "Theme '../other' does not exist.")
+            ->and(fn () => $service->loadTheme('missing'))->toThrow(ClientFence\InformationException::class, "Theme 'missing' does not exist.");
+    } finally {
+        $filesystem->remove($root);
+    }
+});
+
 test('loadTheme lists html_custom first, as the template loader renders it', function (): void {
     $root = sys_get_temp_dir() . '/cf_theme_paths_' . uniqid();
     $filesystem = new Symfony\Component\Filesystem\Filesystem();

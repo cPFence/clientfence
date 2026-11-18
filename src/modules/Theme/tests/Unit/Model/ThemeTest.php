@@ -32,6 +32,11 @@ test('not existing theme', function (): void {
     expect($e ?? null)->toBeInstanceOf(ClientFence\InformationException::class);
 });
 
+test('a theme name is a folder name, never a path', function (string $name): void {
+    // CF-189: ../ told whether any file or folder exists, and theme/select would save it.
+    expect(fn () => new ClientFence\Mod\Theme\Model\Theme($name))->toThrow(ClientFence\InformationException::class, 'does not exist');
+})->with(['../config.php', '../modules/Clientfence', 'palisade/../admin_default', '']);
+
 test('is admin area theme', function () use ($existingTheme): void {
     $theme = new ClientFence\Mod\Theme\Model\Theme($existingTheme);
     $result = $theme->isAdminAreaTheme();

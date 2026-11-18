@@ -352,7 +352,7 @@ class Service implements InjectionAwareInterface
 
         if (self::$adminThemeCache !== null) {
             // Apply default logic when returning from cache
-            $theme = !empty(self::$adminThemeCache) && $this->filesystem->exists(Path::join(PATH_THEMES, self::$adminThemeCache))
+            $theme = $this->isTheme(self::$adminThemeCache)
                 ? self::$adminThemeCache
                 : $default;
             $url = SYSTEM_URL . "themes/{$theme}/";
@@ -369,7 +369,7 @@ class Service implements InjectionAwareInterface
         self::$adminThemeCache = $theme ?? '';
 
         // Apply default logic for the return value
-        if ($theme == null || !$this->filesystem->exists(Path::join(PATH_THEMES, $theme))) {
+        if (!$this->isTheme($theme)) {
             $theme = $default;
         }
         $url = SYSTEM_URL . "themes/{$theme}/";
@@ -391,7 +391,7 @@ class Service implements InjectionAwareInterface
         $theme = self::$clientThemeCache;
 
         // ClientFence core patch: a missing client theme folder falls back to palisade, as the admin area falls back to admin_default.
-        return !empty($theme) && $this->filesystem->exists(Path::join(PATH_THEMES, $theme)) ? $theme : 'palisade';
+        return $this->isTheme($theme) ? $theme : 'palisade';
     }
 
     /**
@@ -432,8 +432,7 @@ class Service implements InjectionAwareInterface
             $theme = $systemService->getParamValue('admin_theme', $default);
         }
 
-        $path = $this->getThemesPath();
-        if (!$this->filesystem->exists(Path::join($path, $theme))) {
+        if (!$this->isTheme($theme)) {
             $theme = $default;
         }
 
@@ -450,13 +449,19 @@ class Service implements InjectionAwareInterface
         return PATH_THEMES;
     }
 
+    // ClientFence core patch: a theme is a folder name in the themes folder, also when read from settings (staff can store any value).
+    private function isTheme(mixed $name): bool
+    {
+        return is_string($name) && preg_match('/^[a-z0-9_-]+$/i', $name) === 1 && $this->filesystem->exists(Path::join($this->getThemesPath(), $name));
+    }
+
     private function buildThemeConfig($theme, $client = true, $mod = null): array
     {
-        $theme_path = Path::join($this->getThemesPath(), $theme);
-
-        if (!$this->filesystem->exists($theme_path)) {
-            throw new \ClientFence\Exception('Theme was not found in path :path', [':path' => $theme_path]);
+        // ClientFence core patch: only a theme folder name, and no server path in the error.
+        if (!$this->isTheme($theme)) {
+            throw new \ClientFence\InformationException("Theme ':name' does not exist.", [':name' => is_string($theme) ? $theme : ''], 404);
         }
+        $theme_path = Path::join($this->getThemesPath(), $theme);
         $manifest = Path::join($theme_path, 'manifest.json');
 
         if ($this->filesystem->exists($manifest)) {

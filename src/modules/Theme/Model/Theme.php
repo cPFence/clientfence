@@ -25,7 +25,8 @@ class Theme
 
     public function __construct(private $name)
     {
-        if (!self::getFilesystem()->exists($this->getPath())) {
+        // ClientFence core patch: a theme is a folder name in the themes folder, never a path (../ probed any file).
+        if (!is_string($name) || preg_match('/^[a-z0-9_-]+$/i', $name) !== 1 || !self::getFilesystem()->exists($this->getPath())) {
             // ClientFence core patch: a theme that is not installed is "not found" (404), not a server error page.
             throw new \ClientFence\InformationException("Theme ':name' does not exist.", [':name' => $name], 404);
         }
