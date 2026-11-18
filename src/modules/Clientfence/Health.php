@@ -563,18 +563,12 @@ final class Health
             yield self::check('server', 'srv_disk', self::msg('Free disk space'), $gb >= 5 ? 'ok' : ($gb >= 1 ? 'warn' : 'bad'), self::msg(':size GB free (:percent%).'), params: [':size' => sprintf('%.1f', $gb), ':percent' => (int) round($free * 100 / $total)]);
         }
 
-        // Only the Linkers billing pack keeps this work folder; other installs have the daily database backup below.
-        $backups = rtrim((string) (getenv('BILLING_SRC') ?: dirname(PATH_ROOT) . '/.billing-src'), '/') . '/backups';
-        $newest = 0;
-        foreach (is_dir($backups) && is_readable($backups) ? (glob($backups . '/*', GLOB_ONLYDIR) ?: []) : [] as $dir) {
-            $newest = max($newest, (int) filemtime($dir));
+        $covered = Backups::coverage($di);
+        yield self::check('server', 'srv_backup_db', self::msg('Database backup'), $covered['db'][0], $covered['db'][1], 'clientfence/backups', $covered['db'][2]);
+        yield self::check('server', 'srv_backup_files', self::msg('Site files backup'), $covered['files'][0], $covered['files'][1], 'clientfence/backups', $covered['files'][2]);
+        if (($daily = Backups::health($di)) !== null) {
+            yield self::check('server', 'srv_db_backup', self::msg('Daily database backup'), $daily[0], $daily[1], 'clientfence/backups', $daily[2]);
         }
-        if (is_dir($backups)) {
-            yield self::check('server', 'srv_backup', self::msg('Newest billing backup'), $newest === 0 ? 'warn' : (time() - $newest <= 30 * 86400 ? 'ok' : 'warn'), $newest === 0 ? self::msg('No backup found in the work folder.') : (time() - $newest > 30 * 86400 ? self::msg('Made :ago ago; make a fresh one.') : self::msg('Made :ago ago.')), params: [':ago' => time() - $newest]);
-        }
-
-        [$state, $detail, $params] = Backups::health($di);
-        yield self::check('server', 'srv_db_backup', self::msg('Daily database backup'), $state, $detail, 'clientfence/backups', $params);
         if (($cloud = CloudBackups::health($di)) !== null) {
             yield self::check('server', 'srv_cloud_backup', self::msg('Cloud backups'), $cloud[0], $cloud[1], 'clientfence/backups', $cloud[2]);
         }

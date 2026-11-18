@@ -30640,3 +30640,32 @@ msgstr "网站 :domain: 不属于此主机账户。"
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "赞助 ClientFence"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "数据库备份"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "最新副本：:time。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "网站文件（网站根目录和上传的文件）还没有备份：请在 系统 → 设置 → 系统 → 备份 中开启文件的云备份。ClientFence 看不到您的主机商所做的备份。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "还没有数据库备份：请在 系统 → 设置 → 系统 → 备份 中开启每日备份或数据库的云备份。"
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "网站文件备份"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "网站文件的最新备份时间为 :time：请检查 cron 是否在运行、备份是否成功。"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "数据库的最新备份时间为 :time：请检查 cron 是否在运行、备份是否成功。"

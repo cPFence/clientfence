@@ -8038,6 +8038,10 @@ msgstr ""
 msgid "Database and configuration patches are being applied. Keep this tab open until the request completes."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "Database backup failed"
 msgstr ""
@@ -14954,14 +14958,6 @@ msgstr ""
 msgid "Made"
 msgstr ""
 
-#: src/modules/Clientfence/Health.php
-msgid "Made :ago ago."
-msgstr ""
-
-#: src/modules/Clientfence/Health.php
-msgid "Made :ago ago; make a fresh one."
-msgstr ""
-
 #: src/modules/Clientfence/Backups.php
 msgid "Made :time, but kept only on this server: add SFTP/FTP, cloud storage or email for a copy that survives losing it."
 msgstr ""
@@ -16666,8 +16662,8 @@ msgstr ""
 msgid "New visitors sign up on the sign-up page (linked from the sign-in page) or on the checkout page, when they order."
 msgstr ""
 
-#: src/modules/Clientfence/Health.php
-msgid "Newest billing backup"
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -16842,8 +16838,8 @@ msgstr ""
 msgid "No articles or categories matched your search for:"
 msgstr ""
 
-#: src/modules/Clientfence/Health.php
-msgid "No backup found in the work folder."
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -16939,7 +16935,7 @@ msgid "No custom parameters have been defined yet."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
-msgid "No daily database backup is on: turn one on in System → Settings → System → Backups."
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
 msgstr ""
 
 #: src/modules/Security/Checks/generalCheck.php
@@ -24730,6 +24726,10 @@ msgstr ""
 msgid "Since %date%."
 msgstr ""
 
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Site key"
 msgstr ""
@@ -27256,11 +27256,19 @@ msgid "The new product no longer exists."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
 msgid "The newest backup sent is :days days old: check that the cron runs."
 msgstr ""
 
 #: src/modules/Clientfence/CloudBackups.php
 msgid "The newest copy sent to :service is from :time: check that the cron runs."
+msgstr ""
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr ""
 
 #: src/themes/palisade/html/mod_serviceapikey_head.html.twig

@@ -33623,3 +33623,32 @@ msgstr "Veebisait :domain: ei kuulu sellele majutuskontole."
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "Toeta ClientFence'i"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "Andmebaasi varukoopia"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "Uusim koopia: :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "Saidi failidest pole veel varukoopiat (veebijuur ja üleslaaditud failid): lülitage failide pilvekoopiad sisse jaotises Süsteem → Seaded → Süsteem → Varukoopiad. ClientFence ei näe varukoopiaid, mida teeb teie majutaja."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "Andmebaasist pole veel varukoopiat: lülitage igapäevane varukoopia või andmebaasi pilvekoopiad sisse jaotises Süsteem → Seaded → Süsteem → Varukoopiad."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "Saidi failide varukoopia"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "Saidi failide uusim varukoopia on :time: kontrollige, et cron töötab ja koopiad õnnestuvad."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "Andmebaasi uusim varukoopia on :time: kontrollige, et cron töötab ja varukoopiad õnnestuvad."

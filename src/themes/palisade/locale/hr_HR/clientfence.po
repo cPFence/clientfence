@@ -33631,3 +33631,32 @@ msgstr "Web-lokacija :domain: nije dio ovog hosting računa."
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "Podržite ClientFence"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "Sigurnosna kopija baze podataka"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "Najnovija kopija: :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "Još nema sigurnosne kopije datoteka web-mjesta (korijen weba i učitane datoteke): uključite kopije datoteka u oblaku u Sustav → Postavke → Sustav → Sigurnosne kopije. ClientFence ne vidi sigurnosne kopije koje izrađuje vaš pružatelj hostinga."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "Još nema sigurnosne kopije baze podataka: uključite dnevnu sigurnosnu kopiju ili kopije baze podataka u oblaku u Sustav → Postavke → Sustav → Sigurnosne kopije."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "Sigurnosna kopija datoteka web-mjesta"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "Najnovija sigurnosna kopija datoteka web-mjesta je od :time: provjerite radi li cron i uspijevaju li kopije."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "Najnovija sigurnosna kopija baze podataka je od :time: provjerite radi li cron i uspijevaju li sigurnosne kopije."

@@ -29106,3 +29106,32 @@ msgstr "Сайт :domain: не относится к этому аккаунту
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "Поддержать ClientFence"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "Резервная копия базы данных"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "Последняя копия: :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "Резервной копии файлов сайта (корень веб-сервера и загруженные файлы) пока нет: включите облачные копии файлов в разделе Система → Настройки → Система → Резервные копии. ClientFence не видит резервные копии, которые делает ваш хостинг."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "Резервной копии базы данных пока нет: включите ежедневную резервную копию или облачные копии базы данных в разделе Система → Настройки → Система → Резервные копии."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "Резервная копия файлов сайта"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "Последняя резервная копия файлов сайта от :time: проверьте, что cron работает и копии создаются успешно."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "Последняя резервная копия базы данных от :time: проверьте, что cron работает и копии создаются успешно."

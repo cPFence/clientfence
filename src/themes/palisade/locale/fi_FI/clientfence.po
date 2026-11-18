@@ -31576,3 +31576,32 @@ msgstr "Verkkosivusto :domain: ei kuulu tähän webhotellitiliin."
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "Tue ClientFencea"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "Tietokannan varmuuskopio"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "Uusin kopio: :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "Sivuston tiedostoista ei ole vielä varmuuskopiota (web-juuri ja ladatut tiedostot): ota tiedostojen pilvikopiot käyttöön kohdassa Järjestelmä → Asetukset → Järjestelmä → Varmuuskopiot. ClientFence ei näe palveluntarjoajasi tekemiä varmuuskopioita."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "Tietokannasta ei ole vielä varmuuskopiota: ota päivittäinen varmuuskopio tai tietokannan pilvikopiot käyttöön kohdassa Järjestelmä → Asetukset → Järjestelmä → Varmuuskopiot."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "Sivuston tiedostojen varmuuskopio"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "Sivuston tiedostojen uusin varmuuskopio on ajalta :time: tarkista, että cron toimii ja kopiot onnistuvat."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "Tietokannan uusin varmuuskopio on ajalta :time: tarkista, että cron toimii ja varmuuskopiot onnistuvat."

@@ -151,9 +151,9 @@ test('Back up now checks its choice: nothing ticked, unknown or cloud copies whi
         ->and(fn () => backupsAdminApi($di, 2)->backup_run(['targets' => ['email']]))->toThrow(InformationException::class, 'Only Super Administrators');
 });
 
-test('Health warns with no method on, needs attention after a failure and warns when old', function (): void {
+test('Health has no daily backup row with no method on, needs attention after a failure and warns when old', function (): void {
     [$di] = backupsContainer();
-    expect(Backups::health($di)[0])->toBe('warn');
+    expect(Backups::health($di))->toBeNull();
 
     $on = ['ftp' => ['enabled' => false], 'email' => ['enabled' => true, 'address' => 'b@example.com']];
     [$di] = backupsContainer(['backups' => $on]);
@@ -182,6 +182,28 @@ test('Health warns with no method on, needs attention after a failure and warns 
     // A failed SFTP run names its own time, not a later Back up now that only kept a local copy.
     [$di] = backupsContainer(['backups' => $on, 'backups_status' => ['ran_at' => '2026-11-16 22:52:00', 'ok' => false, 'results' => ['ftp' => 'Login failed', 'local' => 'ok'], 'results_at' => ['ftp' => '2026-11-16 22:52:00', 'local' => '2026-11-17 02:46:45']]]);
     expect(Backups::health($di)[2][':time'])->toBe('2026-11-16 22:52:00');
+});
+
+test('Health warns about the database or the files when no source has a recent copy of it', function (): void {
+    $recent = date('Y-m-d H:i:s', time() - 3600);
+    $old = date('Y-m-d H:i:s', time() - 5 * 86400);
+    $state = static fn (array $settings): array => array_map(static fn (array $check): string => $check[0], Backups::coverage(backupsContainer($settings)[0]));
+
+    // Nothing anywhere.
+    expect($state([]))->toBe(['db' => 'warn', 'files' => 'warn'])
+        ->and(Backups::coverage(backupsContainer()[0])['files'][1])->toContain('No backup of the site files');
+    // Only the daily database backup: the files are not covered.
+    expect($state(['backups_status' => ['last_ok_at' => $recent]]))->toBe(['db' => 'ok', 'files' => 'warn']);
+    // Only cloud copies of the files: the database is not covered.
+    $filesOnly = ['backups_cloud' => ['enabled' => true, 'provider' => 'gdrive', 'db_every' => 'never', 'files_every' => 'weekly'], 'backups_cloud_status' => ['files' => ['last_ok_at' => $recent]]];
+    expect($state($filesOnly))->toBe(['db' => 'warn', 'files' => 'ok']);
+    // Cloud copies of both, with the daily backup off: nothing to warn about.
+    $both = ['backups_cloud' => ['enabled' => true, 'provider' => 'gdrive', 'db_every' => 'daily', 'files_every' => 'daily'], 'backups_cloud_status' => ['db' => ['last_ok_at' => $recent], 'files' => ['last_ok_at' => $recent]]];
+    expect($state($both))->toBe(['db' => 'ok', 'files' => 'ok']);
+    // An old daily backup is cleared by a recent cloud copy of the database; an old one alone warns with its time.
+    expect($state(['backups_status' => ['last_ok_at' => $old]] + $both))->toBe(['db' => 'ok', 'files' => 'ok']);
+    expect(Backups::coverage(backupsContainer(['backups_status' => ['last_ok_at' => $old]])[0])['db'])
+        ->toBe(['warn', 'The newest database backup is from :time: check that the cron runs and the backups succeed.', [':time' => $old]]);
 });
 
 test('Health counts cloud copies of the database as a copy off this server', function (): void {

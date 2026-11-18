@@ -33623,3 +33623,32 @@ msgstr "Webstedet :domain: er ikke en del af denne hostingkonto."
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "Støt ClientFence"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "Sikkerhedskopi af databasen"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "Nyeste kopi: :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "Der er endnu ingen sikkerhedskopi af webstedets filer (webroden og de uploadede filer): slå skykopier af filerne til under System → Indstillinger → System → Sikkerhedskopier. ClientFence kan ikke se sikkerhedskopier, som din hostingudbyder laver."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "Der er endnu ingen sikkerhedskopi af databasen: slå en daglig sikkerhedskopi eller skykopier af databasen til under System → Indstillinger → System → Sikkerhedskopier."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "Sikkerhedskopi af webstedets filer"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "Den nyeste sikkerhedskopi af webstedets filer er fra :time: kontrollér, at cron kører, og at kopierne lykkes."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "Den nyeste sikkerhedskopi af databasen er fra :time: kontrollér, at cron kører, og at sikkerhedskopierne lykkes."

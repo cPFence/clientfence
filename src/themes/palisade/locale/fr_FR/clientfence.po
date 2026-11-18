@@ -30588,3 +30588,32 @@ msgstr "Le site web :domain: ne fait pas partie de ce compte d'hébergement."
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "Soutenir ClientFence"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "Sauvegarde de la base de données"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "Copie la plus récente : :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "Aucune sauvegarde des fichiers du site pour l'instant (la racine web et les fichiers téléversés) : activez les copies cloud des fichiers dans Système → Paramètres → Système → Sauvegardes. ClientFence ne voit pas les sauvegardes faites par votre hébergeur."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "Aucune sauvegarde de la base de données pour l'instant : activez une sauvegarde quotidienne ou des copies cloud de la base de données dans Système → Paramètres → Système → Sauvegardes."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "Sauvegarde des fichiers du site"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "La sauvegarde la plus récente des fichiers du site date du :time : vérifiez que le cron s'exécute et que les copies réussissent."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "La sauvegarde la plus récente de la base de données date du :time : vérifiez que le cron s'exécute et que les sauvegardes réussissent."

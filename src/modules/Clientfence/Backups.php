@@ -337,17 +337,18 @@ final class Backups
     }
 
     /**
-     * The Health check: [state, detail]. Warn when no method is on or the newest backup that was
-     * sent is over two days old; needs attention when the last run failed.
+     * The Health check of the daily backup, only while a method is on (coverage() warns when nothing backs the
+     * database up): warn when the newest backup that was sent is over two days old; needs attention when the last
+     * run failed.
      *
-     * @return array{0: string, 1: string, 2: array<string, mixed>} the state, the text (Health::msg()) and its values
+     * @return array{0: string, 1: string, 2: array<string, mixed>}|null the state, the text (Health::msg()) and its values
      */
-    public static function health(\Pimple\Container $di): array
+    public static function health(\Pimple\Container $di): ?array
     {
         $settings = self::settings($di);
         $on = array_keys(array_filter([Health::msg('SFTP/FTP') => $settings['ftp']['enabled'], Health::msg('email') => $settings['email']['enabled'], Health::msg('this server') => $settings['local']['enabled']]));
         if ($on === []) {
-            return ['warn', Health::msg('No daily database backup is on: turn one on in System → Settings → System → Backups.'), []];
+            return null;
         }
         $status = self::state($di, self::STATUS);
         if ($status === null) {
@@ -387,6 +388,45 @@ final class Backups
         return $cloud['enabled'] && isset(CloudBackups::EVERY[$cloud['db_every']])
             ? ['ok', Health::msg('Made :time; cloud storage keeps a copy off this server.'), [':time' => $latest]]
             : ['warn', Health::msg('Made :time, but kept only on this server: add SFTP/FTP, cloud storage or email for a copy that survives losing it.'), [':time' => $latest]];
+    }
+
+    /**
+     * The Health checks of what is backed up, from every source: the database (the daily backup or cloud copies) and
+     * the site files (cloud copies). A copy counts while it is newer than twice its schedule (two days for the daily
+     * backup).
+     *
+     * @return array{db: array{0: string, 1: string, 2: array<string, mixed>}, files: array{0: string, 1: string, 2: array<string, mixed>}}
+     */
+    public static function coverage(\Pimple\Container $di): array
+    {
+        $newest = ['db' => '', 'files' => ''];
+        $fresh = ['db' => false, 'files' => false];
+        $seen = static function (string $kind, ?string $at, int $window) use (&$newest, &$fresh): void {
+            if ($at) {
+                $newest[$kind] = max($newest[$kind], $at);
+                $fresh[$kind] = $fresh[$kind] || time() - (int) strtotime($at) <= $window;
+            }
+        };
+        $seen('db', self::state($di, self::STATUS)['last_ok_at'] ?? null, 2 * 86400);
+        $cloud = CloudBackups::settings($di);
+        $copies = self::state($di, CloudBackups::STATUS) ?? [];
+        foreach (['db', 'files'] as $kind) {
+            // A schedule turned off still counts its last copy for two days.
+            $seen($kind, $copies[$kind]['last_ok_at'] ?? null, 2 * (CloudBackups::EVERY[$cloud[$kind . '_every']] ?? 86400));
+        }
+
+        return [
+            'db' => match (true) {
+                $fresh['db'] => ['ok', Health::msg('Newest copy :time.'), [':time' => $newest['db']]],
+                $newest['db'] !== '' => ['warn', Health::msg('The newest database backup is from :time: check that the cron runs and the backups succeed.'), [':time' => $newest['db']]],
+                default => ['warn', Health::msg('No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups.'), []],
+            },
+            'files' => match (true) {
+                $fresh['files'] => ['ok', Health::msg('Newest copy :time.'), [':time' => $newest['files']]],
+                $newest['files'] !== '' => ['warn', Health::msg('The newest backup of the site files is from :time: check that the cron runs and the copies succeed.'), [':time' => $newest['files']]],
+                default => ['warn', Health::msg('No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host.'), []],
+            },
+        ];
     }
 
     // ---- Kept on this server.

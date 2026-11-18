@@ -33615,3 +33615,32 @@ msgstr "웹사이트 :domain:은(는) 이 호스팅 계정에 속하지 않습�
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Support ClientFence"
 msgstr "ClientFence 후원하기"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "Database backup"
+msgstr "데이터베이스 백업"
+
+#: src/modules/Clientfence/Backups.php
+msgid "Newest copy :time."
+msgstr "최신 사본: :time."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No backup of the site files yet (the web root and the uploaded files): turn on cloud copies of the files in System → Settings → System → Backups. ClientFence cannot see backups made by your host."
+msgstr "사이트 파일(웹 루트와 업로드된 파일)의 백업이 아직 없습니다. 시스템 → 설정 → 시스템 → 백업에서 파일의 클라우드 사본을 켜세요. ClientFence는 호스팅 업체가 만든 백업을 볼 수 없습니다."
+
+#: src/modules/Clientfence/Backups.php
+msgid "No database backup yet: turn on a daily backup or cloud copies of the database in System → Settings → System → Backups."
+msgstr "데이터베이스 백업이 아직 없습니다. 시스템 → 설정 → 시스템 → 백업에서 매일 백업이나 데이터베이스의 클라우드 사본을 켜세요."
+
+#: src/modules/Clientfence/Health.php
+msgid "Site files backup"
+msgstr "사이트 파일 백업"
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest backup of the site files is from :time: check that the cron runs and the copies succeed."
+msgstr "사이트 파일의 최신 백업은 :time 것입니다. cron이 실행되고 사본이 성공하는지 확인하세요."
+
+#: src/modules/Clientfence/Backups.php
+msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
+msgstr "최신 데이터베이스 백업은 :time 것입니다. cron이 실행되고 백업이 성공하는지 확인하세요."
