@@ -1591,21 +1591,30 @@ class Service implements InjectionAwareInterface
     {
         $groupId = $this->orderGroupId($order);
         $clientId = $this->orderClientId($order);
+        $id = $this->orderId($order);
 
         if (!$order instanceof Order) {
-            return $this->di['db']->find('ClientOrder', 'group_id = :group_id AND client_id = :client_id AND id != :id AND (group_master = 0 OR group_master IS NULL)', [
+            $addons = $this->di['db']->find('ClientOrder', 'group_id = :group_id AND client_id = :client_id AND id != :id AND (group_master = 0 OR group_master IS NULL)', [
                 ':group_id' => $groupId,
                 ':client_id' => $clientId,
-                ':id' => $this->orderId($order),
+                ':id' => $id,
             ]);
+        } else {
+            $addons = array_filter($this->getOrderRepository()->findBy([
+                'groupId' => $groupId,
+                'clientId' => $clientId,
+            ]), fn (Order $addon): bool => $addon->getId() !== $order->getId() && !$addon->isGroupMaster());
         }
 
-        $addons = $this->getOrderRepository()->findBy([
-            'groupId' => $groupId,
-            'clientId' => $clientId,
-        ]);
+        // ClientFence core patch: an add-on belongs to the service it was bought for; one bought in the same checkout belongs to the hosting, not to a domain ordered with it (a second master of the group).
+        $domainBeside = $this->orderServiceType($order) === 'domain'
+            && $this->di['dbal']->fetchOne("SELECT id FROM client_order WHERE group_id = ? AND client_id = ? AND id <> ? AND group_master = 1 AND service_type <> 'domain' LIMIT 1", [(string) $groupId, (int) $clientId, $id]) !== false;
 
-        return array_values(array_filter($addons, fn (Order $addon): bool => $addon->getId() !== $order->getId() && !$addon->isGroupMaster()));
+        return array_values(array_filter($addons, function (Order|\Model_ClientOrder $addon) use ($id, $domainBeside): bool {
+            $for = (int) ($this->getConfig($addon)['addon_for'] ?? 0);
+
+            return $for > 0 ? $for === $id : !$domainBeside;
+        }));
     }
 
     protected function _callOnService(Order|\Model_ClientOrder $order, $action)

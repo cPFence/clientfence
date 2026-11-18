@@ -8674,5 +8674,9 @@
     {
         "file": "library/Payment/Adapter/Stripe.php",
         "done": "ClientFence core patch: a row that credited the first charge keeps that charge's id, so a retry of the charge finds the credit."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: an add-on belongs to the service it was bought for; one bought in the same checkout belongs to the hosting, not to a domain ordered with it (a second master of the group)."
     }
 ]

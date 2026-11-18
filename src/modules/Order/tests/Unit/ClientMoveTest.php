@@ -19,7 +19,7 @@ function clientMoveDb(): Connection
     foreach ([
         'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, currency TEXT, updated_at TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
-        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, title TEXT, status TEXT, currency TEXT, group_id TEXT, group_master INTEGER, service_id INTEGER, service_type TEXT, updated_at TEXT)',
+        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, title TEXT, status TEXT, currency TEXT, group_id TEXT, group_master INTEGER, service_id INTEGER, service_type TEXT, config TEXT, updated_at TEXT)',
         'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, client_id INTEGER, service_hosting_server_id INTEGER)',
         'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, manager TEXT)',
         'CREATE TABLE service_license (id INTEGER PRIMARY KEY, client_id INTEGER)',
@@ -195,10 +195,14 @@ test('moving a domain bought with hosting leaves the hosting and its add-ons whe
     $db->executeStatement('CREATE TABLE service_domain (id INTEGER PRIMARY KEY, client_id INTEGER)');
     $db->insert('client_order', ['id' => 73, 'client_id' => 5, 'title' => 'example.com', 'status' => 'active', 'currency' => 'EUR', 'group_id' => 'g1', 'group_master' => 1, 'service_id' => 4, 'service_type' => 'domain']);
     $db->insert('service_domain', ['id' => 4, 'client_id' => 5]);
+    // An add-on bought later for the domain itself moves with it.
+    $db->insert('client_order', ['id' => 74, 'client_id' => 5, 'title' => 'Domain licence', 'status' => 'active', 'currency' => 'EUR', 'group_id' => 'g1', 'group_master' => 0, 'service_id' => 5, 'service_type' => 'license', 'config' => json_encode(['addon_for' => 73])]);
+    $db->insert('service_license', ['id' => 5, 'client_id' => 5]);
 
     ClientMove::move(clientMoveContainer($db), 73, 9, 3);
 
-    expect($db->fetchAllKeyValue('SELECT id, client_id FROM client_order WHERE id IN (70, 71, 73) ORDER BY id'))->toEqual([70 => 5, 71 => 5, 73 => 9])
+    expect($db->fetchAllKeyValue('SELECT id, client_id FROM client_order WHERE id IN (70, 71, 73, 74) ORDER BY id'))->toEqual([70 => 5, 71 => 5, 73 => 9, 74 => 9])
         ->and((int) $db->fetchOne('SELECT client_id FROM service_domain WHERE id = 4'))->toBe(9)
-        ->and((int) $db->fetchOne('SELECT client_id FROM service_license WHERE id = 2'))->toBe(5);
+        ->and((int) $db->fetchOne('SELECT client_id FROM service_license WHERE id = 2'))->toBe(5)
+        ->and((int) $db->fetchOne('SELECT client_id FROM service_license WHERE id = 5'))->toBe(9);
 });

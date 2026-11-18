@@ -2634,6 +2634,42 @@ test('getOrderAddonsList returns addons', function (): void {
     expect($result[0])->toBeInstanceOf(Order::class);
 });
 
+test('an add-on belongs to the service it was bought for, else to the hosting rather than a domain ordered with it', function (string $type, int $orderId, bool $withHosting, ?int $addonFor, int $addons): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, group_id TEXT, group_master INTEGER, service_type TEXT)');
+    $db->insert('client_order', ['id' => 2, 'client_id' => 7, 'group_id' => 'g1', 'group_master' => 1, 'service_type' => 'domain']);
+    if ($withHosting) {
+        $db->insert('client_order', ['id' => 1, 'client_id' => 7, 'group_id' => 'g1', 'group_master' => 1, 'service_type' => 'hosting']);
+    }
+    $order = new Order();
+    (new ReflectionProperty($order, 'id'))->setValue($order, $orderId);
+    $order->setClientId(7);
+    $order->setGroupId('g1');
+    $order->setServiceType($type);
+    $addon = new Order();
+    (new ReflectionProperty($addon, 'id'))->setValue($addon, 3);
+    $addon->setConfig(json_encode($addonFor === null ? [] : ['addon_for' => $addonFor]));
+    $repo = Mockery::mock(OrderRepository::class);
+    $repo->allows('findBy')->andReturn([$addon]);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->allows('getRepository')->with(Order::class)->andReturn($repo);
+    $di = container();
+    $di['em'] = $em;
+    $di['dbal'] = $db;
+    $svc = new Service();
+    $svc->setDi($di);
+
+    expect($svc->getOrderAddonsList($order))->toHaveCount($addons);
+})->with([
+    // Hosting 1 and domain 2 in one checkout, add-on 3 bought with them.
+    'same checkout: not the domain' => ['domain', 2, true, null, 0],
+    'same checkout: the hosting' => ['hosting', 1, true, null, 1],
+    'a domain ordered alone keeps its add-on' => ['domain', 2, false, null, 1],
+    // Add-on 3 bought later for the domain.
+    'bought for the domain: the domain' => ['domain', 2, true, 2, 1],
+    'bought for the domain: not the hosting' => ['hosting', 1, true, 2, 0],
+]);
+
 test('stockSale reduces stock', function (): void {
     $productModel = orderServiceCreateProductEntity();
 

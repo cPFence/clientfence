@@ -43,14 +43,18 @@ final class ClientMove
                 && $db->fetchOne('SELECT id FROM client_order WHERE group_id = ? AND client_id = ? AND group_master = 1', [$group, $fromId]) !== false) {
                 throw new InformationException('This is an add-on: move its main service, and its add-ons move with it.');
             }
-            // The add-ons as Order\Service::getOrderAddonsList() finds them.
+            // The add-ons as Order\Service::getOrderAddonsList() finds them: one bought for this service, or in its checkout
+            // (a domain ordered with hosting is a second master of the hosting's group: those stay with the hosting).
             $ids = [$orderId];
-            // A domain ordered with hosting is a second master of the hosting's group: the add-ons stay with the hosting.
-            $ownsAddons = (string) $order['service_type'] !== 'domain'
-                || $db->fetchOne("SELECT id FROM client_order WHERE group_id = ? AND client_id = ? AND id <> ? AND group_master = 1 AND service_type <> 'domain'", [$group, $fromId, $orderId]) === false;
-            if ($group !== '' && (int) $order['group_master'] && $ownsAddons) {
-                $addons = $db->fetchFirstColumn('SELECT id FROM client_order WHERE group_id = ? AND client_id = ? AND id <> ? AND (group_master = 0 OR group_master IS NULL) ORDER BY id', [$group, $fromId, $orderId]);
-                $ids = [...$ids, ...array_map('intval', $addons)];
+            if ($group !== '' && (int) $order['group_master']) {
+                $domainBeside = (string) $order['service_type'] === 'domain'
+                    && $db->fetchOne("SELECT id FROM client_order WHERE group_id = ? AND client_id = ? AND id <> ? AND group_master = 1 AND service_type <> 'domain'", [$group, $fromId, $orderId]) !== false;
+                foreach ($db->fetchAllAssociative('SELECT id, config FROM client_order WHERE group_id = ? AND client_id = ? AND id <> ? AND (group_master = 0 OR group_master IS NULL) ORDER BY id', [$group, $fromId, $orderId]) as $addon) {
+                    $for = (int) (json_decode((string) $addon['config'], true)['addon_for'] ?? 0);
+                    if ($for > 0 ? $for === $orderId : !$domainBeside) {
+                        $ids[] = (int) $addon['id'];
+                    }
+                }
             }
             self::refuse($db, $ids, $to);
 
