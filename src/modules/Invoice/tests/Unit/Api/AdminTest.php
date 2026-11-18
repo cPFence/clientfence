@@ -836,7 +836,7 @@ test('a staff-created manual transaction pays the invoice and runs its renewal w
     $orders->shouldReceive('renewOrder')->once()->with($order)->andReturn(true);
     $clients = Mockery::mock(ClientFence\Mod\Client\Service::class);
     $clients->shouldReceive('get')->with(['id' => 5])->andReturn($client);
-    $clients->shouldReceive('addFunds')->once()->with($client, 62.0, Mockery::any(), []);
+    $clients->shouldReceive('addFunds')->once()->with($client, 62.0, Mockery::any(), ['type' => 'transaction', 'rel_id' => 20]);
     $adapter = new Payment_Adapter_Custom([]);
     $gateways = Mockery::mock(ServicePayGateway::class);
     $gateways->shouldReceive('getPaymentAdapter')->with($gateway)->andReturn($adapter);

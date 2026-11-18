@@ -509,6 +509,7 @@ test('the settings form keeps each gateway under its own id', function (): void 
     $twig = new Twig\Environment(new Twig\Loader\FilesystemLoader(__DIR__ . '/../../../templates/admin'));
     $twig->addFilter(new Twig\TwigFilter('trans', static fn (string $text, array $params = []): string => strtr($text, $params)));
     $twig->addFilter(new Twig\TwigFilter('api_url', static fn (string $path): string => '/api/' . $path));
+    $twig->addTest(new Twig\TwigTest('rtl', static fn (?string $locale): bool => ClientFence\Twig\Extension\RtlDateExtension::isRtl((string) $locale)));
     $twig->addFilter(new Twig\TwigFilter('format_datetime', static fn (mixed $date): string => (string) $date));
     $twig->addFunction(new Twig\TwigFunction('fb_api_form', static fn (): string => '', ['is_safe' => ['html']]));
 

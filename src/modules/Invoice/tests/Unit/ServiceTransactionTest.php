@@ -556,7 +556,7 @@ test('custom transfers only credit the client when the invoice is no longer unpa
     $db->shouldReceive('store')->once()->with($tx)->andReturn(8);
     $clients = Mockery::mock();
     $clients->shouldReceive('get')->with(['id' => 5])->andReturn($client);
-    $clients->shouldReceive('addFunds')->once()->with($client, $amount, Mockery::any(), []);
+    $clients->shouldReceive('addFunds')->once()->with($client, $amount, Mockery::any(), ['type' => 'transaction', 'rel_id' => 8]);
     $invoices = Mockery::mock();
     $invoices->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(10.0);
     $invoices->shouldReceive('isInvoiceTypeDeposit')->with($invoice)->andReturn($deposit);
