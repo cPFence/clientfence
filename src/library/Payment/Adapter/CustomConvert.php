@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * Works like FOSSBilling's "Custom" gateway (an admin confirms the payment), and adds
  * a `converted` variable to the instruction template (`egp` is the same, for templates written before):
- *   converted.total     invoice total in that currency, rounded up to a whole unit, e.g. "5,075"
+ *   converted.total     amount due in that currency (the balance due of an unpaid invoice), rounded up to a whole unit, e.g. "5,075"
  *   converted.currency  the currency code, e.g. "EGP"
  *   converted.rate      units per one unit of the invoice currency, e.g. "50.7432" (converted.factor: the same, unrounded)
  *   converted.updated   date of the rate, e.g. "2026-10-08"
@@ -59,7 +59,9 @@ class Payment_Adapter_CustomConvert extends Payment_Adapter_Custom
             $tpl = '"CustomConvert" payment adapter is not fully configured.';
         }
 
-        $converted = $this->convertedAmount((float) $invoice['total'], (string) $invoice['currency']);
+        // GitHub #49: an unpaid invoice asks for its balance due (part payments, applied credit), as the invoice page does.
+        $amount = $invoice['status'] === Model_Invoice::STATUS_UNPAID ? $invoice['balance_due'] : $invoice['total'];
+        $converted = $this->convertedAmount((float) $amount, (string) $invoice['currency']);
 
         return $this->di['mod_service']('System')->renderAdapterTplString($tpl, [
             'invoice' => $invoice,

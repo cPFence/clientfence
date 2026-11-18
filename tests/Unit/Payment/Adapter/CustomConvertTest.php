@@ -11,9 +11,8 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 require_once PATH_LIBRARY . '/Payment/Adapter/CustomConvert.php';
 
 /** An adapter with $config whose rate provider answers 1 USD = 50.5 EGP = 0.92 EUR = 0.000412345 XAU. */
-function customConvertAdapter(array $config): Payment_Adapter_CustomConvert
+function customConvertAdapter(array $config, Pimple\Container $di = new Pimple\Container()): Payment_Adapter_CustomConvert
 {
-    $di = new Pimple\Container();
     $di['cache'] = new ArrayAdapter();
     $di['http_client'] = new MockHttpClient(new MockResponse((string) json_encode([
         'result' => 'success',
@@ -38,4 +37,21 @@ test('the total is shown in the gateway currency, rounded up to a whole unit', f
     'a currency the provider does not list' => [['currency' => 'XYZ'], null],
     'a strong currency keeps its rate digits' => [['currency' => 'XAU'], ['XAU', '1', '0.0004123', 0.000412345]],
     'the invoice currency itself' => [['currency' => 'USD'], ['USD', '101', '1.0000', 1.0]],
+]);
+
+test('the instructions convert the balance due of an unpaid invoice', function (string $status, string $expected): void {
+    $di = new Pimple\Container();
+    $di['db'] = Mockery::mock();
+    $di['db']->allows('load')->andReturn(new Model_Invoice());
+    $invoiceService = Mockery::mock();
+    $invoiceService->allows('toApiArray')->andReturn(['status' => $status, 'total' => 10.0, 'balance_due' => $status === 'unpaid' ? 4.0 : 0.0, 'currency' => 'USD']);
+    $systemService = Mockery::mock();
+    $systemService->allows('renderAdapterTplString')->andReturnUsing(fn (string $tpl, array $vars): string => $vars['converted']['total']);
+    $di['mod_service'] = $di->protect(fn (string $name) => $name === 'Invoice' ? $invoiceService : $systemService);
+    $adapter = customConvertAdapter(['currency' => 'EGP', 'single' => '{{ converted.total }}'], $di);
+
+    expect($adapter->getHtml(new ClientFence\Api\Proxy(new Model_Admin()), 1, false))->toBe($expected);
+})->with([
+    'unpaid, part paid' => ['unpaid', '202'],
+    'paid' => ['paid', '505'],
 ]);
