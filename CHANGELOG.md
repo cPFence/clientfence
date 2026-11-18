@@ -1,15 +1,20 @@
 # Changelog
 
-## 1.0.58 (2026-11-18)
+## 1.0.58 (2026-11-19)
 
 A fixes release from the QA rounds: renewal invoices use part of the account credit, view-only staff see fewer controls they cannot use, and many billing, ticket, date and language fixes.
 
 ### Added
 
+- Company name and address per language: in System → Settings → Company Details, choose a language and enter the name and address as they read in it (for example Cyrillic or Arabic script). Emails, the client area, and new invoices, quotes and statements use the client's language; an empty field shows the default. ([#51](https://github.com/cPFence/clientfence/issues/51))
+- PayU India payment gateway: clients pay in rupees on PayU's page (cards, UPI, net banking, wallets), with refunds. Not yet tested with a real PayU account.
+- CCAvenue payment gateway: clients pay on CCAvenue's page, with refunds. Not yet tested with a real CCAvenue account.
+- Porkbun domain registrar: register, renew and transfer domains, name servers, contacts and a TLD price import. Not yet tested with a real Porkbun account.
 - A "Support ClientFence" button on System → Update opens clientfence.com/sponsor in a new tab.
 
 ### Changed
 
+- System Health has two backup checks, Database backup and Site files backup, that look at every source (the daily database backup and cloud copies) instead of a folder only the Linkers pack has.
 - When an update finishes, a welcome screen shows the new version; Continue opens the sign-in page.
 - Check for Updates and other actions that reload the page keep the loading animation until the next page shows.
 - With several Enhance servers, an order's Change Hosting Plan list leaves out plans imported from another server. Plans made by hand, and plans imported before 1.0.58 while several Enhance servers were set up, are still listed for every account.
@@ -35,6 +40,8 @@ A fixes release from the QA rounds: renewal invoices use part of the account cre
 
 ### Fixed
 
+- Sync with server shows only for the panels that can read the account (cPanel/WHM, CWP and Enhance): DirectAdmin and Plesk orders no longer show an error, and HestiaCP orders no longer show a button that changed nothing.
+- The price change email template can be previewed and saved before the first price change email is sent. ([#50](https://github.com/cPFence/clientfence/issues/50))
 - Bank transfer instructions with currency conversion: `converted.total` on an unpaid invoice is now what is left to pay (after part payments and credit), as the invoice page shows. ([#49](https://github.com/cPFence/clientfence/issues/49))
 - Several Enhance servers: hosting plans now remember the Enhance server they were imported from, so importing from a second server no longer matches the first server's plans. A plan whose name is already taken gets the server name in brackets. With several Enhance servers set up before this update, plans imported earlier still match by name.
 - Bank transfer payments that staff record show on the account statement as payments for the invoice, not as account credit added.
