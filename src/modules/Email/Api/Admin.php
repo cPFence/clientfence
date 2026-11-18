@@ -263,9 +263,12 @@ class Admin extends \ClientFence\Api\AbstractApi
         $content = $data['content'] ?? null;
 
         $model = $this->getService()->getTemplate((int) $data['id']);
-        $this->assertCanEditSignInTemplate((string) $model->getActionCode());
         // ClientFence core patch: `translations` (lang => subject, content) replaces the language versions; left out, they stay.
         $translations = array_key_exists('translations', $data) ? (is_array($data['translations']) ? $data['translations'] : []) : null;
+        // Switching the email on or off and its category stay with the template permission.
+        if ($subject !== null || $content !== null || $translations !== null) {
+            $this->assertCanEditSignInTemplate((string) $model->getActionCode());
+        }
 
         return $this->getService()->updateTemplate($model, $enabled, $category, $subject, $content, $translations);
     }

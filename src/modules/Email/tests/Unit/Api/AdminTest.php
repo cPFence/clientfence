@@ -445,6 +445,20 @@ test('only a Super Administrator changes an email that carries a sign-in link or
     }
 })->with([true, false]);
 
+test('switching a sign-in email on or off stays with the template permission', function (): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
+    $adminApi->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturnFalse();
+    $template = new EmailTemplate('mod_client_password_reset_request', 8);
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldReceive('getTemplate')->with(8)->andReturn($template);
+    $emailService->shouldReceive('updateTemplate')->once()->with($template, '0', 'client', null, null, null)->andReturnTrue();
+    $adminApi->setService($emailService);
+
+    expect($adminApi->template_update(['id' => 8, 'enabled' => '0', 'category' => 'client']))->toBeTrue()
+        ->and(fn () => $adminApi->template_update(['id' => 8, 'translations' => ['de_DE' => ['subject' => 'x', 'content' => '{{ hash }}']]]))
+        ->toThrow(ClientFence\InformationException::class, 'Only a Super Administrator');
+});
+
 test('template group get list returns assigned groups', function (): void {
     $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
 
