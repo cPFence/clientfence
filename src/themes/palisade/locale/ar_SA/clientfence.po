@@ -30559,3 +30559,125 @@ msgstr "أحدث نسخة احتياطية لملفات الموقع بتاري�
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "أحدث نسخة احتياطية لقاعدة البيانات بتاريخ :time: تحقق من تشغيل cron ومن نجاح النسخ الاحتياطية."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "لم يستجب CCAvenue للطلب :path: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "لم يبلغ CCAvenue عن الدفعة :id: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "دفعة CCAvenue :id بعملة :currency، بينما الفاتورة بعملة :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "دفعة CCAvenue :id ليست لفاتورة في ClientFence"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "عودة CCAvenue لا تحدد أي دفعة"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "رمز الوصول (access code) (الإنتاج):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "مفتاح التاجر (merchant key) (الإنتاج):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "الملح (salt) (الإنتاج):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "مفتاح العمل (working key) (الإنتاج):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "معرّف التاجر:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "الدفع عبر CCAvenue"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "الدفع عبر PayU"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "لوحة تحكم PayU: Developers, Key and Salt. يستخدم وضع الاختبار مفتاح الاختبار والملح الخاصين به."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "لم يستجب PayU للطلب :command: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "لم يُجرِ PayU الاسترداد: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "إشعار PayU غير موقّع بمفتاح التاجر والملح هذين"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "دفعة PayU :id بعملة INR، بينما الفاتورة بعملة :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "دفعة PayU :id ليست لفاتورة في ClientFence"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "لم يتم العثور على دفعة PayU :id"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "يعيد PayU فقط مدفوعاته هو بالروبية الهندية (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "يقبل PayU المدفوعات بالروبية الهندية (INR) فقط."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "مدفوعات بالروبية الهندية (INR) على صفحة الدفع في PayU India: البطاقات وUPI والخدمات المصرفية عبر الإنترنت والمحافظ. [كيفية إعداد PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "مدفوعات على صفحة الفوترة في CCAvenue. يحصّل CCAvenue بعملة الفاتورة: فعّل عملات فواتيرك في حسابك لدى CCAvenue. يتم التحقق من المدفوعات عبر API الخاص بـ CCAvenue، لذا سجّل عنوان IP لهذا الخادم لدى CCAvenue للوصول إلى API. [كيفية إعداد CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "رمز الوصول (access code) (الاختبار):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "مفتاح التاجر (merchant key) (الاختبار):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "الملح (salt) (الاختبار):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "مفتاح العمل (working key) (الاختبار):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "لم يُجرِ CCAvenue الاسترداد: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "يعيد CCAvenue فقط مدفوعاته هو."

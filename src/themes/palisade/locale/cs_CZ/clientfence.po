@@ -30967,3 +30967,125 @@ msgstr "Nejnovější záloha souborů webu je z :time: zkontrolujte, zda běž�
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "Nejnovější záloha databáze je z :time: zkontrolujte, zda běží cron a zda se zálohy daří vytvářet."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue neodpověděl na :path: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue nenahlásil platbu :id: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "Platba CCAvenue :id je v :currency, faktura v :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "Platba CCAvenue :id nepatří k faktuře ClientFence"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "Návrat z CCAvenue neuvádí žádnou platbu"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "přístupový kód (access code) – ostrý provoz:"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "klíč obchodníka (merchant key) – ostrý provoz:"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "sůl (salt) – ostrý provoz:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "pracovní klíč (working key) – ostrý provoz:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "ID obchodníka:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "Zaplatit přes CCAvenue"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "Zaplatit přes PayU"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "Přehled PayU: Developers, Key and Salt. Testovací režim používá testovací klíč a sůl."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU neodpověděl na :command: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU neprovedl vrácení peněz: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "Oznámení PayU není podepsáno tímto klíčem a solí obchodníka"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "Platba PayU :id je v INR, faktura v :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "Platba PayU :id nepatří k faktuře ClientFence"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "Platba PayU :id nebyla nalezena"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU vrací jen své vlastní platby v indických rupiích (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU přijímá platby pouze v indických rupiích (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "Platby v indických rupiích (INR) na platební stránce PayU India: karty, UPI, internetové bankovnictví a peněženky. [Jak nastavit PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "Platby na fakturační stránce CCAvenue. CCAvenue účtuje v měně faktury: zapněte měny svých faktur ve svém účtu CCAvenue. Platby se ověřují přes API CCAvenue, proto u CCAvenue zaregistrujte IP adresu tohoto serveru pro přístup k API. [Jak nastavit CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "Testovací přístupový kód (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "Testovací klíč obchodníka (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "Testovací sůl (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "Testovací pracovní klíč (working key):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue neprovedl vrácení peněz: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue vrací jen své vlastní platby."

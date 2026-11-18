@@ -4618,6 +4618,38 @@ msgstr ""
 msgid "CAPTCHA verification failed. Please try again."
 msgstr ""
 
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr ""
+
 #: src/modules/Api/Controller/Client.php src/modules/Client/Controller/Admin.php src/modules/Clientfence/Controller/Admin.php …
 msgid "CSRF token invalid"
 msgstr ""
@@ -14694,8 +14726,20 @@ msgstr ""
 msgid "Live Webhook signing secret:"
 msgstr ""
 
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr ""
+
 #: src/library/Payment/Adapter/GoCardless.php
 msgid "Live access token:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -14708,6 +14752,10 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayTabs.php
 msgid "Live server key:"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
@@ -15704,6 +15752,10 @@ msgstr ""
 
 #: src/themes/palisade/config/settings.html.twig
 msgid "Menu Links"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig src/modules/Support/templates/admin/mod_support_tickets_bulk.html.twig
@@ -19490,8 +19542,16 @@ msgstr ""
 msgid "Pay with"
 msgstr ""
 
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Pay with PayPal and set up automatic payments"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/PayTabs.php
@@ -19700,6 +19760,42 @@ msgstr ""
 
 #: src/library/Payment/Adapter/PayTabs.php
 msgid "PayTabs: Profile. The server key: Developers, Key management (an API key)."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/modules/Invoice/templates/client/mod_invoice_banklink.html.twig
@@ -19948,6 +20044,14 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Payments by :gateway"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
 msgstr ""
 
 #: src/library/Payment/Adapter/Mollie.php
@@ -25922,6 +26026,10 @@ msgstr ""
 msgid "Test Webhook signing secret:"
 msgstr ""
 
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr ""
+
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
 msgid "Test client"
 msgstr ""
@@ -25946,6 +26054,14 @@ msgstr ""
 msgid "Test environment (sandbox)"
 msgstr ""
 
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr ""
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr ""
+
 #: src/modules/Clientfence/ChatAlerts.php
 msgid "Test message from ClientFence"
 msgstr ""
@@ -25968,6 +26084,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
 msgid "Test the connection"
+msgstr ""
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
 msgstr ""
 
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
@@ -26098,7 +26218,7 @@ msgstr ""
 msgid "The \":driver\" cache driver requires an installation identifier (\"info.instance_id\" in the configuration file) so that installations sharing the same server don't collide. Reinstall or update ClientFence to have one generated automatically, or set it manually."
 msgstr ""
 
-#: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
+#: src/library/Payment/Adapter/CCAvenue.php src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php …
 msgid "The \":pay_gateway\" payment gateway is not fully configured. Please configure the :missing"
 msgstr ""
 

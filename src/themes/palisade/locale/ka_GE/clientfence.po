@@ -33652,3 +33652,125 @@ msgstr "საიტის ფაილების უახლესი სა
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "მონაცემთა ბაზის უახლესი სარეზერვო ასლი არის :time: შეამოწმეთ, მუშაობს თუ არა cron და წარმატებით იქმნება თუ არა სარეზერვო ასლები."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue-მა :path-ზე არ უპასუხა: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue-მ არ შეატყობინა გადახდის :id შესახებ: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "CCAvenue-ის გადახდა :id :currency-შია, ინვოისი კი :invoice-ში"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "CCAvenue-ის გადახდა :id ClientFence-ის ინვოისისთვის არ არის"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "CCAvenue-დან დაბრუნება არცერთ გადახდას არ ასახელებს"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "Live წვდომის კოდი (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "Live გამყიდველის გასაღები (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "Live მარილი (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "Live სამუშაო გასაღები (working key):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "გამყიდველის ID:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "გადაიხადეთ CCAvenue-ით"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "გადაიხადეთ PayU-თი"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "PayU-ს პანელი: Developers, Key and Salt. სატესტო რეჟიმი იყენებს სატესტო გასაღებსა და მარილს."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU-მა :command-ზე არ უპასუხა: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU-მა თანხა არ დააბრუნა: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "PayU-ს შეტყობინება ამ გამყიდველის გასაღებითა და მარილით არ არის ხელმოწერილი"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "PayU-ის გადახდა :id INR-შია, ინვოისი კი :invoice-ში"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "PayU-ის გადახდა :id ClientFence-ის ინვოისისთვის არ არის"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "PayU-ის გადახდა :id ვერ მოიძებნა"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU აბრუნებს მხოლოდ საკუთარ გადახდებს ინდურ რუპიებში (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU იღებს გადახდებს მხოლოდ ინდურ რუპიებში (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "გადახდები ინდურ რუპიებში (INR) PayU India-ს გადახდის გვერდზე: ბარათები, UPI, ინტერნეტბანკი და საფულეები. [როგორ დავაყენოთ PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "გადახდები CCAvenue-ს ბილინგის გვერდზე. CCAvenue იხდევინებს ინვოისის ვალუტით: ჩართეთ თქვენი ინვოისების ვალუტები CCAvenue-ის ანგარიშში. გადახდები მოწმდება CCAvenue-ს API-ით, ამიტომ დაარეგისტრირეთ ამ სერვერის IP მისამართი CCAvenue-ში API-ზე წვდომისთვის. [როგორ დავაყენოთ CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "სატესტო წვდომის კოდი (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "სატესტო გამყიდველის გასაღები (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "სატესტო მარილი (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "სატესტო სამუშაო გასაღები (working key):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue-მა თანხა არ დააბრუნა: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue აბრუნებს მხოლოდ საკუთარ გადახდებს."

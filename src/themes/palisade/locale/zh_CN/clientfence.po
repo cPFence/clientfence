@@ -30669,3 +30669,125 @@ msgstr "网站文件的最新备份时间为 :time：请检查 cron 是否在运
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "数据库的最新备份时间为 :time：请检查 cron 是否在运行、备份是否成功。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue 未响应 :path：:error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue 未报告付款 :id：:error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "CCAvenue 付款 :id 的币种为 :currency，发票的币种为 :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "CCAvenue 付款 :id 不属于 ClientFence 发票"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "CCAvenue 的返回信息未指明任何付款"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "正式环境访问码 (access code)："
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "正式环境商户密钥 (merchant key)："
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "正式环境盐值 (salt)："
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "正式环境工作密钥 (working key)："
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "商户 ID："
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "使用 CCAvenue 付款"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "使用 PayU 付款"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "PayU 控制台：Developers, Key and Salt。测试模式使用测试密钥和测试盐值。"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU 未响应 :command：:error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU 未完成退款：:error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "PayU 通知未使用此商户密钥和盐值签名"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "PayU 付款 :id 的币种为 INR，发票的币种为 :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "PayU 付款 :id 不属于 ClientFence 发票"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "未找到 PayU 付款 :id"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU 仅退还其自身的印度卢比 (INR) 付款。"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU 仅接受印度卢比 (INR) 付款。"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "在 PayU India 付款页面使用印度卢比 (INR) 付款：银行卡、UPI、网上银行和电子钱包。[如何设置 PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "在 CCAvenue 账单页面付款。CCAvenue 按发票币种扣款：请在您的 CCAvenue 账户中开启发票所用的币种。付款通过 CCAvenue 的 API 核对，因此请在 CCAvenue 注册此服务器的 IP 地址以获得 API 访问权限。[如何设置 CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "测试访问码 (access code)："
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "测试商户密钥 (merchant key)："
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "测试盐值 (salt)："
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "测试工作密钥 (working key)："
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue 未完成退款：:error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue 仅退还其自身的付款。"

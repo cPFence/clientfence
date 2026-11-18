@@ -33652,3 +33652,125 @@ msgstr "Saidi failide uusim varukoopia on :time: kontrollige, et cron töötab j
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "Andmebaasi uusim varukoopia on :time: kontrollige, et cron töötab ja varukoopiad õnnestuvad."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue ei vastanud päringule :path: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue ei teatanud maksest :id: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "CCAvenue makse :id on valuutas :currency, arve valuutas :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "CCAvenue makse :id ei ole ClientFence'i arve jaoks"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "CCAvenue'st tagasipöördumine ei nimeta ühtegi makset"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "Töökeskkonna juurdepääsukood (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "Töökeskkonna kaupmehe võti (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "Töökeskkonna sool (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "Töökeskkonna töövõti (working key):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "Kaupmehe ID:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "Maksa CCAvenue'ga"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "Maksa PayU-ga"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "PayU töölaud: Developers, Key and Salt. Testrežiim kasutab testvõtit ja testsoola."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU ei vastanud päringule :command: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU ei teinud tagasimakset: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "PayU teade pole selle kaupmehe võtme ja soolaga allkirjastatud"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "PayU makse :id on valuutas INR, arve valuutas :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "PayU makse :id ei ole ClientFence'i arve jaoks"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "PayU makset :id ei leitud"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU tagastab ainult oma makseid India ruupiates (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU võtab makseid vastu ainult India ruupiates (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "Maksed India ruupiates (INR) PayU India maksulehel: kaardid, UPI, internetipank ja rahakotid. [Kuidas PayU seadistada](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "Maksed CCAvenue arvelduslehel. CCAvenue võtab tasu arve valuutas: lülitage oma CCAvenue kontol sisse oma arvete valuutad. Makseid kontrollitakse CCAvenue API-ga, seega registreerige selle serveri IP-aadress API juurdepääsuks CCAvenue'is. [Kuidas CCAvenue seadistada](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "Testi juurdepääsukood (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "Testi kaupmehe võti (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "Testi sool (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "Testi töövõti (working key):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue ei teinud tagasimakset: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue tagastab ainult oma makseid."

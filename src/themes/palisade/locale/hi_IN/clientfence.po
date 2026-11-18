@@ -33652,3 +33652,125 @@ msgstr "साइट फ़ाइलों का सबसे नया बै�
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "डेटाबेस का सबसे नया बैकअप :time का है: जाँचें कि cron चल रहा है और बैकअप सफल हो रहे हैं।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue ने :path का जवाब नहीं दिया: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue ने भुगतान :id की जानकारी नहीं दी: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "CCAvenue भुगतान :id :currency में है, इनवॉइस :invoice में"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "CCAvenue भुगतान :id किसी ClientFence इनवॉइस के लिए नहीं है"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "CCAvenue से वापसी में किसी भुगतान का नाम नहीं है"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "लाइव एक्सेस कोड (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "लाइव मर्चेंट की (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "लाइव सॉल्ट (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "लाइव वर्किंग की (working key):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "मर्चेंट आईडी:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "CCAvenue से भुगतान करें"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "PayU से भुगतान करें"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "PayU डैशबोर्ड: Developers, Key and Salt। टेस्ट मोड टेस्ट की और सॉल्ट का उपयोग करता है।"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU ने :command का जवाब नहीं दिया: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU ने रिफ़ंड नहीं किया: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "PayU की सूचना इस मर्चेंट की और सॉल्ट से हस्ताक्षरित नहीं है"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "PayU भुगतान :id INR में है, इनवॉइस :invoice में"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "PayU भुगतान :id किसी ClientFence इनवॉइस के लिए नहीं है"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "PayU भुगतान :id नहीं मिला"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU केवल अपने ही भुगतान भारतीय रुपये (INR) में रिफंड करता है।"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU केवल भारतीय रुपये (INR) में भुगतान लेता है।"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "PayU India के भुगतान पृष्ठ पर भारतीय रुपये (INR) में भुगतान: कार्ड, UPI, नेट बैंकिंग और वॉलेट। [PayU कैसे सेट करें](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "CCAvenue के बिलिंग पृष्ठ पर भुगतान। CCAvenue इनवॉइस की मुद्रा में शुल्क लेता है: अपने CCAvenue खाते में अपने इनवॉइस की मुद्राएँ चालू करें। भुगतान CCAvenue के API से जाँचे जाते हैं, इसलिए API एक्सेस के लिए इस सर्वर का IP पता CCAvenue में पंजीकृत करें। [CCAvenue कैसे सेट करें](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "टेस्ट एक्सेस कोड (access code):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "टेस्ट मर्चेंट की (merchant key):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "टेस्ट सॉल्ट (salt):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "टेस्ट वर्किंग की (working key):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue ने रिफ़ंड नहीं किया: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue केवल अपने ही भुगतान रिफंड करता है।"

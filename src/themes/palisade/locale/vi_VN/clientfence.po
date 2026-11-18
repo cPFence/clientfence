@@ -31179,3 +31179,125 @@ msgstr "Bản sao lưu mới nhất của các tệp trang web là từ :time: h
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "Bản sao lưu cơ sở dữ liệu mới nhất là từ :time: hãy kiểm tra cron có đang chạy và các bản sao lưu có thành công không."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue không phản hồi :path: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue không báo cáo thanh toán :id: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "Khoản thanh toán CCAvenue :id bằng :currency, còn hóa đơn bằng :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "Khoản thanh toán CCAvenue :id không dành cho hóa đơn ClientFence"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "Phản hồi từ CCAvenue không nêu thanh toán nào"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "Mã truy cập (access code) chính thức:"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "Khóa người bán (merchant key) chính thức:"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "Salt chính thức:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "Khóa làm việc (working key) chính thức:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "ID người bán:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "Thanh toán bằng CCAvenue"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "Thanh toán bằng PayU"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "Bảng điều khiển PayU: Developers, Key and Salt. Chế độ thử nghiệm dùng khóa và salt thử nghiệm."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU không phản hồi :command: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU không thực hiện hoàn tiền: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "Thông báo của PayU không được ký bằng khóa người bán và salt này"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "Khoản thanh toán PayU :id bằng INR, còn hóa đơn bằng :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "Khoản thanh toán PayU :id không dành cho hóa đơn ClientFence"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "Không tìm thấy khoản thanh toán PayU :id"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU chỉ hoàn tiền cho các thanh toán của chính mình bằng rupee Ấn Độ (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU chỉ nhận thanh toán bằng rupee Ấn Độ (INR)."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "Thanh toán bằng rupee Ấn Độ (INR) trên trang thanh toán của PayU India: thẻ, UPI, ngân hàng trực tuyến và ví điện tử. [Cách thiết lập PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "Thanh toán trên trang thanh toán của CCAvenue. CCAvenue thu tiền theo đơn vị tiền tệ của hóa đơn: hãy bật các đơn vị tiền tệ của hóa đơn trong tài khoản CCAvenue của bạn. Thanh toán được kiểm tra bằng API của CCAvenue, vì vậy hãy đăng ký địa chỉ IP của máy chủ này với CCAvenue để truy cập API. [Cách thiết lập CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "Mã truy cập (access code) thử nghiệm:"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "Khóa người bán (merchant key) thử nghiệm:"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "Salt thử nghiệm:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "Khóa làm việc (working key) thử nghiệm:"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue không thực hiện hoàn tiền: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue chỉ hoàn tiền cho các thanh toán của chính mình."

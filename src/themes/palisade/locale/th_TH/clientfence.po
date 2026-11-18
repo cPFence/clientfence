@@ -28995,3 +28995,125 @@ msgstr "ข้อมูลสำรองไฟล์เว็บไซต์ล
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "ข้อมูลสำรองฐานข้อมูลล่าสุดคือเมื่อ :time: ตรวจสอบว่า cron ทำงานอยู่และการสำรองสำเร็จ"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue ไม่ตอบกลับ :path: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue ไม่ได้รายงานการชำระเงิน :id: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "การชำระเงิน CCAvenue :id เป็นสกุลเงิน :currency ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน CCAvenue :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "ข้อมูลที่ส่งกลับจาก CCAvenue ไม่ระบุการชำระเงิน"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "รหัสเข้าถึง (access code) (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "คีย์ร้านค้า (merchant key) (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "ซอลต์ (salt) (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "คีย์ทำงาน (working key) (ใช้งานจริง):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "รหัสร้านค้า:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "ชำระเงินด้วย CCAvenue"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "ชำระเงินด้วย PayU"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "แดชบอร์ด PayU: Developers, Key and Salt โหมดทดสอบใช้คีย์ทดสอบและซอลต์ทดสอบ"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU ไม่ตอบกลับ :command: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU ไม่ได้คืนเงิน: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "การแจ้งเตือนจาก PayU ไม่ได้ลงนามด้วยคีย์ร้านค้าและซอลต์นี้"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "การชำระเงิน PayU :id เป็นสกุลเงิน INR ส่วนใบแจ้งหนี้เป็นสกุลเงิน :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "การชำระเงิน PayU :id ไม่ใช่ของใบแจ้งหนี้ ClientFence"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "ไม่พบการชำระเงิน PayU :id"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU คืนเงินเฉพาะการชำระเงินของตนเองเป็นรูปีอินเดีย (INR) เท่านั้น"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU รับชำระเป็นรูปีอินเดีย (INR) เท่านั้น"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "ชำระเงินเป็นรูปีอินเดีย (INR) บนหน้าชำระเงินของ PayU India: บัตร UPI อินเทอร์เน็ตแบงก์กิ้ง และกระเป๋าเงินอิเล็กทรอนิกส์ [วิธีตั้งค่า PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "การชำระเงินบนหน้าเรียกเก็บเงินของ CCAvenue CCAvenue เรียกเก็บเงินในสกุลเงินของใบแจ้งหนี้: เปิดสกุลเงินของใบแจ้งหนี้ของคุณในบัญชี CCAvenue ระบบตรวจสอบการชำระเงินด้วย API ของ CCAvenue ดังนั้นโปรดลงทะเบียนที่อยู่ IP ของเซิร์ฟเวอร์นี้กับ CCAvenue เพื่อเข้าถึง API [วิธีตั้งค่า CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "รหัสเข้าถึง (access code) (ทดสอบ):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "คีย์ร้านค้า (merchant key) (ทดสอบ):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "ซอลต์ (salt) (ทดสอบ):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "คีย์ทำงาน (working key) (ทดสอบ):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue ไม่ได้คืนเงิน: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue คืนเงินเฉพาะการชำระเงินของตนเองเท่านั้น"

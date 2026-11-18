@@ -30687,3 +30687,125 @@ msgstr "جدیدترین پشتیبان فایل‌های سایت مربوط ب
 #: src/modules/Clientfence/Backups.php
 msgid "The newest database backup is from :time: check that the cron runs and the backups succeed."
 msgstr "جدیدترین پشتیبان پایگاه داده مربوط به :time است: بررسی کنید که cron اجرا می‌شود و پشتیبان‌گیری‌ها موفق‌اند."
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue M.A.R.S: Settings, API Keys."
+msgstr "CCAvenue M.A.R.S: Settings, API Keys."
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not answer :path: :error"
+msgstr "CCAvenue به :path پاسخ نداد: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not report payment :id: :error"
+msgstr "CCAvenue پرداخت :id را گزارش نکرد: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is in :currency, the invoice in :invoice"
+msgstr "پرداخت CCAvenue با شناسهٔ :id به :currency است و فاکتور به :invoice"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue payment :id is not for a ClientFence invoice"
+msgstr "پرداخت CCAvenue با شناسهٔ :id مربوط به فاکتور ClientFence نیست"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue return names no payment"
+msgstr "بازگشت از CCAvenue هیچ پرداختی را مشخص نکرده است"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live access code:"
+msgstr "کد دسترسی (access code) (زنده):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant key:"
+msgstr "کلید پذیرنده (merchant key) (زنده):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Live merchant salt:"
+msgstr "سالت (salt) (زنده):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Live working key:"
+msgstr "کلید کاری (working key) (زنده):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Merchant ID:"
+msgstr "شناسه پذیرنده:"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Pay with CCAvenue"
+msgstr "پرداخت با CCAvenue"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Pay with PayU"
+msgstr "پرداخت با PayU"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt."
+msgstr "داشبورد PayU: Developers, Key and Salt. حالت آزمایشی از کلید و سالت آزمایشی استفاده می‌کند."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not answer :command: :error"
+msgstr "PayU به :command پاسخ نداد: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU did not make the refund: :error"
+msgstr "PayU بازپرداخت را انجام نداد: :error"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU notice is not signed with this merchant key and salt"
+msgstr "اعلان PayU با این کلید و سالت پذیرنده امضا نشده است"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is in INR, the invoice in :invoice"
+msgstr "پرداخت PayU با شناسهٔ :id به INR است و فاکتور به :invoice"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id is not for a ClientFence invoice"
+msgstr "پرداخت PayU با شناسهٔ :id مربوط به فاکتور ClientFence نیست"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU payment :id was not found"
+msgstr "پرداخت PayU با شناسهٔ :id پیدا نشد"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU refunds only its own payments in Indian rupees (INR)."
+msgstr "PayU فقط پرداخت‌های خودش را به روپیه هند (INR) بازپرداخت می‌کند."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "PayU takes payments in Indian rupees (INR) only."
+msgstr "PayU فقط پرداخت به روپیه هند (INR) می‌پذیرد."
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Payments in Indian rupees (INR) on PayU India's payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+msgstr "پرداخت به روپیه هند (INR) در صفحه پرداخت PayU India: کارت، UPI، بانکداری اینترنتی و کیف پول. [راه‌اندازی PayU](https://clientfence.com/docs/clients-and-billing/payu/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Payments on CCAvenue's billing page. CCAvenue charges in the invoice's currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue's API, so register this server's IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+msgstr "پرداخت در صفحه صورتحساب CCAvenue. CCAvenue به ارز صورتحساب مبلغ را دریافت می‌کند: ارزهای صورتحساب‌های خود را در حساب CCAvenue خود فعال کنید. پرداخت‌ها با API سرویس CCAvenue بررسی می‌شوند، پس نشانی IP این سرور را برای دسترسی به API در CCAvenue ثبت کنید. [راه‌اندازی CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test access code:"
+msgstr "کد دسترسی (access code) (آزمایشی):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant key:"
+msgstr "کلید پذیرنده (merchant key) (آزمایشی):"
+
+#: src/library/Payment/Adapter/PayU.php
+msgid "Test merchant salt:"
+msgstr "سالت (salt) (آزمایشی):"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "Test working key:"
+msgstr "کلید کاری (working key) (آزمایشی):"
+
+# To translate (tools/locales.py starter).
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue did not make the refund: :error"
+msgstr "CCAvenue بازپرداخت را انجام نداد: :error"
+
+#: src/library/Payment/Adapter/CCAvenue.php
+msgid "CCAvenue refunds only its own payments."
+msgstr "CCAvenue فقط پرداخت‌های خودش را بازپرداخت می‌کند."
