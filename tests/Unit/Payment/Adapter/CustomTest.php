@@ -69,7 +69,8 @@ test('an Add funds invoice is paid once its own transfers add up to it', functio
     $client->loadBean(new Tests\Helpers\DummyBean());
     $clients = Mockery::mock();
     $clients->shouldReceive('get')->andReturn($client);
-    $clients->shouldReceive('addFunds')->once()->with($client, 6.0, Mockery::any(), []);
+    // CF-163: the credit names its transaction, so the statement lists it as the invoice's payment.
+    $clients->shouldReceive('addFunds')->once()->with($client, 6.0, Mockery::any(), ['type' => 'transaction', 'rel_id' => 8]);
     $invoices = Mockery::mock();
     $invoices->shouldReceive('getTotalWithTax')->andReturn(10.0);
     $invoices->shouldReceive('isInvoiceTypeDeposit')->andReturn(true);

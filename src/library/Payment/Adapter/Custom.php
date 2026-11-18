@@ -139,7 +139,8 @@ class Payment_Adapter_Custom
             // gateway has no title column: its name is the label clients see in the balance history.
             $received = is_numeric($tx->amount) && (float) $tx->amount > 0 ? round((float) $tx->amount, 2) : $invoiceTotal;
             $tx_desc = $gateway->name . ' transaction No: ' . $tx->txn_id;
-            $clientService->addFunds($client, $received, $tx_desc, []);
+            // ClientFence core patch: the credit names its transaction, as gateway payments do, so the statement shows a payment.
+            $clientService->addFunds($client, $received, $tx_desc, ['type' => 'transaction', 'rel_id' => $tx->id]);
             // QA r7 X-01: an Add funds invoice is paid once its own transfers add up to it; credit never pays one, so two
             // partial transfers left it unpaid (and Mark as paid would credit it again). Only while it is unpaid: a refunded
             // one's transfers were paid back.
