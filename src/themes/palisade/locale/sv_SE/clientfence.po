@@ -33774,3 +33774,45 @@ msgstr "CCAvenue gjorde inte återbetalningen: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue återbetalar bara sina egna betalningar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "Testläget för :registrar kräver en API-nyckel för sandlåda (den börjar med pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld-domäner kan inte registreras via API-gränssnittet hos :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Från Porkbun: Account > API Access (börjar med pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Hanterar domäner hos Porkbun via dess API. Skapa API-nyckeln på porkbun.com/account/api, verifiera kontots e-postadress och telefonnummer, aktivera API-åtkomst för alla domäner (kontoinställningar), ha tillräckligt med kontokredit för registreringar och förnyelser och höj den månatliga API-utgiftsgränsen (som standard 100 USD). Porkbun registrerar, förnyar och flyttar bara för registrets minimiperiod (oftast ett år): beställningar för fler år avvisas innan något dras. Porkbuns automatiska förnyelse är avstängd för varje domän: ClientFence förnyar en domän när dess förnyelsefaktura är betald. När testläget är på anger du ett nyckelpar för sandlåda (börjar med pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun returnerade ett oläsligt svar för :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Hemlig API-nyckel"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Nyckelns hemlighet (börjar med sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar säljer bara :domain för registrets minimiperiod (i år: :duration), inte för den beställda perioden (i år: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld-domäner kan inte flyttas via API-gränssnittet hos :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Internationaliserade domännamn kan inte registreras via :registrar."

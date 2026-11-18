@@ -31782,3 +31782,45 @@ msgstr "CCAvenue не направи възстановяването: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue възстановява само собствените си плащания."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "Тестовият режим на :registrar изисква API ключ за sandbox (започва с pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "Домейни :tld не могат да се регистрират чрез API на :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "От Porkbun: Account > API Access (започва с pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Управлява домейни в Porkbun чрез неговия API. Създайте API ключа на porkbun.com/account/api, потвърдете имейл адреса и телефонния номер на акаунта, включете всички домейни в достъпа през API (настройки на акаунта), поддържайте достатъчно кредит в акаунта за регистрации и подновявания и повишете месечния лимит за разходи през API (по подразбиране 100 USD). Porkbun регистрира, подновява и прехвърля само за минималния срок на регистъра (обикновено една година): поръчки за повече години се отхвърлят преди каквото и да е таксуване. Автоматичното подновяване в Porkbun е изключено за всеки домейн: ClientFence подновява домейн, когато фактурата за подновяването му е платена. При включен тестов режим въведете двойка sandbox ключове (започва с pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun върна нечетим отговор за :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Таен API ключ"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Тайната на ключа (започва с sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar продава :domain само за минималния срок на регистъра (в години: :duration), а не за поръчания срок (в години: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "Домейни :tld не могат да се прехвърлят чрез API на :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Интернационализирани имена на домейни не могат да се регистрират чрез :registrar."

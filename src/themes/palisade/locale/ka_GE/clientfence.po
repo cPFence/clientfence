@@ -33774,3 +33774,45 @@ msgstr "CCAvenue-მა თანხა არ დააბრუნა: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue აბრუნებს მხოლოდ საკუთარ გადახდებს."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar-ის სატესტო რეჟიმს სჭირდება Sandbox API გასაღები (იწყება pk1_sb_-ით)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld დომენების რეგისტრაცია :registrar-ის API-ით შეუძლებელია: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Porkbun-იდან: Account > API Access (იწყება pk1_-ით)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "მართავს დომენებს Porkbun-ზე მისი API-ით. შექმენით API გასაღები მისამართზე porkbun.com/account/api, დაადასტურეთ ანგარიშის ელფოსტა და ტელეფონის ნომერი, ჩართეთ ყველა დომენი API წვდომაში (ანგარიშის პარამეტრები), გქონდეთ ანგარიშზე საკმარისი თანხა რეგისტრაციებისა და განახლებებისთვის და გაზარდეთ ყოველთვიური API ხარჯის ლიმიტი (ნაგულისხმევად 100 USD). Porkbun არეგისტრირებს, ანახლებს და გადაიტანს მხოლოდ რეესტრის მინიმალური ვადით (ჩვეულებრივ ერთი წელი): მეტი წლის შეკვეთები უარყოფილია ჩამოჭრამდე. Porkbun-ის ავტომატური განახლება გამორთულია ყველა დომენისთვის: ClientFence ანახლებს დომენს, როცა მისი განახლების ინვოისი გადახდილია. სატესტო რეჟიმის ჩართვისას შეიყვანეთ Sandbox გასაღებების წყვილი (იწყება pk1_sb_-ით)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun-მა :command-ისთვის წაუკითხავი პასუხი დააბრუნა"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "საიდუმლო API გასაღები"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "გასაღების საიდუმლო (იწყება sk1_-ით)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar ყიდის :domain-ს მხოლოდ რეესტრის მინიმალური ვადით (წლებში: :duration), და არა შეკვეთილი ვადით (წლებში: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld დომენების გადატანა :registrar-ის API-ით შეუძლებელია."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "ინტერნაციონალიზებული დომენური სახელების რეგისტრაცია :registrar-ით შეუძლებელია."

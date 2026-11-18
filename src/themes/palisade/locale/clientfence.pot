@@ -786,7 +786,7 @@ msgstr ""
 msgid ":reason"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Ovh.php
+#: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php
 msgid ":registrar does not support this action."
 msgstr ""
 
@@ -800,6 +800,14 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid ":registrar refused the request: :error"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
 msgstr ""
 
 #: src/modules/Clientfence/CloudBackups.php
@@ -884,6 +892,14 @@ msgstr ""
 
 #: src/modules/Servicedomain/PriceSync.php
 msgid ":tld cannot be applied. Nothing was changed."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -11606,6 +11622,10 @@ msgstr ""
 msgid "From NameSilo: Account > API Manager."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Connectreseller.php
 msgid "From the ConnectReseller reseller panel: Tools > Profile Settings > API."
 msgstr ""
@@ -13308,6 +13328,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig
 msgid "Internal notes only visible to staff."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Internetbs.php
@@ -15496,6 +15520,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Openprovider.php
 msgid "Manages domains on Openprovider through its API. Use an Openprovider API user, allow this server's IP address for it, and keep enough account funds for registrations and renewals. Openprovider auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter the username and password of your Openprovider sandbox account."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Realtimeregister.php
@@ -20538,6 +20566,10 @@ msgstr ""
 msgid "Poor"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Port"
 msgstr ""
@@ -23520,6 +23552,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
 msgid "Secret"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
 msgstr ""
 
 #: src/modules/Support/Api/Admin.php src/modules/Support/Api/Client.php
@@ -27219,6 +27255,10 @@ msgstr ""
 msgid "The issue and payment dates of a paid invoice cannot be changed."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr ""
+
 #: src/modules/Product/Options.php
 msgid "The kind of an option cannot change. Make a new option instead."
 msgstr ""
@@ -27871,7 +27911,7 @@ msgstr ""
 msgid "The total is now :amount. Check the summary, then select the button again."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php
+#: src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Porkbun.php
 msgid "The transfer authorization code is required."
 msgstr ""
 

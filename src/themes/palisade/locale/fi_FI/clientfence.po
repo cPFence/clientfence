@@ -31727,3 +31727,45 @@ msgstr "CCAvenue ei tehnyt hyvitystä: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue palauttaa vain omat maksunsa."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar: testitila vaatii Sandbox API -avaimen (se alkaa pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld-verkkotunnuksia ei voi rekisteröidä palvelun :registrar API-rajapinnan kautta: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Porkbunista: Account > API Access (alkaa pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Hallinnoi verkkotunnuksia Porkbunissa sen API-rajapinnan kautta. Luo API-avain osoitteessa porkbun.com/account/api, vahvista tilin sähköpostiosoite ja puhelinnumero, ota kaikki verkkotunnukset mukaan API-käyttöön (tilin asetukset), pidä tilillä tarpeeksi saldoa rekisteröinteihin ja uusimisiin ja nosta kuukausittaista API-kulurajaa (oletuksena 100 USD). Porkbun rekisteröi, uusii ja siirtää vain rekisterin vähimmäisajaksi (yleensä yksi vuosi): useamman vuoden tilaukset hylätään ennen veloitusta. Porkbunin automaattinen uusinta on pois päältä jokaiselta verkkotunnukselta: ClientFence uusii verkkotunnuksen, kun sen uusintalasku on maksettu. Kun testitila on päällä, anna Sandbox-avainpari (se alkaa pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun palautti komennolle :command lukukelvottoman vastauksen"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Salainen API-avain"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Avaimen salaisuus (alkaa sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr "Palvelu :registrar myy verkkotunnuksen :domain vain rekisterin vähimmäisajaksi (vuosina: :duration), ei tilatuksi ajaksi (vuosina: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld-verkkotunnuksia ei voi siirtää palvelun :registrar API-rajapinnan kautta."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Kansainvälistettyjä verkkotunnuksia ei voi rekisteröidä palvelun :registrar kautta."

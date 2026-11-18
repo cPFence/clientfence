@@ -30681,3 +30681,45 @@ msgstr "لم يُجرِ CCAvenue الاسترداد: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "يعيد CCAvenue فقط مدفوعاته هو."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar في وضع الاختبار يحتاج إلى مفتاح API تجريبي (sandbox) (يبدأ بـ pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "لا يمكن تسجيل نطاقات :tld عبر API الخاص بـ :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "من Porkbun: Account > API Access (يبدأ بـ pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "يدير النطاقات لدى Porkbun عبر API الخاص بها. أنشئ مفتاح API على porkbun.com/account/api، وتحقق من البريد الإلكتروني ورقم الهاتف للحساب، وفعّل الوصول عبر API لجميع النطاقات (في إعدادات الحساب)، وأبقِ رصيدًا كافيًا في الحساب للتسجيل والتجديد، وارفع حد الإنفاق الشهري عبر API (100 USD افتراضيًا). يسجّل Porkbun ويجدّد وينقل للحد الأدنى من المدة لدى السجل فقط (عادةً سنة واحدة): تُرفض الطلبات لأكثر من ذلك قبل أي خصم. التجديد التلقائي في Porkbun متوقف لكل نطاق: يجدّد ClientFence النطاق عند دفع فاتورة تجديده. عند تفعيل وضع الاختبار، أدخل زوج مفاتيح تجريبيًا (sandbox) (يبدأ بـ pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "أعاد Porkbun ردًا غير مقروء للأمر :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "مفتاح API السري"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "سرّ المفتاح (يبدأ بـ sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar يبيع :domain فقط لأقل مدة لدى السجل (بالسنوات: :duration)، وليس للمدة المطلوبة (بالسنوات: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "لا يمكن نقل نطاقات :tld عبر API الخاص بـ :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "لا يمكن تسجيل أسماء النطاقات الدولية (IDN) عبر :registrar."

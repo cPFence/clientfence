@@ -33766,3 +33766,45 @@ msgstr "CCAvenue 未能退款：:error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue 只退還其自身的付款。"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar 的測試模式需要沙盒 API 金鑰（以 pk1_sb_ 開頭）。"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "無法透過 :registrar API 註冊 :tld 網域：:reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "來自 Porkbun：Account > API Access（以 pk1_ 開頭）。"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "透過 Porkbun 的 API 管理其網域。請在 porkbun.com/account/api 建立 API 金鑰，驗證帳戶的電郵地址和電話號碼，為所有網域開啟 API 存取（帳戶設定），在帳戶中保留足夠的餘額用於註冊和續期，並提高每月 API 支出上限（預設 100 USD）。Porkbun 只按註冊管理機構的最短年期（通常為一年）註冊、續期和轉移：超過該年期的訂單會在扣款前被拒絕。Porkbun 的自動續期對每個網域都已關閉：續期發票付款後，ClientFence 會為網域續期。開啟測試模式後，請輸入一組沙盒金鑰（以 pk1_sb_ 開頭）。"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun 對 :command 傳回了無法讀取的回應"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "私密 API 金鑰"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "金鑰的私密部分（以 sk1_ 開頭）。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar 只按註冊管理機構的最短年期出售 :domain（以年計：:duration），而不是按所訂購的年期（以年計：:years）。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "無法透過 :registrar API 轉移 :tld 網域。"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "無法透過 :registrar 註冊國際化網域名稱。"

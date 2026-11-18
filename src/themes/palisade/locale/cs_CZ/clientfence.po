@@ -31089,3 +31089,45 @@ msgstr "CCAvenue neprovedl vrácení peněz: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue vrací jen své vlastní platby."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "Testovací režim :registrar potřebuje klíč API pro sandbox (začíná pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "Domény :tld nelze registrovat přes API :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Z Porkbunu: Account > API Access (začíná pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Spravuje domény u Porkbunu přes jeho API. Klíč API vytvořte na porkbun.com/account/api, ověřte e-mailovou adresu a telefonní číslo účtu, zapněte přístup přes API pro všechny domény (nastavení účtu), mějte na účtu dostatek kreditu na registrace a prodloužení a zvyšte měsíční limit výdajů přes API (ve výchozím stavu 100 USD). Porkbun registruje, prodlužuje a převádí jen na minimální dobu registru (obvykle jeden rok): objednávky na více let se odmítnou před jakoukoli platbou. Automatické prodlužování u Porkbunu je u každé domény vypnuté: ClientFence doménu prodlouží, když je zaplacena faktura za prodloužení. Při zapnutém testovacím režimu zadejte dvojici klíčů pro sandbox (začíná pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun vrátil nečitelnou odpověď na :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Tajný klíč API"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Tajná část klíče (začíná sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar prodává :domain jen na minimální dobu registru (v letech: :duration), ne na objednanou dobu (v letech: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "Domény :tld nelze převést přes API :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Internacionalizované doménové názvy nelze registrovat přes :registrar."

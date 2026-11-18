@@ -33774,3 +33774,45 @@ msgstr "CCAvenue geri qaytarmanı etmədi: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue yalnız öz ödənişlərini qaytarır."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar test rejimi üçün sandbox API açarı lazımdır (pk1_sb_ ilə başlayır)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld domenləri :registrar API-si ilə qeydiyyatdan keçirilə bilməz: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Porkbun-dan: Account > API Access (pk1_ ilə başlayır)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Domenləri Porkbun-da onun API-si vasitəsilə idarə edir. API açarını porkbun.com/account/api ünvanında yaradın, hesabın e-poçt ünvanını və telefon nömrəsini təsdiqləyin, bütün domenləri API girişinə qoşun (hesab parametrləri), qeydiyyat və yeniləmələr üçün hesabda kifayət qədər kredit saxlayın və aylıq API xərc limitini artırın (defolt olaraq 100 USD). Porkbun qeydiyyatı, yeniləməni və transferi yalnız reyestrin minimum müddəti üçün edir (adətən bir il): daha çox il üçün sifarişlər ödəniş çıxılmazdan əvvəl rədd edilir. Porkbun avtomatik yeniləməsi hər domen üçün söndürülüb: ClientFence domeni yeniləmə fakturası ödənəndə yeniləyir. Test rejimi açıq olduqda sandbox açar cütünü daxil edin (pk1_sb_ ilə başlayır)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun :command üçün oxunmayan cavab qaytardı"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Gizli API açarı"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Açarın sirri (sk1_ ilə başlayır)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar :domain domenini yalnız reyestrin minimum müddətinə (illə: :duration) satır, sifariş edilən müddətə (illə: :years) yox."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld domenləri :registrar API-si ilə transfer edilə bilməz."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Beynəlxalq domen adları :registrar vasitəsilə qeydiyyatdan keçirilə bilməz."

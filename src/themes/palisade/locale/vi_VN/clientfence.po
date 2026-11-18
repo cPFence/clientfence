@@ -31301,3 +31301,45 @@ msgstr "CCAvenue không thực hiện hoàn tiền: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue chỉ hoàn tiền cho các thanh toán của chính mình."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "Chế độ thử nghiệm của :registrar cần khóa API sandbox (bắt đầu bằng pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "Không thể đăng ký tên miền :tld qua API của :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Từ Porkbun: Account > API Access (bắt đầu bằng pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Quản lý tên miền tại Porkbun qua API của hệ thống này. Tạo khóa API tại porkbun.com/account/api, xác minh địa chỉ email và số điện thoại của tài khoản, bật quyền truy cập API cho tất cả tên miền (cài đặt tài khoản), giữ đủ số dư trong tài khoản cho việc đăng ký và gia hạn, và nâng giới hạn chi tiêu API hằng tháng (mặc định 100 USD). Porkbun chỉ đăng ký, gia hạn và chuyển tên miền theo thời hạn tối thiểu của cơ quan đăng ký (thường là một năm): đơn hàng nhiều năm hơn bị từ chối trước khi tính phí. Tính năng tự động gia hạn của Porkbun bị tắt cho mọi tên miền: ClientFence gia hạn tên miền khi hóa đơn gia hạn được thanh toán. Khi bật chế độ thử nghiệm, hãy nhập cặp khóa sandbox (bắt đầu bằng pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun trả về phản hồi không đọc được cho :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Khóa API bí mật"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Phần bí mật của khóa (bắt đầu bằng sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar chỉ bán :domain theo thời hạn tối thiểu của cơ quan đăng ký (tính bằng năm: :duration), không bán theo thời hạn đã đặt (tính bằng năm: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "Không thể chuyển tên miền :tld qua API của :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Không thể đăng ký tên miền quốc tế hóa qua :registrar."

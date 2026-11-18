@@ -33774,3 +33774,45 @@ msgstr "CCAvenue রিফান্ড করেনি: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue শুধু নিজের পেমেন্ট ফেরত দেয়।"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar-এর টেস্ট মোডে স্যান্ডবক্স API কী লাগে (এটি pk1_sb_ দিয়ে শুরু হয়)।"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld ডোমেইন :registrar API দিয়ে নিবন্ধন করা যায় না: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Porkbun থেকে: Account > API Access (এটি pk1_ দিয়ে শুরু হয়)।"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Porkbun-এ তার API দিয়ে ডোমেইন পরিচালনা করে। porkbun.com/account/api-তে API কী তৈরি করুন, অ্যাকাউন্টের ইমেইল ঠিকানা ও ফোন নম্বর যাচাই করুন, সব ডোমেইন API অ্যাক্সেসে যুক্ত করুন (অ্যাকাউন্ট সেটিংস), নিবন্ধন ও নবায়নের জন্য অ্যাকাউন্টে যথেষ্ট ক্রেডিট রাখুন এবং মাসিক API খরচের সীমা বাড়ান (ডিফল্ট 100 USD)। Porkbun শুধু রেজিস্ট্রির ন্যূনতম মেয়াদের জন্য নিবন্ধন, নবায়ন ও ট্রান্সফার করে (সাধারণত এক বছর): বেশি বছরের অর্ডার কোনো চার্জের আগেই প্রত্যাখ্যাত হয়। প্রতিটি ডোমেইনের জন্য Porkbun-এর স্বয়ংক্রিয় নবায়ন বন্ধ: নবায়নের ইনভয়েস পরিশোধ হলে ClientFence ডোমেইন নবায়ন করে। টেস্ট মোড চালু থাকলে একটি স্যান্ডবক্স কী জোড়া দিন (এটি pk1_sb_ দিয়ে শুরু হয়)।"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr ":command-এর জন্য Porkbun একটি অপঠনযোগ্য উত্তর দিয়েছে"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "গোপন API কী"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "কী-র গোপন অংশ (এটি sk1_ দিয়ে শুরু হয়)।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar :domain শুধু রেজিস্ট্রির ন্যূনতম মেয়াদের জন্য বিক্রি করে (বছরে: :duration), অর্ডার করা মেয়াদের জন্য নয় (বছরে: :years)।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld ডোমেইন :registrar API দিয়ে ট্রান্সফার করা যায় না।"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "আন্তর্জাতিক ডোমেইন নাম :registrar দিয়ে নিবন্ধন করা যায় না।"

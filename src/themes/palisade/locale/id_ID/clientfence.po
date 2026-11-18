@@ -31451,3 +31451,45 @@ msgstr "CCAvenue tidak melakukan pengembalian dana: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue hanya mengembalikan dana pembayarannya sendiri."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "Mode uji :registrar memerlukan kunci API sandbox (diawali pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "Domain :tld tidak dapat didaftarkan lewat API :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Dari Porkbun: Account > API Access (diawali pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Mengelola domain di Porkbun melalui API-nya. Buat kunci API di porkbun.com/account/api, verifikasi alamat email dan nomor telepon akun, aktifkan semua domain untuk akses API (pengaturan akun), sediakan kredit akun yang cukup untuk pendaftaran dan perpanjangan, lalu naikkan batas pengeluaran API bulanan (bawaan 100 USD). Porkbun mendaftar, memperpanjang, dan mentransfer hanya untuk masa minimum registri (biasanya satu tahun): pesanan untuk lebih dari itu ditolak sebelum ada penagihan. Perpanjangan otomatis Porkbun dimatikan untuk setiap domain: ClientFence memperpanjang domain saat faktur perpanjangannya dibayar. Saat mode uji aktif, masukkan pasangan kunci sandbox (diawali pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun mengembalikan respons yang tidak terbaca untuk :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Kunci API rahasia"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Rahasia kunci (diawali sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar menjual :domain hanya untuk masa minimum registri (dalam tahun: :duration), bukan untuk masa yang dipesan (dalam tahun: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "Domain :tld tidak dapat ditransfer lewat API :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Nama domain internasional tidak dapat didaftarkan lewat :registrar."

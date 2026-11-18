@@ -31292,3 +31292,45 @@ msgstr "Az CCAvenue nem hajtotta végre a visszatérítést: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "A CCAvenue csak a saját fizetéseit téríti vissza."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "A(z) :registrar tesztmódjához sandbox API-kulcs kell (pk1_sb_ előtaggal kezdődik)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "A(z) :tld domainek nem regisztrálhatók a(z) :registrar API-ján keresztül: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "A Porkbunból: Account > API Access (pk1_ előtaggal kezdődik)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "A domaineket a Porkbunnál az API-ján keresztül kezeli. Hozza létre az API-kulcsot a porkbun.com/account/api oldalon, igazolja a fiók e-mail-címét és telefonszámát, kapcsolja be az API-hozzáférést minden domainhez (fiókbeállítások), tartson elég egyenleget a fiókon a regisztrációkhoz és megújításokhoz, és emelje meg a havi API-költési korlátot (alapértelmezés szerint 100 USD). A Porkbun csak a regisztrációs adatbázis minimális időtartamára (általában egy évre) regisztrál, újít és visz át: a több évre szóló megrendeléseket minden terhelés előtt elutasítja. A Porkbun automatikus megújítása minden domainnél ki van kapcsolva: a ClientFence akkor újít meg egy domaint, amikor a megújítási számláját kifizették. Bekapcsolt tesztmódnál adjon meg egy sandbox kulcspárt (pk1_sb_ előtaggal kezdődik)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "A Porkbun olvashatatlan választ adott erre: :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Titkos API-kulcs"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "A kulcs titka (sk1_ előtaggal kezdődik)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar a(z) :domain domaint csak a regisztrációs adatbázis minimális időtartamára értékesíti (években: :duration), nem a megrendelt időtartamra (években: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "A(z) :tld domainek nem vihetők át a(z) :registrar API-ján keresztül."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "A nemzetköziesített domainnevek nem regisztrálhatók a(z) :registrar útján."

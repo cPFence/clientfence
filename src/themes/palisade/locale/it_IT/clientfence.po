@@ -30362,3 +30362,45 @@ msgstr "CCAvenue non ha effettuato il rimborso: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue rimborsa solo i propri pagamenti."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr "La modalità test di :registrar richiede una chiave API sandbox (inizia con pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr "I domini :tld non possono essere registrati tramite l'API di :registrar: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Da Porkbun: Account > API Access (inizia con pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Gestisce i domini su Porkbun tramite la sua API. Crea la chiave API su porkbun.com/account/api, verifica l'indirizzo e-mail e il numero di telefono dell'account, abilita tutti i domini all'accesso API (impostazioni dell'account), mantieni credito sufficiente sull'account per registrazioni e rinnovi e alza il limite di spesa mensile dell'API (100 USD per impostazione predefinita). Porkbun registra, rinnova e trasferisce solo per la durata minima del registro (di solito un anno): gli ordini per più anni vengono rifiutati prima di qualsiasi addebito. Il rinnovo automatico di Porkbun è disattivato per ogni dominio: ClientFence rinnova un dominio quando la sua fattura di rinnovo è pagata. Con la modalità test attiva, inserisci una coppia di chiavi sandbox (inizia con pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun ha restituito una risposta illeggibile per :command"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Chiave API segreta"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Il segreto della chiave (inizia con sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar vende :domain solo per la durata minima del registro (in anni: :duration), non per la durata ordinata (in anni: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr "I domini :tld non possono essere trasferiti tramite l'API di :registrar."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "I nomi di dominio internazionalizzati non possono essere registrati tramite :registrar."

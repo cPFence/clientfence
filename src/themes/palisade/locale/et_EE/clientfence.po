@@ -33774,3 +33774,45 @@ msgstr "CCAvenue ei teinud tagasimakset: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue tagastab ainult oma makseid."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar testrežiim vajab liivakasti API-võtit (see algab pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld domeene ei saa :registrar API kaudu registreerida: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Porkbunist: Account > API Access (algab pk1_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "Haldab domeene Porkbunis selle API kaudu. Looge API-võti aadressil porkbun.com/account/api, kinnitage konto e-posti aadress ja telefoninumber, lülitage kõik domeenid API-juurdepääsu alla (konto seaded), hoidke kontol piisavalt krediiti registreerimiste ja pikendamiste jaoks ning tõstke igakuist API kulupiiri (vaikimisi 100 USD). Porkbun registreerib, pikendab ja kannab üle ainult registri minimaalseks perioodiks (tavaliselt üks aasta): rohkemate aastate tellimused lükatakse tagasi enne mis tahes tasu võtmist. Porkbuni automaatne pikendamine on iga domeeni jaoks välja lülitatud: ClientFence pikendab domeeni, kui selle pikendusarve on makstud. Testrežiimi sisselülitamisel sisestage liivakasti võtmepaar (see algab pk1_sb_)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr "Porkbun andis käsule :command loetamatu vastuse"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "Salajane API-võti"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "Võtme saladus (algab sk1_)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar müüb :domain ainult registri minimaalseks perioodiks (aastates: :duration), mitte tellitud perioodiks (aastates: :years)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld domeene ei saa :registrar API kaudu üle kanda."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "Rahvusvahelistatud domeeninimesid ei saa :registrar kaudu registreerida."

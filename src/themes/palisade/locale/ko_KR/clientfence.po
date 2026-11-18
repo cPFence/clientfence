@@ -33766,3 +33766,45 @@ msgstr "CCAvenue가 환불을 처리하지 않았습니다: :error"
 #: src/library/Payment/Adapter/CCAvenue.php
 msgid "CCAvenue refunds only its own payments."
 msgstr "CCAvenue는 자체 결제만 환불합니다."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar test mode needs a sandbox API key (it starts with pk1_sb_)."
+msgstr ":registrar 테스트 모드에는 샌드박스 API 키가 필요합니다(pk1_sb_로 시작)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgstr ":tld 도메인은 :registrar API로 등록할 수 없습니다: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "From Porkbun: Account > API Access (it starts with pk1_)."
+msgstr "Porkbun에서: Account > API Access (pk1_로 시작)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Manages domains on Porkbun through its API. Create the API key at porkbun.com/account/api, verify the account's email address and phone number, opt all domains in to API access (account settings), keep enough account credit for registrations and renewals, and raise the monthly API spend limit (100 USD by default). Porkbun registers, renews and transfers for the registry's minimum term only (usually one year): orders for more years are refused before any charge. Porkbun auto-renewal is turned off for every domain: ClientFence renews a domain when its renewal invoice is paid. With test mode on, enter a sandbox key pair (it starts with pk1_sb_)."
+msgstr "API를 통해 Porkbun의 도메인을 관리합니다. porkbun.com/account/api에서 API 키를 만들고, 계정의 이메일 주소와 전화번호를 인증하고, 모든 도메인을 API 접근에 포함시키고(계정 설정), 등록과 갱신에 필요한 계정 크레딧을 충분히 유지하고, 월 API 지출 한도를 올리세요(기본 100 USD). Porkbun은 레지스트리의 최소 기간(보통 1년)으로만 등록, 갱신, 이전합니다. 더 긴 기간의 주문은 결제 전에 거부됩니다. Porkbun 자동 갱신은 모든 도메인에서 꺼져 있습니다. ClientFence는 갱신 청구서가 결제되면 도메인을 갱신합니다. 테스트 모드를 켜면 샌드박스 키 쌍을 입력하세요(pk1_sb_로 시작)."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Porkbun returned an unreadable response for :command"
+msgstr ":command에 대해 Porkbun이 읽을 수 없는 응답을 반환했습니다"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Secret API key"
+msgstr "비밀 API 키"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "The key's secret (it starts with sk1_)."
+msgstr "키의 비밀 값(sk1_로 시작)."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ":registrar는 :domain을(를) 레지스트리의 최소 기간(년 단위: :duration)으로만 판매하며, 주문한 기간(년 단위: :years)으로는 판매하지 않습니다."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the :registrar API."
+msgstr ":tld 도메인은 :registrar API로 이전할 수 없습니다."
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid "Internationalized domain names cannot be registered through :registrar."
+msgstr "국제화 도메인 이름은 :registrar로 등록할 수 없습니다."
