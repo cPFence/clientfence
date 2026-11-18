@@ -54,6 +54,8 @@
                         <span>{{ 'Reseller control panel'|trans }}</span>
                     </a>
                 {% endif %}
+                {# ClientFence core patch: Sync with server shows only for panels that can read the account back (DirectAdmin and Plesk refuse, HestiaCP and Custom change nothing). #}
+                {% if server and server.manager in ['Whm', 'CWP', 'Enhance'] %}
                 <a class="btn btn-primary" href="{{ 'servicehosting/sync'|api_url(query: { 'order_id': order.id }) }}"
                     {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'Account Synced'|trans}) }}>
                     <svg class="icon">
@@ -61,6 +63,7 @@
                     </svg>
                     <span>{{ 'Sync with server'|trans }}</span>
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
