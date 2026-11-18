@@ -8818,5 +8818,13 @@
     {
         "file": "themes/admin_default/html/partial_pricing.html.twig",
         "done": "ClientFence core patch: the default currency without the Currency right (product staff price their pricing, as in WHMCS)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: as WHMCS \"Automatic Credit Use\", a renewal invoice takes the client's free credit that does"
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: Renew Now takes the part of the credit that does not cover the invoice, as the cron does."
     }
 ]

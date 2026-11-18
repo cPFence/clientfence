@@ -88,6 +88,7 @@ test('creates renewal invoice', function (): void {
         ->atLeast()->once()
         ->andReturn($model);
     $serviceMock->shouldReceive('approveInvoice');
+    $serviceMock->shouldReceive('applyPartCreditToRenewal')->once();
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $clientOrder = new Model_ClientOrder();
@@ -126,6 +127,7 @@ test('creates renewal invoice for free order', function (): void {
         ->atLeast()->once()
         ->andReturn($model);
     $serviceMock->shouldReceive('approveInvoice');
+    $serviceMock->shouldReceive('applyPartCreditToRenewal')->once();
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $clientOrder = new Model_ClientOrder();
@@ -180,6 +182,7 @@ test('renewal invoices use the order reloaded inside the lock', function (): voi
     $service = Mockery::mock(Service::class);
     $service->shouldReceive('generateForOrder')->once()->with($after)->andReturn($invoice);
     $service->shouldReceive('approveInvoice')->once()->with($invoice, ['id' => 9, 'use_credits' => true]);
+    $service->shouldReceive('applyPartCreditToRenewal')->once()->with($invoice);
     $di = container();
     $di['db'] = $db;
     $di['logger'] = new Tests\Helpers\TestLogger();

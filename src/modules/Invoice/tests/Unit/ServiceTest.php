@@ -3755,6 +3755,7 @@ test('a staff renewal right after a paid renewal of the order is refused', funct
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('generateForOrder')->times($refused ? 0 : 1)->andReturn($invoice);
     $serviceMock->shouldReceive('approveInvoice')->times($refused ? 0 : 1);
+    $serviceMock->shouldReceive('getBalanceDue', 'getFreeCredit')->andReturn(0.0);
     $events = Mockery::mock('ClientFence\EventManager');
     $events->shouldReceive('fire');
     $di = container();
@@ -4148,6 +4149,7 @@ test('generates invoices for expiring orders', function (): void {
     $serviceMock->shouldReceive('generateForOrder')
         ->once()
         ->andReturn($invoiceModel);
+    $serviceMock->shouldReceive('getBalanceDue', 'getFreeCredit')->andReturn(0.0);
 
     $orderService = Mockery::mock(OrderService::class);
     $orderService->shouldReceive('getSoonExpiringActiveOrders')
@@ -6076,4 +6078,28 @@ test('an unpaid invoice lowered to what was paid on it is paid from those paymen
     'still due' => ['unpaid', 30.0, 20.0, false],
     'nothing paid on it' => ['unpaid', 0.0, 0.0, false],
     'already paid' => ['paid', 60.0, 0.0, false],
+]);
+
+test('a renewal invoice takes the free credit that does not cover it', function (float $free, ?float $applied, bool $refused): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->client_id = 20;
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getBalanceDue')->andReturn(10.0);
+    $service->shouldReceive('getFreeCredit')->with(20)->andReturn($free);
+    if ($applied === null) {
+        $service->shouldNotReceive('applyCredit');
+    } else {
+        $call = $service->shouldReceive('applyCredit')->once()->with($invoice, $applied);
+        $refused ? $call->andThrow(new ClientFence\InformationException('another currency')) : $call->andReturnTrue();
+    }
+
+    (new ReflectionMethod(Service::class, 'applyPartCreditToRenewal'))->invoke($service, $invoice);
+})->with([
+    'part of the invoice' => [4.0, 4.0, false],
+    'covers it: paid from credit on approval' => [12.0, null, false],
+    'no credit' => [0.0, null, false],
+    'old debt' => [-5.0, null, false],
+    'credit in another currency' => [4.0, 4.0, true],
 ]);

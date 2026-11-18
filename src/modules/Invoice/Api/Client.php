@@ -134,6 +134,8 @@ class Client extends \ClientFence\Api\AbstractApi
                 throw new \ClientFence\InformationException('The invoice for this service is being prepared. You will receive it by email.');
             }
             $invoice = $service->generateForOrder($model);
+            // ClientFence core patch: Renew Now takes the part of the credit that does not cover the invoice, as the cron does.
+            $service->applyPartCreditToRenewal($invoice);
             $service->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
 
             return $invoice;

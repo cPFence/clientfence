@@ -2790,6 +2790,7 @@ class Service implements InjectionAwareInterface
                 throw new \ClientFence\InformationException('This order was renewed a moment ago. Reload the page to see it.');
             }
             $invoice = $this->generateForOrder($model, $due_days);
+            $this->applyPartCreditToRenewal($invoice);
             $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
 
             return $invoice;
@@ -2800,6 +2801,23 @@ class Service implements InjectionAwareInterface
         $this->di['logger']->info("Generated renewal invoice #{$invoice->id}.");
 
         return $invoice->id;
+    }
+
+    /**
+     * ClientFence core patch: as WHMCS "Automatic Credit Use", a renewal invoice takes the client's free credit that does
+     * not cover it, before the approval so its email shows what is left; credit that covers it pays it on approval.
+     */
+    public function applyPartCreditToRenewal(\Model_Invoice $invoice): void
+    {
+        $due = round($this->getBalanceDue($invoice), 2);
+        $part = min($due, $this->getFreeCredit((int) $invoice->client_id));
+        if ($part > 0 && $part < $due) {
+            try {
+                $this->applyCredit($invoice, $part);
+            } catch (InformationException) {
+                // An invoice in another currency than the credit: none applied, as on approval.
+            }
+        }
     }
 
     /** ClientFence core patch: staff chose "Do not apply credit" on a new order: the credit batch leaves this invoice. */
@@ -2999,6 +3017,7 @@ class Service implements InjectionAwareInterface
         if ($invoice instanceof \Model_Invoice && $first instanceof \Model_ClientOrder) {
             try {
                 $this->finishRenewalInvoice($invoice, $first);
+                $this->applyPartCreditToRenewal($invoice);
                 $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
             } catch (\Exception $e) {
                 $this->di['logger']->warning($e->getMessage());
@@ -3075,6 +3094,7 @@ class Service implements InjectionAwareInterface
                     }
                     $model = $this->di['db']->getExistingModelById('ClientOrder', $order['id']);
                     $invoice = $this->generateForOrder($model);
+                    $this->applyPartCreditToRenewal($invoice);
                     $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
                 });
             } catch (\Exception $e) {
