@@ -525,6 +525,12 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         // completed setup intent would subscribe/charge the requester but
         // credit and mark paid whatever invoice_id was supplied.
         if ($setupIntent->status === 'succeeded' && $invoice instanceof Model_Invoice && $this->setupIntentBelongsToInvoice($setupIntent, $invoice, $gateway_id)) {
+            // ClientFence core patch: a failed row whose credit paid the invoice stays failed when another row is the payment.
+            if ($this->credited($tx) && $this->paidByAnother($tx, (int) $invoice->id) && $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === Model_Invoice::STATUS_PAID) {
+                $this->trashUnlessCredited($tx, 'Payment recorded again by another transaction; its account credit was added with this one.');
+
+                return;
+            }
             // ClientFence core patch (security S-1): Stripe's subscription idempotency key can change or expire.
             $existing = $this->di['db']->findOne(
                 'Transaction',
@@ -1223,6 +1229,11 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return true;
     }
 
+    private function paidByAnother(Model_Transaction $tx, int $invoiceId): bool
+    {
+        return $this->di['dbal']->fetchOne('SELECT 1 FROM `transaction` WHERE invoice_id = ? AND id <> ? AND status = ? LIMIT 1', [$invoiceId, $tx->id, Model_Transaction::STATUS_PROCESSED]) !== false;
+    }
+
     /** ClientFence core patch: a Stripe payment is credited once: a retry is a new transaction, and the one that credited it may have failed after. */
     private function credited(Model_Transaction $tx): bool
     {
@@ -1311,9 +1322,8 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
     {
         $setupIntent = $event->data->object;
 
-        if (!$this->credited($tx)) {
-            $tx->txn_id = $setupIntent->id;
-        }
+        // ClientFence core patch: a row that credited keeps its stored charge id, not the event id, so a later notice of the charge finds the credit.
+        $tx->txn_id = $this->credited($tx) ? $this->di['dbal']->fetchOne('SELECT txn_id FROM `transaction` WHERE id = ?', [$tx->id]) : $setupIntent->id;
         $tx->txn_status = $setupIntent->status;
 
         if ($setupIntent->status !== 'succeeded') {
@@ -1349,6 +1359,10 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $priceId = $this->resolveSubscriptionPriceId($setupIntent, $invoice);
 
         if ($this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [$invoice->id]) === Model_Invoice::STATUS_PAID) {
+            // ClientFence core patch: a failed webhook row whose credit paid the invoice stays failed when another row is the payment (processWebhookEvent keeps it with a note).
+            if ($this->credited($tx) && $this->paidByAnother($tx, (int) $invoice->id)) {
+                return false;
+            }
             $tx->status = Model_Transaction::STATUS_PROCESSED;
             $tx->error = 'The invoice was already paid; no subscription was started.';
             $tx->updated_at = date('Y-m-d H:i:s');

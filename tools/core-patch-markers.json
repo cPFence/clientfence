@@ -8826,5 +8826,17 @@
     {
         "file": "modules/Invoice/Api/Client.php",
         "done": "ClientFence core patch: Renew Now takes the part of the credit that does not cover the invoice, as the cron does."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a failed row whose credit paid the invoice stays failed when another row is the payment."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a failed webhook row whose credit paid the invoice stays failed when another row is the payment (processWebhookEvent keeps it with a note)."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a row that credited keeps its stored charge id, not the event id, so a later notice of the charge finds the credit."
     }
 ]

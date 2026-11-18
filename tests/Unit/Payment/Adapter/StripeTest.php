@@ -2881,6 +2881,74 @@ test('a payment credited by a transaction that failed later is not credited agai
         ->and($credited(603, ''))->toBeFalse();
 });
 
+test('a failed setup transaction whose credit paid the invoice stays failed when processed again', function (bool $webhook): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER, invoice_id INTEGER, status TEXT, error TEXT, updated_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, type TEXT, rel_id INTEGER)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT)');
+    // Transaction 700 credited the first charge in_first and then failed; the invoice.paid of in_first paid the invoice from that credit.
+    $db->insert('`transaction`', ['id' => 700, 'txn_id' => 'in_first', 'gateway_id' => 1, 'invoice_id' => 96, 'status' => Model_Transaction::STATUS_ERROR]);
+    // The later row that paid the invoice from row 700's credit.
+    $db->insert('`transaction`', ['id' => 701, 'txn_id' => 'in_first', 'gateway_id' => 1, 'invoice_id' => 96, 'status' => Model_Transaction::STATUS_PROCESSED]);
+    $db->insert('client_balance', ['type' => 'transaction', 'rel_id' => 700]);
+    $db->insert('invoice', ['id' => 96, 'status' => Model_Invoice::STATUS_PAID]);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new DummyBean());
+    $invoice->id = 96;
+    $invoice->status = Model_Invoice::STATUS_PAID;
+    $setupIntent = [
+        'id' => 'seti_first', 'object' => 'setup_intent', 'status' => 'succeeded', 'customer' => 'cus_first',
+        'metadata' => ['invoice_id' => '96', 'gateway_id' => '1', 'price_id' => 'price_first'],
+    ];
+    $stripe = Mockery::mock(StripeClient::class);
+    $stripe->setupIntents = Mockery::mock();
+    $stripe->setupIntents->shouldReceive('retrieve')->times($webhook ? 0 : 1)->with('seti_first', [])->andReturn(Stripe\SetupIntent::constructFrom($setupIntent));
+    $stripe->subscriptions = Mockery::mock();
+    $stripe->subscriptions->shouldNotReceive('create');
+    setPrivateProperty($this->adapter, 'stripe', $stripe);
+    $tx = buildTransaction();
+    $tx->id = 700;
+    $tx->gateway_id = 1;
+    $tx->invoice_id = 96;
+    $tx->txn_id = 'in_first';
+    $tx->status = Model_Transaction::STATUS_ERROR;
+    $di = container();
+    $di['dbal'] = $db;
+    // The setup webhook row already processed with the setup intent id: the redirect duplicate check must not record T1 again.
+    $setupRow = new Model_Transaction();
+    $setupRow->loadBean(new Tests\Helpers\DummyBean());
+    $setupRow->status = Model_Transaction::STATUS_PROCESSED;
+    $di['db']->shouldReceive('findOne')->with('Transaction', 'txn_id = :txn_id AND status IN (:s1, :s2)', Mockery::any())->andReturn($setupRow);
+    $di['db']->shouldReceive('getExistingModelById')->with('Invoice', 96)->andReturn($invoice);
+    $di['db']->shouldReceive('store')->with($tx)->andReturnUsing(function (Model_Transaction $tx) use ($db): int {
+        $db->update('`transaction`', ['txn_id' => $tx->txn_id, 'status' => $tx->status], ['id' => $tx->id]);
+
+        return 700;
+    });
+    $di['db']->shouldNotReceive('trash');
+    $this->adapter->setDi($di);
+    $api = Mockery::mock();
+    $api->shouldNotReceive('client_balance_add_funds', 'invoice_subscription_create');
+
+    if ($webhook) {
+        // Staff click Process: the stored setup_intent.succeeded notice is handled again.
+        $rawBody = json_encode(['id' => 'evt_setup', 'type' => 'setup_intent.succeeded', 'data' => ['object' => $setupIntent]]);
+        invokePrivateMethod($this->adapter, 'processWebhookEvent', [$api, $tx, [
+            'http_raw_post_data' => $rawBody,
+            'server' => ['HTTP_STRIPE_SIGNATURE' => signStripeWebhookPayload($rawBody)],
+        ], 1]);
+    } else {
+        invokePrivateMethod($this->adapter, 'processSetupIntent', [$api, $tx, $invoice, ['get' => ['setup_intent' => 'seti_first']], 1]);
+    }
+
+    // Not a second payment of the invoice, and it keeps in_first so a later notice of in_first still finds its credit.
+    expect($db->fetchAssociative('SELECT txn_id, status, error FROM `transaction` WHERE id = 700'))->toBe([
+        'txn_id' => 'in_first',
+        'status' => Model_Transaction::STATUS_ERROR,
+        'error' => 'Payment recorded again by another transaction; its account credit was added with this one.',
+    ]);
+})->with(['redirect' => false, 'webhook' => true]);
+
 test('checkout buyer details are encoded as JS string literals', function (): void {
     // HTML entities are never decoded inside <script>, so HTML-escaping would
     // corrupt the data sent to Stripe.
