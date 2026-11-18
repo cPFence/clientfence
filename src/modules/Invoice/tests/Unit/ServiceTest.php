@@ -2851,6 +2851,7 @@ test('does not deduct credits when the locked balance is insufficient', function
     $di['db'] = $db;
     $di['dbal'] = $dbalMock;
     $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $balanceService);
+    $service->shouldReceive('getAmountPaid')->once()->with($invoice)->andReturn(0.0);
     $service->setDi($di);
 
     expect($service->tryPayWithCredits($invoice))->toBeFalse();
@@ -5725,9 +5726,45 @@ test('credit set aside for another unpaid invoice does not pay this one', functi
     $di['db'] = $db;
     $di['dbal'] = $dbalMock;
     $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $balanceService);
+    $service->shouldReceive('getAmountPaid')->once()->with($invoice)->andReturn(0.0);
     $service->setDi($di);
 
     expect($service->tryPayWithCredits($invoice))->toBeFalse();
+});
+
+test('a card payment pays its own invoice when an old debt holds the balance below zero', function (): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->client_id = 20;
+    $invoice->approved = 1;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 20;
+    $balanceService = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
+    // -5.00 of old debt, then the 10.00 card payment of this invoice.
+    $balanceService->shouldReceive('getClientBalance')->once()->with($client)->andReturn(5.0);
+    $dbalMock = Mockery::mock();
+    expectCreditPaymentLock($dbalMock, 20, Model_Invoice::STATUS_UNPAID);
+    $debit = new Model_ClientBalance();
+    $debit->loadBean(new Tests\Helpers\DummyBean());
+    $db = Mockery::mock(\ClientFence\Database::class);
+    $db->shouldReceive('load')->once()->with('Client', 20)->andReturn($client);
+    $db->shouldReceive('dispense')->once()->with('ClientBalance')->andReturn($debit);
+    $db->shouldReceive('find')->once()->with('InvoiceItem', 'invoice_id = ?', [10])->andReturn([]);
+    $db->shouldReceive('store')->once()->with($debit);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->once()->with($invoice)->andReturn(10.0);
+    $service->shouldReceive('getAmountPaid')->once()->with($invoice)->andReturn(10.0);
+    $service->shouldReceive('markAsPaid')->once()->with($invoice, false, false, true)->andReturnTrue();
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $dbalMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $balanceService);
+    $service->setDi($di);
+
+    expect($service->tryPayWithCredits($invoice))->toBeTrue()->and($debit->amount)->toBe(-10.0);
 });
 
 test('apply credit takes up to the free credit and the balance due, and pays a covered invoice', function (float $amount, float $due, ?string $error, bool $pays): void {

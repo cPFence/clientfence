@@ -655,9 +655,12 @@ class ServiceTransaction implements InjectionAwareInterface
         $invoice = $tx->invoice_id ? $this->di['db']->load('Invoice', (int) $tx->invoice_id) : null;
         if ($invoice instanceof \Model_Invoice && $invoice->gateway_id && PendingPayments::forInvoice($this->di, (int) $invoice->id) === null) {
             try {
-                GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
-                // Without the fee, what was paid may now cover the invoice: settle it as the adapter tried to.
-                $this->di['mod_service']('Invoice')->tryPayWithCredits($this->di['db']->load('Invoice', (int) $invoice->id));
+                // ClientFence core patch: the processed payment may now pay the invoice with its fee (an old debt kept the adapter from it); the fee changes only if not.
+                if (!$this->di['mod_service']('Invoice')->tryPayWithCredits($invoice)) {
+                    GatewayFees::apply($this->di, $invoice, (int) $invoice->gateway_id);
+                    // Without the fee, what was paid may now cover the invoice: settle it as the adapter tried to.
+                    $this->di['mod_service']('Invoice')->tryPayWithCredits($this->di['db']->load('Invoice', (int) $invoice->id));
+                }
             } catch (\Throwable $e) {
                 $this->di['logger']->error('Invoice #%s: payment fee not updated after transaction #%s: %s', $invoice->id, $id, $e->getMessage());
             }

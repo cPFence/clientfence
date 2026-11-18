@@ -8766,5 +8766,13 @@
     {
         "file": "modules/Extension/templates/admin/mod_extension_languages.html.twig",
         "done": "ClientFence core patch: staff who may only view extensions get no language toggles (the API refuses them)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the invoice's own payments pay it even when an old debt holds the balance below zero (WHMCS)."
+    },
+    {
+        "file": "modules/Invoice/ServiceTransaction.php",
+        "done": "ClientFence core patch: the processed payment may now pay the invoice with its fee (an old debt kept the adapter from it); the fee changes only if not."
     }
 ]

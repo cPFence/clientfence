@@ -321,7 +321,7 @@ test('the fee tax before the invoice exists is the same as the invoice adds, rou
         ->and(GatewayFees::taxOn(20.0, 0, 1.16))->toBe(0.0);
 });
 
-test('a payment that leaves the invoice part-paid puts the fee on what is left, not while one is clearing (CF-171)', function (bool $clearing, float $fee): void {
+test('a payment that leaves the invoice part-paid puts the fee on what is left, not while one is clearing (CF-171)', function (bool $clearing, bool $paysFirst, float $fee): void {
     $world = feeWorld();
     $world->db->executeStatement('CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, amount REAL, currency TEXT, status TEXT, txn_status TEXT, created_at TEXT)');
     if ($clearing) {
@@ -344,8 +344,9 @@ test('a payment that leaves the invoice part-paid puts the fee on what is left, 
         }
     });
     $world->di['api_system'] = new stdClass();
-    // What the payment left due is settled again once the fee changed (a payment of the amount without the fee pays it).
-    $world->invoices->shouldReceive('tryPayWithCredits')->times($clearing ? 0 : 1)->andReturn(false);
+    // The processed payment may pay the invoice with its fee (an old debt kept the adapter from it): the fee stays.
+    // Otherwise what it left due is settled again once the fee changed (a payment of the amount without the fee pays it).
+    $world->invoices->shouldReceive('tryPayWithCredits')->times($clearing ? 0 : ($paysFirst ? 1 : 2))->andReturn($paysFirst);
     $service = new ClientFence\Mod\Invoice\ServiceTransaction();
     $service->setDi($world->di);
 
@@ -353,6 +354,7 @@ test('a payment that leaves the invoice part-paid puts the fee on what is left, 
         ->and((float) $world->line->price)->toBe($fee);
 })->with([
     // 2.5% of 80 + 0.45.
-    'part-paid' => [false, 2.45],
-    'a payment still clearing' => [true, 2.95],
+    'part-paid' => [false, false, 2.45],
+    'paid with its fee' => [false, true, 2.95],
+    'a payment still clearing' => [true, false, 2.95],
 ]);

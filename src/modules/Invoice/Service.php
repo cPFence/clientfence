@@ -1566,7 +1566,8 @@ class Service implements InjectionAwareInterface
             $required = $this->getTotalWithTax($invoice);
             // Compare at two-decimal monetary scale: balances are DECIMAL(18,2) sums while the
             // total is float arithmetic, so e.g. 0.30 and 0.1 * 3 differ as raw floats.
-            if (round($balance, 2) < round($required, 2)) {
+            // ClientFence core patch: the invoice's own payments pay it even when an old debt holds the balance below zero (WHMCS).
+            if (round($balance, 2) < round($required, 2) && $this->getAmountPaid($invoice) < round($required, 2)) {
                 // @phpstan-ignore if.alwaysFalse (DEBUG is a runtime constant that may be true during debugging)
                 if (DEBUG) {
                     $this->di['logger']->setChannel('billing')->info("Invoice {$invoice->id} could not be paid with credits. Money in balance {$balance} Required: {$required}.");
