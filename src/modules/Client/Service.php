@@ -452,6 +452,12 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         return true;
     }
 
+    // ClientFence core patch: a gateway payment is credited once, also when a retry of its notice follows a first try that failed after crediting it.
+    public static function hasGatewayCredit(\Doctrine\DBAL\Connection $dbal, string $type, string $paymentId): bool
+    {
+        return (bool) $dbal->fetchOne('SELECT id FROM client_balance WHERE type = ? AND rel_id = ? LIMIT 1', [$type, $paymentId]);
+    }
+
     public function getExpiredPasswordReminders()
     {
         $expireAfterHours = 2;

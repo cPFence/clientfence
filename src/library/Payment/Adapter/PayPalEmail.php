@@ -429,13 +429,16 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
     /** ClientFence core patch: a received PayPal payment goes to the client's credit, then pays the invoice (or their open invoices). */
     private function applyPayment($api_admin, int $clientId, $amount, string $txnId, ?Model_Invoice $invoice): void
     {
-        $api_admin->client_balance_add_funds([
-            'id' => $clientId,
-            'amount' => $amount,
-            'description' => 'PayPal transaction ' . $txnId,
-            'type' => 'PayPal',
-            'rel_id' => $txnId,
-        ]);
+        // A retry after a try that failed once the payment was credited.
+        if (!\ClientFence\Mod\Client\Service::hasGatewayCredit($this->di['dbal'], 'PayPal', $txnId)) {
+            $api_admin->client_balance_add_funds([
+                'id' => $clientId,
+                'amount' => $amount,
+                'description' => 'PayPal transaction ' . $txnId,
+                'type' => 'PayPal',
+                'rel_id' => $txnId,
+            ]);
+        }
         $invoiceService = $this->di['mod_service']('Invoice');
         if ($invoice instanceof Model_Invoice && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
             if (!$invoice->approved) {

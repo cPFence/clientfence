@@ -56,6 +56,7 @@ function mollieWorld(array $replies, array $config = []): object
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, gateway_id INTEGER, txn_id TEXT, txn_status TEXT, amount TEXT, currency TEXT, type TEXT, status TEXT, error TEXT, error_code INTEGER, note TEXT, created_at TEXT, updated_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, amount REAL)');
     $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, approved INTEGER DEFAULT 1, gateway_id INTEGER)');
     $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT)');
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 3, 'client_id' => 7, 'test_mode' => 1, 'external_customer_id' => 'cst_7', 'saved_cards' => 1, 'default_payment_method' => 'cst_7 mdt_1', 'default_card' => 'Visa •••• 4242', 'auto_pay_at' => '2026-11-01 00:00:00']);
@@ -248,6 +249,23 @@ test('records a paid payment read back from Mollie on its invoice once, keeping 
     'another currency' => [molliePayment('pay', 'paid', ['amount' => ['currency' => 'USD', 'value' => '12.50']]), 'is in USD', 'received', false, 'cst_7 mdt_1'],
     'less than the balance' => [molliePayment('pay', 'paid', ['amount' => ['currency' => 'EUR', 'value' => '5.00']]), 'Payment amount does not match', 'received', false, 'cst_7 mdt_1'],
 ]);
+
+test('a payment credited by a try that failed after it is not credited again when its notice comes back', function (): void {
+    $world = mollieWorld(['GET /v2/payments/tr_abc' => molliePayment('pay')]);
+    // Transaction 40 credited tr_abc, then paying the invoice timed out on the client's credit lock.
+    $world->db->insert('`transaction`', ['id' => 40, 'gateway_id' => 3, 'invoice_id' => 5, 'txn_id' => 'tr_abc', 'type' => 'mollie', 'status' => 'error', 'txn_status' => 'Completed']);
+    $world->db->insert('client_balance', ['client_id' => 7, 'type' => 'Mollie', 'rel_id' => 'tr_abc', 'amount' => 12.5]);
+    $world->db->insert('`transaction`', ['id' => 41, 'gateway_id' => 3, 'status' => 'received']);
+    $world->services->allows('validatePaymentAmount');
+    $world->services->allows('isInvoiceTypeDeposit')->andReturn(false);
+    $api = Mockery::mock();
+    $api->shouldNotReceive('client_balance_add_funds');
+    $api->shouldReceive('invoice_pay_with_credits')->once()->with(['id' => 5]);
+
+    $world->adapter->processTransaction($api, 41, ['source' => 'mollie_return', 'get' => ['mollie_payment' => 'tr_abc']], 3);
+
+    expect($world->db->fetchOne('SELECT status FROM `transaction` WHERE id = 41'))->toBe('processed');
+});
 
 test('a payment recorded already is not credited again, and the webhook names the payment only by its posted id', function (): void {
     $world = mollieWorld(['GET /v2/payments/tr_abc' => molliePayment('pay')]);

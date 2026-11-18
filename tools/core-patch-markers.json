@@ -8662,5 +8662,17 @@
     {
         "file": "modules/Email/Api/Admin.php",
         "done": "ClientFence core patch: only Super Administrators change the emails that carry a sign-in link or code (staff who edit templates could send the reset link to themselves)."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a Stripe payment is credited once: a retry is a new transaction, and the one that credited it may have failed after."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: a gateway payment is credited once, also when a retry of its notice follows a first try that failed after crediting it."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a row that credited the first charge keeps that charge's id, so a retry of the charge finds the credit."
     }
 ]

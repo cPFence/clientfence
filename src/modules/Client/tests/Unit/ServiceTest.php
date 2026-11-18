@@ -51,6 +51,16 @@ function confirmEmailService(string $email, ?string $tokenEmail, string $created
     return [$service, $db];
 }
 
+test('a gateway payment counts as credited once its credit row exists', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, type TEXT, rel_id TEXT)');
+    $db->insert('client_balance', ['type' => 'Mollie', 'rel_id' => 'tr_1']);
+
+    expect(ClientFence\Mod\Client\Service::hasGatewayCredit($db, 'Mollie', 'tr_1'))->toBeTrue()
+        ->and(ClientFence\Mod\Client\Service::hasGatewayCredit($db, 'Mollie', 'tr_2'))->toBeFalse()
+        ->and(ClientFence\Mod\Client\Service::hasGatewayCredit($db, 'PayPal', 'tr_1'))->toBeFalse();
+});
+
 test('approveClientEmailByHash confirms the email the link was sent to', function (): void {
     [$service, $db] = confirmEmailService('Owner@Example.com', 'owner@example.com ', date('Y-m-d H:i:s', time() - 3600));
 

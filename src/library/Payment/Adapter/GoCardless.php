@@ -408,7 +408,10 @@ class Payment_Adapter_GoCardless implements ClientFence\InjectionAwareInterface
         $service->validatePaymentAmount($amount, $service->getBalanceDue($invoice), $invoice);
         $db->update('`transaction`', $row + ['txn_status' => 'Completed'], ['id' => $id]);
         // As PayPal: the payment goes to the client's credit, which then pays the invoice.
-        $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'GoCardless payment ' . $paymentId, 'type' => 'GoCardless', 'rel_id' => $paymentId]);
+        // A retry after a try that failed once the payment was credited.
+        if (!\ClientFence\Mod\Client\Service::hasGatewayCredit($this->di['dbal'], 'GoCardless', $paymentId)) {
+            $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'GoCardless payment ' . $paymentId, 'type' => 'GoCardless', 'rel_id' => $paymentId]);
+        }
         if ($service->isInvoiceTypeDeposit($invoice)) {
             $service->markAsPaid($invoice);
         } else {

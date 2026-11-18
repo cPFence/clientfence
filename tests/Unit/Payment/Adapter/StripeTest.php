@@ -990,6 +990,7 @@ describe('handleInvoicePaymentSucceeded invoice linking', function (): void {
 
         $dbalMock = Mockery::mock();
         expectPaymentIntentLock($dbalMock, 'in_456', 1);
+        $dbalMock->shouldReceive('fetchOne')->once()->with(Mockery::pattern('/FROM client_balance b JOIN `transaction` t/'), Mockery::any())->andReturnFalse();
 
         $di = container();
         $di['db'] = $dbMock;
@@ -1205,6 +1206,7 @@ describe('handleInvoicePaymentSucceeded with invoice_payment event (API 2026-06-
 
         $dbalMock = Mockery::mock();
         expectPaymentIntentLock($dbalMock, 'in_1TnBdC', 4);
+        $dbalMock->shouldReceive('fetchOne')->once()->with(Mockery::pattern('/FROM client_balance b JOIN `transaction` t/'), Mockery::any())->andReturnFalse();
 
         $di = container();
         $di['db'] = $dbMock;
@@ -1309,7 +1311,7 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
             ->with(Mockery::pattern("/txn_status = 'processing'/"), Mockery::on(fn (array $p): bool => $p[0] === 'succeeded' && $p[2] === 'pi_new' && $p[3] === 1 && $p[4] === 201))
             ->andReturn(1);
         $dbalMock->shouldReceive('fetchOne')->once()
-            ->with('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => 'transaction', 'rel_id' => 201])->andReturnFalse();
+            ->with(Mockery::pattern('/FROM client_balance b JOIN `transaction` t/'), Mockery::on(fn (array $p): bool => $p[0] === 201 && $p[1] === 'pi_new'))->andReturnFalse();
         $dbMock->shouldReceive('findOne')
             ->andReturn(null);
         $dbMock->shouldReceive('store')->andReturn($tx->id);
@@ -2787,6 +2789,8 @@ test('a transaction retried after paying its invoice reuses its balance credit',
 
     $balanceDb = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $balanceDb->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, type TEXT, rel_id TEXT, amount REAL)');
+    $balanceDb->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER)');
+    $balanceDb->insert('`transaction`', ['id' => 600, 'txn_id' => 'pi_retry', 'gateway_id' => 1]);
     $clientService = Mockery::mock();
     $clientService->shouldReceive('addFunds')->once()->with($client, 50.0, Mockery::any(), Mockery::any())
         ->andReturnUsing(function ($client, $amount, $description, array $data) use ($balanceDb): void {
@@ -2843,6 +2847,34 @@ test('a transaction retried after paying its invoice reuses its balance credit',
         ->and($tx->status)->toBe(Model_Transaction::STATUS_PROCESSED);
 })->with(['processPaymentIntentUnderLock', 'applyOneTimePayment'])
     ->with([Model_Transaction::STATUS_ERROR, Model_Transaction::STATUS_PROCESSING]);
+
+test('a payment credited by a transaction that failed later is not credited again by a retry of its notice', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, type TEXT, rel_id TEXT, amount REAL)');
+    $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, txn_id TEXT, gateway_id INTEGER)');
+    // Transaction 600 credited pi_1 and then failed; 601 is the next notice of pi_1, 602 another payment, 603 has no id yet.
+    $db->insert('`transaction`', ['id' => 600, 'txn_id' => 'pi_1', 'gateway_id' => 1]);
+    $db->insert('`transaction`', ['id' => 604, 'txn_id' => '', 'gateway_id' => 1]);
+    $db->insert('client_balance', ['type' => 'transaction', 'rel_id' => '600', 'amount' => 50]);
+    $db->insert('client_balance', ['type' => 'transaction', 'rel_id' => '604', 'amount' => 50]);
+    $di = container();
+    $di['dbal'] = $db;
+    $this->adapter->setDi($di);
+    $credited = function (int $id, string $txnId, int $gatewayId = 1): bool {
+        $tx = buildTransaction();
+        $tx->id = $id;
+        $tx->txn_id = $txnId;
+        $tx->gateway_id = $gatewayId;
+
+        return invokePrivateMethod($this->adapter, 'credited', [$tx]);
+    };
+
+    expect($credited(601, 'pi_1'))->toBeTrue()
+        ->and($credited(600, 'pi_1'))->toBeTrue()
+        ->and($credited(602, 'pi_2'))->toBeFalse()
+        ->and($credited(605, 'pi_1', 2))->toBeFalse()
+        ->and($credited(603, ''))->toBeFalse();
+});
 
 test('checkout buyer details are encoded as JS string literals', function (): void {
     // HTML entities are never decoded inside <script>, so HTML-escaping would

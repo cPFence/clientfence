@@ -419,7 +419,10 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
         $service->validatePaymentAmount($amount, $due, $invoice);
         $db->update('`transaction`', $row + ['txn_status' => 'Completed'], ['id' => $id]);
         // As PayPal Email: the payment goes to the client's credit, which then pays the invoice.
-        $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'PayPal transaction ' . $txnId, 'type' => 'PayPal', 'rel_id' => $txnId]);
+        // A retry after a try that failed once the payment was credited.
+        if (!\ClientFence\Mod\Client\Service::hasGatewayCredit($this->di['dbal'], 'PayPal', $txnId)) {
+            $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'PayPal transaction ' . $txnId, 'type' => 'PayPal', 'rel_id' => $txnId]);
+        }
         if ($service->isInvoiceTypeDeposit($invoice)) {
             $service->markAsPaid($invoice);
         } else {

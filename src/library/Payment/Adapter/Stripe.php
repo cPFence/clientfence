@@ -462,7 +462,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             }
 
             // ClientFence core patch: transaction retries must reuse their existing balance credit.
-            if (!$this->di['dbal']->fetchOne('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => $bd['type'], 'rel_id' => $bd['rel_id']])) {
+            if (!$this->credited($tx)) {
                 $clientService->addFunds($client, $bd['amount'], $bd['description'], $bd);
             }
 
@@ -512,7 +512,10 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $setupIntent = $this->stripe->setupIntents->retrieve($data['get']['setup_intent'], []);
 
         $tx->txn_status = $setupIntent->status;
-        $tx->txn_id = $setupIntent->id;
+        // ClientFence core patch: a row that credited the first charge keeps that charge's id, so a retry of the charge finds the credit.
+        if (!$this->credited($tx)) {
+            $tx->txn_id = $setupIntent->id;
+        }
 
         // $invoice and $setupIntent are resolved independently, from separate
         // query parameters on the redirect URL (see resolveInvoice()) - unlike
@@ -671,7 +674,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 'rel_id' => $tx->id,
             ];
 
-            $api_admin->client_balance_add_funds($bd);
+            if (!$this->credited($tx)) {
+                $api_admin->client_balance_add_funds($bd);
+            }
 
             $invoiceService = $this->di['mod_service']('Invoice');
             if (!$alreadyPaid && !$invoiceService->isInvoiceTypeDeposit($invoice)) {
@@ -1051,8 +1056,11 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         $tx->type = Payment_Transaction::TXTYPE_PAYMENT;
         $tx->amount = $bd['amount'];
         $tx->currency = strtoupper((string) ($stripeInvoice->currency ?? ''));
+        $this->di['db']->store($tx);
 
-        $api_admin->client_balance_add_funds($bd);
+        if (!$this->credited($tx)) {
+            $api_admin->client_balance_add_funds($bd);
+        }
 
         $invoiceService = $this->di['mod_service']('Invoice');
 
@@ -1202,6 +1210,12 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
         return true;
     }
 
+    /** ClientFence core patch: a Stripe payment is credited once: a retry is a new transaction, and the one that credited it may have failed after. */
+    private function credited(Model_Transaction $tx): bool
+    {
+        return (bool) $this->di['dbal']->fetchOne("SELECT b.id FROM client_balance b JOIN `transaction` t ON t.id = b.rel_id WHERE b.type = 'transaction' AND (t.id = ? OR (t.txn_id = ? AND t.txn_id <> '' AND t.gateway_id = ?)) LIMIT 1", [$tx->id, (string) $tx->txn_id, $tx->gateway_id]);
+    }
+
     private function withStripeObjectLock(string $objectId, int $gatewayId, callable $callback, ?callable $isDuplicate = null): mixed
     {
         $lockName = 'fb:stripe:' . substr(hash('sha256', $gatewayId . ':' . $objectId), 0, 54);
@@ -1284,7 +1298,9 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
     {
         $setupIntent = $event->data->object;
 
-        $tx->txn_id = $setupIntent->id;
+        if (!$this->credited($tx)) {
+            $tx->txn_id = $setupIntent->id;
+        }
         $tx->txn_status = $setupIntent->status;
 
         if ($setupIntent->status !== 'succeeded') {
@@ -1465,7 +1481,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             'rel_id' => $tx->id,
         ];
 
-        if (!$this->di['dbal']->fetchOne('SELECT id FROM client_balance WHERE type = :type AND rel_id = :rel_id LIMIT 1', ['type' => $bd['type'], 'rel_id' => $bd['rel_id']])) {
+        if (!$this->credited($tx)) {
             $clientService->addFunds($client, $bd['amount'], $bd['description'], $bd);
         }
 

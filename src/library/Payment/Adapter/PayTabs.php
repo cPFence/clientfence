@@ -354,7 +354,10 @@ class Payment_Adapter_PayTabs implements ClientFence\InjectionAwareInterface
         $service->validatePaymentAmount($amount, $due, $invoice);
         $db->update('`transaction`', $row + ['txn_status' => 'Completed'], ['id' => $id]);
         // As PayPal: the payment goes to the client's credit, which then pays the invoice.
-        $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'PayTabs transaction ' . $tranRef, 'type' => 'PayTabs', 'rel_id' => $tranRef]);
+        // A retry after a try that failed once the payment was credited.
+        if (!\ClientFence\Mod\Client\Service::hasGatewayCredit($this->di['dbal'], 'PayTabs', $tranRef)) {
+            $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'PayTabs transaction ' . $tranRef, 'type' => 'PayTabs', 'rel_id' => $tranRef]);
+        }
         if ($service->isInvoiceTypeDeposit($invoice)) {
             $service->markAsPaid($invoice);
         } else {

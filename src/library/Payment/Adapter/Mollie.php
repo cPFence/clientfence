@@ -345,7 +345,10 @@ class Payment_Adapter_Mollie implements ClientFence\InjectionAwareInterface
         $service->validatePaymentAmount($amount, $service->getBalanceDue($invoice), $invoice);
         $db->update('`transaction`', $row + ['txn_status' => 'Completed'], ['id' => $id]);
         // As PayPal: the payment goes to the client's credit, which then pays the invoice.
-        $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'Mollie payment ' . $paymentId, 'type' => 'Mollie', 'rel_id' => $paymentId]);
+        // A retry after a try that failed once the payment was credited.
+        if (!\ClientFence\Mod\Client\Service::hasGatewayCredit($this->di['dbal'], 'Mollie', $paymentId)) {
+            $api_admin->client_balance_add_funds(['id' => $invoice->client_id, 'amount' => $amount, 'description' => 'Mollie payment ' . $paymentId, 'type' => 'Mollie', 'rel_id' => $paymentId]);
+        }
         if ($service->isInvoiceTypeDeposit($invoice)) {
             $service->markAsPaid($invoice);
         } else {
