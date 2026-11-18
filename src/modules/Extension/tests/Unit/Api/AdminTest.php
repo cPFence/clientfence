@@ -98,6 +98,16 @@ test('configSave saves extension config', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('config get and save refuse an extension that is not named by a string', function (string $call): void {
+    // CF-188 L-2: an array answered with the PHP type error, its class, file and line.
+    $api = apiEndpoint(new ClientFence\Mod\Extension\Api\Admin());
+    $serviceMock = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $serviceMock->shouldNotReceive('hasManagePermission', 'getConfig', 'setConfig');
+    $api->setService($serviceMock);
+
+    expect(fn () => $api->{$call}(['ext' => ['a']]))->toThrow(ClientFence\InformationException::class, 'Parameter "ext" was not passed');
+})->with(['config_get', 'config_save']);
+
 test('getList returns extensions list', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\Extension\Api\Admin());
     $serviceMock = Mockery::mock(ClientFence\Mod\Extension\Service::class)->makePartial();

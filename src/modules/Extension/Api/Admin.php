@@ -254,6 +254,10 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $service = $this->getService();
         $ext = $data['ext'];
+        // ClientFence core patch: the extension is named by a string (an array answered with the PHP error text).
+        if (!is_string($ext)) {
+            throw new \ClientFence\InformationException('Parameter "ext" was not passed');
+        }
 
         $service->hasManagePermission($ext);
 
@@ -283,6 +287,9 @@ class Admin extends \ClientFence\Api\AbstractApi
     public function config_save($data)
     {
         $service = $this->getService();
+        if (!is_string($data['ext'])) {
+            throw new \ClientFence\InformationException('Parameter "ext" was not passed');
+        }
         $service->hasManagePermission($data['ext']);
 
         return $service->setConfig($data);
