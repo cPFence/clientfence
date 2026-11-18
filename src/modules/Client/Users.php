@@ -179,6 +179,8 @@ final class Users
         'support/contact-us' => null,
         'support' => 'tickets',
         'order/service' => 'products',
+        // The services and email history list pages (their detail pages are order/service and email).
+        'service' => 'products',
         'order' => 'orders',
         'cart' => 'orders',
         'invoice' => 'invoices',
@@ -189,6 +191,7 @@ final class Users
         'ticket-file' => 'tickets',
         'client/profile' => 'profile',
         'email' => 'emails',
+        'emails' => 'emails',
         'hosting' => 'products',
         'servicedownloadable' => 'products',
         'users' => 'owner',

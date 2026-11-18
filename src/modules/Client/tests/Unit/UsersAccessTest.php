@@ -57,6 +57,14 @@ test('the payment methods pages are the owner\'s, like their saved card calls', 
         ->toThrow(InformationException::class, 'Ask the account owner for access.');
 });
 
+test('the services and email history list pages need their permissions, as their detail pages', function (): void {
+    // These paths opened and failed on their first call with a "page not found" heading.
+    // The user has products and invoices, not emails.
+    expect(Users::pageDenied($this->di, '/emails'))->toBe('emails')
+        ->and(Users::PAGES['service'] ?? null)->toBe('products')
+        ->and(Users::pageDenied($this->di, '/service/manage/5'))->toBeNull();
+});
+
 test('invoice access does not allow a sub-user to list or accept quotes', function (): void {
     expect(fn () => Users::checkCall($this->di, $this->client, 'invoice', 'quote_get_list'))
         ->toThrow(InformationException::class, 'Ask the account owner for access.');
