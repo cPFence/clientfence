@@ -1874,3 +1874,43 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
 @media (min-width: 992px) { .cf-trunc { width: 100%; max-width: 0; } }
 @media (max-width: 991.98px) { .cf-trunc a { max-width: 14rem; } }
 @media (max-width: 575.98px) { .cf-ov .cf-facts { grid-template-columns: minmax(0, 1fr); } }
+/* Support ClientFence: one button on System > Update, a brand-gradient pill with a beating heart and a shine on hover. */
+.cf-sponsor-btn {
+  position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: .5rem;
+  padding: .5rem 1.1rem; border-radius: 999px; font-weight: 600; line-height: 1.2; color: #fff;
+  background: linear-gradient(120deg, var(--bf-teal), var(--bf-brand) 55%, var(--bf-violet));
+  box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--bf-brand) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, .25);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.cf-sponsor-btn::after {
+  content: ""; position: absolute; inset: 0; translate: -120% 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 50%, transparent 70%);
+  transition: translate .6s ease;
+}
+.cf-sponsor-btn:hover, .cf-sponsor-btn:focus-visible {
+  color: #fff; text-decoration: none; transform: translateY(-1px);
+  box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--bf-violet) 65%, transparent), inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+.cf-sponsor-btn:hover::after, .cf-sponsor-btn:focus-visible::after { translate: 120% 0; }
+.cf-sponsor-heart { width: 1.1rem; height: 1.1rem; fill: #ff5c7a; filter: drop-shadow(0 0 4px rgba(255, 92, 122, .7)); animation: cf-heartbeat 2.4s ease-in-out infinite; }
+@keyframes cf-heartbeat { 0%, 60%, 100% { scale: 1; } 10%, 30% { scale: 1.22; } 20% { scale: 1.05; } }
+@media (prefers-reduced-motion: reduce) {
+  .cf-sponsor-heart { animation: none; }
+  .cf-sponsor-btn, .cf-sponsor-btn::after { transition: none; }
+}
+/* The welcome screen after an update: covers the whole admin, styled as the finalize page. */
+.cf-update-welcome {
+  position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; overflow-y: auto;
+  background:
+    radial-gradient(640px 440px at 92% -4%, var(--bf-glow-1), transparent 70%),
+    radial-gradient(560px 420px at 22% 104%, var(--bf-glow-2), transparent 70%),
+    var(--bf-bg);
+  animation: cf-hero-in .4s ease both;
+}
+.cf-update-welcome[hidden] { display: none; }
+.cf-update-welcome-icon {
+  display: inline-grid; place-items: center; width: 64px; height: 64px; margin-bottom: 1rem; border-radius: 999px;
+  background: var(--bf-ok-soft); color: var(--bf-ok); box-shadow: 0 0 0 8px color-mix(in srgb, var(--bf-ok) 10%, transparent);
+}
+.cf-update-welcome-icon .icon { width: 32px; height: 32px; stroke-width: 2.5; }
+@media (prefers-reduced-motion: reduce) { .cf-update-welcome { animation: none; } }

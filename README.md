@@ -115,6 +115,15 @@ By hand:
 System → Settings → System, System Health tab, shows "Database updates" pending until they are
 applied.
 
+## Support ClientFence
+
+❤️ Donate to keep ClientFence free and thriving.
+
+ClientFence is free and open source, and it stays that way: every feature, security fix and
+release is for everyone. Donations and sponsor plans pay for its development, security work,
+new integrations and maintenance. Sponsor plans from $25 a month also include support tickets.
+See [clientfence.com/sponsor](https://clientfence.com/sponsor).
+
 ## Development
 
 [CONTRIBUTING.md](CONTRIBUTING.md) describes how to send changes. Report security issues

@@ -368,10 +368,20 @@ const API = {
       console.warn('Invalid callback function:', apiData.callback);
     }
 
+    // ClientFence: a reload or redirect keeps the loader up until the next page shows (Check for Updates).
+    if (apiData.hasOwnProperty('redirect') || apiData.hasOwnProperty('reload')) {
+      const loader = API._createLoader();
+      loader.classList.add('is-visible');
+      // The Back button can bring this page back from the browser cache: no loader then.
+      window.addEventListener('pageshow', () => loader.remove(), { once: true });
+    }
+
     if (apiData.hasOwnProperty('redirect')) {
       const redirectUrl = new URL(apiData.redirect, window.location.href);
 
-      if (redirectUrl.href === window.location.href) {
+      // ClientFence: a redirect to this same page with only another #tab reloads too (a hash change alone loads nothing).
+      if (redirectUrl.href.split('#')[0] === window.location.href.split('#')[0]) {
+        window.location.hash = redirectUrl.hash;
         window.location.reload();
       } else {
         window.location = redirectUrl.href;

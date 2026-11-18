@@ -3,6 +3,17 @@
 {% block meta_title %}{{ 'Update ClientFence'|trans }}{% endblock %}
 {% set active_menu = 'system' %}
 
+{# ClientFence core patch: the one Support ClientFence button, beside the breadcrumb of the update page only. #}
+{% block breadcrumbs %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+        {{ parent() }}
+        <a class="cf-sponsor-btn" href="https://clientfence.com/sponsor" target="_blank" rel="noopener">
+            <svg class="cf-sponsor-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12.57 12 20l-7.5-7.43A5 5 0 1 1 12 6.01a5 5 0 1 1 7.5 6.57z"/></svg>
+            <span>{{ 'Support ClientFence'|trans }}</span>
+        </a>
+    </div>
+{% endblock %}
+
 {% block content %}
     {% set update_info = admin.system_update_info %}
     {% set isPreviewBranch = update_info['branch'] == 'preview' %}
@@ -244,12 +255,25 @@
                         {% endif %}
                     </div>
                     <div id="update-progress"></div>
-                    {# ClientFence core patch: a finished update says so and waits for Continue instead of reloading at
-                       once (the update signs staff out, and the web server may restart in that second). #}
-                    <div class="alert alert-success mt-3" role="status" tabindex="-1" data-update-done hidden>
-                        <h4 class="alert-title">{{ 'ClientFence %version% was installed successfully.'|trans({'%version%': update_info['version']|default('')}) }}</h4>
-                        <div class="text-secondary">{{ 'The update signed you out. Continue to sign in again.'|trans }}</div>
-                        <a class="btn btn-success mt-3" href="{{ 'system/update'|url }}">{{ 'Continue'|trans }}</a>
+                    {# ClientFence core patch: a finished update covers the page with a welcome screen and waits for
+                       Continue, which opens the sign-in page (the update signs staff out, and the web server may
+                       restart in that second). #}
+                    <div class="cf-update-welcome" role="dialog" aria-modal="true" aria-labelledby="cf-update-welcome-title" data-update-done hidden>
+                        <div class="container-tight py-4">
+                            <div class="text-center mb-4">
+                                <div class="cf-update-welcome-icon"><svg class="icon"><use href="#check" /></svg></div>
+                                <div class="h1 mb-1" id="cf-update-welcome-title">{{ 'Welcome to ClientFence %version%'|trans({'%version%': update_info['version']|default('')}) }}</div>
+                                <p class="text-secondary mb-0">{{ 'ClientFence %version% was installed successfully.'|trans({'%version%': update_info['version']|default('')}) }}</p>
+                            </div>
+                            <div class="card card-md">
+                                <div class="card-body">
+                                    <p>{{ 'The update signed you out. Continue to sign in again.'|trans }}</p>
+                                    <div class="d-grid">
+                                        <a class="btn btn-primary" href="{{ ''|url }}" data-update-continue>{{ 'Continue'|trans }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     {% if not isPreviewBranch %}
                         {# ClientFence: the release feed check (Clientfence/Updates.php): its last result and the daily switch. #}
@@ -338,12 +362,12 @@
 
 {% block js %}
 <script nonce="{{ csp_nonce }}">
-    // The update button's callback: hide the button and show the success message.
+    // The update button's callback: hide the button and cover the page with the welcome screen.
     window.clientfenceUpdateDone = () => {
         document.querySelector('[data-update-requires-backup]')?.closest('.d-flex')?.classList.add('d-none');
-        const done = document.querySelector('[data-update-done]');
-        done.hidden = false;
-        done.focus();
+        document.body.appendChild(document.querySelector('[data-update-done]')).hidden = false;
+        document.body.classList.add('overflow-hidden');
+        document.querySelector('[data-update-continue]').focus();
     };
 
     document.addEventListener('DOMContentLoaded', () => {
