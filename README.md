@@ -120,9 +120,8 @@ applied.
 ❤️ Donate to keep ClientFence free and thriving.
 
 ClientFence is free and open source, and it stays that way: every feature, security fix and
-release is for everyone. Donations and sponsor plans pay for its development, security work,
-new integrations and maintenance. Sponsor plans from $25 a month also include support tickets.
-See [clientfence.com/sponsor](https://clientfence.com/sponsor).
+release is for everyone. Donations pay for its development, security work, new integrations
+and maintenance. See [clientfence.com/sponsor](https://clientfence.com/sponsor).
 
 ## Development
 
