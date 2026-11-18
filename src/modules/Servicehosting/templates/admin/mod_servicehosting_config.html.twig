@@ -13,11 +13,22 @@
             <div class="row g-3">
                 <div class="col-lg-6">
                     <label class="form-label">{{ 'Server'|trans }}</label>
+                    {# ClientFence core patch: staff without the server or plan right see the stored choice and keep it (the lists need those rights; the page failed). #}
+                    {% if has_permission('servicehosting', 'view_servers') %}
                     {{ mf.selectbox('config[server_id]', admin.servicehosting_server_get_pairs, config.server_id|default(''), 0, 'Select Server'|trans) }}
+                    {% else %}
+                    <input type="hidden" name="config[server_id]" value="{{ config.server_id|default('') }}">
+                    <input type="text" class="form-control" value="{{ config.server_id|default('') ? '#' ~ config.server_id : '' }}" disabled>
+                    {% endif %}
                 </div>
                 <div class="col-lg-6">
                     <label class="form-label">{{ 'Hosting Plan'|trans }}</label>
+                    {% if has_permission('servicehosting', 'manage_plans') %}
                     {{ mf.selectbox('config[hosting_plan_id]', admin.servicehosting_hp_get_pairs, config.hosting_plan_id|default(''), 0, 'Select Hosting Plan'|trans) }}
+                    {% else %}
+                    <input type="hidden" name="config[hosting_plan_id]" value="{{ config.hosting_plan_id|default('') }}">
+                    <input type="text" class="form-control" value="{{ config.hosting_plan_id|default('') ? '#' ~ config.hosting_plan_id : '' }}" disabled>
+                    {% endif %}
                 </div>
                 <div class="col-lg-6">
                     <label class="form-label">{{ 'Reseller Hosting'|trans }}</label>
@@ -219,6 +230,7 @@
         {% endif %}
     </form>
 
+    {% if has_permission('servicehosting', 'manage_plans') %}
     <div class="d-flex align-items-center mt-5 mb-3 cf-section-head">
         <h3 class="card-title mb-0">{{ 'Hosting Plans'|trans }}</h3>
         <a href="{{ 'servicehosting#tab-new-plan'|url }}" class="ms-auto btn btn-primary">
@@ -261,7 +273,9 @@
         </tbody>
     </table>
     </div>
+    {% endif %}
 
+    {% if has_permission('servicehosting', 'view_servers') %}
     <div class="d-flex align-items-center mt-5 mb-3 cf-section-head">
         <h3 class="card-title mb-0">{{ 'Servers'|trans }}</h3>
         <a href="{{ 'servicehosting'|url }}#tab-new-server" class="ms-auto btn btn-primary">
@@ -304,6 +318,7 @@
         </tbody>
     </table>
     </div>
+    {% endif %}
 </div>
 
 <script nonce="{{ csp_nonce }}">

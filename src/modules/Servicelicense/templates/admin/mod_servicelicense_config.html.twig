@@ -22,7 +22,13 @@
                 </div>
                 <div class="col-lg-4">
                     <label class="form-label">{{ 'Plugin'|trans }}</label>
+                    {# ClientFence core patch: staff without the licence right see the stored plugin and keep it (the list needs that right; the page failed). #}
+                    {% if has_permission('servicelicense', 'manage') %}
                     {{ mf.selectbox('config[plugin]', admin.servicelicense_plugin_get_pairs, config.plugin|default(''), 1) }}
+                    {% else %}
+                    <input type="hidden" name="config[plugin]" value="{{ config.plugin|default('') }}">
+                    <input type="text" class="form-control" value="{{ config.plugin|default('') }}" disabled>
+                    {% endif %}
                 </div>
             </div>
         </div>
