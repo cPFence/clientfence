@@ -28,7 +28,8 @@ function ccavenueDecrypt(string $hex): string
 
 function ccavenueOrderId(int $invoiceId = 5): string
 {
-    return 'cf' . $invoiceId . '-' . substr(md5((string) INSTANCE_ID), 0, 6) . '-1700000000';
+    // The tag is HMAC-SHA256 of cf<invoice>-<time> under the working key and this install, first 8 hex digits.
+    return 'cf' . $invoiceId . '-1700000000-' . substr(hash_hmac('sha256', 'cf' . $invoiceId . '-1700000000', CCAVENUE_KEY . '|' . INSTANCE_ID), 0, 8);
 }
 
 /** CCAvenue's encrypted return as posted to ipn.php. */
@@ -134,7 +135,7 @@ test('posts the invoice balance, encrypted with the working key, to the test bil
         'redirect_url' => 'https://portal.example/invoice/ccavenue-paid/3',
         'cancel_url' => 'https://portal.example/invoice/ccavenue-paid/3',
         'language' => 'EN',
-    ])->and($order['order_id'])->toMatch('/^cf5-' . substr(md5((string) INSTANCE_ID), 0, 6) . '-\d+$/')
+    ])->and($order['order_id'])->toMatch('/^cf5-\d+-[0-9a-f]{8}$/')
         ->and(strlen($order['order_id']))->toBeLessThanOrEqual(30);
 });
 
@@ -152,13 +153,14 @@ test('pays the invoice only as the Status API reports the order', function (arra
     'awaited (read back by the cron)' => [ccavenueOrder(ccavenueOrderId(), ['order_status' => 'Awaited']), ccavenueReturn(ccavenueOrderId(), 'Awaited'), null, 'received', false],
     'another currency' => [ccavenueOrder(ccavenueOrderId(), ['order_currncy' => 'USD']), ccavenueReturn(ccavenueOrderId()), 'is in USD', 'received', false],
     'another order read back' => [ccavenueOrder(ccavenueOrderId(6)), ccavenueReturn(ccavenueOrderId()), 'is not for a ClientFence invoice', 'received', false],
-    'another portal\'s order' => [ccavenueOrder('cf5-000000-1700000000'), ccavenueReturn('cf5-000000-1700000000'), 'is not for a ClientFence invoice', 'received', false],
+    'another portal\'s or an altered order' => [ccavenueOrder('cf5-1700000000-00000000'), ccavenueReturn('cf5-1700000000-00000000'), 'names no payment', 'received', false],
+    'an order ID cut to name another invoice' => [ccavenueOrder('cf6' . substr(ccavenueOrderId(), 3)), ccavenueReturn('cf6' . substr(ccavenueOrderId(), 3)), 'names no payment', 'received', false],
 ]);
 
 test('the return names the invoice of this install\'s order only', function (): void {
     $adapter = ccavenueWorld()->adapter;
     expect($adapter->returnedOrder(ccavenueReturn(ccavenueOrderId())['post']['encResp']))->toBe([5, '204000163469'])
-        ->and($adapter->returnedOrder(ccavenueReturn('cf5-000000-1700000000')['post']['encResp']))->toBeNull()
+        ->and($adapter->returnedOrder(ccavenueReturn('cf5-1700000000-00000000')['post']['encResp']))->toBeNull()
         ->and($adapter->returnedOrder('zz'))->toBeNull();
 });
 

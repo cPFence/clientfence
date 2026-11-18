@@ -8,7 +8,8 @@ declare(strict_types=1);
  * posts the encrypted result (encResp) back to invoice/ccavenue-paid/<gateway>, which records it and sends the client to
  * the invoice. The return only
  * names the order: its status, amount and currency are always read back with CCAvenue's Status API (orderStatusTracker),
- * so only this install's orders (order ID cf<invoice>-<site>-<time>) that CCAvenue reports paid pay an invoice. Staff
+ * so only this install's orders (order ID cf<invoice>-<time>-<tag>, the tag keyed with the working key and this
+ * install) that CCAvenue reports paid pay an invoice. Staff
  * refunds use refundOrder. Follows
  * CCAvenue's integration and API guides; not tested against a live CCAvenue account yet.
  */
@@ -74,7 +75,7 @@ class Payment_Adapter_CCAvenue implements ClientFence\InjectionAwareInterface
         $back = (string) $this->di['url']->link('invoice/ccavenue-paid/' . $this->gatewayId());
         $order = [
             'merchant_id' => trim((string) $this->config['merchant_id']),
-            'order_id' => 'cf' . (int) $invoice->id . '-' . $this->site() . '-' . time(),
+            'order_id' => $this->orderId((int) $invoice->id, time()),
             'currency' => strtoupper((string) $invoice->currency),
             'amount' => number_format($this->di['mod_service']('Invoice')->getBalanceDue($invoice), 2, '.', ''),
             'redirect_url' => $back,
@@ -95,14 +96,15 @@ class Payment_Adapter_CCAvenue implements ClientFence\InjectionAwareInterface
     }
 
     /**
-     * [invoice ID, tracking_id] of this install's order that CCAvenue's encrypted return names, or null. Unproven: the
-     * encryption has no integrity check, so only the Status API's read-back (a ccavenue row) proves the order.
+     * [invoice ID, tracking_id] of this install's order that CCAvenue's encrypted return names, or null. The order ID's
+     * tag cannot be forged; the payment itself is proven only by the Status API's read-back (a ccavenue row).
      */
     public function returnedOrder(string $encResp): ?array
     {
         parse_str($this->decrypt($encResp) ?? '', $return);
+        $invoiceId = $this->invoiceOf((string) ($return['order_id'] ?? ''));
 
-        return preg_match('/^cf(\d+)-' . $this->site() . '-\d+$/', (string) ($return['order_id'] ?? ''), $match) === 1 ? [(int) $match[1], (string) ($return['tracking_id'] ?? '')] : null;
+        return $invoiceId === null ? null : [$invoiceId, (string) ($return['tracking_id'] ?? '')];
     }
 
     /** CCAvenue's return (post.encResp): the order it names is read back from CCAvenue and pays its invoice once. */
@@ -111,7 +113,7 @@ class Payment_Adapter_CCAvenue implements ClientFence\InjectionAwareInterface
         parse_str($this->decrypt((string) ($data['post']['encResp'] ?? '')) ?? '', $return);
         $orderId = (string) ($return['order_id'] ?? '');
         $trackingId = (string) ($return['tracking_id'] ?? '');
-        if (preg_match('/^cf\d+-[0-9a-f]{6}-\d+$/', $orderId) !== 1 || preg_match('/^\d{1,25}$/', $trackingId) !== 1) {
+        if ($this->invoiceOf($orderId) === null || preg_match('/^\d{1,25}$/', $trackingId) !== 1) {
             throw new Payment_Exception('CCAvenue return names no payment');
         }
         $this->recordPayment($api_admin, (int) $id, $orderId, $trackingId);
@@ -122,11 +124,11 @@ class Payment_Adapter_CCAvenue implements ClientFence\InjectionAwareInterface
     {
         $order = $this->status($orderId, $trackingId);
         // Only this install's orders name an invoice: one of another shop or portal on the same account pays nothing.
-        if ((string) ($order['order_no'] ?? '') !== $orderId || (string) ($order['reference_no'] ?? '') !== $trackingId
-            || preg_match('/^cf(\d+)-' . $this->site() . '-\d+$/', $orderId, $match) !== 1) {
+        $invoiceId = $this->invoiceOf($orderId);
+        if ((string) ($order['order_no'] ?? '') !== $orderId || (string) ($order['reference_no'] ?? '') !== $trackingId || $invoiceId === null) {
             throw new Payment_Exception('CCAvenue payment :id is not for a ClientFence invoice', [':id' => $trackingId]);
         }
-        $invoice = $this->di['db']->getExistingModelById('Invoice', (int) $match[1], 'Invoice not found');
+        $invoice = $this->di['db']->getExistingModelById('Invoice', $invoiceId, 'Invoice not found');
         $amount = (float) ($order['order_amt'] ?? 0);
         // The guide's field table says order_curr, its examples order_currncy.
         $currency = strtoupper((string) ($order['order_currncy'] ?? $order['order_curr'] ?? ''));
@@ -279,9 +281,20 @@ class Payment_Adapter_CCAvenue implements ClientFence\InjectionAwareInterface
         return trim((string) $this->config[($this->testMode() ? 'test_' : '') . $key]);
     }
 
-    /** This install in the order ID, so a CCAvenue account shared by several portals pays only its own invoices. */
-    private function site(): string
+    /**
+     * Our order ID of an invoice, cf<invoice>-<time>-<tag>: the tag is keyed with the working key and this install, so the
+     * unauthenticated encryption cannot be cut to name another invoice, and another portal on the account pays nothing.
+     */
+    private function orderId(int $invoiceId, int $time): string
     {
-        return substr(md5((string) INSTANCE_ID), 0, 6);
+        $order = 'cf' . $invoiceId . '-' . $time;
+
+        return $order . '-' . substr(hash_hmac('sha256', $order, $this->credential('working_key') . '|' . INSTANCE_ID), 0, 8);
+    }
+
+    /** The invoice of one of our order IDs, or null (another shop's or portal's, or altered). */
+    private function invoiceOf(string $orderId): ?int
+    {
+        return preg_match('/^cf(\d+)-(\d+)-[0-9a-f]{8}$/', $orderId, $match) === 1 && hash_equals($this->orderId((int) $match[1], (int) $match[2]), $orderId) ? (int) $match[1] : null;
     }
 }
