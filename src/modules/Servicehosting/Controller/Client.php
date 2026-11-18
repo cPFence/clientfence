@@ -74,13 +74,15 @@ class Client implements \ClientFence\InjectionAwareInterface
 
     /**
      * The DNS status panel of one hosting order (an HTML fragment for the Domains tab); `refresh=1`
-     * looks the domains up again. The API checks that the order is the signed-in client's.
+     * looks the domains up again, `website` shows another website of the account. The API checks that the order is the signed-in client's.
      */
     public function get_account_domains(\ClientFence\App $app, $id): string
     {
         $this->panelOn();
 
-        return $app->render('mod_servicehosting_account_domains', ['order_id' => (int) $id, 'refresh' => $this->di['request']->query->getBoolean('refresh')]);
+        $query = $this->di['request']->query;
+
+        return $app->render('mod_servicehosting_account_domains', ['order_id' => (int) $id, 'refresh' => $query->getBoolean('refresh'), 'website' => $query->getString('website')]);
     }
 
     /**

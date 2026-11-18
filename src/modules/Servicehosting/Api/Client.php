@@ -200,7 +200,7 @@ class Client extends \ClientFence\Api\AbstractApi
      * Whether one of the client's hosting accounts' domains point to its server, for its Domains
      * tab: each domain's website and mail status (Panel/Dns.php) and the addresses to use. Kept
      * for 5 minutes; `refresh=1` looks again (20 times an hour). Never fails: `['error' => true]`
-     * when the panel cannot answer.
+     * when the panel cannot answer. `website` picks another website of the account (`websites` lists them).
      */
     public function domains($data): array
     {
@@ -216,18 +216,20 @@ class Client extends \ClientFence\Api\AbstractApi
             }
         }
 
-        $result = $this->panelFeature($data, 'dns', static function (PanelManager $m, \Server_Account $a) use ($di, $orderId, $refreshed): array {
-            $key = 'servicehosting_dns_' . $orderId . '_' . md5((string) $a->getDomain());
+        $website = self::website($data);
+        $result = $this->panelFeature($data, 'dns', static function (PanelManager $m, \Server_Account $a) use ($di, $orderId, $refreshed, $website): array {
+            $key = 'servicehosting_dns_' . $orderId . '_' . md5($a->getDomain() . '|' . $website);
             if ($refreshed) {
                 $di['cache']->deleteItem($key);
             }
 
-            return $di['cache']->get($key, static function (\Symfony\Contracts\Cache\ItemInterface $item) use ($m, $a): array {
+            return $di['cache']->get($key, static function (\Symfony\Contracts\Cache\ItemInterface $item) use ($m, $a, $website): array {
                 $item->expiresAfter(300);
-                $site = $m->clientfenceDomains($a);
+                $site = $m->clientfenceDomains($a, $website);
 
                 return [
                     'checked_at' => time(),
+                    'websites' => $m->clientfenceWebsites($a),
                     'domains' => Dns::check($site),
                     'expected' => ['web_ips' => $site['web_ips'], 'mail_ips' => $site['mail_ips'], 'mail_host' => $site['mail_host']],
                 ];
@@ -244,7 +246,8 @@ class Client extends \ClientFence\Api\AbstractApi
      */
     public function emails($data): array
     {
-        return $this->mail($data, false, static fn (Mailboxes $mail): array => [
+        return $this->mail($data, false, static fn (Mailboxes $mail, PanelManager $m, \Server_Account $a): array => [
+            'websites' => $m->clientfenceWebsites($a),
             'accounts' => $mail->list(),
             'domains' => $mail->domains(),
             'allowance' => $mail->allowance(),
@@ -388,7 +391,8 @@ class Client extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Runs an email call on one of the client's hosting accounts (feature "email"). Changes need an
+     * Runs an email call on one of the client's hosting accounts (feature "email"), on its website `website`
+     * ('' = its own; emails() lists them as `websites`). Changes need an
      * active account. Panel errors reach the client as their (safe) message.
      */
     private function mail(mixed $data, bool $change, callable $call): mixed
@@ -401,7 +405,7 @@ class Client extends \ClientFence\Api\AbstractApi
         }
 
         try {
-            return $call($manager->clientfenceMailboxes($account));
+            return $call($manager->clientfenceMailboxes($account, self::website($data)), $manager, $account);
         } catch (\Server_Exception $e) {
             throw new InformationException($e->getMessage());
         }
@@ -429,6 +433,12 @@ class Client extends \ClientFence\Api\AbstractApi
     private function logChange(string $what, string $address): void
     {
         $this->getDi()['logger']->info('Client #%s ' . $what, (int) $this->getIdentity()->id, $address);
+    }
+
+    /** The website the Email and DNS tabs show (`website`, one of the account's domains); '' is the account's own. */
+    private static function website(mixed $data): string
+    {
+        return is_array($data) && is_string($data['website'] ?? null) ? strtolower(trim($data['website'])) : '';
     }
 
     private static function address(mixed $data): string

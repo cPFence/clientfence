@@ -32,16 +32,23 @@ interface PanelManager
     public function clientfenceServer(\Server_Account $account): array;
 
     /**
-     * The email accounts of the account's website (feature "email").
+     * The domains of the client's websites on the account, its own first (the Email and DNS tabs' picker).
+     *
+     * @return list<string>
      */
-    public function clientfenceMailboxes(\Server_Account $account): Mailboxes;
+    public function clientfenceWebsites(\Server_Account $account): array;
 
     /**
-     * The website's domains and the addresses its DNS should point to (feature "dns").
+     * The email accounts of one of the account's websites, '' = its own (feature "email").
+     */
+    public function clientfenceMailboxes(\Server_Account $account, string $website = ''): Mailboxes;
+
+    /**
+     * One website's domains ('' = the account's own) and the addresses its DNS should point to (feature "dns").
      *
      * @return array{domains: list<array{domain: string, kind: string}>, web_ips: list<string>, mail_ips: list<string>, mail_host: string}
      */
-    public function clientfenceDomains(\Server_Account $account): array;
+    public function clientfenceDomains(\Server_Account $account, string $website = ''): array;
 
     public function clientfenceBackups(\Server_Account $account): array;
 

@@ -1,8 +1,9 @@
 {# ClientFence, Hosting accounts: the Domains tab of an account (loaded from /hosting/:id/domains):
    whether each of the website's domains points to its server, for the website (A/AAAA) and for
    mail (MX), looked up in public DNS by Servicehosting/Panel/Dns.php. The API never throws; `error` renders a
-   line of text. #}
-{% set dns = client.servicehosting_domains({ 'order_id': order_id, 'refresh': refresh ? 1 : 0 }) %}
+   line of text. An account with several websites (one Enhance subscription) gets a picker; `website` is the
+   one shown, '' the account's own. #}
+{% set dns = client.servicehosting_domains({ 'order_id': order_id, 'refresh': refresh ? 1 : 0, 'website': website|default('') }) %}
 
 {% set web_states = {
     'ok': { 'label': 'Points to your server', 'class': 'text-bg-success' },
@@ -30,6 +31,13 @@
                 <h2 class="mb-0">{{ 'Domains'|trans }}</h2>
                 <div class="small text-secondary">{{ 'Checked :time in public DNS.'|trans({ ':time': dns.checked_at|date('H:i', 'UTC') ~ ' UTC' }) }}</div>
             </div>
+            {% if dns.websites|default([])|length > 1 %}
+                <select class="form-select form-select-sm w-auto" aria-label="{{ 'Website'|trans }}" data-domains-website>
+                    {% for site in dns.websites %}
+                        <option value="{{ site }}"{% if site == (website|default('') ?: dns.websites|first) %} selected{% endif %}>{{ site }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
             <button type="button" class="btn btn-sm btn-outline-secondary" data-domains-refresh>
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#refresh"/></svg>
                 {{ 'Check again'|trans }}

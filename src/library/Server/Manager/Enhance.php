@@ -321,12 +321,24 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
     }
 
     /**
-     * ClientFence panel feature "email": the email accounts of the account's website.
+     * The domains of the client's websites on the account's subscription, its own first (Email and DNS tabs).
+     *
+     * @return list<string>
      */
-    public function clientfenceMailboxes(Server_Account $account): Mailboxes
+    public function clientfenceWebsites(Server_Account $account): array
     {
         $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
-        ['org' => $org, 'website' => $website] = $panel->find($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+
+        return array_map(static fn (array $site): string => (string) ($site['website']['domain']['domain'] ?? ''), $panel->sites($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account)));
+    }
+
+    /**
+     * ClientFence panel feature "email": the email accounts of one of the account's websites ('' = its own).
+     */
+    public function clientfenceMailboxes(Server_Account $account, string $website = ''): Mailboxes
+    {
+        $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
+        ['org' => $org, 'website' => $website] = $panel->site($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account), $website);
         // The full record names the website's mail server.
         $full = $panel->api()->get('/orgs/' . rawurlencode((string) $org['id']) . '/websites/' . rawurlencode((string) $website['id']));
 
@@ -346,15 +358,15 @@ class Server_Manager_Enhance extends Server_Manager implements PanelManager
     }
 
     /**
-     * ClientFence panel feature "dns": the website's domains and the addresses they should use
+     * ClientFence panel feature "dns": one website's domains ('' = the account's own) and the addresses they should use
      * (Panel/Dns.php looks them up).
      *
      * @return array{domains: list<array{domain: string, kind: string}>, web_ips: list<string>, mail_ips: list<string>, mail_host: string}
      */
-    public function clientfenceDomains(Server_Account $account): array
+    public function clientfenceDomains(Server_Account $account, string $website = ''): array
     {
         $panel = $this->panel()->forAccount($account->getPanelOrgId(), $account->getPanelSubscriptionId());
-        ['org' => $org, 'website' => $website] = $panel->find($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account));
+        ['org' => $org, 'website' => $website] = $panel->site($this->clientEmail($account), (string) $account->getDomain(), $this->loginEmail($account), $website);
 
         return $panel->dnsSite((string) $org['id'], (string) $website['id']);
     }

@@ -187,6 +187,45 @@ final class Panel
         throw new \Server_Exception('No website for :domain: belonging to :email: was found on the :panel: server.', [':domain:' => $domain, ':email:' => $clientEmail, ':panel:' => Api::PANEL], self::ACCOUNT_NOT_FOUND);
     }
 
+    /**
+     * The client's websites on the account's subscription: the account's own website first (the Email and DNS
+     * tabs' picker, forum #159). A plan with several websites is one subscription in Enhance.
+     *
+     * @return list<array{org: array, website: array}>
+     */
+    public function sites(string $clientEmail, string $domain, string $loginEmail = ''): array
+    {
+        $found = $this->find($clientEmail, $domain, $loginEmail);
+        $subscriptionId = self::subscriptionOf($found['website']);
+        $sites = [$found];
+        foreach ($subscriptionId === null ? [] : $this->api->each('/orgs/' . rawurlencode((string) $found['org']['id']) . '/websites', ['subscriptionId' => $subscriptionId]) as $website) {
+            if (!empty($website['id']) && $website['id'] !== $found['website']['id'] && ($website['status'] ?? '') !== 'deleted' && in_array($website['kind'] ?? 'normal', self::CLIENT_SITE_KINDS, true)) {
+                $sites[] = ['org' => $found['org'], 'website' => $website];
+            }
+        }
+
+        return $sites;
+    }
+
+    /**
+     * One website of the account's subscription by its domain; '' is the account's own website.
+     *
+     * @return array{org: array, website: array}
+     */
+    public function site(string $clientEmail, string $domain, string $loginEmail, string $website): array
+    {
+        if ($website === '') {
+            return $this->find($clientEmail, $domain, $loginEmail);
+        }
+        foreach ($this->sites($clientEmail, $domain, $loginEmail) as $site) {
+            if (strcasecmp((string) ($site['website']['domain']['domain'] ?? ''), $website) === 0) {
+                return $site;
+            }
+        }
+
+        throw new \Server_Exception('The website :domain: is not part of this hosting account.', [':domain:' => $website]);
+    }
+
     public function subscriptionState(): string
     {
         $subscription = $this->resolveSubscription(true);

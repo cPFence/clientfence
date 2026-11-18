@@ -2,7 +2,8 @@
    mod_servicehosting_account.html.twig with `account`). The list and every change go through the
    client API (servicehosting/email*), which checks that the order is the client's and, for
    changes, that it is active. Search and paging run in the browser: the panel answers the whole
-   list at once. The forms are <template>s, shown in one modal. #}
+   list at once. The forms are <template>s, shown in one modal. An account with several websites (one
+   Enhance subscription) gets a picker; every call names the website shown. #}
 {% set read_only = account.status != 'active' %}
 <div class="clientfence-email" data-clientfence-email="{{ account.order_id }}"{% if read_only %} data-read-only{% endif %}>
     {% if read_only %}
@@ -14,6 +15,7 @@
                 <h2 class="mb-0">{{ 'Email accounts'|trans }}</h2>
                 <div class="small text-secondary" data-email-allowance></div>
             </div>
+            <select class="form-select form-select-sm w-auto" aria-label="{{ 'Website'|trans }}" data-email-website hidden></select>
             <input type="search" class="form-control form-control-sm clientfence-email-search" placeholder="{{ 'Search email accounts'|trans }}" aria-label="{{ 'Search email accounts'|trans }}" data-email-search>
             {% if not read_only %}
                 <button type="button" class="btn btn-sm btn-primary" data-email-action="create" disabled>
@@ -249,11 +251,12 @@
         const submit = modalElement.querySelector('[data-modal-submit]');
         let data = null;
         let page = 0;
+        let website = '';
         let current = null;
 
         // The client API, as a promise; errors carry the server's message.
         const call = (method, params = {}, loader = true) => new Promise((resolve, reject) => {
-            ClientFence.api.client.post(`servicehosting/${method}`, Object.assign({ order_id: orderId }, params), resolve, reject, loader);
+            ClientFence.api.client.post(`servicehosting/${method}`, Object.assign({ order_id: orderId, website }, params), resolve, reject, loader);
         });
         const failed = (error) => ClientFence.message(error?.message || String(error), 'error');
 
@@ -282,6 +285,9 @@
                 foot.hidden = true;
                 return;
             }
+            const picker = root.querySelector('[data-email-website]');
+            picker.hidden = data.websites.length < 2;
+            picker.replaceChildren(...data.websites.map((domain) => new Option(domain, domain, false, domain === (website || data.websites[0]))));
             const { used, limit } = data.allowance;
             root.querySelector('[data-email-allowance]').textContent = limit === null
                 ? fill(texts.allowance_unlimited, { used })
@@ -581,6 +587,17 @@
             if (data) {
                 render();
             }
+        });
+        root.querySelector('[data-email-website]').addEventListener('change', (event) => {
+            website = event.target.value;
+            page = 0;
+            data = null;
+            list.replaceChildren(spinner.cloneNode(true));
+            foot.hidden = true;
+            if (createButton) {
+                createButton.disabled = true;
+            }
+            load();
         });
         root.querySelectorAll('[data-email-page]').forEach((button) => button.addEventListener('click', () => {
             page += Number(button.dataset.emailPage);

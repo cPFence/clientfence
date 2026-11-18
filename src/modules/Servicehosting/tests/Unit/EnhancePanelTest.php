@@ -279,3 +279,26 @@ test('an unreachable panel names the reason and what to check', function (string
     'end of stream inside TLS' => ['OpenSSL SSL_read: SSL_ERROR_SYSCALL, errno 0', 'Please try again later.'],
     'other, host name with ssl' => ['Recv failure: Connection reset by peer', 'Please try again later.'],
 ]);
+
+// Forum #159: a plan with several websites is one subscription; the Email and DNS tabs pick among its websites only.
+test('sites lists the subscription\'s websites and site picks only one of them', function (bool $stored): void {
+    $requests = [];
+    $panel = enhancePanelFake([
+        '/api/orgs/M/customers' => [['id' => 'B', 'status' => 'active', 'ownerEmail' => 'b@example.test']],
+        '/api/orgs/B/subscriptions/7' => ['id' => 7, 'subscriberId' => 'B', 'vendorId' => 'M', 'status' => 'active', 'planId' => 1],
+        '/api/orgs/B/websites' => [
+            ['id' => 'Other', 'status' => 'active', 'subscriptionId' => 8, 'domain' => ['domain' => 'other.example']],
+            ['id' => 'Second', 'status' => 'active', 'subscriptionId' => 7, 'domain' => ['domain' => 'second.example']],
+            ['id' => 'W', 'status' => 'active', 'subscriptionId' => 7, 'domain' => ['domain' => 'site.example']],
+            ['id' => 'Gone', 'status' => 'deleted', 'subscriptionId' => 7, 'domain' => ['domain' => 'gone.example']],
+        ],
+    ], $requests);
+    $panel = $stored ? $panel->forAccount('B', 7) : $panel;
+    $site = fn (string $website): string => $panel->site('b@example.test', 'site.example', '', $website)['website']['id'];
+
+    expect(array_map(fn (array $s): string => $s['website']['id'], $panel->sites('b@example.test', 'site.example')))->toBe(['W', 'Second'])
+        ->and($site(''))->toBe('W')
+        ->and($site('SECOND.example'))->toBe('Second')
+        ->and(fn () => $site('other.example'))->toThrow(Server_Exception::class, 'is not part of this hosting account')
+        ->and(fn () => $site('gone.example'))->toThrow(Server_Exception::class, 'is not part of this hosting account');
+})->with(['stored subscription' => [true], 'found by the client email' => [false]]);

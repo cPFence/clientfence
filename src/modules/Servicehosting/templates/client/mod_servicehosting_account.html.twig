@@ -199,9 +199,17 @@
         if (domainsTab.classList.contains('active')) {
             showDomains();
         }
+        // An account with several websites: the picker shows another one; "Check again" keeps it.
+        let domainsWebsite = '';
         domains.addEventListener('click', (event) => {
             if (event.target.closest('[data-domains-refresh]')) {
-                loadDomains('refresh=1');
+                loadDomains(`refresh=1&website=${encodeURIComponent(domainsWebsite)}`);
+            }
+        });
+        domains.addEventListener('change', (event) => {
+            if (event.target.matches('[data-domains-website]')) {
+                domainsWebsite = event.target.value;
+                loadDomains(`website=${encodeURIComponent(domainsWebsite)}`);
             }
         });
 
