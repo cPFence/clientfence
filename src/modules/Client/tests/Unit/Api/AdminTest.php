@@ -674,13 +674,15 @@ test('balanceAddFunds returns true', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('balanceAddFunds removes at most the credit the client has', function (string $amount, bool $allowed, float $balance = 20.0): void {
+test('balanceAddFunds removes at most the credit the client has', function (string $amount, bool $allowed, float $balance = 20.0, float $reserved = 0.0): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $serviceMock = Mockery::mock(ClientFence\Mod\Client\Service::class);
     $serviceMock->shouldReceive('getClientBalance')->andReturn($balance);
     $serviceMock->shouldReceive('addFunds')->times($allowed ? 1 : 0);
+    $invoiceService = Mockery::mock(ClientFence\Mod\Invoice\Service::class);
+    $invoiceService->shouldReceive('getReservedCredit')->andReturn($reserved);
     $di = container();
-    $di['mod_service'] = $di->protect(moduleService(['client' => $serviceMock]));
+    $di['mod_service'] = $di->protect(moduleService(['client' => $serviceMock, 'invoice' => $invoiceService]));
     $di['validator'] = $this->createStub(ClientFence\Validate::class);
     $adminClient->setDi($di);
 
@@ -692,6 +694,9 @@ test('balanceAddFunds removes at most the credit the client has', function (stri
     'adding' => ['5', true],
     // A payment a gateway adds to a client below zero (from before this check, or a deleted credit line).
     'adding below zero' => ['5', true, -10.0],
+    // A 30.00 part payment recorded on an unpaid invoice is in the balance rows but is not credit.
+    'a part payment of an unpaid invoice' => ['-30', false, 30.0, 30.0],
+    'credit beside a part payment' => ['-10', true, 40.0, 30.0],
 ]);
 
 test('batchExpirePasswordReminders returns true', function (): void {

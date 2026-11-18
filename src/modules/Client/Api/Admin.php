@@ -641,9 +641,12 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $service = $this->getDi()['mod_service']('client');
         // ClientFence core patch: staff cannot remove more credit than the client has (the balance went below zero).
-        $balance = $service->getClientBalance($client);
-        if (is_numeric($data['amount']) && (float) $data['amount'] < 0 && round($balance + (float) $data['amount'], 2) < 0) {
-            throw new InformationException('The client has :amount :currency credit. You cannot remove more than that.', [':amount' => number_format(max($balance, 0), 2, '.', ''), ':currency' => (string) $client->getCurrency()]);
+        if (is_numeric($data['amount']) && (float) $data['amount'] < 0) {
+            // The credit the client can spend, as the client page shows it: part payments of unpaid invoices are not credit.
+            $balance = round($service->getClientBalance($client) - $this->getDi()['mod_service']('Invoice')->getReservedCredit((int) $client->getId()), 2);
+            if (round($balance + (float) $data['amount'], 2) < 0) {
+                throw new InformationException('The client has :amount :currency credit. You cannot remove more than that.', [':amount' => number_format(max($balance, 0), 2, '.', ''), ':currency' => (string) $client->getCurrency()]);
+            }
         }
         $service->addFunds($client, $data['amount'], $data['description'], $data);
 
