@@ -8894,5 +8894,37 @@
     {
         "file": "modules/Email/Service.php",
         "done": "ClientFence core patch: the price change email previews and saves before its first send"
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (GitHub #51): `$locale` picks that language's company name and address lines"
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (GitHub #51): the language versions of the company name and address (company_name_de_de) need the same permission."
+    },
+    {
+        "file": "modules/System/Api/Guest.php",
+        "done": "ClientFence core patch (GitHub #51): the name and address in `locale` (an email's language), else the visitor's; staff pages keep the default."
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch (GitHub #51): the company name and address in the email's language."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #51): seller details an invoice did not store come in its client's language."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #51): the invoice keeps the seller name and address in its client's language."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #51): the footer and bank block name the seller as the invoice stored it, in its client's language."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch (GitHub #51): the company name and address per language (System Service getCompany()), for the languages turned on besides the default."
     }
 ]

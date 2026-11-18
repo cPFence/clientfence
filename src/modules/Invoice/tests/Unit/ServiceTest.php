@@ -2399,6 +2399,7 @@ test('sets invoice defaults', function (): void {
     $clientModel = new Model_Client();
     $clientModel->loadBean(new Tests\Helpers\DummyBean());
     $clientModel->po_number = 'PO-31';
+    $clientModel->lang = 'sr_Cyrl_RS';
 
     $buyer = [
         'first_name' => '',
@@ -2424,17 +2425,19 @@ test('sets invoice defaults', function (): void {
 
     $systemService = Mockery::mock(SystemService::class);
     $seller = [
-        'name' => '',
+        'name' => 'Тесла',
         'vat_number' => '',
         'number' => '',
-        'address_1' => '',
-        'address_2' => '',
+        'address_1' => 'Главна 1',
+        'address_2' => 'Београд',
         'address_3' => '',
         'tel' => '',
         'email' => '',
     ];
+    // GitHub #51: the seller name and address in the client's language.
     $systemService->shouldReceive('getCompany')
         ->atLeast()->once()
+        ->with('sr_Cyrl_RS')
         ->andReturn($seller);
     $systemService->shouldReceive('getParamValue')
         ->atLeast()->once()
@@ -2475,7 +2478,9 @@ test('sets invoice defaults', function (): void {
 
     $service->setInvoiceDefaults($invoiceModel);
     // GitHub #31: a new invoice starts with the client's purchase order number.
-    expect($invoiceModel->po_number)->toBe('PO-31');
+    expect($invoiceModel->po_number)->toBe('PO-31')
+        ->and($invoiceModel->seller_company)->toBe('Тесла')
+        ->and($invoiceModel->seller_address)->toBe('Главна 1 Београд');
 });
 
 test('approves an invoice', function (): void {

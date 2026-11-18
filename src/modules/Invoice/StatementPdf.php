@@ -31,7 +31,8 @@ final class StatementPdf
     {
         return \ClientFence\Translate::with(RtlPdf::labels($locale), static function () use ($di, $statement, $locale): string {
             $pdf = RtlPdf::document($di, $locale, __trans('Account statement'));
-            $company = $di['mod_service']('system')->getCompany();
+            // The seller name and address in the statement client's language (GitHub #51).
+            $company = $di['mod_service']('system')->getCompany($statement['client']['lang'] ?: null);
             $money = static fn (float $amount): string => RtlPdf::money($di, $amount, $statement['currency']);
             $pdf->writeHTML(self::html($statement, $company, $money, RtlPdf::isRtl($locale)), true, false, true, false, '');
 

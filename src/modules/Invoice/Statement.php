@@ -30,7 +30,7 @@ final class Statement
     public static function build(\Pimple\Container $di, int $clientId, string $from = '', string $to = ''): array
     {
         $db = $di['em']->getConnection();
-        $client = $db->fetchAssociative('SELECT id, first_name, last_name, company, email, currency FROM client WHERE id = ?', [$clientId]);
+        $client = $db->fetchAssociative('SELECT id, first_name, last_name, company, email, currency, lang FROM client WHERE id = ?', [$clientId]);
         if ($client === false) {
             throw new InformationException('Client not found');
         }
@@ -77,6 +77,7 @@ final class Statement
                 'name' => trim($client['first_name'] . ' ' . $client['last_name']),
                 'company' => (string) $client['company'],
                 'email' => (string) $client['email'],
+                'lang' => (string) $client['lang'],
             ],
             'currency' => $currency,
             'from' => $from,

@@ -20,7 +20,7 @@ function statementDb(): Connection
     foreach ([
         'CREATE TABLE currency (code TEXT PRIMARY KEY, is_default INTEGER, conversion_rate REAL)',
         'CREATE TABLE setting (param TEXT PRIMARY KEY, value TEXT)',
-        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, currency TEXT)',
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, currency TEXT, lang TEXT)',
         'CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, serie TEXT, nr TEXT, currency TEXT, status TEXT, approved INTEGER, gateway_id INTEGER, taxrate TEXT, tax_adjust REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, type TEXT, task TEXT, price REAL, quantity INTEGER, taxed INTEGER)',
@@ -136,7 +136,7 @@ test('the statement lists invoices, payments and credit with the running balance
         ->and($statement['credit'])->toBe(330.0)
         ->and($statement['closing'])->toBe(5.0)
         ->and($statement['currency'])->toBe('USD')
-        ->and($statement['client'])->toBe(['id' => 1, 'name' => 'Alice Smith', 'company' => '', 'email' => 'alice@example.com'])
+        ->and($statement['client'])->toBe(['id' => 1, 'name' => 'Alice Smith', 'company' => '', 'email' => 'alice@example.com', 'lang' => ''])
         ->and(array_column($statement['lines'], 'invoice_id'))->toBe([1, 1, 2, 2, 3, 3, null, 4, null, null, 5])
         ->and(array_column($statement['lines'], 'title'))->toBe([
             'Invoice CF-00001', 'Payment for invoice CF-00001', 'Invoice CF-00002', 'Payment for invoice CF-00002',

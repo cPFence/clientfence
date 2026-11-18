@@ -27,9 +27,11 @@ class Guest extends \ClientFence\Api\AbstractApi
      *
      * @return array
      */
-    public function company()
+    public function company($data = [])
     {
-        $companyInfo = $this->getService()->getCompany();
+        // ClientFence core patch (GitHub #51): the name and address in `locale` (an email's language), else the visitor's; staff pages keep the default.
+        $locale = $data['locale'] ?? (\defined('ADMIN_AREA') && ADMIN_AREA ? null : \Locale::getDefault());
+        $companyInfo = $this->getService()->getCompany(is_string($locale) ? $locale : null);
         $auth = $this->getDi()['auth'];
         $hideExtraCompanyInfoFromGuest = $this->getService()->getParamValue('hide_company_public');
 

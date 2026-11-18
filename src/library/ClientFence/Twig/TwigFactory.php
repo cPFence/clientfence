@@ -286,7 +286,8 @@ class TwigFactory
         // Convert guest to array to prevent object method access in sandbox
         $apiGuest = $this->di['api_guest'];
         $twig->addGlobal('guest', [
-            'system_company' => $apiGuest->system_company(),
+            // ClientFence core patch (GitHub #51): the company name and address in the email's language.
+            'system_company' => $apiGuest->system_company(['locale' => $locale]),
             'system_email' => $this->getEmailSettingsForTemplates(),
         ]);
         $twig->addGlobal('default_currency', $this->getDefaultCurrencyCode());

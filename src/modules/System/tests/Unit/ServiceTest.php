@@ -661,3 +661,45 @@ test('setParamValue moves updated_at only when the value changes', function (): 
     expect($db->fetchAssociative("SELECT value, updated_at FROM setting WHERE param = 'affiliate_enabled'"))
         ->toMatchArray(['value' => '0'])->updated_at->not->toBe('2026-01-01 00:00:00');
 });
+
+test('getCompany gives the name and address lines of a language, each empty one from the default (GitHub #51)', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
+    $default = strtolower((string) ClientFence\Config::getProperty('i18n.locale', 'en_US'));
+    foreach ([
+        'company_name' => 'Tesla', 'company_address_1' => '1 Main Street', 'company_address_2' => 'Belgrade', 'company_email' => 'info@example.com',
+        'company_name_sr_cyrl_rs' => 'Тесла', 'company_address_1_sr_cyrl_rs' => 'Главна 1', 'company_address_2_sr_cyrl_rs' => ' ',
+        'company_name_' . $default => 'Not shown',
+    ] as $param => $value) {
+        $db->insert('setting', ['param' => $param, 'value' => $value]);
+    }
+    $di = container();
+    $di['dbal'] = $db;
+    $service = new Service();
+    $service->setDi($di);
+
+    $pick = fn (?string $locale): array => array_intersect_key($service->getCompany($locale), array_flip(['name', 'address_1', 'address_2', 'address_3', 'email']));
+    $plain = ['name' => 'Tesla', 'email' => 'info@example.com', 'address_1' => '1 Main Street', 'address_2' => 'Belgrade', 'address_3' => null];
+
+    expect($pick('sr_Cyrl_RS'))->toBe(['name' => 'Тесла', 'email' => 'info@example.com', 'address_1' => 'Главна 1', 'address_2' => 'Belgrade', 'address_3' => null])
+        ->and($pick(null))->toBe($plain)
+        // The default language, a language without versions and an unknown code get the default.
+        ->and($pick((string) ClientFence\Config::getProperty('i18n.locale', 'en_US')))->toBe($plain)
+        ->and($pick('de_DE'))->toBe($plain)
+        ->and($pick('xx-bad/locale'))->toBe($plain);
+});
+
+test('updateParams refuses the language versions of the company details to staff without the company permission (GitHub #51)', function (bool $allowed): void {
+    $di = container();
+    $staff = Mockery::mock();
+    $staff->allows('hasPermission')->with(null, 'system', 'manage_company_details')->andReturn($allowed);
+    $di['mod_service'] = $di->protect(fn (): object => $staff);
+    $di['events_manager'] = Mockery::mock();
+    $di['events_manager']->allows('fire');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $allowed ? $service->expects('setParamValue')->with('company_address_3_sr_cyrl_rs', 'Београд', true) : $service->shouldNotReceive('setParamValue');
+    $service->setDi($di);
+
+    $allowed ? expect($service->updateParams(['company_address_3_sr_cyrl_rs' => 'Београд']))->toBeTrue()
+        : expect(fn () => $service->updateParams(['company_address_3_sr_cyrl_rs' => 'Београд']))->toThrow(ClientFence\InformationException::class, 'You do not have permission');
+})->with(['allowed' => [true], 'refused' => [false]]);

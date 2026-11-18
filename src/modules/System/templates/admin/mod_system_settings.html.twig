@@ -165,6 +165,45 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {# ClientFence core patch (GitHub #51): the company name and address per language (System Service getCompany()), for the languages turned on besides the default. #}
+                        {% set company_langs = guest.extension_languages(true)|filter(l => l.locale != localization.locale) %}
+                        {% if company_langs is not empty %}
+                        <div class="card-body cf-sys-sec">
+                            <h4 class="card-title mb-2">{{ 'Languages'|trans }}</h4>
+                            <p class="form-hint mb-3">{{ 'Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default.'|trans }}</p>
+                            {% set company_filled = company_langs|filter(l => params['company_name_' ~ l.locale|lower]|default('') or params['company_address_1_' ~ l.locale|lower]|default('') or params['company_address_2_' ~ l.locale|lower]|default('') or params['company_address_3_' ~ l.locale|lower]|default('')) %}
+                            {# One language at a time: a button per language with a version, the rest in "Add language". Every field stays in the form. #}
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-3" data-cf-company-langs role="tablist" aria-label="{{ 'Languages'|trans }}">
+                                {% for l in company_filled %}
+                                    <button class="btn btn-sm {{ loop.first ? 'btn-primary' : 'btn-outline-secondary' }}" type="button" role="tab" aria-selected="{{ loop.first ? 'true' : 'false' }}" data-cf-lang="{{ l.locale }}">{{ l.title }}</button>
+                                {% endfor %}
+                                {% if company_filled|length < company_langs|length %}
+                                    <select class="form-select form-select-sm w-auto" data-cf-add-lang aria-label="{{ 'Add language'|trans }}">
+                                        <option value="">+ {{ 'Add language'|trans }}</option>
+                                        {% for l in company_langs|filter(l => l.locale not in company_filled|map(f => f.locale)) %}
+                                            <option value="{{ l.locale }}">{{ l.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                            </div>
+                            {% for l in company_langs %}
+                                {% set sfx = '_' ~ l.locale|lower %}
+                                {% set rtl = l.locale is rtl %}
+                                <div class="row g-3" data-cf-lang-pane="{{ l.locale }}"{% if company_filled is empty or l.locale != (company_filled|first).locale %} hidden{% endif %}>
+                                    <div class="col-lg-6">
+                                        <label class="form-label" for="company_name{{ sfx }}">{{ 'Name'|trans }} <span class="text-secondary">{{ l.title }}</span></label>
+                                        <input class="form-control" id="company_name{{ sfx }}" type="text" name="company_name{{ sfx }}" value="{{ params['company_name' ~ sfx]|default('') }}" placeholder="{{ params.company_name|default('') }}" lang="{{ l.locale[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="company_address_1{{ sfx }}">{{ 'Address'|trans }}</label>
+                                        <input class="form-control mb-2" id="company_address_1{{ sfx }}" type="text" name="company_address_1{{ sfx }}" value="{{ params['company_address_1' ~ sfx]|default('') }}" placeholder="{{ params.company_address_1|default('') ?: 'Address line 1'|trans }}" lang="{{ l.locale[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                        <input class="form-control mb-2" type="text" name="company_address_2{{ sfx }}" value="{{ params['company_address_2' ~ sfx]|default('') }}" placeholder="{{ params.company_address_2|default('') ?: 'Address line 2'|trans }}" aria-label="{{ 'Address line 2'|trans }}" lang="{{ l.locale[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                        <input class="form-control" type="text" name="company_address_3{{ sfx }}" value="{{ params['company_address_3' ~ sfx]|default('') }}" placeholder="{{ params.company_address_3|default('') ?: 'Address line 3'|trans }}" aria-label="{{ 'Address line 3'|trans }}" lang="{{ l.locale[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                         <div class="card-body cf-sys-sec">
                             <h4 class="card-title mb-3">{{ 'Registration and Banking'|trans }}</h4>
                             <div class="row g-3">
@@ -583,6 +622,50 @@
 
 {% block js %}
 <script nonce="{{ csp_nonce }}">
+    // ClientFence core patch (GitHub #51): the company name and address of one language at a time.
+    (function () {
+        const bar = document.querySelector('[data-cf-company-langs]');
+        if (!bar) {
+            return;
+        }
+        const show = function (lang) {
+            bar.querySelectorAll('[data-cf-lang]').forEach(function (button) {
+                const on = button.dataset.cfLang === lang;
+                button.classList.toggle('btn-primary', on);
+                button.classList.toggle('btn-outline-secondary', !on);
+                button.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            document.querySelectorAll('[data-cf-lang-pane]').forEach(function (pane) {
+                pane.hidden = pane.dataset.cfLangPane !== lang;
+            });
+        };
+        bar.addEventListener('click', function (e) {
+            const button = e.target.closest('[data-cf-lang]');
+            if (button) {
+                show(button.dataset.cfLang);
+            }
+        });
+        const add = bar.querySelector('[data-cf-add-lang]');
+        add?.addEventListener('change', function () {
+            const option = add.selectedOptions[0];
+            if (add.value === '') {
+                return;
+            }
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-sm btn-outline-secondary';
+            button.setAttribute('role', 'tab');
+            button.dataset.cfLang = add.value;
+            button.textContent = option.textContent;
+            add.before(button);
+            show(add.value);
+            document.getElementById('company_name_' + add.value.toLowerCase())?.focus();
+            option.remove();
+            add.value = '';
+            add.hidden = add.options.length < 2;
+        });
+    })();
+
     const bindTo = "{{ constant('BIND_TO') }}";
     const canManageNetworkInterface = {{ can_manage_network_interface ? 'true' : 'false' }};
 

@@ -53,3 +53,16 @@ test('getDefaultCurrencyCode returns null instead of crashing when the currency 
 
     expect($result)->toBeNull();
 });
+
+test('the email environment gives the company name and address in the email\'s language (GitHub #51)', function (): void {
+    $di = Tests\Helpers\container();
+    unset($di['em']);
+    $di['mod_config'] = $di->protect(fn (string $name): array => ['signature' => 'Thanks']);
+    $guest = Mockery::mock();
+    $guest->expects('system_company')->with(['locale' => 'sr_Cyrl_RS'])->andReturn(['name' => 'Тесла', 'address_1' => 'Главна 1']);
+    $di['api_guest'] = $guest;
+
+    $twig = (new TwigFactory($di))->createEmailEnvironment('UTC', 'sr_Cyrl_RS');
+
+    expect($twig->createTemplate('{{ guest.system_company.name }}, {{ guest.system_company.address_1 }}')->render())->toBe('Тесла, Главна 1');
+});

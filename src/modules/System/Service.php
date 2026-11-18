@@ -230,7 +230,11 @@ class Service
         return $result;
     }
 
-    public function getCompany(): array
+    /**
+     * ClientFence core patch (GitHub #51): `$locale` picks that language's company name and address lines
+     * (settings company_name_de_de, company_address_1_de_de...); each empty one keeps the default.
+     */
+    public function getCompany(?string $locale = null): array
     {
         $c = [
             'company_name',
@@ -258,6 +262,17 @@ class Service
             'invoice_tax_label',
         ];
         $results = $this->getSettingsByParams($c);
+        // The default language has no versions; a turned-off or unknown locale gets the default.
+        if ($locale !== null && $locale !== \ClientFence\Config::getProperty('i18n.locale', 'en_US') && in_array($locale, \ClientFence\i18n::getLocales(), true)) {
+            $suffix = '_' . strtolower($locale);
+            $fields = ['company_name', 'company_address_1', 'company_address_2', 'company_address_3'];
+            $versions = $this->getSettingsByParams(array_map(fn (string $field): string => $field . $suffix, $fields));
+            foreach ($fields as $field) {
+                if (trim((string) ($versions[$field . $suffix] ?? '')) !== '') {
+                    $results[$field] = $versions[$field . $suffix];
+                }
+            }
+        }
 
         $logoUrl = $results['company_logo'] ?? null;
         if ($logoUrl !== null && !str_contains((string) $logoUrl, 'http')) {
@@ -891,7 +906,8 @@ class Service
         $company_legal = ['company_tos', 'company_privacy_policy', 'company_note'];
 
         $staff_service = $this->di['mod_service']('Staff');
-        if (in_array($param, $company) && !$staff_service->hasPermission(null, 'system', 'manage_company_details')) {
+        // ClientFence core patch (GitHub #51): the language versions of the company name and address (company_name_de_de) need the same permission.
+        if ((in_array($param, $company) || preg_match('/^company_(name|address_[123])_[a-z]/', $param) === 1) && !$staff_service->hasPermission(null, 'system', 'manage_company_details')) {
             return false;
         }
 

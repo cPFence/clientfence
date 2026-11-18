@@ -52,6 +52,20 @@ test('company returns company data when public display is enabled', function ():
     expect($result)->toBeArray()->not->toBeEmpty();
 });
 
+test('company gives the version of the given language, else of the visitor\'s language (GitHub #51)', function (?string $locale): void {
+    $api = apiEndpoint(new ClientFence\Mod\System\Api\Guest());
+    $serviceMock = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $serviceMock->expects('getCompany')->with($locale ?? Locale::getDefault())->andReturn(['name' => 'Тесла']);
+    $serviceMock->allows('getParamValue')->andReturn(0);
+    $api->setDi(container());
+    $api->setService($serviceMock);
+
+    expect($api->company($locale === null ? [] : ['locale' => $locale])['name'])->toBe('Тесла');
+})->with([
+    'email language' => ['sr_Cyrl_RS'],
+    'visitor' => [null],
+]);
+
 test('company filters sensitive data when public display is disabled', function (): void {
     $api = apiEndpoint(new ClientFence\Mod\System\Api\Guest());
     $companyData = [

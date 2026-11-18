@@ -40,7 +40,8 @@ final class QuotePdf
         try {
             $title = __trans('Quote #:id', [':id' => $quote['id']]);
             $pdf = RtlPdf::document($di, $locale, $title);
-            $company = $di['mod_service']('system')->getCompany();
+            // The seller name and address in the quote client's language (GitHub #51).
+            $company = $di['mod_service']('system')->getCompany(Quotes::recipientLocale($di, $quote));
             $money = static fn (float $amount): string => RtlPdf::money($di, $amount, $quote['currency']);
             $link = $quote['open'] ? Quotes::link($di, $quote) : '';
             $pdf->writeHTML(self::html($quote, $company, $money, RtlPdf::isRtl($locale), $title, $link), true, false, true, false, '');

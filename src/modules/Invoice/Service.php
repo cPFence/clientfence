@@ -409,7 +409,13 @@ class Service implements InjectionAwareInterface
         ];
 
         $systemService = $this->di['mod_service']('system');
-        $c = $systemService->getCompany();
+        /**
+         * Removed if($identity instanceof \Model_Admin) {}
+         * Generates error when this function is called by cron.
+         */
+        $client = isset($row['client_id']) ? $this->di['db']->load('Client', $row['client_id']) : null;
+        // ClientFence core patch (GitHub #51): seller details an invoice did not store come in its client's language.
+        $c = $systemService->getCompany($client instanceof \Model_Client ? ($client->lang ?: null) : null);
         $result['seller'] = [
             'company' => !empty($row['seller_company']) ? $row['seller_company'] : ($c['name'] ?? ''),
             'company_vat' => $row['seller_company_vat'] ?? '',
@@ -425,11 +431,6 @@ class Service implements InjectionAwareInterface
             'bic' => $c['bic'] ?? null,
         ];
 
-        /**
-         * Removed if($identity instanceof \Model_Admin) {}
-         * Generates error when this function is called by cron.
-         */
-        $client = isset($row['client_id']) ? $this->di['db']->load('Client', $row['client_id']) : null;
         $clientService = $this->di['mod_service']('client');
         if ($client instanceof \Model_Client) {
             $result['client'] = $clientService->toApiArray($client);
@@ -1416,7 +1417,8 @@ class Service implements InjectionAwareInterface
         $clientService = $this->di['mod_service']('Client');
         $systemService = $this->di['mod_service']('system');
         $client = $this->di['db']->load('Client', $model->client_id);
-        $seller = $systemService->getCompany();
+        // ClientFence core patch (GitHub #51): the invoice keeps the seller name and address in its client's language.
+        $seller = $systemService->getCompany($client->lang ?: null);
 
         $buyer = $clientService->toApiArray($client);
 
@@ -3447,7 +3449,8 @@ class Service implements InjectionAwareInterface
     {
         $systemService = $this->di['mod_service']('system');
         $locale ??= ($invoice['client']['lang'] ?? '') ?: \Locale::getDefault();
-        $c = $systemService->getCompany();
+        // ClientFence core patch (GitHub #51): the footer and bank block name the seller as the invoice stored it, in its client's language.
+        $c = $systemService->getCompany(($invoice['client']['lang'] ?? '') ?: null);
 
         if (isset($invoiceModel->currency)) {
             $currencyCode = $invoiceModel->currency;
