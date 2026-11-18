@@ -60,9 +60,9 @@ test('a registration is quoted by a dry run, bought at the quoted cost with an i
 
     [$dry, $create, $contacts, $ns] = $GLOBALS['porkbun_calls'];
     expect(array_column($GLOBALS['porkbun_calls'], 0))->toBe(['POST /domain/create/example.com dry', 'POST /domain/create/example.com', 'POST /domain/updateContacts/example.com', 'POST /domain/updateNs/example.com'])
-        ->and($dry[1])->toBe(['agreeToTerms' => 'yes', 'whoisPrivacy' => true, 'cost' => 0, 'dryRun' => true])
+        ->and($dry[1])->toBe(['agreeToTerms' => 'yes', 'cost' => 0, 'dryRun' => true])
         ->and($dry[2])->not->toHaveKey('idempotency-key')
-        ->and($create[1])->toBe(['agreeToTerms' => 'yes', 'whoisPrivacy' => true, 'cost' => 973])
+        ->and($create[1])->toBe(['agreeToTerms' => 'yes', 'cost' => 973])
         ->and($create[2])->toMatchArray(['x-api-key' => 'pk1_live', 'x-secret-api-key' => 'sk1_secret'])
         ->and($create[2]['idempotency-key'])->toStartWith('clientfence-')
         ->and($contacts[1])->toBe(['contact' => ['firstName' => 'Ann', 'lastName' => 'Lee', 'organization' => '', 'address1' => '1 Main St', 'address2' => '',
@@ -204,19 +204,17 @@ test('internationalized names and .uk transfers are refused before the client pa
         ->and($GLOBALS['porkbun_calls'])->toBe([]);
 });
 
-test('a retry after a lost reply goes on when Porkbun took the first request, and fails otherwise', function (): void {
+test('a refused purchase of a name already in the account stops for staff instead of taking it over', function (): void {
     $refused = [400, ['status' => 'ERROR', 'code' => 'DOMAIN_NOT_AVAILABLE', 'message' => 'Not available.']];
     $owned = porkbunAdapter(['POST /domain/create/example.com dry' => $refused, 'POST /domain/checkDomain/example.com' => ['status' => 'SUCCESS', 'response' => ['avail' => 'no', 'inYourAccount' => true]]]);
-    expect($owned->registerDomain(porkbunDomain()))->toBeTrue()
-        ->and(array_column($GLOBALS['porkbun_calls'], 0))->toBe(['POST /domain/create/example.com dry', 'POST /domain/checkDomain/example.com', 'POST /domain/updateContacts/example.com', 'POST /domain/updateNs/example.com']);
+    expect(fn () => $owned->registerDomain(porkbunDomain()))->toThrow(Registrar_Exception::class, 'activate the order by hand')
+        ->and(array_column($GLOBALS['porkbun_calls'], 0))->toBe(['POST /domain/create/example.com dry', 'POST /domain/checkDomain/example.com']);
 
+    // Another client's transfer of the same name under way: refused, never adopted.
     $moving = porkbunAdapter(['POST /domain/transfer/example.com dry' => $refused, 'POST /domain/checkDomain/example.com' => ['status' => 'SUCCESS', 'response' => ['avail' => 'no']],
         'GET /domain/getTransfer/example.com' => ['status' => 'SUCCESS', 'transfer' => ['status' => 'PENDINGTRANSFER']]]);
-    expect($moving->transferDomain(porkbunDomain()->setEpp('abc123')))->toBeTrue()
-        ->and(array_column($GLOBALS['porkbun_calls'], 0))->not->toContain('POST /domain/transfer/example.com');
-
-    $taken = porkbunAdapter(['POST /domain/create/example.com dry' => $refused, 'POST /domain/checkDomain/example.com' => ['status' => 'SUCCESS', 'response' => ['avail' => 'no']]]);
-    expect(fn () => $taken->registerDomain(porkbunDomain()))->toThrow(Registrar_Exception::class, 'Not available.');
+    expect(fn () => $moving->transferDomain(porkbunDomain()->setEpp('abc123')))->toThrow(Registrar_Exception::class, 'Not available.')
+        ->and(array_column($GLOBALS['porkbun_calls'], 0))->not->toContain('GET /domain/getTransfer/example.com');
 });
 
 test('lock, privacy and the transfer code are not in the API; a cancel turns auto-renewal off and survives a refusal', function (): void {

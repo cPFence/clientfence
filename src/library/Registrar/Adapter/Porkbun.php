@@ -9,7 +9,7 @@ declare(strict_types=1);
  * Porkbun's request schemas require; the registrar's test mode needs a sandbox key pair (pk1_sb_),
  * which Porkbun simulates on the same address without charges. A registration, renewal or transfer is first quoted with
  * a dry run (nothing charged), then bought at exactly the quoted cost with an Idempotency-Key from the order. A retry
- * after a lost reply finds the name already in the account (or its transfer under way) and goes on without buying again. Porkbun buys only the registry's minimum term
+ * that finds the name already in the account stops for staff: it may be another order's. Porkbun buys only the registry's minimum term
  * and registers with the account's default contact and name servers: the order's are applied right after. The API has
  * no transfer lock, privacy switch, transfer code or delete calls. Porkbun auto-renewal is turned off on every domain
  * the sync reads: ClientFence renews a domain when its renewal invoice is paid.
@@ -193,7 +193,8 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
 
     public function registerDomain(Registrar_Domain $domain): bool
     {
-        $this->purchase('create', $domain, ['agreeToTerms' => 'yes', 'whoisPrivacy' => (bool) $domain->getPrivacyEnabled()]);
+        // No whoisPrivacy: the order never sets it, and false would publish the client's contact; the account default applies.
+        $this->purchase('create', $domain, ['agreeToTerms' => 'yes']);
 
         // Porkbun has taken the order: a failed follow-up is logged, never thrown (the order must not fail and re-register).
         foreach (['modifyContact' => 'the contact', 'modifyNs' => 'the name servers'] as $step => $what) {
@@ -275,9 +276,9 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
         try {
             $quote = $this->request('POST', $path, $body + ['cost' => 0, 'dryRun' => true]);
         } catch (Registrar_Exception $e) {
-            // A retry after a lost reply: Porkbun took the first request, so the name is already ours or on its way in.
-            if ($action !== 'renew' && $this->taken($action, $domain)) {
-                return;
+            // Maybe a retry after a lost reply. Not taken over automatically: the name may be another order's, so staff check.
+            if ($action !== 'renew' && !empty($this->check($domain)['inYourAccount'])) {
+                throw new Registrar_Exception(':domain is already in your :registrar account. If this order\'s earlier try registered or transferred it, activate the order by hand.', [':domain' => $domain->getName(), ':registrar' => 'Porkbun']);
             }
 
             throw $e;
@@ -293,24 +294,13 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
         $cost = (int) ($quote['cost'] ?? 0);
         // The same key on a retry of this purchase: Porkbun answers it from its first reply for 24 hours instead of charging again.
         // A renewal also keys on the expiry it starts from, so next year's renewal of the same order is a new purchase; a
-        // transfer on a 10-minute window, so retrying a cancelled transfer starts a new one (a lost reply is found by taken()).
+        // transfer on a 10-minute window, so retrying a cancelled transfer starts a new one.
         $key = 'clientfence-' . hash('sha256', implode('|', [$action, strtolower($domain->getName()), (string) ($this->_order->id ?? ''), $cost, match ($action) {
             'renew' => (string) $domain->getExpirationTime(),
             'transfer' => (string) intdiv(time(), 600),
             default => '',
         }]));
         $this->request('POST', $path, $body + ['cost' => $cost], $key);
-    }
-
-    /** The name is in this account, or (a transfer) Porkbun has a transfer of it under way. */
-    private function taken(string $action, Registrar_Domain $domain): bool
-    {
-        if (!empty($this->check($domain)['inYourAccount'])) {
-            return true;
-        }
-        $transfer = $action === 'transfer' ? $this->call('GET', '/domain/getTransfer/' . $this->name($domain)) : [];
-
-        return ($transfer['status'] ?? '') === 'SUCCESS' && ($transfer['transfer']['status'] ?? 'CANCELED') !== 'CANCELED';
     }
 
     private function check(Registrar_Domain $domain): array
