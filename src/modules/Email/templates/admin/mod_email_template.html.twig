@@ -212,6 +212,8 @@
                         } %}
                             {% import 'macro_functions.html.twig' as mf %}
                             {% block form_content %}
+                                {# ClientFence core patch: the staff groups are listed only to staff who may see them (the page failed for template staff without Staff access). #}
+                                {% if admin.system_is_allowed({ 'mod': 'staff', 'f': 'view' }) %}
                                 <form method="post" action="{{ 'email/template_group_add'|api_url }}" class="row g-3 align-items-end mb-4" {{ fb_api_form({message: 'Group added'|trans, reload: true}) }}>
                                     <input type="hidden" name="id" value="{{ template.id }}">
                                     <div class="col-lg-8">
@@ -222,6 +224,7 @@
                                         <button class="btn btn-primary w-100" type="submit">{{ 'Add group'|trans }}</button>
                                     </div>
                                 </form>
+                                {% endif %}
 
                                 {% if assigned_groups|length > 0 %}
                                     <div class="list-group">
