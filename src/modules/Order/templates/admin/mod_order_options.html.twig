@@ -68,7 +68,7 @@
                         <div class="col-12 text-secondary">{{ 'The product of this service has no options now. Attach an option group on its Options tab to change them here.'|trans }}</div>
                     {% endfor %}
                 </div>
-                {% if order_options.options %}
+                {% if order_options.options and has_permission('order', 'manage') %}
                 <label class="form-check mt-3 mb-0">
                     <input class="form-check-input" type="checkbox" name="reprice" value="1" checked>
                     <span class="form-check-label">{{ 'Change the recurring price by the difference (catalog prices at today\'s exchange rate)'|trans }}</span>
@@ -77,7 +77,7 @@
             {% endblock %}
 
             {% block form_actions %}
-                {% if order_options.options %}<button class="btn btn-primary" type="submit">{{ 'Save options'|trans }}</button>{% endif %}
+                {% if order_options.options and has_permission('order', 'manage') %}<button class="btn btn-primary" type="submit">{{ 'Save options'|trans }}</button>{% endif %}
             {% endblock %}
         {% endembed %}
     </form>

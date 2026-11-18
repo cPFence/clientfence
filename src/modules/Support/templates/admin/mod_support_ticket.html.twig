@@ -473,10 +473,13 @@
                 card_class: 'm-3'
             } %}
                 {% block section_action %}
+                    {# ClientFence core patch: staff who may only view tickets get no New Support Ticket (the API refuses it). #}
+                    {% if has_permission('support', 'manage_tickets') %}
                     <a href="{{ 'support'|url(query: { 'client_id': ticket.author.id}) }}#tab-new" class="btn btn-primary">
                         <svg class="icon"><use href="#plus" /></svg>
                         {{ 'New Support Ticket'|trans }}
                     </a>
+                    {% endif %}
                 {% endblock %}
 
                 {% block section_content %}

@@ -71,7 +71,10 @@
                     </svg>
                     {{ 'Go Back'|trans }}
                 </a>
+                {# ClientFence core patch: staff who may only view the knowledge base get no Update or delete (the API refuses them). #}
+                {% if has_permission('support', 'manage_kb') %}
                 <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
+                {% endif %}
             {% endblock %}
         {% endembed %}
     </form>
@@ -116,6 +119,7 @@
                                     <use href="#edit" />
                                 </svg>
                             </a>
+                            {% if has_permission('support', 'manage_kb') %}
                             <a class="btn btn-icon" href="{{ 'support/kb_article_delete'|api_url(query: { 'id': article.id }) }}"
                                 data-bs-toggle="tooltip" data-bs-title="{{ 'Delete'|trans }}"
                                 {{ fb_api_link({modal: {type: 'danger', title: 'Are you sure?'|trans, button: 'Delete'|trans}, redirect: "support/kb/category/#{category.id}"|url }) }}>
@@ -123,6 +127,7 @@
                                     <use href="#trash" />
                                 </svg>
                             </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% else %}

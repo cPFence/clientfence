@@ -15,7 +15,8 @@
     {% set updateReady = readiness['can_update'] is defined ? readiness['can_update'] : true %}
     {% set readinessIssues = readiness['issues'] is defined ? readiness['issues'] : [] %}
     {% set previewCompareUrl = 'https://github.com/cPFence/clientfence/commits/main' %}
-    {% set canInstallUpdate = updateCandidateAvailable and phpVersionSupported and updateReady %}
+    {# ClientFence core patch: staff who may only view updates get no update, check or patch controls (the API refuses them). #}
+    {% set canInstallUpdate = updateCandidateAvailable and phpVersionSupported and updateReady and has_permission('system', 'system_update') %}
     {% set behindOnPatches = admin.system_is_behind_on_patches %}
     {% set updateType = update_info['update_type']|default(0) + 0 %}
     {% if isPreviewBranch %}
@@ -233,7 +234,7 @@
                                 {{ updateButtonLabel }}
                             </a>
                         {% endif %}
-                        {% if not isPreviewBranch %}
+                        {% if not isPreviewBranch and has_permission('system', 'recheck_update') %}
                             <a class="btn btn-outline-secondary" href="{{ 'system/recheck_update'|api_url }}" {{ fb_api_link({ reload: true }) }}>
                                 <svg class="icon">
                                     <use href="#refresh" />
@@ -305,6 +306,7 @@
                     <p>{{ 'Database patches are small migrations that update ClientFence database tables and settings after the application files change.'|trans }}</p>
                     <p class="text-secondary mb-0">{{ 'Update patches are automatically run after ClientFence updates. Use the manual action here only when ClientFence reports pending patches or when troubleshooting update issues.'|trans }}</p>
                 </div>
+                {% if has_permission('system', 'system_update') %}
                 <div class="card-footer">
                     <div class="d-flex flex-wrap gap-2">
                         <a class="btn {{ behindOnPatches ? 'btn-success' : 'btn-secondary' }}" href="{{ 'system/manual_update'|api_url }}"
@@ -328,6 +330,7 @@
                     </div>
                     <div id="patch-progress"></div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

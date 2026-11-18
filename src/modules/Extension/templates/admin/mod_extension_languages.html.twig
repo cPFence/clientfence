@@ -74,11 +74,14 @@
                                         </td>
                                         <td class="w-1">{{ lang.locale }}</td>
                                         <td class="w-1">
+                                            {# ClientFence core patch: staff who may only view extensions get no language toggles (the API refuses them). #}
+                                            {% if has_permission('extension', 'manage_extensions') %}
                                             <a class="btn btn-icon" href="{{ 'extension/toggle_language'|api_url(query: { 'locale_id': lang.locale }) }}" {{ fb_api_link({reload: true}) }}>
                                                 <svg class="icon">
                                                     <use href="#x" />
                                                 </svg>
                                             </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% else %}
@@ -132,11 +135,13 @@
                                         </td>
                                         <td class="w-1">{{ lang.locale }}</td>
                                         <td class="w-1">
+                                            {% if has_permission('extension', 'manage_extensions') %}
                                             <a class="btn btn-icon" href="{{ 'extension/toggle_language'|api_url(query: { 'locale_id': lang.locale }) }}" {{ fb_api_link({reload: true}) }}>
                                                 <svg class="icon">
                                                     <use href="#check" />
                                                 </svg>
                                             </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% else %}

@@ -281,7 +281,10 @@
                         {% endblock %}
 
                         {% block form_actions %}
+                            {# ClientFence core patch: staff who may only view products get no save or create buttons (the API refuses them). #}
+                            {% if has_permission('product', 'manage_products') %}
                             <button type="submit" class="btn btn-primary">{{ 'Update'|trans }}</button>
+                            {% endif %}
                         {% endblock %}
                     {% endembed %}
                 </form>
@@ -339,6 +342,7 @@
                     {% endblock %}
 
                     {% block section_footer %}
+                        {% if has_permission('product', 'manage_products') %}
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ 'product/addons'|url }}#tab-new" class="btn btn-primary">
                                 <svg class="icon">
@@ -349,6 +353,7 @@
                             <input type="hidden" name="id" value="{{ product.id }}">
                             <input type="submit" value="{{ 'Update'|trans }}" class="btn btn-primary">
                         </div>
+                        {% endif %}
                     {% endblock %}
                 {% endembed %}
             </form>
@@ -387,6 +392,7 @@
                     {% endblock %}
 
                     {% block section_footer %}
+                        {% if has_permission('product', 'manage_products') %}
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ 'product/option-group/0'|url }}" class="btn">
                                 <svg class="icon"><use href="#plus" /></svg>
@@ -394,6 +400,7 @@
                             </a>
                             <button type="submit" class="btn btn-primary">{{ 'Update'|trans }}</button>
                         </div>
+                        {% endif %}
                     {% endblock %}
                 {% endembed %}
             </form>
@@ -431,10 +438,12 @@
                     {% endblock %}
 
                     {% block section_footer %}
+                        {% if has_permission('product', 'manage_products') %}
                         <div class="d-flex justify-content-end">
                             <input type="hidden" name="id" value="{{ product.id }}">
                             <button type="submit" class="btn btn-primary">{{ 'Update'|trans }}</button>
                         </div>
+                        {% endif %}
                     {% endblock %}
                 {% endembed %}
             </form>
@@ -462,11 +471,13 @@
                     {% endblock %}
 
                     {% block section_footer %}
+                        {% if has_permission('product', 'manage_products') %}
                         <div class="d-flex justify-content-end">
                             <input type="hidden" name="scope" value="product">
                             <input type="hidden" name="id" value="{{ product.id }}">
                             <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
                         </div>
+                        {% endif %}
                     {% endblock %}
                 {% endembed %}
             </form>

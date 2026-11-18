@@ -6,21 +6,27 @@
 {% set has_filter_panel = true %}
 {% set filter_panel_id = 'page-search-filters' %}
 {% set filter_panel_open = request_has_filters %}
+{# ClientFence core patch: staff who may only view the knowledge base get no new, delete or create controls (the API refuses them). #}
+{% set can_manage_kb = has_permission('support', 'manage_kb') %}
 {% set new_article_action %}
+    {% if can_manage_kb %}
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newKbArticleModal">
         <svg class="icon">
             <use href="#plus" />
         </svg>
         {{ 'New Article'|trans }}
     </button>
+    {% endif %}
 {% endset %}
 {% set new_kb_category_action %}
+    {% if can_manage_kb %}
     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newKbCategoryModal">
         <svg class="icon">
             <use href="#plus" />
         </svg>
         {{ 'New Category'|trans }}
     </button>
+    {% endif %}
 {% endset %}
 
 {% block breadcrumbs %}
@@ -143,6 +149,7 @@
                                                         <use href="#edit" />
                                                    </svg>
                                                 </a>
+                                                {% if can_manage_kb %}
                                                 <a class="btn btn-icon" href="{{ 'support/kb_article_delete'|api_url(query: { 'id': post.id }) }}"
                                                     data-bs-toggle="tooltip" data-bs-title="{{ 'Delete'|trans }}"
                                                     {{ fb_api_link({modal: {type: 'danger', title: 'Are you sure?'|trans, button: 'Delete'|trans}, redirect: 'support/kb'|url }) }}>
@@ -150,6 +157,7 @@
                                                         <use href="#trash" />
                                                     </svg>
                                                 </a>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                         {% else %}
@@ -172,11 +180,13 @@
                     </div>
 
                     <div class="tab-pane fade" id="tab-categories" role="tabpanel">
+                        {% if can_manage_kb %}
                         <div class="card-body border-bottom py-3">
                             <div class="d-flex justify-content-end">
                                 {{ new_kb_category_action|raw }}
                             </div>
                         </div>
+                        {% endif %}
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter table-striped text-nowrap">
                                 <tbody>
@@ -198,12 +208,14 @@
                                                      <use href="#edit" />
                                                  </svg>
                                              </a>
+                                             {% if can_manage_kb %}
                                              <a class="btn btn-icon" href="{{ 'support/kb_category_delete'|api_url(query: { 'id': category.id }) }}"
                                                  {{ fb_api_link({ message: 'Are you sure?'|trans, modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'support/kb#tab-categories'|url }) }}>
                                                 <svg class="icon">
                                                     <use href="#trash" />
                                                 </svg>
                                             </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% else %}
@@ -219,6 +231,7 @@
             </div>
         </div>
 
+        {% if can_manage_kb %}
         <div class="modal modal-blur fade" id="newKbArticleModal" tabindex="-1" aria-labelledby="newKbArticleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down modal-lg">
                 <form class="modal-content fb-modal-form" method="post" action="{{ 'support/kb_article_create'|api_url }}" {{ fb_api_form({ reload: true }) }}>
@@ -305,6 +318,7 @@
                 </form>
             </div>
         </div>
+        {% endif %}
     </div>
 {% endblock %}
 

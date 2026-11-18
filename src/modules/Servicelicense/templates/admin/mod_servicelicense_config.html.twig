@@ -200,7 +200,8 @@
                     <div class="form-text">{{ 'The order is suspended. A suspended licence cannot report, so staff unsuspend it; the time starts again then.'|trans }}</div>
                 </div>
             </div>
-            {% if config.unit_field|default('') or config.unit_count_field|default('') %}
+            {# ClientFence core patch: staff who may only view products or licences get no import or save buttons (the API refuses them). #}
+            {% if (config.unit_field|default('') or config.unit_count_field|default('')) and has_permission('servicelicense', 'manage') %}
             <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
                 <a class="btn btn-outline-secondary" {{ fb_api_link({href: 'servicelicense/units_from_answers'|api_url(query: {product_id: product.id}), modal: {type: 'confirm', title: 'Take the switch and counts from imported answers?'|trans, content: 'For licences of this product that have no per-unit switch yet: the order form answers under the two field names above set it and the count. Prices stay as imported.'|trans}, reload: true}) }}>{{ 'Take from imported answers'|trans }}</a>
                 <span class="form-text m-0">{{ 'After a WHMCS import, where these were custom fields of the service.'|trans }}</span>
@@ -257,9 +258,11 @@
         </div>
 
         <input type="hidden" name="id" value="{{ product.id }}">
+        {% if has_permission('product', 'manage_products') %}
         <div class="d-flex justify-content-end">
             <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
         </div>
+        {% endif %}
     </form>
 
     <div class="mt-5">

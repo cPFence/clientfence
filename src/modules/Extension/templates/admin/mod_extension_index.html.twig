@@ -66,8 +66,9 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="d-inline-flex align-items-center gap-2">
+                                                {# ClientFence core patch: staff who may only view extensions get no deactivate, uninstall or activate (the API refuses them). #}
                                                 {% if ext.type == 'mod' %}
-                                                    {% if ext.status == 'installed' %}
+                                                    {% if ext.status == 'installed' and has_permission('extension', 'manage_extensions') %}
                                                         <a class="btn btn-icon" href="{{ 'extension/deactivate'|api_url(query: { 'type': ext.type, 'id': ext.id }) }}"
                                                             data-bs-toggle="tooltip" data-bs-title="{{ 'Deactivate'|trans }}"
                                                             {{ fb_api_link({modal: {type: 'danger', title: 'Are you sure?'|trans, button: 'Deactivate'|trans}, reload: true}) }}>
@@ -75,7 +76,7 @@
                                                                 <use href="#x" />
                                                             </svg>
                                                         </a>
-                                                    {% else %}
+                                                    {% elseif ext.status != 'installed' and has_permission('extension', 'uninstall_extensions') %}
                                                         <a class="btn btn-icon"
                                                             href="{{ 'extension/uninstall'|api_url(query: { 'type': ext.type, 'id': ext.id }) }}"
                                                             data-bs-toggle="tooltip" data-bs-title="{{ 'Uninstall'|trans }}"
@@ -86,7 +87,7 @@
                                                         </a>
                                                     {% endif %}
                                                 {% endif %}
-                                                {% if ext.type == 'mod' and ext.status != 'installed' %}
+                                                {% if ext.type == 'mod' and ext.status != 'installed' and has_permission('extension', 'manage_extensions') %}
                                                     <a class="btn btn-icon"
                                                         href="{{ 'extension/activate'|api_url(query:{ 'type': ext.type, 'id': ext.id }) }}"
                                                         {{ fb_api_link({modal: { type: 'confirm', title: 'Are you sure?'|trans, button: 'Activate'|trans}, callback: 'onAfterModuleActivated'}) }}

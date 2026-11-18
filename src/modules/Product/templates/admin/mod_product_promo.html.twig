@@ -292,7 +292,10 @@
             {% endblock %}
 
             {% block form_actions %}
+                {# ClientFence core patch: staff who may only view promotions get no Update (the API refuses it). #}
+                {% if has_permission('product', 'manage_promos') %}
                 <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
+                {% endif %}
             {% endblock %}
         {% endembed %}
     </form>

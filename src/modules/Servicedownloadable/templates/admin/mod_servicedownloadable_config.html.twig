@@ -23,9 +23,12 @@
                 </div>
             </div>
             <input type="hidden" name="id" value="{{ product.id }}">
+            {# ClientFence core patch: staff who may not manage downloadable products get no save or upload controls (the API refuses them). #}
+            {% if has_permission('servicedownloadable', 'manage') %}
             <div class="d-flex justify-content-end mt-3">
                 <button class="btn btn-primary" type="submit" id="config-save-button">{{ 'Save Config'|trans }}</button>
             </div>
+            {% endif %}
         </form>
     </div>
 
@@ -46,15 +49,19 @@
                     </div>
                 {% endif %}
 
+                {% if has_permission('servicedownloadable', 'manage') %}
                 <div class="col-lg-6">
                     <label class="form-label">{{ 'Upload New File'|trans }}</label>
                     <input class="form-control" type="file" name="file_data" id="file_data">
                 </div>
+                {% endif %}
             </div>
             <input type="hidden" name="id" value="{{ product.id }}">
+            {% if has_permission('servicedownloadable', 'manage') %}
             <div class="d-flex justify-content-end mt-3">
                 <button class="btn btn-primary" type="submit" id="file-upload-button">{{ 'Upload'|trans }}</button>
             </div>
+            {% endif %}
         </form>
     </div>
 </div>

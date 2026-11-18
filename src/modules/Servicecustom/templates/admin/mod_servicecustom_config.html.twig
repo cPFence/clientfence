@@ -14,9 +14,12 @@
                 </div>
             </div>
             <input type="hidden" name="id" value="{{ product.id }}">
+            {# ClientFence core patch: staff who may only view products get no save buttons (the API refuses them). #}
+            {% if has_permission('product', 'manage_products') %}
             <div class="d-flex justify-content-end mt-3">
                 <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
             </div>
+            {% endif %}
         </form>
     </div>
 
@@ -60,8 +63,10 @@
         </div>
 
         <input type="hidden" name="id" value="{{ product.id }}">
+        {% if has_permission('product', 'manage_products') %}
         <div class="d-flex justify-content-end">
             <button class="btn btn-primary" type="submit">{{ 'Update Configuration Fields'|trans }}</button>
         </div>
+        {% endif %}
     </form>
 </div>

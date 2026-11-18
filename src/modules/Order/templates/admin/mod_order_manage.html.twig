@@ -881,12 +881,15 @@
                                     <td>{{ mf.status_badge(sh.status, 'order') }}</td>
                                     <td class="text-wrap">{{ sh.notes }}</td>
                                     <td>
+                                        {# ClientFence core patch: staff who may only view orders get no status history delete (the API refuses it). #}
+                                        {% if has_permission('order', 'manage') %}
                                         <a class="btn btn-icon"
                                             {{ fb_api_link({href: 'order/status_history_delete'|api_url(query: {'id': sh.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'order'|url}) }}>
                                             <svg class="icon">
                                                 <use href="#trash" />
                                             </svg>
                                         </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% else %}
