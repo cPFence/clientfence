@@ -5,7 +5,8 @@ declare(strict_types=1);
 /**
  * ClientFence: FOSSBilling hosting plans made from a panel's own plans (Hosting Plans and Servers page,
  * Hosting panels). A panel plan matches a hosting plan by its custom values (`plan_id`), else by
- * name; matching plans are left alone unless staff choose to update them.
+ * name; matching plans are left alone unless staff choose to update them. Hosting plans made from a server keep its id
+ * (`server_id`): several servers (Enhance clusters) number and name their plans alike, and never match each other's.
  */
 
 namespace ClientFence\Mod\Servicehosting\Panel;
@@ -24,6 +25,9 @@ final class Plans
         $hostingPlans = $di['em']->getConnection()->fetchAllAssociative('SELECT id, name, config FROM service_hosting_hp ORDER BY id');
         $plans = [];
         foreach (Panels::serverManager($di, $panel, $serverId)->listPackages() as $plan) {
+            if (!empty($plan['config'])) {
+                $plan['config']['server_id'] = (string) $serverId;
+            }
             [$match, $by] = self::match($hostingPlans, $plan);
             $plan['hosting_plan_id'] = $match === null ? null : (int) $match['id'];
             $plan['hosting_plan_name'] = $match === null ? null : (string) $match['name'];
@@ -63,13 +67,13 @@ final class Plans
 
                     continue;
                 }
-                $hosting->updateHp($di['db']->load('ServiceHostingHp', $plan['hosting_plan_id']), $data + ['name' => $plan['name']]);
+                $hosting->updateHp($di['db']->load('ServiceHostingHp', $plan['hosting_plan_id']), $data + ['name' => self::name($di, $plan, $serverId)]);
                 ++$done['updated'];
 
                 continue;
             }
 
-            $id = $hosting->createHp((string) $plan['name'], $data);
+            $id = $hosting->createHp(self::name($di, $plan, $serverId), $data);
             if ($id !== null && $data['config'] !== []) {
                 // createHp leaves the custom values out.
                 $hosting->updateHp($di['db']->load('ServiceHostingHp', $id), ['config' => $data['config']]);
@@ -79,6 +83,15 @@ final class Plans
         $di['logger']->info('ClientFence: hosting plans from %s server #%s: %d created, %d updated, %d left as they were', Panels::PANELS[$panel]['label'], $serverId, $done['created'], $done['updated'], $done['skipped']);
 
         return $done;
+    }
+
+    /** The plan's name, followed by its server's when another hosting plan already has that name. */
+    private static function name(\Pimple\Container $di, array $plan, int $serverId): string
+    {
+        $db = $di['em']->getConnection();
+        $taken = $db->fetchOne('SELECT COUNT(*) FROM service_hosting_hp WHERE name = ? AND id <> ?', [(string) $plan['name'], (int) ($plan['hosting_plan_id'] ?? 0)]);
+
+        return (int) $taken === 0 ? (string) $plan['name'] : $plan['name'] . ' (' . $db->fetchOne('SELECT name FROM service_hosting_server WHERE id = ?', [$serverId]) . ')';
     }
 
     /**
@@ -101,6 +114,11 @@ final class Plans
             }
         }
         foreach ($hostingPlans as $hp) {
+            $config = json_decode((string) $hp['config'], true);
+            // Never a plan made from another server, whatever its name.
+            if (isset($wanted['server_id'], $config['server_id']) && (string) $config['server_id'] !== $wanted['server_id']) {
+                continue;
+            }
             if (strcasecmp((string) $hp['name'], (string) $plan['name']) === 0) {
                 return [$hp, 'name'];
             }

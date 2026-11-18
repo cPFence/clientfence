@@ -576,6 +576,7 @@ class UpdatePatcher implements InjectionAwareInterface
             126 => 'patch126',
             127 => 'patch127',
             128 => 'patch128',
+            129 => 'patch129',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2723,6 +2724,22 @@ class UpdatePatcher implements InjectionAwareInterface
         $this->restoreLegacyDefaultEmailTemplates([
             'mod_servicedomain_activated' => ['d126c5677d78ff411aff745f05b1933ba13578e61c1a2af91fec708af7e6a54c', '94a6b068271de1b56207ff4bc63365ccd3dcf690b34a5c42e50e3adf26b2cea1'],
         ]);
+    }
+
+    private function patch129(): void
+    {
+        // ClientFence core patch: hosting plans made from an Enhance server keep its id (Servicehosting/Panel/Plans.php); with
+        // one Enhance server, the plans already made from it (they carry a plan_id) get it written in.
+        $servers = $this->fetchFirstColumn("SELECT id FROM service_hosting_server WHERE manager = 'Enhance'");
+        if (count($servers) !== 1) {
+            return;
+        }
+        foreach ($this->fetchAll('SELECT id, config FROM service_hosting_hp') as $row) {
+            $config = json_decode((string) $row['config'], true);
+            if (is_array($config) && isset($config['plan_id']) && !isset($config['server_id'])) {
+                $this->updateTable('service_hosting_hp', ['config' => json_encode($config + ['server_id' => (string) $servers[0]])], ['id' => $row['id']]);
+            }
+        }
     }
 
     private function patch128(): void

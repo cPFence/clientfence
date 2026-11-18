@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(15)
+    expect($patches)->toHaveCount(16)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -49,7 +49,8 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[125][1])->toBe('patch125')
         ->and($patches[126][1])->toBe('patch126')
         ->and($patches[127][1])->toBe('patch127')
-        ->and($patches[128][1])->toBe('patch128');
+        ->and($patches[128][1])->toBe('patch128')
+        ->and($patches[129][1])->toBe('patch129');
 });
 
 test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {
@@ -811,3 +812,35 @@ test('require transfer code patch is a no-op when the column already exists', fu
     $patcher->setDi($di);
     (new ReflectionMethod($patcher, 'patch99'))->invoke($patcher);
 });
+
+test('hosting plan server patch writes the only Enhance server into plans made from it', function (array $servers, bool $written): void {
+    $statement = function (array $rows): PDOStatement {
+        $s = Mockery::mock(PDOStatement::class);
+        $s->allows('execute')->andReturnTrue();
+        $s->allows('fetchAll')->andReturn($rows);
+
+        return $s;
+    };
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->allows('prepare')->with("SELECT id FROM service_hosting_server WHERE manager = 'Enhance'")->andReturn($statement($servers));
+    $pdo->allows('prepare')->with('SELECT id, config FROM service_hosting_hp')->andReturn($statement([
+        ['id' => 1, 'config' => '{"plan_id":"3"}'],
+        ['id' => 2, 'config' => '{"plan_id":"4","server_id":"9"}'],
+        ['id' => 3, 'config' => '{}'],
+    ]));
+    $update = Mockery::mock(PDOStatement::class);
+    $pdo->allows('prepare')->with('UPDATE `service_hosting_hp` SET `config` = :set_config WHERE `id` = :where_id')->andReturn($update);
+    $written
+        ? $update->expects('execute')->once()->with(['set_config' => '{"plan_id":"3","server_id":"5"}', 'where_id' => 1])->andReturnTrue()
+        : $update->expects('execute')->never();
+
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+    (new ReflectionMethod($patcher, 'patch129'))->invoke($patcher);
+})->with([
+    'one Enhance server' => [[5], true],
+    'two Enhance servers' => [[5, 6], false],
+    'no Enhance server' => [[], false],
+]);
