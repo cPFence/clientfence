@@ -168,14 +168,13 @@ class Service implements InjectionAwareInterface
         $query = 'SELECT COUNT(*)
             FROM service_hosting sh
             INNER JOIN client_order co ON co.service_id = sh.id AND co.service_type = :service_type
-            WHERE LOWER(sh.sld) = LOWER(:sld)
-                AND LOWER(sh.tld) = LOWER(:tld)
+            WHERE LOWER(CONCAT(sh.sld, sh.tld)) = LOWER(:domain)
                 AND co.status != :canceled_status';
 
+        // ClientFence core patch: the whole name, as one domain can be split two ways (shop.example + .com, shop + .example.com).
         $count = (int) $this->di['db']->getCell($query, [
             ':service_type' => \ClientFence\Mod\Product\Service::HOSTING,
-            ':sld' => $sld,
-            ':tld' => $tld,
+            ':domain' => $sld . $tld,
             ':canceled_status' => \Model_ClientOrder::STATUS_CANCELED,
         ]);
 

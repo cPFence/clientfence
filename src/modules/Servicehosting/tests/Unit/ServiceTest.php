@@ -1678,7 +1678,7 @@ test('validateOrderData refuses a domain another live hosting order has', functi
     $service = new Service();
     $di = container();
     $di['db'] = Mockery::mock('ClientFence\Database');
-    $di['db']->shouldReceive('getCell')->once()->with(Mockery::type('string'), Mockery::on(fn (array $p): bool => $p[':sld'] === 'great' && $p[':tld'] === '.com'))->andReturn(1);
+    $di['db']->shouldReceive('getCell')->once()->with(Mockery::type('string'), Mockery::on(fn (array $p): bool => $p[':domain'] === 'great.com'))->andReturn(1);
     $service->setDi($di);
     $data = ['server_id' => 1, 'hosting_plan_id' => 2, 'sld' => 'great', 'tld' => 'com', 'domain' => ['action' => 'owndomain']];
 
@@ -1691,7 +1691,7 @@ test('the domain check compares one ASCII spelling', function (string $sld, stri
     $service = new Service();
     $di = container();
     $di['db'] = Mockery::mock('ClientFence\Database');
-    $di['db']->shouldReceive('getCell')->once()->with(Mockery::type('string'), Mockery::on(fn (array $p): bool => $p[':sld'] === 'xn--bcher-kva' && $p[':tld'] === '.com'))->andReturn(1);
+    $di['db']->shouldReceive('getCell')->once()->with(Mockery::type('string'), Mockery::on(fn (array $p): bool => $p[':domain'] === 'xn--bcher-kva.com'))->andReturn(1);
     $service->setDi($di);
     $data = ['server_id' => 1, 'hosting_plan_id' => 2, 'sld' => $sld, 'tld' => $tld, 'domain' => ['action' => 'owndomain']];
 

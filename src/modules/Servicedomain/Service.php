@@ -115,7 +115,11 @@ class Service implements \ClientFence\InjectionAwareInterface
             ];
             $this->di['validator']->checkRequiredParamsForArray($required, $data);
 
-            if (!$validator->isSldValid($data['owndomain_sld'])) {
+            // ClientFence core patch: a subdomain is an own domain too (shop.example + .com), as in WHMCS; each label is checked.
+            // A name that already ends with the extension (example.com + .com) stays refused, as before.
+            $sld = strtolower((string) $data['owndomain_sld']);
+            if (array_filter(explode('.', $sld), fn (string $label): bool => !$validator->isSldValid($label)) !== []
+                || (str_contains($sld, '.') && str_ends_with($sld, '.' . ltrim(strtolower((string) $data['owndomain_tld']), '.')))) {
                 throw new \ClientFence\InformationException('Domain name :domain is invalid', [':domain' => $data['owndomain_sld']]);
             }
 

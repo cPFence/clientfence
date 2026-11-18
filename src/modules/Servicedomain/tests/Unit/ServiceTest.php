@@ -3109,3 +3109,27 @@ test('an existing domain is not refused as already registered', function (): voi
 
     expect($data['period'])->toBe('1Y');
 });
+
+// CF-195: a subdomain is an own domain too (WHMCS takes one); each label of the name is checked.
+test('an own domain may be a subdomain', function (string $sld, bool $valid): void {
+    $service = new Service();
+    $di = container();
+    $validator = Mockery::mock(ClientFence\Validate::class)->makePartial();
+    $validator->shouldReceive('checkRequiredParamsForArray')->andReturnNull();
+    $validator->shouldReceive('isTldValid')->andReturn(true);
+    $di['validator'] = $validator;
+    $service->setDi($di);
+    $data = ['action' => 'owndomain', 'owndomain_sld' => $sld, 'owndomain_tld' => '.com'];
+
+    $valid ? expect(fn () => $service->validateOrderData($data))->not->toThrow(Exception::class)
+        : expect(fn () => $service->validateOrderData($data))->toThrow(ClientFence\InformationException::class, 'is invalid');
+})->with([
+    'domain' => ['example', true],
+    'subdomain' => ['shop.example', true],
+    'two levels' => ['eu.shop.example', true],
+    'empty label' => ['shop..example', false],
+    'bad label' => ['-shop.example', false],
+    'name with the extension' => ['example.com', false],
+    'name ending in the extension' => ['shop.example.com', false],
+    'name equal to the extension (com.com)' => ['com', true],
+]);

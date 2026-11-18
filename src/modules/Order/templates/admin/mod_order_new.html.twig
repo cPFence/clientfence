@@ -307,9 +307,10 @@
             const item = { product_id: p.id, period: it.period || null, quantity: Math.max(1, parseInt(it.qty, 10) || 1), price: it.price.trim(), config: { _start_date: it.start, import: it.import ? 1 : 0 } };
             if (p.type === 'hosting') {
                 const linked = state.domains.find((d) => d.linkedTo === it.key);
-                const name = it.domain.trim(), dot = name.indexOf('.');
+                // A subdomain is an own domain too: split at the TLD (shop.example + .com), not at the first dot.
+                const name = it.domain.trim().toLowerCase(), own = split(name), dot = name.lastIndexOf('.');
                 item.config.domain = linked ? domainConfig(linked)
-                    : { action: 'owndomain', owndomain_sld: dot > 0 ? name.slice(0, dot) : name, owndomain_tld: dot > 0 ? name.slice(dot) : '' };
+                    : { action: 'owndomain', owndomain_sld: own ? own.sld : (dot > 0 ? name.slice(0, dot) : name), owndomain_tld: own ? own.tld : (dot > 0 ? name.slice(dot) : '') };
                 if (linked) item.domain_price = linked.price.trim();
                 Object.assign(item.config, { username: it.username.trim(), password: it.password });
             }

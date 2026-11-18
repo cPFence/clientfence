@@ -8856,11 +8856,19 @@
         "done": "#[AsTwigTest('rtl')]"
     },
     {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a subdomain is an own domain too (shop.example + .com), as in WHMCS; each label is checked."
+    },
+    {
         "file": "modules/Servicehosting/Service.php",
         "done": "ClientFence core patch: with a server, plans made from another server are left out (Panel/Plans.php keeps it)."
     },
     {
         "file": "modules/Servicehosting/Api/Admin.php",
         "done": "ClientFence core patch: server_id lists only the plans that server can take (a plan change)."
+    },
+    {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: the whole name, as one domain can be split two ways (shop.example + .com, shop + .example.com)."
     }
 ]
