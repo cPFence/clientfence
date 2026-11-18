@@ -27,7 +27,8 @@
                 {# ClientFence: links to the account statement (mod_invoice_statement) and, when
                    the client has quotes, to them (mod_invoice_quotes). #}
                 <div class="d-flex flex-wrap gap-2">
-                    {% if client.invoice_quote_get_list %}
+                    {# An authorized user without quotes sees the invoices without the link (the call needs quotes). #}
+                    {% if (not clientfence_user|default(null) or clientfence_user.owner or 'quotes' in clientfence_user.permissions) and client.invoice_quote_get_list %}
                         <a class="btn btn-outline-secondary" href="{{ 'invoice/quotes'|url }}">{{ 'Quotes'|trans }}</a>
                     {% endif %}
                     <a class="btn btn-outline-secondary" href="{{ 'invoice/statement'|url }}">{{ 'Account statement'|trans }}</a>
