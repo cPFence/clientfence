@@ -365,7 +365,8 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('servicehosting', 'manage_plans');
 
-        return $this->getService()->getHpPairs();
+        // ClientFence core patch: server_id lists only the plans that server can take (a plan change).
+        return $this->getService()->getHpPairs(isset($data['server_id']) ? (int) $data['server_id'] : null);
     }
 
     /**

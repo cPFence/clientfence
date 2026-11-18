@@ -107,7 +107,7 @@
             <div class="row g-3">
                 <div class="col-lg-6">
                     <label class="form-label">{{ 'New Hosting Plan'|trans }}</label>
-                    {{ mf.selectbox('plan_id', admin.servicehosting_hp_get_pairs, hp.id, 1) }}
+                    {{ mf.selectbox('plan_id', admin.servicehosting_hp_get_pairs({server_id: server ? server.id : null}), hp.id, 1) }}
                 </div>
             </div>
 

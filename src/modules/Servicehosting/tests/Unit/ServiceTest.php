@@ -2122,3 +2122,20 @@ test('linkPanelAccount with both IDs empty removes the link without asking the s
     'login kept' => ['', 'b@example.test'],
     'login given' => ['New@Example.test', 'new@example.test'],
 ]);
+
+// CF-196: a plan change lists only the plans the account's server can take; plans that do not record a server stay.
+test('the plan pairs of one server leave out plans made from another server', function (): void {
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getAll')->andReturn([
+        ['id' => 1, 'name' => 'Basic (A)', 'config' => '{"plan_id":"1","server_id":"1"}'],
+        ['id' => 2, 'name' => 'Basic (B)', 'config' => '{"plan_id":"1","server_id":"2"}'],
+        ['id' => 3, 'name' => 'cPanel plan', 'config' => null],
+    ]);
+    $service = new Service();
+    $di = container();
+    $di['db'] = $dbMock;
+    $service->setDi($di);
+
+    expect($service->getHpPairs(2))->toBe([2 => 'Basic (B)', 3 => 'cPanel plan'])
+        ->and($service->getHpPairs())->toBe([1 => 'Basic (A)', 2 => 'Basic (B)', 3 => 'cPanel plan']);
+});

@@ -1495,13 +1495,18 @@ class Service implements InjectionAwareInterface
         return $manager->testConnection();
     }
 
-    public function getHpPairs(): array
+    public function getHpPairs(?int $serverId = null): array
     {
-        $sql = 'SELECT id, name
+        $sql = 'SELECT id, name, config
                 FROM service_hosting_hp';
         $rows = $this->di['db']->getAll($sql);
         $result = [];
         foreach ($rows as $record) {
+            // ClientFence core patch: with a server, plans made from another server are left out (Panel/Plans.php keeps it).
+            $madeOn = json_decode((string) ($record['config'] ?? ''), true)['server_id'] ?? null;
+            if ($serverId !== null && $madeOn !== null && (string) $madeOn !== (string) $serverId) {
+                continue;
+            }
             $result[$record['id']] = $record['name'];
         }
 
