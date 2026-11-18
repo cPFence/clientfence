@@ -46,6 +46,7 @@ $paths = [
     'library/Registrar/Adapter/Openprovider.php',
     'library/Registrar/Adapter/Synergywholesale.php',
     'library/Registrar/Adapter/Opensrs.php',
+    'library/Registrar/Adapter/Porkbun.php',
     'library/Registrar/Adapter/Realtimeregister.php',
     'library/Registrar/Adapter/Connectreseller.php',
     'library/Registrar/Adapter/Centralnicreseller.php',
