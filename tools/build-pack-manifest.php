@@ -37,6 +37,7 @@ $paths = [
     'library/Payment/Adapter/Eway.php',
     'library/Payment/Adapter/GoCardless.php',
     'library/Payment/Adapter/Mollie.php',
+    'library/Payment/Adapter/PayU.php',
     'library/Registrar/Adapter/Dynadot.php',
     'library/Registrar/Adapter/Enom.php',
     'library/Registrar/Adapter/Inwx.php',

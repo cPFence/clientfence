@@ -61,6 +61,10 @@ $ipn = [
 if ($gatewayID !== null && $di['dbal']->fetchOne('SELECT gateway FROM pay_gateway WHERE id = ?', [$gatewayID]) === 'PayPalAutoPay') {
     $ipn['skip_validation'] = true;
 }
+// ClientFence core patch: PayU's payment webhooks (one address set in the PayU dashboard) name no invoice: its txnid does.
+if ($gatewayID !== null && $di['dbal']->fetchOne('SELECT gateway FROM pay_gateway WHERE id = ?', [$gatewayID]) === 'PayU') {
+    $ipn['skip_validation'] = true;
+}
 
 $contentType = $request->headers->get('Content-Type', '');
 $isJsonWebhook = str_contains((string) $contentType, 'application/json') && !empty($rawBody);
