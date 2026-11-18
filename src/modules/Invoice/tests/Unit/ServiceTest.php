@@ -1268,6 +1268,49 @@ test('handles after admin cron run event', function (): void {
     Service::onAfterAdminCronRun($eventMock);
 });
 
+test('the cron reads waiting PayU and CCAvenue payments back from the gateway', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, status TEXT, txn_status TEXT, type TEXT, created_at TEXT, updated_at TEXT)');
+    $now = date('Y-m-d H:i:s');
+    // Row 2 was checked longest ago, so it is read first.
+    foreach ([[1, 'received', 'payu', $now, date('Y-m-d H:i:s', time() - 300)], [2, 'received', 'ccavenue', $now, date('Y-m-d H:i:s', time() - 600)], [3, 'received', 'paytabs', $now, $now], [4, 'received', 'payu', date('Y-m-d H:i:s', strtotime('-30 days')), $now], [5, 'error', 'payu', $now, $now]] as [$id, $status, $type, $at, $checked]) {
+        $db->insert('`transaction`', ['id' => $id, 'status' => $status, 'txn_status' => 'processing', 'type' => $type, 'created_at' => $at, 'updated_at' => $checked]);
+    }
+    $system = Mockery::mock(SystemService::class);
+    $system->allows('getParamValue')->andReturnNull();
+    $read = [];
+    $transactions = Mockery::mock();
+    // processTransaction, which leaves a row whose read failed waiting (preProcessTransaction would mark it failed).
+    $transactions->shouldNotReceive('preProcessTransaction');
+    $transactions->allows('processTransaction')->andReturnUsing(function (int $id) use (&$read): bool {
+        $read[] = $id;
+        if ($id === 1) {
+            throw new Payment_Exception('PayU did not answer');
+        }
+
+        return true;
+    });
+    $di = container();
+    $di['dbal'] = $db;
+    // The real logger takes printf arguments, as Service calls it.
+    $logged = [];
+    $di['logger'] = Mockery::mock();
+    $di['logger']->allows('error')->andReturnUsing(function (string $message, ...$args) use (&$logged): void {
+        $logged[] = vsprintf($message, $args);
+    });
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system, 'invoice:transaction' => $transactions]));
+    $event = Mockery::mock('ClientFence\Event');
+    $event->allows('getDi')->andReturn($di);
+
+    Service::onAfterAdminCronRun($event);
+    // Only recent waiting PayU and CCAvenue rows; one that fails does not stop the next.
+    expect($read)->toBe([2, 1])
+        ->and($logged)->toContain('Invoice: reading pending payment #1 back failed: PayU did not answer')
+        // The failed row moves behind the others, still waiting.
+        ->and(strtotime($db->fetchOne('SELECT updated_at FROM `transaction` WHERE id = 1')))->toBeGreaterThan(time() - 60)
+        ->and($db->fetchOne('SELECT status FROM `transaction` WHERE id = 1'))->toBe('received');
+});
+
 test('uses the client billing email for invoice notifications', function (): void {
     $service = new Service();
     $email = ['to_client' => 42, 'code' => 'mod_invoice_created'];

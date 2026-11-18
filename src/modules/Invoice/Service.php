@@ -728,6 +728,22 @@ class Service implements InjectionAwareInterface
         } catch (\Throwable $e) {
             $di['logger']->error('Invoice: charging saved cards failed: %s', $e->getMessage());
         }
+        // ClientFence core patch: PayU and CCAvenue payments still pending are read back from the gateway until they settle.
+        // processTransaction, not preProcessTransaction: a failed read (gateway down) leaves the row waiting instead of
+        // marking it failed, so the next run tries again. A minute per run, longest unchecked first.
+        $deadline = microtime(true) + 60;
+        foreach ($di['dbal']->fetchFirstColumn("SELECT id FROM `transaction` WHERE status = ? AND txn_status = 'processing' AND type IN ('payu', 'ccavenue') AND created_at > ? ORDER BY updated_at", [\Model_Transaction::STATUS_RECEIVED, PendingPayments::since()]) as $id) {
+            try {
+                $di['mod_service']('Invoice', 'Transaction')->processTransaction((int) $id);
+            } catch (\Throwable $e) {
+                $di['logger']->error('Invoice: reading pending payment #%s back failed: %s', $id, $e->getMessage());
+                // To the back of the queue, so a gateway that times out does not hold the others.
+                $di['dbal']->update('`transaction`', ['updated_at' => date('Y-m-d H:i:s')], ['id' => (int) $id]);
+            }
+            if (microtime(true) >= $deadline) {
+                break;
+            }
+        }
         // ClientFence core patch: EU VAT numbers VIES did not answer for are checked again daily (Invoice/EuVat.php).
         try {
             EuVat::recheck($di);
