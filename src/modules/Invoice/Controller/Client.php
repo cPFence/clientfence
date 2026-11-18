@@ -83,6 +83,8 @@ class Client implements \ClientFence\InjectionAwareInterface
         $app->get('/payment-methods/mollie/saved', 'get_mollie_saved', [], static::class);
         $app->get('/invoice/mollie/:hash', 'get_invoice_mollie', ['hash' => '[a-z0-9]+'], static::class);
         $app->get('/invoice/mollie-paid', 'get_invoice_mollie_paid', [], static::class);
+        // ClientFence: CCAvenue (Payment_Adapter_CCAvenue) posts its encrypted result here, on a short address with no query.
+        $app->post('/invoice/ccavenue-paid/:id', 'get_invoice_ccavenue_paid', ['id' => '[0-9]+'], static::class);
     }
 
     /** ClientFence: sends the account owner to GoCardless to set up a Direct Debit without paying; ?next= is where they go after. */
@@ -364,6 +366,38 @@ class Client implements \ClientFence\InjectionAwareInterface
             ]);
         } catch (\Payment_Exception) {
             // Nothing paid (the client cancelled at PayTabs): the error stays on the transaction, the client sees the invoice.
+        }
+        $paid = $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]) === \Model_Invoice::STATUS_PAID;
+
+        return $this->movesOn(($paid ? 'invoice/thank-you/' : 'invoice/') . $invoice->hash);
+    }
+
+    /** ClientFence: back from CCAvenue (without the session cookie): records the payment of the order its encrypted result names. */
+    public function get_invoice_ccavenue_paid(\ClientFence\App $app, $id): Response
+    {
+        $this->keepSessionCookie();
+        $gateway = $this->di['db']->findOne('PayGateway', 'id = ? AND gateway = ? AND enabled = 1', [(int) $id, 'CCAvenue']);
+        $adapter = $gateway instanceof \Model_PayGateway ? $this->di['mod_service']('Invoice', 'PayGateway')->getPaymentAdapter($gateway) : null;
+        $encResp = (string) $app->getRequest()->request->get('encResp', '');
+        [$invoiceId, $trackingId] = ($adapter instanceof \Payment_Adapter_CCAvenue ? $adapter->returnedOrder($encResp) : null) ?? [0, ''];
+        $invoice = $invoiceId === 0 ? null : $this->di['db']->load('Invoice', $invoiceId);
+        if (!$invoice instanceof \Model_Invoice) {
+            return $this->movesOn('invoice');
+        }
+        try {
+            $this->di['mod_service']('Invoice', 'Transaction')->createAndProcess([
+                'invoice_id' => (int) $invoice->id,
+                'gateway_id' => (int) $gateway->id,
+                'source' => 'ccavenue_return',
+                'post' => ['encResp' => $encResp],
+            ]);
+        } catch (\Payment_Exception) {
+            // Nothing paid (cancelled or failed at CCAvenue): the error stays on the transaction, the client sees the invoice.
+        }
+        // The return's encryption can be altered without the key: only an order CCAvenue's Status API matched (its
+        // ccavenue row) shows its invoice, so an altered return never reveals another client's invoice link.
+        if ($trackingId === '' || $this->di['dbal']->fetchOne("SELECT id FROM `transaction` WHERE invoice_id = ? AND type = 'ccavenue' AND txn_id = ? LIMIT 1", [(int) $invoice->id, $trackingId]) === false) {
+            return $this->movesOn('invoice');
         }
         $paid = $this->di['dbal']->fetchOne('SELECT status FROM invoice WHERE id = ?', [(int) $invoice->id]) === \Model_Invoice::STATUS_PAID;
 
