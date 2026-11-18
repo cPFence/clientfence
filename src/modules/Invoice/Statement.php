@@ -100,11 +100,12 @@ final class Statement
     private static function lines(Connection $db, int $clientId, string $currency): array
     {
         $invoices = $db->fetchAllAssociative(
-            'SELECT i.id, i.serie, i.nr, i.status, i.created_at, i.paid_at, g.name AS gateway, '
+            'SELECT i.id, i.serie, i.nr, i.status, i.created_at, i.paid_at, g.name AS gateway, ' . MassPay::sql('i.id') . ' AS mass_pay, '
             // Tax once on the taxed subtotal, as Invoice\Service::getTax() (what the client was asked to pay).
-            . '(SELECT COALESCE(SUM(ii.price * ii.quantity), 0) + CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0 THEN ROUND(CAST(COALESCE(SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) + CAST(i.tax_adjust AS DECIMAL(20, 2)) ELSE 0 END FROM invoice_item ii WHERE ii.invoice_id = i.id) AS total
+            // A Mass Pay invoice bills only its own lines (a gateway fee): the invoices it lists are on the statement (MassPay.php).
+            . "(SELECT COALESCE(SUM(ii.price * ii.quantity), 0) + CASE WHEN CAST(i.taxrate AS DECIMAL(20, 10)) > 0 THEN ROUND(CAST(COALESCE(SUM(CASE WHEN ii.taxed <> 0 THEN ii.price * ii.quantity ELSE 0 END), 0) AS DECIMAL(20, 2)) * CAST(i.taxrate AS DECIMAL(20, 10)) / 100, 2) + CAST(i.tax_adjust AS DECIMAL(20, 2)) ELSE 0 END FROM invoice_item ii WHERE ii.invoice_id = i.id AND NOT (COALESCE(ii.type, '') = 'deposit' AND COALESCE(ii.task, '') LIKE 'mass_pay:%')) AS total
              FROM invoice i LEFT JOIN pay_gateway g ON g.id = i.gateway_id
-             WHERE i.client_id = ? AND i.approved = 1 AND i.currency = ? AND i.status IN (?, ?)'
+             WHERE i.client_id = ? AND i.approved = 1 AND i.currency = ? AND i.status IN (?, ?)"
             // An unpaid Mass Pay invoice is not billed again: the invoices it lists are on the statement (MassPay.php).
             . " AND NOT (i.status = 'unpaid' AND " . MassPay::sql('i.id') . ')',
             [$clientId, $currency, 'unpaid', 'paid']
@@ -136,6 +137,10 @@ final class Statement
             $id = (int) $invoice['id'];
             $number = self::number($db, $invoice);
             $total = round((float) $invoice['total'], 2);
+            // A paid Mass Pay invoice without a fee: its payment is the credit added that paid the invoices it lists.
+            if ((bool) $invoice['mass_pay'] && $total == 0.0) {
+                continue;
+            }
             // What reached the invoice from outside the balance (staff Mark as Paid takes the credit used from it, then records the rest without a balance row).
             $outside = round($total + array_sum(array_column($usedFor[$id] ?? [], 'amount')), 2);
             $fromCredit = $invoice['status'] === 'paid' && isset($usedFor[$id]) && !isset($received[$id]) && $outside <= 0;

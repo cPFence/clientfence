@@ -209,6 +209,47 @@ test('an invoice paid partly from account credit shows what was paid otherwise',
     ]],
 ]);
 
+test('a paid Mass Pay invoice bills only its fee: the credit it added paid its invoices', function (float $fee, array $balance, array $expected): void {
+    $db = statementDb();
+    statementInvoice($db, 1, '2026-06-20', 20, ['paid_at' => '2026-07-02 10:00:00']);
+    statementInvoice($db, 2, '2026-06-25', 30, ['paid_at' => '2026-07-02 10:00:00']);
+    statementInvoice($db, 3, '2026-07-01', 50, ['gateway_id' => 1, 'paid_at' => '2026-07-02 10:00:00']);
+    $db->update('invoice_item', ['type' => 'deposit', 'task' => 'mass_pay:1'], ['invoice_id' => 3]);
+    if ($fee > 0) {
+        $db->insert('invoice_item', ['invoice_id' => 3, 'type' => 'custom', 'task' => 'gateway_fee', 'price' => $fee, 'quantity' => 1, 'taxed' => 0]);
+    }
+    $db->insert('"transaction"', ['id' => 1, 'invoice_id' => 3]);
+    foreach ([...$balance, ['invoice', 1, -20, ''], ['invoice', 2, -30, '']] as [$type, $rel, $amount, $text]) {
+        statementBalance($db, $type, $rel, $amount, '2026-07-02', $text);
+    }
+
+    $statement = Statement::build(statementContainer($db), 1);
+
+    expect(array_map(fn (array $l): array => [$l['description'], $l['debit'], $l['credit']], $statement['lines']))->toBe($expected)
+        ->and([$statement['debit'], $statement['credit'], $statement['closing']])->toBe([50.0 + $fee, 50.0 + $fee, 0.0]);
+})->with([
+    'card, no fee' => [0.0, [['transaction', 1, 50, 'Stripe transaction']], [
+        ['Invoice CF-00001 (paid from account credit)', 20.0, 0.0],
+        ['Invoice CF-00002 (paid from account credit)', 30.0, 0.0],
+        ['Account credit added: Stripe transaction', 0.0, 50.0],
+    ]],
+    // The gateway adds what it received; the fee is then charged from the balance for the group.
+    'card with a fee' => [2.0, [['transaction', 1, 52, 'Stripe transaction'], ['invoice', 3, -2, 'Fee']], [
+        ['Invoice CF-00001 (paid from account credit)', 20.0, 0.0],
+        ['Invoice CF-00002 (paid from account credit)', 30.0, 0.0],
+        ['Invoice CF-00003', 2.0, 0.0],
+        ['Payment for invoice CF-00003 (Stripe)', 0.0, 52.0],
+    ]],
+    // Mark as Paid records 52 without a balance row and adds the 50 of the Mass Pay lines as credit.
+    'Mark as Paid with a fee' => [2.0, [['invoice', 3, 50, 'Mass Pay']], [
+        ['Invoice CF-00001 (paid from account credit)', 20.0, 0.0],
+        ['Invoice CF-00002 (paid from account credit)', 30.0, 0.0],
+        ['Invoice CF-00003', 2.0, 0.0],
+        ['Payment for invoice CF-00003 (Stripe)', 0.0, 2.0],
+        ['Account credit added: Mass Pay', 0.0, 50.0],
+    ]],
+]);
+
 test('a client without a currency gets the default one; the number follows the padding setting', function (): void {
     $db = statementDb();
     $db->insert('setting', ['param' => 'invoice_number_padding', 'value' => '3']);
