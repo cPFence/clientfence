@@ -166,6 +166,26 @@ test('a cancellation scheduled at the period end ends the service on its expiry 
     expect($service->batchSuspendExpired())->toBeTrue();
 });
 
+test('batchSuspendExpired waits while the renewal invoice is a draft', function (int $approved, bool $suspended): void {
+    // Staff set the renewal back to draft: the client cannot see or pay it, so the service stays on.
+    $order = createEntity(Order::class, ['id' => 1, 'serviceType' => 'hosting', 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year'), 'unpaidInvoiceId' => 9]);
+    $repository = Mockery::mock(OrderRepository::class);
+    $repository->shouldReceive('getExpired')->once()->andReturn([$order]);
+    $repository->shouldReceive('find')->andReturn($order);
+    $service = autoSuspendService(['batch_suspend_reason' => 'Overdue'], $repository);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, status TEXT, expires_at TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+    $dbal->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, approved INTEGER)');
+    $dbal->executeStatement('CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT)');
+    $dbal->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, created_at TEXT)');
+    $dbal->insert('invoice', ['id' => 9, 'status' => 'unpaid', 'approved' => $approved]);
+    $service->getDi()['dbal'] = $dbal;
+    $service->shouldReceive('suspendFromOrder')->times($suspended ? 1 : 0)->with($order, 'Overdue')->andReturn(true);
+
+    expect($service->batchSuspendExpired())->toBeTrue();
+})->with(['a draft renewal' => [0, false], 'an issued renewal' => [1, true]]);
+
 test('batchSuspendExpired rechecks renewed orders under the paid-task lock', function (string $status, string $expiry): void {
     $order = createEntity(Order::class, ['id' => 1, 'status' => Order::STATUS_ACTIVE, 'expiresAt' => new DateTime('-1 year')]);
     $repository = Mockery::mock(OrderRepository::class);

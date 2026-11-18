@@ -2573,6 +2573,10 @@ class Service implements InjectionAwareInterface
                     if ($this->isExemptFromAutoSuspension($order) || $this->hasUnexecutedPaidOrderItem((int) $order->getId()) || PendingPayments::forOrder($this->di, (int) $order->getId())) {
                         return;
                     }
+                    // ClientFence core patch: not while the renewal invoice is a draft, which the client cannot see or pay (WHMCS suspends for an overdue unpaid invoice).
+                    if ($order->getUnpaidInvoiceId() && $this->di['dbal']->fetchOne('SELECT 1 FROM invoice WHERE id = ? AND approved = 0 AND status = ?', [$order->getUnpaidInvoiceId(), \Model_Invoice::STATUS_UNPAID]) !== false) {
+                        return;
+                    }
                     $this->suspendFromOrder($order, $reason);
                 });
             } catch (\Exception $e) {
