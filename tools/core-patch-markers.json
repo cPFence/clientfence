@@ -8774,5 +8774,9 @@
     {
         "file": "modules/Invoice/ServiceTransaction.php",
         "done": "ClientFence core patch: the processed payment may now pay the invoice with its fee (an old debt kept the adapter from it); the fee changes only if not."
+    },
+    {
+        "file": "library/Payment/Adapter/Stripe.php",
+        "done": "ClientFence core patch: a row whose try added the account credit stays, so the credit keeps its payment."
     }
 ]

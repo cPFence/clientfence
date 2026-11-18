@@ -411,6 +411,7 @@ test('keeps a subscription active after an invoice payment failure, and keeps th
 test('a Stripe dispute takes its payment back on the invoice once; won funds only leave a note', function (string $type, bool $resent, int $chargebacks): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $dbal->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, gateway_id INTEGER, txn_id TEXT, status TEXT, amount TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_balance (id INTEGER PRIMARY KEY, type TEXT, rel_id INTEGER)');
     $dbal->insert('`transaction`', ['id' => 5, 'invoice_id' => 26, 'gateway_id' => 1, 'txn_id' => 'pi_paid', 'status' => Model_Transaction::STATUS_PROCESSED, 'amount' => '120.00']);
     if ($resent) {
         $dbal->insert('`transaction`', ['id' => 6, 'gateway_id' => 1, 'txn_id' => 'evt_dispute', 'status' => Model_Transaction::STATUS_PROCESSED]);
@@ -1368,7 +1369,7 @@ describe('handlePaymentIntentSucceededWebhook', function (): void {
 });
 
 describe('processPaymentIntent', function (): void {
-    test('deletes the redirect transaction when the webhook already recorded the PaymentIntent', function (): void {
+    test('deletes the redirect transaction when the webhook already recorded the PaymentIntent, but keeps a row that added the credit', function (bool $credited): void {
         $tx = buildTransaction();
         $tx->id = 401;
         $tx->gateway_id = 4;
@@ -1402,7 +1403,11 @@ describe('processPaymentIntent', function (): void {
                 && $params[':gateway_id'] === 4
                 && $params[':id'] === 401))
             ->andReturn($existingTx);
-        $dbMock->shouldReceive('trash')->once()->with($tx);
+        // A retried notice: the failed first row added the account credit, so Process on it keeps it.
+        $dbalMock->shouldReceive('fetchOne')->once()->with("SELECT id FROM client_balance WHERE type = 'transaction' AND rel_id = ? LIMIT 1", [401])->andReturn($credited ? 9 : false);
+        $dbMock->shouldReceive('trash')->times($credited ? 0 : 1)->with($tx);
+        $dbMock->shouldNotReceive('store');
+        $dbalMock->shouldReceive('update')->times($credited ? 1 : 0)->with('`transaction`', Mockery::on(fn (array $row): bool => $row['error'] === 'Payment recorded again by transaction #' . $existingTx->id . '; its account credit was added with this one.'), ['id' => 401]);
 
         $di = container();
         $di['db'] = $dbMock;
@@ -1416,7 +1421,7 @@ describe('processPaymentIntent', function (): void {
         ]);
 
         expect($tx->txn_id)->toBe('pi_webhook_first');
-    });
+    })->with(['a duplicate' => [false], 'the row that added the credit' => [true]]);
 
     test('rejects redirect PaymentIntents that are not bound to the invoice', function (array $paymentIntent): void {
         $tx = buildTransaction();

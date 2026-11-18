@@ -401,7 +401,7 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
             ]
         );
         if ($existing instanceof Model_Transaction) {
-            $this->di['db']->trash($tx);
+            $this->trashUnlessCredited($tx, 'Payment recorded again by transaction #' . $existing->id . '; its account credit was added with this one.');
 
             return;
         }
@@ -776,13 +776,26 @@ class Payment_Adapter_Stripe implements ClientFence\InjectionAwareInterface
                 $tx->status = Model_Transaction::STATUS_PROCESSED;
             }
         } else {
-            $this->di['db']->trash($tx);
+            $this->trashUnlessCredited($tx, 'Payment recorded again by another transaction; its account credit was added with this one.');
 
             return;
         }
 
         $tx->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($tx);
+    }
+
+    /** A duplicate row is removed, unless it added the account credit (a retried payment keeps the credit on its first row). */
+    private function trashUnlessCredited(Model_Transaction $tx, string $error): void
+    {
+        // ClientFence core patch: a row whose try added the account credit stays, so the credit keeps its payment.
+        if ($this->di['dbal']->fetchOne("SELECT id FROM client_balance WHERE type = 'transaction' AND rel_id = ? LIMIT 1", [$tx->id])) {
+            // Only the note: the row keeps its stored payment ID, which finds the credit (the webhook set the event's on $tx).
+            $this->di['dbal']->update('`transaction`', ['error' => $error, 'updated_at' => date('Y-m-d H:i:s')], ['id' => $tx->id]);
+
+            return;
+        }
+        $this->di['db']->trash($tx);
     }
 
     /** ClientFence core patch: the payment recorded here that a Stripe dispute takes back (by its charge or PaymentIntent). */
