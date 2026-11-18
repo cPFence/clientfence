@@ -425,6 +425,26 @@ test('template update', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('only a Super Administrator changes an email that carries a sign-in link or code', function (bool $superAdministrator): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
+    $adminApi->getDi()['mod_service']('Staff')->shouldReceive('isSuperAdministrator')->andReturn($superAdministrator);
+    $template = new EmailTemplate('mod_staff_password_reset_request', 3);
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldReceive('getTemplate')->with(3)->andReturn($template);
+    $emailService->shouldReceive('updateTemplate')->times($superAdministrator ? 1 : 0)->andReturnTrue();
+    $emailService->shouldReceive('templateCreate')->times($superAdministrator ? 1 : 0)->andReturn($template);
+    $adminApi->setService($emailService);
+
+    $update = fn () => $adminApi->template_update(['id' => 3, 'content' => '<img src="https://example.com/?h={{ hash }}">']);
+    $create = fn () => $adminApi->template_create(['action_code' => 'mod_staff_password_reset_request', 'subject' => 'Reset', 'content' => '{{ hash }}']);
+    if ($superAdministrator) {
+        expect($update())->toBeTrue()->and($create())->toBe(3);
+    } else {
+        expect($update)->toThrow(ClientFence\InformationException::class, 'Only a Super Administrator');
+        expect($create)->toThrow(ClientFence\InformationException::class, 'Only a Super Administrator');
+    }
+})->with([true, false]);
+
 test('template group get list returns assigned groups', function (): void {
     $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
 

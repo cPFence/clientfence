@@ -236,6 +236,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     {
         $this->checkPermissions('email', 'manage_templates');
 
+        $this->assertCanEditSignInTemplate((string) $data['action_code']);
         $enabled = $data['enabled'] ?? 0;
         $category = $data['category'] ?? null;
 
@@ -262,10 +263,19 @@ class Admin extends \ClientFence\Api\AbstractApi
         $content = $data['content'] ?? null;
 
         $model = $this->getService()->getTemplate((int) $data['id']);
+        $this->assertCanEditSignInTemplate((string) $model->getActionCode());
         // ClientFence core patch: `translations` (lang => subject, content) replaces the language versions; left out, they stay.
         $translations = array_key_exists('translations', $data) ? (is_array($data['translations']) ? $data['translations'] : []) : null;
 
         return $this->getService()->updateTemplate($model, $enabled, $category, $subject, $content, $translations);
+    }
+
+    // ClientFence core patch: only Super Administrators change the emails that carry a sign-in link or code (staff who edit templates could send the reset link to themselves).
+    private function assertCanEditSignInTemplate(string $code): void
+    {
+        if (in_array($code, \ClientFence\Mod\Email\Service::SIGN_IN_LINK_TEMPLATES, true) && !$this->getDi()['mod_service']('Staff')->isSuperAdministrator()) {
+            throw new \ClientFence\InformationException('Only a Super Administrator can change this email: it carries a sign-in link or code.', [], 403);
+        }
     }
 
     /**
