@@ -24,9 +24,14 @@ A fixes release from the QA rounds: renewal invoices use part of the account cre
 - The API's per-address limit applies only to requests without a signed-in session, and only failed sign-ins count against the sign-in limit, so a team behind one office address is no longer locked out.
 - The installer advises `config.php` mode 600 and names the System Health page.
 - Console: `system:version` shows the ClientFence version, and `system:releasenotes` says when the site is on the latest version or the update check failed.
+- Enhance: when a hosting plan holds several websites, the client's Email and Domains tabs let them pick the website.
 
 ### Fixed
 
+- Bank transfer instructions with currency conversion: `converted.total` on an unpaid invoice is now what is left to pay (after part payments and credit), as the invoice page shows. ([#49](https://github.com/cPFence/clientfence/issues/49))
+- Several Enhance servers: hosting plans now remember the Enhance server they were imported from, so importing from a second server no longer matches the first server's plans. A plan whose name is already taken gets the server name in brackets. With several Enhance servers set up before this update, plans imported earlier still match by name.
+- Bank transfer payments that staff record show on the account statement as payments for the invoice, not as account credit added.
+- Pages in Urdu and Yiddish read right to left, as their emails and PDFs already did.
 - Dates: an unreadable date in a search filter, a list, a statistics chart, an order, an invoice or a promotion is refused with "Enter a valid date." instead of an error.
 - Lists: the "to" date includes that whole day on the order, invoice, transaction, client and credit lists, and the client credit list's date filter works. The order list's filter by several order ids matches all of them, and a search keeps the title filter.
 - Statistics charts show every day of the chosen range and count the whole last day.
