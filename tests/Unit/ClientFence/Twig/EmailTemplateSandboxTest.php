@@ -17,14 +17,23 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /** The email environment's own filters and functions (TwigFactory::createEmailEnvironment()), as stubs. */
-function emailSandboxEnvironment(?Closure $trans = null): Environment
+function emailSandboxEnvironment(?Closure $trans = null, bool $markdown = false): Environment
 {
     $twig = new Environment(new ArrayLoader(), ['autoescape' => 'html']);
     $twig->addExtension(new SandboxExtension(EmailPolicy::create(), true));
-    foreach ([
+    if ($markdown) {
+        // The real Markdown converter of the portal (raw HTML escaped).
+        $di = Tests\Helpers\container();
+        $theme = Mockery::mock(ClientFence\Mod\Theme\Service::class);
+        $theme->allows('getDefaultMarkdownAttributes')->andReturn([]);
+        $di['mod_service'] = $di->protect(fn (string $module) => $theme);
+        $twig->addExtension(new Twig\Extra\Markdown\MarkdownExtension());
+        $twig->addRuntimeLoader(new Twig\RuntimeLoader\FactoryRuntimeLoader([Twig\Extra\Markdown\MarkdownRuntime::class => fn () => new Twig\Extra\Markdown\MarkdownRuntime(new ClientFence\Twig\Markdown\ClientFenceMarkdown($di, false))]));
+    }
+    foreach (array_diff([
         'format_currency', 'format_date', 'format_datetime', 'format_number', 'format_time', 'currency_name',
         'currency_symbol', 'country_name', 'url', 'daysleft', 'trans', 'trans_html', 'period_title', 'markdown_to_html',
-    ] as $filter) {
+    ], $markdown ? ['markdown_to_html'] : []) as $filter) {
         $twig->addFilter(new TwigFilter($filter, $filter === 'trans' && $trans ? $trans : static fn (mixed $value, mixed ...$options): mixed => $value, ['is_variadic' => true]));
     }
     $twig->addFunction(new TwigFunction('country_names', static fn (): array => []));
@@ -91,6 +100,17 @@ test('the staff reply email shows the reply just posted', function (): void {
 
     expect($html)->toContain('The &lt;b&gt;answer&lt;/b&gt;')->not->toContain('The question');
 });
+
+test('ticket emails with a staff message show it as formatted text, with its HTML escaped', function (string $file, array $messages): void {
+    $html = emailSandboxEnvironment(null, true)->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/Support/templates/email/' . $file), $file)
+        ->render(['ticket' => ['messages' => $messages]]);
+
+    expect($html)->toContain('<strong>bold part</strong>')->not->toContain('**bold part**')
+        ->toContain('&lt;script&gt;')->not->toContain('<script>alert');
+})->with([
+    'staff reply' => ['mod_support_ticket_staff_reply.html.twig', [['content' => 'The question'], ['content' => "A **bold part**\n\n<script>alert(1)</script>"]]],
+    'staff opened' => ['mod_support_ticket_staff_open.html.twig', [['content' => "A **bold part**\n\n<script>alert(1)</script>"]]],
+]);
 
 test('staff assigned and escalated emails translate the status and priority', function (string $file): void {
     $twig = emailSandboxEnvironment(static fn (mixed $value, mixed ...$options): string => '[' . $value . ']');
