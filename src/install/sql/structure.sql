@@ -290,6 +290,11 @@ CREATE TABLE `client` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `po_number` varchar(64) DEFAULT NULL,
+  `overdue_notices` tinyint(1) NOT NULL DEFAULT '1',
+  `separate_invoices` tinyint(1) NOT NULL DEFAULT '0',
+  `auto_charge` tinyint(1) NOT NULL DEFAULT '1',
+  `allow_sso` tinyint(1) NOT NULL DEFAULT '1',
+  `status_update` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `alternative_id_idx` (`aid`),
@@ -779,6 +784,7 @@ CREATE TABLE `mod_massmailer` (
   `sent_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `marketing` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

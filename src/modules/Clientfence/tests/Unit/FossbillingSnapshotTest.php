@@ -199,7 +199,7 @@ test('FOSSBilling is read a page at a time into WHMCS\'s tables, and what cannot
         ->and($db->fetchAssociative('SELECT companyname, address1, city, country, phonenumber, tax_id, credit, status, groupid, taxexempt, language, datecreated FROM tblclients WHERE id = 101'))
         ->toBe(['companyname' => 'Lee Ltd', 'address1' => '1 Road', 'city' => 'London', 'country' => 'GB', 'phonenumber' => '+44.2071234567', 'tax_id' => 'GB123', 'credit' => 25.0, 'status' => 'Active', 'groupid' => 3, 'taxexempt' => 0, 'language' => 'en_US', 'datecreated' => '2025-01-05'])
         ->and($db->fetchAllKeyValue('SELECT c.id, cur.code FROM tblclients c JOIN tblcurrencies cur ON cur.id = c.currency ORDER BY c.id'))->toBe([101 => 'USD', 102 => 'EUR'])
-        ->and($db->fetchAssociative('SELECT status, taxexempt, groupid FROM tblclients WHERE id = 102'))->toBe(['status' => 'Inactive', 'taxexempt' => 1, 'groupid' => 0])
+        ->and($db->fetchAssociative('SELECT status, taxexempt, groupid FROM tblclients WHERE id = 102'))->toBe(['status' => 'Active', 'taxexempt' => 1, 'groupid' => 0])
         ->and(password_verify('secret', (string) $db->fetchOne('SELECT password FROM tblusers WHERE id = 101')))->toBeTrue()
         ->and($db->fetchAllAssociative('SELECT amount, relid FROM tblcredit ORDER BY id'))->toBe([['amount' => 9.6, 'relid' => 0], ['amount' => -9.6, 'relid' => 1], ['amount' => 25.0, 'relid' => 0]])
         ->and($db->fetchFirstColumn('SELECT note FROM tblnotes'))->toBe(['Pays early.'])

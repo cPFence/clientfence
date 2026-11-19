@@ -31389,3 +31389,108 @@ msgstr ":domain уже є у вашому обліковому записі :reg
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Клієнти бачать назву й адресу своєю мовою в листах, рахунках і клієнтських сторінках. Порожнє поле показує значення за замовчуванням."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Дозволити єдиний вхід (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Автоплатежі для вашого облікового запису вимкнено: збережені способи оплати не списуються самі. Сплачуйте кожен рахунок на його сторінці."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Автоматичне оновлення статусу"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Клієнти можуть вимкнути маркетингові листи у своєму профілі, а кожен маркетинговий лист Масової розсилки містить посилання для відписки та заголовки відписки в один клік. Масова розсилка завжди пропускає клієнтів, які відмовилися, зокрема коли працівник вимкнув маркетинг у профілі клієнта. Службові листи (рахунки, тікети, вхід) надсилаються завжди."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Клієнти, які відмовилися від маркетингових листів, пропускаються. Вимикайте лише для повідомлень про їхні послуги, наприклад про технічні роботи чи зміну ціни."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Вимкнути обробку карток"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Кожна послуга продовжується за своїм рахунком, навіть з однаковою датою оплати."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Вхід через Google для цього облікового запису вимкнено. Увійдіть за допомогою електронної пошти та пароля."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Згода на маркетингові листи"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Маркетинговий лист"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Повідомлення Масової розсилки, позначені як маркетингові листи."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Без податку на рахунки цього клієнта."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Раз на добу клієнти без активної чи призупиненої послуги, додатка або домену стають Неактивними, а коли вони з'являються, знову Активними. Неактивні клієнти входять, замовляють, платять і відкривають тікети як раніше. Клієнти молодші за два дні, Призупинені та Скасовані клієнти, а також клієнти з вимкненим оновленням статусу в профілі залишаються без змін."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Сповіщення про прострочення"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Нагадування про оплату після дати оплати. Нагадування до дати оплати надсилається в будь-якому разі."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Збережені картки, облікові записи PayPal і прямі дебети не списуються автоматично; клієнт платить вручну. Після повторного ввімкнення списуються вже прострочені рахунки."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Окремі рахунки"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Робити клієнтів неактивними"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Вхід через Google для власника облікового запису."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Оновлення статусу"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Звільнений від податку"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Автоматичне оновлення статусу може зробити цього клієнта Неактивним і знову Активним."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Вибір входу читає історію входів: зберігайте журнал активності щонайменше 90 днів (налаштування Активності)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Цей клієнт входить лише через Google: коли вимкнено, він задає пароль через Забули пароль."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Без послуг"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Без послуг і без входу 3 місяці"

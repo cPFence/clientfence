@@ -33826,3 +33826,108 @@ msgstr ":domain artıq :registrar hesabınızdadır. Bu sifarişin əvvəlki cə
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Müştərilər adı və ünvanı öz dillərində e-poçtlarda, hesab-fakturalarda və müştəri səhifələrində görür. Boş sahə standart dəyəri göstərir."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Vahid girişə (SSO) icazə ver"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Hesabınız üçün avtomatik ödənişlər söndürülüb: saxlanmış ödəniş üsulları öz-özünə tutulmur. Hər hesab-fakturanı onun səhifəsindən ödəyin."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Avtomatik status yeniləməsi"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Müştərilər profillərində marketinq e-poçtlarını söndürə bilər və hər marketinq Mass Mailer e-poçtunda abunəlikdən çıxma linki və bir kliklə abunəlikdən çıxma başlıqları olur. Mass Mailer imtina edən müştəriləri həmişə keçir, işçi müştərinin profilində marketinqi söndürdükdə də. Xidmət e-poçtları (hesab-fakturalar, sorğular, giriş) həmişə göndərilir."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Marketinq e-poçtundan imtina edən müştərilər keçilir. Bunu yalnız xidmətlərinə dair bildirişlər üçün söndürün, məsələn texniki işlər və ya qiymət dəyişikliyi."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Kartla emalı söndür"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Hər xidmət, ödəniş tarixi eyni olsa belə, öz hesab-fakturası ilə yenilənir."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Bu hesab üçün Google ilə giriş söndürülüb. E-poçt və parolla daxil olun."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Marketinq e-poçtlarına razılıq"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Marketinq e-poçtu"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Marketinq e-poçtu kimi işarələnmiş Mass Mailer mesajları."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Bu müştərinin hesab-fakturalarına vergi tətbiq edilmir."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Gündə bir dəfə aktiv və ya dayandırılmış xidməti, əlavəsi və ya domeni olmayan müştərilər Qeyri-aktiv olur, birini əldə etdikdə yenidən Aktiv olur. Qeyri-aktiv müştərilər əvvəlki kimi daxil olur, sifariş verir, ödəyir və sorğu açır. İki gündən yeni müştərilər, Dayandırılıb və Ləğv edilib müştərilər, həmçinin profilində Status yeniləməsi söndürülmüş müştərilər olduğu kimi qalır."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Gecikmə bildirişləri"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Ödəniş tarixindən sonra ödəniş xatırlatmaları. Ödəniş tarixindən əvvəlki xatırlatma hər halda göndərilir."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Saxlanmış kartlar, PayPal hesabları və Birbaşa debetlər avtomatik tutulmur; müştəri əllə ödəyir. Yenidən aktiv edildikdə vaxtı çatmış hesab-fakturalar tutulur."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Ayrı hesab-fakturalar"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Müştəriləri Qeyri-aktiv et"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Hesab sahibi üçün Google ilə daxil ol."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Status yeniləməsi"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Vergidən azad"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Avtomatik status yeniləməsi bu müştərini Qeyri-aktiv, sonra yenidən Aktiv edə bilər."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Giriş seçimi giriş tarixçəsini oxuyur: fəaliyyət jurnalını ən azı 90 gün saxlayın (Fəaliyyət parametrləri)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Bu müştəri yalnız Google ilə daxil olur: bu söndürülərsə, parolu Parolu unutdum ilə təyin edir."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Xidmətsiz"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Xidmətsiz və 3 ay girişsiz"

@@ -399,6 +399,33 @@ test('update puts a client in several groups, or one through the old group_id, o
     'old empty group_id clears them' => [['group_id' => ''], [], null],
 ]);
 
+test('update changes only the profile switches it is sent, writes the marketing opt-out and logs each change', function (): void {
+    $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
+    $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1]);
+    $clientRepository = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
+    $clientRepository->shouldReceive('find')->andReturn($client);
+    $di = container();
+    $di['dbal'] = $db = adminTestGroupsDb();
+    $db->executeStatement('CREATE TABLE ' . ClientFence\Mod\Client\Privacy::OPTOUT_TABLE . ' (client_id INTEGER PRIMARY KEY, source TEXT, opted_out_at TEXT)');
+    $di['em']->shouldReceive('getRepository')->with(ClientFence\Mod\Client\Entity\Client::class)->andReturn($clientRepository);
+    $di['em']->shouldReceive('getConnection')->andReturn($db);
+    $di['em']->shouldReceive('persist', 'flush');
+    $di['logger'] = $logger = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(moduleService(['client' => Mockery::mock(ClientFence\Mod\Client\Service::class)]));
+    $adminClient->setDi($di);
+
+    // The form: a hidden 0 then the switch; Overdue Notices left on, Disable CC Processing on, marketing off.
+    $adminClient->update(['id' => 1, 'overdue_notices' => '1', 'auto_charge' => '0', 'separate_invoices' => '1', 'marketing' => '0']);
+    $adminClient->update(['id' => 1, 'first_name' => 'Ann']);
+    // A page opened before the opt-out shows marketing on; saved untouched, it keeps the opt-out.
+    $adminClient->update(['id' => 1, 'marketing' => '1', 'marketing_shown' => '1']);
+
+    expect([$client->getProfileOption('overdue_notices'), $client->getProfileOption('auto_charge'), $client->getProfileOption('separate_invoices'), $client->getProfileOption('allow_sso')])->toBe([true, false, true, true])
+        ->and($db->fetchAssociative('SELECT client_id, source FROM ' . ClientFence\Mod\Client\Privacy::OPTOUT_TABLE))->toBe(['client_id' => 1, 'source' => 'staff'])
+        ->and(array_values(array_filter(array_map(fn (array $c): string => (string) $c['params'][0], $logger->calls), fn (string $m): bool => str_contains($m, 'settings changed'))))->toHaveCount(1)
+        ->and(array_column($logger->calls, 'params'))->toContain(['Client #%s settings changed: %s', 1, 'separate_invoices on, auto_charge off, marketing off']);
+});
+
 test('update refuses a client group that does not exist', function (): void {
     $adminClient = apiEndpoint(new ClientFence\Mod\Client\Api\Admin());
     $client = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['id' => 1]);

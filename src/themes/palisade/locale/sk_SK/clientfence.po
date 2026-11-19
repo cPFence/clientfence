@@ -33834,3 +33834,108 @@ msgstr ":domain už je vo vašom účte u :registrar. Ak ju skoršia snaha tejto
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Klienti vidia názov a adresu vo svojom jazyku v e-mailoch, faktúrach a na stránkach pre klientov. Prázdne pole zobrazí predvolenú hodnotu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Povoliť jednotné prihlásenie (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Automatické platby sú pre váš účet vypnuté: uložené spôsoby platby sa samy nestrhávajú. Každú faktúru zaplaťte na jej stránke."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Automatická zmena stavu"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Klienti môžu vo svojom profile vypnúť marketingové e-maily a každý marketingový e-mail z Mass Mailera má odkaz na odhlásenie a hlavičky na odhlásenie jedným kliknutím. Mass Mailer vždy preskočí klientov, ktorí sa odhlásili, aj keď marketing vypol v profile klienta personál. Servisné e-maily (faktúry, tikety, prihlásenie) sa odosielajú vždy."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Klienti, ktorí odmietli marketingové e-maily, sa preskakujú. Vypnite iba pri oznamoch o ich službách, napríklad o údržbe alebo zmene ceny."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Vypnúť spracovanie kariet"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Každá služba sa obnovuje na vlastnej faktúre, aj s rovnakým dátumom splatnosti."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Prihlásenie cez Google je pre tento účet vypnuté. Prihláste sa e-mailom a heslom."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Súhlas s marketingovými e-mailami"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Marketingový e-mail"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Správy Mass Mailera označené ako marketingový e-mail."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Bez dane na faktúrach tohto klienta."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Raz denne sa klienti bez aktívnej alebo pozastavenej služby, doplnku či domény stanú Neaktívnymi a hneď ako ju majú, opäť Aktívnymi. Neaktívni klienti sa prihlasujú, objednávajú, platia a otvárajú tikety ako predtým. Klienti mladší ako dva dni, Pozastavení a Zrušení klienti a klienti s vypnutou zmenou stavu v profile zostávajú bez zmeny."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Upomienky po splatnosti"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Pripomienky platby po dátume splatnosti. Pripomienka pred dátumom splatnosti sa odosiela v každom prípade."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Uložené karty, účty PayPal a inkasá sa nestrhávajú automaticky; klient platí ručne. Po opätovnom zapnutí sa strhnú už splatné faktúry."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Samostatné faktúry"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Nastaviť klientov ako Neaktívnych"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Prihlásenie cez Google pre vlastníka účtu."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Zmena stavu"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Oslobodený od dane"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Automatická zmena stavu môže tohto klienta nastaviť ako Neaktívneho a opäť Aktívneho."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Voľba prihlásenia číta históriu prihlásení: uchovávajte záznam aktivity aspoň 90 dní (nastavenia Aktivity)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Tento klient sa prihlasuje iba cez Google: pri vypnutí si nastaví heslo cez Zabudnuté heslo."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Bez služieb"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Bez služieb a bez prihlásenia 3 mesiace"

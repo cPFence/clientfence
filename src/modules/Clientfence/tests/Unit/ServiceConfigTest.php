@@ -155,12 +155,12 @@ test('a closed store answers a product page with 404', function (): void {
 });
 
 // ClientFence: the store open to one client group (Client/Groups.php).
-test('a store open to one client group lets in an active client in it, whichever of their groups it is', function (): void {
+test('a store open to one client group lets in an active or inactive client in it, whichever of their groups it is', function (): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, status TEXT)');
     $db->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
-    $db->executeStatement("INSERT INTO client (id, status) VALUES (1, 'active'), (2, 'active'), (3, 'canceled')");
-    $db->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) VALUES (1, 2), (1, 5), (2, 2), (3, 5)');
+    $db->executeStatement("INSERT INTO client (id, status) VALUES (1, 'active'), (2, 'active'), (3, 'canceled'), (4, 'inactive')");
+    $db->executeStatement('INSERT INTO client_group_members (client_id, client_group_id) VALUES (1, 2), (1, 5), (2, 2), (3, 5), (4, 5)');
     $di = container();
     $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'testers', 'store_testers_group' => '5'] : []);
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
@@ -170,5 +170,6 @@ test('a store open to one client group lets in an active client in it, whichever
     expect(Service::storeOpenTo($di, 1))->toBeTrue()
         ->and(Service::storeOpenTo($di, 2))->toBeFalse()
         ->and(Service::storeOpenTo($di, 3))->toBeFalse()
+        ->and(Service::storeOpenTo($di, 4))->toBeTrue()
         ->and(Service::storeOpenTo($di, null))->toBeFalse();
 });

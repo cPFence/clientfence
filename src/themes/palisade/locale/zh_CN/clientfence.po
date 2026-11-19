@@ -30843,3 +30843,108 @@ msgstr ":domain 已在您的 :registrar 账户中。如果此订单之前的尝�
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "客户会在电子邮件、发票和客户页面上看到所用语言的名称和地址。留空的字段将显示默认值。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "允许单点登录"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "您的账户已关闭自动付款：已保存的付款方式不会自动扣款。请在每张发票的页面上付款。"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "自动状态更新"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "客户可以在个人资料中关闭营销邮件，群发邮件的每封营销邮件都带有退订链接和一键退订邮件头。群发邮件始终会跳过已退出的客户，即使是工作人员在客户资料中关闭了营销。服务邮件（发票、工单、登录）始终会发送。"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "已退出营销邮件的客户会被跳过。仅在发送与其服务有关的通知（如维护或价格变更）时关闭此项。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "禁用信用卡处理"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "每项服务使用各自的发票续费，即使到期日相同。"
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "此账户已关闭 Google 登录。请使用电子邮件和密码登录。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "同意接收营销邮件"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "营销邮件"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "标记为营销邮件的群发邮件消息。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "此客户的发票不含税。"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "每天一次，没有已启用或已冻结的服务、附加组件或域名的客户会变为非活跃的，有了之后再变回已启用。非活跃的客户可照常登录、下单、付款和提交工单。注册不满两天的客户、已冻结和已取消的客户，以及在资料中关闭状态更新的客户保持不变。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "逾期通知"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "到期日之后的付款提醒。到期日之前的提醒无论如何都会发送。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "已保存的信用卡、PayPal 账户和直接借记不会自动扣款；客户需手动付款。重新开启后，已到期的发票会被扣款。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "单独发票"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "将客户设为非活跃"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "账户所有者使用 Google 登录。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "状态更新"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "免税"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "自动状态更新可能会将此客户设为非活跃，然后再设为已启用。"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "登录选项会读取登录历史：请将活动日志至少保留 90 天（活动设置）。"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "此客户仅使用 Google 登录：关闭此项后，客户通过忘记密码设置密码。"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "无服务"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "无服务且 3 个月未登录"

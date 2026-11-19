@@ -45,7 +45,8 @@ final class Snapshot extends Base
     /** product_payment price columns => months. */
     private const PRICES = ['m' => 1, 'q' => 3, 'b' => 6, 'a' => 12, 'bia' => 24, 'tria' => 36];
 
-    private const CLIENT_STATUSES = ['active' => 'Active', 'suspended' => 'Inactive', 'canceled' => 'Closed'];
+    // A suspended FOSSBilling client is not an Inactive one (no services): they stay Active, as before.
+    private const CLIENT_STATUSES = ['active' => 'Active', 'suspended' => 'Active', 'canceled' => 'Closed'];
 
     private const SERVICE_STATUSES = ['pending_setup' => 'Pending', 'failed_setup' => 'Pending', 'active' => 'Active', 'failed_renew' => 'Active', 'suspended' => 'Suspended', 'canceled' => 'Cancelled'];
 

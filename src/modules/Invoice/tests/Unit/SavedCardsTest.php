@@ -23,6 +23,10 @@ function savedCardsWorld(): object
     $db->executeStatement('CREATE TABLE pay_gateway_customer (id INTEGER PRIMARY KEY, pay_gateway_id INTEGER, client_id INTEGER, test_mode INTEGER, external_customer_id TEXT, saved_cards INTEGER DEFAULT 0, default_payment_method TEXT, default_card TEXT, auto_pay_at TEXT, created_at TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE invoice_card_charge (invoice_id INTEGER PRIMARY KEY, attempts INTEGER NOT NULL DEFAULT 0, last_attempt_at TEXT, last_error TEXT)');
     $db->executeStatement('CREATE TABLE `transaction` (id INTEGER PRIMARY KEY, invoice_id INTEGER, status TEXT, txn_status TEXT, amount TEXT, currency TEXT, created_at TEXT)');
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, auto_charge INTEGER NOT NULL DEFAULT 1)');
+    foreach ([7, 8, 11, 12] as $client) {
+        $db->insert('client', ['id' => $client]);
+    }
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 7, 'test_mode' => 0, 'external_customer_id' => 'cus_7', 'saved_cards' => 1, 'default_payment_method' => 'pm_7', 'default_card' => 'Visa •••• 4242 (12/2030)']);
     $db->insert('pay_gateway_customer', ['pay_gateway_id' => 1, 'client_id' => 8, 'test_mode' => 0, 'external_customer_id' => 'cus_8', 'saved_cards' => 1]);
     // A subscription customer found by email: its card is not used.
@@ -163,6 +167,25 @@ test('the cron charges due invoices without a payment method or with Stripe, nev
     // A second cron run the same day tries nothing again.
     SavedCards::runDue($world->di);
     expect($world->charged)->toHaveCount(2);
+});
+
+test('with Disable CC Processing the cron charges nothing and keeps the PayPal subscriptions, staff can still charge', function (): void {
+    $world = savedCardsWorld();
+    savedCardsPaypal($world);
+    $world->db->update('client', ['auto_charge' => 0], ['id' => 7]);
+    $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00')]);
+    $world->db->insert('pay_gateway_customer', ['pay_gateway_id' => 2, 'client_id' => 7, 'test_mode' => 0, 'external_customer_id' => 'paypal-customer', 'saved_cards' => 1, 'default_payment_method' => 'vault-token', 'default_card' => 'PayPal buyer@example.com']);
+    $world->db->insert('subscription', ['id' => 1, 'client_id' => 7, 'pay_gateway_id' => 2, 'sid' => 'I-KEPT', 'status' => 'active']);
+    $subscriptions = Mockery::mock();
+    $subscriptions->expects('cancel')->never();
+    $services = $world->di['mod_service'];
+    $world->di['mod_service'] = $world->di->protect(fn (string $mod, string $sub = '') => strtolower($mod) . $sub === 'invoiceSubscription' ? $subscriptions : $services($mod, $sub));
+
+    SavedCards::runDue($world->di);
+    expect($world->charged)->toBe([]);
+
+    SavedCards::charge($world->di, $world->di['db']->load('Invoice', 1), SavedCards::stripe($world->di), true);
+    expect($world->charged)->toHaveCount(1);
 });
 
 test('a staff charge does not count as a try and emails nobody', function (): void {

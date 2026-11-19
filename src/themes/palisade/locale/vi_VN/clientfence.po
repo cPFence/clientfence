@@ -31353,3 +31353,108 @@ msgstr ":domain đã có trong tài khoản :registrar của bạn. Nếu lần 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Khách hàng thấy tên và địa chỉ bằng ngôn ngữ của họ trong email, hóa đơn và các trang khách hàng. Trường để trống sẽ hiển thị giá trị mặc định."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Cho phép đăng nhập một lần (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Thanh toán tự động đã tắt cho tài khoản của bạn: phương thức thanh toán đã lưu không tự động bị trừ tiền. Hãy thanh toán từng hóa đơn từ trang của hóa đơn đó."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Tự động cập nhật trạng thái"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Khách hàng có thể tắt email tiếp thị trong hồ sơ của mình, và mọi email tiếp thị của Gửi thư hàng loạt đều có liên kết hủy đăng ký và tiêu đề hủy đăng ký một lần nhấp. Gửi thư hàng loạt luôn bỏ qua khách hàng đã từ chối, kể cả khi nhân viên đã tắt tiếp thị trong hồ sơ khách hàng. Email dịch vụ (hóa đơn, phiếu hỗ trợ, đăng nhập) luôn được gửi."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Khách hàng đã từ chối email tiếp thị sẽ bị bỏ qua. Chỉ tắt cho thông báo về dịch vụ của họ, như bảo trì hoặc đổi giá."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Tắt xử lý thẻ"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Mỗi dịch vụ gia hạn bằng hóa đơn riêng, kể cả khi cùng ngày đến hạn."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Đăng nhập bằng Google đã tắt cho tài khoản này. Hãy đăng nhập bằng email và mật khẩu."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Đồng ý nhận email tiếp thị"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Email tiếp thị"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Thư của Gửi thư hàng loạt được đánh dấu là email tiếp thị."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Không tính thuế trên hóa đơn của khách hàng này."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Mỗi ngày một lần, khách hàng không có dịch vụ, tiện ích bổ sung hoặc tên miền đang hoạt động hay tạm dừng sẽ chuyển sang Tắt, và trở lại Hoạt động khi có. Khách hàng ở trạng thái Tắt vẫn đăng nhập, đặt hàng, thanh toán và mở phiếu như trước. Khách hàng mới dưới hai ngày, khách hàng Đã tạm dừng và Đã hủy bỏ, và khách hàng đã tắt Cập nhật trạng thái trong hồ sơ được giữ nguyên."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Thông báo quá hạn"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Nhắc thanh toán sau ngày đến hạn. Lời nhắc trước ngày đến hạn luôn được gửi."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Thẻ đã lưu, tài khoản PayPal và Ghi nợ trực tiếp không bị trừ tiền tự động; khách hàng thanh toán thủ công. Khi bật lại, các hóa đơn đã đến hạn sẽ bị trừ tiền."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Hóa đơn riêng"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Đặt khách hàng ở trạng thái Tắt"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Đăng nhập bằng Google cho chủ tài khoản."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Cập nhật trạng thái"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Miễn thuế"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Cập nhật trạng thái tự động có thể chuyển khách hàng này sang Tắt rồi trở lại Hoạt động."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Lựa chọn đăng nhập đọc lịch sử đăng nhập: hãy giữ nhật ký hoạt động ít nhất 90 ngày (thiết lập Hoạt động)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Khách hàng này chỉ đăng nhập bằng Google: khi tắt mục này, họ đặt mật khẩu bằng Quên mật khẩu."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Không có dịch vụ"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Không có dịch vụ và không đăng nhập trong 3 tháng"

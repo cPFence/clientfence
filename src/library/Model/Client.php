@@ -13,6 +13,9 @@ class Model_Client extends RedBeanPHP\SimpleModel
     final public const string ACTIVE = 'active';
     final public const string SUSPENDED = 'suspended';
     final public const string CANCELED = 'canceled';
+    // ClientFence core patch: Inactive works as Active (Client/StatusUpdate.php).
+    final public const string INACTIVE = 'inactive';
+    final public const array OPEN = [self::ACTIVE, self::INACTIVE];
     final public const string GENDER_MALE = 'male';
     final public const string GENDER_FEMALE = 'female';
     final public const string GENDER_NON_BINARY = 'nonbinary';

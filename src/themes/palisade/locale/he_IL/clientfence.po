@@ -35015,3 +35015,108 @@ msgstr ":domain כבר נמצא בחשבון שלכם ב-:registrar. אם ניס
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "לקוחות רואים את השם והכתובת בשפתם בהודעות דוא״ל, בחשבוניות ובדפי הלקוחות. שדה ריק מציג את ברירת המחדל."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "אפשר כניסה אחידה (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "תשלומים אוטומטיים כבויים בחשבון שלך: אמצעי התשלום השמורים שלך לא מחויבים מעצמם. שלם כל חשבונית מהעמוד שלה."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "עדכון סטטוס אוטומטי"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "לקוחות יכולים לכבות אימייל שיווקי בפרופיל שלהם, וכל אימייל שיווקי של Mass Mailer כולל קישור להסרה מהרשימה וכותרות הסרה בלחיצה אחת. Mass Mailer תמיד מדלג על לקוחות שביטלו, גם כשהצוות כיבה שיווק בפרופיל הלקוח. אימיילי שירות (חשבוניות, פניות, כניסה) נשלחים תמיד."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "לקוחות שביטלו אימייל שיווקי מדולגים. כבו זאת רק להודעות על השירותים שלהם, כמו תחזוקה או שינוי מחיר."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "השבת עיבוד כרטיסי אשראי"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "כל שירות מתחדש בחשבונית משלו, גם עם אותו תאריך יעד."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "כניסה עם Google כבויה בחשבון זה. היכנסו עם האימייל והסיסמה."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "הסכמה לאימיילים שיווקיים"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "אימייל שיווקי"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "הודעות Mass Mailer שסומנו כאימייל שיווקי."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "ללא מס בחשבוניות של לקוח זה."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "פעם ביום, לקוחות ללא שירות, תוסף או דומיין פעילים או מושעים הופכים ללא פעיל, וחוזרים לפעיל כשיש להם. לקוחות לא פעילים נכנסים, מזמינים, משלמים ופותחים פניות כרגיל. לקוחות חדשים מיומיים, לקוחות מושעים ובוטלו, ולקוחות שעדכון הסטטוס כבוי בפרופיל שלהם נשארים כפי שהם."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "התראות איחור"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "תזכורות תשלום אחרי תאריך היעד. התזכורת לפני תאריך היעד נשלחת בכל מקרה."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "כרטיסים שמורים, חשבונות PayPal והוראות חיוב ישיר לא מחויבים אוטומטית; הלקוח משלם ידנית. בהפעלה מחדש, חשבוניות שכבר הגיע מועדן מחויבות."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "חשבוניות נפרדות"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "הגדר לקוחות כלא פעיל"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "כניסה עם Google לבעל החשבון."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "עדכון סטטוס"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "פטור ממס"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "עדכון הסטטוס האוטומטי עשוי להפוך לקוח זה ללא פעיל ושוב לפעיל."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "בחירת הכניסה קוראת את היסטוריית הכניסות: שמרו את יומן הפעילות לפחות 90 יום (הגדרות פעילות)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "לקוח זה נכנס רק עם Google: כשזה כבוי, הוא קובע סיסמה דרך שכחתי סיסמה."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "ללא שירותים"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "ללא שירותים וללא כניסה במשך 3 חודשים"

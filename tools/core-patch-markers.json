@@ -8930,5 +8930,117 @@
     {
         "file": "themes/admin_default/assets/js/ui/modals.ts",
         "done": "// ClientFence core patch: once, so a second tap while the modal fades does not run the action again."
+    },
+    {
+        "file": "library/ClientFence/Authorization.php",
+        "done": "ClientFence core patch: Inactive clients sign in as Active ones."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: Inactive clients sign in as Active ones."
+    },
+    {
+        "file": "library/ClientFence/Enums/ClientStatusEnum.php",
+        "done": "ClientFence core patch: the automatic status update (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "library/Model/Client.php",
+        "done": "ClientFence core patch: Inactive works as Active (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Cart/Service.php",
+        "done": "ClientFence core patch: an order sets an Inactive client Active again (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: an order sets an Inactive client Active again (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: the profile's Marketing switch, and whether turning single sign-on off leaves no password."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: each switch changes only when sent; the log names what staff changed."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: an Inactive client keeps their API key and sessions, as an Active one."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: Inactive clients sign in as Active ones."
+    },
+    {
+        "file": "modules/Client/Repository/ClientRepository.php",
+        "done": "ClientFence core patch: Inactive clients sign in as Active ones."
+    },
+    {
+        "file": "modules/Client/Repository/ClientPasswordResetRepository.php",
+        "done": "ClientFence core patch: Inactive clients sign in as Active ones."
+    },
+    {
+        "file": "modules/Client/Entity/Client.php",
+        "done": "ClientFence core patch: as WHMCS, the automatic status update (Client/StatusUpdate.php) sets a client without live services Inactive."
+    },
+    {
+        "file": "modules/Client/Entity/Client.php",
+        "done": "ClientFence core patch: the WHMCS client profile options, column => default (added by Clientfence\\Migrations 19)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the WHMCS client profile options (Entity\\Client::PROFILE_OPTIONS)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: WHMCS's automatic client status update, once a day (StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: Inactive clients sign in as Active ones."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_index.html.twig",
+        "done": "ClientFence core patch: Inactive clients (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: Inactive works as Active (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: the WHMCS profile options as switches, in WHMCS's order"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "ClientFence core patch: WHMCS's automatic client status update (Client/StatusUpdate.php)."
+    },
+    {
+        "file": "modules/Invoice/Api/Client.php",
+        "done": "ClientFence core patch: staff turned automatic charges off for this client (Disable CC Processing)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: nor for a client with Overdue Notices off (WHMCS); the reminder before the due date still goes."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a client with Separate Invoices on (WHMCS) gets one invoice per service."
+    },
+    {
+        "file": "modules/Massmailer/Entity/MassmailerMessage.php",
+        "done": "ClientFence core patch: as WHMCS \"Marketing email?\": only marketing messages skip opted-out clients (Service::sendMessage())."
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "as WHMCS, for every marketing message, whether or not clients can opt out themselves."
+    },
+    {
+        "file": "modules/Massmailer/Service.php",
+        "done": "not marked as marketing (a service notice) goes to everyone, without them."
+    },
+    {
+        "file": "modules/Massmailer/templates/admin/mod_massmailer_message.html.twig",
+        "done": "ClientFence core patch: as WHMCS \"Marketing email?\" (Service::sendMessage())."
     }
 ]

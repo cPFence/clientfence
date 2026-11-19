@@ -926,6 +926,8 @@ class Service implements InjectionAwareInterface
 
             return $result;
         });
+        // ClientFence core patch: an order sets an Inactive client Active again (Client/StatusUpdate.php).
+        \ClientFence\Mod\Client\StatusUpdate::ordered($this->di, $this->clientId($client));
 
         $this->di['logger']->info('Checked out shopping cart');
 
@@ -1422,6 +1424,7 @@ class Service implements InjectionAwareInterface
             if ($staff !== null) {
                 // As checkout: the client's credit lock is held until the orders are committed.
                 [, $invoice, $ids] = \ClientFence\Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $client->id, fn (): array => $this->di['dbal']->transactional($run));
+                \ClientFence\Mod\Client\StatusUpdate::ordered($this->di, (int) $client->id);
 
                 return ['order_ids' => $ids, 'invoice_id' => $invoice instanceof \Model_Invoice ? (int) $invoice->id : null];
             }

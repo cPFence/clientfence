@@ -194,6 +194,14 @@
                         <textarea class="editor-textarea" id="mm-content" name="content" rows="14">{{ msg.content|default('') }}</textarea>
                         <div class="form-text">{{ 'A placeholder is filled in for each client. It goes into the subject or the message, wherever you clicked last.'|trans }}</div>
                     </div>
+                    {# ClientFence core patch: as WHMCS "Marketing email?" (Service::sendMessage()). #}
+                    <div class="col-12">
+                        <label class="form-check form-switch form-switch-2 mb-1">
+                            <input class="form-check-input" type="checkbox" role="switch" id="mm-marketing" name="marketing" value="1"{% if not msg or msg.marketing %} checked{% endif %}>
+                            <span class="form-check-label">{{ 'Marketing email'|trans }}</span>
+                        </label>
+                        <div class="form-text">{{ 'Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change.'|trans }}</div>
+                    </div>
                 </div>
             </fieldset>
             <div class="card-footer d-flex justify-content-end">
@@ -212,7 +220,7 @@
                     </div>
                     <fieldset class="card-body"{% if not can_edit %} disabled{% endif %}>
                         {% set filters = [
-                            { key: 'client_status', label: 'Client Status'|trans, options: { active: 'Active'|trans, suspended: 'Suspended'|trans, canceled: 'Canceled'|trans } },
+                            { key: 'client_status', label: 'Client Status'|trans, options: { active: 'Active'|trans, inactive: 'Inactive'|trans, suspended: 'Suspended'|trans, canceled: 'Canceled'|trans } },
                             { key: 'client_groups', label: 'Client Groups'|trans, options: admin.client_group_get_pairs },
                             { key: 'has_order_with_status', label: 'Has Order With Status'|trans, options: admin.order_get_status_pairs },
                             { key: 'has_order', label: 'Has Order'|trans, options: admin.product_get_pairs },
@@ -446,6 +454,7 @@
                 subject: fields.subject.value,
                 content: fields.content.editor ? fields.content.editor.getData() : fields.content.value,
                 filter: filter(),
+                marketing: fields.marketing.checked ? 1 : 0,
             };
             dirty = false;
             const saved = () => {

@@ -29109,3 +29109,108 @@ msgstr ":domain zaten :registrar hesabınızda. Bu siparişin önceki denemesi o
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Müşteriler adı ve adresi e-postalarda, faturalarda ve müşteri sayfalarında kendi dillerinde görür. Boş bir alan varsayılanı gösterir."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Çoklu oturum açmaya (SSO) izin ver"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Hesabınız için otomatik ödemeler kapalı: kayıtlı ödeme yöntemleriniz kendiliğinden tahsil edilmez. Her faturayı kendi sayfasından ödeyin."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Otomatik durum güncellemesi"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Müşteriler profillerinde pazarlama e-postalarını kapatabilir ve Toplu E-posta Gönderimi'nin her pazarlama e-postasında abonelikten çıkma bağlantısı ve tek tıkla çıkma başlıkları bulunur. Toplu E-posta Gönderimi, vazgeçen müşterileri her zaman atlar, personel müşterinin profilinde pazarlamayı kapattığında da. Hizmet e-postaları (faturalar, destek talepleri, oturum açma) her zaman gönderilir."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Pazarlama e-postasından vazgeçen müşteriler atlanır. Bunu yalnızca hizmetleriyle ilgili bildirimler için kapatın, örneğin bakım veya fiyat değişikliği."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Kart işlemeyi devre dışı bırak"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Her hizmet, son ödeme tarihi aynı olsa bile kendi faturasıyla yenilenir."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Bu hesap için Google ile oturum açma kapalı. E-posta ve parolanızla oturum açın."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Pazarlama e-postası onayı"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Pazarlama e-postası"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Pazarlama e-postası olarak işaretlenmiş Toplu E-posta Gönderimi mesajları."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Bu müşterinin faturalarında vergi yok."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Günde bir kez, etkin veya askıya alınmış hizmeti, eklentisi ya da alan adı olmayan müşteriler Pasif olur, biri olduğunda tekrar Etkin olur. Pasif müşteriler eskisi gibi oturum açar, sipariş verir, ödeme yapar ve destek talebi açar. İki günden yeni müşteriler, Askıya alındı ve İptal edildi müşterileri ve profilinde Durum güncellemesi kapalı olan müşteriler olduğu gibi kalır."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Gecikme bildirimleri"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Son ödeme tarihinden sonra ödeme hatırlatmaları. Son ödeme tarihinden önceki hatırlatma her durumda gönderilir."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Kayıtlı kartlar, PayPal hesapları ve otomatik ödeme talimatları otomatik tahsil edilmez; müşteri elle öder. Tekrar açıldığında vadesi gelmiş faturalar tahsil edilir."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Ayrı faturalar"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Müşterileri Pasif yap"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Hesap sahibi için Google ile oturum açma."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Durum güncellemesi"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Vergiden muaf"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Otomatik durum güncellemesi bu müşteriyi Pasif, ardından tekrar Etkin yapabilir."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Oturum açma seçimi oturum açma geçmişini okur: etkinlik günlüğünü en az 90 gün saklayın (Aktivite ayarları)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Bu müşteri yalnızca Google ile oturum açar: bu kapalıyken parolayı Parolamı unuttum ile belirler."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Hizmetsiz"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Hizmetsiz ve 3 aydır oturum açmadan"

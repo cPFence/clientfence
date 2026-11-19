@@ -27,7 +27,8 @@ class Authorization
         }
 
         $client = $this->di['db']->load('Client', $clientId);
-        if (!$client || $client->status !== \Model_Client::ACTIVE) {
+        // ClientFence core patch: Inactive clients sign in as Active ones.
+        if (!$client || !in_array($client->status, \Model_Client::OPEN, true)) {
             $this->session->delete('client_id');
 
             return false;

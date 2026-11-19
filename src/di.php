@@ -394,7 +394,8 @@ $di['loggedin_client'] = function () use ($di) {
 
     try {
         $client = $di['db']->getExistingModelById('Client', $client_id);
-        if ($client->status !== Model_Client::ACTIVE) {
+        // ClientFence core patch: Inactive clients sign in as Active ones.
+        if (!in_array($client->status, Model_Client::OPEN, true)) {
             throw new Exception('Client account is not active');
         }
         // ClientFence core patch: authorized users. A user who was removed, switched off or whose

@@ -23,4 +23,6 @@ enum ClientStatusEnum: string
     case ACTIVE = 'active';
     case SUSPENDED = 'suspended';
     case CANCELED = 'canceled';
+    // ClientFence core patch: the automatic status update (Client/StatusUpdate.php).
+    case INACTIVE = 'inactive';
 }

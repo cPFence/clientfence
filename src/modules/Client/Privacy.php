@@ -16,8 +16,9 @@ use Doctrine\DBAL\Connection;
  *   page (/my-data, the account owner only) and asks for the account to be deleted, which opens
  *   a ticket for staff.
  * - marketing_optout: a client turns marketing email (Mass Mailer) off on the profile page, or
- *   with the one-click link every mass email then carries (/unsubscribe/<id>/<token>, also as
- *   List-Unsubscribe headers, RFC 8058). Mass Mailer skips clients who opted out. Service email
+ *   with the one-click link every marketing mass email then carries (/unsubscribe/<id>/<token>, also as
+ *   List-Unsubscribe headers, RFC 8058). Staff set it on the client's profile (Marketing Emails Opt-in) in any case,
+ *   and Mass Mailer always skips opted-out clients for a marketing message. Service email
  *   (invoices, tickets, sign-in) is not marketing and always goes.
  *
  * Anonymizing keeps the money records (orders, invoices, payments, balance, quotes, affiliate ledger) and erases
@@ -62,7 +63,7 @@ final class Privacy
             throw new InformationException('Client not found', [], 404);
         }
         // Secrets, and the staff's own fields about the client (notes, group, import and referral marks).
-        foreach (['pass', 'salt', 'api_token', 'notes', 'aid', 'referred_by', 'client_group_id', 'tax_exempt', 'role', 'auth_type'] as $column) {
+        foreach (['pass', 'salt', 'api_token', 'notes', 'aid', 'referred_by', 'client_group_id', 'tax_exempt', 'role', 'auth_type', 'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update'] as $column) {
             unset($client[$column]);
         }
         $invoiceIds = array_map(intval(...), $db->fetchFirstColumn('SELECT id FROM invoice WHERE client_id = ?', [$clientId]));

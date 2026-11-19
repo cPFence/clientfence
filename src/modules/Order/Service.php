@@ -1305,6 +1305,8 @@ class Service implements InjectionAwareInterface
             $this->approveStaffInvoice($invoice, $data);
         }
 
+        // ClientFence core patch: an order sets an Inactive client Active again (Client/StatusUpdate.php).
+        \ClientFence\Mod\Client\StatusUpdate::ordered($this->di, (int) $order->getClientId());
         $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderCreate', 'params' => ['id' => $order->getId()], 'subject' => $this->getProductType($product)]);
 
         $this->di['logger']->info('Created order #%s', $id);

@@ -123,6 +123,10 @@ class Admin extends \ClientFence\Api\AbstractApi
         );
         $details['last_login_ip'] = ($login === false ? $details['ip'] : $login['ip']) ?: null;
         $details['last_login_at'] = $login['created_at'] ?? null;
+        // ClientFence core patch: the profile's Marketing switch, and whether turning single sign-on off leaves no password.
+        $details['marketing'] = !\ClientFence\Mod\Client\Privacy::optedOut($this->getDi()['dbal'], (int) $details['id']);
+        $details['google_only'] = Google::linkOf($this->getDi(), 'client', (int) $details['id']) !== null
+            && !Google::ownPassword($this->getDi(), (int) $details['id']);
 
         return $details;
     }
@@ -243,7 +247,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new InformationException('A password is required when the welcome email is disabled.');
         }
 
-        if ($data['send_welcome_email'] && $status !== Client::ACTIVE) {
+        if ($data['send_welcome_email'] && !in_array($status, Client::OPEN, true)) {
             throw new InformationException('Welcome email can only be sent for active clients.');
         }
 
@@ -505,8 +509,23 @@ class Admin extends \ClientFence\Api\AbstractApi
             $client->setEmailApproved(false);
         }
 
-        if (array_key_exists('tax_exempt', $data)) {
-            $client->setTaxExempt((bool) $data['tax_exempt']);
+        // ClientFence core patch: each switch changes only when sent; the log names what staff changed.
+        $switched = [];
+        if (array_key_exists('tax_exempt', $data) && $client->isTaxExempt() !== ($on = Tools::normalizeBoolean($data['tax_exempt']))) {
+            $client->setTaxExempt($on);
+            $switched[] = 'tax_exempt ' . ($on ? 'on' : 'off');
+        }
+        foreach (array_keys(Client::PROFILE_OPTIONS) as $option) {
+            if (array_key_exists($option, $data) && $client->getProfileOption($option) !== ($on = Tools::normalizeBoolean($data[$option]))) {
+                $client->setProfileOption($option, $on);
+                $switched[] = $option . ' ' . ($on ? 'on' : 'off');
+            }
+        }
+        // The form also sends marketing_shown: a switch left as shown keeps a newer client unsubscribe.
+        if (array_key_exists('marketing', $data) && \ClientFence\Mod\Client\Privacy::optedOut($this->getDi()['dbal'], (int) $client->getId()) === ($on = Tools::normalizeBoolean($data['marketing']))
+            && (!array_key_exists('marketing_shown', $data) || Tools::normalizeBoolean($data['marketing_shown']) !== $on)) {
+            \ClientFence\Mod\Client\Privacy::setOptOut($this->getDi(), (int) $client->getId(), !$on, 'staff');
+            $switched[] = 'marketing ' . ($on ? 'on' : 'off');
         }
         // ClientFence core patch: staff can let one client order from hosting networks (CF-119, Antispam/Networks.php).
         if (array_key_exists('hosting_network_allowed', $data)) {
@@ -531,14 +550,15 @@ class Admin extends \ClientFence\Api\AbstractApi
         // ClientFence core patch: EU VAT numbers are checked with VIES and set the tax exemption (Invoice/EuVat.php).
         \ClientFence\Mod\Invoice\EuVat::apply($this->getDi(), $client, $oldVat, $oldCountry, array_key_exists('company_vat', $data));
 
-        if ($client->getStatus() !== Client::ACTIVE) {
+        // ClientFence core patch: an Inactive client keeps their API key and sessions, as an Active one.
+        if (!in_array($client->getStatus(), Client::OPEN, true)) {
             $client->setApiToken(null);
         }
 
         $this->getDi()['em']->persist($client);
         $this->getDi()['em']->flush();
 
-        if ($client->getStatus() !== Client::ACTIVE && $previousStatus === Client::ACTIVE) {
+        if (!in_array($client->getStatus(), Client::OPEN, true) && in_array($previousStatus, Client::OPEN, true)) {
             $profileService = $this->getDi()['mod_service']('profile');
             $profileService->invalidateSessions('client', (int) $client->getId());
         }
@@ -546,6 +566,9 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminClientUpdate', 'params' => ['id' => $client->getId()]]);
 
         $this->getDi()['logger']->info('Updated client #%s profile', $client->getId());
+        if ($switched !== []) {
+            $this->getDi()['logger']->info('Client #%s settings changed: %s', $client->getId(), implode(', ', $switched));
+        }
 
         return true;
     }

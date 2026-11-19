@@ -29169,3 +29169,108 @@ msgstr ":domain อยู่ในบัญชี :registrar ของคุณ�
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "ลูกค้าจะเห็นชื่อและที่อยู่ในภาษาของตนในอีเมล ใบแจ้งหนี้ และหน้าสำหรับลูกค้า ช่องที่ว่างจะแสดงค่าเริ่มต้น"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "อนุญาตการลงชื่อเข้าใช้ครั้งเดียว (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "การชำระเงินอัตโนมัติถูกปิดสำหรับบัญชีของคุณ: วิธีชำระเงินที่บันทึกไว้จะไม่ถูกตัดเงินเอง ชำระแต่ละใบแจ้งหนี้จากหน้าของใบนั้น"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "อัปเดตสถานะอัตโนมัติ"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "ลูกค้าปิดอีเมลการตลาดได้ในโปรไฟล์ และอีเมลการตลาดทุกฉบับจากเครื่องมือส่งอีเมลจำนวนมากมีลิงก์ยกเลิกการรับและเฮดเดอร์ยกเลิกด้วยคลิกเดียว เครื่องมือส่งอีเมลจำนวนมากจะข้ามลูกค้าที่ปฏิเสธเสมอ แม้เจ้าหน้าที่จะปิดการตลาดในโปรไฟล์ลูกค้าก็ตาม อีเมลบริการ (ใบแจ้งหนี้ ทิกเก็ต การลงชื่อเข้าใช้) จะถูกส่งเสมอ"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "ลูกค้าที่ปฏิเสธอีเมลการตลาดจะถูกข้าม ปิดตัวเลือกนี้เฉพาะการแจ้งเรื่องบริการของลูกค้า เช่น การบำรุงรักษาหรือการเปลี่ยนราคา"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "ปิดการประมวลผลบัตร"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "แต่ละบริการต่ออายุด้วยใบแจ้งหนี้ของตัวเอง แม้วันครบกำหนดจะตรงกัน"
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "การลงชื่อเข้าใช้ด้วย Google ถูกปิดสำหรับบัญชีนี้ ลงชื่อเข้าใช้ด้วยอีเมลและรหัสผ่านของคุณ"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "ยินยอมรับอีเมลการตลาด"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "อีเมลการตลาด"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "ข้อความของเครื่องมือส่งอีเมลจำนวนมากที่ทำเครื่องหมายเป็นอีเมลการตลาด"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "ไม่มีภาษีในใบแจ้งหนี้ของลูกค้ารายนี้"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "วันละครั้ง ลูกค้าที่ไม่มีบริการ แอดออน หรือโดเมนที่ใช้งานหรือถูกระงับ จะเป็นไม่ใช้งาน และกลับเป็นพร้อมใช้งานเมื่อมี ลูกค้าที่ไม่ใช้งานลงชื่อเข้าใช้ สั่งซื้อ ชำระเงิน และเปิดทิกเก็ตได้เหมือนเดิม ลูกค้าที่ใหม่กว่าสองวัน ลูกค้าที่ถูกระงับและยกเลิก และลูกค้าที่ปิดการอัปเดตสถานะในโปรไฟล์ จะคงเดิม"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "การแจ้งเตือนค้างชำระ"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "การเตือนชำระเงินหลังวันครบกำหนด การเตือนก่อนวันครบกำหนดจะถูกส่งในทุกกรณี"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "บัตรที่บันทึกไว้ บัญชี PayPal และการหักบัญชีอัตโนมัติจะไม่ถูกตัดเงินอัตโนมัติ ลูกค้าชำระเอง เมื่อเปิดอีกครั้ง ใบแจ้งหนี้ที่ถึงกำหนดแล้วจะถูกตัดเงิน"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "ใบแจ้งหนี้แยก"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "ตั้งลูกค้าเป็นไม่ใช้งาน"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "ลงชื่อเข้าใช้ด้วย Google สำหรับเจ้าของบัญชี"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "อัปเดตสถานะ"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "ยกเว้นภาษี"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "การอัปเดตสถานะอัตโนมัติอาจตั้งลูกค้ารายนี้เป็นไม่ใช้งานและกลับเป็นพร้อมใช้งาน"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "ตัวเลือกการลงชื่อเข้าใช้อ่านประวัติการลงชื่อเข้าใช้: เก็บบันทึกกิจกรรมอย่างน้อย 90 วัน (การตั้งค่ากิจกรรม)"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "ลูกค้ารายนี้ลงชื่อเข้าใช้ด้วย Google เท่านั้น: เมื่อปิดตัวเลือกนี้ จะตั้งรหัสผ่านด้วยลืมรหัสผ่าน"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "ไม่มีบริการ"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "ไม่มีบริการและไม่ลงชื่อเข้าใช้ 3 เดือน"

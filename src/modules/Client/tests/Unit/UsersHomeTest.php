@@ -88,6 +88,22 @@ test('Google sign-in links only a client account whose email is confirmed', func
         ->and(fn () => $match->invoke(null, $di, $claims('zero@example.com')))->toThrow(ClientFence\InformationException::class, 'not confirmed');
 });
 
+test('with Allow Single Sign-On off the account owner cannot sign in with Google; an authorized user still can', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, status TEXT, allow_sso INTEGER)');
+    $db->executeStatement("INSERT INTO client VALUES (1, 'active', 1), (2, 'active', 0)");
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $di = container();
+    $di['em'] = $em;
+    $usable = new ReflectionMethod(Google::class, 'checkUsable');
+    $sso = new ReflectionMethod(Google::class, 'ssoOff');
+
+    expect(fn () => $usable->invoke(null, $di, 'client', 1))->not->toThrow(ClientFence\InformationException::class)
+        ->and(fn () => $usable->invoke(null, $di, 'client', 2))->toThrow(ClientFence\InformationException::class, 'Google sign-in is off for this account')
+        ->and($sso->invoke(null, $di, 'user', 2))->toBeFalse();
+});
+
 test('Google session recovery uses an opaque callback token bound to state and browser cookie once', function (): void {
     $di = container();
     $di['dbal']->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MariaDBPlatform());

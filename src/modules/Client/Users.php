@@ -261,9 +261,9 @@ final class Users
                 'SELECT u.email, u.first_name, u.last_name, u.status, u.session_version, l.owner, l.permissions
                  FROM client_user u
                  JOIN client_user_account l ON l.user_id = u.id AND l.client_id = ?
-                 JOIN client c ON c.id = l.client_id AND c.status = ?
+                 JOIN client c ON c.id = l.client_id AND c.status IN (?, ?)
                  WHERE u.id = ?',
-                [$clientId, \Model_Client::ACTIVE, $userId]
+                [$clientId, ...\Model_Client::OPEN, $userId]
             );
         } catch (\Throwable) {
             return null;
@@ -324,9 +324,9 @@ final class Users
         $version = $db->fetchOne('SELECT session_version FROM client_user WHERE id = ? AND status = ?', [$userId, 'active']);
         $clientId = $version === false ? false : $db->fetchOne(
             'SELECT l.client_id FROM client_user_account l JOIN client c ON c.id = l.client_id
-             WHERE l.user_id = ? AND c.status = ?
+             WHERE l.user_id = ? AND c.status IN (?, ?)
              ORDER BY l.last_login_at IS NULL, l.last_login_at DESC, l.id LIMIT 1',
-            [$userId, \Model_Client::ACTIVE]
+            [$userId, ...\Model_Client::OPEN]
         );
         if ($clientId === false) {
             return null;
@@ -370,9 +370,9 @@ final class Users
         $version = $di['em']->getConnection()->fetchOne(
             'SELECT u.session_version FROM client_user u
              JOIN client_user_account l ON l.user_id = u.id AND l.client_id = ?
-             JOIN client c ON c.id = l.client_id AND c.status = ?
+             JOIN client c ON c.id = l.client_id AND c.status IN (?, ?)
              WHERE u.id = ? AND u.status = ?',
-            [$clientId, \Model_Client::ACTIVE, $context['user_id'], 'active']
+            [$clientId, ...\Model_Client::OPEN, $context['user_id'], 'active']
         );
         if ($version === false) {
             throw new InformationException('Account not found.', null, 404);
@@ -399,9 +399,9 @@ final class Users
         }
         $accounts = $di['em']->getConnection()->fetchAllAssociative(
             'SELECT c.id, c.first_name, c.last_name, c.company FROM client_user_account l
-             JOIN client c ON c.id = l.client_id AND c.status = ?
+             JOIN client c ON c.id = l.client_id AND c.status IN (?, ?)
              WHERE l.user_id = ? ORDER BY c.company, c.first_name, c.last_name, c.id',
-            [\Model_Client::ACTIVE, $context['user_id']]
+            [...\Model_Client::OPEN, $context['user_id']]
         );
         $name = static fn (array $c): string => trim((string) $c['company']) !== '' ? trim((string) $c['company']) : trim($c['first_name'] . ' ' . $c['last_name']);
         $list = array_map(static fn (array $c): array => ['id' => (int) $c['id'], 'name' => $name($c), 'current' => (int) $c['id'] === $context['client_id']], $accounts);
@@ -952,9 +952,9 @@ final class Users
         }
         $row = $di['em']->getConnection()->fetchAssociative(
             'SELECT i.id, i.client_id, i.email, i.permissions, c.email AS client_email, c.first_name, c.last_name, c.company
-             FROM client_user_invite i JOIN client c ON c.id = i.client_id AND c.status = ?
+             FROM client_user_invite i JOIN client c ON c.id = i.client_id AND c.status IN (?, ?)
              WHERE i.token_hash = ? AND i.expires_at >= ?',
-            [\Model_Client::ACTIVE, hash('sha256', $token), date('Y-m-d H:i:s')]
+            [...\Model_Client::OPEN, hash('sha256', $token), date('Y-m-d H:i:s')]
         );
 
         return $row === false ? null : $row;

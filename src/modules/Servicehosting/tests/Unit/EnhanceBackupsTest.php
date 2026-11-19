@@ -111,7 +111,7 @@ function enhanceBackupsFixture(string $case = 'success'): array
                 return $key === Users::SESSION ? ['user_id' => 4, 'client_id' => 5, 'version' => 1] : 5;
             }
         };
-        $db->shouldReceive('fetchAssociative')->with(Mockery::pattern('/FROM client_user u/'), [5, Model_Client::ACTIVE, 4])->andReturn([
+        $db->shouldReceive('fetchAssociative')->with(Mockery::pattern('/FROM client_user u/'), [5, ...Model_Client::OPEN, 4])->andReturn([
             'email' => 'user@example.test', 'first_name' => 'Test', 'last_name' => 'User', 'status' => 'active',
             'session_version' => 1, 'owner' => 1, 'permissions' => '[]',
         ]);

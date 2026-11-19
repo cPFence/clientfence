@@ -18,7 +18,7 @@ beforeEach(function (): void {
     $this->di['session']->shouldReceive('get')->with('client_id')->andReturn(5);
     $this->di['session']->shouldReceive('get')->with(ClientFence\Mod\Client\TwoFactor::REQUIRED)->andReturnNull();
     $this->db = Mockery::mock(Connection::class);
-    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->byDefault()->andReturn([
+    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, ...Model_Client::OPEN, 7])->byDefault()->andReturn([
         'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User',
         'status' => 'active', 'session_version' => 1, 'owner' => 0, 'permissions' => 'products,invoices',
     ]);
@@ -28,7 +28,7 @@ beforeEach(function (): void {
 afterEach(fn () => Users::forget());
 
 test('authorized users can call product actions with their assigned permission', function (string $module, string $method, string $permission): void {
-    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->andReturn([
+    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, ...Model_Client::OPEN, 7])->andReturn([
         'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User',
         'status' => 'active', 'session_version' => 1, 'owner' => 0, 'permissions' => $permission,
     ]);

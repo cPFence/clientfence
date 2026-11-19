@@ -34,7 +34,8 @@ class ClientPasswordResetRepository extends EntityRepository
                     'SELECT created_at FROM client_password_reset WHERE client_id = :id AND hash = :hash' . RowLock::suffix($connection),
                     ['id' => $clientId, 'hash' => $resetHash],
                 );
-                if ($status !== Client::ACTIVE || $reset === false || strtotime((string) $reset['created_at']) + 900 < time()) {
+                // ClientFence core patch: Inactive clients sign in as Active ones.
+                if (!in_array($status, Client::OPEN, true) || $reset === false || strtotime((string) $reset['created_at']) + 900 < time()) {
                     throw new InformationException('The link has expired or you have already reset your password.');
                 }
             }

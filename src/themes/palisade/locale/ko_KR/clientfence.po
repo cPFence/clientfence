@@ -33818,3 +33818,108 @@ msgstr ":domain은(는) 이미 :registrar 계정에 있습니다. 이 주문의 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "고객은 이메일, 청구서, 고객 페이지에서 이름과 주소를 자신의 언어로 봅니다. 비워 두면 기본값이 표시됩니다."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "싱글 사인온 허용"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "계정의 자동 결제가 꺼져 있습니다. 저장된 결제 수단은 자동으로 청구되지 않습니다. 각 청구서는 해당 페이지에서 결제하세요."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "자동 상태 업데이트"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "고객은 프로필에서 마케팅 이메일을 끌 수 있으며, Mass Mailer의 모든 마케팅 이메일에는 수신 거부 링크와 원클릭 수신 거부 헤더가 들어갑니다. Mass Mailer는 수신 거부한 고객을 항상 건너뛰며, 직원이 고객 프로필에서 마케팅을 끈 경우에도 마찬가지입니다. 서비스 이메일(청구서, 티켓, 로그인)은 항상 발송됩니다."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "마케팅 이메일을 거부한 고객은 건너뜁니다. 점검이나 가격 변경처럼 고객 서비스에 관한 알림에만 끄세요."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "카드 처리 비활성화"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "같은 납부 기한이라도 각 서비스는 자체 청구서로 갱신됩니다."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "이 계정은 Google 로그인이 꺼져 있습니다. 이메일과 비밀번호로 로그인하세요."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "마케팅 이메일 수신 동의"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "마케팅 이메일"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "마케팅 이메일로 표시된 Mass Mailer 메시지입니다."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "이 고객의 청구서에는 세금이 없습니다."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "하루에 한 번, 활성 또는 정지된 서비스, 부가 서비스, 도메인이 없는 고객은 비활성이 되고, 하나라도 생기면 다시 활성이 됩니다. 비활성 고객도 이전처럼 로그인, 주문, 결제, 티켓 등록을 할 수 있습니다. 가입 2일 미만 고객, 정지됨 및 취소됨 고객, 프로필에서 상태 업데이트를 끈 고객은 그대로 둡니다."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "연체 알림"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "납부 기한 이후의 결제 알림입니다. 납부 기한 전 알림은 어느 쪽이든 발송됩니다."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "저장된 카드, PayPal 계정, 자동이체(Direct Debit)는 자동으로 청구되지 않으며 고객이 직접 결제합니다. 다시 켜면 이미 기한이 지난 청구서가 청구됩니다."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "청구서 분리"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "고객을 비활성으로 설정"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "계정 소유자의 Google 로그인."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "상태 업데이트"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "면세"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "자동 상태 업데이트가 이 고객을 비활성으로 바꿨다가 다시 활성으로 바꿀 수 있습니다."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "로그인 선택은 로그인 기록을 읽습니다. 활동 로그를 90일 이상 보관하세요(활동 설정)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "이 고객은 Google로만 로그인합니다. 이 옵션을 끄면 비밀번호 찾기로 비밀번호를 설정합니다."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "서비스 없음"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "서비스 없음 및 3개월간 로그인 없음"

@@ -24238,3 +24238,108 @@ msgstr ":domain já está na sua conta :registrar. Se uma tentativa anterior des
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Os clientes veem o nome e o endereço no idioma deles nos e-mails, nas faturas e nas páginas do cliente. Um campo vazio mostra o padrão."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Permitir login único (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Os pagamentos automáticos estão desativados na sua conta: suas formas de pagamento salvas não são cobradas sozinhas. Pague cada fatura na página dela."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Atualização automática de status"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Os clientes podem desativar o e-mail de marketing no perfil, e todo e-mail de marketing do Envio em Massa tem link de cancelamento e cabeçalhos de cancelamento com um clique. O Envio em Massa sempre pula clientes que optaram por sair, também quando a equipe desativou o marketing no perfil do cliente. E-mails de serviço (faturas, tickets, login) sempre são enviados."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Clientes que recusaram e-mail de marketing são pulados. Desative só para avisos sobre os serviços deles, como manutenção ou mudança de preço."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Desativar processamento de cartão"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Cada serviço renova na sua própria fatura, mesmo com o mesmo vencimento."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "O login com o Google está desativado nesta conta. Entre com seu e-mail e senha."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Aceite de e-mails de marketing"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "E-mail de marketing"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Mensagens do Envio em Massa marcadas como e-mail de marketing."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Sem imposto nas faturas deste cliente."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Uma vez por dia, clientes sem serviço, complemento ou domínio ativo ou suspenso ficam Inativos e voltam a Ativos quando tiverem um. Clientes inativos entram, pedem, pagam e abrem tickets como antes. Clientes com menos de dois dias, Suspensos e Cancelados, e clientes com Atualização de status desativada no perfil ficam como estão."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Avisos de atraso"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Lembretes de pagamento após a data de vencimento. O lembrete antes da data de vencimento é enviado de qualquer forma."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Cartões salvos, contas PayPal e débitos diretos não são cobrados automaticamente; o cliente paga manualmente. Ao reativar, as faturas já vencidas são cobradas."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Faturas separadas"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Definir clientes como Inativo"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Login com o Google para o titular da conta."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Atualização de status"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Isento de imposto"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "A atualização automática de status pode definir este cliente como Inativo e depois Ativo de novo."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "A escolha de login lê o histórico de logins: mantenha o registro de atividades por pelo menos 90 dias (configurações de Atividade)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Este cliente entra só com o Google: com isto desativado, ele define uma senha com Esqueci a senha."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Sem serviços"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Sem serviços e sem login há 3 meses"

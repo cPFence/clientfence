@@ -378,7 +378,8 @@ class Guest extends \ClientFence\Api\AbstractApi
                 return true;
             }
 
-            if ($client->getStatus() !== Client::ACTIVE) {
+            // ClientFence core patch: Inactive clients sign in as Active ones.
+            if (!in_array($client->getStatus(), Client::OPEN, true)) {
                 $this->getDi()['logger']->setChannel('security')->info('Client password reset requested for ineligible client #%s from IP %s: email %s, account status %s', $client->getId(), $this->getIp(), $data['email'], $client->getStatus());
 
                 return true;
@@ -437,7 +438,8 @@ class Guest extends \ClientFence\Api\AbstractApi
                 throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');
             }
 
-            if ($client->getStatus() !== Client::ACTIVE) {
+            // ClientFence core patch: Inactive clients sign in as Active ones.
+            if (!in_array($client->getStatus(), Client::OPEN, true)) {
                 $this->getDi()['logger']->setChannel('security')->info('Client password reset confirmation failed for client #%s from IP %s: account status %s', $client->getId(), $this->getIp(), $client->getStatus());
 
                 throw new \ClientFence\InformationException('The link has expired or you have already reset your password.');

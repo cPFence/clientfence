@@ -34,6 +34,7 @@ function seedReceiverTables(Connection $dbal): void
     $dbal->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, status TEXT, client_group_id INTEGER, first_name TEXT, last_name TEXT, email TEXT)');
     $dbal->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, status TEXT)');
     $dbal->executeStatement('CREATE TABLE client_group_members (client_id INTEGER NOT NULL, client_group_id INTEGER NOT NULL, PRIMARY KEY (client_id, client_group_id))');
+    $dbal->executeStatement('CREATE TABLE ' . ClientFence\Mod\Client\Privacy::OPTOUT_TABLE . ' (client_id INTEGER PRIMARY KEY, source TEXT, opted_out_at TEXT)');
 
     $dbal->executeStatement('INSERT INTO client_group (id) VALUES (1), (2)');
     $dbal->executeStatement('INSERT INTO product (id) VALUES (10), (11)');
@@ -65,7 +66,8 @@ test('sendMessage builds the mail payload from the client entity without a fatal
     $extensionService = Mockery::mock(ClientFence\Mod\Extension\Service::class);
     $extensionService->shouldReceive('isExtensionActive')->with('mod', 'demo')->once()->andReturn(false);
 
-    $model = (new MassmailerMessage())->setSubject('subject')->setContent('content');
+    // A service notice: no opt-out lookup.
+    $model = (new MassmailerMessage())->setSubject('subject')->setContent('content')->setMarketing(false);
 
     $service = new ClientFence\Mod\Massmailer\Service();
     $di = createMassmailerDi();
@@ -152,22 +154,22 @@ test('get message receivers rejects invalid stored filter', function (): void {
         ->toThrow(InformationException::class, 'Mass mail filter contains invalid values for "client_status"');
 });
 
-test('get message receivers flags clients who opted out of marketing email', function (bool $optOutOn, array $expected): void {
+test('get message receivers flags clients who opted out of marketing email', function (bool $optOutOn, bool $marketing, array $expected): void {
     $dbal = createMassmailerDbal();
     seedReceiverTables($dbal);
-    $dbal->executeStatement('CREATE TABLE ' . ClientFence\Mod\Client\Privacy::OPTOUT_TABLE . ' (client_id INTEGER PRIMARY KEY, source TEXT, opted_out_at TEXT)');
     $dbal->executeStatement('INSERT INTO ' . ClientFence\Mod\Client\Privacy::OPTOUT_TABLE . " (client_id, source, opted_out_at) VALUES (1, 'link', '2026-10-18')");
     $di = createMassmailerDi($dbal);
     $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'client' ? ['marketing_optout' => $optOutOn ? '1' : '0'] : []);
-    $model = (new MassmailerMessage())->setFilter(json_encode(['client_status' => ['active']], JSON_THROW_ON_ERROR));
+    $model = (new MassmailerMessage())->setFilter(json_encode(['client_status' => ['active']], JSON_THROW_ON_ERROR))->setMarketing($marketing);
 
     $service = new ClientFence\Mod\Massmailer\Service();
     $service->setDi($di);
 
     expect(array_column($service->getMessageReceivers($model), 'opted_out', 'id'))->toBe($expected);
 })->with([
-    'opt-out on' => [true, [3 => false, 1 => true]],
-    'opt-out off: no one is flagged' => [false, [3 => false, 1 => false]],
+    'marketing, opt-out on' => [true, true, [3 => false, 1 => true]],
+    'marketing, clients cannot opt out themselves: staff and earlier opt-outs still count' => [false, true, [3 => false, 1 => true]],
+    'a service notice reaches everyone' => [true, false, [3 => false, 1 => false]],
 ]);
 
 function createSendingService(Connection $dbal, array $messages = []): ClientFence\Mod\Massmailer\Service&Mockery\MockInterface

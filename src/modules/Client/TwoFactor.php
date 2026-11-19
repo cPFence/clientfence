@@ -376,7 +376,7 @@ final class TwoFactor
     public static function signIn(\Pimple\Container $di, int $clientId, ?array $user, string $ip): void
     {
         $client = $di['em']->getRepository(\ClientFence\Mod\Client\Entity\Client::class)->find($clientId);
-        if (!$client instanceof \ClientFence\Mod\Client\Entity\Client || $client->getStatus() !== \ClientFence\Mod\Client\Entity\Client::ACTIVE) {
+        if (!$client instanceof \ClientFence\Mod\Client\Entity\Client || !in_array($client->getStatus(), \ClientFence\Mod\Client\Entity\Client::OPEN, true)) {
             throw new InformationException('Please check your login details.', [], 401);
         }
         $di['events_manager']->fire(['event' => 'onAfterClientLogin', 'params' => ['id' => $client->getId(), 'ip' => $ip]]);

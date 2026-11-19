@@ -33826,3 +33826,108 @@ msgstr ":domain पहले से आपके :registrar खाते मे�
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "क्लाइंट ईमेल, इनवॉइस और क्लाइंट पेजों पर नाम और पता अपनी भाषा में देखते हैं। खाली फ़ील्ड डिफ़ॉल्ट दिखाता है।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "सिंगल साइन-ऑन की अनुमति दें"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "आपके खाते के लिए स्वचालित भुगतान बंद हैं: आपके सहेजे गए भुगतान तरीकों से अपने आप शुल्क नहीं लिया जाता। हर इनवॉइस का भुगतान उसके पेज से करें।"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "स्वचालित स्थिति अपडेट"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "ग्राहक अपनी प्रोफ़ाइल में मार्केटिंग ईमेल बंद कर सकते हैं, और हर मार्केटिंग Mass Mailer ईमेल में अनसब्सक्राइब लिंक और एक-क्लिक अनसब्सक्राइब हेडर होते हैं। Mass Mailer हमेशा उन ग्राहकों को छोड़ देता है जिन्होंने ऑप्ट-आउट किया है, तब भी जब स्टाफ ने ग्राहक की प्रोफ़ाइल में मार्केटिंग बंद की हो। सेवा ईमेल (इनवॉइस, टिकट, साइन-इन) हमेशा जाते हैं।"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "जिन ग्राहकों ने मार्केटिंग ईमेल से ऑप्ट-आउट किया है उन्हें छोड़ दिया जाता है। इसे केवल उनकी सेवाओं की सूचनाओं के लिए बंद करें, जैसे रखरखाव या मूल्य परिवर्तन।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "कार्ड प्रोसेसिंग अक्षम करें"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "हर सेवा अपने इनवॉइस पर नवीनीकृत होती है, भले ही देय तिथि समान हो।"
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "इस खाते के लिए Google साइन-इन बंद है। अपने ईमेल और पासवर्ड से साइन इन करें।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "मार्केटिंग ईमेल ऑप्ट-इन"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "मार्केटिंग ईमेल"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Mass Mailer संदेश जिन्हें मार्केटिंग ईमेल के रूप में चिह्नित किया गया है।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "इस ग्राहक के इनवॉइस पर कोई कर नहीं।"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "दिन में एक बार, जिन ग्राहकों के पास सक्रिय या निलंबित सेवा, ऐड-ऑन या डोमेन नहीं है वे निष्क्रिय हो जाते हैं, और एक मिलते ही फिर सक्रिय हो जाते हैं। निष्क्रिय ग्राहक पहले की तरह साइन इन, ऑर्डर, भुगतान और टिकट खोल सकते हैं। दो दिन से नए ग्राहक, निलंबित और रद्द ग्राहक, और जिनकी प्रोफ़ाइल में स्थिति अपडेट बंद है वे जैसे हैं वैसे रहते हैं।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "अतिदेय सूचनाएँ"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "देय तिथि के बाद भुगतान अनुस्मारक। देय तिथि से पहले का अनुस्मारक हर हाल में भेजा जाता है।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "सहेजे गए कार्ड, PayPal खाते और Direct Debit से अपने आप शुल्क नहीं लिया जाता; ग्राहक खुद भुगतान करता है। वापस चालू करने पर पहले से देय इनवॉइस पर शुल्क लिया जाता है।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "अलग इनवॉइस"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "ग्राहकों को निष्क्रिय करें"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "खाता स्वामी के लिए Google से साइन इन।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "स्थिति अपडेट"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "कर मुक्त"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "स्वचालित स्थिति अपडेट इस ग्राहक को निष्क्रिय और फिर सक्रिय कर सकता है।"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "साइन-इन विकल्प साइन-इन इतिहास पढ़ता है: गतिविधि लॉग कम से कम 90 दिन रखें (गतिविधि सेटिंग्स)।"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "यह ग्राहक केवल Google से साइन इन करता है: इसके बंद होने पर वह पासवर्ड भूल गए से पासवर्ड सेट करता है।"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "बिना सेवाओं के"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "बिना सेवाओं के और 3 महीने बिना साइन-इन के"

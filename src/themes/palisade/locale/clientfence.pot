@@ -2790,6 +2790,10 @@ msgstr ""
 msgid "Allow Registration"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig
 msgid "Allow Transfer"
 msgstr ""
@@ -4062,6 +4066,10 @@ msgstr ""
 msgid "Automatic payments"
 msgstr ""
 
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr ""
+
 #: src/library/Payment/Adapter/Mollie.php src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Automatic payments to :company"
 msgstr ""
@@ -4076,6 +4084,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Automatic reply"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
 msgstr ""
 
 #: src/modules/Order/Api/Admin.php
@@ -6451,7 +6463,7 @@ msgid "Clients can set up automatic payments on their Payment methods page witho
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
-msgid "Clients can turn marketing email off on their profile. Every Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers, and Mass Mailer skips clients who opted out. Service email (invoices, tickets, sign-in) always goes."
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig
@@ -6528,6 +6540,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
 msgid "Clients who can order"
+msgstr ""
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateway.html.twig
@@ -8622,6 +8638,10 @@ msgstr ""
 msgid "Disable All"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Disable Email Change"
 msgstr ""
@@ -9320,6 +9340,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_reports.html.twig
 msgid "Each report can be filtered, printed and downloaded as a CSV file."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -10730,7 +10754,7 @@ msgstr ""
 msgid "Execute Now"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Exempt from Tax"
 msgstr ""
 
@@ -12050,6 +12074,10 @@ msgstr ""
 msgid "Google sign-in is off (step 1)."
 msgstr ""
 
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Run.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Google sign-in links"
 msgstr ""
@@ -13182,7 +13210,7 @@ msgstr ""
 msgid "In your default currency; other currencies at the exchange rates."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Extension/templates/admin/mod_extension_index.html.twig …
+#: src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
 msgid "Inactive"
 msgstr ""
 
@@ -15638,6 +15666,14 @@ msgstr ""
 msgid "Marketing Email Opt-out"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr ""
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr ""
+
 #: src/modules/Client/Api/Client.php
 msgid "Marketing email settings are not available."
 msgstr ""
@@ -15664,6 +15700,10 @@ msgstr ""
 
 #: src/modules/Massmailer/manifest.json
 msgid "Mass Mail Tool"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
 msgstr ""
 
 #: src/modules/Massmailer/Service.php
@@ -17362,6 +17402,10 @@ msgstr ""
 msgid "No tax"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/widgets/mod_clientfence_dashboard_support.html.twig
 msgid "No tickets are waiting for a reply."
 msgstr ""
@@ -17912,6 +17956,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "On: session cookies are SameSite=Strict."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
@@ -18956,6 +19004,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig …
 msgid "Overdue"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
 msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_due_after.html.twig
@@ -20048,6 +20100,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/email/mod_invoice_payment_reminder.html.twig
 msgid "Payment reminder: invoice #%number%"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig
@@ -23406,6 +23462,10 @@ msgstr ""
 msgid "Saved cards are not available."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Saved cards, two-factor sign-in, coupons, package add-ons, ticket attachments and refunds: the warnings name what was found."
 msgstr ""
@@ -24038,6 +24098,10 @@ msgstr ""
 msgid "Sent."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Dynadot.php
 msgid "Separate key for api-sandbox.dynadot.com, used only while test mode is on."
 msgstr ""
@@ -24314,6 +24378,10 @@ msgstr ""
 msgid "Set as Default"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr ""
+
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Set default nameservers that will be used for new domain registrations if a client does not provide their own nameservers during checkout."
 msgstr ""
@@ -24406,7 +24474,7 @@ msgstr ""
 msgid "Setting up a Direct Debit with GoCardless is not available."
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
 msgid "Settings"
 msgstr ""
 
@@ -24764,6 +24832,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/widgets/mod_client_google_button.html.twig
 msgid "Sign in with Google"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
 msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_login.html.twig src/themes/palisade/html/mod_page_login.html.twig
@@ -25248,6 +25320,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Client/templates/admin/mod_client_affiliates_list.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig …
 msgid "Status"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -25876,6 +25952,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Invoice/InvoicePdf.php src/modules/Invoice/QuotePdf.php …
 msgid "Tax"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_contact_fields.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
@@ -26612,6 +26692,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "The automatic reply was removed."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig
@@ -27843,6 +27927,10 @@ msgstr ""
 msgid "The sign-in PIN could not be emailed. Please try again later or contact us."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "The staff member is emailed, unless they assign it to themselves."
 msgstr ""
@@ -28289,6 +28377,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
 msgid "This client is not an affiliate. An affiliate shares a link to your site and earns a commission on the services its visitors order."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
@@ -31981,6 +32073,14 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Without a code, on every order its rules allow. A code the client enters replaces it."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig

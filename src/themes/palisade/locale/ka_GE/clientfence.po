@@ -33826,3 +33826,108 @@ msgstr ":domain უკვე თქვენს :registrar ანგარიშ
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "კლიენტები სახელსა და მისამართს თავიანთ ენაზე ხედავენ ელფოსტაში, ინვოისებსა და კლიენტის გვერდებზე. ცარიელი ველი აჩვენებს ნაგულისხმევს."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "ერთიანი შესვლის (SSO) დაშვება"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "ავტომატური გადახდები გამორთულია თქვენი ანგარიშისთვის: შენახული გადახდის მეთოდებიდან თანხა თავისით არ ჩამოიჭრება. თითოეული ინვოისი გადაიხადეთ მისი გვერდიდან."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "სტატუსის ავტომატური განახლება"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "კლიენტებს შეუძლიათ პროფილში გამორთონ მარკეტინგული ელფოსტა, და Mass Mailer-ის ყველა მარკეტინგულ წერილს აქვს გამოწერის გაუქმების ბმული და ერთი დაწკაპუნებით გაუქმების სათაურები. Mass Mailer ყოველთვის გამოტოვებს უარის მთქმელ კლიენტებს, მაშინაც კი, როცა თანამშრომელმა მარკეტინგი კლიენტის პროფილში გამორთო. სერვისის წერილები (ინვოისები, ბილეთები, შესვლა) ყოველთვის იგზავნება."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "მარკეტინგულ ელფოსტაზე უარის მთქმელი კლიენტები გამოიტოვება. გამორთეთ მხოლოდ მათი სერვისების შესახებ შეტყობინებებისთვის, მაგალითად ტექნიკური სამუშაოები ან ფასის ცვლილება."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "ბარათით დამუშავების გამორთვა"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "ყოველი სერვისი ახლდება საკუთარი ინვოისით, ვადის ერთი და იგივე თარიღის შემთხვევაშიც."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Google-ით შესვლა ამ ანგარიშისთვის გამორთულია. შედით ელფოსტითა და პაროლით."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "თანხმობა მარკეტინგულ ელფოსტაზე"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "მარკეტინგული ელფოსტა"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Mass Mailer-ის შეტყობინებები, რომლებიც მარკეტინგულ ელფოსტად არის მონიშნული."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "ამ კლიენტის ინვოისებზე გადასახადი არ ირიცხება."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "დღეში ერთხელ კლიენტები, რომლებსაც არ აქვთ აქტიური ან შეჩერებული სერვისი, დამატება ან დომენი, ხდებიან არააქტიური, და ისევ აქტიური, როგორც კი ექნებათ. არააქტიური კლიენტები შედიან, ათავსებენ შეკვეთებს, იხდიან და ხსნიან ბილეთებს როგორც ადრე. ორ დღეზე ახალი კლიენტები, შეჩერებული და გაუქმებული კლიენტები და კლიენტები, რომელთა პროფილში სტატუსის განახლება გამორთულია, უცვლელი რჩებიან."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "ვადაგადაცილების შეტყობინებები"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "გადახდის შეხსენებები ვადის გასვლის შემდეგ. ვადის გასვლამდე შეხსენება ყოველთვის იგზავნება."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "შენახული ბარათებიდან, PayPal ანგარიშებიდან და Direct Debit-იდან თანხა ავტომატურად არ ჩამოიჭრება; კლიენტი იხდის ხელით. ხელახლა ჩართვისას უკვე ვადამოსული ინვოისები ჩამოიჭრება."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "ცალკე ინვოისები"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "კლიენტების არააქტიურად დაყენება"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Google-ით შესვლა ანგარიშის მფლობელისთვის."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "სტატუსის განახლება"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "გადასახადისგან გათავისუფლებული"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "სტატუსის ავტომატურმა განახლებამ შეიძლება ეს კლიენტი არააქტიური და ისევ აქტიური გახადოს."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "შესვლის არჩევანი კითხულობს შესვლის ისტორიას: შეინახეთ აქტივობის ჟურნალი მინიმუმ 90 დღე (აქტივობის პარამეტრები)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "ეს კლიენტი შედის მხოლოდ Google-ით: გამორთვისას ის პაროლს აყენებს პაროლის აღდგენით."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "სერვისების გარეშე"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "სერვისების გარეშე და 3 თვე შესვლის გარეშე"

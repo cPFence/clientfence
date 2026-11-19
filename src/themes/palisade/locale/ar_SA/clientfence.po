@@ -30733,3 +30733,108 @@ msgstr ":domain موجود بالفعل في حسابك لدى :registrar. إذ�
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "يرى العملاء الاسم والعنوان بلغتهم في رسائل البريد الإلكتروني والفواتير وصفحات العملاء. يعرض الحقل الفارغ القيمة الافتراضية."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "السماح بتسجيل الدخول الموحّد"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "المدفوعات التلقائية متوقفة لحسابك: لا يتم خصم طرق الدفع المحفوظة تلقائيًا. ادفع كل فاتورة من صفحتها."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "تحديث الحالة التلقائي"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "يمكن للعملاء إيقاف الرسائل التسويقية من ملفهم الشخصي، وتحتوي كل رسالة تسويقية عبر Mass Mailer على رابط لإلغاء الاشتراك وترويسات إلغاء الاشتراك بنقرة واحدة. يتجاوز Mass Mailer دائمًا العملاء الذين رفضوا الرسائل، وكذلك عندما يوقف الموظفون التسويق من ملف العميل. رسائل الخدمة (الفواتير والتذاكر وتسجيل الدخول) تُرسل دائمًا."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "يتم تجاوز العملاء الذين رفضوا الرسائل التسويقية. أوقف هذا الخيار فقط للإشعارات المتعلقة بخدماتهم، مثل الصيانة أو تغيير السعر."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "تعطيل المعالجة بالبطاقة"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "تُجدَّد كل خدمة بفاتورتها الخاصة، حتى لو كان تاريخ الاستحقاق نفسه."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "تسجيل الدخول عبر Google متوقف لهذا الحساب. سجّل الدخول بالبريد الإلكتروني وكلمة المرور."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "الموافقة على الرسائل التسويقية"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "رسالة تسويقية"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "رسائل Mass Mailer المحددة كرسائل تسويقية."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "لا ضريبة على فواتير هذا العميل."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "مرة في اليوم، يصبح العملاء الذين ليس لديهم خدمة أو إضافة أو نطاق نشط أو موقوف غير مُفعّلين، ويعودون نشطين عندما يحصلون على واحد. يسجّل العملاء غير المُفعّلين الدخول ويطلبون ويدفعون ويفتحون التذاكر كالمعتاد. لا يتأثر العملاء الأحدث من يومين، والموقوفون والملغون، والعملاء الذين أوقفوا تحديث الحالة في ملفهم."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "إشعارات التأخر"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "تذكيرات الدفع بعد تاريخ الاستحقاق. يُرسل التذكير قبل تاريخ الاستحقاق في الحالتين."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "لا يتم خصم البطاقات المحفوظة وحسابات PayPal والخصم المباشر تلقائيًا؛ يدفع العميل يدويًا. عند إعادة التفعيل، تُخصم الفواتير المستحقة بالفعل."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "فواتير منفصلة"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "اجعل العملاء غير مُفعّلين"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "تسجيل الدخول عبر Google لمالك الحساب."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "تحديث الحالة"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "معفى من الضريبة"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "قد يجعل التحديث التلقائي للحالة هذا العميل غير مُفعّل ثم نشطًا مرة أخرى."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "يعتمد خيار تسجيل الدخول على سجل تسجيل الدخول: احتفظ بسجل النشاط 90 يومًا على الأقل (إعدادات النشاط)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "يسجّل هذا العميل الدخول عبر Google فقط: عند إيقاف هذا الخيار، يعيّن كلمة مرور عبر نسيت كلمة المرور."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "بدون خدمات"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "بدون خدمات وبدون تسجيل دخول لمدة 3 أشهر"

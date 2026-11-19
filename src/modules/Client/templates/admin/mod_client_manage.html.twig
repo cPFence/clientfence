@@ -189,6 +189,11 @@
                                             <input class="form-check-input" id="radioStatusActive" type="radio" name="status" value="active"{% if client.status == 'active' %} checked{% endif %}>
                                             <span class="form-check-label">{{ 'Active'|trans }}</span>
                                         </label>
+                                        {# ClientFence core patch: Inactive works as Active (Client/StatusUpdate.php). #}
+                                        <label class="form-check">
+                                            <input class="form-check-input" id="radioStatusInactive" type="radio" name="status" value="inactive"{% if client.status == 'inactive' %} checked{% endif %}>
+                                            <span class="form-check-label">{{ 'Inactive'|trans }}</span>
+                                        </label>
                                         <label class="form-check">
                                             <input class="form-check-input" id="radioStatusSuspended" type="radio" name="status" value="suspended"{% if client.status == 'suspended' %} checked{% endif %}>
                                             <span class="form-check-label">{{ 'Suspended'|trans }}</span>
@@ -331,6 +336,38 @@
                             </div>
                         </section>
 
+                        {# ClientFence core patch: the WHMCS profile options as switches, in WHMCS's order; key: [name, hint, on, value when on].
+                           Disable CC Processing is auto_charge reversed. Saved by client/update (Client/Api/Admin.php). #}
+                        <section class="mb-4 pb-4 border-bottom" id="client-settings">
+                            <h6 class="card-title text-secondary mb-3">{{ 'Settings'|trans }}</h6>
+                            <div class="row g-2 align-items-start">
+                                {% for key, row in {
+                                    'overdue_notices': ['Overdue Notices'|trans, 'Payment reminders after the due date. The reminder before the due date is sent either way.'|trans, client.overdue_notices, 1],
+                                    'tax_exempt': ['Tax Exempt'|trans, 'No tax on this client\'s invoices.'|trans, client.tax_exempt, 1],
+                                    'separate_invoices': ['Separate Invoices'|trans, 'Each service renews on its own invoice, even with the same due date.'|trans, client.separate_invoices, 1],
+                                    'auto_charge': ['Disable CC Processing'|trans, 'Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged.'|trans, not client.auto_charge, 0],
+                                    'marketing': ['Marketing Emails Opt-in'|trans, 'Mass Mailer messages marked as marketing email.'|trans, client.marketing, 1],
+                                    'status_update': ['Status Update'|trans, 'The automatic status update may set this client Inactive and Active again.'|trans, client.status_update, 1],
+                                    'allow_sso': ['Allow Single Sign-On'|trans, client.google_only ? 'This client signs in with Google only: with this off, they set a password with Forgot password.'|trans : 'Sign in with Google for the account owner.'|trans, client.allow_sso, 1],
+                                } %}
+                                <div class="col-lg-6">
+                                    <label class="d-flex align-items-start justify-content-between gap-3 p-3 border rounded-3" for="client-{{ key }}">
+                                        <span>
+                                            <span class="d-block fw-medium">{{ row[0] }}</span>
+                                            <span class="d-block form-hint mt-1">{{ row[1] }}</span>
+                                        </span>
+                                        <span class="form-check form-switch form-switch-2 m-0">
+                                            <input type="hidden" name="{{ key }}" value="{{ 1 - row[3] }}">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="client-{{ key }}" name="{{ key }}" value="{{ row[3] }}"{% if row[2] %} checked{% endif %}>
+                                        </span>
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                {# The value shown: an unsubscribe made while the page was open is kept unless staff switch it. #}
+                                <input type="hidden" name="marketing_shown" value="{{ client.marketing ? 1 : 0 }}">
+                            </div>
+                        </section>
+
                         <section>
                             <h6 class="card-title text-secondary mb-3">{{ 'Additional Settings'|trans }}</h6>
                             <div class="row g-3">
@@ -338,22 +375,9 @@
                                     <label class="form-label">{{ 'Custom Client ID'|trans }}</label>
                                     <input class="form-control" type="text" name="aid" value="{{ client.aid }}" placeholder="{{ 'Existing customer ID from another system'|trans }}">
                                 </div>
-                                <div class="col-xl-3">
+                                <div class="col-xl-6">
                                     <label class="form-label">{{ 'Currency'|trans }}</label>
                                     {{ mf.selectbox('currency', guest.currency_get_pairs, client.currency, 0, 'Select Currency'|trans) }}
-                                </div>
-                                <div class="col-xl-3">
-                                    <label class="form-label d-block">{{ 'Exempt from Tax'|trans }}</label>
-                                    <div class="d-flex flex-wrap gap-3">
-                                        <label class="form-check">
-                                            <input class="form-check-input" id="radioTaxExemptYes" type="radio" name="tax_exempt" value="1"{% if client.tax_exempt %} checked{% endif %}>
-                                            <span class="form-check-label">{{ 'Yes'|trans }}</span>
-                                        </label>
-                                        <label class="form-check">
-                                            <input class="form-check-input" id="radioTaxExemptNo" type="radio" name="tax_exempt" value="0"{% if not client.tax_exempt %} checked{% endif %}>
-                                            <span class="form-check-label">{{ 'No'|trans }}</span>
-                                        </label>
-                                    </div>
                                 </div>
                                 {# ClientFence core patch: one client may order from hosting networks (CF-119, Antispam/Networks.php). #}
                                 {% set hosting_network = admin.client_hosting_network({ 'id': client.id }) %}

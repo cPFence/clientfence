@@ -299,6 +299,7 @@ final class Google
             throw new InformationException('Google sign-in is not available.');
         }
         [$kind, $id] = TwoFactor::subject($di, $clientId);
+        self::checkSso($di, $kind, $id);
         TwoFactor::checkPassword($di, $kind, $id, $data['password'] ?? null, $ip);
 
         return self::start($di, ['mode' => 'link', 'kind' => $kind, 'id' => $id, 'client_id' => $clientId]);
@@ -830,15 +831,29 @@ final class Google
     }
 
     /**
-     * A login that may sign in: an active client, or an active user with an active account.
+     * A login that may sign in: an active client with single sign-on allowed, or an active user with an active account.
      */
     private static function checkUsable(\Pimple\Container $di, string $kind, int $id): void
     {
         $usable = $kind === 'user'
             ? Users::loginFor($di, $id) !== null
-            : $di['em']->getConnection()->fetchOne('SELECT status FROM client WHERE id = ?', [$id]) === \Model_Client::ACTIVE;
+            : in_array($di['em']->getConnection()->fetchOne('SELECT status FROM client WHERE id = ?', [$id]), \Model_Client::OPEN, true);
         if (!$usable) {
             throw new InformationException('This sign-in cannot be used. Please contact support.');
+        }
+        self::checkSso($di, $kind, $id);
+    }
+
+    /** ClientFence core patch: staff turned Allow Single Sign-On off for this account owner (WHMCS); authorized users keep theirs. */
+    private static function ssoOff(\Pimple\Container $di, string $kind, int $id): bool
+    {
+        return $kind === 'client' && (string) $di['em']->getConnection()->fetchOne('SELECT allow_sso FROM client WHERE id = ?', [$id]) === '0';
+    }
+
+    private static function checkSso(\Pimple\Container $di, string $kind, int $id): void
+    {
+        if (self::ssoOff($di, $kind, $id)) {
+            throw new InformationException('Google sign-in is off for this account. Sign in with your email and password.');
         }
     }
 
@@ -853,6 +868,7 @@ final class Google
         if (!$signedIn) {
             throw new InformationException('You were signed out. Please sign in and link Google again.');
         }
+        self::checkSso($di, $kind, $id);
         $db = $di['em']->getConnection();
         $other = $db->fetchAssociative('SELECT kind, subject_id FROM client_google WHERE google_sub = ?', [$claims['sub']]);
         if ($other !== false && ((string) $other['kind'] !== $kind || (int) $other['subject_id'] !== $id)) {
@@ -901,7 +917,7 @@ final class Google
         [$kind, $id] = TwoFactor::subject($di, $clientId);
 
         return [
-            'on' => self::signinOn($di),
+            'on' => self::signinOn($di) && !self::ssoOff($di, $kind, $id),
             'link' => self::linkOf($di, $kind, $id),
             // Lock-out protection: an account made by Google sign-up chooses a password first.
             'needs_password' => $kind === 'client' && !self::ownPassword($di, $id),

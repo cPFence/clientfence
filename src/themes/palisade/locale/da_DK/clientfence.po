@@ -33826,3 +33826,108 @@ msgstr ":domain findes allerede i din :registrar-konto. Hvis et tidligere forsø
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Kunder ser navnet og adressen på deres sprog i e-mails, fakturaer og kundesider. Et tomt felt viser standardværdien."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Tillad single sign-on"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Automatiske betalinger er slået fra for din konto: dine gemte betalingsmetoder trækkes ikke af sig selv. Betal hver faktura fra dens side."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Automatisk statusopdatering"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Kunder kan slå marketingmails fra på deres profil, og hver marketing-mail fra Mass Mailer får et afmeldingslink og afmeldingsheadere med ét klik. Mass Mailer springer altid kunder over, der har fravalgt det, også når personalet har slået marketing fra på kundens profil. Servicemails (fakturaer, tickets, login) sendes altid."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Kunder, der har fravalgt marketingmails, springes over. Slå det kun fra til beskeder om deres tjenester, f.eks. vedligehold eller prisændring."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Deaktiver kortbehandling"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Hver tjeneste fornyes på sin egen faktura, også med samme forfaldsdato."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Google-login er slået fra for denne konto. Log ind med din e-mail og adgangskode."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Tilmelding til marketingmails"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Marketing-mail"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Mass Mailer-beskeder markeret som marketing-mail."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Ingen moms på denne kundes fakturaer."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Én gang om dagen bliver kunder uden en aktiv eller suspenderet tjeneste, tilføjelse eller domæne Inaktive, og Aktive igen, når de har en. Inaktive kunder logger ind, bestiller, betaler og åbner tickets som før. Kunder yngre end to dage, Suspenderede og Annullerede kunder og kunder med Statusopdatering slået fra på profilen lades uændrede."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Påmindelser om forfald"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Betalingspåmindelser efter forfaldsdatoen. Påmindelsen før forfaldsdatoen sendes under alle omstændigheder."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Gemte kort, PayPal-konti og Direkte debitering (Direct Debit) trækkes ikke automatisk; kunden betaler selv. Når det slås til igen, trækkes allerede forfaldne fakturaer."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Separate fakturaer"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Sæt kunder til Inaktiv"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Log ind med Google for kontoejeren."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Statusopdatering"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Momsfritaget"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Den automatiske statusopdatering kan sætte denne kunde til Inaktiv og Aktiv igen."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Loginvalget læser loginhistorikken: gem aktivitetsloggen i mindst 90 dage (indstillinger for Aktivitet)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Denne kunde logger kun ind med Google: når dette er slået fra, sætter kunden en adgangskode med Glemt adgangskode."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Uden tjenester"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Uden tjenester og uden login i 3 måneder"

@@ -301,6 +301,8 @@ class Client extends \ClientFence\Api\AbstractApi
         $mollieMethod = $mollie?->savedCard($clientId);
 
         return [
+            // ClientFence core patch: staff turned automatic charges off for this client (Disable CC Processing).
+            'auto_charge' => $di['dbal']->fetchOne('SELECT auto_charge FROM client WHERE id = ?', [$clientId]) == 1,
             'available' => $stripe !== null,
             'bank' => $stripe?->bankDebit($clientId) ?? false,
             'cards' => $cards,

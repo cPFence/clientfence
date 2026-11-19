@@ -1147,7 +1147,7 @@ final class MailImport
             $rows = $db->fetchAllAssociative(
                 'SELECT u.id AS user_id, u.email, u.first_name, u.last_name, a.client_id, a.owner, a.permissions'
                 . ' FROM client_user u JOIN client_user_account a ON a.user_id = u.id JOIN client c ON c.id = a.client_id'
-                . " WHERE LOWER(u.email) = ? AND u.status = 'active' AND c.status = 'active' ORDER BY a.owner DESC, a.client_id",
+                . " WHERE LOWER(u.email) = ? AND u.status = 'active' AND c.status IN ('active', 'inactive') ORDER BY a.owner DESC, a.client_id",
                 [$email]
             );
         } catch (\Doctrine\DBAL\Exception\TableNotFoundException) {

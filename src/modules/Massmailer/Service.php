@@ -42,6 +42,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         ClientStatusEnum::ACTIVE->value,
         ClientStatusEnum::SUSPENDED->value,
         ClientStatusEnum::CANCELED->value,
+        ClientStatusEnum::INACTIVE->value,
     ];
     private const array ORDER_STATUSES = [
         ClientOrderStatusEnum::PENDING_SETUP->value,
@@ -155,8 +156,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
         $this->appendInCondition($query, 'co.product_id', 'has_order', $filter[self::FILTER_HAS_ORDER] ?? [], ArrayParameterType::INTEGER);
         $this->appendInCondition($query, 'co.status', 'has_order_with_status', $filter[self::FILTER_HAS_ORDER_WITH_STATUS] ?? [], ArrayParameterType::STRING);
-        // ClientFence core patch (ext massmailer): clients who opted out of marketing email are flagged, skipped and counted in the report (Client/Privacy.php).
-        if (\ClientFence\Mod\Client\Privacy::optOutOn($this->di)) {
+        // ClientFence core patch (ext massmailer): clients who opted out of marketing email are flagged, skipped and counted in the report (Client/Privacy.php);
+        // as WHMCS, for every marketing message, whether or not clients can opt out themselves.
+        if ($model->isMarketing()) {
             $query->leftJoin('c', \ClientFence\Mod\Client\Privacy::OPTOUT_TABLE, 'mo', 'mo.client_id = c.id')->addSelect('mo.client_id AS opted_out');
         } else {
             $query->addSelect('NULL AS opted_out');
@@ -376,14 +378,17 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function sendMessage(MassmailerMessage $model, int $client_id, bool $sendNow = false): int|false|null
     {
-        // ClientFence core patch: an opted-out client gets no marketing email (also one queued
-        // before the opt-out); the others get an unsubscribe footer and headers (Client/Privacy.php).
+        // ClientFence core patch: an opted-out client gets no marketing email (also one queued before the opt-out); while
+        // clients can opt out themselves, the others get an unsubscribe footer and headers (Client/Privacy.php). A message
+        // not marked as marketing (a service notice) goes to everyone, without them.
         $unsubscribe = null;
-        if (\ClientFence\Mod\Client\Privacy::optOutOn($this->di)) {
+        if ($model->isMarketing()) {
             if (\ClientFence\Mod\Client\Privacy::optedOut($this->di['em']->getConnection(), $client_id)) {
                 return false;
             }
-            $unsubscribe = \ClientFence\Mod\Client\Privacy::unsubscribeUrl($this->di, $client_id);
+            if (\ClientFence\Mod\Client\Privacy::optOutOn($this->di)) {
+                $unsubscribe = \ClientFence\Mod\Client\Privacy::unsubscribeUrl($this->di, $client_id);
+            }
         }
 
         [$ps, $pc] = $this->getParsed($model, $client_id);

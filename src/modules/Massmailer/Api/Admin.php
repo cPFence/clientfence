@@ -247,6 +247,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             ->setSubject(($model->getSubject() ?? '') . ' (Copy)')
             ->setContent($model->getContent())
             ->setFilter($model->getFilter())
+            ->setMarketing($model->isMarketing())
             ->setStatus(MassmailerMessage::STATUS_DRAFT)
             ->setCreatedAt(date('Y-m-d H:i:s'))
             ->setUpdatedAt(date('Y-m-d H:i:s'));
@@ -347,6 +348,9 @@ class Admin extends \ClientFence\Api\AbstractApi
         $model->setSubject($data['subject'] ?? $model->getSubject());
         if (isset($data['filter'])) {
             $model->setFilter($this->getService()->serializeFilter($data['filter']));
+        }
+        if (array_key_exists('marketing', $data)) {
+            $model->setMarketing(\ClientFence\Tools::normalizeBoolean($data['marketing'], true));
         }
 
         if (isset($data['from_name'])) {

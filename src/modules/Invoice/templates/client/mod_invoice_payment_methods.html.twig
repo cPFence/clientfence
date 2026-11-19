@@ -18,6 +18,9 @@
         {% endif %}
     </div>
 </div>
+{% if not cards.auto_charge %}
+<div class="alert alert-info" role="status">{{ 'Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page.'|trans }}</div>
+{% endif %}
 
 {% if not cards.available and not cards.paypal and not cards.autopay and not cards.paytabs and not cards.eway and not cards.mollie and not cards.gocardless %}
     <div class="alert alert-info" role="status">{{ 'Saved payment methods are not available.'|trans }}</div>

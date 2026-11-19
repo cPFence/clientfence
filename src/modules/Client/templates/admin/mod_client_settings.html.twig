@@ -113,6 +113,22 @@
                                         </div>
                                     </section>
                                 </div>
+                                {# ClientFence core patch: WHMCS's automatic client status update (Client/StatusUpdate.php). #}
+                                <div class="col-12 col-xl-6">
+                                    <section class="card card-sm h-100">
+                                        <div class="card-body">
+                                            <h4 class="card-title mb-2">{{ 'Automatic status update'|trans }}</h4>
+                                            <p class="text-secondary mb-3">{{ 'Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are.'|trans }}</p>
+                                            <label class="form-label" for="client-status-update">{{ 'Set clients Inactive'|trans }}</label>
+                                            <select class="form-select" id="client-status-update" name="status_update">
+                                                {% for value, label in { off: 'Off'|trans, services: 'Without services'|trans, signin: 'Without services and without a sign-in for 3 months'|trans } %}
+                                                    <option value="{{ value }}"{% if params.status_update|default('off') == value %} selected{% endif %}>{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <small class="form-hint">{{ 'The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings).'|trans }}</small>
+                                        </div>
+                                    </section>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer text-end cf-set-save">
@@ -176,7 +192,7 @@
                                     <section class="card card-sm h-100">
                                         <div class="card-body">
                                             <h4 class="card-title mb-2">{{ 'Marketing Email Opt-out'|trans }}</h4>
-                                            <p class="text-secondary mb-3">{{ 'Clients can turn marketing email off on their profile. Every Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers, and Mass Mailer skips clients who opted out. Service email (invoices, tickets, sign-in) always goes.'|trans }}</p>
+                                            <p class="text-secondary mb-3">{{ 'Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client\'s profile. Service email (invoices, tickets, sign-in) always goes.'|trans }}</p>
                                             <input type="hidden" name="marketing_optout" value="0">
                                             <label class="form-check form-switch form-switch-2">
                                                 <input class="form-check-input" name="marketing_optout" value="1" type="checkbox" {% if params.marketing_optout|default('0') == '1' %}checked="checked"{% endif %}>

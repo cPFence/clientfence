@@ -33842,3 +33842,108 @@ msgstr ":domain je že v vašem računu pri :registrar. Če ga je prejšnji posk
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Stranke vidijo ime in naslov v svojem jeziku v e-poštnih sporočilih, računih in straneh za stranke. Prazno polje prikaže privzeto vrednost."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Dovoli enotno prijavo (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Samodejna plačila so za vaš račun izklopljena: shranjeni načini plačila se ne bremenijo sami. Vsak račun plačajte na njegovi strani."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Samodejna posodobitev statusa"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Stranke lahko v profilu izklopijo tržna e-sporočila, vsako tržno e-sporočilo Mass Mailerja pa ima povezavo za odjavo in glave za odjavo z enim klikom. Mass Mailer vedno preskoči stranke, ki so se odjavile, tudi kadar je osebje izklopilo trženje v profilu stranke. Storitvena e-sporočila (računi, zahtevki, prijava) se vedno pošljejo."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Stranke, ki so zavrnile tržna e-sporočila, se preskočijo. Izklopite samo za obvestila o njihovih storitvah, na primer o vzdrževanju ali spremembi cene."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Onemogoči obdelavo kartic"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Vsaka storitev se obnovi na svojem računu, tudi z istim datumom zapadlosti."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Prijava z Googlom je za ta račun izklopljena. Prijavite se z e-pošto in geslom."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Soglasje za tržna e-sporočila"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Tržno e-sporočilo"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Sporočila Mass Mailerja, označena kot tržno e-sporočilo."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Brez davka na računih te stranke."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Enkrat na dan stranke brez aktivne ali začasno ustavljene storitve, dodatka ali domene postanejo Neaktivne, in spet Aktivne, ko jo imajo. Neaktivne stranke se prijavljajo, naročajo, plačujejo in odpirajo zahtevke kot prej. Stranke, mlajše od dveh dni, Začasno ustavljene in Preklicane stranke ter stranke z izklopljeno posodobitvijo statusa v profilu ostanejo nespremenjene."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Obvestila o zamudi"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Opomniki za plačilo po datumu zapadlosti. Opomnik pred datumom zapadlosti se pošlje v vsakem primeru."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Shranjene kartice, računi PayPal in direktne bremenitve se ne bremenijo samodejno; stranka plača ročno. Ob ponovnem vklopu se že zapadli računi bremenijo."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Ločeni računi"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Nastavi stranke na Neaktivno"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Prijava z Googlom za lastnika računa."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Posodobitev statusa"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Oproščeno davka"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Samodejna posodobitev statusa lahko to stranko nastavi na Neaktivno in spet na Aktivno."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Izbira prijave bere zgodovino prijav: dnevnik dejavnosti hranite vsaj 90 dni (nastavitve Dejavnosti)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Ta stranka se prijavlja samo z Googlom: ko je to izklopljeno, geslo nastavi z Pozabljeno geslo."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Brez storitev"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Brez storitev in brez prijave 3 mesece"

@@ -151,6 +151,8 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $db->executeStatement('CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, gateway TEXT)');
     $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY)');
     $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY)');
+    // 19 adds the client profile switches and checks the import's state.
+    $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT, updated_at TEXT)');
     $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)');
     $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT)');
     $db->insert('activity_client_history', ['client_id' => 7, 'ip' => '203.0.113.7', 'created_at' => '2026-11-01 10:00:00']);
@@ -160,8 +162,8 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $columns = static fn (string $table): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns($table)));
     $details = ['country', 'asn', 'network', 'browser', 'session_id'];
 
-    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18])
-        ->and([$columns('pay_gateway'), $columns('client'), $columns('invoice')])->toBe([['id', 'gateway', 'position'], ['id', 'po_number'], ['id', 'po_number']])
+    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19])
+        ->and([$columns('pay_gateway'), $columns('client'), $columns('invoice')])->toBe([['id', 'gateway', 'position'], ['id', 'po_number', 'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update'], ['id', 'po_number']])
         ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('activity_admin_history'))->toBe(['id', 'admin_id', 'ip', 'created_at', ...$details])
         ->and($db->createSchemaManager()->listTableIndexes('activity_client_history'))->toHaveKey('user_id_idx')
@@ -174,3 +176,32 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     expect($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('invoice'))->toBe(['id', 'po_number']);
 });
+
+test('migration 19 adds the profile switches once, and removes the opt-outs only a non-WHMCS import wrote by mistake', function (string $system, array $kept): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY)');
+    $db->executeStatement('CREATE TABLE mod_massmailer (id INTEGER PRIMARY KEY)');
+    $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT, updated_at TEXT)');
+    $db->executeStatement('CREATE TABLE client_marketing_optout (client_id INTEGER PRIMARY KEY, source TEXT, opted_out_at TEXT)');
+    $db->insert('client', ['id' => 1]);
+    $db->insert('mod_clientfence_state', ['name' => ClientFence\Mod\Clientfence\Whmcs\Run::STATE, 'value' => '{}']);
+    $db->insert('mod_clientfence_state', ['name' => ClientFence\Mod\Clientfence\Whmcs\Import::SETTINGS, 'value' => json_encode([$system => 1])]);
+    foreach ([[1, 'whmcs'], [2, 'profile'], [3, 'link']] as [$client, $source]) {
+        $db->insert('client_marketing_optout', ['client_id' => $client, 'source' => $source, 'opted_out_at' => '2026-11-01']);
+    }
+    $di = Tests\Helpers\container();
+    $di['dbal'] = $db;
+    $di['em']->shouldReceive('getConnection')->andReturn($db);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $migration = new ReflectionMethod(Migrations::class, 'm19ClientProfileOptions');
+
+    $migration->invoke(null, $di);
+    $migration->invoke(null, $di);
+
+    expect($db->fetchAllAssociative('SELECT * FROM client'))->toBe([['id' => 1, 'overdue_notices' => 1, 'separate_invoices' => 0, 'auto_charge' => 1, 'allow_sso' => 1, 'status_update' => 1]])
+        ->and(array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns('mod_massmailer'))))->toBe(['id', 'marketing'])
+        ->and($db->fetchFirstColumn('SELECT client_id FROM client_marketing_optout ORDER BY client_id'))->toBe($kept);
+})->with([
+    'a Blesta import' => ['blesta', [2, 3]],
+    'a WHMCS import keeps its clients\' choices' => ['none', [1, 2, 3]],
+]);

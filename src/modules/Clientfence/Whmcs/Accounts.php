@@ -199,7 +199,8 @@ final class Accounts
                 $id = (int) $this->db->lastInsertId();
             }
             $this->map->put('group', (int) $row['id'], (int) $id);
-            if ((float) ($row['discountpercent'] ?? 0) > 0 || trim((string) ($row['susptermexempt'] ?? '')) !== '' || trim((string) ($row['separateinvoices'] ?? '')) !== '') {
+            // Separate invoices are set on each member (clients()).
+            if ((float) ($row['discountpercent'] ?? 0) > 0 || trim((string) ($row['susptermexempt'] ?? '')) !== '') {
                 $this->warn(sprintf('Client group "%s": its discount and exemptions are not imported; set them again where ClientFence has them.', $title));
             }
             ++$done;
@@ -262,6 +263,13 @@ final class Accounts
         $values = $this->customValues($ids);
         $notes = $this->staffNotes($ids);
         $currencies = $this->currencyCodes();
+        // WHMCS client groups with "Separate Invoices": their members get the client switch.
+        $separateGroups = [];
+        foreach ($this->source->rows('SELECT id, separateinvoices FROM tblclientgroups') as $group) {
+            if (self::on($group['separateinvoices'] ?? '')) {
+                $separateGroups[(int) $group['id']] = true;
+            }
+        }
         $done = 0;
         foreach ($rows as $row) {
             $id = (int) $row['id'];
@@ -295,10 +303,17 @@ final class Accounts
                 'pass' => $this->hash($hash, sprintf('Client #%d', $id), $signsIn || !$this->source->hasTable('tblusers')),
                 'status' => match (strtolower((string) $row['status'])) {
                     'closed' => 'canceled',
+                    // As in WHMCS (Inactive works as Active here); Blesta, ClientExec and Upmind inactive clients too.
+                    'inactive' => 'inactive',
                     default => 'active',
                 },
                 'email_approved' => 1,
                 'tax_exempt' => (int) ($row['taxexempt'] ?? 0) === 1 ? 1 : 0,
+                // The WHMCS profile switches (older WHMCS lacks some); WHMCS's Allow Single Sign-On is token sign-in from other apps, not Google.
+                'overdue_notices' => self::on($row['overideduenotices'] ?? '') ? 0 : 1,
+                'separate_invoices' => self::on($row['separateinvoices'] ?? '') || isset($separateGroups[(int) ($row['groupid'] ?? 0)]) ? 1 : 0,
+                'auto_charge' => self::on($row['disableautocc'] ?? '') ? 0 : 1,
+                'status_update' => self::on($row['overrideautoclose'] ?? '') ? 0 : 1,
                 'type' => trim((string) $row['companyname']) !== '' ? 'company' : 'individual',
                 'first_name' => self::cut($row['firstname'] ?? '', 100),
                 'last_name' => self::cut($row['lastname'] ?? '', 100),
@@ -861,7 +876,13 @@ final class Accounts
         return $parts === [] ? null : implode("\n\n", $parts);
     }
 
-    private static function cut(mixed $value, int $max): string
+    /** A WHMCS yes/no column: 1 or "on". */
+    private static function on(mixed $value): bool
+    {
+        return in_array(strtolower(trim((string) $value)), ['1', 'on'], true);
+    }
+
+        private static function cut(mixed $value, int $max): string
     {
         return mb_substr(trim(is_scalar($value) ? (string) $value : ''), 0, $max);
     }

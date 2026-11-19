@@ -25,6 +25,12 @@ class Client implements ApiArrayInterface
     final public const string ACTIVE = 'active';
     final public const string SUSPENDED = 'suspended';
     final public const string CANCELED = 'canceled';
+    // ClientFence core patch: as WHMCS, the automatic status update (Client/StatusUpdate.php) sets a client without live services Inactive.
+    final public const string INACTIVE = 'inactive';
+    /** Statuses that sign in and use the client area: Inactive works as Active. */
+    final public const array OPEN = [self::ACTIVE, self::INACTIVE];
+    /** ClientFence core patch: the WHMCS client profile options, column => default (added by Clientfence\Migrations 19). */
+    final public const array PROFILE_OPTIONS = ['overdue_notices' => true, 'separate_invoices' => false, 'auto_charge' => true, 'allow_sso' => true, 'status_update' => true];
     final public const string GENDER_MALE = 'male';
     final public const string GENDER_FEMALE = 'female';
     final public const string GENDER_NON_BINARY = 'nonbinary';
@@ -147,6 +153,21 @@ class Client implements ApiArrayInterface
     // ClientFence core patch (GitHub #31): the purchase order number new invoices start with.
     #[ORM\Column(name: 'po_number', type: Types::STRING, length: 64, nullable: true)]
     private ?string $poNumber = null;
+
+    #[ORM\Column(name: 'overdue_notices', type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $overdueNotices = true;
+
+    #[ORM\Column(name: 'separate_invoices', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $separateInvoices = false;
+
+    #[ORM\Column(name: 'auto_charge', type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $autoCharge = true;
+
+    #[ORM\Column(name: 'allow_sso', type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $allowSso = true;
+
+    #[ORM\Column(name: 'status_update', type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $statusUpdate = true;
 
     #[ORM\Column(name: 'custom_1', type: Types::TEXT, nullable: true)]
     private ?string $custom1 = null;
@@ -330,6 +351,28 @@ class Client implements ApiArrayInterface
         $this->emailApproved = $emailApproved;
 
         return $this;
+    }
+
+    /** One of PROFILE_OPTIONS by its column name. */
+    public function getProfileOption(string $column): bool
+    {
+        return (bool) $this->{self::optionProperty($column)};
+    }
+
+    public function setProfileOption(string $column, bool $on): self
+    {
+        $this->{self::optionProperty($column)} = $on;
+
+        return $this;
+    }
+
+    private static function optionProperty(string $column): string
+    {
+        if (!array_key_exists($column, self::PROFILE_OPTIONS)) {
+            throw new \InvalidArgumentException('Unknown client option: ' . $column);
+        }
+
+        return lcfirst(str_replace('_', '', ucwords($column, '_')));
     }
 
     public function isTaxExempt(): bool
@@ -952,6 +995,11 @@ class Client implements ApiArrayInterface
             'auth_type' => $this->authType,
             'status' => $this->status ?? self::ACTIVE,
             'tax_exempt' => $this->taxExempt ?? false,
+            'overdue_notices' => $this->overdueNotices,
+            'separate_invoices' => $this->separateInvoices,
+            'auto_charge' => $this->autoCharge,
+            'allow_sso' => $this->allowSso,
+            'status_update' => $this->statusUpdate,
             'notes' => $this->notes,
             'ip' => $this->ip,
             'referred_by' => $this->referredBy,

@@ -27,7 +27,8 @@ class ClientRepository extends EntityRepository
 
     public function findOneByEmailAndActive(string $email): ?Client
     {
-        $client = $this->findOneBy(['email' => $email, 'status' => Client::ACTIVE]);
+        // ClientFence core patch: Inactive clients sign in as Active ones.
+        $client = $this->findOneBy(['email' => $email, 'status' => Client::OPEN]);
 
         return $client instanceof Client ? $client : null;
     }
@@ -207,7 +208,7 @@ class ClientRepository extends EntityRepository
             'SELECT status, COUNT(id) AS count FROM client GROUP BY status'
         );
 
-        $counts = ['active' => 0, 'suspended' => 0, 'canceled' => 0];
+        $counts = ['active' => 0, 'suspended' => 0, 'canceled' => 0, 'inactive' => 0];
         foreach ($rows as $row) {
             $counts[$row['status']] = (int) $row['count'];
         }

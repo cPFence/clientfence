@@ -42,6 +42,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         'company_number', 'address_1', 'address_2', 'city', 'state', 'postcode',
         'country', 'notes', 'currency', 'lang', 'timezone', 'ip', 'referred_by',
         'billing_email', 'po_number',
+        'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update',
         'custom_1', 'custom_2', 'custom_3', 'custom_4', 'custom_5', 'custom_6',
         'custom_7', 'custom_8', 'custom_9', 'custom_10', 'custom_11', 'custom_12',
         'custom_13', 'custom_14', 'custom_15', 'custom_16', 'custom_17', 'custom_18',
@@ -535,6 +536,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             Client::ACTIVE => $counts['active'],
             Client::SUSPENDED => $counts['suspended'],
             Client::CANCELED => $counts['canceled'],
+            Client::INACTIVE => $counts['inactive'],
         ];
     }
 
@@ -550,7 +552,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
     public function getByLoginDetails($email, $password): ?object
     {
-        return $this->clientRepository->findOneBy(['email' => $email, 'pass' => $password, 'status' => Client::ACTIVE]);
+        // ClientFence core patch: Inactive clients sign in as Active ones.
+        return $this->clientRepository->findOneBy(['email' => $email, 'pass' => $password, 'status' => Client::OPEN]);
     }
 
     public function toApiArray(Client|\Model_Client $model, $deep = false, $identity = null, bool $includeSensitive = false): array
@@ -707,6 +710,12 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 'notes' => $client->notes,
                 'status' => $client->status,
                 'tax_exempt' => $client->tax_exempt,
+                // ClientFence core patch: the WHMCS client profile options (Entity\Client::PROFILE_OPTIONS).
+                'overdue_notices' => (bool) $client->overdue_notices,
+                'separate_invoices' => (bool) $client->separate_invoices,
+                'auto_charge' => (bool) $client->auto_charge,
+                'allow_sso' => (bool) $client->allow_sso,
+                'status_update' => (bool) $client->status_update,
                 'ip' => $client->ip,
                 'group' => $group ? $group->title : null,
                 'created_at' => $client->created_at,
@@ -1112,7 +1121,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 $orderService->cancelFromOrder($order);
             }
         }
-        $wasActive = $client->getStatus() === Client::ACTIVE;
+        $wasActive = in_array($client->getStatus(), Client::OPEN, true);
         $client->setStatus(Client::CANCELED);
         $client->setApiToken(null);
         $client->setUpdatedAt(new \DateTime());
@@ -1198,10 +1207,11 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
     {
         // The shared authorization service still reads the legacy bean fields directly.
         // Keep that boundary until the identity/authentication slice migrates as well.
-        $legacyClient = $this->di['db']->findOne('Client', 'email = ? AND status = ?', [$email, Client::ACTIVE]);
+        // ClientFence core patch: Inactive clients sign in as Active ones.
+        $legacyClient = $this->di['db']->findOne('Client', 'email = ? AND status IN (?, ?)', [$email, ...Client::OPEN]);
         $authUser = $legacyClient;
         if (!$authUser) {
-            $candidate = $this->clientRepository->findOneBy(['email' => $email, 'status' => Client::ACTIVE]);
+            $candidate = $this->clientRepository->findOneBy(['email' => $email, 'status' => Client::OPEN]);
             $authUser = $candidate instanceof Client ? $candidate : null;
         }
 
@@ -1408,6 +1418,13 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
     public static function onBeforeAdminCronRun(\ClientFence\Event $event): void
     {
         $di = $event->getDi();
+
+        // ClientFence core patch: WHMCS's automatic client status update, once a day (StatusUpdate.php).
+        try {
+            StatusUpdate::run($di);
+        } catch (\Throwable $e) {
+            $di['logger']->error('Client: the automatic status update failed: %s', $e->getMessage());
+        }
 
         // ClientFence core patch: ID document files go the set number of days after the decision (IdDocuments.php).
         try {

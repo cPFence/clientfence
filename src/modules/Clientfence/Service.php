@@ -552,10 +552,10 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         if (!ctype_digit($group) || (int) $group <= 0) {
             return false;
         }
-        // A signed-in client in that group, whichever of their groups it is (Client/Groups.php).
+        // A signed-in Active or Inactive client in that group, whichever of their groups it is (Client/Groups.php).
         return (bool) $di['em']->getConnection()->fetchOne(
-            'SELECT 1 FROM client c JOIN client_group_members m ON m.client_id = c.id WHERE c.id = ? AND c.status = ? AND m.client_group_id = ?',
-            [$clientId, 'active', (int) $group]
+            'SELECT 1 FROM client c JOIN client_group_members m ON m.client_id = c.id WHERE c.id = ? AND c.status IN (?, ?) AND m.client_group_id = ?',
+            [$clientId, ...\Model_Client::OPEN, (int) $group]
         );
     }
 

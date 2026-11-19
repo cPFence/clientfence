@@ -11,7 +11,8 @@ declare(strict_types=1);
  * invoices without a payment method or with one of these gateways: the set number of days before the due date, then
  * every set number of days up to the set number of retries (invoice_card_charge counts the tries). A failed charge
  * emails the client (mod_invoice_card_failed). Invoices of orders that a gateway subscription pays are left to it.
- * Staff can charge the saved method from the invoice page.
+ * Staff can charge the saved method from the invoice page. A client with Disable CC Processing on (client.auto_charge 0,
+ * WHMCS) is never charged by the cron, and their PayPal subscriptions are kept.
  */
 
 namespace ClientFence\Mod\Invoice;
@@ -191,7 +192,7 @@ final class SavedCards
         $di['dbal']->executeStatement('UPDATE pay_gateway_customer SET auto_pay_at = ? WHERE pay_gateway_id = ? AND client_id = ? AND test_mode = ?', [date('Y-m-d H:i:s'), $gatewayId, $clientId, (int) $testMode]);
     }
 
-    /** From the cron: charges the saved method of every invoice whose next try is due today. */
+    /** From the cron: charges the saved method of every invoice whose next try is due today (clients with auto_charge on). */
     public static function runDue(\Pimple\Container $di): void
     {
         $adapters = self::adapters($di);
@@ -206,6 +207,7 @@ final class SavedCards
                 "SELECT i.id, i.client_id, i.due_at, COALESCE(c.attempts, 0) AS attempts FROM invoice i
                    JOIN pay_gateway_customer g ON g.client_id = i.client_id AND g.pay_gateway_id = ? AND g.test_mode = ? AND g.saved_cards = 1
                         AND g.default_payment_method IS NOT NULL AND g.default_payment_method <> ''
+                   JOIN client cl ON cl.id = i.client_id AND cl.auto_charge = 1
                    LEFT JOIN invoice_card_charge c ON c.invoice_id = i.id
                   WHERE i.status = 'unpaid' AND i.approved = 1 AND i.due_at IS NOT NULL
                     AND (i.gateway_id IS NULL OR i.gateway_id IN (" . implode(',', $gatewayIds) . ')) AND COALESCE(c.attempts, 0) < ?
@@ -246,6 +248,7 @@ final class SavedCards
         }
         $ids = $di['dbal']->fetchFirstColumn(
             "SELECT s.id FROM subscription s JOIN pay_gateway_customer g ON g.client_id = s.client_id AND g.pay_gateway_id = s.pay_gateway_id AND g.test_mode = ?
+               JOIN client cl ON cl.id = s.client_id AND cl.auto_charge = 1
               WHERE s.pay_gateway_id = ? AND s.status = 'active' AND s.sid IS NOT NULL AND s.sid <> '' AND g.saved_cards = 1
                 AND g.default_payment_method IS NOT NULL AND g.default_payment_method <> ''
                 AND (s.updated_at IS NULL OR s.updated_at < ?)",

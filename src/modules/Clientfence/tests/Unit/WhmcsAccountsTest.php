@@ -33,7 +33,7 @@ function whmcsAccountsSource(): Connection
         'CREATE TABLE tblclientgroups (id INTEGER PRIMARY KEY, groupname TEXT, groupcolour TEXT, discountpercent REAL, susptermexempt TEXT, separateinvoices TEXT)',
         'CREATE TABLE tblcustomfields (id INTEGER PRIMARY KEY, type TEXT, relid INTEGER, fieldname TEXT, fieldtype TEXT, adminonly TEXT, required TEXT, sortorder INTEGER)',
         'CREATE TABLE tblcustomfieldsvalues (id INTEGER PRIMARY KEY, fieldid INTEGER, relid INTEGER, value TEXT)',
-        "CREATE TABLE tblclients (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT, companyname TEXT, email TEXT, address1 TEXT, address2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, phonenumber TEXT, tax_id TEXT, password TEXT, authmodule TEXT DEFAULT '', authdata TEXT DEFAULT '', currency INTEGER, taxexempt INTEGER DEFAULT 0, datecreated TEXT, notes TEXT, groupid INTEGER DEFAULT 0, ip TEXT, status TEXT, language TEXT, emailoptout INTEGER DEFAULT 0, marketing_emails_opt_in INTEGER DEFAULT 1, created_at TEXT)",
+        "CREATE TABLE tblclients (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT, companyname TEXT, email TEXT, address1 TEXT, address2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, phonenumber TEXT, tax_id TEXT, password TEXT, authmodule TEXT DEFAULT '', authdata TEXT DEFAULT '', currency INTEGER, taxexempt INTEGER DEFAULT 0, datecreated TEXT, notes TEXT, groupid INTEGER DEFAULT 0, ip TEXT, status TEXT, language TEXT, emailoptout INTEGER DEFAULT 0, marketing_emails_opt_in INTEGER DEFAULT 1, overideduenotices INTEGER DEFAULT 0, separateinvoices INTEGER DEFAULT 0, disableautocc INTEGER DEFAULT 0, overrideautoclose INTEGER DEFAULT 0, allow_sso INTEGER DEFAULT 1, created_at TEXT)",
         "CREATE TABLE tblusers (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, email TEXT, password TEXT, language TEXT, second_factor TEXT DEFAULT '', second_factor_config TEXT DEFAULT '', last_ip TEXT, last_login TEXT, created_at TEXT)",
         'CREATE TABLE tblusers_clients (id INTEGER PRIMARY KEY, auth_user_id INTEGER, client_id INTEGER, owner INTEGER, permissions TEXT, last_login TEXT, created_at TEXT)',
         'CREATE TABLE tblcontacts (id INTEGER PRIMARY KEY, userid INTEGER, firstname TEXT, lastname TEXT, companyname TEXT, email TEXT, address1 TEXT, address2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, phonenumber TEXT, tax_id TEXT, subaccount INTEGER DEFAULT 0, password TEXT, permissions TEXT, generalemails INTEGER DEFAULT 0, invoiceemails INTEGER DEFAULT 0, productemails INTEGER DEFAULT 0, domainemails INTEGER DEFAULT 0, supportemails INTEGER DEFAULT 0, affiliateemails INTEGER DEFAULT 0, created_at TEXT)',
@@ -44,7 +44,7 @@ function whmcsAccountsSource(): Connection
     }
     $db->insert('tblconfiguration', ['setting' => 'Version', 'value' => '9.0.4-release.1']);
     $db->executeStatement('INSERT INTO tblcurrencies VALUES (1, \'USD\', \'$\', \'\', 2, 1, 1), (2, \'EGP\', \'\', \' EGP\', 4, 50, 0)');
-    $db->insert('tblclientgroups', ['id' => 5, 'groupname' => 'VIP', 'discountpercent' => 10, 'susptermexempt' => '', 'separateinvoices' => '']);
+    $db->insert('tblclientgroups', ['id' => 5, 'groupname' => 'VIP', 'discountpercent' => 10, 'susptermexempt' => '', 'separateinvoices' => 'on']);
     $db->insert('tblcustomfields', ['id' => 1, 'type' => 'client', 'fieldname' => 'Passport', 'fieldtype' => 'text', 'adminonly' => 'on', 'required' => '', 'sortorder' => 0]);
     $db->insert('tblcustomfields', ['id' => 2, 'type' => 'client', 'fieldname' => 'Referral', 'fieldtype' => 'text', 'adminonly' => '', 'required' => 'on', 'sortorder' => 1]);
     $db->insert('tblcustomfields', ['id' => 3, 'type' => 'product', 'fieldname' => 'Domain', 'fieldtype' => 'text', 'adminonly' => '', 'required' => '', 'sortorder' => 0]);
@@ -56,7 +56,8 @@ function whmcsAccountsSource(): Connection
     $db->insert('tblclients', ['id' => 1, 'firstname' => 'Ann', 'lastname' => 'Lee', 'companyname' => 'Ann Co', 'email' => 'ann@acct.test', 'phonenumber' => '+44.2071234567', 'currency' => 2, 'status' => 'Active', 'groupid' => 5, 'notes' => 'Pays late', 'marketing_emails_opt_in' => 0] + $client);
     $db->insert('tblclients', ['id' => 2, 'firstname' => 'Bob', 'lastname' => 'Ray', 'companyname' => '', 'email' => 'billing@bob.test', 'phonenumber' => '5550100', 'currency' => 1, 'status' => 'Inactive'] + $client);
     $db->insert('tblclients', ['id' => 3, 'firstname' => 'Ann', 'lastname' => 'Lee', 'companyname' => '', 'email' => 'ann-old@acct.test', 'phonenumber' => '', 'currency' => 1, 'status' => 'Closed'] + $client);
-    $db->insert('tblclients', ['id' => 4, 'firstname' => 'Nobody', 'lastname' => 'Owner', 'companyname' => '', 'email' => 'nobody@acct.test', 'phonenumber' => '', 'currency' => 1, 'status' => 'Active'] + $client);
+    // WHMCS's profile switches; allow_sso 0 is not imported (WHMCS's single sign-on is not Google sign-in).
+    $db->insert('tblclients', ['id' => 4, 'firstname' => 'Nobody', 'lastname' => 'Owner', 'companyname' => '', 'email' => 'nobody@acct.test', 'phonenumber' => '', 'currency' => 1, 'status' => 'Active', 'overideduenotices' => 1, 'disableautocc' => 1, 'overrideautoclose' => 1, 'allow_sso' => 0] + $client);
     $db->insert('tblnotes', ['userid' => 1, 'created' => '2025-03-04 10:00:00', 'note' => 'VIP since 2025', 'sticky' => 1]);
 
     $db->insert('tblusers', ['id' => 10, 'first_name' => 'Ann', 'last_name' => 'Lee', 'email' => 'ann@acct.test', 'password' => $bcrypt, 'language' => 'arabic', 'second_factor' => 'totp', 'second_factor_config' => WHMCS_9_TOTP, 'created_at' => '2024-01-02 00:00:00']);
@@ -83,7 +84,7 @@ function whmcsAccountsTarget(): Connection
     foreach ([
         'CREATE TABLE currency (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, is_default INTEGER DEFAULT 0, conversion_rate REAL DEFAULT 1, is_rate_manual INTEGER DEFAULT 0, format_pattern TEXT, fraction_digits INTEGER, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_group (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, created_at TEXT, updated_at TEXT)',
-        "CREATE TABLE client (id INTEGER PRIMARY KEY, aid TEXT, client_group_id INTEGER, role TEXT, auth_type TEXT, email TEXT UNIQUE, billing_email TEXT, pass TEXT, salt TEXT, status TEXT, email_approved INTEGER, tax_exempt INTEGER, type TEXT, first_name TEXT, last_name TEXT, gender TEXT, birthday TEXT, phone_cc TEXT, phone TEXT, company TEXT, company_vat TEXT, company_number TEXT, address_1 TEXT, address_2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, notes TEXT, currency TEXT, lang TEXT, timezone TEXT, ip TEXT, api_token TEXT, referred_by TEXT, $custom, created_at TEXT, updated_at TEXT)",
+        "CREATE TABLE client (id INTEGER PRIMARY KEY, aid TEXT, client_group_id INTEGER, role TEXT, auth_type TEXT, email TEXT UNIQUE, billing_email TEXT, pass TEXT, salt TEXT, status TEXT, email_approved INTEGER, tax_exempt INTEGER, type TEXT, first_name TEXT, last_name TEXT, gender TEXT, birthday TEXT, phone_cc TEXT, phone TEXT, company TEXT, company_vat TEXT, company_number TEXT, address_1 TEXT, address_2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, notes TEXT, currency TEXT, lang TEXT, timezone TEXT, ip TEXT, api_token TEXT, referred_by TEXT, $custom, created_at TEXT, updated_at TEXT, overdue_notices INTEGER DEFAULT 1, separate_invoices INTEGER DEFAULT 0, auto_charge INTEGER DEFAULT 1, allow_sso INTEGER DEFAULT 1, status_update INTEGER DEFAULT 1)",
         'CREATE TABLE client_user (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, first_name TEXT, last_name TEXT, pass TEXT, lang TEXT, status TEXT, session_version INTEGER, last_login_at TEXT, last_ip TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_user_account (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, client_id INTEGER, owner INTEGER, permissions TEXT, last_login_at TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_twofactor (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT, subject_id INTEGER, secret TEXT, backup_hash TEXT, last_step INTEGER, enabled_at TEXT, updated_at TEXT)',
@@ -155,7 +156,10 @@ test('clients keep their ids, details, currency, group, notes and custom fields'
         'client_group_id' => (int) $vip, 'custom_1' => 'P-123', 'custom_2' => null, 'created_at' => '2024-01-02 00:00:00', 'email_approved' => 1,
     ])->and($ann['notes'])->toBe("Pays late\n\n[2025-03-04 10:00:00] VIP since 2025")
         ->and(password_verify('secret', $ann['pass']))->toBeTrue()
-        ->and($target->fetchFirstColumn('SELECT status FROM client ORDER BY id'))->toBe(['active', 'active', 'canceled', 'active'])
+        ->and($target->fetchFirstColumn('SELECT status FROM client ORDER BY id'))->toBe(['active', 'inactive', 'canceled', 'active'])
+        // Ann is in VIP, a group with Separate Invoices; client 4 has WHMCS's other switches set.
+        ->and($target->fetchAllNumeric('SELECT id, overdue_notices, separate_invoices, auto_charge, allow_sso, status_update FROM client WHERE id IN (1, 2, 4) ORDER BY id'))
+        ->toBe([[1, 1, 1, 1, 1, 1], [2, 1, 0, 1, 1, 1], [4, 0, 0, 0, 1, 0]])
         ->and($target->fetchFirstColumn('SELECT client_id FROM client_marketing_optout'))->toBe([1])
         // The group is also the client's group list (Client/Groups.php).
         ->and($target->fetchAllNumeric('SELECT client_id, client_group_id FROM client_group_members'))->toBe([[1, (int) $vip]])

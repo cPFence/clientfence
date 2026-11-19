@@ -77,8 +77,8 @@ final class BalanceAlert
             'SELECT a.client_id, a.threshold, a.currency AS alert_currency, a.alerted_at, c.currency,
                 (SELECT COALESCE(SUM(b.amount), 0) FROM client_balance b WHERE b.client_id = a.client_id) AS balance,
                 EXISTS (SELECT 1 FROM invoice i WHERE i.client_id = a.client_id AND i.status = ?) AS unpaid
-             FROM ' . self::TABLE . ' a JOIN client c ON c.id = a.client_id WHERE c.status = ?',
-            [\Model_Invoice::STATUS_UNPAID, \Model_Client::ACTIVE],
+             FROM ' . self::TABLE . ' a JOIN client c ON c.id = a.client_id WHERE c.status IN (?, ?)',
+            [\Model_Invoice::STATUS_UNPAID, ...\Model_Client::OPEN],
         );
         foreach ($rows as $row) {
             $clientId = (int) $row['client_id'];

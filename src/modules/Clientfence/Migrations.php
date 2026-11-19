@@ -42,6 +42,7 @@ final class Migrations
         16 => 'm16ApiLog',
         17 => 'm17BalanceAlert',
         18 => 'm18GatewayOrderPoNumber',
+        19 => 'm19ClientProfileOptions',
     ];
 
     public static function latest(): int
@@ -314,6 +315,35 @@ final class Migrations
         foreach (['client', 'invoice'] as $table) {
             if (!in_array('po_number', $columns($table), true)) {
                 $db->executeStatement("ALTER TABLE `{$table}` ADD COLUMN `po_number` varchar(64) DEFAULT NULL");
+            }
+        }
+    }
+
+    /**
+     * 19: ClientFence core patch: the WHMCS client profile options (overdue notices, separate invoices, automatic charges
+     * as WHMCS "Disable CC Processing" reversed, single sign-on, automatic status update) and the Mass Mailer's
+     * "Marketing email" box. Also removes the marketing opt-outs a Blesta, ClientExec, Upmind, FOSSBilling or Paymenter
+     * import wrote for every client by mistake (its snapshot said "not opted in"). Safe to run again.
+     */
+    private static function m19ClientProfileOptions(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $columns = static fn (string $table): array => array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns($table));
+        $client = $columns('client');
+        foreach (['overdue_notices' => 1, 'separate_invoices' => 0, 'auto_charge' => 1, 'allow_sso' => 1, 'status_update' => 1] as $column => $default) {
+            if (!in_array($column, $client, true)) {
+                $db->executeStatement("ALTER TABLE `client` ADD COLUMN `{$column}` tinyint(1) NOT NULL DEFAULT '{$default}'");
+            }
+        }
+        if ($db->createSchemaManager()->tablesExist(['mod_massmailer']) && !in_array('marketing', $columns('mod_massmailer'), true)) {
+            $db->executeStatement("ALTER TABLE `mod_massmailer` ADD COLUMN `marketing` tinyint(1) NOT NULL DEFAULT '1'");
+        }
+        // An import needs a fresh install, so every "whmcs" opt-out of such an install came from that import.
+        if ($db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [Whmcs\Run::STATE]) !== false
+            && Whmcs\Import::system(Whmcs\Import::settings($di)) !== 'WHMCS') {
+            $removed = $db->executeStatement("DELETE FROM client_marketing_optout WHERE source = 'whmcs'");
+            if ($removed > 0) {
+                $di['logger']->info('Removed %s marketing email opt-outs written by mistake by the %s import', $removed, Whmcs\Import::system(Whmcs\Import::settings($di)));
             }
         }
     }

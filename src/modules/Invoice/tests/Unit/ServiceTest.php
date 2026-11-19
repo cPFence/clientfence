@@ -874,7 +874,7 @@ $di['session'] = Mockery::mock(ClientFence\Session::class)
     ->shouldReceive('get')->with(ClientFence\Mod\Client\Users::SESSION)->andReturn($case['context'] === null ? null : ['user_id' => 7, 'client_id' => 5, 'version' => 1])
     ->shouldReceive('get')->with('client_id')->andReturn(5)->getMock();
 $db = Mockery::mock(Doctrine\DBAL\Connection::class);
-$db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, Model_Client::ACTIVE, 7])->andReturnUsing(function () use (&$case): array {
+$db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, ...Model_Client::OPEN, 7])->andReturnUsing(function () use (&$case): array {
     return ['status' => 'active', 'session_version' => 1, 'owner' => $case['context']['owner'], 'permissions' => implode(',', $case['context']['permissions']), 'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User'];
 });
 $di['em'] = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldReceive('getConnection')->andReturn($db)->getMock();
@@ -1436,6 +1436,32 @@ test('skips overdue invoice reminder when the invoice was already claimed', func
     $eventMock->shouldReceive('getDi')
         ->atLeast()->once()
         ->andReturn($di);
+
+    $serviceMock->onEventAfterInvoiceIsDue($eventMock);
+});
+
+test('skips the overdue reminder of a client with Overdue Notices off, before claiming it', function (): void {
+    $eventMock = Mockery::mock('ClientFence\Event');
+    $eventMock->shouldReceive('getParameters')->andReturn(['days_passed' => 5, 'id' => 1]);
+    $emailService = Mockery::mock(EmailService::class);
+    $emailService->shouldReceive('sendTemplate')->never();
+    $systemService = Mockery::mock(SystemService::class);
+    $systemService->shouldReceive('getParamValue')->with('invoice_reminder_after_due_days', '5')->andReturn('1, 5, 7');
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): object => match ($name) {
+        'invoice' => $serviceMock,
+        'email' => $emailService,
+        'system' => $systemService,
+    });
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchAssociative')->andReturn(false);
+    $dbal->shouldReceive('fetchOne')->with(Mockery::pattern('/invoice_item/'), Mockery::any())->andReturn(false);
+    $dbal->shouldReceive('fetchOne')->once()->with(Mockery::pattern('/overdue_notices = 0/'), [1])->andReturn(1);
+    $di['dbal'] = $dbal;
+    $di['db']->shouldReceive('exec')->never();
+    $serviceMock->setDi($di);
+    $eventMock->shouldReceive('getDi')->andReturn($di);
 
     $serviceMock->onEventAfterInvoiceIsDue($eventMock);
 });
@@ -4323,6 +4349,46 @@ test('renews a client\'s orders due on the same day on one invoice, and leaves a
 
     expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
         ->and($calls)->toBe([[1, null, false], [2, 40, false]]);
+});
+
+test('renews each order of a client with Separate Invoices on its own invoice', function (): void {
+    $orderService = Mockery::mock(OrderService::class);
+    $due = date('Y-m-d', strtotime('+5 days'));
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->with([])->andReturn([
+        ['id' => 1, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 10:00:00'],
+        ['id' => 2, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 18:00:00'],
+    ]);
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->andReturnUsing(fn (array $f): array => [['id' => $f['id']]]);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): object => $orderService);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['db']->shouldReceive('getExistingModelById')->andReturnUsing(function (string $type, int $id): Model_ClientOrder {
+        $order = new Model_ClientOrder();
+        $order->loadBean(new Tests\Helpers\DummyBean());
+        $order->id = $id;
+
+        return $order;
+    });
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT separate_invoices FROM client WHERE id = ?', [7])->andReturn(1);
+    $di['dbal'] = $dbal;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $renewed = [];
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('renewTogether')->never();
+    $service->shouldReceive('generateForOrder')->twice()->andReturnUsing(function (Model_ClientOrder $o) use (&$renewed, $invoice): Model_Invoice {
+        $renewed[] = $o->id;
+
+        return $invoice;
+    });
+    $service->shouldReceive('applyPartCreditToRenewal');
+    $service->shouldReceive('approveInvoice')->twice();
+    $service->setDi($di);
+
+    expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
+        ->and($renewed)->toBe([1, 2]);
 });
 
 test('activates paid invoices in batch', function (): void {

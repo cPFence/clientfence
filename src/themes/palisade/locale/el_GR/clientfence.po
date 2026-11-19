@@ -31443,3 +31443,108 @@ msgstr "Το :domain βρίσκεται ήδη στον λογαριασμό σ�
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Οι πελάτες βλέπουν το όνομα και τη διεύθυνση στη γλώσσα τους σε email, τιμολόγια και σελίδες πελατών. Ένα κενό πεδίο εμφανίζει την προεπιλογή."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Να επιτρέπεται η ενιαία σύνδεση (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Οι αυτόματες πληρωμές είναι απενεργοποιημένες για τον λογαριασμό σας: οι αποθηκευμένοι τρόποι πληρωμής δεν χρεώνονται αυτόματα. Πληρώστε κάθε παραστατικό από τη σελίδα του."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Αυτόματη ενημέρωση κατάστασης"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Οι πελάτες μπορούν να απενεργοποιήσουν τα διαφημιστικά email από το προφίλ τους και κάθε διαφημιστικό email του Mass Mailer έχει σύνδεσμο διαγραφής και κεφαλίδες διαγραφής με ένα κλικ. Το Mass Mailer παραλείπει πάντα τους πελάτες που αρνήθηκαν, ακόμη και όταν το προσωπικό απενεργοποίησε το μάρκετινγκ στο προφίλ του πελάτη. Τα email υπηρεσίας (παραστατικά, αιτήματα, σύνδεση) αποστέλλονται πάντα."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "Οι πελάτες που αρνήθηκαν τα διαφημιστικά email παραλείπονται. Απενεργοποιήστε το μόνο για ειδοποιήσεις σχετικά με τις υπηρεσίες τους, όπως συντήρηση ή αλλαγή τιμής."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Απενεργοποίηση επεξεργασίας καρτών"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Κάθε υπηρεσία ανανεώνεται με δικό της παραστατικό, ακόμη και με την ίδια ημερομηνία λήξης."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "Η σύνδεση με Google είναι απενεργοποιημένη για αυτόν τον λογαριασμό. Συνδεθείτε με email και κωδικό πρόσβασης."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Συγκατάθεση για διαφημιστικά email"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Διαφημιστικό email"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Μηνύματα Mass Mailer που επισημαίνονται ως διαφημιστικό email."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Χωρίς φόρο στα παραστατικά αυτού του πελάτη."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Μία φορά την ημέρα, οι πελάτες χωρίς ενεργή ή σε αναστολή υπηρεσία, πρόσθετο ή τομέα γίνονται Ανενεργοί και ξανά Ενεργοί μόλις αποκτήσουν. Οι ανενεργοί πελάτες συνδέονται, παραγγέλλουν, πληρώνουν και ανοίγουν αιτήματα όπως πριν. Οι πελάτες νεότεροι των δύο ημερών, οι πελάτες σε αναστολή και οι ακυρωμένοι, και οι πελάτες με απενεργοποιημένη την ενημέρωση κατάστασης στο προφίλ τους μένουν ως έχουν."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Ειδοποιήσεις καθυστέρησης"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Υπενθυμίσεις πληρωμής μετά την ημερομηνία λήξης. Η υπενθύμιση πριν από την ημερομηνία λήξης αποστέλλεται σε κάθε περίπτωση."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "Οι αποθηκευμένες κάρτες, οι λογαριασμοί PayPal και οι Άμεσες χρεώσεις δεν χρεώνονται αυτόματα· ο πελάτης πληρώνει με το χέρι. Όταν ενεργοποιηθεί ξανά, χρεώνονται τα ήδη ληξιπρόθεσμα παραστατικά."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Ξεχωριστά παραστατικά"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Ορισμός πελατών ως Ανενεργών"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Σύνδεση με Google για τον κάτοχο του λογαριασμού."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Ενημέρωση κατάστασης"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Απαλλαγή από φόρο"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Η αυτόματη ενημέρωση κατάστασης μπορεί να θέσει αυτόν τον πελάτη Ανενεργό και ξανά Ενεργό."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "Η επιλογή σύνδεσης διαβάζει το ιστορικό συνδέσεων: κρατήστε το αρχείο δραστηριότητας τουλάχιστον 90 ημέρες (ρυθμίσεις Δραστηριότητας)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Αυτός ο πελάτης συνδέεται μόνο με Google: όταν είναι απενεργοποιημένο, ορίζει κωδικό με το Ξέχασα τον κωδικό."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Χωρίς υπηρεσίες"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Χωρίς υπηρεσίες και χωρίς σύνδεση για 3 μήνες"

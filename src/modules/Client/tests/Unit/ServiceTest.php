@@ -667,7 +667,7 @@ test('getByLoginDetails returns Client', function (): void {
     $clientRepoMock = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
     $clientRepoMock->shouldReceive('findOneBy')
         ->atLeast()->once()
-        ->with(['email' => 'email@example.com', 'pass' => 'password', 'status' => 'active'])
+        ->with(['email' => 'email@example.com', 'pass' => 'password', 'status' => ['active', 'inactive']])
         ->andReturn($model);
 
     $di = container();
@@ -1027,7 +1027,7 @@ test('authorizeClient returns Client', function (): void {
     $clientRepoMock = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
     $clientRepoMock->shouldReceive('findOneBy')
         ->atLeast()->once()
-        ->with(['email' => $email, 'status' => 'active'])
+        ->with(['email' => $email, 'status' => ['active', 'inactive']])
         ->andReturn($clientModel);
 
     $authMock = Mockery::mock('ClientFence\Authorization');
@@ -1059,7 +1059,7 @@ test('authorizeClient with confirmed email returns Client', function (): void {
     $clientRepoMock = Mockery::mock(ClientFence\Mod\Client\Repository\ClientRepository::class);
     $clientRepoMock->shouldReceive('findOneBy')
         ->atLeast()->once()
-        ->with(['email' => $email, 'status' => 'active'])
+        ->with(['email' => $email, 'status' => ['active', 'inactive']])
         ->andReturn($clientModel);
 
     $authMock = Mockery::mock('ClientFence\Authorization');

@@ -775,6 +775,10 @@ class Service implements InjectionAwareInterface
             if (PendingPayments::forInvoice($di, (int) ($params['id'] ?? 0)) !== null || MassPay::is($di, (int) ($params['id'] ?? 0))) {
                 return;
             }
+            // ClientFence core patch: nor for a client with Overdue Notices off (WHMCS); the reminder before the due date still goes.
+            if ($di['dbal']->fetchOne('SELECT 1 FROM invoice i JOIN client c ON c.id = i.client_id WHERE i.id = ? AND c.overdue_notices = 0', [(int) ($params['id'] ?? 0)])) {
+                return;
+            }
 
             // Atomically claim the invoice before sending anything: this is what stops the same
             // reminder being sent twice when this event is dispatched more than once for the
@@ -3098,8 +3102,10 @@ class Service implements InjectionAwareInterface
             $groups[($order['client_id'] ?? '') . '|' . ($order['currency'] ?? '') . '|' . substr((string) ($order['expires_at'] ?? ''), 0, 10)][] = (int) $order['id'];
         }
         $single = [];
-        foreach ($groups as $ids) {
-            array_push($single, ...(count($ids) > 1 ? $this->renewTogether($ids, $orderService) : $ids));
+        foreach ($groups as $key => $ids) {
+            // ClientFence core patch: a client with Separate Invoices on (WHMCS) gets one invoice per service.
+            $together = count($ids) > 1 && !$this->di['dbal']->fetchOne('SELECT separate_invoices FROM client WHERE id = ?', [(int) $key]);
+            array_push($single, ...($together ? $this->renewTogether($ids, $orderService) : $ids));
         }
 
         foreach ($single as $id) {

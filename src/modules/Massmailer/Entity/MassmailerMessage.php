@@ -62,6 +62,10 @@ class MassmailerMessage implements ApiArrayInterface
     #[ORM\Column(name: 'updated_at', type: \Doctrine\DBAL\Types\Types::STRING, length: 35, nullable: true)]
     private ?string $updatedAt = null;
 
+    // ClientFence core patch: as WHMCS "Marketing email?": only marketing messages skip opted-out clients (Service::sendMessage()).
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => true])]
+    private bool $marketing = true;
+
     public function toApiArray(): array
     {
         return [
@@ -76,6 +80,7 @@ class MassmailerMessage implements ApiArrayInterface
             'sent_at' => $this->sentAt,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
+            'marketing' => $this->marketing,
         ];
     }
 
@@ -200,6 +205,18 @@ class MassmailerMessage implements ApiArrayInterface
     public function setUpdatedAt(?string $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isMarketing(): bool
+    {
+        return $this->marketing;
+    }
+
+    public function setMarketing(bool $marketing): self
+    {
+        $this->marketing = $marketing;
 
         return $this;
     }

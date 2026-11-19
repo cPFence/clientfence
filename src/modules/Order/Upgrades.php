@@ -1480,7 +1480,9 @@ final class Upgrades
         }
         try {
             // A saved card or account still pays the renewal (SavedCards cron): the email says which applies.
-            $saved = \ClientFence\Mod\Invoice\SavedCards::method($di, (int) $order->client_id) !== null;
+            // ClientFence core patch: not for a client the cron never charges (Disable CC Processing).
+            $saved = \ClientFence\Mod\Invoice\SavedCards::method($di, (int) $order->client_id) !== null
+                && $di['dbal']->fetchOne('SELECT auto_charge FROM client WHERE id = ?', [(int) $order->client_id]) == 1;
             // Without one, the email links the Payment methods page while a gateway can save one (GitHub #7).
             $methods = !$saved && \ClientFence\Mod\Invoice\SavedCards::adapters($di) !== [];
             $di['mod_service']('email')->sendTemplate(['code' => 'mod_order_subscription_stopped', 'to_client' => (int) $order->client_id, 'order_id' => (int) $order->id, 'title' => (string) $order->title, 'saved_method' => $saved, 'payment_methods' => $methods]);

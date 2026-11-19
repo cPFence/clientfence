@@ -31344,3 +31344,108 @@ msgstr "A(z) :domain már szerepel a :registrar fiókjában. Ha a megrendelés k
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Clients see the name and address in their language on emails, invoices and client pages. An empty field shows the default."
 msgstr "Az ügyfelek a nevet és a címet a saját nyelvükön látják az e-mailekben, a számlákon és az ügyfeloldalakon. Az üres mező az alapértelmezett értéket mutatja."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Allow Single Sign-On"
+msgstr "Egyszeri bejelentkezés engedélyezése (SSO)"
+
+#: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
+msgid "Automatic payments are off for your account: your saved payment methods are not charged by themselves. Pay each invoice from its page."
+msgstr "Az automatikus fizetések ki vannak kapcsolva a fiókjánál: a mentett fizetési módjait nem terheljük meg maguktól. Minden számlát a saját oldaláról fizessen ki."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Automatic status update"
+msgstr "Automatikus állapotfrissítés"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Clients can turn marketing email off on their profile, and every marketing Mass Mailer email gets an unsubscribe link and one-click unsubscribe headers. Mass Mailer always skips clients who opted out, also when staff turned marketing off on the client's profile. Service email (invoices, tickets, sign-in) always goes."
+msgstr "Az ügyfelek a profiljukban kikapcsolhatják a marketinglevelet, és minden marketing Mass Mailer levél tartalmaz leiratkozási linket és egykattintásos leiratkozási fejlécet. A Mass Mailer mindig kihagyja a leiratkozott ügyfeleket, akkor is, ha a munkatárs kapcsolta ki a marketinget az ügyfél profiljában. A szolgáltatási levelek (számlák, jegyek, bejelentkezés) mindig kimennek."
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Clients who opted out of marketing email are skipped. Turn it off only for notices about their services, such as maintenance or a price change."
+msgstr "A marketinglevélről leiratkozott ügyfeleket kihagyjuk. Csak a szolgáltatásaikról szóló értesítésekhez kapcsolja ki, például karbantartás vagy áremelés esetén."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Disable CC Processing"
+msgstr "Kártyás feldolgozás letiltása"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Each service renews on its own invoice, even with the same due date."
+msgstr "Minden szolgáltatás a saját számláján újul meg, azonos esedékesség esetén is."
+
+#: src/modules/Client/Google.php
+msgid "Google sign-in is off for this account. Sign in with your email and password."
+msgstr "A Google-bejelentkezés ki van kapcsolva ennél a fióknál. Jelentkezzen be e-mail-címével és jelszavával."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Marketing Emails Opt-in"
+msgstr "Marketinglevél-feliratkozás"
+
+#: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
+msgid "Marketing email"
+msgstr "Marketinglevél"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Mass Mailer messages marked as marketing email."
+msgstr "Marketinglevélként megjelölt Mass Mailer üzenetek."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "No tax on this client's invoices."
+msgstr "Nincs adó az ügyfél számláin."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Once a day, clients without an active or suspended service, add-on or domain become Inactive, and Active again once they have one. Inactive clients sign in, order, pay and open tickets as before. Clients newer than two days, Suspended and Canceled clients, and clients with Status Update off on their profile are left as they are."
+msgstr "Naponta egyszer azok az ügyfelek, akiknek nincs aktív vagy felfüggesztett szolgáltatásuk, kiegészítőjük vagy domainjük, Inaktívak lesznek, és újra Aktívak, ha van nekik. Az inaktív ügyfelek a megszokott módon jelentkeznek be, rendelnek, fizetnek és nyitnak jegyet. A két napnál újabb ügyfelek, a Felfüggesztett és Törölt ügyfelek, valamint azok, akiknél a profilban ki van kapcsolva az állapotfrissítés, változatlanok maradnak."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Overdue Notices"
+msgstr "Késedelmi értesítések"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Payment reminders after the due date. The reminder before the due date is sent either way."
+msgstr "Fizetési emlékeztetők az esedékesség után. Az esedékesség előtti emlékeztető mindenképp kimegy."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Saved cards, PayPal accounts and Direct Debits are not charged automatically; the client pays by hand. Turned back on, invoices already due are charged."
+msgstr "A mentett kártyákat, PayPal-fiókokat és csoportos beszedéseket nem terheljük automatikusan; az ügyfél kézzel fizet. Újra bekapcsolva a már esedékes számlákat megterheljük."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Separate Invoices"
+msgstr "Külön számlák"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Set clients Inactive"
+msgstr "Ügyfelek beállítása Inaktívra"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Sign in with Google for the account owner."
+msgstr "Bejelentkezés Google-lal a fióktulajdonosnak."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Status Update"
+msgstr "Állapotfrissítés"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "Tax Exempt"
+msgstr "Adómentes"
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "The automatic status update may set this client Inactive and Active again."
+msgstr "Az automatikus állapotfrissítés ezt az ügyfelet Inaktívvá, majd újra Aktívvá teheti."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
+msgstr "A bejelentkezési választás a bejelentkezési előzményeket olvassa: őrizze meg a tevékenységnaplót legalább 90 napig (Tevékenység beállításai)."
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig
+msgid "This client signs in with Google only: with this off, they set a password with Forgot password."
+msgstr "Ez az ügyfél csak Google-lal jelentkezik be: ha ez ki van kapcsolva, az Elfelejtett jelszó funkcióval állít be jelszót."
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services"
+msgstr "Szolgáltatások nélkül"
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Without services and without a sign-in for 3 months"
+msgstr "Szolgáltatások nélkül és 3 hónapja bejelentkezés nélkül"
