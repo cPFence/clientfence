@@ -136,7 +136,8 @@
             {% if service %}
                 {{ include(service_partial, { 'order': order, 'service': service }) }}
             {% elseif has_partial %}
-                <div class="alert alert-info" role="alert">{{ 'This order has no active service to manage.'|trans }}</div>
+                {# ClientFence core patch: a client's services are called services, not orders, as in WHMCS. #}
+                <div class="alert alert-info" role="alert">{{ 'There is nothing to manage for this service yet.'|trans }}</div>
             {% endif %}
             {{ render_widgets('client.order.manage.service.after', { 'order': order, 'service': service }) }}
 
@@ -156,9 +157,9 @@
                         <div class="bf-fact"><dt>{{ answer.label }}</dt><dd><bdi>{{ answer.value }}</bdi> <button class="bf-copy" type="button" data-bf-copy="{{ answer.value }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button></dd></div>
                     {% endfor %}
                     {% if order.discount > 0 %}
-                        <div class="bf-fact"><dt>{{ 'Order Discount'|trans }}{% if order.promo_code %} (<bdi>{{ order.promo_code }}</bdi>){% endif %}</dt><dd>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</dd></div>
+                        <div class="bf-fact"><dt>{{ 'Discount'|trans }}{% if order.promo_code %} (<bdi>{{ order.promo_code }}</bdi>){% endif %}</dt><dd>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</dd></div>
                     {% endif %}
-                    <div class="bf-fact"><dt>{{ 'Order Created'|trans }}</dt><dd>{{ order.created_at|format_date }}</dd></div>
+                    <div class="bf-fact"><dt>{{ 'Created'|trans }}</dt><dd>{{ order.created_at|format_date }}</dd></div>
                 </dl>
                 {% if answers %}
                     <div class="card-footer small text-secondary">{{ 'Your answers on the order form.'|trans }}</div>
@@ -187,7 +188,7 @@
             {% set addon_offers = client.order_addon_offers({ "id": order.id }) %}
             {% if addon_offers|length > 0 %}
             <div class="card mb-4" id="order-addons">
-                <div class="card-header"><h2>{{ 'Order Add-ons'|trans }}</h2></div>
+                <div class="card-header"><h2>{{ 'Available Add-ons'|trans }}</h2></div>
                 {% for offer in addon_offers %}
                     <div class="list-row">
                         <div class="min-w-0">

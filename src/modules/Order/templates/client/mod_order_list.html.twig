@@ -15,7 +15,8 @@
     <div class="bf-page-head mb-4">
         <div>
             <h1 class="bf-page-title">{{ 'Services'|trans }}</h1>
-            <span class="bf-hint">{{ 'All of your orders are displayed here. Click on any service to get full information about it.'|trans }}</span>
+            {# ClientFence core patch: a client's services are called services, not orders, as in WHMCS. #}
+            <span class="bf-hint">{{ 'All your services are listed here. Select one to see its details and manage it.'|trans }}</span>
         </div>
     </div>
     {# ClientFence core patch: status cards over the list; one click shows only that status, a second click shows every service again. #}
@@ -53,7 +54,7 @@
                 </div>
             {% endfor %}
         {% else %}
-            <div class="empty-state">{{ 'No orders yet'|trans }}</div>
+            <div class="empty-state">{{ 'No services yet.'|trans }}</div>
         {% endif %}
         {{ include('partial_pagination.html.twig', { 'list': orders, 'url': 'order/service' }) }}
     </div>

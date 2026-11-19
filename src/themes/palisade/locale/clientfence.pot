@@ -2702,10 +2702,6 @@ msgstr ""
 msgid "All of your invoices: unpaid, paid, and cancelled or refunded, each in its tab."
 msgstr ""
 
-#: src/modules/Order/templates/client/mod_order_list.html.twig
-msgid "All of your orders are displayed here. Click on any service to get full information about it."
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "All payment gateways installed"
 msgstr ""
@@ -2764,6 +2760,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "All time"
+msgstr ""
+
+#: src/modules/Order/templates/client/mod_order_list.html.twig
+msgid "All your services are listed here. Select one to see its details and manage it."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -4116,6 +4116,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Available Adapters"
+msgstr ""
+
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "Available Add-ons"
 msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -7610,7 +7614,7 @@ msgstr ""
 msgid "Create your account first, then come back to this page."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig src/modules/Support/templates/admin/mod_support_canned_category.html.twig src/modules/Support/templates/admin/mod_support_canned_responses.html.twig …
+#: src/modules/Invoice/templates/admin/mod_invoice_quotes.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/modules/Support/templates/admin/mod_support_canned_category.html.twig …
 msgid "Created"
 msgstr ""
 
@@ -17234,10 +17238,6 @@ msgstr ""
 msgid "No orders are waiting for review."
 msgstr ""
 
-#: src/modules/Order/templates/client/mod_order_list.html.twig
-msgid "No orders yet"
-msgstr ""
-
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "No orders yet."
 msgstr ""
@@ -17382,7 +17382,7 @@ msgstr ""
 msgid "No service matches."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Order/templates/client/mod_order_list.html.twig
 msgid "No services yet."
 msgstr ""
 
@@ -18638,16 +18638,8 @@ msgstr ""
 msgid "Order :id was canceled and its hosting account removed from the server. Restore the account, or refund the payment."
 msgstr ""
 
-#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
-msgid "Order Add-ons"
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Order Configuration"
-msgstr ""
-
-#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
-msgid "Order Created"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -18658,7 +18650,7 @@ msgstr ""
 msgid "Order Details"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Order Discount"
 msgstr ""
 
@@ -18728,10 +18720,6 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Order Promo Code"
-msgstr ""
-
-#: src/modules/Order/templates/client/mod_order_manage.html.twig
-msgid "Order Status"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -28207,6 +28195,10 @@ msgstr ""
 msgid "There is no IP address request waiting."
 msgstr ""
 
+#: src/modules/Order/templates/client/mod_order_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+msgid "There is nothing to manage for this service yet."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "There is nothing to pay."
 msgstr ""
@@ -28719,7 +28711,7 @@ msgstr ""
 msgid "This order does not have an active gateway subscription that supports cancellation at the end of the billing period."
 msgstr ""
 
-#: src/modules/Order/templates/client/mod_order_manage.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig src/themes/palisade/html/mod_order_manage.html.twig
+#: src/modules/Servicelicense/templates/admin/mod_servicelicense_manage.html.twig
 msgid "This order has no active service to manage."
 msgstr ""
 

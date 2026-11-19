@@ -57,7 +57,7 @@
 
                         {% if order.discount and order.discount > 0 %}
                             <tr>
-                                <td><label>{{ 'Order Discount'|trans }}</label></td>
+                                <td><label>{{ 'Discount'|trans }}</label></td>
                                 <td>-{{ order.discount|format_currency(order.currency ?? default_currency) }}</td>
                             </tr>
 
@@ -75,14 +75,14 @@
                         {% endif %}
 
                         <tr>
-                            <td><label>{{ 'Order Status'|trans }}</label></td>
+                            <td><label>{{ 'Status'|trans }}</label></td>
                             <td>
                                 {{ mf.status_badge(order.status, 'order') }}
                             </td>
                         </tr>
 
                         <tr>
-                            <td><label>{{ 'Order Created'|trans }}</label></td>
+                            <td><label>{{ 'Created'|trans }}</label></td>
                             <td>{{ order.created_at|format_date }}</td>
                         </tr>
 
@@ -144,7 +144,8 @@
                 {% if service %}
                     {{ include(service_partial, { 'order': order, 'service': service }) }}
                 {% else %}
-                    <div class="alert alert-info" role="alert">{{ 'This order has no active service to manage.'|trans }}</div>
+                    {# ClientFence core patch: a client's services are called services, not orders, as in WHMCS. #}
+                    <div class="alert alert-info" role="alert">{{ 'There is nothing to manage for this service yet.'|trans }}</div>
                 {% endif %}
             {% endif %}
             {{ render_widgets('client.order.manage.service.after', { 'order': order, 'service': service }) }}
@@ -198,7 +199,7 @@
             {% if addon_offers|length > 0 %}
             <div class="card mb-4" id="order-addons">
                 <div class="card-header py-3">
-                    <h1 class="mb-1">{{ 'Order Add-ons'|trans }}</h1>
+                    <h1 class="mb-1">{{ 'Available Add-ons'|trans }}</h1>
                     <span class="small text-secondary">{{ 'Add-ons are charged to this service\'s due date, then renew with it.'|trans }}</span>
                 </div>
                 <div class="card-body">
