@@ -32079,3 +32079,16 @@ msgstr "無法取消此服務的金流訂閱，因此價格未變更。請先在
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid ":gateway (disabled)"
 msgstr ":gateway（已停用）"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
+msgid "Add Funds preset amounts"
+msgstr "儲值預設金額"
+
+#: src/modules/Currency/Api/Admin.php
+msgid "Enter up to ten preset amounts above zero, separated by commas, without thousands separators: 5000, 10000, 20000."
+msgstr "最多輸入十個大於零的預設金額，以英文逗號分隔，不使用千位分隔符:5000, 10000, 20000。"
+
+#: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
+msgid "The amount buttons on the client Wallet page in this currency, separated by commas. Leave blank to use 10, 25, 50, 100, 200, 500 and 1000, multiplied by this rate when it is above 1 and rounded, up to five shown. Amounts outside the Add Funds minimum and maximum are not shown; clients can still type any amount within them."
+msgstr "此幣別下客戶錢包頁面上的金額按鈕，以英文逗號分隔。留空則使用 10, 25, 50, 100, 200, 500 和 1000，匯率大於 1 時乘以此匯率並四捨五入，最多顯示五個。超出儲值最低及最高金額的金額不會顯示；客戶仍可在該範圍內輸入任何金額。"

@@ -80,14 +80,14 @@ class Guest extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * The smallest and largest wallet top-up (FOSSBilling's funds_min_amount and funds_max_amount,
-     * in `currency` when given; null when not set).
+     * The Wallet's top-up range and amount buttons in `currency` when given (Invoice\Service::walletAmounts():
+     * min, max, presets).
      */
     public function wallet_limits($data = []): array
     {
         $currency = is_array($data) && is_string($data['currency'] ?? null) ? strtoupper($data['currency']) : null;
 
-        return $this->getDi()['mod_service']('invoice')->fundsLimits($currency);
+        return $this->getDi()['mod_service']('invoice')->walletAmounts($currency);
     }
 
     /**

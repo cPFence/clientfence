@@ -436,6 +436,31 @@ test('update forwards individual formatting fields without clearing the other se
     ]))->toBeTrue();
 });
 
+test('update saves the wallet preset amounts of the currency (CF-211)', function (): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Currency\Api\Admin());
+    $service = Mockery::mock(ClientFence\Mod\Currency\Service::class);
+    $service->expects('updateCurrency')->with('ARS', null, [], null)->andReturnTrue();
+    $systemService = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $systemService->expects('setParamValue')->with('funds_presets_ars', '5000, 10000, 20000');
+    $di = container();
+    $staff = $di['mod_service']('Staff');
+    $di['mod_service'] = $di->protect(fn (string $name): Mockery\MockInterface => $name === 'system' ? $systemService : $staff);
+    $adminApi->setDi($di);
+    $adminApi->setService($service);
+
+    expect($adminApi->update(['code' => 'ARS', 'funds_presets' => '20000, 5000 10000']))->toBeTrue();
+});
+
+test('update refuses wallet preset amounts written with thousands separators (CF-211)', function (): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Currency\Api\Admin());
+    $service = Mockery::mock(ClientFence\Mod\Currency\Service::class);
+    $service->expects('updateCurrency')->never();
+    $adminApi->setDi(container());
+    $adminApi->setService($service);
+
+    expect(fn () => $adminApi->update(['code' => 'ARS', 'funds_presets' => '5.000, 10.000']))->toThrow(ClientFence\InformationException::class);
+});
+
 test('delete exception', function (): void {
     $adminApi = apiEndpoint(new ClientFence\Mod\Currency\Api\Admin());
 

@@ -29391,3 +29391,16 @@ msgstr "ยกเลิกการสมัครสมาชิกของเ
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid ":gateway (disabled)"
 msgstr ":gateway (ปิดใช้งาน)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
+msgid "Add Funds preset amounts"
+msgstr "จำนวนเงินที่ตั้งไว้ล่วงหน้าสำหรับเติมเงิน"
+
+#: src/modules/Currency/Api/Admin.php
+msgid "Enter up to ten preset amounts above zero, separated by commas, without thousands separators: 5000, 10000, 20000."
+msgstr "ป้อนจำนวนเงินที่ตั้งไว้ล่วงหน้าที่มากกว่าศูนย์ได้สูงสุดสิบจำนวน คั่นด้วยเครื่องหมายจุลภาค โดยไม่ใช้ตัวคั่นหลักพัน: 5000, 10000, 20000"
+
+#: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
+msgid "The amount buttons on the client Wallet page in this currency, separated by commas. Leave blank to use 10, 25, 50, 100, 200, 500 and 1000, multiplied by this rate when it is above 1 and rounded, up to five shown. Amounts outside the Add Funds minimum and maximum are not shown; clients can still type any amount within them."
+msgstr "ปุ่มจำนวนเงินในหน้ากระเป๋าวอลเล็ตของลูกค้าในสกุลเงินนี้ คั่นด้วยเครื่องหมายจุลภาค เว้นว่างไว้เพื่อใช้ 10, 25, 50, 100, 200, 500 และ 1000 ที่คูณด้วยอัตรานี้เมื่อมากกว่า 1 และปัดเศษแล้ว แสดงสูงสุดห้าปุ่ม จำนวนเงินที่อยู่นอกขั้นต่ำและขั้นสูงของการเติมเงินจะไม่แสดง แต่ลูกค้ายังพิมพ์จำนวนเงินใดก็ได้ภายในช่วงนั้น"

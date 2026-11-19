@@ -139,6 +139,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional bool $is_rate_manual - preserve the conversion rate during automatic and manual bulk synchronization
      * @optional string $format_pattern - plain-text display pattern containing one {amount} placeholder
      * @optional int $fraction_digits - fraction digit override from 0 to 6, blank to use the ISO default
+     * @optional string $funds_presets - the Wallet's Add Funds amount buttons in this currency, such as "5000, 10000", blank for the converted defaults
      *
      * @throws \ClientFence\Exception
      */
@@ -146,6 +147,13 @@ class Admin extends \ClientFence\Api\AbstractApi
     public function update($data): bool
     {
         $this->checkPermissions('currency', 'edit');
+
+        // ClientFence core patch (CF-211): the Wallet's amount buttons in this currency (Invoice\Service::walletAmounts()).
+        $presets = null;
+        if (array_key_exists('funds_presets', $data)) {
+            $presets = \ClientFence\Mod\Invoice\Service::parseFundsPresets($data['funds_presets'])
+                ?? throw new \ClientFence\InformationException('Enter up to ten preset amounts above zero, separated by commas, without thousands separators: 5000, 10000, 20000.');
+        }
 
         $conversionRate = $data['conversion_rate'] ?? null;
         $isRateManual = array_key_exists('is_rate_manual', $data)
@@ -156,12 +164,17 @@ class Admin extends \ClientFence\Api\AbstractApi
             'fraction_digits' => true,
         ]);
 
-        return $this->getService()->updateCurrency(
+        $updated = $this->getService()->updateCurrency(
             $data['code'],
             $conversionRate,
             $formatting,
             $isRateManual,
         );
+        if ($presets !== null) {
+            $this->getDi()['mod_service']('system')->setParamValue('funds_presets_' . strtolower((string) $data['code']), implode(', ', $presets));
+        }
+
+        return $updated;
     }
 
     /**

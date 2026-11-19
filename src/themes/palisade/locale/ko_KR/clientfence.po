@@ -34040,3 +34040,16 @@ msgstr "이 서비스의 게이트웨이 구독을 취소하지 못해 가격이
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid ":gateway (disabled)"
 msgstr ":gateway (사용 안 함)"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
+msgid "Add Funds preset amounts"
+msgstr "충전 미리 설정 금액"
+
+#: src/modules/Currency/Api/Admin.php
+msgid "Enter up to ten preset amounts above zero, separated by commas, without thousands separators: 5000, 10000, 20000."
+msgstr "0보다 큰 미리 설정 금액을 최대 10개까지 쉼표로 구분하여 입력하세요. 천 단위 구분 기호는 사용하지 않습니다: 5000, 10000, 20000."
+
+#: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
+msgid "The amount buttons on the client Wallet page in this currency, separated by commas. Leave blank to use 10, 25, 50, 100, 200, 500 and 1000, multiplied by this rate when it is above 1 and rounded, up to five shown. Amounts outside the Add Funds minimum and maximum are not shown; clients can still type any amount within them."
+msgstr "이 통화로 고객 지갑 페이지에 표시되는 금액 버튼이며, 쉼표로 구분합니다. 비워 두면 10, 25, 50, 100, 200, 500, 1000을 환율이 1보다 크면 이 환율을 곱하고 반올림하여 사용하며 최대 5개가 표시됩니다. 충전 최소 및 최대 금액 범위를 벗어난 금액은 표시되지 않지만, 고객은 그 범위 안에서 원하는 금액을 직접 입력할 수 있습니다."

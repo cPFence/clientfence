@@ -5971,6 +5971,47 @@ test('wallet top-up limits are converted to the client currency', function (): v
         ->and($service->fundsLimits())->toBe(['min' => 10.0, 'max' => 200.0]);
 });
 
+test('wallet amount buttons are staff\'s list or the defaults converted and rounded, within the limits (CF-211)', function (?string $min, ?string $max, ?string $own, string $currency, float $rate, array $expected): void {
+    $systemService = Mockery::mock(SystemService::class);
+    $systemService->shouldReceive('getParamValue')->with('funds_min_amount', null)->andReturn($min);
+    $systemService->shouldReceive('getParamValue')->with('funds_max_amount', null)->andReturn($max);
+    $systemService->shouldReceive('getParamValue')->with('funds_presets_' . strtolower($currency), '')->andReturn($own ?? '');
+    $currencyRepository = Mockery::mock(ClientFence\Mod\Currency\Repository\CurrencyRepository::class);
+    $currencyRepository->shouldReceive('getRateByCode')->with($currency)->andReturn($rate);
+    $currencyService = Mockery::mock(ClientFence\Mod\Currency\Service::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->andReturn($currencyRepository);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name): Mockery\MockInterface => $name === 'currency' ? $currencyService : $systemService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->walletAmounts($currency))->toBe($expected);
+})->with([
+    'USD, no limits: as before' => [null, null, null, 'USD', 1.0, ['min' => 1.0, 'max' => 1000.0, 'presets' => [10.0, 25.0, 50.0, 100.0, 200.0]]],
+    'EUR at 0.92: not scaled down' => [null, null, null, 'EUR', 0.92, ['min' => 1.0, 'max' => 1000.0, 'presets' => [10.0, 25.0, 50.0, 100.0, 200.0]]],
+    'USD in an EGP store, no maximum: as before' => ['10', null, null, 'USD', 0.0193, ['min' => 0.19, 'max' => 1000.0, 'presets' => [10.0, 25.0, 50.0, 100.0, 200.0]]],
+    'limits converted down to 0 fall back' => ['10', '50', null, 'USD', 0.000062, ['min' => 1.0, 'max' => 1000.0, 'presets' => [10.0, 25.0, 50.0, 100.0, 200.0]]],
+    'a minimum above the unset maximum' => ['1500', null, null, 'USD', 1.0, ['min' => 1500.0, 'max' => 1500.0, 'presets' => []]],
+    'EGP at 51.8, limits 10 to 200' => ['10', '200', null, 'EGP', 51.8, ['min' => 518.0, 'max' => 10360.0, 'presets' => [1000.0, 2500.0, 5000.0, 10000.0]]],
+    'ARS at 1450, no limits' => [null, null, null, 'ARS', 1450.0, ['min' => 1.0, 'max' => 2000000.0, 'presets' => [20000.0, 50000.0, 100000.0, 200000.0, 250000.0]]],
+    'ARS staff list, cut to the limits' => ['10', '200', '5000, 10000, 20000, 50000, 500000', 'ARS', 1450.0, ['min' => 14500.0, 'max' => 290000.0, 'presets' => [20000.0, 50000.0]]],
+    'a broken stored list falls back to the defaults' => [null, null, '5.000', 'USD', 1.0, ['min' => 1.0, 'max' => 1000.0, 'presets' => [10.0, 25.0, 50.0, 100.0, 200.0]]],
+]);
+
+test('wallet preset lists are read as plain numbers (CF-211)', function (mixed $value, ?array $expected): void {
+    expect(Service::parseFundsPresets($value))->toBe($expected);
+})->with([
+    'commas, spaces and semicolons, sorted' => ['50000, 10000 5000;20000', [5000.0, 10000.0, 20000.0, 50000.0]],
+    'blank' => ['  ', []],
+    'decimals and duplicates' => ['2.5, 10, 10', [2.5, 10.0]],
+    'thousands dot' => ['5.000, 10.000', null],
+    'thousands comma' => ['5,000, 10,000', null],
+    'zero or negative' => ['0, -5', null],
+    'words' => ['ten', null],
+    'more than ten' => ['1 2 3 4 5 6 7 8 9 10 11', null],
+    'not text' => [['10'], null],
+]);
+
 test('credit set aside for another unpaid invoice does not pay this one', function (): void {
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());

@@ -3308,16 +3308,84 @@ class Service implements InjectionAwareInterface
     public function fundsLimits(?string $currency = null): array
     {
         $systemService = $this->di['mod_service']('system');
-        $rate = 1.0;
-        if ($currency !== null && $currency !== '') {
-            $rate = (float) ($this->di['mod_service']('currency')->getCurrencyRepository()->getRateByCode($currency) ?: 1.0);
-        }
+        $rate = $this->fundsRate($currency);
         $limit = static fn ($value): ?float => is_numeric($value) && (float) $value > 0 ? round((float) $value * $rate, 2) : null;
 
         return [
             'min' => $limit($systemService->getParamValue('funds_min_amount', null)),
             'max' => $limit($systemService->getParamValue('funds_max_amount', null)),
         ];
+    }
+
+    private function fundsRate(?string $currency): float
+    {
+        if ($currency === null || $currency === '') {
+            return 1.0;
+        }
+
+        return (float) ($this->di['mod_service']('currency')->getCurrencyRepository()->getRateByCode($currency) ?: 1.0);
+    }
+
+    /**
+     * ClientFence core patch (CF-211): the Wallet's top-up range and amount buttons in a currency. The range is
+     * fundsLimits(); an unset limit is 1, or 1000 scaled (only set limits are enforced). The buttons are staff's
+     * list for the currency (funds_presets_<code>, on its Currency settings page), else the first five of 10, 25,
+     * 50, 100, 200, 500 and 1000 scaled and rounded, within the range. Scaled = times the rate when the currency
+     * is worth less than the default one (ARS from USD), never smaller (USD in an EGP store keeps 10 to 1000).
+     *
+     * @return array{min: float, max: float, presets: list<float>}
+     */
+    public function walletAmounts(?string $currency = null): array
+    {
+        $scale = max($this->fundsRate($currency), 1.0);
+        ['min' => $min, 'max' => $max] = $this->fundsLimits($currency);
+        // A limit unset or converted down to 0 (a very weak default currency) falls back, so the page keeps a range.
+        $min = $min > 0 ? $min : 1.0;
+        $max = $max > 0 ? $max : max(self::niceAmount(1000 * $scale), $min);
+        $inRange = fn (float $v): bool => $v >= $min && $v <= $max;
+
+        $own = self::parseFundsPresets($this->di['mod_service']('system')->getParamValue('funds_presets_' . strtolower((string) $currency), '')) ?? [];
+        if ($own !== []) {
+            return ['min' => $min, 'max' => $max, 'presets' => array_values(array_filter($own, $inRange))];
+        }
+        $scaled = array_unique(array_map(fn (int $v): float => self::niceAmount($v * $scale), [10, 25, 50, 100, 200, 500, 1000]));
+
+        return ['min' => $min, 'max' => $max, 'presets' => array_slice(array_values(array_filter($scaled, $inRange)), 0, 5)];
+    }
+
+    /**
+     * ClientFence (CF-211): the amounts of a "5000, 10000, 20000" list, sorted (blank = none); null when a part is
+     * not a number above zero with at most two decimals (as "5.000" written with a thousands dot) or there are more
+     * than ten.
+     *
+     * @return list<float>|null
+     */
+    public static function parseFundsPresets(mixed $value): ?array
+    {
+        if (!is_scalar($value) && $value !== null) {
+            return null;
+        }
+        $amounts = [];
+        foreach (preg_split('/[\s,;]+/', trim((string) $value), -1, PREG_SPLIT_NO_EMPTY) ?: [] as $part) {
+            if (preg_match('/^\d{1,12}(\.\d{1,2})?$/', $part) !== 1 || (float) $part <= 0) {
+                return null;
+            }
+            $amounts[] = (float) $part;
+        }
+        $amounts = array_values(array_unique($amounts));
+        sort($amounts);
+
+        return count($amounts) <= 10 ? $amounts : null;
+    }
+
+    /** ClientFence (CF-211): a converted amount rounded to 1, 2, 2.5 or 5 of its power of ten (EGP 1295 to 1000, 2590 to 2500). */
+    private static function niceAmount(float $value): float
+    {
+        $scale = 10 ** floor(log10($value));
+        $steps = [$scale, 2 * $scale, 2.5 * $scale, 5 * $scale, 10 * $scale];
+        usort($steps, fn (float $a, float $b): int => abs(log($value / $a)) <=> abs(log($value / $b)));
+
+        return round($steps[0], 2);
     }
 
     public function generateFundsInvoice(\Model_Client $client, $amount)

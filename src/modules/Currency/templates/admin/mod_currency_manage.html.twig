@@ -58,6 +58,12 @@
                     </div>
                 </div>
                 {% endif %}
+                {# ClientFence core patch (CF-211): the Wallet's Add Funds amount buttons in this currency (Invoice/Service.php walletAmounts). #}
+                <div class="col-12">
+                    <label class="form-label" for="funds-presets">{{ 'Add Funds preset amounts'|trans }}</label>
+                    <input class="form-control" id="funds-presets" type="text" name="funds_presets" value="{{ funds_presets }}" placeholder="5000, 10000, 20000, 50000">
+                    <div class="form-hint">{{ 'The amount buttons on the client Wallet page in this currency, separated by commas. Leave blank to use 10, 25, 50, 100, 200, 500 and 1000, multiplied by this rate when it is above 1 and rounded, up to five shown. Amounts outside the Add Funds minimum and maximum are not shown; clients can still type any amount within them.'|trans }}</div>
+                </div>
                 <div class="col-12">
                     {% set has_formatting_overrides = currency.format_pattern|default('') is not empty or currency.fraction_digits|default(null) is not null %}
                     <div class="accordion" id="currency-formatting-accordion">

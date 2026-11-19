@@ -36,6 +36,9 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $guest_api = $this->di['api_guest'];
         $currency = $guest_api->currency_get(['code' => $code]);
 
-        return $app->render('mod_currency_manage', ['currency' => $currency]);
+        // ClientFence core patch (CF-211): the Wallet's amount buttons in this currency, edited on this page.
+        $presets = $this->di['mod_service']('system')->getParamValue('funds_presets_' . strtolower((string) $currency['code']), '');
+
+        return $app->render('mod_currency_manage', ['currency' => $currency, 'funds_presets' => $presets]);
     }
 }
