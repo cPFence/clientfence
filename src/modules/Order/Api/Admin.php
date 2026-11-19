@@ -219,6 +219,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional array  $meta - list of meta properties
      * @optional bool   $auto_suspend_override - Override Auto-Suspend: the cron neither suspends nor cancels the order (ClientFence)
      * @optional string $auto_suspend_until - with the override: do not suspend until this date (YYYY-MM-DD), blank for no end
+     * @optional bool   $recalculate - ClientFence core patch: Recalculate on Save (WHMCS): the price comes from the product, its cycle and options; $price is ignored
      *
      * @return bool
      */
@@ -783,6 +784,48 @@ class Admin extends \ClientFence\Api\AbstractApi
         \ClientFence\Mod\Order\Upgrades::staffSetOptions($this->getDi(), (int) $data['id'], $choice, !empty($data['reprice']));
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: Edit Order "First Payment Amount", as WHMCS: the service's lines (with its setup fee and
+     * discount) on the first invoice that billed it, before tax, or with it when prices include tax (the lines hold the
+     * net price then: Invoice\Service::applyInclusiveTax()); null without one (an imported service).
+     *
+     * @return array{amount: float, currency: string, invoice_id: int}|null
+     */
+    #[RequiredParams(['id' => 'Order ID was not passed'])]
+    public function first_payment($data): ?array
+    {
+        $this->checkPermissions('order', 'view');
+        $db = $this->getDi()['dbal'];
+        $invoiceId = $db->fetchOne('SELECT MIN(invoice_id) FROM invoice_item WHERE type = ? AND rel_id = ?', [\Model_InvoiceItem::TYPE_ORDER, (string) (int) $data['id']]);
+        if (!$invoiceId) {
+            return null;
+        }
+        $invoice = $db->fetchAssociative('SELECT currency, taxrate, tax_adjust FROM invoice WHERE id = ?', [(int) $invoiceId]);
+        $lines = $db->fetchAllAssociative('SELECT type, rel_id, price, quantity, taxed FROM invoice_item WHERE invoice_id = ? AND type <> ?', [(int) $invoiceId, \Model_InvoiceItem::TYPE_DEPOSIT]);
+        $own = array_filter($lines, static fn (array $l): bool => (string) $l['rel_id'] === (string) (int) $data['id'] && in_array($l['type'], [\Model_InvoiceItem::TYPE_ORDER, \Model_InvoiceItem::TYPE_CUSTOM], true));
+        if ($invoice === false || $own === []) {
+            return null;
+        }
+        // With prices that include tax a taxed line holds the net unit price (Invoice\Service::applyInclusiveTax()): each
+        // unit's price with tax, plus this service's share of what that leaves of the invoice's real taxed total
+        // (its tax and tax_adjust), is what the client paid. Otherwise the amount is before tax.
+        // shortcut: the gross line price is not stored, so on a shared tax-inclusive invoice with large quantities a
+        // service's share can be off (display only); store the gross in applyInclusiveTax() if that ever matters.
+        $rate = $this->getDi()['mod_service']('Invoice')->pricesIncludeTax() ? (float) $invoice['taxrate'] : 0.0;
+        $gross = static fn (array $l): float => ($rate > 0 && $l['taxed'] ? round((float) $l['price'] * (100 + $rate) / 100, 2) : (float) $l['price']) * (float) $l['quantity'];
+        $sum = static fn (array $ls, callable $f): float => array_sum(array_map($f, $ls));
+        $amount = $sum($own, $gross);
+        if ($rate > 0) {
+            $taxed = static fn (array $ls): array => array_filter($ls, static fn (array $l): bool => (bool) $l['taxed']);
+            $net = $sum($taxed($lines), static fn (array $l): float => (float) $l['price'] * (float) $l['quantity']);
+            $rebuilt = $sum($taxed($lines), $gross);
+            $residual = $net + \ClientFence\Mod\Invoice\Service::taxOf($net, $rate, (float) $invoice['tax_adjust']) - $rebuilt;
+            $amount += $rebuilt != 0 ? $residual * $sum($taxed($own), $gross) / $rebuilt : 0.0;
+        }
+
+        return ['amount' => round($amount, 2), 'currency' => (string) $invoice['currency'], 'invoice_id' => (int) $invoiceId];
     }
 
     /**

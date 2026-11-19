@@ -2018,3 +2018,80 @@ test('a licence plan change counts the IP addresses again when it applies, and f
     expect($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE))->toBe(['status' => 'failed', 'error' => 'To move to a plan with fewer servers, first remove the IP addresses it cannot hold.'])
         ->and($db->fetchOne('SELECT product_id FROM client_order WHERE id = 1'))->toBe(1);
 });
+
+test('Recalculate on Save prices a service from its own product for its cycle, in its currency; a cycle without a price is refused', function (): void {
+    $di = upgradesContainer(upgradesDb());
+
+    expect(Upgrades::recalculate($di, 1, 'EUR', '1M', '{}')['price'])->toBe(4.5)
+        ->and(Upgrades::recalculate($di, 1, 'USD', '1Y', '{}')['price'])->toBe(48.0)
+        ->and(fn () => Upgrades::recalculate($di, 1, 'USD', '3M', '{}'))->toThrow(InformationException::class, 'no price for the billing cycle');
+
+    // With its options: Starter 5 + RAM 4 GB 5 + Backups 3. An option whose group left the product refuses, never dropped.
+    $db = $di['em']->getConnection();
+    $o = upgradesWithOptions($di);
+    $config = (string) $db->fetchOne('SELECT config FROM client_order WHERE id = 1');
+    expect(Upgrades::recalculate($di, 1, 'USD', '1M', $config))->toMatchArray(['price' => 13.0])
+        ->and(Upgrades::recalculate($di, 1, 'USD', '1M', $config)['config']['options'])->toBe([$o['ram'] => $o['4gb'], $o['backups'] => 1, $o['support'] => $o['basic']]);
+    // A priced option added to the product since (its first value 7) is not sold to the service.
+    $added = Options::saveOption($di, ['group_id' => (int) $db->fetchOne('SELECT group_id FROM product_option WHERE id = ?', [$o['ram']]), 'title' => 'Panel', 'type' => 'select', 'values' => [['title' => 'Plus', 'm_price' => '7']]]);
+    expect(Upgrades::recalculate($di, 1, 'USD', '1M', $config))->toMatchArray(['price' => 13.0])
+        ->and(Upgrades::recalculate($di, 1, 'USD', '1M', $config)['config']['options'])->not->toHaveKey($added);
+    $db->executeStatement('DELETE FROM product_option_group_product WHERE product_id = 1 AND group_id = (SELECT group_id FROM product_option WHERE id = ?)', [$o['support']]);
+    expect(fn () => Upgrades::recalculate($di, 1, 'USD', '1M', $config))->toThrow(InformationException::class, 'no longer fit');
+});
+
+function upgradesOrderService(Pimple\Container $di, array &$notes): ClientFence\Mod\Order\Service
+{
+    $service = Mockery::mock(ClientFence\Mod\Order\Service::class)->makePartial();
+    $service->shouldReceive('updateOrderMeta')->andReturn(0);
+    $service->shouldReceive('saveStatusChange')->andReturnUsing(function (Model_ClientOrder $order, string $note) use (&$notes): void {
+        $notes[] = $note;
+    });
+    $service->setDi($di);
+
+    return $service;
+}
+
+test('Edit Order with Recalculate on Save ignores the typed price, stops the gateway subscription and notes it; a refusal saves nothing', function (): void {
+    $db = upgradesDb();
+    $db->update('client_order', ['price' => 7.5], ['id' => 1]);
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()->andReturn(1);
+    $di['services']['invoice_subscription']->shouldReceive('hasGatewaySubscriptionForOrder')->once()->andReturn(false);
+    $notes = [];
+    $service = upgradesOrderService($di, $notes);
+
+    expect(fn () => $service->updateOrder(upgradesOrder($di, 1), ['recalculate' => 1, 'period' => '3M']))->toThrow(InformationException::class)
+        ->and($db->fetchAssociative('SELECT price, period FROM client_order WHERE id = 1'))->toBe(['price' => 7.5, 'period' => '1M']);
+
+    $service->updateOrder(upgradesOrder($di, 1), ['recalculate' => 1, 'price' => 99]);
+
+    expect((float) $db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(5.0)
+        ->and($notes)->toBe(['Price recalculated by staff: 7.50 to 5.00 USD (automatic payment by subscription at the old price stopped; client emailed)']);
+});
+
+test('Edit Order keeps the subscription when the recalculated price does not change, or recalculate is off ("false" from a form)', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->never();
+    $notes = [];
+
+    upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['recalculate' => 1]);
+    upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['recalculate' => 'false', 'price' => 9]);
+
+    expect($notes)->toBe([])
+        ->and((float) $db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(9.0);
+});
+
+test('Edit Order refuses a recalculated price while a gateway subscription it cannot cancel would charge the old one', function (): void {
+    $db = upgradesDb();
+    $db->update('client_order', ['price' => 7.5], ['id' => 1]);
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()->andReturn(0);
+    $di['services']['invoice_subscription']->shouldReceive('hasGatewaySubscriptionForOrder')->once()->andReturn(true);
+    $notes = [];
+
+    expect(fn () => upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['recalculate' => 1]))->toThrow(InformationException::class, 'could not be canceled')
+        ->and((float) $db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(7.5)
+        ->and($notes)->toBe([]);
+});

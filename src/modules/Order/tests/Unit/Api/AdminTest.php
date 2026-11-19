@@ -844,3 +844,33 @@ test('export_csv delegates to service when permissions granted', function (): vo
 
     expect($result)->toBeInstanceOf(Symfony\Component\HttpFoundation\Response::class);
 });
+
+test('first payment is the service lines on its first invoice: price, setup fee and discount, with tax when prices include it', function (bool $inclusive, float $amount, float $three, float $six, float $hundred): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, currency TEXT, taxrate TEXT, tax_adjust REAL DEFAULT 0)');
+    $db->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id TEXT, price REAL, quantity INTEGER, taxed INTEGER)');
+    $db->executeStatement("INSERT INTO setting (param, value) VALUES ('tax_enabled', '1'), ('tax_inclusive', ?)", [$inclusive ? '1' : '0']);
+    $db->executeStatement("INSERT INTO invoice VALUES (10, 'EUR', '20', 0), (11, 'EUR', '20', 0), (12, 'EUR', '20', 0), (13, 'EUR', '19', 0.59)");
+    // The order line and its discount are taxed, the setup fee not; another service and a later renewal are left out.
+    $db->executeStatement("INSERT INTO invoice_item (invoice_id, type, rel_id, price, quantity, taxed) VALUES
+        (10, 'order', '7', 20, 1, 1), (10, 'custom', '7', -2, 1, 1), (10, 'custom', '7', 5, 1, 0), (10, 'order', '8', 99, 1, 1), (11, 'order', '7', 20, 1, 1)");
+    // Three at 10.00 and three at 20.00 with the tax in it, on one invoice: 8.33 and 16.67 net each.
+    $db->executeStatement("INSERT INTO invoice_item (invoice_id, type, rel_id, price, quantity, taxed) VALUES (12, 'order', '20', 8.33, 3, 1), (12, 'order', '21', 16.67, 3, 1)");
+    // A hundred at 9.99 with 19% in it: 8.39 net each (9.98 with tax), and the invoice's 0.59 of rounding makes 999.00.
+    $db->executeStatement("INSERT INTO invoice_item (invoice_id, type, rel_id, price, quantity, taxed) VALUES (13, 'order', '22', 8.39, 100, 1)");
+    $api = apiEndpoint(new Admin());
+    $di = $api->getDi();
+    $di['dbal'] = $db;
+    $invoices = new ClientFence\Mod\Invoice\Service();
+    $invoices->setDi($di);
+    $services = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = ''): object => $name === 'Invoice' ? $invoices : $services($name, $sub));
+    $api->setDi($di);
+
+    expect($api->first_payment(['id' => 7]))->toBe(['amount' => $amount, 'currency' => 'EUR', 'invoice_id' => 10])
+        ->and($api->first_payment(['id' => 20])['amount'])->toBe($three)
+        ->and($api->first_payment(['id' => 21])['amount'])->toBe($six)
+        ->and($api->first_payment(['id' => 22])['amount'])->toBe($hundred)
+        ->and($api->first_payment(['id' => 9]))->toBeNull();
+})->with(['tax on top' => [false, 23.0, 24.99, 50.01, 839.0], 'prices include tax' => [true, 26.6, 30.0, 60.0, 999.0]]);

@@ -1804,6 +1804,21 @@ class Service implements InjectionAwareInterface
             $order->title = $data['title'] ?? $this->orderTitle($order);
         }
 
+        // ClientFence core patch: Recalculate on Save, as WHMCS: the price of the service's product for its cycle and options (Order\Upgrades::recalculate()); the typed price is ignored.
+        $oldPrice = round((float) $this->orderPrice($order), 2);
+        $recalculated = Tools::normalizeBoolean($data['recalculate'] ?? false)
+            ? \ClientFence\Mod\Order\Upgrades::recalculate($this->di, (int) $this->orderProductId($order), (string) $this->orderCurrency($order), (string) $this->orderPeriod($order), $this->orderConfig($order))
+            : null;
+        if ($recalculated !== null) {
+            $data['price'] = $recalculated['price'];
+            $config = json_encode($recalculated['config']);
+            if ($order instanceof Order) {
+                $order->setConfig($config);
+            } else {
+                $order->config = $config;
+            }
+        }
+
         if (isset($data['price'])) {
             $price = PriceValidator::validateAmount($data['price']);
             if ($order instanceof Order) {
@@ -1835,6 +1850,19 @@ class Service implements InjectionAwareInterface
             $order->reason = $reason;
         }
 
+        // A recalculated price must not keep charging the old gateway subscription (as Order\Upgrades::staffMove()).
+        $priceNote = '';
+        $newPrice = round((float) $this->orderPrice($order), 2);
+        if ($recalculated !== null && $newPrice !== $oldPrice) {
+            $model = $this->di['db']->getExistingModelById('ClientOrder', $orderId);
+            $priceNote = sprintf('Price recalculated by staff: %s to %s %s', number_format($oldPrice, 2, '.', ''), number_format($newPrice, 2, '.', ''), $this->orderCurrency($order))
+                . \ClientFence\Mod\Order\Upgrades::cancelSubscriptions($this->di, $model);
+            // A subscription the gateway cannot cancel (PayPal without its API keys) would go on charging the old price.
+            if ($this->di['mod_service']('Invoice', 'Subscription')->hasGatewaySubscriptionForOrder($model)) {
+                throw new InformationException('The gateway subscription of this service could not be canceled, so the price was not changed. Cancel it at the gateway first.');
+            }
+        }
+
         $this->updateOrderMeta($order, $data['meta'] ?? null);
         if ($overrideMeta !== null) {
             $this->updateOrderMeta($order, $overrideMeta);
@@ -1846,6 +1874,10 @@ class Service implements InjectionAwareInterface
         } else {
             $order->updated_at = date('Y-m-d H:i:s');
             $this->di['db']->store($order);
+        }
+
+        if ($priceNote !== '') {
+            $this->saveStatusChange($order, $priceNote);
         }
 
         $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderUpdate', 'params' => ['id' => $orderId]]);

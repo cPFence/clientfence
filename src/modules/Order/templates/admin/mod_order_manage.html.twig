@@ -557,12 +557,31 @@
                                     <input class="form-control" id="order_title" type="text" name="title" value="{{ order.title }}">
                                 </div>
                                 <div class="col-lg-6">
-                                    <label class="form-label" for="order_price">{{ 'Price'|trans }}</label>
-                                    <input class="form-control" id="order_price" type="number" min="0" step="any" name="price" value="{{ order.price }}" required>
-                                </div>
-                                <div class="col-lg-6">
                                     <label class="form-label">{{ 'Invoice Option'|trans }}</label>
                                     {{ mf.selectbox('invoice_option', admin.order_get_invoice_options, order.invoice_option) }}
+                                </div>
+                                {# ClientFence core patch: First Payment Amount, read-only as WHMCS (order/first_payment). #}
+                                {% set first_payment = admin.order_first_payment({ 'id': order.id }) %}
+                                <div class="col-lg-6">
+                                    <label class="form-label">{{ 'First Payment Amount'|trans }}</label>
+                                    <div class="form-control-plaintext">
+                                        {% if first_payment %}
+                                            {{ first_payment.amount|format_currency(first_payment.currency) }}
+                                            {% if has_permission('invoice', 'view') %}<a class="ms-2" href="{{ ('invoice/manage/' ~ first_payment.invoice_id)|url }}">{{ 'Invoice #:id'|trans({ ':id': first_payment.invoice_id }) }}</a>{% endif %}
+                                        {% else %}-{% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="order_price">{{ 'Recurring Amount'|trans }}</label>
+                                    <input class="form-control" id="order_price" type="number" min="0" step="any" name="price" value="{{ order.price }}" required>
+                                    {# ClientFence core patch: Recalculate on Save, as WHMCS (Order/Upgrades.php recalculate()), for the product types Upgrades prices (KINDS); domains renew at the TLD price. #}
+                                    {% if order.period and order.service_type in ['hosting', 'license', 'custom', 'membership', 'downloadable'] %}
+                                    <label class="form-check form-switch mt-2 mb-0">
+                                        <input class="form-check-input" type="checkbox" name="recalculate" value="1">
+                                        <span class="form-check-label">{{ 'Recalculate on Save'|trans }}</span>
+                                    </label>
+                                    <div class="form-hint">{{ 'When on, saving sets the price from the product for this billing cycle and its options, at the current exchange rate. The amount typed above is ignored.'|trans }}</div>
+                                    {% endif %}
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="form-label">{{ 'Period'|trans }}</label>

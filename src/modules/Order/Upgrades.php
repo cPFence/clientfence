@@ -1395,6 +1395,61 @@ final class Upgrades
     }
 
     /**
+     * ClientFence core patch: Edit Order "Recalculate on Save", as WHMCS: the price of the service's own product for its
+     * billing cycle with its options, as staffMove() reprices. Returns the price and the config with the options' lines
+     * at those prices; refuses when the product has no price for the cycle.
+     *
+     * @return array{price: float, config: array<string, mixed>}
+     */
+    public static function recalculate(\Pimple\Container $di, int $productId, string $currency, string $period, ?string $config): array
+    {
+        $config = json_decode((string) $config, true);
+        $config = is_array($config) ? $config : [];
+        // Only the service's own options, all of them, unlike optionsFor() (a move drops those the new product lacks and
+        // takes its defaults): one detached from the product refuses; one added to it since is not sold to the service.
+        $choice = self::choiceOf($config['options'] ?? null);
+        try {
+            $resolved = Options::resolve($di, $productId, $choice, $period !== '' ? $period : 'once', $choice);
+        } catch (InformationException) {
+            throw new InformationException('The options of this service no longer fit its product. Change them first.');
+        }
+        $lines = array_values(array_filter($resolved['lines'], static fn (array $line): bool => isset($choice[(int) $line['option_id']])));
+        $options = ['choice' => array_intersect_key($resolved['choice'], $choice), 'lines' => $lines, 'price' => round(array_sum(array_column($lines, 'price')), 2)];
+        $price = self::catalogPrice($di, $productId, $currency, $period, $options['price'])
+            ?? throw new InformationException('The product has no price for the billing cycle of this service, so the price cannot be recalculated.');
+
+        return ['price' => $price, 'config' => self::withOptions($config, $options)];
+    }
+
+    /** The product's recurring price for $period plus $optionsPrice, in $currency at today's rate; null without a price. */
+    private static function catalogPrice(\Pimple\Container $di, int $productId, string $currency, string $period, float $optionsPrice): ?float
+    {
+        $db = self::db($di);
+        $prices = self::catalog($db, $productId, false, $currency)['prices'] ?? [];
+        $rate = self::rate($db, $currency);
+
+        return $rate === null || !isset($prices[$period]) ? null : round(($prices[$period] + $optionsPrice) * $rate, 2);
+    }
+
+    /**
+     * @param array<string, mixed>                                                                     $config
+     * @param array{choice: array<int, int>, lines: list<array<string, mixed>>, price: float} $options
+     *
+     * @return array<string, mixed>
+     */
+    private static function withOptions(array $config, array $options): array
+    {
+        if ($options['choice'] === []) {
+            unset($config['options'], $config['option_lines']);
+        } else {
+            $config['options'] = $options['choice'];
+            $config['option_lines'] = $options['lines'];
+        }
+
+        return $config;
+    }
+
+    /**
      * ClientFence: staff move a service to another product, as WHMCS (Products/Services tab: a new Product/Service,
      * "Auto Recalculate on Save", then the Change Package module command). No invoice is made. Its options stay where
      * the new product has them. With $reprice the recurring price is the new product's for the service's cycle (with
@@ -1418,11 +1473,8 @@ final class Upgrades
         $old = round((float) $order->price, 2);
         $price = $old;
         if ($reprice) {
-            $rate = self::rate($db, (string) $order->currency);
-            if ($rate === null || !isset($to['prices'][$period])) {
-                throw new InformationException('The new product has no price for the billing cycle of this service, so the price cannot be recalculated.');
-            }
-            $price = round(($to['prices'][$period] + $options['price']) * $rate, 2);
+            $price = self::catalogPrice($di, $productId, (string) $order->currency, $period, $options['price'])
+                ?? throw new InformationException('The new product has no price for the billing cycle of this service, so the price cannot be recalculated.');
         }
         // The stock first: out of stock refuses before the panel changes; a panel failure gives it back.
         $quantity = max(1, (int) ($order->quantity ?? 1));
@@ -1442,13 +1494,7 @@ final class Upgrades
         $subscriptionNote = $price !== $old ? self::cancelSubscriptions($di, $order) : '';
 
         $config = json_decode((string) $order->config, true);
-        $config = self::productConfig($db, $order, $to, is_array($config) ? $config : []);
-        if ($options['choice'] === []) {
-            unset($config['options'], $config['option_lines']);
-        } else {
-            $config['options'] = $options['choice'];
-            $config['option_lines'] = $options['lines'];
-        }
+        $config = self::withOptions(self::productConfig($db, $order, $to, is_array($config) ? $config : []), $options);
         // The names as the client reads them (Product/Translations.php), as apply() writes a client's change.
         $locale = self::clientLocale($db, (int) $order->client_id);
         $toName = (string) Translations::text($di, 'product', $productId, 'title', $to['title'], $locale);
@@ -1473,7 +1519,7 @@ final class Upgrades
      * ClientFence core patch: the old gateway subscription is cancelled, as WHMCS does on an upgrade; nothing renews the
      * service automatically now, so the client is emailed and the history says so (GitHub issue #5).
      */
-    private static function cancelSubscriptions(\Pimple\Container $di, \Model_ClientOrder $order): string
+    public static function cancelSubscriptions(\Pimple\Container $di, \Model_ClientOrder $order): string
     {
         if ($di['mod_service']('Invoice', 'Subscription')->cancelForOrder($order) === 0) {
             return '';
