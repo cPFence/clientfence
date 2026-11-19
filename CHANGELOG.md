@@ -40,6 +40,8 @@ A fixes release from the QA rounds: renewal invoices use part of the account cre
 
 ### Fixed
 
+- System → Update: after a successful update the page could show "HTTP error 503" instead of the welcome screen; the update and patch buttons now send their request only once.
+- Admin on phones: card buttons such as Quick setup on the Settings page now sit on the right of the card title.
 - Sync with server shows only for the panels that can read the account (cPanel/WHM, CWP and Enhance): DirectAdmin and Plesk orders no longer show an error, and HestiaCP orders no longer show a button that changed nothing.
 - The price change email template can be previewed and saved before the first price change email is sent. ([#50](https://github.com/cPFence/clientfence/issues/50))
 - Bank transfer instructions with currency conversion: `converted.total` on an unpaid invoice is now what is left to pay (after part payments and credit), as the invoice page shows. ([#49](https://github.com/cPFence/clientfence/issues/49))
