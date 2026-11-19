@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.0.60 (2026-11-19)
+
+Custom client fields like WHMCS, and the service page in WHMCS's terms. Guide: [Custom client fields](https://clientfence.com/docs/clients-and-billing/custom-client-fields/).
+
+### Added
+
+- Custom client fields as in WHMCS (System → Settings → Client, Custom Fields): Text Box, Link/URL, Password, Drop Down, Checkbox and Text Area, with select options, description, validation, display order, Admin Only, Required, Show on Order Form, Show on Invoice and translations. Password answers are stored encrypted. The WHMCS import brings the fields with these settings.
+- Show on Invoice: the answer prints on invoices made from then on (invoice page, print view and PDF).
+- Module Commands row on the admin service page's Details tab, as in WHMCS: Create, Suspend, Unsuspend, Terminate, Renew and the product's main commands, with a More menu for the rest.
+- Payment Method per service on Edit Order: renewal invoices preselect it, and services with different methods renew on separate invoices. The WHMCS import brings each service's payment method.
+- Edit Order: Recalculate on Save reprices a service from its product, and First Payment Amount shows the first invoice.
+- Wallet amount buttons per currency (System → Settings → Currency, Add Funds preset amounts). Left blank, the usual amounts are converted with the currency's rate.
+- Imports: download the import plan and, after the import, an audit file as CSV.
+
+### Changed
+
+- Services are named as in WHMCS: Products & Services tab on the admin client page with links on its Overview, the Addons tab on every main service, and services instead of orders in the client area.
+- Edit Order: Price is now Recurring Amount.
+
 ## 1.0.59 (2026-11-19)
 
 Client options from WHMCS: per-client switches and an Inactive client status. Guide: [Client options and the Inactive status](https://clientfence.com/docs/clients-and-billing/client-options/).
