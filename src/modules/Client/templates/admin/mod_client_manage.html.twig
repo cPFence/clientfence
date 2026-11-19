@@ -634,7 +634,8 @@
                         <div class="row g-3">
                             {% for i in filled %}
                             <div class="col-xl-6">
-                                <label class="form-label">{{ 'Custom field'|trans }} {{ i }}</label>
+                                {# An inactive field keeps its title from the settings, if it has one. #}
+                                <label class="form-label">{{ cf_fields['custom_' ~ i].title|default('') ?: 'Custom field'|trans ~ ' ' ~ i }}</label>
                                 <textarea class="form-control" name="custom_{{ i }}" rows="3">{{ client['custom_' ~ i]|default('') }}</textarea>
                             </div>
                             {% endfor %}

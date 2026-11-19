@@ -176,8 +176,13 @@
                                     </select>
                                     <small class="form-hint text-muted">{{ 'Used to display dates and times in your local time across tickets, invoices, and order history.'|trans }}</small>
                                 </div>
-                                {# ClientFence: WHMCS custom client fields, each as its type; a saved password is never shown back (mod_client_custom_field_input.html.twig). #}
-                                {% for custom, current in guest.client_custom_fields|default({}) %}
+                            </div>
+                            {# ClientFence: WHMCS custom client fields under their own heading, each as its type; a saved password is never shown back (mod_client_custom_field_input.html.twig). #}
+                            {% set custom_fields = guest.client_custom_fields|default({})|filter(f => f.active|default(false)) %}
+                            {% if custom_fields %}
+                            <h3 class="cf-pf-section">{{ 'Additional Details'|trans }}</h3>
+                            <div class="row g-3 mb-4">
+                                {% for custom, current in custom_fields %}
                                     {% if current.active|default(false) %}
                                         <div class="{{ current.type|default('text') == 'textarea' ? 'col-12' : 'col-md-6' }}">
                                             {{ include('mod_client_custom_field_input.html.twig', { name: custom, field: current, value: profile[custom]|default(''), id: custom }) }}
@@ -185,6 +190,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </div>
+                            {% endif %}
                             <button class="btn btn-primary" type="submit">{{ 'Update Profile'|trans }}</button>
                         </form>
                     </div>
