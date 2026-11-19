@@ -249,11 +249,12 @@ globalThis.Modals = {
 
     const confirmButton = modal.querySelector("#confirm-button");
     if (confirmButton) {
+      // ClientFence core patch: once, so a second tap while the modal fades does not run the action again.
       confirmButton.addEventListener("click", function () {
         if (options.confirmCallback) {
           options.confirmCallback();
         }
-      });
+      }, { once: true });
     }
 
     const promptConfirmButton = modal.querySelector("#prompt-confirm-button");
@@ -264,7 +265,7 @@ globalThis.Modals = {
             document.getElementById("prompt-input").value
           );
         }
-      });
+      }, { once: true });
     }
 
     // Show the modal.

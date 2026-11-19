@@ -47,6 +47,12 @@ describe('dispatchLinkAction', () => {
     assert.deepEqual(request, ['GET', '/endpoint']);
   });
 
+  test('sends the method the link names', () => {
+    let request: unknown;
+    dispatchLinkAction({ method: 'POST' }, '/endpoint', null, (...args) => { request = args; });
+    assert.deepEqual(request, ['POST', '/endpoint']);
+  });
+
   test('uses native confirm when the modal library is unavailable', () => {
     let request: unknown;
     window.confirm = (message) => {

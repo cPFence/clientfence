@@ -18,8 +18,10 @@
  * @param {function}    onRequest   Callback: (method, href, params?) => void.
  */
 export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
+  // ClientFence core patch: `method: 'POST'` for long actions; browsers and proxies may resend a GET on their own.
+  const method = apiData.method ?? 'GET';
   if (!apiData.hasOwnProperty('modal')) {
-    onRequest('GET', rawHref);
+    onRequest(method, rawHref);
     return;
   }
 
@@ -31,10 +33,10 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
     if (modal.type === 'prompt') {
       const value = window.prompt(modal.label ?? modal.title ?? '', modal.value ?? '');
       if (value) {
-        onRequest('GET', rawHref, { [modal.key]: value });
+        onRequest(method, rawHref, { [modal.key]: value });
       }
     } else if (window.confirm([modal.title, modal.content].filter(Boolean).join('\n\n') || 'Are you sure?')) {
-      onRequest('GET', rawHref);
+      onRequest(method, rawHref);
     }
   } else if (modal.type === 'prompt') {
     modalsLib.create({
@@ -44,7 +46,7 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
       value: text(modal.value),
       promptConfirmCallback: (value) => {
         if (value) {
-          onRequest('GET', rawHref, { [modal.key]: value });
+          onRequest(method, rawHref, { [modal.key]: value });
         }
       },
     });
@@ -57,7 +59,7 @@ export function dispatchLinkAction(apiData, rawHref, modalsLib, onRequest) {
       confirmButton: modal.button !== undefined ? text(modal.button) : (modalsLib.defaultOptions?.confirmButton ?? 'Confirm'),
       confirmButtonColor: modal.buttonColor ?? 'primary',
       confirmCallback: () => {
-        onRequest('GET', rawHref);
+        onRequest(method, rawHref);
       },
     });
   }

@@ -221,6 +221,7 @@
                         {% if canInstallUpdate %}
                             <a class="btn {{ updateButtonClass }} disabled" href="#" aria-disabled="true" data-update-requires-backup data-update-href="{{ 'system/update_core'|api_url }}"
                                 {{ fb_api_link({
+                                    method: 'POST',
                                     modal: {type: updateModalType, title: updateConfirmTitle, content: updateModalContent, button: updateModalButton},
                                     callback: 'clientfenceUpdateDone',
                                     timeoutMs: 300000,
@@ -335,6 +336,7 @@
                     <div class="d-flex flex-wrap gap-2">
                         <a class="btn {{ behindOnPatches ? 'btn-success' : 'btn-secondary' }}" href="{{ 'system/manual_update'|api_url }}"
                             {{ fb_api_link({
+                                method: 'POST',
                                 message: 'Patches Applied and Configuration Updated'|trans,
                                 modal: {type: 'confirm', title: 'Are you sure?'|trans},
                                 timeoutMs: 180000,
