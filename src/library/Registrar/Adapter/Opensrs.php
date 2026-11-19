@@ -391,7 +391,8 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
             return null;
         }
 
-        return is_numeric($price) && (float) $price > 0 ? (float) $price : null;
+        // 0 is kept: a free transfer is a price (PriceSync drops a 0 register or renew cost).
+        return is_numeric($price) && (float) $price >= 0 ? (float) $price : null;
     }
 
     /** A registration or transfer (sw_register): the client's contact for all four roles, no OpenSRS auto-renewal. */

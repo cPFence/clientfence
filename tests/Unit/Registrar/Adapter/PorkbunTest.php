@@ -182,10 +182,10 @@ test('the transfer status maps Porkbun\'s transfer status: DONE completed, CANCE
     'unknown' => ['SOMETHING_NEW', Registrar_TransferStatus::PENDING],
 ]);
 
-test('the price list reads pricing/get in USD, skips Handshake names and keeps the asked TLDs', function (): void {
+test('the price list reads pricing/get in USD, skips Handshake names and .uk transfers, and keeps the asked TLDs', function (): void {
     $adapter = porkbunAdapter(['GET /pricing/get' => ['status' => 'SUCCESS', 'pricing' => [
         'com' => ['registration' => '9.73', 'renewal' => '10.37', 'transfer' => '10.37'],
-        'co.uk' => ['registration' => '5.13', 'renewal' => '5.13', 'transfer' => ''],
+        'co.uk' => ['registration' => '5.13', 'renewal' => '5.13', 'transfer' => '0.00'],
         'hns' => ['registration' => '1.00', 'renewal' => '1.00', 'transfer' => '1.00', 'specialType' => 'handshake'],
     ]]]);
 

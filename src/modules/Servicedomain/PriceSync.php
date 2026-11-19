@@ -76,20 +76,20 @@ final class PriceSync
     /**
      * A store price from a registrar cost: converted with $rate (registrar currency units per one
      * default unit, currency.conversion_rate), plus the markup, up to the cent and then up to the
-     * rounding ending. Null when there is no usable cost.
+     * rounding ending (a free result stays free). Null when there is no usable cost; store() keeps 0 only for a free transfer.
      *
      * @param array{type: string, value: float} $markup
      */
     public static function price(?float $cost, float $rate, array $markup, string $rounding): ?float
     {
-        if ($cost === null || !is_finite($cost) || $cost <= 0 || $rate <= 0) {
+        if ($cost === null || !is_finite($cost) || $cost < 0 || $rate <= 0) {
             return null;
         }
         $cents = $cost / $rate * 100;
         $cents = $markup['type'] === 'fixed' ? $cents + $markup['value'] * 100 : $cents * (1 + $markup['value'] / 100);
         // Round away float noise first, so 10.00 stays 1000 cents and is not pushed to 1001.
         $cents = (int) ceil(round($cents, 6));
-        if ($rounding !== '') {
+        if ($rounding !== '' && $cents > 0) {
             $cents += ((int) substr($rounding, 1) - $cents % 100 + 100) % 100;
         }
 
@@ -249,7 +249,7 @@ final class PriceSync
             'currency' => $currency,
             'rate' => $rate,
             'fetched_at' => $state['done_at'],
-            'fingerprint' => hash('sha256', json_encode([$settings, $rate, array_map(static fn (array $r): array => [$r['tld'], $r['status'], $r['current'], $r['new'], $r['registrar']], $rows)])),
+            'fingerprint' => hash('sha256', json_encode([$settings, $rate, array_map(static fn (array $r): array => [$r['tld'], $r['status'], $r['current'], $r['new'], $r['registrar'], $r['offers_transfer']], $rows)])),
         ];
     }
 
@@ -297,7 +297,8 @@ final class PriceSync
                         'active' => 0,
                         'allow_register' => 1,
                         'allow_transfer' => $row['offers_transfer'] ? 1 : 0,
-                        'require_transfer_code' => 1,
+                        // A free .uk transfer is a tag change with no code (Nominet, Realtime Register); a paid one may need it (Dynadot).
+                        'require_transfer_code' => str_ends_with($tld, '.uk') && $row['cost']['transfer'] === 0.0 ? 0 : 1,
                         'min_years' => 1,
                     ]);
                     ++$done['created'];
@@ -544,8 +545,9 @@ final class PriceSync
         $db = self::db($di);
         $service = $di['mod_service']('servicedomain');
         $now = date('Y-m-d H:i:s');
-        $cost = static function (mixed $value): ?string {
-            return is_numeric($value) && is_finite((float) $value) && (float) $value > 0 ? number_format((float) $value, 4, '.', '') : null;
+        // A transfer can be free (0.00, as .uk); a register or renew cost of 0 is a missing price.
+        $cost = static function (mixed $value, bool $free): ?string {
+            return is_numeric($value) && is_finite((float) $value) && ((float) $value > 0 || ($free && (float) $value == 0)) ? number_format((float) $value, 4, '.', '') : null;
         };
         foreach ($prices as $tld => $price) {
             try {
@@ -555,7 +557,7 @@ final class PriceSync
             }
             $values = ['currency' => $currency, 'fetched_at' => $now];
             foreach (array_keys(self::ACTIONS) as $action) {
-                $values['cost_' . $action] = $cost(is_array($price) ? ($price[$action] ?? null) : null);
+                $values['cost_' . $action] = $cost(is_array($price) ? ($price[$action] ?? null) : null, $action === 'transfer');
             }
             $old = $db->fetchAssociative('SELECT id, currency FROM tld_registrar_cost WHERE tld_registrar_id = ? AND tld = ?', [$registrarId, $tld]);
             if ($old === false) {

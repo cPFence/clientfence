@@ -256,7 +256,9 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
         foreach ((array) ($this->request('GET', '/pricing/get')['pricing'] ?? []) as $tld => $p) {
             // Handshake names (specialType) are not DNS TLDs.
             if (is_array($p) && !isset($p['specialType'])) {
-                $prices['.' . strtolower((string) $tld)] = ['register' => $year($p['registration'] ?? null), 'renew' => $year($p['renewal'] ?? null), 'transfer' => $year($p['transfer'] ?? null)];
+                $name = '.' . strtolower((string) $tld);
+                // No transfer price for .uk: the API transfers no .uk names (isDomaincanBeTransferred).
+                $prices[$name] = ['register' => $year($p['registration'] ?? null), 'renew' => $year($p['renewal'] ?? null), 'transfer' => str_ends_with($name, '.uk') ? null : $year($p['transfer'] ?? null)];
             }
         }
         if ($tlds !== []) {

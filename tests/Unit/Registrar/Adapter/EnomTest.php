@@ -174,7 +174,9 @@ test('the price list asks for the account\'s TLDs, then the one-year wholesale c
         } elseif ($body['command'] === 'PE_GetProductPrice') {
             // .t2 offers no transfer; .t3 has no price at all.
             $enabled = !($body['tld'] === 't2' && $body['ProductType'] === '19') && $body['tld'] !== 't3';
-            $reply = '<productprice><price>' . ['10' => '8.95', '16' => '9.50', '19' => '8.00'][$body['ProductType']] . '</price><productenabled>' . ($enabled ? 'True' : 'False') . '</productenabled></productprice>';
+            // .t4 transfers for free.
+            $price = $body['tld'] === 't4' && $body['ProductType'] === '19' ? '0.00' : ['10' => '8.95', '16' => '9.50', '19' => '8.00'][$body['ProductType']];
+            $reply = '<productprice><price>' . $price . '</price><productenabled>' . ($enabled ? 'True' : 'False') . '</productenabled></productprice>';
         }
 
         return new MockResponse('<?xml version="1.0"?><interface-response><ErrCount>0</ErrCount>' . $reply . '<Done>true</Done></interface-response>');
@@ -196,6 +198,7 @@ test('the price list asks for the account\'s TLDs, then the one-year wholesale c
     expect($first['currency'])->toBe('USD')
         ->and($first['prices']['.t1'])->toBe(['register' => 8.95, 'renew' => 9.5, 'transfer' => 8.0])
         ->and($first['prices']['.t2'])->toBe(['register' => 8.95, 'renew' => 9.5, 'transfer' => null])
+        ->and($first['prices']['.t4']['transfer'])->toBe(0.0)
         ->and($first['prices'])->not->toHaveKey('.t3')
         ->and(array_keys($first['prices']))->toBe(['.t1', '.t2', '.t4', '.t5'])
         ->and($first['remaining'])->toBe(['.t6', '.t7', '.t8', '.t9', '.t10', '.t11', '.com'])

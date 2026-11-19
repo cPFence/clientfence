@@ -150,7 +150,9 @@ test('a price is the cost converted, marked up and rounded up, never below cost'
     'rounding .00 keeps a whole price' => [10.00, 1.0, ['type' => 'percent', 'value' => 0.0], '.00', 10.00],
     'rounding .50 past .50' => [10.60, 1.0, ['type' => 'percent', 'value' => 0.0], '.50', 11.50],
     'rounding .95' => [10.10, 1.0, ['type' => 'percent', 'value' => 0.0], '.95', 10.95],
-    'zero cost' => [0.0, 1.0, ['type' => 'percent', 'value' => 20.0], '', null],
+    'a free transfer stays free, not rounded up' => [0.0, 1.0, ['type' => 'percent', 'value' => 20.0], '.99', 0.0],
+    'a free transfer with a fixed markup' => [0.0, 1.0, ['type' => 'fixed', 'value' => 5.0], '.99', 5.99],
+    'negative cost' => [-1.0, 1.0, ['type' => 'percent', 'value' => 20.0], '', null],
     'no cost' => [null, 1.0, ['type' => 'fixed', 'value' => 5.0], '.99', null],
 ]);
 
@@ -243,6 +245,19 @@ test('apply creates new TLDs inactive, updates and moves only what is ticked, an
     $db->update('currency', ['conversion_rate' => $preview['rate']], ['code' => 'USD']);
     PriceSync::saveSettings($di, 1, ['markup' => ['renew' => ['type' => 'percent', 'value' => '10']]]);
     expect(priceRow(PriceSync::preview($di, 1), '.com'))->toMatchArray(['status' => 'change', 'rate_only' => false]);
+});
+
+test('a free transfer (cost 0) is a transfer at 0, not "no transfers" (GitHub #52)', function (): void {
+    [$di, $db] = priceSyncFixture(new PriceSyncFakeRegistrar(['.uk' => ['register' => 5.00, 'renew' => 5.00, 'transfer' => 0.0], '.co.uk' => ['register' => 5.00, 'renew' => 5.00, 'transfer' => 3.00], '.net' => ['register' => 12.50, 'renew' => 12.50, 'transfer' => 0.0]]));
+    PriceSync::fetch($di, 1, 30);
+    $preview = PriceSync::preview($di, 1);
+
+    expect(priceRow($preview, '.uk'))->toMatchArray(['status' => 'new', 'offers_transfer' => true])
+        ->and(priceRow($preview, '.uk')['new']['transfer'])->toBe(0.0)
+        ->and(priceRow($preview, '.net')['new']['transfer'])->toBe(0.0)
+        ->and(PriceSync::apply($di, 1, ['.uk', '.co.uk'], [], $preview['fingerprint'], 5))->toBe(['created' => 2, 'updated' => 0, 'moved' => 0])
+        ->and($db->fetchAssociative("SELECT price_transfer, allow_transfer, require_transfer_code FROM tld WHERE tld = '.uk'"))->toEqual(['price_transfer' => 0.0, 'allow_transfer' => 1, 'require_transfer_code' => 0])
+        ->and($db->fetchOne("SELECT require_transfer_code FROM tld WHERE tld = '.co.uk'"))->toEqual(1);
 });
 
 test('an unfinished refresh is not shown as the price list', function (): void {
@@ -381,6 +396,16 @@ test('apply writes changes and below-cost prices, holds a jump over half, and sk
         ->and(array_column($emails[1]['sync']['rows'], 'tld'))->toBe(['.com'])
         ->and($emails[1]['sync']['rows'][0])->toMatchArray(['below' => true, 'what' => 'applied'])
         ->and((float) $db->fetchOne("SELECT price_renew FROM tld WHERE tld = '.com'"))->toBe(10.58);
+});
+
+test('the scheduled sync prices a transfer that became free at 0, held for staff as a big drop (GitHub #52)', function (): void {
+    [$di, $db, $registrar, $emails] = priceSyncScheduled('apply');
+    $registrar->prices['.com']['transfer'] = 0.0;
+    PriceSync::runIfDue($di);
+
+    $row = array_column($emails[0]['sync']['rows'], null, 'tld')['.com'];
+    expect($row['what'])->toBe('review')
+        ->and($row['actions']['transfer'])->toMatchArray(['cost_new' => 0.0, 'price_new' => 0.0]);
 });
 
 test('a registrar error changes nothing and is tried again the next day; the time limit stops a run', function (): void {

@@ -215,6 +215,16 @@ test('domain details come from all_info, status and whois_privacy_state; the tra
         ->and(end($GLOBALS['opensrs_calls'])[1])->toBe(['domain_name' => 'example.com']);
 });
 
+test('a free transfer (price 0) stays a price of 0', function (): void {
+    $adapter = opensrsAdapter([
+        'get_price:new' => '<item key="price">5.00</item>',
+        'get_price:renewal' => '<item key="price">5.00</item>',
+        'get_price:transfer' => '<item key="price">0</item>',
+    ]);
+
+    expect($adapter->getTldPrices(['.co.uk'])['prices']['.co.uk'])->toBe(['register' => 5.0, 'renew' => 5.0, 'transfer' => 0.0]);
+});
+
 test('the price list asks get_price for one year per action in USD, in slices, and keeps only the asked TLDs', function (): void {
     $adapter = opensrsAdapter([
         'get_price:new' => fn (array $a) => str_ends_with($a['domain'], '.net') ? ['', '0', '701', 'TLD not serviced'] : '<item key="price">8.50</item>',

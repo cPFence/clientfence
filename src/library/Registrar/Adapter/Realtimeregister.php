@@ -295,7 +295,7 @@ class Registrar_Adapter_Realtimeregister extends Registrar_AdapterAbstract imple
         foreach ((array) ($this->request('GET', $this->customerPath('/pricelist'))['prices'] ?? []) as $row) {
             $product = strtolower((string) ($row['product'] ?? ''));
             $action = $actions[$row['action'] ?? ''] ?? null;
-            if ($action === null || !str_contains($product, 'domain') || !is_numeric($row['price'] ?? null) || $row['price'] <= 0) {
+            if ($action === null || !str_contains($product, 'domain') || !is_numeric($row['price'] ?? null) || $row['price'] < 0) {
                 continue;
             }
             $currency = $currency !== '' ? $currency : strtoupper((string) ($row['currency'] ?? ''));

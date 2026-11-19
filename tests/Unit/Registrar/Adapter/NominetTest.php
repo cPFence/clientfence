@@ -224,7 +224,8 @@ test('the price list is the cost price in GBP for every Nominet extension and ac
 
     expect($prices['currency'])->toBe('GBP')
         ->and(array_keys($prices['prices']))->toBe(['.uk', '.co.uk', '.org.uk', '.me.uk', '.sch.uk', '.wales', '.cymru'])
-        ->and($prices['prices']['.co.uk'])->toBe(['register' => 3.65, 'renew' => 3.65, 'transfer' => 3.65])
+        ->and($prices['prices']['.co.uk'])->toBe(['register' => 3.65, 'renew' => 3.65, 'transfer' => 0.0])
+        ->and($prices['prices']['.wales'])->toBe(['register' => 3.65, 'renew' => 3.65, 'transfer' => 3.65])
         ->and($prices['remaining'])->toBe([])
         ->and(array_keys(nominetAdapter()->getTldPrices(['.co.uk', '.com'])['prices']))->toBe(['.co.uk'])
         ->and(fn () => nominetAdapter([], ['username' => 'EXAMPLE-TAG', 'password' => 'epp-secret-password-1'])->getTldPrices())

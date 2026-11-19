@@ -282,7 +282,10 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         $price = (float) $this->config['cost_price'];
         $list = $tlds === [] ? self::TLDS : array_values(array_intersect(self::TLDS, array_map('strtolower', $tlds)));
 
-        return ['currency' => 'GBP', 'prices' => array_fill_keys($list, ['register' => $price, 'renew' => $price, 'transfer' => $price]), 'remaining' => []];
+        // A .uk transfer costs nothing: the old registrar moves the name to this tag, with no year added (.wales and .cymru are gTLDs).
+        $prices = array_combine($list, array_map(static fn (string $tld): array => ['register' => $price, 'renew' => $price, 'transfer' => str_ends_with($tld, '.uk') ? 0.0 : $price], $list));
+
+        return ['currency' => 'GBP', 'prices' => $prices, 'remaining' => []];
     }
 
     /**

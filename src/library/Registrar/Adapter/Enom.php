@@ -282,7 +282,8 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
             return null;
         }
 
-        return (float) $price->price > 0 ? (float) $price->price : null;
+        // 0 is kept: a free transfer is a price (PriceSync drops a 0 register or renew cost).
+        return (float) $price->price >= 0 ? (float) $price->price : null;
     }
 
     private function request(string $command, array $params): SimpleXMLElement

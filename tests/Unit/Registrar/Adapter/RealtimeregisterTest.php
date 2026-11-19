@@ -198,7 +198,7 @@ test('the price list reads the domain products in cents; other products, actions
 
     expect($adapter->getTldPrices())->toBe(['currency' => 'EUR', 'prices' => [
         '.com' => ['register' => 8.99, 'renew' => 9.5, 'transfer' => 8.99],
-        '.co.uk' => ['register' => 5.25, 'renew' => null, 'transfer' => null],
+        '.co.uk' => ['register' => 5.25, 'renew' => null, 'transfer' => 0.0],
         '.uk.com' => ['register' => null, 'renew' => 25.0, 'transfer' => null],
     ], 'remaining' => []])
         ->and(array_keys($adapter->getTldPrices(['.co.uk', '.net'])['prices']))->toBe(['.co.uk']);
