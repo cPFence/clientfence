@@ -255,7 +255,7 @@
             </form>
             {% endif %}
             {# The statement shows without email rights too, as on the old page (invoice view only). #}
-            <div class="card-body cf-acts{{ can_send_emails ? ' pt-0' }}">
+            <div class="card-body cf-acts">
                 {% if can_send_emails %}
                 <a class="cf-act" href="#" data-bs-toggle="modal" data-bs-target="#bf-send-email">
                     <span class="cf-act-icon" aria-hidden="true"><svg class="icon"><use href="#mail" /></svg></span>
