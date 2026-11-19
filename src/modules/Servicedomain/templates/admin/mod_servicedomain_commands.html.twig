@@ -1,0 +1,101 @@
+{# ClientFence: the domain's Module Commands on the service's Details tab (moved from Service Management); the script
+   updates the Locked and Privacy Protection values there. #}
+{% if order.status == 'active' %}
+{% if part == 'buttons' %}
+    <button class="btn btn-primary" type="button" id="cmd-domain-sync">
+        <svg class="icon">
+            <use href="#refresh" />
+        </svg>
+        <span>{{ 'Sync Now'|trans }}</span>
+    </button>
+    <button class="btn btn-primary" type="button" id="cmd-get-epp">
+        <svg class="icon">
+            <use href="#key" />
+        </svg>
+        <span>{{ 'Get EPP Code'|trans }}</span>
+    </button>
+{% elseif part == 'more' %}
+    <button class="dropdown-item{% if service.locked == 0 %} d-none{% endif %}" type="button" id="cmd-domain-unlock"><svg class="icon dropdown-item-icon"><use href="#lock-open" /></svg>{{ 'Unlock'|trans }}</button>
+    <button class="dropdown-item{% if service.locked == 1 %} d-none{% endif %}" type="button" id="cmd-domain-lock"><svg class="icon dropdown-item-icon"><use href="#lock" /></svg>{{ 'Lock'|trans }}</button>
+    <button class="dropdown-item{% if service.privacy == 0 %} d-none{% endif %}" type="button" id="cmd-domain-disable-pp"><svg class="icon dropdown-item-icon"><use href="#eye" /></svg>{{ 'Disable Privacy'|trans }}</button>
+    <button class="dropdown-item{% if service.privacy == 1 %} d-none{% endif %}" type="button" id="cmd-domain-enable-pp"><svg class="icon dropdown-item-icon"><use href="#eye-off" /></svg>{{ 'Enable Privacy'|trans }}</button>
+{% else %}
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener("DOMContentLoaded", function() {
+        // ClientFence core patch: with the Email registrar the request goes to the domain's ticket (Servicedomain/DomainTickets.php).
+        const requested = {% if service.ticket_mode|default(false) %}{{ 'Request added to the domain ticket.'|trans|json_encode|raw }}{% else %}null{% endif %};
+        const done = (fn) => (result) => requested ? ClientFence.message(requested) : fn(result);
+
+        document.getElementById('cmd-domain-lock').addEventListener('click', function(event) {
+            ClientFence.api.admin.post('servicedomain/lock', { order_id: {{ order.id }} },
+                done((result) => {
+                    ClientFence.message("{{ 'Domain locked'|trans }}");
+
+                    document.getElementById('cmd-domain-lock').classList.add('d-none');
+                    document.getElementById('cmd-domain-unlock').classList.remove('d-none');
+
+                    document.getElementById('locked-value').innerHTML = '<span class="badge text-bg-danger">{{ "Yes"|trans }}</span>';
+                }));
+        });
+
+        document.getElementById('cmd-domain-unlock').addEventListener('click', function(event) {
+            ClientFence.api.admin.post('servicedomain/unlock', { order_id: {{ order.id }} },
+                done((result) => {
+                    ClientFence.message("{{ 'Domain unlocked'|trans }}");
+
+                    document.getElementById('cmd-domain-lock').classList.remove('d-none');
+                    document.getElementById('cmd-domain-unlock').classList.add('d-none');
+
+                    document.getElementById('locked-value').innerHTML = '<span class="badge text-bg-success">{{ "No"|trans }}</span>';
+                }));
+        });
+
+        document.getElementById('cmd-domain-enable-pp').addEventListener('click', function(event) {
+            ClientFence.api.admin.post('servicedomain/enable_privacy_protection',{ order_id: {{ order.id }} },
+                done((result) => {
+                    ClientFence.message("{{ 'Privacy protection enabled'|trans }}");
+
+                    document.getElementById('cmd-domain-enable-pp').classList.add('d-none');
+                    document.getElementById('cmd-domain-disable-pp').classList.remove('d-none');
+
+                    document.getElementById('privacy-value').innerHTML = '<span class="badge text-bg-danger">{{ "Enabled"|trans }}</span>';
+                }));
+        });
+
+        document.getElementById('cmd-domain-disable-pp').addEventListener('click', function(event) {
+            ClientFence.api.admin.post('servicedomain/disable_privacy_protection', { order_id: {{ order.id }} },
+                done((result) => {
+                    ClientFence.message("{{ 'Privacy protection disabled'|trans }}");
+
+                    document.getElementById('cmd-domain-disable-pp').classList.add('d-none');
+                    document.getElementById('cmd-domain-enable-pp').classList.remove('d-none');
+
+                    document.getElementById('privacy-value').innerHTML = '<span class="badge text-bg-success">{{ "Disabled"|trans }}</span>';
+                }));
+        });
+
+        document.getElementById('cmd-get-epp').addEventListener('click', function(event) {
+            ClientFence.api.admin.post('servicedomain/get_transfer_code', { order_id: {{ order.id}} },
+                done((result) => {
+                    ClientFence.message("{{ 'Domain transfer code is: '|trans }}" + result);
+                }));
+        });
+
+        document.getElementById('cmd-domain-sync').addEventListener('click', function(event) {
+            const syncButton = event.currentTarget;
+            syncButton.disabled = true;
+
+            ClientFence.api.admin.post('servicedomain/sync', { order_id: {{ order.id }} },
+                (result) => {
+                    ClientFence.message({{ 'Domain synchronized with registrar'|trans|json_encode|raw }});
+                    window.location.reload();
+                },
+                (error) => {
+                    syncButton.disabled = false;
+                    ClientFence.message(`${error.message} (${error.code})`, 'error');
+                });
+        });
+    });
+</script>
+{% endif %}
+{% endif %}

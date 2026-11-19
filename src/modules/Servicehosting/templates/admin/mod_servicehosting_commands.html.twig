@@ -1,0 +1,71 @@
+{# ClientFence: the hosting account's Module Commands on the service's Details tab, as WHMCS (moved from Service Management). #}
+{% import 'macro_functions.html.twig' as mf %}
+{% set server = service.server|default(null) %}
+{% if part == 'buttons' %}
+    {% if server %}
+    <a class="btn btn-primary" href="{{ server.cpanel_url }}" target="_blank" rel="noopener">
+        <svg class="icon" width="24" height="24"><use href="#server" /></svg>
+        <span>{{ 'Login to Control Panel'|trans }}</span>
+    </a>
+    {% endif %}
+{% elseif part == 'more' %}
+    {# The plan list needs "manage plans"; without it the item is left out (the page crashed for those staff). #}
+    {% if has_permission('servicehosting', 'manage_plans') %}
+    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePackageModal">{{ 'Change Package'|trans }}</button>
+    {% endif %}
+    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">{{ 'Change Password'|trans }}</button>
+    {# Only for panels that can read the account back (DirectAdmin and Plesk refuse, HestiaCP and Custom change nothing). #}
+    {% if server and server.manager in ['Whm', 'CWP', 'Enhance'] %}
+    <a class="dropdown-item" href="{{ 'servicehosting/sync'|api_url(query: { 'order_id': order.id }) }}"
+        {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'Account Synced'|trans}) }}>{{ 'Sync'|trans }}</a>
+    {% endif %}
+{% else %}
+    {% if has_permission('servicehosting', 'manage_plans') %}
+    <div class="modal modal-blur fade" id="changePackageModal" tabindex="-1" aria-labelledby="changePackageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" action="{{ 'servicehosting/change_plan'|api_url }}" {{ fb_api_form({message: 'Hosting Plan Changed'|trans, reload: true}) }}>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePackageModalLabel">{{ 'Change Package'|trans }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <label class="form-label" for="plan_id">{{ 'New Hosting Plan'|trans }}</label>
+                        {{ mf.selectbox('plan_id', admin.servicehosting_hp_get_pairs({server_id: server ? server.id : null}), service.hosting_plan.id|default(''), 1) }}
+                        <p class="text-muted mt-3 mb-0">{{ 'Move this account onto a different hosting plan available on the current server.'|trans }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                        <button type="submit" class="btn btn-primary">{{ 'Change'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="modal modal-blur fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" action="{{ 'servicehosting/change_password'|api_url }}" {{ fb_api_form({message: 'Account Password Changed'|trans}) }}>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">{{ 'Change Password'|trans }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <label class="form-label" for="hostingPassword">{{ 'New Password'|trans }}</label>
+                        <input class="form-control mb-3" id="hostingPassword" type="password" name="password" autocomplete="new-password" required>
+                        <label class="form-label" for="hostingPasswordConfirm">{{ 'Confirm Password'|trans }}</label>
+                        <input class="form-control" id="hostingPasswordConfirm" type="password" name="password_confirm" autocomplete="new-password" required>
+                        <p class="text-muted mt-3 mb-0">{{ 'Set a new password for the hosting account on the remote server.'|trans }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Close'|trans }}</button>
+                        <button type="submit" class="btn btn-primary">{{ 'Change'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}

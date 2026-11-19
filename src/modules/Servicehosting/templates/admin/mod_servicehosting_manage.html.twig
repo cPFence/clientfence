@@ -35,37 +35,19 @@
             </dl>
         </div>
 
+        {# ClientFence core patch: Login to Control Panel, Sync, Change Package and Change Password are Module Commands on the Details tab (mod_servicehosting_commands.html.twig). #}
+        {% if server and service.reseller %}
         <div class="card-footer text-center">
             <div class="btn-list justify-content-center">
-                {{ order_actions|default('') }}
-                {% if server %}
-                <a class="btn btn-primary" href="{{ server.cpanel_url }}" target="_blank">
-                    <svg class="icon">
-                        <use href="#server" />
-                    </svg>
-                    <span>{{ 'Jump to control panel'|trans }}</span>
-                </a>
-                {% endif %}
-                {% if server and service.reseller %}
                     <a class="btn btn-primary" href="{{ server.reseller_cpanel_url }}" target="_blank">
                         <svg class="icon">
                             <use href="#server" />
                         </svg>
                         <span>{{ 'Reseller control panel'|trans }}</span>
                     </a>
-                {% endif %}
-                {# ClientFence core patch: Sync with server shows only for panels that can read the account back (DirectAdmin and Plesk refuse, HestiaCP and Custom change nothing). #}
-                {% if server and server.manager in ['Whm', 'CWP', 'Enhance'] %}
-                <a class="btn btn-primary" href="{{ 'servicehosting/sync'|api_url(query: { 'order_id': order.id }) }}"
-                    {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'Account Synced'|trans}) }}>
-                    <svg class="icon">
-                        <use href="#refresh" />
-                    </svg>
-                    <span>{{ 'Sync with server'|trans }}</span>
-                </a>
-                {% endif %}
             </div>
         </div>
+        {% endif %}
     </div>
 
     {# ClientFence core patch: link an account on an Enhance server to its panel organization and subscription by hand (GitHub #47). #}
@@ -102,52 +84,6 @@
 
     <div class="mb-5">
         <div class="mb-3 cf-section-head{% if not (server and server.manager == 'Enhance') %} border-0 pt-0{% endif %}">
-            <h3 class="card-title mb-1">{{ 'Change Hosting Plan'|trans }}</h3>
-            <p class="text-secondary mb-0">{{ 'Move this account onto a different hosting plan available on the current server.'|trans }}</p>
-        </div>
-
-        <form method="post" action="{{ 'servicehosting/change_plan'|api_url }}" {{ fb_api_form({message: 'Hosting Plan Changed'|trans}) }}>
-            <div class="row g-3">
-                <div class="col-lg-6">
-                    <label class="form-label">{{ 'New Hosting Plan'|trans }}</label>
-                    {{ mf.selectbox('plan_id', admin.servicehosting_hp_get_pairs({server_id: server ? server.id : null}), hp.id, 1) }}
-                </div>
-            </div>
-
-            <input type="hidden" name="order_id" value="{{ order.id }}">
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-primary" type="submit">{{ 'Change'|trans }}</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="mb-5">
-        <div class="mb-3 cf-section-head">
-            <h3 class="card-title mb-1">{{ 'Change Account Password'|trans }}</h3>
-            <p class="text-secondary mb-0">{{ 'Set a new password for the hosting account on the remote server.'|trans }}</p>
-        </div>
-
-        <form method="post" action="{{ 'servicehosting/change_password'|api_url }}" {{ fb_api_form({message: 'Account Password Changed'|trans}) }}>
-            <div class="row g-3">
-                <div class="col-lg-6">
-                    <label class="form-label">{{ 'Password'|trans }}</label>
-                    <input class="form-control" type="password" name="password" required>
-                </div>
-                <div class="col-lg-6">
-                    <label class="form-label">{{ 'Password Confirm'|trans }}</label>
-                    <input class="form-control" type="password" name="password_confirm" required>
-                </div>
-            </div>
-
-            <input type="hidden" name="order_id" value="{{ order.id }}">
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-primary" type="submit">{{ 'Change'|trans }}</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="mb-5">
-        <div class="mb-3 cf-section-head">
             <h3 class="card-title mb-1">{{ 'Change IP'|trans }}</h3>
             <p class="text-secondary mb-0">{{ 'Update the primary IP address assigned to the hosting account.'|trans }}</p>
         </div>

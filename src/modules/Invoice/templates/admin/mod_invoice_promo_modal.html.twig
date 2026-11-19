@@ -1,11 +1,14 @@
 {# ClientFence core patch: Apply Promotion (Invoice/Promotions.php) on the invoice and order pages. promo_invoice_id: the unpaid invoice; promo_orders: the order lines it can discount ({rel_id, title}). #}
 {% if has_permission('invoice', 'manage_invoices') and has_permission('product', 'manage_promos') %}
+{# promo_part 'modal': the caller shows its own Apply Promotion item (the service page's More menu). #}
+{% if promo_part|default('') != 'modal' %}
 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#promoModal">
     <svg class="icon" width="24" height="24">
         <use href="#plus" />
     </svg>
     <span>{{ 'Apply Promotion'|trans }}</span>
 </a>
+{% endif %}
 <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
 <div class="modal-dialog">
     <form class="modal-content" method="post" action="{{ 'invoice/promo_apply'|api_url }}" {{ fb_api_form({reload: true}) }}>

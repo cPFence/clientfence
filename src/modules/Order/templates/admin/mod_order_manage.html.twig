@@ -35,6 +35,10 @@
 {% endif %}
 {# ClientFence core patch: the products staff can move the service to (Order/Upgrades.php moveTargets()). #}
 {% set move_targets = order.status != 'canceled' ? admin.order_move_targets({ 'id': order.id }) : [] %}
+{# ClientFence core patch: the service (Service Management tab) and the product type's Module Commands (mod_service<type>_commands.html.twig). #}
+{% set order_service = admin.system_template_exists({ 'file': service_partial }) ? admin.order_service({ 'id': order.id }) : null %}
+{% set commands_partial = 'mod_service' ~ order.service_type ~ '_commands.html.twig' %}
+{% set command_service = order_service is not null and admin.system_template_exists({ 'file': commands_partial }) ? order_service : null %}
 
 {% block content %}
 {# ClientFence core patch: the order's open failed actions. #}
@@ -126,16 +130,20 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="cf-inv-client">
+                            <div class="cf-inv-client flex-wrap">
                                 <span class="cf-avatar" aria-hidden="true">{{ (order.client.first_name|default('')|first ~ order.client.last_name|default('')|first)|upper }}</span>
                                 <div class="cf-inv-who">
                                     <a href='{{ "client/manage/#{order.client.id}"|url }}'>{{ order.client.first_name }} {{ order.client.last_name }}</a>
                                     {% if order.client.company|default('') %}<span class="text-secondary">{{ order.client.company }}</span>{% endif %}
                                     {% if order.client.email|default('') %}<span class="text-secondary small">{{ order.client.email }}</span>{% endif %}
                                 </div>
+                                {# ClientFence core patch: the client's Products & Services tab (client page, #tab-orders), as WHMCS. #}
+                                {% if has_permission('client', 'view') %}
+                                    <a class="btn btn-sm btn-outline-primary ms-auto" href="{{ ('client/manage/' ~ order.client.id)|url }}#tab-orders">{{ 'View Products & Services'|trans }}</a>
+                                {% endif %}
                                 {# ClientFence core patch: staff move the service to another client (Order/ClientMove.php, CF-183). #}
                                 {% if has_permission('order', 'manage') %}
-                                    <button type="button" class="btn btn-sm btn-outline-primary ms-auto" data-bs-toggle="modal" data-bs-target="#moveClientModal">{{ 'Move to Another Client'|trans }}</button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary{{ has_permission('client', 'view') ? '' : ' ms-auto' }}" data-bs-toggle="modal" data-bs-target="#moveClientModal">{{ 'Move to Another Client'|trans }}</button>
                                 {% endif %}
                             </div>
                             <dl class="cf-facts">
@@ -195,7 +203,8 @@
                     {% endblock %}
 
                     {% block summary_actions %}
-                        {% set order_actions %}
+                        {# ClientFence core patch: one "Module Commands" row, as WHMCS: Create, Suspend, Unsuspend, Terminate, Reactivate, Renew and the product type's most used (mod_service<type>_commands.html.twig); the rest and Delete under More. #}
+                        {% set module_commands %}
                     {% if has_permission('order', 'manage') %}
                     {% if order.status == 'pending_setup' or order.status == 'failed_setup' %}
                     <a class="btn btn-primary"
@@ -203,21 +212,13 @@
                         <svg class="icon" width="24" height="24">
                             <use href="#player-play" />
                         </svg>
-                        <span>{{ 'Activate'|trans }}</span>
+                        <span>{{ 'Create'|trans }}</span>
                     </a>
                     {% endif %}
 
                     {% if order.status == 'active' or order.status == 'failed_renew' %}
                     {# ClientFence core patch: the order settings only for staff who may read them (the page crashed for the others: plain Suspend). #}
                     {% set params = has_permission('order', 'manage_settings') ? admin.extension_config_get({ 'ext': 'mod_order' }) : {} %}
-                    <a class="btn btn-primary"
-                        {{ fb_api_link({href: 'order/renew'|api_url(query: {'id': order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>
-                        <svg class="icon" width="24" height="24">
-                            <use href="#refresh" />
-                        </svg>
-                        <span>{{ 'Renew'|trans }}</span>
-                    </a>
-
                     {% if params.suspend_reason_list|default('')|trim == null %}
                     <a class="btn btn-primary"
                         {{ fb_api_link({href: 'order/suspend'|api_url(query: {'id': order.id}), modal: {type: 'prompt', title: 'Suspension Reason'|trans, label: 'Reason for Suspension'|trans, key: 'reason'}, reload: true}) }}>
@@ -229,17 +230,11 @@
                     {% else %}
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#suspendModal">
                         <svg class="icon" width="24" height="24">
-                            <use href="#x" />
+                            <use href="#player-pause" />
                         </svg>
                         <span>{{ 'Suspend'|trans }}</span>
                     </button>
                     {% endif %}
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                        <svg class="icon" width="24" height="24">
-                            <use href="#x" />
-                        </svg>
-                        <span>{{ 'Cancel'|trans }}</span>
-                    </button>
                     {% endif %}
 
                     {% if order.status == 'suspended' %}
@@ -252,49 +247,74 @@
                     </a>
                     {% endif %}
 
+                    {% if order.status == 'active' or order.status == 'failed_renew' %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                        <svg class="icon" width="24" height="24">
+                            <use href="#x" />
+                        </svg>
+                        <span>{{ 'Terminate'|trans }}</span>
+                    </button>
+                    {% endif %}
+
                     {% if order.status == 'canceled' %}
                     <a class="btn btn-primary"
                         {{ fb_api_link({href: 'order/uncancel'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>
                         <svg class="icon" width="24" height="24">
                             <use href="#player-play" />
                         </svg>
-                        <span>{{ 'Activate'|trans }}</span>
+                        <span>{{ 'Reactivate'|trans }}</span>
                     </a>
                     {% endif %}
 
-                    {# ClientFence core patch: move the service to another product, as WHMCS (Order/Upgrades.php staffMove()). #}
-                    {% if move_targets is not empty %}
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#moveProductModal">
+                    {% if order.status == 'active' or order.status == 'failed_renew' %}
+                    <a class="btn btn-primary"
+                        {{ fb_api_link({href: 'order/renew'|api_url(query: {'id': order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>
                         <svg class="icon" width="24" height="24">
                             <use href="#refresh" />
                         </svg>
-                        <span>{{ 'Change Product'|trans }}</span>
-                    </button>
+                        <span>{{ 'Renew'|trans }}</span>
+                    </a>
                     {% endif %}
-
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <svg class="icon" width="24" height="24">
-                            <use href="#trash" />
-                        </svg>
-                        <span>{{ 'Delete'|trans }}</span>
-                    </button>
-
+                    {% endif %}
+                    {% if command_service is not null %}
+                        {{ include(commands_partial, { 'service': command_service, 'part': 'buttons' }) }}
+                    {% endif %}
+                        {% endset %}
+                        {% set more_commands %}
+                    {% if command_service is not null %}
+                        {{ include(commands_partial, { 'service': command_service, 'part': 'more' }) }}
+                    {% endif %}
+                    {# ClientFence core patch: move the service to another product, as WHMCS (Order/Upgrades.php staffMove()). #}
+                    {% if has_permission('order', 'manage') and move_targets is not empty %}
+                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#moveProductModal">{{ 'Change Product'|trans }}</button>
                     {% endif %}
                     {% if not order.unpaid_invoice_id %}
                     {% if has_permission('invoice', 'manage_invoices') %}
-                    <a class="btn btn-primary"
-                        {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>
-                        <svg class="icon" width="24" height="24">
-                            <use href="#plus" />
-                        </svg>
-                        <span>{{ 'Issue Invoice'|trans }}</span>
-                    </a>
+                    <a class="dropdown-item" {{ fb_api_link({href: 'invoice/renewal_invoice'|api_url(query: {id: order.id}), modal: {type: 'confirm', title: 'Are you sure?'|trans}, reload: true}) }}>{{ 'Issue Invoice'|trans }}</a>
                     {% endif %}
-                    {% else %}
+                    {% elseif has_permission('invoice', 'manage_invoices') and has_permission('product', 'manage_promos') %}
                     {# ClientFence core patch: a promotion for this order goes on its unpaid invoice (Invoice/Promotions.php). #}
-                    {{ include('mod_invoice_promo_modal.html.twig', { promo_invoice_id: order.unpaid_invoice_id, promo_orders: [{ rel_id: order.id, title: order.title }] }) }}
+                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#promoModal">{{ 'Apply Promotion'|trans }}</button>
                     {% endif %}
-                {% endset %}
+                    {% if has_permission('order', 'manage') %}
+                    <div class="dropdown-divider"></div>
+                    <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">{{ 'Delete'|trans }}</button>
+                    {% endif %}
+                        {% endset %}
+                        {% set order_actions %}
+                    {% if module_commands|trim or more_commands|trim %}
+                    <div class="w-100 cf-label mb-0">{{ 'Module Commands'|trans }}</div>
+                    {{ module_commands }}
+                    {% if more_commands|trim %}
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{{ 'More'|trans }}</button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            {{ more_commands }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                        {% endset %}
                         {{ order_actions }}
                     {% endblock %}
                 {% endembed %}
@@ -324,6 +344,12 @@
                 </div>
             </div>
         </div>
+        {% if command_service is not null %}
+            {{ include(commands_partial, { 'service': command_service, 'part': 'modals' }) }}
+        {% endif %}
+        {% if order.unpaid_invoice_id %}
+            {{ include('mod_invoice_promo_modal.html.twig', { promo_invoice_id: order.unpaid_invoice_id, promo_orders: [{ rel_id: order.id, title: order.title }], promo_part: 'modal' }) }}
+        {% endif %}
         {% if move_targets is not empty %}
             <div class="modal modal-blur fade" id="moveProductModal" tabindex="-1" aria-labelledby="moveProductModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -792,7 +818,7 @@
 
         <div class="tab-pane fade" id="tab-service" role="tabpanel">
             {% if guest.system_template_exists({ 'file': service_partial }) %}
-                {% set service = admin.order_service({ 'id': order.id }) %}
+                {% set service = order_service %}
                 {% if service is not null %}
                     {{ include(service_partial, { 'order': order, 'service': service }) }}
                 {% else %}
