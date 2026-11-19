@@ -674,6 +674,10 @@ msgstr ""
 msgid ":function: is enabled, potentially being a security concern."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid ":gateway (disabled)"
+msgstr ""
+
 #: src/modules/Cart/Service.php src/modules/Invoice/GatewayFees.php
 msgid ":gateway fee"
 msgstr ""
@@ -1662,7 +1666,7 @@ msgstr ""
 msgid "Account Owner"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Account Password Changed"
 msgstr ""
 
@@ -1674,7 +1678,7 @@ msgstr ""
 msgid "Account Statement (PDF)"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Account Synced"
 msgstr ""
 
@@ -1810,7 +1814,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: src/modules/Extension/templates/admin/mod_extension_index.html.twig src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_failed_notice.html.twig …
+#: src/modules/Extension/templates/admin/mod_extension_index.html.twig src/modules/Order/templates/admin/mod_order_failed_actions.html.twig src/modules/Order/templates/admin/mod_order_failed_notice.html.twig
 msgid "Activate"
 msgstr ""
 
@@ -3690,7 +3694,7 @@ msgstr ""
 msgid "Apply Patches & Update Configuration"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_promo_modal.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Apply Promotion"
 msgstr ""
 
@@ -5174,10 +5178,6 @@ msgstr ""
 msgid "Change"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
-msgid "Change Account Password"
-msgstr ""
-
 #: src/modules/Client/Service.php
 msgid "Change Client Passwords"
 msgstr ""
@@ -5187,18 +5187,18 @@ msgid "Change Domain"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
-msgid "Change Hosting Plan"
+msgid "Change IP"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
-msgid "Change IP"
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "Change Package"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Change Package: move the hosting account to the new product's plan on the server"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig …
 msgid "Change Password"
 msgstr ""
 
@@ -6246,6 +6246,10 @@ msgstr ""
 msgid "Client to Send Test Email"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Client's choice"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "ClientExec was read on :date. Make the plan below."
 msgstr ""
@@ -6934,7 +6938,7 @@ msgstr ""
 msgid "Confirm Cancellation"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig …
 msgid "Confirm Password"
 msgstr ""
 
@@ -8662,7 +8666,7 @@ msgstr ""
 msgid "Disable New Signups"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
 msgid "Disable Privacy"
 msgstr ""
 
@@ -8978,7 +8982,7 @@ msgstr ""
 msgid "Domain is not available."
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/themes/palisade/html/partials/i18n.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/themes/palisade/html/partials/i18n.html.twig
 msgid "Domain locked"
 msgstr ""
 
@@ -9086,7 +9090,7 @@ msgstr ""
 msgid "Domain suspended"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain synchronized with registrar"
 msgstr ""
 
@@ -9098,7 +9102,7 @@ msgstr ""
 msgid "Domain transfer code"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/themes/palisade/html/partials/i18n.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/themes/palisade/html/partials/i18n.html.twig
 msgid "Domain transfer code is: "
 msgstr ""
 
@@ -9118,7 +9122,7 @@ msgstr ""
 msgid "Domain transfer of %domain% completed"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/themes/palisade/html/partials/i18n.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/themes/palisade/html/partials/i18n.html.twig
 msgid "Domain unlocked"
 msgstr ""
 
@@ -9902,7 +9906,7 @@ msgstr ""
 msgid "Enable Knowledge Base"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
 msgid "Enable Privacy"
 msgstr ""
 
@@ -11278,6 +11282,10 @@ msgstr ""
 msgid "First Name"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "First Payment Amount"
+msgstr ""
+
 #: src/themes/admin_default/html/partial_pricing.html.twig
 msgid "First Payment Sum"
 msgstr ""
@@ -11810,11 +11818,7 @@ msgstr ""
 msgid "GeoIP database"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
-msgid "Get EPP"
-msgstr ""
-
-#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Get EPP Code"
 msgstr ""
 
@@ -12494,7 +12498,7 @@ msgstr ""
 msgid "Hosting Plan Additional Parameters"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Hosting Plan Changed"
 msgstr ""
 
@@ -13634,7 +13638,7 @@ msgstr ""
 msgid "Invoice #%number% is ready"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_index.html.twig
+#: src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Invoice #:id"
 msgstr ""
 
@@ -14012,10 +14016,6 @@ msgstr ""
 
 #: src/modules/Theme/templates/admin/mod_theme_preset.html.twig
 msgid "Jump to Section"
-msgstr ""
-
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
-msgid "Jump to control panel"
 msgstr ""
 
 #: src/modules/Clientfence/CloudBackups.php
@@ -14882,7 +14882,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Lock"
 msgstr ""
 
@@ -14950,7 +14950,7 @@ msgstr ""
 msgid "Login to Client Area"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig src/themes/palisade/html/mod_servicehosting_head.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig src/themes/palisade/html/mod_servicehosting_head.html.twig
 msgid "Login to Control Panel"
 msgstr ""
 
@@ -16050,6 +16050,10 @@ msgstr ""
 msgid "Module :mod does not have a service class. Make sure Service.php exists and is valid."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Module Commands"
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
 msgid "Module access"
 msgstr ""
@@ -16158,6 +16162,10 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "More"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "More actions"
 msgstr ""
@@ -16222,7 +16230,7 @@ msgstr ""
 msgid "Move here"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Move this account onto a different hosting plan available on the current server."
 msgstr ""
 
@@ -16546,7 +16554,7 @@ msgstr ""
 msgid "New Helpdesk"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "New Hosting Plan"
 msgstr ""
 
@@ -19378,7 +19386,7 @@ msgstr ""
 msgid "Password Changed"
 msgstr ""
 
-#: src/modules/Page/templates/client/mod_page_signup.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig …
+#: src/modules/Page/templates/client/mod_page_signup.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "Password Confirm"
 msgstr ""
 
@@ -19914,7 +19922,7 @@ msgstr ""
 msgid "Payment Information"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Payment Method"
 msgstr ""
 
@@ -20010,7 +20018,7 @@ msgstr ""
 msgid "Payment gateway is required when marking an invoice as paid."
 msgstr ""
 
-#: src/modules/Invoice/Service.php
+#: src/modules/Invoice/Service.php src/modules/Order/Service.php
 msgid "Payment gateway not found"
 msgstr ""
 
@@ -20942,11 +20950,11 @@ msgstr ""
 msgid "Privacy Tools (GDPR)"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
 msgid "Privacy protection disabled"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
 msgid "Privacy protection enabled"
 msgstr ""
 
@@ -21534,7 +21542,7 @@ msgstr ""
 msgid "Re-queued"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Reactivate"
 msgstr ""
 
@@ -21711,6 +21719,10 @@ msgid "Rebuilds each table with free space, one at a time, to give the space of 
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recalculate on Save"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "Recalculate the price from the new product"
 msgstr ""
 
@@ -21844,6 +21856,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Recurring"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Recurring Amount"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -22442,6 +22458,10 @@ msgstr ""
 msgid "Renewal date"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Renewal invoices of this service select this method. The client can still pay another way."
+msgstr ""
+
 #: src/modules/Servicedomain/Api/Admin.php
 msgid "Renewal price is missing"
 msgstr ""
@@ -22542,7 +22562,7 @@ msgstr ""
 msgid "Request a password reset link to regain access to your client account securely."
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
 msgid "Request added to the domain ticket."
 msgstr ""
 
@@ -24350,7 +24370,7 @@ msgstr ""
 msgid "Set a new client-area password for this account."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Set a new password for the hosting account on the remote server."
 msgstr ""
 
@@ -25750,11 +25770,11 @@ msgstr ""
 msgid "Switched off by staff"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Sync"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_head.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_head.html.twig
 msgid "Sync Now"
 msgstr ""
 
@@ -25776,10 +25796,6 @@ msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig
 msgid "Sync with registrars"
-msgstr ""
-
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
-msgid "Sync with server"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -26088,6 +26104,10 @@ msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
 msgid "Temporary"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "Terminate"
 msgstr ""
 
 #: src/modules/Page/templates/client/mod_page_tos.html.twig
@@ -27183,6 +27203,10 @@ msgstr ""
 msgid "The fraud check (:provider) could not run, so orders go through unchecked: :error"
 msgstr ""
 
+#: src/modules/Order/Service.php
+msgid "The gateway subscription of this service could not be canceled, so the price was not changed. Cancel it at the gateway first."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "The global webmail domain is read from Enhance while the panel is on."
 msgstr ""
@@ -27543,6 +27567,10 @@ msgstr ""
 msgid "The options of this service do not fit the new product. Change them first."
 msgstr ""
 
+#: src/modules/Order/Upgrades.php
+msgid "The options of this service no longer fit its product. Change them first."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_options.html.twig
 msgid "The options this service was sold with. The client changes them from their service page with a prorated invoice; a change here makes no invoice."
 msgstr ""
@@ -27741,6 +27769,10 @@ msgstr ""
 
 #: src/modules/Client/Api/Admin.php src/modules/Client/Controller/Admin.php
 msgid "The privacy tools are off (System → Settings → Clients → Privacy)."
+msgstr ""
+
+#: src/modules/Order/Upgrades.php
+msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -30347,7 +30379,7 @@ msgstr ""
 msgid "Unlink your Google account? You then sign in with your password."
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Unlock"
 msgstr ""
 
@@ -31239,7 +31271,7 @@ msgstr ""
 msgid "View GitHub Comparison"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
+#: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "View Products & Services"
 msgstr ""
 
@@ -31917,6 +31949,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "When enabled, ordering can be limited by the quantity available below."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_manage.html.twig
+msgid "When on, saving sets the price from the product for this billing cycle and its options, at the current exchange rate. The amount typed above is ignored."
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
