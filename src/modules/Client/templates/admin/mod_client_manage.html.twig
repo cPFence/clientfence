@@ -104,8 +104,9 @@
             </li>
             {% endif %}
             {% if can_view_orders %}
+            {# ClientFence core patch: the services tab is named "Products & Services", as in WHMCS. #}
             <li class="nav-item" role="presentation">
-                <a class="nav-link" href="#tab-orders" data-bs-toggle="tab" role="tab">{{ 'Orders'|trans }}</a>
+                <a class="nav-link" href="#tab-orders" data-bs-toggle="tab" role="tab">{{ 'Products & Services'|trans }}</a>
             </li>
             {% endif %}
             {% if can_view_invoices %}
@@ -631,8 +632,8 @@
             {% set ordersPerPage = request.orders_per_page in [10, 25, 50, 100] ? request.orders_per_page : 25 %}
             {% set orders = admin.order_get_list({ 'per_page': ordersPerPage, 'page': ordersPage, 'client_id': client.id, 'active_first': 1 }) %}
             {% embed 'partial_admin_related_section.html.twig' with {
-                title: 'Client Orders'|trans,
-                subtitle: 'Review the client’s active and historical orders, or create a new order directly for this client.'|trans,
+                title: 'Products & Services'|trans,
+                subtitle: 'The client’s services and domains, active and past. New Order creates one for this client.'|trans,
                 card_class: 'm-3'
             } %}
                 {% block section_action %}
@@ -740,7 +741,7 @@
                         data-bf-none-title="{{ 'Nothing selected'|trans }}"
                         data-bf-none-text="{{ 'Tick the services first.'|trans }}"
                         data-bf-delete-title="{{ 'Delete services?'|trans }}"
-                        data-bf-delete-text="{{ 'Orders %list% will be deleted. This cannot be undone.'|trans }}"
+                        data-bf-delete-text="{{ 'Services %list% will be deleted. This cannot be undone.'|trans }}"
                         data-bf-delete-confirm="{{ 'Delete'|trans }}"
                         data-bf-cancel="{{ 'Cancel'|trans }}">
                         <span class="bf-bulk-label">{{ 'With Selected:'|trans }}</span>
