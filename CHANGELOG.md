@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.59 (2026-11-19)
+
+Client options from WHMCS: per-client switches and an Inactive client status. Guide: [Client options and the Inactive status](https://clientfence.com/docs/clients-and-billing/client-options/).
+
+### Added
+
+- Client options on the client's Profile, as in WHMCS: Overdue Notices, Separate Invoices, Disable CC Processing, Marketing Emails Opt-in, Status Update and Allow Single Sign-On, next to Tax Exempt. Each change is logged.
+- Inactive client status: an Inactive client signs in, orders, pays and opens tickets as an Active one. An optional automatic status update (System → Settings → Clients) sets clients without services Inactive once a day, and Active again when they have one; a new order sets them Active at once.
+- Mass Mail: a Marketing email switch per message. Clients who opted out are skipped only for marketing messages; service notices reach every client in the filter.
+
+### Changed
+
+- The WHMCS import brings these client options, except Allow Single Sign-On (in WHMCS it covers sign-in from other apps, not Google), and keeps Inactive clients.
+
+### Fixed
+
+- Clients imported from Blesta, ClientExec, Upmind, FOSSBilling or Paymenter were saved as opted out of marketing email; the update opts them in again.
+
 ## 1.0.58 (2026-11-19)
 
 A fixes release from the QA rounds: renewal invoices use part of the account credit, view-only staff see fewer controls they cannot use, and many billing, ticket, date and language fixes.
