@@ -222,7 +222,7 @@ msgstr ""
 msgid "+ Add New Option"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_google_profile.html.twig src/themes/palisade/html/mod_client_profile.html.twig src/themes/palisade/html/mod_page_signup.html.twig
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_custom_field_input.html.twig src/modules/Client/templates/client/mod_client_google_profile.html.twig …
 msgid "-- Select --"
 msgstr ""
 
@@ -2198,6 +2198,10 @@ msgstr ""
 msgid "Add-on and domain orders do not earn affiliate commissions."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Add-on module"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Add-on module archive: :file (:size MB) in :dir. It can hold the secrets those modules keep: treat it as a backup."
 msgstr ""
@@ -2364,6 +2368,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_new_form.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Admin Notes"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Admin Only"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -3770,7 +3778,11 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Archived only"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Archived, not imported"
 msgstr ""
 
@@ -3800,6 +3812,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_group.html.twig src/modules/Client/templates/admin/mod_client_index.html.twig src/modules/Client/templates/admin/mod_client_manage.html.twig …
 msgid "Are you sure?"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Area"
 msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
@@ -5342,7 +5358,7 @@ msgstr ""
 msgid "Chat alerts"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Check"
 msgstr ""
 
@@ -5356,6 +5372,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Check against :source"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Check against the source"
 msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
@@ -5418,7 +5438,7 @@ msgstr ""
 msgid "Check your login details"
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Checkbox"
 msgstr ""
 
@@ -5524,6 +5544,10 @@ msgstr ""
 
 #: src/modules/Invoice/Accounting/Sync.php
 msgid "Choose a date before the start date."
+msgstr ""
+
+#: src/modules/Client/CustomFields.php
+msgid "Choose a field type for :field."
 msgstr ""
 
 #: src/modules/Client/Files.php src/modules/Support/TicketFiles.php
@@ -5720,6 +5744,10 @@ msgstr ""
 
 #: src/modules/Invoice/Reports.php
 msgid "Choose one of the currencies."
+msgstr ""
+
+#: src/modules/Client/CustomFields.php
+msgid "Choose one of the options for :field."
 msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Mail.php
@@ -6286,6 +6314,10 @@ msgstr ""
 msgid "ClientFence Email Test"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "ClientFence ID"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "ClientFence Updates"
 msgstr ""
@@ -6826,7 +6858,7 @@ msgstr ""
 msgid "Company Updated"
 msgstr ""
 
-#: src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig src/modules/Invoice/templates/client/mod_invoice_invoice.html.twig …
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
 msgid "Company VAT"
 msgstr ""
 
@@ -8606,7 +8638,7 @@ msgstr ""
 msgid "Describe what this addon provides on the order page and in client-facing product details."
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Client/templates/client/mod_client_balance.html.twig …
 msgid "Description"
 msgstr ""
 
@@ -8622,12 +8654,20 @@ msgstr ""
 msgid "Destination folder"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Detail"
+msgstr ""
+
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig …
 msgid "Details"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Development/testing only - never enable this in production."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Difference"
 msgstr ""
 
 #: src/library/Payment/Adapter/GoCardless.php
@@ -8756,6 +8796,10 @@ msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
 msgid "Display Formatting (Advanced)"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Display Order"
 msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
@@ -9170,7 +9214,7 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
 msgid "Download CSV"
 msgstr ""
 
@@ -9192,6 +9236,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Download a copy of the personal data we keep about you: your profile, orders, invoices, payments, tickets and the emails we sent you."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Download audit CSV"
 msgstr ""
 
 #: src/modules/Servicedownloadable/templates/email/mod_servicedownloadable_activated.html.twig
@@ -9228,6 +9276,14 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Drag a card, or use its arrows."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Drop Down"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Drop Down only: the choices, separated by commas."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
@@ -10154,6 +10210,10 @@ msgstr ""
 msgid "Enter a valid email for the prospect."
 msgstr ""
 
+#: src/modules/Client/CustomFields.php
+msgid "Enter a web address starting with http:// or https:// for :field."
+msgstr ""
+
 #: src/modules/Product/Options.php
 msgid "Enter a whole number for :option."
 msgstr ""
@@ -10374,6 +10434,10 @@ msgstr ""
 msgid "Enter the licence key or API key."
 msgstr ""
 
+#: src/modules/Client/CustomFields.php
+msgid "Enter the options of :field, separated by commas."
+msgstr ""
+
 #: src/modules/Clientfence/CloudBackups.php
 msgid "Enter the passphrase the copies are encrypted with."
 msgstr ""
@@ -10500,6 +10564,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_password_update.html.twig
 msgid "Enter your secret code"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Entity"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -10902,6 +10970,10 @@ msgstr ""
 msgid "Extensions"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Extra details clients give at sign-up or on their profile, as WHMCS custom client fields. Admin Only fields are seen and changed by staff only, unless Show on Invoice is also on: that prints the field on invoices made from now on."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Extra details for this client"
 msgstr ""
@@ -10912,6 +10984,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "FTP passive mode"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Fail"
 msgstr ""
 
 #: src/modules/Security/Checks/generalCheck.php
@@ -11094,7 +11170,7 @@ msgstr ""
 msgid "Field \":field\" is required"
 msgstr ""
 
-#: src/modules/Client/Service.php
+#: src/modules/Client/CustomFields.php src/modules/Client/Service.php
 msgid "Field :field cannot be empty"
 msgstr ""
 
@@ -11112,6 +11188,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Field Title"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Field Type"
 msgstr ""
 
 #: src/modules/Formbuilder/Api/Admin.php
@@ -11314,7 +11394,7 @@ msgstr ""
 msgid "First product"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Fix"
 msgstr ""
 
@@ -11568,6 +11648,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Forwards to :count address(es)"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Found in the source"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
@@ -12228,6 +12312,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "HTTPS only"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Handling"
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -13158,7 +13246,7 @@ msgstr ""
 msgid "Important:"
 msgstr ""
 
-#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Order/templates/admin/mod_order_manage.html.twig …
+#: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Clientfence/Whmcs/Csv.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Imported"
 msgstr ""
 
@@ -13220,6 +13308,10 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "In the default currency. Empty: no per-unit billing."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "In the source"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -14002,6 +14094,10 @@ msgstr ""
 msgid "Its email address is still :email, so new ticket notices go there instead of to your staff. Set your own address in Support > Help desks."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Its services and domains become ClientFence orders."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_gateways.html.twig
 msgid "Its unpaid invoices move to the gateway you choose. Paid invoices and payments keep their history. A gateway with active subscriptions or saved payment methods cannot be deleted: disable it instead."
 msgstr ""
@@ -14726,6 +14822,10 @@ msgstr ""
 msgid "Link your Google account to sign in with Google instead of your password. Your password keeps working, and two-factor sign-in still asks for its code."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Link/URL"
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Linked"
 msgstr ""
@@ -15198,7 +15298,7 @@ msgstr ""
 msgid "Make the plan again"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/Controller/Admin.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Make the plan first."
 msgstr ""
 
@@ -17590,7 +17690,7 @@ msgstr ""
 msgid "Not enough free disk space to keep the backup on this server."
 msgstr ""
 
-#: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Not imported"
 msgstr ""
 
@@ -17632,6 +17732,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Not switched on"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Not their translations."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig src/modules/Staff/templates/admin/mod_staff_profile.html.twig
@@ -18090,6 +18194,10 @@ msgstr ""
 msgid "One-time payments are not enabled for the selected payment gateway"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Only Google sign-in links, the first of each login."
+msgstr ""
+
 #: src/modules/Redirect/Service.php
 msgid "Only HTTP and HTTPS redirect targets are allowed."
 msgstr ""
@@ -18128,6 +18236,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig
 msgid "Only Super Administrators can change the fraud check."
+msgstr ""
+
+#: src/modules/Clientfence/Controller/Admin.php
+msgid "Only Super Administrators can import from WHMCS."
 msgstr ""
 
 #: src/modules/Clientfence/Controller/Admin.php
@@ -18226,6 +18338,10 @@ msgstr ""
 msgid "Only cancelled invoices can be marked unpaid."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Only client and product custom fields."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "Only clients and their authorized users can open tickets by email; anyone else is told so by email. Off: others get a guest ticket (while guest tickets are on in Support settings)."
 msgstr ""
@@ -18246,6 +18362,10 @@ msgstr ""
 msgid "Only custom email templates can be deleted"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Only emails that were sent."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "Only from a new country or network"
 msgstr ""
@@ -18256,6 +18376,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Only if Blesta runs on another server: a copy of its support_manager_files folder on this one (Blesta > Settings > System > General > Uploads Directory). Files not found are named in the warnings and show as removed."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Only logins linked to a client."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -18314,8 +18438,16 @@ msgstr ""
 msgid "Only the account owner can save a payment method."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Only the answers to client and product custom fields."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_report.html.twig
 msgid "Only the first :count rows are shown. Narrow the filters to see the rest."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Only the newest request of each service."
 msgstr ""
 
 #: src/modules/Invoice/PaymentReversal.php
@@ -19318,12 +19450,20 @@ msgstr ""
 msgid "Part"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Partly imported"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Partnership"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Partnership registered in Canada"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Pass"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig
@@ -21834,7 +21974,7 @@ msgstr ""
 msgid "Reconnect"
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Record"
 msgstr ""
 
@@ -22886,7 +23026,7 @@ msgstr ""
 msgid "Restrict use to one redemption per client account."
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Clientfence/Whmcs/Csv.php src/modules/Currency/templates/admin/mod_currency_settings.html.twig …
 msgid "Result"
 msgstr ""
 
@@ -23506,6 +23646,10 @@ msgstr ""
 msgid "Saved: leave empty to keep it"
 msgstr ""
 
+#: src/modules/Client/templates/client/mod_client_custom_field_input.html.twig
+msgid "Saved: type a new one to change it"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Order/templates/admin/mod_order_settings_fraud_check.html.twig …
 msgid "Saved; leave empty to keep it"
 msgstr ""
@@ -23658,7 +23802,7 @@ msgstr ""
 msgid "Secrets cannot be added to a closed ticket."
 msgstr ""
 
-#: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig
 msgid "Section"
 msgstr ""
 
@@ -23732,6 +23876,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Select Hosting Plan"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Select Options"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_subscription.html.twig src/modules/Invoice/templates/admin/mod_invoice_subscriptions.html.twig src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
@@ -24206,6 +24354,10 @@ msgstr ""
 msgid "Server and nameservers"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Server check"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server connected"
 msgstr ""
@@ -24502,7 +24654,7 @@ msgstr ""
 msgid "Settings for"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Settings only"
 msgstr ""
 
@@ -24706,6 +24858,14 @@ msgstr ""
 msgid "Show in the footer"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Show on Invoice"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Show on Order Form"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Show password"
 msgstr ""
@@ -24776,6 +24936,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig
 msgid "Shown on your new invoices, for your purchasing team."
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Shown under the field."
 msgstr ""
 
 #: src/modules/Cookieconsent/manifest.json
@@ -25056,6 +25220,18 @@ msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig
 msgid "Source"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Source ID"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Source IDs are the numbers the import gave Upmind's records, not Upmind IDs."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Source system"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig
@@ -25354,7 +25530,7 @@ msgstr ""
 msgid "Statuses"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+#: src/modules/Clientfence/Whmcs/Csv.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Step"
 msgstr ""
 
@@ -26238,8 +26414,16 @@ msgstr ""
 msgid "Text After Invoice Item Table"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Text Area"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Text Before Invoice Item Table"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Text Box"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -27171,7 +27355,7 @@ msgid "The files copy is a zip of the web root (with config.php) and the private
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
-msgid "The first :shown are shown; the console lists them all: php console.php clientfence:whmcs-import apply"
+msgid "The first :shown are shown. Download audit CSV (once the import has finished) lists them all, as does the console: php console.php clientfence:whmcs-import apply"
 msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_receipts.html.twig
@@ -27285,6 +27469,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Preflight.php
 msgid "The import did not start: fix these first, then start it again. :problems"
+msgstr ""
+
+#: src/modules/Clientfence/Controller/Admin.php
+msgid "The import has not finished yet."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -27971,6 +28159,10 @@ msgstr ""
 msgid "The sign-in choice reads the sign-in history: keep the activity log at least 90 days (Activity settings)."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "The source could not be read, so this check is left out."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
 msgid "The staff member is emailed, unless they assign it to themselves."
 msgstr ""
@@ -28043,6 +28235,10 @@ msgstr ""
 msgid "The text for clients can have up to 5000 characters."
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "The title, description and options in other languages. Leave blank to use the default text; give the options in the same order."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "The total is now :amount. Check the summary, then select the button again."
 msgstr ""
@@ -28107,12 +28303,20 @@ msgstr ""
 msgid "The username you use to login to the Namecheap control panel."
 msgstr ""
 
+#: src/modules/Client/CustomFields.php
+msgid "The validation of :field is not a regular expression PHP can use, for example /^[0-9]+$/."
+msgstr ""
+
 #: src/themes/palisade/html/partials/i18n.html.twig
 msgid "The value must be :max or less."
 msgstr ""
 
 #: src/themes/palisade/html/partials/i18n.html.twig
 msgid "The value must be :min or more."
+msgstr ""
+
+#: src/modules/Client/CustomFields.php
+msgid "The value of :field is not valid."
 msgstr ""
 
 #: src/modules/Currency/templates/admin/mod_currency_manage.html.twig
@@ -29815,7 +30019,7 @@ msgstr ""
 msgid "Transfer your existing domain"
 msgstr ""
 
-#: src/modules/Extension/templates/admin/mod_extension_languages.html.twig
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig src/modules/Extension/templates/admin/mod_extension_languages.html.twig
 msgid "Translations"
 msgstr ""
 
@@ -31183,12 +31387,20 @@ msgstr ""
 msgid "Validate Version"
 msgstr ""
 
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Validation"
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "Validation Rules"
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Validation complete: :valid valid, :invalid invalid"
+msgstr ""
+
+#: src/modules/Client/templates/admin/mod_client_settings.html.twig
+msgid "Validation: a regular expression with its delimiters that a new answer must match. Leave blank to accept any answer."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
@@ -31583,7 +31795,7 @@ msgstr ""
 msgid "Warn when reports stop"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Security/templates/admin/mod_security_index.html.twig src/modules/Security/templates/admin/mod_security_rate_limits.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Clientfence/Whmcs/Csv.php src/modules/Security/templates/admin/mod_security_index.html.twig …
 msgid "Warning"
 msgstr ""
 
@@ -32077,6 +32289,10 @@ msgstr ""
 
 #: src/modules/Embed/templates/admin/mod_embed_index.html.twig src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Width"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Csv.php
+msgid "Will be imported"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
