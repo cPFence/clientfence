@@ -17,6 +17,7 @@ Client options from WHMCS: per-client switches and an Inactive client status. Gu
 ### Fixed
 
 - Clients imported from Blesta, ClientExec, Upmind, FOSSBilling or Paymenter were saved as opted out of marketing email; the update opts them in again.
+- Getting TLD prices from a registrar no longer turns off transfers for TLDs with a free transfer, such as .uk: the transfer is priced with your transfer markup and rounding (a percent markup keeps it free), and a new .uk TLD with a free transfer does not require a transfer code. For TLDs imported before this fix whose price list now shows a transfer cost of 0, turn Allow Transfer on, and for .uk set Require Transfer Code to No. ([#52](https://github.com/cPFence/clientfence/issues/52))
 
 ## 1.0.58 (2026-11-19)
 
