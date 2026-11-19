@@ -26,6 +26,8 @@
 {% set addons = order.group_master == 1 ? admin.order_addons({ 'id': order.id }) : [] %}
 {# ClientFence core patch: Add Add-on for this service (Order/AddonOrders.php). #}
 {% set addon_offers = order.status == 'active' ? admin.order_addon_offers({ 'id': order.id }) : [] %}
+{# ClientFence core patch: the Addons tab on every main service, as WHMCS always offers New Addon; not on an add-on itself. #}
+{% set addons_tab = order.group_master == 1 and has_permission('product', 'view') and admin.product_addon_get_pairs[order.product_id] is not defined %}
 {# ClientFence core patch: configurable options (Product/Options.php) on their own tab. #}
 {% set order_options = admin.order_options_get({ 'id': order.id }) %}
 {% if order.status == 'active' or order.status == 'failed_renew' %}
@@ -65,7 +67,7 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-invoices" data-bs-toggle="tab" role="tab">{{ 'Invoices'|trans }}</a>
                     </li>
-                    {% if addons|length > 0 or addon_offers|length > 0 %}
+                    {% if addons_tab or addons|length > 0 or addon_offers|length > 0 %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-addons" data-bs-toggle="tab" role="tab">{{ 'Addons'|trans }}</a>
                     </li>
@@ -706,9 +708,10 @@
         {% endif %}
 
         <div class="tab-pane fade" id="tab-addons" role="tabpanel">
+            {# ClientFence core patch: the add-ons of this service, as WHMCS names them. #}
             {% embed 'partial_admin_related_section.html.twig' with {
-                title: 'Order Addons'|trans,
-                subtitle: 'Review additional products and services attached to this order and open them directly when needed.'|trans,
+                title: 'Service Add-ons'|trans,
+                subtitle: 'The add-ons of this service. Open one to manage it.'|trans,
                 card_class: 'm-3'
             } %}
                 {% block section_content %}
@@ -770,6 +773,18 @@
                             </div>
                         </div>
                     </form>
+                    {% elseif addon_offers is empty and addons_tab %}
+                    {# ClientFence core patch: why no add-on can be added (AddonOrders::products()). #}
+                    {% set product_link = has_permission('product', 'manage_products') %}
+                    <p class="card-body border-top text-secondary mb-0">
+                        {% if order.status != 'active' %}
+                        {{ 'Add-ons can be added once the service is active.'|trans }}
+                        {% elseif not order.period or not order.expires_at or order.expires_at|slice(0, 10) <= 'now'|date('Y-m-d') %}
+                        {{ 'Add-ons can only be added to a recurring service before its due date.'|trans }}
+                        {% else %}
+                        {{ 'No add-ons can be added to this service. %link%Assign add-ons to its product%link_end% on its Addons tab, enabled and priced for this billing cycle.'|trans_html({}, { '%link%': product_link ? '<a href="' ~ (('product/manage/' ~ order.product_id)|url ~ '#tab-addons')|e ~ '">' : '', '%link_end%': product_link ? '</a>' : '' }) }}
+                        {% endif %}
+                    </p>
                     {% endif %}
                 {% endblock %}
             {% endembed %}
