@@ -523,9 +523,15 @@
             <h3 class="card-title">{{ 'Import plan'|trans }}</h3>
             <p class="card-subtitle">{{ 'What :source holds and what the import does with it. Making the plan changes nothing in :source. For very large installs, the console runs the same steps: php console.php clientfence:whmcs-import plan'|trans({ ':source': source }) }}</p>
         </div>
-        {% if chosen != 'whmcs' ? (snapshot and snapshot.finished_at) : settings.has_password %}
-        <div class="card-actions">
+        {% set can_plan = chosen != 'whmcs' ? (snapshot and snapshot.finished_at) : settings.has_password %}
+        {% if can_plan or plan %}
+        <div class="card-actions d-flex flex-wrap gap-2">
+            {% if plan %}
+            <a class="btn btn-outline-secondary" href="{{ 'clientfence/import/plan-csv'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Download CSV'|trans }}</a>
+            {% endif %}
+            {% if can_plan %}
             <a class="btn btn-primary" href="{{ 'clientfence/whmcs_import_plan'|api_url }}" {{ fb_api_link({ message: 'Plan made.'|trans, reload: true }) }}>{{ plan ? 'Make the plan again'|trans : 'Make the plan'|trans }}</a>
+            {% endif %}
         </div>
         {% endif %}
     </div>
@@ -678,7 +684,8 @@
             <button type="button" class="btn btn-primary" data-whmcs-import-run data-confirm="{{ run ? '' : 'Import from :source into this install now? Keep this page open until it finishes.'|trans({ ':source': source }) }}">{{ run ? 'Go on with the import'|trans : 'Start the import'|trans }}</button>
         </div>
         {% elseif run.finished_at|default(false) %}
-        <div class="card-actions">
+        <div class="card-actions d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-secondary" href="{{ 'clientfence/import/audit-csv'|url(query: { CSRFToken: CSRFToken }) }}">{{ 'Download audit CSV'|trans }}</a>
             <button type="button" class="btn btn-outline-primary" data-whmcs-import-verify>{{ 'Check against :source'|trans({ ':source': source }) }}</button>
         </div>
         {% endif %}
@@ -736,7 +743,7 @@
                     {% for warning in whmcs.warnings %}<li>{{ warning }}</li>{% endfor %}
                 </ul>
                 {% if run.warnings > whmcs.warnings|length %}
-                    <p class="small text-secondary mb-0">{{ 'The first :shown are shown; the console lists them all: php console.php clientfence:whmcs-import apply'|trans({ ':shown': whmcs.warnings|length }) }}</p>
+                    <p class="small text-secondary mb-0">{{ 'The first :shown are shown. Download audit CSV (once the import has finished) lists them all, as does the console: php console.php clientfence:whmcs-import apply'|trans({ ':shown': whmcs.warnings|length }) }}</p>
                 {% endif %}
             </details>
         {% endif %}

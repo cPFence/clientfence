@@ -529,7 +529,8 @@ final class Import
         return $path;
     }
 
-    private static function state(\Pimple\Container $di, string $name): ?array
+    /** A saved import setting or plan (SETTINGS, PLAN), or null. */
+    public static function state(\Pimple\Container $di, string $name): ?array
     {
         try {
             $row = $di['em']->getConnection()->fetchOne('SELECT value FROM mod_clientfence_state WHERE name = ?', [$name]);

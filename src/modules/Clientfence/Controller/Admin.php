@@ -10,6 +10,9 @@ use ClientFence\Mod\Clientfence\CloudBackups;
 use ClientFence\Mod\Clientfence\Customized;
 use ClientFence\Mod\Clientfence\Health;
 use ClientFence\Mod\Clientfence\Setup;
+use ClientFence\Mod\Clientfence\Whmcs\Csv;
+use ClientFence\Mod\Clientfence\Whmcs\Import;
+use ClientFence\Mod\Clientfence\Whmcs\Run;
 
 /**
  * Admin area pages of the ClientFence module: System health (Health.php) and Database backups
@@ -40,6 +43,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/' . CloudBackups::CALLBACK, 'get_cloud_callback', [], static::class);
         $app->get('/clientfence/setup', 'get_setup', [], static::class);
         $app->get('/clientfence/update/changed-files', 'get_changed_files', [], static::class);
+        $app->get('/clientfence/import/plan-csv', 'get_import_plan_csv', [], static::class);
+        $app->get('/clientfence/import/audit-csv', 'get_import_audit_csv', [], static::class);
     }
 
     /** @return array<string, string> code => "Name (CODE)" of the currencies in use today, by name */
@@ -271,6 +276,73 @@ class Admin implements \ClientFence\InjectionAwareInterface
         } finally {
             @unlink($file);
         }
+        exit;
+    }
+
+    /** The Migration tab's "Download CSV": the saved import plan and the server checks (Whmcs/Csv.php). */
+    public function get_import_plan_csv(\ClientFence\App $app): never
+    {
+        $this->requireImporter();
+        $plan = Import::state($this->di, Import::PLAN) ?? throw new \ClientFence\InformationException('Make the plan first.', null, 404);
+        $system = Import::system(Import::settings($this->di));
+
+        $this->sendCsv(Csv::name('plan', $system), static function ($out) use ($plan, $system): void {
+            Csv::plan($plan, $system, $out);
+        });
+    }
+
+    /** The Migration tab's "Download audit CSV": the check against the source, every warning and the id map (Whmcs/Csv.php). */
+    public function get_import_audit_csv(\ClientFence\App $app): never
+    {
+        $this->requireImporter();
+        // As on the page: a run still going would give a map that is missing rows.
+        if (!isset(Run::state($this->di)['finished_at'])) {
+            throw new \ClientFence\InformationException('The import has not finished yet.', null, 404);
+        }
+        @set_time_limit(0);
+        try {
+            $verify = Run::verify($this->di);
+        } catch (\Throwable) {
+            // The source may be gone after the move; its error can name the database user and host, so it is not written.
+            $verify = null;
+        }
+        $system = Import::system(Import::settings($this->di));
+        $db = $this->di['em']->getConnection();
+
+        $this->sendCsv(Csv::name('audit', $system), static function ($out) use ($db, $system, $verify): void {
+            Csv::audit($db, $system, $verify, $out);
+        });
+    }
+
+    /** The import's own check (Api\Admin whmcs_import_*: Super Administrators only), and the page's CSRF token. */
+    private function requireImporter(): void
+    {
+        $this->di['is_admin_logged'];
+        if (!$this->isSuperAdmin()) {
+            throw new \ClientFence\InformationException('Only Super Administrators can import from WHMCS.', null, 403);
+        }
+        $token = $this->di['request']->query->get('CSRFToken');
+        $session = $this->di['session']->get('csrf_token');
+        if (!is_string($token) || !is_string($session) || $session === '' || !hash_equals($session, $token)) {
+            throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
+        }
+    }
+
+    /** Streams a CSV straight to the browser (UTF-8 with a BOM, so Excel reads accents), then ends the request. */
+    private function sendCsv(string $name, \Closure $write): never
+    {
+        @set_time_limit(0);
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $name . '"');
+        header('Cache-Control: no-store');
+        header('X-Content-Type-Options: nosniff');
+        $out = fopen('php://output', 'w') ?: throw new \RuntimeException('The download could not be started.');
+        fwrite($out, "\xEF\xBB\xBF");
+        $write($out);
+        fclose($out);
         exit;
     }
 

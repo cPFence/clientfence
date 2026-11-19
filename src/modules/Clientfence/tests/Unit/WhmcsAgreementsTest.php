@@ -50,7 +50,7 @@ test('brings live WHMCS billing agreements as saved PayPal Auto-Pay methods when
     expect($target->fetchAllKeyValue('SELECT client_id, default_payment_method FROM pay_gateway_customer WHERE pay_gateway_id = 4 AND saved_cards = 1 AND test_mode = 0 ORDER BY client_id'))
         ->toBe([112 => 'B-12', 113 => 'B-13NEW'])
         ->and($money->total('agreements'))->toBe(2)
-        ->and(implode(' ', $money->warnings()))->toContain('Client #13 had 2 PayPal billing agreements in WHMCS: the newest, B-13NEW, was kept.');
+        ->and(implode(' ', $money->warnings()))->toContain('Client #13 had 2 PayPal billing agreements in WHMCS: the newest, ending 3NEW, was kept.');
     // The invoices of WHMCS's gateway go to PayPal Auto-Pay.
     expect((fn () => $this->gateway(Money::AGREEMENT_GATEWAY))->call($money))->toBe(4);
 });

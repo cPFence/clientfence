@@ -181,7 +181,8 @@ final class Money
         // shortcut: the table has no dates, so with several the last one written is taken; a cancelled one is removed at its first charge.
         $agreement = end($ids);
         if (count($ids) > 1) {
-            $this->warn(sprintf('Client #%d had %d PayPal billing agreements in WHMCS: the newest, %s, was kept. Check it on the client\'s payment methods if a charge fails.', (int) $row['userid'], count($ids), $agreement));
+            // Only the end of the ID: the agreement charges the client, and warnings go into the audit file.
+            $this->warn(sprintf('Client #%d had %d PayPal billing agreements in WHMCS: the newest, ending %s, was kept. Check it on the client\'s payment methods if a charge fails.', (int) $row['userid'], count($ids), substr($agreement, -4)));
         }
         $values = ['external_customer_id' => '', 'saved_cards' => 1, 'default_payment_method' => $agreement, 'default_card' => 'PayPal', 'auto_pay_at' => $this->now, 'updated_at' => $this->now];
         // WHMCS's agreements are live ones, also while the gateway is still in test mode.
