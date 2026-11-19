@@ -127,8 +127,17 @@ test('the client API leaves out admin only and inactive answers and masks a save
     $service = new ClientFence\Mod\Client\Service();
     $service->setDi($di);
 
+    $di['mod_service'] = $di->protect(fn (string $name): object => new class {
+        public function hasPermission(mixed $member, string $module, ?string $key = null): bool
+        {
+            return $member instanceof Model_Admin;
+        }
+    });
+    $admin = new Model_Admin();
+    $admin->loadBean(new Tests\Helpers\DummyBean());
+
     $own = $service->toApiArray($client, false, $client);
-    $staff = $service->toApiArray($client, false, createEntity(ClientFence\Mod\Staff\Entity\Admin::class));
+    $staff = $service->toApiArray($client, false, $admin);
 
     expect($own)->toMatchArray(['custom_1' => 'Exento', 'custom_3' => CustomFields::MASK])
         ->and($own)->not->toHaveKeys(['custom_2', 'custom_6'])
@@ -246,11 +255,17 @@ test('staff API output opens the sealed password; the client\'s own output masks
 
         public function hasPermission(mixed $member, string $module, ?string $key = null): bool
         {
+            // The serializer's own identity is checked: a payment webhook has no signed-in admin to look up.
+            if (!$member instanceof Model_Admin) {
+                throw new RuntimeException('Admin is not logged in');
+            }
+
             return $module === 'client' && $key === 'view' && $this->canView;
         }
     };
     $di['mod_service'] = $di->protect(fn (string $name): object => $staff);
-    $admin = createEntity(ClientFence\Mod\Staff\Entity\Admin::class);
+    $admin = new Model_Admin();
+    $admin->loadBean(new Tests\Helpers\DummyBean());
 
     expect($service->toApiArray($client, false, $admin)['custom_3'])->toBe('hunter2')
         ->and($service->toApiArray($client, false, $client)['custom_3'])->toBe(CustomFields::MASK);

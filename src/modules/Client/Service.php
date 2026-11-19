@@ -603,7 +603,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             // ClientFence core patch: all the client's groups (Client/Groups.php); group_id and client_group stay the first one.
             $details['group_ids'] = Groups::ids($this->di, (int) $client->getId());
             // ClientFence core patch: staff see Password custom fields in clear; they are stored encrypted (Client/CustomFields.php).
-            $details = $this->staffCustomValues($details);
+            $details = $this->staffCustomValues($details, $identity);
 
             if ($includeSensitive) {
                 $details['api_token'] = $client->getApiToken();
@@ -618,17 +618,19 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
 
     /**
      * ClientFence core patch: Password custom fields in clear only for staff who may view clients; others (a
-     * support-only member reading a ticket) get them masked.
+     * support-only member reading a ticket) get them masked. The identity the array is made for is checked, not
+     * the session: a payment webhook serializes as the system admin with nobody signed in.
      *
      * @param array<string, mixed> $details
      *
      * @return array<string, mixed>
      */
-    private function staffCustomValues(array $details): array
+    private function staffCustomValues(array $details, mixed $identity): array
     {
         $config = $this->di['mod_config']('client');
+        $admin = $identity instanceof \Model_Admin ? $identity : $this->di['db']->load('Admin', (int) $this->getIdentityId($identity));
 
-        return $this->di['mod_service']('Staff')->hasPermission(null, 'client', 'view')
+        return $admin instanceof \Model_Admin && $this->di['mod_service']('Staff')->hasPermission($admin, 'client', 'view')
             ? CustomFields::staffValues($this->di, $config, $details)
             : CustomFields::maskPasswords($config, $details);
     }
@@ -714,7 +716,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 $field = 'custom_' . $i;
                 $details[$field] = $client->{$field};
             }
-            $details = $this->staffCustomValues($details);
+            $details = $this->staffCustomValues($details, $identity);
 
             $group = $this->di['db']->load('ClientGroup', $client->client_group_id);
             $details += [
