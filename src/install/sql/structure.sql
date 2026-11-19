@@ -646,6 +646,8 @@ CREATE TABLE `invoice` (
   `updated_at` datetime DEFAULT NULL,
   `hash_expires_at` datetime DEFAULT NULL,
   `po_number` varchar(64) DEFAULT NULL,
+  -- ClientFence core patch: the custom client fields shown on the invoice, copied when it is made (JSON).
+  `buyer_custom` mediumtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `client_id_idx` (`client_id`),

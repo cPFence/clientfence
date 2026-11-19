@@ -66,6 +66,15 @@ final class Privacy
         foreach (['pass', 'salt', 'api_token', 'notes', 'aid', 'referred_by', 'client_group_id', 'tax_exempt', 'role', 'auth_type', 'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update'] as $column) {
             unset($client[$column]);
         }
+        // Custom client fields only staff see (Client/CustomFields.php) stay out of the client's own export, and a
+        // Password answer shows as ******** there; staff get it in clear.
+        $customConfig = $di['mod_config']('client');
+        foreach ($includeStaffData ? [] : CustomFields::all($customConfig) as $name => $field) {
+            if ($field['admin_only']) {
+                unset($client[$name]);
+            }
+        }
+        $client = $includeStaffData ? CustomFields::staffValues($di, $customConfig, $client) : CustomFields::maskPasswords($customConfig, $client);
         $invoiceIds = array_map(intval(...), $db->fetchFirstColumn('SELECT id FROM invoice WHERE client_id = ?', [$clientId]));
         $ticketIds = array_map(intval(...), $db->fetchFirstColumn('SELECT id FROM support_ticket WHERE client_id = ?', [$clientId]));
         $in = static fn (array $ids): string => $ids === [] ? '0' : implode(',', $ids);
@@ -84,7 +93,7 @@ final class Privacy
             'contacts' => self::rows($db, 'SELECT first_name, last_name, company, email, phone_cc, phone, address_1, address_2, city, state, postcode, country, tax_id, emails, created_at FROM ' . Contacts::TABLE . ' WHERE client_id = ? ORDER BY id', [$clientId]),
             'orders' => self::rows($db, 'SELECT id, title, status, period, quantity, price, discount, currency, config, created_at, activated_at, expires_at, suspended_at, canceled_at FROM client_order WHERE client_id = ? ORDER BY id', [$clientId]),
             'domains' => self::rows($db, 'SELECT sld, tld, ns1, ns2, ns3, ns4, period, privacy, contact_email, contact_company, contact_first_name, contact_last_name, contact_address1, contact_address2, contact_city, contact_state, contact_postcode, contact_country, contact_phone_cc, contact_phone, registered_at, expires_at FROM service_domain WHERE client_id = ?', [$clientId]),
-            'invoices' => self::rows($db, 'SELECT id, serie, nr, currency, status, buyer_first_name, buyer_last_name, buyer_company, buyer_company_vat, buyer_company_number, buyer_address, buyer_city, buyer_state, buyer_country, buyer_zip, buyer_phone, buyer_phone_cc, buyer_email, taxname, taxrate, due_at, paid_at, created_at FROM invoice WHERE client_id = ? ORDER BY id', [$clientId]),
+            'invoices' => self::rows($db, 'SELECT id, serie, nr, currency, status, buyer_first_name, buyer_last_name, buyer_company, buyer_company_vat, buyer_company_number, buyer_address, buyer_city, buyer_state, buyer_country, buyer_zip, buyer_phone, buyer_phone_cc, buyer_email, buyer_custom, taxname, taxrate, due_at, paid_at, created_at FROM invoice WHERE client_id = ? ORDER BY id', [$clientId]),
             'invoice_items' => self::rows($db, 'SELECT invoice_id, title, period, quantity, unit, price, taxed, created_at FROM invoice_item WHERE invoice_id IN (' . $in($invoiceIds) . ') ORDER BY id'),
             'payments' => self::rows($db, 'SELECT invoice_id, txn_id, amount, currency, type, status, created_at FROM `transaction` WHERE invoice_id IN (' . $in($invoiceIds) . ') ORDER BY id'),
             'balance' => self::rows($db, 'SELECT type, amount, description, created_at FROM client_balance WHERE client_id = ? ORDER BY id', [$clientId]),
@@ -162,7 +171,7 @@ final class Privacy
                 'updated_at' => $now,
             ], ['id' => $clientId]);
             $db->executeStatement(
-                'UPDATE invoice SET buyer_first_name = ?, buyer_last_name = ?, buyer_address = NULL, buyer_city = NULL, buyer_state = NULL, buyer_zip = NULL, buyer_phone = NULL, buyer_phone_cc = NULL, buyer_email = ?, notes = NULL WHERE client_id = ?',
+                'UPDATE invoice SET buyer_first_name = ?, buyer_last_name = ?, buyer_address = NULL, buyer_city = NULL, buyer_state = NULL, buyer_zip = NULL, buyer_phone = NULL, buyer_phone_cc = NULL, buyer_email = ?, buyer_custom = NULL, notes = NULL WHERE client_id = ?',
                 ['Anonymized', 'Client #' . $clientId, $email, $clientId]
             );
             $db->executeStatement('UPDATE `transaction` SET ip = NULL, ipn = NULL, output = NULL WHERE invoice_id IN (SELECT id FROM invoice WHERE client_id = ?)', [$clientId]);

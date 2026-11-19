@@ -19,7 +19,7 @@ function privacyDb(): Connection
     foreach ([
         "CREATE TABLE client (id INTEGER PRIMARY KEY, aid TEXT, email TEXT, billing_email TEXT, pass TEXT, salt TEXT, status TEXT, email_approved INTEGER, first_name TEXT, last_name TEXT, gender TEXT, birthday TEXT, phone_cc TEXT, phone TEXT, company TEXT, company_vat TEXT, company_number TEXT, address_1 TEXT, address_2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, notes TEXT, ip TEXT, api_token TEXT, referred_by TEXT, auth_type TEXT, $custom, updated_at TEXT)",
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, title TEXT, status TEXT, period TEXT, quantity INTEGER, price REAL, discount REAL, currency TEXT, config TEXT, notes TEXT, created_at TEXT, activated_at TEXT, expires_at TEXT, suspended_at TEXT, canceled_at TEXT)',
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, serie TEXT, nr TEXT, currency TEXT, status TEXT, notes TEXT, buyer_first_name TEXT, buyer_last_name TEXT, buyer_company TEXT, buyer_company_vat TEXT, buyer_company_number TEXT, buyer_address TEXT, buyer_city TEXT, buyer_state TEXT, buyer_country TEXT, buyer_zip TEXT, buyer_phone TEXT, buyer_phone_cc TEXT, buyer_email TEXT, taxname TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, due_at TEXT, paid_at TEXT, created_at TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, serie TEXT, nr TEXT, currency TEXT, status TEXT, notes TEXT, buyer_first_name TEXT, buyer_last_name TEXT, buyer_company TEXT, buyer_company_vat TEXT, buyer_company_number TEXT, buyer_address TEXT, buyer_city TEXT, buyer_state TEXT, buyer_country TEXT, buyer_zip TEXT, buyer_phone TEXT, buyer_phone_cc TEXT, buyer_email TEXT, buyer_custom TEXT, taxname TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, due_at TEXT, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, title TEXT, period TEXT, quantity INTEGER, unit TEXT, price REAL, taxed INTEGER, created_at TEXT)',
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY, invoice_id INTEGER, txn_id TEXT, amount REAL, currency TEXT, type TEXT, status TEXT, ip TEXT, ipn TEXT, output TEXT, created_at TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, amount REAL, description TEXT, created_at TEXT)',
@@ -53,7 +53,7 @@ function privacyDb(): Connection
     }
     $db->insert('client', ['id' => 7, 'email' => 'alice@client.test', 'pass' => 'hash', 'salt' => 's', 'api_token' => 'secret-token', 'status' => 'active', 'first_name' => 'Alice', 'last_name' => 'Smith', 'phone' => '5550100', 'company' => 'Alice Co', 'address_1' => '1 Main St', 'city' => 'Town', 'country' => 'US', 'notes' => 'VIP', 'ip' => '203.0.113.7', 'custom_1' => 'passport 123']);
     $db->insert('client_order', ['id' => 1, 'client_id' => 7, 'title' => 'Hosting', 'status' => 'canceled', 'price' => 10, 'currency' => 'USD', 'notes' => 'call Alice']);
-    $db->insert('invoice', ['id' => 3, 'client_id' => 7, 'status' => 'paid', 'currency' => 'USD', 'buyer_first_name' => 'Alice', 'buyer_last_name' => 'Smith', 'buyer_company' => 'Alice Co', 'buyer_company_vat' => 'US123', 'buyer_address' => '1 Main St', 'buyer_country' => 'US', 'buyer_email' => 'alice@client.test']);
+    $db->insert('invoice', ['id' => 3, 'client_id' => 7, 'status' => 'paid', 'currency' => 'USD', 'buyer_first_name' => 'Alice', 'buyer_last_name' => 'Smith', 'buyer_company' => 'Alice Co', 'buyer_company_vat' => 'US123', 'buyer_address' => '1 Main St', 'buyer_country' => 'US', 'buyer_email' => 'alice@client.test', 'buyer_custom' => '[{"title":"Personal ID","value":"X1"}]']);
     $db->insert('invoice_item', ['invoice_id' => 3, 'title' => 'Hosting', 'price' => 10, 'quantity' => 1]);
     $db->executeStatement('INSERT INTO "transaction" (invoice_id, txn_id, amount, ip, ipn) VALUES (3, ?, 10, ?, ?)', ['T1', '203.0.113.7', 'payer=alice@client.test']);
     $db->insert('invoice_quote', ['client_id' => 7, 'first_name' => 'Alice', 'last_name' => 'Smith', 'email' => 'alice@client.test', 'admin_notes' => 'staff only']);
@@ -185,6 +185,7 @@ test('anonymizing erases the person and keeps the money records', function (): v
     expect($invoice['status'])->toBe('paid')
         ->and($invoice['buyer_first_name'] . ' ' . $invoice['buyer_last_name'])->toBe('Anonymized Client #7')
         ->and($invoice['buyer_address'])->toBeNull()
+        ->and($invoice['buyer_custom'])->toBeNull()
         ->and($invoice['buyer_company_vat'])->toBe('US123')
         ->and($invoice['buyer_country'])->toBe('US')
         ->and((float) $db->fetchOne('SELECT amount FROM "transaction"'))->toBe(10.0)
@@ -260,4 +261,13 @@ test('the footer escapes its link and the queue keeps the unsubscribe link until
         ->and(Privacy::queuedUnsubscribe($di, 42))->toBeNull();
     Privacy::forgetUnsubscribe($di, 41);
     expect(Privacy::queuedUnsubscribe($di, 41))->toBeNull();
+});
+
+test('an admin only custom client field stays out of the client\'s own export, not out of the staff export', function (): void {
+    $config = ['privacy_tools' => '1', 'custom_fields' => ['custom_1' => ['title' => 'Passport', 'active' => '1', 'admin_only' => '1']]];
+
+    expect(Privacy::export(privacyDi(privacyDb(), $config), 7)['client'])->not->toHaveKey('custom_1')
+        ->and(Privacy::export(privacyDi(privacyDb(), $config), 7, true)['client']['custom_1'])->toBe('passport 123')
+        // Without the setting the client sees the answer, as before.
+        ->and(Privacy::export(privacyDi(privacyDb()), 7)['client']['custom_1'])->toBe('passport 123');
 });

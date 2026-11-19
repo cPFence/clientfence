@@ -54,7 +54,7 @@
                 </div>
                 {# The details the client settings require at sign-up, and the active custom fields. #}
                 {% for name, label in {
-                    'company': 'Company', 'phone': 'Phone Number', 'birthday': 'Birthdate', 'gender': 'Gender',
+                    'company': 'Company', 'company_vat': 'Company VAT', 'phone': 'Phone Number', 'birthday': 'Birthdate', 'gender': 'Gender',
                     'address_1': 'Address Line 1', 'address_2': 'Address Line 2', 'city': 'City', 'state': 'State',
                     'postcode': 'Zip/Postal Code', 'country': 'Country'
                 } %}
@@ -89,16 +89,19 @@
                     {% endif %}
                 {% endfor %}
                 {% if guest.clientfence_eu_vat %}
+                    {# ClientFence: a required VAT number is asked above, with the other required details. #}
+                    {% if 'company_vat' not in r %}
                     <div class="mb-3">
                         <label class="form-label" for="su-company-vat">{{ 'Company VAT number (optional)'|trans }}</label>
                         <input class="form-control" id="su-company-vat" name="company_vat" value="{{ request.company_vat|default('') }}" maxlength="100" autocomplete="off">
                     </div>
+                    {% endif %}
                 {% endif %}
+                {# ClientFence core patch: WHMCS custom client fields shown on the order form, each as its type (mod_client_custom_field_input.html.twig). #}
                 {% for name, field in guest.client_custom_fields %}
-                    {% if field.active|default(false) %}
+                    {% if field.active|default(false) and (field.show_order ?? true) %}
                         <div class="mb-3">
-                            <label class="form-label" for="su-{{ name }}">{{ field.title|default(name|capitalize) }}</label>
-                            <input class="form-control" id="su-{{ name }}" name="{{ name }}" value="{{ request[name]|default('') }}" maxlength="250"{% if field.required|default(false) %} required{% endif %}>
+                            {{ include('mod_client_custom_field_input.html.twig', { name: name, field: field, value: field.type|default('text') == 'password' ? '' : request[name]|default(''), id: 'su-' ~ name }) }}
                         </div>
                     {% endif %}
                 {% endfor %}

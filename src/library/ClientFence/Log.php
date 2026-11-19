@@ -84,7 +84,8 @@ class Log implements \ClientFence\InjectionAwareInterface
         }
 
         foreach ($params as $key => $value) {
-            if (in_array(strtolower((string) $key), $this->_maskedKeys)) {
+            // ClientFence core patch: client custom fields (custom_N) can hold a Password answer before it is sealed.
+            if (in_array(strtolower((string) $key), $this->_maskedKeys) || preg_match('/^custom_\d+$/', (string) $key)) {
                 $params[$key] = '********';
             } elseif (is_array($value)) {
                 $params[$key] = $this->maskParams($value, $depthLimit - 1);

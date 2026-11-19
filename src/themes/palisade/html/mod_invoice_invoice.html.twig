@@ -191,6 +191,8 @@
                             {# ClientFence core patch (GitHub #31): the purchase order number. #}
                             {% if invoice.po_number|default('')|trim %}{{ 'PO number'|trans }} <bdi dir="ltr">{{ invoice.po_number }}</bdi><br>{% endif %}
                             {% if buyer.company_vat|trim %}{{ company.tax_label|default('') ?: 'Company VAT'|trans }} {{ buyer.company_vat }}<br>{% endif %}
+                            {# ClientFence: the custom client fields shown on invoices, as copied when the invoice was made. #}
+                            {% for line in buyer.custom|default([]) %}{{ line.title }}: {{ line.value }}<br>{% endfor %}
                             {% if buyer.address|trim %}{{ buyer.address }}<br>{{ buyer.city }}{% if buyer.state|trim %}, {{ buyer.state }}{% endif %}<br>{{ buyer.zip }}{% if buyer.country|trim %}, {{ buyer.country|country_name }}{% endif %}<br>{% endif %}
                             {% if buyer.phone|trim %}<bdi dir="ltr">{{ buyer.phone }}</bdi>{% endif %}
                         </dd>

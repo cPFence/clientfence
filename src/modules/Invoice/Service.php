@@ -406,6 +406,8 @@ class Service implements InjectionAwareInterface
             'phone_cc' => $row['buyer_phone_cc'] ?? '',
             'email' => $row['buyer_email'],
             'zip' => $row['buyer_zip'],
+            // ClientFence core patch: the custom client fields shown on the invoice, as copied when it was made (title, value).
+            'custom' => \ClientFence\Mod\Client\CustomFields::fromInvoice($row['buyer_custom'] ?? null),
         ];
 
         $systemService = $this->di['mod_service']('system');
@@ -1447,6 +1449,11 @@ class Service implements InjectionAwareInterface
         $model->buyer_zip = $buyer['postcode'] ?? null;
         // ClientFence core patch (GitHub #31): the client's purchase order number, which staff can change per invoice.
         $model->po_number = $client->po_number ?: null;
+        // ClientFence core patch: WHMCS custom client fields with Show on Invoice, copied in the client's language like the other buyer details (Client/CustomFields.php).
+        $custom = \ClientFence\Mod\Client\CustomFields::invoiceCopy($this->di['mod_config']('client'), \ClientFence\Mod\Client\CustomFields::values($client), \ClientFence\Mod\Product\Translations::locale($client->lang ?: null));
+        if ($custom !== null) {
+            $model->buyer_custom = $custom;
+        }
 
         $invoice_due_days = $systemService->getParamValue('invoice_due_days');
         if (!is_numeric($invoice_due_days)) {
@@ -2197,6 +2204,10 @@ class Service implements InjectionAwareInterface
                 $new->buyer_zip = $invoice->buyer_zip;
                 // ClientFence core patch (GitHub #31): the credit note keeps the purchase order number.
                 $new->po_number = $invoice->po_number;
+                // ClientFence core patch: and the custom client fields shown on the invoice.
+                if (!empty($invoice->buyer_custom)) {
+                    $new->buyer_custom = $invoice->buyer_custom;
+                }
 
                 $new->paid_at = date('Y-m-d H:i:s');
                 $new->created_at = date('Y-m-d H:i:s');
@@ -2325,6 +2336,10 @@ class Service implements InjectionAwareInterface
         foreach (['client_id', 'currency', 'taxname', 'taxrate', 'seller_company', 'seller_company_vat', 'seller_company_number', 'seller_address', 'seller_phone', 'seller_email',
             'buyer_first_name', 'buyer_last_name', 'buyer_company', 'buyer_company_vat', 'buyer_company_number', 'buyer_address', 'buyer_city', 'buyer_state', 'buyer_country', 'buyer_phone', 'buyer_email', 'buyer_zip', 'po_number'] as $field) {
             $new->{$field} = $source->{$field};
+        }
+        // ClientFence core patch: the credit note keeps the custom client fields shown on the invoice.
+        if (!empty($source->buyer_custom)) {
+            $new->buyer_custom = $source->buyer_custom;
         }
         $new->hash = bin2hex(random_bytes(random_int(15, 30)));
         $new->hash_expires_at = $this->computeHashExpiration();
@@ -4164,6 +4179,8 @@ class Service implements InjectionAwareInterface
     {
         $sourceData = [
             'Company' => $invoice['buyer']['company'] ?? null,
+            // ClientFence core patch: the company number is printed when the client has one.
+            'Company Number' => $invoice['buyer']['company_number'] ?? null,
             'Name' => trim(($invoice['buyer']['first_name'] ?? '') . ' ' . ($invoice['buyer']['last_name'] ?? '')),
             'Address' => $invoice['buyer']['address'] ?? null,
             'City' => $invoice['buyer']['city'] ?? null,
@@ -4173,6 +4190,10 @@ class Service implements InjectionAwareInterface
             'Phone' => $invoice['buyer']['phone'] ?? null,
             'VAT Number' => $invoice['buyer']['company_vat'] ?? null,
         ];
+        // ClientFence core patch: the custom client fields shown on the invoice, one "Title: value" line each (keys custom:N never match a label).
+        foreach ($invoice['buyer']['custom'] ?? [] as $i => $line) {
+            $sourceData['custom:' . $i] = $line['title'] . ': ' . $line['value'];
+        }
 
         foreach ($sourceData as $label => $data) {
             if ($data === null || empty(trim((string) $data))) {

@@ -34,10 +34,15 @@
                         <label class="form-label" for="gp_password_confirm">{{ 'Confirm password'|trans }}</label>
                         <input type="password" class="form-control" id="gp_password_confirm" name="password_confirm" autocomplete="new-password" required>
                     </div>
+                    {% elseif field.custom and field.field is defined %}
+                    {# A custom field as its type (Client/CustomFields.php). #}
+                    <div class="col-md-6">
+                        {{ include('mod_client_custom_field_input.html.twig', { name: field.name, field: field.field, value: '', id: 'gp_' ~ field.name }) }}
+                    </div>
                     {% else %}
                     <div class="col-md-6">
                         <label class="form-label" for="gp_{{ field.name }}">{{ field.custom ? field.label : {
-                            'last_name': 'Last Name', 'company': 'Company', 'phone': 'Phone Number', 'birthday': 'Birthdate',
+                            'last_name': 'Last Name', 'company': 'Company', 'company_vat': 'Company VAT', 'phone': 'Phone Number', 'birthday': 'Birthdate',
                             'gender': 'Gender', 'address_1': 'Address Line 1', 'address_2': 'Address Line 2', 'city': 'City',
                             'state': 'State', 'postcode': 'Zip/Postal Code', 'country': 'Country'
                         }[field.name]|default(field.label)|trans }}</label>

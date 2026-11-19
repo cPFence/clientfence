@@ -803,6 +803,10 @@ class Service implements InjectionAwareInterface
             $kept = [...$kept, ...\ClientFence\Mod\Support\NetworkIssues::SETTINGS];
         }
         $data += array_intersect_key($stored, array_flip($kept));
+        // ClientFence core patch: WHMCS custom client fields, their types and Validation checked before they are saved (Client/CustomFields.php).
+        if ($ext === 'mod_client' && array_key_exists('custom_fields', $data)) {
+            $data['custom_fields'] = \ClientFence\Mod\Client\CustomFields::clean($data['custom_fields']);
+        }
 
         $this->di['events_manager']->fire(['event' => 'onBeforeAdminExtensionConfigSave', 'params' => $data]);
 

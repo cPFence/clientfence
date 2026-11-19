@@ -626,7 +626,7 @@ test('custom_fields returns fields sorted alphabetically by title', function ():
     expect(array_keys($result))->toBe(['custom_3', 'custom_1', 'custom_2']);
 });
 
-test('custom_fields normalizes incomplete and malformed field configuration', function (): void {
+test('custom_fields normalizes incomplete and malformed field configuration and leaves out inactive fields', function (): void {
     $guestClient = apiEndpoint(new ClientFence\Mod\Client\Api\Guest());
     $configArr = [
         'custom_fields' => [
@@ -642,20 +642,15 @@ test('custom_fields normalizes incomplete and malformed field configuration', fu
     $guestClient->setDi($di);
 
     $result = $guestClient->custom_fields();
-    expect($result['custom_1'])->toBe([
-        'title' => 'Optional field',
-        'active' => false,
-        'required' => false,
-    ]);
+    expect(array_keys($result))->toBe(['custom_2']);
     expect($result['custom_2'])->toBe([
+        'title' => 'Required flags',
         'active' => true,
         'required' => false,
-        'title' => 'Required flags',
-    ]);
-    expect($result['custom_3'])->toBe([
-        'title' => '',
-        'active' => false,
-        'required' => false,
+        'type' => 'text',
+        'description' => '',
+        'options' => [],
+        'show_order' => true,
     ]);
 });
 

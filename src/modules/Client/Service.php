@@ -602,22 +602,35 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             }
             // ClientFence core patch: all the client's groups (Client/Groups.php); group_id and client_group stay the first one.
             $details['group_ids'] = Groups::ids($this->di, (int) $client->getId());
+            // ClientFence core patch: staff see Password custom fields in clear; they are stored encrypted (Client/CustomFields.php).
+            $details = $this->staffCustomValues($details);
 
             if ($includeSensitive) {
                 $details['api_token'] = $client->getApiToken();
             }
         } else {
-            $config = $this->di['mod_config']('client');
-            for ($i = 1; $i <= 20; ++$i) {
-                $field = 'custom_' . $i;
-                $value = $client->{'getCustom' . $i}();
-                if (($config['custom_fields'][$field]['active'] ?? false) && !empty($value)) {
-                    $details[$field] = $value;
-                }
-            }
+            // ClientFence core patch: WHMCS custom client fields: admin only ones stay with staff, a saved password is masked (Client/CustomFields.php).
+            $details += CustomFields::clientValues($this->di['mod_config']('client'), CustomFields::values($client));
         }
 
         return $details;
+    }
+
+    /**
+     * ClientFence core patch: Password custom fields in clear only for staff who may view clients; others (a
+     * support-only member reading a ticket) get them masked.
+     *
+     * @param array<string, mixed> $details
+     *
+     * @return array<string, mixed>
+     */
+    private function staffCustomValues(array $details): array
+    {
+        $config = $this->di['mod_config']('client');
+
+        return $this->di['mod_service']('Staff')->hasPermission(null, 'client', 'view')
+            ? CustomFields::staffValues($this->di, $config, $details)
+            : CustomFields::maskPasswords($config, $details);
     }
 
     public function getClientBalance(Client|\Model_Client $c): float
@@ -701,6 +714,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 $field = 'custom_' . $i;
                 $details[$field] = $client->{$field};
             }
+            $details = $this->staffCustomValues($details);
 
             $group = $this->di['db']->load('ClientGroup', $client->client_group_id);
             $details += [
@@ -726,12 +740,7 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
                 $details['api_token'] = $client->api_token;
             }
         } else {
-            $config = $this->di['mod_config']('client');
-            foreach (($config['custom_fields'] ?? []) as $fieldName => $fieldConfig) {
-                if (($fieldConfig['active'] ?? false) && !empty($client->{$fieldName})) {
-                    $details[$fieldName] = $client->{$fieldName};
-                }
-            }
+            $details += CustomFields::clientValues($this->di['mod_config']('client'), CustomFields::values($client));
         }
 
         return $details;
@@ -948,6 +957,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             'ip' => $this->di['request']->getClientIp(),
             'status' => Client::ACTIVE,
         ];
+        // ClientFence core patch: a sign-up sets only the custom fields on the order form, checked (Client/CustomFields.php).
+        $data = CustomFields::input($this->di['mod_config']('client'), $data, CustomFields::SIGNUP, [], false, $this->di);
         foreach ($allowedFields as $field) {
             if (array_key_exists($field, $data)) {
                 $safeData[$field] = $data[$field];
@@ -1281,21 +1292,13 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         }
     }
 
+    /**
+     * ClientFence core patch: the sign-up's custom field answers (WHMCS custom client fields): every required field
+     * on the order form answered, each answer of its type and Validation (Client/CustomFields.php).
+     */
     public function checkCustomFields(array $checkArr): void
     {
-        $config = $this->di['mod_config']('client');
-        $customFields = $config['custom_fields'] ?? [];
-        foreach ($customFields as $cFieldName => $cField) {
-            $active = isset($cField['active']) && $cField['active'];
-            $required = isset($cField['required']) && $cField['required'];
-            if ($active && $required) {
-                if (!isset($checkArr[$cFieldName]) || empty($checkArr[$cFieldName])) {
-                    $name = isset($cField['title']) && !empty($cField['title']) ? $cField['title'] : ucwords(str_replace('_', ' ', $cFieldName));
-
-                    throw new InformationException('Field :field cannot be empty', [':field' => $name]);
-                }
-            }
-        }
+        CustomFields::input($this->di['mod_config']('client'), $checkArr, CustomFields::SIGNUP, [], true);
     }
 
     public function resolveDocumentNumber(Client|\Model_Client|null $client): ?string
@@ -1312,7 +1315,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         foreach (range(1, 20) as $i) {
             $fieldName = 'custom_' . $i;
             $fieldConfig = $customFields[$fieldName] ?? null;
-            if (!is_array($fieldConfig) || !($fieldConfig['active'] ?? false)) {
+            // ClientFence core patch: a Password custom field is never a document number (it is stored encrypted).
+            if (!is_array($fieldConfig) || !($fieldConfig['active'] ?? false) || ($fieldConfig['type'] ?? '') === 'password') {
                 continue;
             }
             $title = strtolower((string) ($fieldConfig['title'] ?? ''));

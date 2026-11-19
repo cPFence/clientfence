@@ -1162,7 +1162,7 @@ test('checkExtraRequiredFields throws exception for missing field', function ():
 test('checkCustomFields throws exception for required field', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $custom_field = [
-        'custom_field_name' => [
+        'custom_1' => [
             'active' => true,
             'required' => true,
             'title' => 'custom_field_title',
@@ -1180,7 +1180,7 @@ test('checkCustomFields throws exception for required field', function (): void 
 test('checkCustomFields returns null when field is not required', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $custom_field = [
-        'custom_field_name' => [
+        'custom_1' => [
             'active' => true,
             'required' => false,
             'title' => 'custom_field_title',

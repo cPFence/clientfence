@@ -93,7 +93,7 @@ final class InvoicePdf
                 . '<span style="font-size:8pt;font-weight:bold;color:' . $teal . ';">' . $text(__trans($heading)) . '</span><br>';
             foreach ($fields as $label => $value) {
                 $line = match ($label) {
-                    'Phone' => $text(__trans($label)) . ': ',
+                    'Phone', 'Company Number' => $text(__trans($label)) . ': ',
                     'VAT Number' => $text($taxLabel !== '' ? $taxLabel : __trans($label)) . ': ',
                     default => '',
                 } . $text($value);

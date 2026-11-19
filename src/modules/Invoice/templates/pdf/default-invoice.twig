@@ -67,6 +67,8 @@
 			<p>
 			{% for key, value in buyer %}
 				{% if key == 'Company' %}<b>{% endif %}
+				{# ClientFence core patch: the buyer's company number has its label. #}
+				{% if key == 'Company Number' %} {{ 'Company Number'|trans }} :{% endif %}
 				{% if key == 'Phone' %} {{ 'Phone'|trans }} :{% endif %}
 				{% if key == 'VAT Number' %} {{ 'VAT Number'|trans }} :{% endif %}
 						{{ value }}<br>

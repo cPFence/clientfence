@@ -27,7 +27,7 @@ final class PalisadeSignupGuestStub
     }
 }
 
-function renderPalisadeSignup(string $back): string
+function renderPalisadeSignup(string $back, ?object $guest = null): string
 {
     $loader = new ChainLoader([
         new ArrayLoader([
@@ -35,7 +35,7 @@ function renderPalisadeSignup(string $back): string
             'partials/auth_shell.html.twig' => '{% block auth_content %}{% endblock %}',
             'macro_functions.html.twig' => '{% macro recaptcha() %}{% endmacro %}',
         ]),
-        new FilesystemLoader(PATH_THEMES . '/palisade/html'),
+        new FilesystemLoader([PATH_THEMES . '/palisade/html', PATH_MODS . '/Client/templates/client']),
     ]);
     $twig = new Environment($loader, ['strict_variables' => true, 'autoescape' => 'html']);
     $twig->addFilter(new TwigFilter('trans', static fn (string $text): string => $text));
@@ -50,7 +50,7 @@ function renderPalisadeSignup(string $back): string
         'settings' => [],
         'CSRFToken' => 'token',
         'request' => ['back' => $back],
-        'guest' => new PalisadeSignupGuestStub(),
+        'guest' => $guest ?? new PalisadeSignupGuestStub(),
     ]);
 }
 
@@ -59,4 +59,29 @@ test('the sign-up goes on to a safe back path and keeps it on its sign-in links,
         ->toContain('href="/login?back=%2Fcart"')
         ->and(renderPalisadeSignup('//evil.example'))->toContain('data-redirect="/"')->not->toContain('evil.example')
         ->and(renderPalisadeSignup('https://x'))->toContain('data-redirect="/"')->not->toContain('https://x');
+});
+
+test('the sign-up shows the custom fields on the order form as their type, and not the others', function (): void {
+    $guest = new class {
+        public function __call(string $name, array $args): mixed
+        {
+            return match ($name) {
+                'clientfence_signup_info' => ['open' => true, 'terms_url' => '', 'privacy_url' => ''],
+                'system_company' => ['email' => ''],
+                'client_required', 'system_countries' => [],
+                'client_custom_fields' => [
+                    'custom_1' => ['title' => 'IVA status', 'active' => true, 'required' => true, 'type' => 'dropdown', 'description' => 'As on your tax record',
+                        'options' => [['value' => 'Exento', 'label' => 'Exempt']], 'show_order' => true],
+                    'custom_2' => ['title' => 'Website', 'active' => true, 'required' => false, 'type' => 'link', 'description' => '', 'options' => [], 'show_order' => false],
+                ],
+                default => false,
+            };
+        }
+    };
+    $html = renderPalisadeSignup('/', $guest);
+
+    expect($html)->toContain('<select class="form-select" id="su-custom_1" name="custom_1" required aria-describedby="su-custom_1-hint">')
+        ->toContain('<option value="Exento">Exempt</option>')
+        ->toContain('As on your tax record')
+        ->not->toContain('name="custom_2"');
 });

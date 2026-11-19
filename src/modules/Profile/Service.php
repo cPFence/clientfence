@@ -143,6 +143,8 @@ class Service implements InjectionAwareInterface
 
         $mod = $this->di['mod']('client');
         $config = $mod->getConfig();
+        // ClientFence core patch: the client sets only the custom fields it sees, each answer checked; a blank password field keeps the saved one (Client/CustomFields.php).
+        $data = \ClientFence\Mod\Client\CustomFields::input($config, $data, \ClientFence\Mod\Client\CustomFields::CLIENT, \ClientFence\Mod\Client\CustomFields::values($client), false, $this->di);
         $email = $data['email'] ?? '';
         // ClientFence core patch: an update without an email (the language menu sends only `lang`) changes no email.
         if (

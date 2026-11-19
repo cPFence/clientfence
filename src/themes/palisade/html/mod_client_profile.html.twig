@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" for="company_vat">{{ 'Company VAT'|trans }}</label>
-                                    <input type="text" class="form-control" name="company_vat" id="company_vat" value="{{ profile.company_vat }}">
+                                    <input type="text" class="form-control" name="company_vat" id="company_vat" value="{{ profile.company_vat }}" {% if "company_vat" in required %} required {% endif %}>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label" for="company_number">{{ 'Company Number'|trans }}</label>
@@ -176,11 +176,11 @@
                                     </select>
                                     <small class="form-hint text-muted">{{ 'Used to display dates and times in your local time across tickets, invoices, and order history.'|trans }}</small>
                                 </div>
+                                {# ClientFence: WHMCS custom client fields, each as its type; a saved password is never shown back (mod_client_custom_field_input.html.twig). #}
                                 {% for custom, current in guest.client_custom_fields|default({}) %}
                                     {% if current.active|default(false) %}
-                                        <div class="col-md-6">
-                                            <label class="form-label" for="{{ custom }}">{{ current.title|default('') is not empty ? current.title : custom|capitalize }}</label>
-                                            <input type="text" class="form-control" name="{{ custom }}" id="{{ custom }}" value="{{ profile[custom]|default('') }}" {% if current.required|default(false) %} required {% endif %}>
+                                        <div class="{{ current.type|default('text') == 'textarea' ? 'col-12' : 'col-md-6' }}">
+                                            {{ include('mod_client_custom_field_input.html.twig', { name: custom, field: current, value: profile[custom]|default(''), id: custom }) }}
                                         </div>
                                     {% endif %}
                                 {% endfor %}

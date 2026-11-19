@@ -588,9 +588,49 @@
                     } %}
                         {% import 'macro_functions.html.twig' as mf %}
                         {% block form_content %}
-                        {% set filled = (1..20)|filter(i => client['custom_' ~ i]|default('') != '') %}
-                        {% set empty_fields = (1..20)|filter(i => i not in filled) %}
-                        <p class="text-secondary">{{ ':count of 20 fields filled.'|trans({ ':count': filled|length }) }}</p>
+                        {# ClientFence core patch: WHMCS custom client fields: the active ones by Display Order with their title, type, description
+                           and Admin Only / Show on Invoice marks (Client/CustomFields.php); the unused slots below as before. #}
+                        {% set cf_fields = admin.client_custom_fields.fields|default({}) %}
+                        {% set cf_active = (1..20)|filter(i => cf_fields['custom_' ~ i].active|default(false)) %}
+                        {% if cf_active %}
+                        <div class="row g-3 mb-4">
+                            {% for name, f in cf_fields %}
+                            {% if f.active|default(false) %}
+                            {% set value = client[name]|default('') %}
+                            <div class="{{ f.type|default('text') == 'textarea' ? 'col-12' : 'col-xl-6' }}">
+                                {% if f.type|default('text') == 'tickbox' %}
+                                    <input type="hidden" name="{{ name }}" value="">
+                                    <label class="form-check mb-1">
+                                        <input class="form-check-input" type="checkbox" name="{{ name }}" value="on"{% if value|lower not in ['', '0', 'off', 'false', 'no'] %} checked{% endif %}>
+                                        <span class="form-check-label">{{ f.title|default('') ?: 'Custom field'|trans ~ ' ' ~ name[7:] }}</span>
+                                    </label>
+                                {% else %}
+                                    <label class="form-label" for="cf-{{ name }}">{{ f.title|default('') ?: 'Custom field'|trans ~ ' ' ~ name[7:] }}</label>
+                                {% endif %}
+                                {% if f.admin_only|default(false) %}<span class="badge bg-secondary-lt mb-1">{{ 'Admin Only'|trans }}</span>{% endif %}
+                                {% if f.show_invoice|default(false) %}<span class="badge bg-blue-lt mb-1">{{ 'Show on Invoice'|trans }}</span>{% endif %}
+                                {% if f.type|default('text') == 'dropdown' %}
+                                    {% set options = f.options|default('')|split(',')|map(o => o|trim)|filter(o => o != '') %}
+                                    <select class="form-select" id="cf-{{ name }}" name="{{ name }}">
+                                        <option value="">{{ '-- Select --'|trans }}</option>
+                                        {% for option in options|merge(value != '' and options|filter(o => o is same as(value))|length == 0 ? [value] : []) %}
+                                            <option value="{{ option }}"{% if option is same as(value) %} selected{% endif %}>{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% elseif f.type|default('text') == 'textarea' %}
+                                    <textarea class="form-control" id="cf-{{ name }}" name="{{ name }}" rows="3">{{ value }}</textarea>
+                                {% elseif f.type|default('text') != 'tickbox' %}
+                                    <input class="form-control" type="text" id="cf-{{ name }}" name="{{ name }}" value="{{ value }}" autocomplete="off"{% if f.type|default('text') == 'link' %} dir="ltr"{% endif %}>
+                                {% endif %}
+                                {% if f.description|default('') %}<div class="form-hint">{{ f.description }}</div>{% endif %}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% set filled = (1..20)|filter(i => i not in cf_active and client['custom_' ~ i]|default('') != '') %}
+                        {% set empty_fields = (1..20)|filter(i => i not in cf_active and i not in filled) %}
+                        <p class="text-secondary">{{ ':count of 20 fields filled.'|trans({ ':count': filled|length + cf_active|filter(i => client['custom_' ~ i]|default('') != '')|length }) }}</p>
                         <div class="row g-3">
                             {% for i in filled %}
                             <div class="col-xl-6">

@@ -93,10 +93,12 @@
                                     <section class="card card-sm h-100">
                                         <div class="card-body">
                                             <h4 class="card-title mb-3">{{ 'Required Profile Fields'|trans }}</h4>
-                                            <select class="form-select" name="required[]" multiple size="13">
+                                            <select class="form-select" name="required[]" multiple size="14">
                                         <optgroup label="General">
                                             <option value="last_name" {% if 'last_name' in required_fields %}selected{% endif %}>{{ 'Last Name'|trans }}</option>
                                             <option value="company" {% if 'company' in required_fields %}selected{% endif %}>{{ 'Company'|trans }}</option>
+                                            {# ClientFence core patch: the VAT number can be required too. #}
+                                            <option value="company_vat" {% if 'company_vat' in required_fields %}selected{% endif %}>{{ 'Company VAT'|trans }}</option>
                                             <option value="gender" {% if 'gender' in required_fields %}selected{% endif %}>{{ 'Gender'|trans }}</option>
                                             <option value="birthday" {% if 'birthday' in required_fields %}selected{% endif %}>{{ 'Birthday'|trans }}</option>
                                         </optgroup>
@@ -136,30 +138,118 @@
                         </div>
                     </div>
 
+                    {# ClientFence core patch: WHMCS custom client fields: type, options, description, validation, display order, admin only,
+                       order form, invoice and the texts per language for each of the 20 slots (Client/CustomFields.php). #}
+                    {% set cf = admin.client_custom_fields %}
+                    {% set cf_types = { text: 'Text Box'|trans, link: 'Link/URL'|trans, password: 'Password'|trans, dropdown: 'Drop Down'|trans, tickbox: 'Checkbox'|trans, textarea: 'Text Area'|trans } %}
                     <div class="tab-pane fade" id="tab-custom-fields" role="tabpanel">
                         <div class="card-body">
+                            <p class="text-secondary">{{ 'Extra details clients give at sign-up or on their profile, as WHMCS custom client fields. Admin Only fields are seen and changed by staff only, unless Show on Invoice is also on: that prints the field on invoices made from now on.'|trans }}</p>
                             <div class="row row-cards">
                             {% for i in 1..20 %}
                                 {% set field_name = 'custom_' ~ i %}
-                                {% set custom_field = params.custom_fields|default({}).(field_name)|default({}) %}
+                                {% set custom_field = cf.fields[field_name]|default({}) %}
+                                {% set base = 'custom_fields[' ~ field_name ~ ']' %}
                                 <div class="col-md-6">
                                     <section class="card card-sm h-100">
                                         <div class="card-body">
                                             <h4 class="card-title mb-3">{% if custom_field.title|default('') is not empty %}{{ custom_field.title }}{% else %}{{ 'Custom_'|trans }}{{ i }}{% endif %}</h4>
-                                            <label class="form-label" for="custom-field-title-{{ i }}">{{ 'Field Title'|trans }}</label>
-                                            <input class="form-control mb-3" id="custom-field-title-{{ i }}" type="text" placeholder="{{ 'Field title'|trans }}" name="custom_fields[{{ field_name }}][title]" value="{{ custom_field.title|default('') }}">
-                                            <div class="d-flex flex-column gap-2">
-                                                <label class="form-check form-switch form-switch-2">
-                                                    <input type="hidden" name="custom_fields[{{ field_name }}][active]" value="0">
-                                                    <input class="form-check-input" id="checkboxActive-{{ field_name }}" type="checkbox" name="custom_fields[{{ field_name }}][active]" value="1"{% if custom_field.active|default(false) %} checked{% endif %}>
-                                                    <span class="form-check-label">{{ 'Active'|trans }}</span>
-                                                </label>
-                                                <label class="form-check form-switch form-switch-2">
-                                                    <input type="hidden" name="custom_fields[{{ field_name }}][required]" value="0">
-                                                    <input class="form-check-input" id="checkboxRequired-{{ field_name }}" type="checkbox" name="custom_fields[{{ field_name }}][required]" value="1"{% if custom_field.required|default(false) %} checked{% endif %}>
-                                                    <span class="form-check-label">{{ 'Required'|trans }}</span>
-                                                </label>
+                                            <div class="row g-2 mb-3">
+                                                <div class="col-sm-8">
+                                                    <label class="form-label" for="custom-field-title-{{ i }}">{{ 'Field Title'|trans }}</label>
+                                                    <input class="form-control" id="custom-field-title-{{ i }}" type="text" placeholder="{{ 'Field title'|trans }}" name="{{ base }}[title]" value="{{ custom_field.title|default('') }}">
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <label class="form-label" for="custom-field-order-{{ i }}">{{ 'Display Order'|trans }}</label>
+                                                    <input class="form-control" id="custom-field-order-{{ i }}" type="number" step="1" name="{{ base }}[order]" value="{{ custom_field.order|default(0) }}">
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="form-label" for="custom-field-type-{{ i }}">{{ 'Field Type'|trans }}</label>
+                                                    <select class="form-select" id="custom-field-type-{{ i }}" name="{{ base }}[type]">
+                                                        {% for type, type_label in cf_types %}
+                                                            <option value="{{ type }}"{% if custom_field.type|default('text') == type %} selected{% endif %}>{{ type_label }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="form-label" for="custom-field-regex-{{ i }}">{{ 'Validation'|trans }}</label>
+                                                    <input class="form-control font-monospace" id="custom-field-regex-{{ i }}" type="text" dir="ltr" spellcheck="false" placeholder="/^[0-9]+$/" name="{{ base }}[regex]" value="{{ custom_field.regex|default('') }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-hint">{{ 'Validation: a regular expression with its delimiters that a new answer must match. Leave blank to accept any answer.'|trans }}</div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label" for="custom-field-options-{{ i }}">{{ 'Select Options'|trans }}</label>
+                                                    <input class="form-control" id="custom-field-options-{{ i }}" type="text" name="{{ base }}[options]" value="{{ custom_field.options|default('') }}">
+                                                    <div class="form-hint">{{ 'Drop Down only: the choices, separated by commas.'|trans }}</div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label" for="custom-field-description-{{ i }}">{{ 'Description'|trans }}</label>
+                                                    <input class="form-control" id="custom-field-description-{{ i }}" type="text" name="{{ base }}[description]" value="{{ custom_field.description|default('') }}">
+                                                    <div class="form-hint">{{ 'Shown under the field.'|trans }}</div>
+                                                </div>
                                             </div>
+                                            <div class="row g-2">
+                                                <div class="col-sm-6">
+                                                    <label class="form-check form-switch form-switch-2">
+                                                        <input type="hidden" name="{{ base }}[active]" value="0">
+                                                        <input class="form-check-input" id="custom-field-active-{{ i }}" type="checkbox" name="{{ base }}[active]" value="1"{% if custom_field.active ?? false %} checked{% endif %}>
+                                                        <span class="form-check-label">{{ 'Active'|trans }}</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="form-check form-switch form-switch-2">
+                                                        <input type="hidden" name="{{ base }}[required]" value="0">
+                                                        <input class="form-check-input" id="custom-field-required-{{ i }}" type="checkbox" name="{{ base }}[required]" value="1"{% if custom_field.required ?? false %} checked{% endif %}>
+                                                        <span class="form-check-label">{{ 'Required'|trans }}</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="form-check form-switch form-switch-2">
+                                                        <input type="hidden" name="{{ base }}[admin_only]" value="0">
+                                                        <input class="form-check-input" id="custom-field-admin_only-{{ i }}" type="checkbox" name="{{ base }}[admin_only]" value="1"{% if custom_field.admin_only ?? false %} checked{% endif %}>
+                                                        <span class="form-check-label">{{ 'Admin Only'|trans }}</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="form-check form-switch form-switch-2">
+                                                        <input type="hidden" name="{{ base }}[show_order]" value="0">
+                                                        <input class="form-check-input" id="custom-field-show_order-{{ i }}" type="checkbox" name="{{ base }}[show_order]" value="1"{% if custom_field.show_order ?? true %} checked{% endif %}>
+                                                        <span class="form-check-label">{{ 'Show on Order Form'|trans }}</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="form-check form-switch form-switch-2">
+                                                        <input type="hidden" name="{{ base }}[show_invoice]" value="0">
+                                                        <input class="form-check-input" id="custom-field-show_invoice-{{ i }}" type="checkbox" name="{{ base }}[show_invoice]" value="1"{% if custom_field.show_invoice ?? false %} checked{% endif %}>
+                                                        <span class="form-check-label">{{ 'Show on Invoice'|trans }}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% if cf.languages|default({}) is not empty %}
+                                                <details class="mt-3">
+                                                    <summary class="text-secondary">{{ 'Translations'|trans }}{% if custom_field.translations|default({}) is not empty %} <span class="badge bg-blue-lt ms-1">{{ custom_field.translations|length }}</span>{% endif %}</summary>
+                                                    <div class="form-hint mb-2">{{ 'The title, description and options in other languages. Leave blank to use the default text; give the options in the same order.'|trans }}</div>
+                                                    {% for lang, language in cf.languages %}
+                                                        {% set own = custom_field.translations[lang]|default({}) %}
+                                                        {% set rtl = lang is rtl %}
+                                                        <fieldset class="border-top pt-2 mt-2">
+                                                            <legend class="fs-5 fw-medium mb-1">{{ language }}</legend>
+                                                            <div class="row g-2">
+                                                                <div class="col-sm-6">
+                                                                    <input class="form-control form-control-sm" type="text" name="{{ base }}[translations][{{ lang }}][title]" value="{{ own.title|default('') }}" placeholder="{{ custom_field.title|default('Field title'|trans) }}" aria-label="{{ 'Field Title'|trans }} ({{ language }})" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input class="form-control form-control-sm" type="text" name="{{ base }}[translations][{{ lang }}][options]" value="{{ own.options|default('') }}" placeholder="{{ custom_field.options|default('Select Options'|trans) }}" aria-label="{{ 'Select Options'|trans }} ({{ language }})" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <input class="form-control form-control-sm" type="text" name="{{ base }}[translations][{{ lang }}][description]" value="{{ own.description|default('') }}" placeholder="{{ custom_field.description|default('Description'|trans) }}" aria-label="{{ 'Description'|trans }} ({{ language }})" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    {% endfor %}
+                                                </details>
+                                            {% endif %}
                                         </div>
                                     </section>
                                 </div>

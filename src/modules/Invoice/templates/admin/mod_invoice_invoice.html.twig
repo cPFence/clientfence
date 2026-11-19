@@ -99,6 +99,8 @@
                                 <div><dt>{{ 'Date Created'|trans }}</dt><dd>{{ invoice.created_at|format_datetime }}</dd></div>
                                 <div><dt>{{ 'Date Due'|trans }}</dt><dd>{{ invoice.due_at|format_datetime }}</dd></div>
                                 {% if invoice.po_number %}<div><dt>{{ 'PO number'|trans }}</dt><dd><bdi dir="ltr">{{ invoice.po_number }}</bdi></dd></div>{% endif %}
+                                {# ClientFence core patch: the custom client fields shown on the invoice (copied when it was made). #}
+                                {% for line in invoice.buyer.custom|default([]) %}<div><dt>{{ line.title }}</dt><dd>{{ line.value }}</dd></div>{% endfor %}
                                 <div><dt>{{ 'Date Paid'|trans }}</dt><dd>{% if invoice.paid_at %}{{ invoice.paid_at|format_datetime }}{% else %}-{% endif %}</dd></div>
                                 <div><dt>{{ 'Last Reminded'|trans }}</dt><dd>{% if invoice.reminded_at %}<span title="{{ invoice.reminded_at|format_datetime }}">{{ invoice.reminded_at|timeago }} {{ 'ago'|trans }}</span>{% else %}-{% endif %}</dd></div>
                                 <div><dt>{{ 'Currency'|trans }}</dt><dd>{{ invoice.currency|currency_name }}</dd></div>

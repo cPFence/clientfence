@@ -163,14 +163,54 @@ test('clients keep their ids, details, currency, group, notes and custom fields'
         ->and($target->fetchFirstColumn('SELECT client_id FROM client_marketing_optout'))->toBe([1])
         // The group is also the client's group list (Client/Groups.php).
         ->and($target->fetchAllNumeric('SELECT client_id, client_group_id FROM client_group_members'))->toBe([[1, (int) $vip]])
+        // WHMCS's admin only field stays active for staff (an older WHMCS without the newer columns: shown on the order form, not on invoices).
         ->and($config['mod_client']['custom_fields'])->toBe([
-            'custom_1' => ['active' => 0, 'required' => 0, 'title' => 'Passport'],
-            'custom_2' => ['active' => 1, 'required' => 1, 'title' => 'Referral'],
+            'custom_1' => ['active' => 1, 'required' => 0, 'title' => 'Passport', 'type' => 'text', 'options' => '', 'description' => '', 'regex' => '', 'order' => 0, 'admin_only' => 1, 'show_order' => 1, 'show_invoice' => 0, 'translations' => []],
+            'custom_2' => ['active' => 1, 'required' => 1, 'title' => 'Referral', 'type' => 'text', 'options' => '', 'description' => '', 'regex' => '', 'order' => 1, 'admin_only' => 0, 'show_order' => 1, 'show_invoice' => 0, 'translations' => []],
         ])
         ->and($target->fetchAllAssociative('SELECT code, is_default, conversion_rate, format_pattern, fraction_digits FROM currency ORDER BY code'))->toBe([
             ['code' => 'EGP', 'is_default' => 0, 'conversion_rate' => 50.0, 'format_pattern' => '{amount} EGP', 'fraction_digits' => 0],
             ['code' => 'USD', 'is_default' => 1, 'conversion_rate' => 1.0, 'format_pattern' => '${amount}', 'fraction_digits' => 2],
         ]);
+});
+
+test('WHMCS custom client field settings come over: type, options, description, validation, order, admin only, order form, invoice and translations', function (): void {
+    $source = whmcsAccountsSource();
+    foreach (['description', 'fieldoptions', 'regexpr', 'showorder', 'showinvoice'] as $column) {
+        $source->executeStatement("ALTER TABLE tblcustomfields ADD COLUMN {$column} TEXT DEFAULT ''");
+    }
+    $source->executeStatement('CREATE TABLE tbldynamic_translations (id INTEGER PRIMARY KEY, related_type TEXT, related_id INTEGER, language TEXT, translation TEXT)');
+    $source->executeStatement("DELETE FROM tblcustomfields WHERE type = 'client'");
+    $source->insert('tblcustomfields', ['id' => 7, 'type' => 'client', 'fieldname' => 'IVA status', 'fieldtype' => 'dropdown', 'description' => 'As on your AFIP record', 'fieldoptions' => 'Responsable Inscripto,Monotributista,Exento', 'regexpr' => '', 'adminonly' => '', 'required' => 'on', 'showorder' => 'on', 'showinvoice' => 'on', 'sortorder' => 3]);
+    $source->insert('tblcustomfields', ['id' => 8, 'type' => 'client', 'fieldname' => 'CUIT', 'fieldtype' => 'text', 'regexpr' => '/^[0-9]{2}-[0-9]{8}-[0-9]$/', 'adminonly' => 'on', 'required' => '', 'showorder' => '', 'showinvoice' => 'on', 'sortorder' => 1]);
+    $source->insert('tblcustomfields', ['id' => 9, 'type' => 'client', 'fieldname' => 'Broken', 'fieldtype' => 'odd', 'regexpr' => '/[0-9', 'adminonly' => '', 'required' => '', 'showorder' => 'on', 'showinvoice' => '', 'sortorder' => 2]);
+    $source->insert('tblcustomfields', ['id' => 10, 'type' => 'client', 'fieldname' => 'Panel password', 'fieldtype' => 'password', 'adminonly' => '', 'required' => '', 'showorder' => '', 'showinvoice' => '', 'sortorder' => 4]);
+    // WHMCS keeps a Password answer encrypted with its own key.
+    $source->insert('tblcustomfieldsvalues', ['fieldid' => 10, 'relid' => 1, 'value' => Cipher::withKey(WHMCS_TEST_KEY)->encrypt('s3cret pass', 'some-iv')]);
+    $source->insert('tbldynamic_translations', ['related_type' => 'custom_field.{id}.name', 'related_id' => 7, 'language' => 'spanish', 'translation' => 'Condición IVA']);
+    $source->insert('tbldynamic_translations', ['related_type' => 'custom_field.{id}.description', 'related_id' => 7, 'language' => 'spanish', 'translation' => 'Como en AFIP']);
+    $source->insert('tbldynamic_translations', ['related_type' => 'product.{id}.name', 'related_id' => 7, 'language' => 'spanish', 'translation' => 'not a field']);
+
+    $target = whmcsAccountsTarget();
+    [$accounts, $config] = whmcsImportAll($source, $target, Cipher::withKey(WHMCS_TEST_KEY));
+    $fields = $config['mod_client']['custom_fields'];
+
+    // Slots follow WHMCS's display order.
+    expect(array_column($fields, 'title'))->toBe(['CUIT', 'Broken', 'IVA status', 'Panel password'])
+        // The password, opened with WHMCS's key, is stored encrypted with this install's key (the test's 'enc:').
+        ->and($fields['custom_4']['type'])->toBe('password')
+        ->and($target->fetchOne('SELECT custom_4 FROM client WHERE id = 1'))->toBe(ClientFence\Mod\Client\CustomFields::SEALED . 'enc:' . base64_encode('s3cret pass'))
+        ->and($fields['custom_1'])->toMatchArray(['type' => 'text', 'regex' => '/^[0-9]{2}-[0-9]{8}-[0-9]$/', 'order' => 1, 'admin_only' => 1, 'show_order' => 0, 'show_invoice' => 1, 'active' => 1])
+        // An unknown type becomes a Text Box; a pattern PHP cannot run is left out with a warning.
+        ->and($fields['custom_2'])->toMatchArray(['type' => 'text', 'regex' => ''])
+        ->and(implode("\n", $accounts->warnings()))->toContain('"Broken": its validation /[0-9 does not work in PHP')
+        ->and($fields['custom_3'])->toMatchArray([
+            'type' => 'dropdown', 'options' => 'Responsable Inscripto,Monotributista,Exento', 'description' => 'As on your AFIP record',
+            'required' => 1, 'order' => 3, 'admin_only' => 0, 'show_order' => 1, 'show_invoice' => 1,
+            'translations' => ['es_ES' => ['title' => 'Condición IVA', 'description' => 'Como en AFIP']],
+        ])
+        // The settings the import writes read back the same through the settings page's checks.
+        ->and(array_keys(ClientFence\Mod\Client\CustomFields::clean($fields)))->toBe(['custom_1', 'custom_2', 'custom_3', 'custom_4']);
 });
 
 test('the client language survives the account import', function (string $language, string $locale): void {

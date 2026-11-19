@@ -123,6 +123,11 @@
                     <dt>{{ company.tax_label|default('') ?: 'Company VAT'|trans }}</dt>
                     <dd>{{ buyer.company_vat }}</dd>
                 {% endif %}
+                {# ClientFence: the custom client fields shown on invoices, as copied when the invoice was made. #}
+                {% for line in buyer.custom|default([]) %}
+                    <dt>{{ line.title }}</dt>
+                    <dd>{{ line.value }}</dd>
+                {% endfor %}
                 {% if buyer.address %}
                     <dt>{{ 'Address'|trans }}</dt>
                     <dd>

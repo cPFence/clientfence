@@ -158,6 +158,8 @@ $paths = [
     'modules/Client/Passkeys.php',
     'modules/Client/templates/email/mod_client_passkey_added.html.twig',
     'modules/Client/Google.php',
+    'modules/Client/CustomFields.php',
+    'modules/Client/templates/client/mod_client_custom_field_input.html.twig',
     'modules/Client/templates/client/mod_client_users_page.html.twig',
     'modules/Client/templates/client/mod_client_user_profile.html.twig',
     'modules/Client/templates/client/mod_client_user_invite.html.twig',

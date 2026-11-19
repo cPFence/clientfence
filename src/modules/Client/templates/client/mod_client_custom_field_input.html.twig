@@ -1,0 +1,38 @@
+{# ClientFence: one client custom field (Client/CustomFields.php) as its type asks: Text Box, Link/URL, Password (never
+   shown back: blank keeps the saved one), Drop Down, Checkbox (a hidden blank first, so unticking saves) or Text Area,
+   with its description under it. Used by the sign-up, checkout, profile and Google sign-up pages. Gets `name`
+   (custom_N), `field` (guest client_custom_fields entry), `value` (the client's answer or the posted one), `id` and
+   optionally `label_class`. #}
+{% set type = field.type|default('text') %}
+{% set required = field.required|default(false) %}
+{% set saved_password = type == 'password' and value|default('') != '' %}
+{% set label = field.title|default('') is not empty ? field.title : name|replace({'_': ' '})|capitalize %}
+{% set hint = field.description|default('') %}
+{% if type == 'tickbox' %}
+    <div class="form-check">
+        <input type="hidden" name="{{ name }}" value="">
+        <input class="form-check-input" type="checkbox" id="{{ id }}" name="{{ name }}" value="on"{% if value|default('')|lower not in ['', '0', 'off', 'false', 'no'] %} checked{% endif %}{% if required %} required{% endif %}{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
+        <label class="form-check-label" for="{{ id }}">{{ label }}</label>
+    </div>
+{% else %}
+    <label class="{{ label_class|default('form-label') }}" for="{{ id }}">{{ label }}</label>
+    {% if type == 'dropdown' %}
+        <select class="form-select" id="{{ id }}" name="{{ name }}"{% if required %} required{% endif %}{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
+            <option value="">{{ '-- Select --'|trans }}</option>
+            {% for option in field.options|default([]) %}
+                <option value="{{ option.value }}"{% if option.value is same as(value|default('')) %} selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+            {# An answer saved before the options changed stays selected, so saving the page keeps it. #}
+            {% if value|default('') != '' and field.options|default([])|filter(o => o.value is same as(value))|length == 0 %}
+                <option value="{{ value }}" selected>{{ value }}</option>
+            {% endif %}
+        </select>
+    {% elseif type == 'textarea' %}
+        <textarea class="form-control" id="{{ id }}" name="{{ name }}" rows="3"{% if required %} required{% endif %}{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>{{ value|default('') }}</textarea>
+    {% elseif type == 'password' %}
+        <input class="form-control" type="password" id="{{ id }}" name="{{ name }}" value="" maxlength="250" autocomplete="new-password"{% if saved_password %} placeholder="{{ 'Saved: type a new one to change it'|trans }}"{% elseif required %} required{% endif %}{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
+    {% else %}
+        <input class="form-control" type="text"{% if type == 'link' %} inputmode="url"{% endif %} id="{{ id }}" name="{{ name }}" value="{{ value|default('') }}" maxlength="250"{% if type == 'link' %} placeholder="https://" dir="ltr"{% endif %}{% if required %} required{% endif %}{% if hint %} aria-describedby="{{ id }}-hint"{% endif %}>
+    {% endif %}
+{% endif %}
+{% if hint %}<div class="form-text" id="{{ id }}-hint">{{ hint }}</div>{% endif %}

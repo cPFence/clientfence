@@ -163,3 +163,13 @@ test('a PDF labelled in English writes its dates in English too', function (stri
 
     expect($html)->toContain('Oct 1, 2026')->toContain('Oct 15, 2026');
 })->with(['Bengali' => ['bn_BD'], 'Kannada' => ['kn_IN'], 'Hindi' => ['hi_IN']]);
+
+test('the invoice PDF labels the company number and escapes the custom client fields copied onto the invoice', function (): void {
+    [$di, $data] = invoicePdfFixture('en_US');
+    $data['buyer'] = ['Name' => 'Example Client', 'Company Number' => '12345', 'custom:0' => 'Ref <b>x</b>: <script>alert(1)</script>'];
+    $html = (new ReflectionMethod(InvoicePdf::class, 'html'))->invoke(null, $di, $data, static fn (mixed $amount): string => (string) $amount, 'en_US');
+
+    expect($html)->toContain('Company Number: 12345')
+        ->toContain('Ref &lt;b&gt;x&lt;/b&gt;: &lt;script&gt;alert(1)&lt;/script&gt;')
+        ->not->toContain('<script>');
+});

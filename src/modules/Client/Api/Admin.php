@@ -89,6 +89,22 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch: the client custom fields with all their settings (WHMCS custom client fields,
+     * Client/CustomFields.php) by Display Order, and the languages their texts can be translated into.
+     *
+     * @return array{fields: array<string, array<string, mixed>>, languages: array<string, string>}
+     */
+    public function custom_fields(): array
+    {
+        $this->checkPermissions('client');
+
+        return [
+            'fields' => \ClientFence\Mod\Client\CustomFields::all($this->getDi()['mod_config']('client')),
+            'languages' => \ClientFence\Mod\Client\CustomFields::languages(),
+        ];
+    }
+
+    /**
      * ClientFence core patch: whether the hosting network check is on, and whether client `id` may order from a
      * hosting network anyway (CF-119, Antispam/Networks.php). Here, not in Antispam, so client staff without that module see it.
      */
@@ -255,6 +271,8 @@ class Admin extends \ClientFence\Api\AbstractApi
             $validator->isPasswordStrong($data['password']);
         }
 
+        // ClientFence core patch: the custom field answers fit their type and Validation (Client/CustomFields.php).
+        $data = \ClientFence\Mod\Client\CustomFields::input($this->getDi()['mod_config']('client'), $data, \ClientFence\Mod\Client\CustomFields::STAFF, [], false, $this->getDi());
         $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminClientCreate', 'params' => $data]);
         $id = $service->adminCreateClient($data);
         $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminClientCreate', 'params' => $data]);
@@ -406,6 +424,9 @@ class Admin extends \ClientFence\Api\AbstractApi
         if ($currency && $service->canChangeCurrency($client, $currency)) {
             $client->setCurrency($currency);
         }
+
+        // ClientFence core patch: WHMCS custom client fields: a changed answer must fit its type and Validation (Client/CustomFields.php).
+        $data = \ClientFence\Mod\Client\CustomFields::input($this->getDi()['mod_config']('client'), $data, \ClientFence\Mod\Client\CustomFields::STAFF, \ClientFence\Mod\Client\CustomFields::values($client), false, $this->getDi());
 
         $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminClientUpdate', 'params' => $data]);
 

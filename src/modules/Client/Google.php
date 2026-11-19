@@ -76,7 +76,7 @@ final class Google
     private const ISSUERS = ['https://accounts.google.com', 'accounts.google.com'];
 
     /** The profile fields FOSSBilling can require at sign-up (Clients settings), in form order. */
-    public const PROFILE_FIELDS = ['last_name', 'company', 'phone', 'birthday', 'gender', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country'];
+    public const PROFILE_FIELDS = ['last_name', 'company', 'company_vat', 'phone', 'birthday', 'gender', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country'];
     public const PROFILE_PAGE = 'google-sign-in/profile';
     /**
      * The settings (Client settings page, kept in mod_client) and their defaults: off until
@@ -669,7 +669,9 @@ final class Google
      * requires at sign-up (Clients settings) and its required custom fields, when empty. Empty
      * for any other client.
      *
-     * @return list<array{name: string, label: string, custom: bool}>
+     * Custom fields also bring their settings (`field`: type, options, description) for the form.
+     *
+     * @return list<array{name: string, label: string, custom: bool, field?: array<string, mixed>}>
      */
     public static function missingFields(\Pimple\Container $di, int $clientId): array
     {
@@ -693,9 +695,10 @@ final class Google
                 $missing[] = ['name' => $field, 'label' => ucwords(str_replace('_', ' ', $field)), 'custom' => false];
             }
         }
-        foreach (is_array($config['custom_fields'] ?? null) ? $config['custom_fields'] : [] as $name => $field) {
-            if (preg_match('/^custom_([1-9]|1[0-9]|20)$/', (string) $name) === 1 && !empty($field['active']) && !empty($field['required']) && trim((string) ($client[$name] ?? '')) === '') {
-                $missing[] = ['name' => (string) $name, 'label' => (string) ($field['title'] ?? '') !== '' ? (string) $field['title'] : ucwords(str_replace('_', ' ', (string) $name)), 'custom' => true];
+        // The required custom fields of the sign-up form (not admin only, shown on the order form: Client/CustomFields.php).
+        foreach (CustomFields::forClient($config) as $name => $field) {
+            if ($field['required'] && $field['show_order'] && trim((string) ($client[$name] ?? '')) === '') {
+                $missing[] = ['name' => $name, 'label' => $field['title'] !== '' ? $field['title'] : ucwords(str_replace('_', ' ', $name)), 'custom' => true, 'field' => $field];
             }
         }
         // "Sign-up only": the sign-in page has no Google, so the account chooses a password.
@@ -814,7 +817,8 @@ final class Google
             if (!is_string($value) || trim($value) === '') {
                 throw new InformationException('Please fill in every field.');
             }
-            $update[$field['name']] = trim($value);
+            // A custom field is trimmed by CustomFields::input(), which keeps a Password answer's spaces.
+            $update[$field['name']] = $field['custom'] ? $value : trim($value);
         }
         if (isset($update['phone']) && is_string($data['phone_cc'] ?? null)) {
             $update['phone_cc'] = $data['phone_cc'];

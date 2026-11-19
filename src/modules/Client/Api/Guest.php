@@ -478,27 +478,15 @@ class Guest extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Array of custom fields for client registration, sorted alphabetically by title.
+     * The client custom fields a client sees (WHMCS custom client fields, Client/CustomFields.php), in the page
+     * language, by Display Order (then title): title, description, type (text, link, password, dropdown, tickbox
+     * or textarea), options (Drop Down: list of value and label), required and show_order (on the sign-up and
+     * checkout). Inactive and admin only fields are left out.
      */
     public function custom_fields()
     {
-        $config = $this->getDi()['mod_config']('client');
-        $customFields = $config['custom_fields'] ?? [];
-        $customFields = is_array($customFields) ? $customFields : [];
-
-        foreach ($customFields as $fieldName => $field) {
-            $field = is_array($field) ? $field : [];
-            $title = $field['title'] ?? '';
-
-            $field['title'] = is_scalar($title) ? (string) $title : '';
-            $field['active'] = Tools::normalizeBoolean($field['active'] ?? false);
-            $field['required'] = Tools::normalizeBoolean($field['required'] ?? false);
-            $customFields[$fieldName] = $field;
-        }
-
-        uasort($customFields, fn ($a, $b): int => strnatcasecmp($a['title'], $b['title']));
-
-        return $customFields;
+        // ClientFence core patch: WHMCS custom client fields; staff settings (admin only fields, Validation) stay with staff.
+        return \ClientFence\Mod\Client\CustomFields::forClient($this->getDi()['mod_config']('client'));
     }
 
     public function is_email_validation_required(): bool

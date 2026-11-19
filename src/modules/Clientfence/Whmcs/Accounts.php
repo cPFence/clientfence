@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Clientfence\Whmcs;
 
 use ClientFence\Mod\Client\Contacts;
+use ClientFence\Mod\Client\CustomFields;
 use ClientFence\Mod\Client\TwoFactor;
 use ClientFence\Mod\Client\Users;
 use Doctrine\DBAL\Connection;
@@ -210,8 +211,10 @@ final class Accounts
     }
 
     /**
-     * Client custom fields become the client custom fields 1 to 20 (title, shown to the client
-     * unless admin only, required); more than 20 go into the client notes.
+     * Client custom fields become the client custom fields 1 to 20 with WHMCS's settings (name,
+     * type, description, options, validation, display order, admin only, required, show on order
+     * form, show on invoice) and the name and description in other languages (Dynamic Field
+     * Translation); more than 20 go into the client notes.
      *
      * @return array{0: null, 1: int}
      */
@@ -232,10 +235,26 @@ final class Accounts
 
                 continue;
             }
+            $type = (string) ($row['fieldtype'] ?? '');
+            $regex = trim((string) ($row['regexpr'] ?? ''));
+            if ($regex !== '' && !CustomFields::validRegex($regex)) {
+                $this->warn(sprintf('Client custom field "%s": its validation %s does not work in PHP and is left out.', $title, $regex));
+                $regex = '';
+            }
             $settings['custom_' . $slot] = [
-                'active' => (string) ($row['adminonly'] ?? '') === 'on' ? 0 : 1,
-                'required' => (string) ($row['required'] ?? '') === 'on' ? 1 : 0,
+                'active' => 1,
+                'required' => self::on($row['required'] ?? '') ? 1 : 0,
                 'title' => $title,
+                'type' => in_array($type, CustomFields::TYPES, true) ? $type : 'text',
+                'options' => trim((string) ($row['fieldoptions'] ?? '')),
+                'description' => trim((string) ($row['description'] ?? '')),
+                'regex' => $regex,
+                'order' => (int) ($row['sortorder'] ?? 0),
+                'admin_only' => self::on($row['adminonly'] ?? '') ? 1 : 0,
+                // A WHMCS without the column showed every field on its order form.
+                'show_order' => self::on($row['showorder'] ?? 'on') ? 1 : 0,
+                'show_invoice' => self::on($row['showinvoice'] ?? '') ? 1 : 0,
+                'translations' => $this->fieldTranslations((int) $row['id']),
             ];
             $this->map->put('customfield', (int) $row['id'], $slot);
             ++$done;
@@ -245,6 +264,31 @@ final class Accounts
         }
 
         return [null, $done];
+    }
+
+    /**
+     * A client custom field's name and description in other languages (WHMCS's Dynamic Field
+     * Translation rows custom_field.{id}.name and .description), by ClientFence locale; the
+     * default language keeps the field's own texts.
+     *
+     * @return array<string, array{title?: string, description?: string}>
+     */
+    private function fieldTranslations(int $fieldId): array
+    {
+        if (!$this->source->hasTable('tbldynamic_translations')) {
+            return [];
+        }
+        $out = [];
+        foreach ($this->source->rows("SELECT related_type, language, translation FROM tbldynamic_translations WHERE related_id = ? AND related_type IN ('custom_field.{id}.name', 'custom_field.{id}.description')", [$fieldId]) as $t) {
+            $locale = self::locale((string) $t['language']);
+            $text = trim((string) $t['translation']);
+            if ($locale !== null && $text !== '') {
+                $out[$locale][$t['related_type'] === 'custom_field.{id}.name' ? 'title' : 'description'] = $text;
+            }
+        }
+        unset($out[(string) \ClientFence\Config::getProperty('i18n.locale', 'en_US')]);
+
+        return $out;
     }
 
     /**
@@ -777,6 +821,9 @@ final class Accounts
             }
             if ($this->map->get('customfield', (int) $row['fieldid']) === 0 && $value !== '') {
                 $value = $row['fieldname'] . ': ' . $value;
+            } elseif ($row['fieldtype'] === 'password') {
+                // Stored encrypted with this install's key, as the settings page's Password fields are (Client/CustomFields.php).
+                $value = CustomFields::seal($this->encrypt, $value);
             }
             $out[(int) $row['relid']][(int) $row['fieldid']] = $value;
         }

@@ -4012,6 +4012,106 @@
         "done": "ClientFence core patch: existing installs create the ticket secret tables before use."
     },
     {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: WHMCS custom client fields, their types and Validation checked before they are saved"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: WHMCS custom client fields: admin only ones stay with staff, a saved password is masked"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: a sign-up sets only the custom fields on the order form, checked"
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: the sign-up's custom field answers (WHMCS custom client fields)"
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: WHMCS custom client fields; staff settings (admin only fields, Validation) stay with staff."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: WHMCS custom client fields: a changed answer must fit its type and Validation"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: the custom field answers fit their type and Validation"
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: the client custom fields with all their settings"
+    },
+    {
+        "file": "modules/Profile/Service.php",
+        "done": "ClientFence core patch: the client sets only the custom fields it sees"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: WHMCS custom client fields with Show on Invoice, copied in the client's language"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the custom client fields shown on the invoice, as copied when it was made"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: and the custom client fields shown on the invoice."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the credit note keeps the custom client fields shown on the invoice."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the company number is printed when the client has one."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the custom client fields shown on the invoice, one \"Title: value\" line each"
+    },
+    {
+        "file": "modules/Invoice/templates/pdf/default-invoice.twig",
+        "done": "ClientFence core patch: the buyer's company number has its label."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch: the custom client fields shown on the invoice (copied when it was made)."
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
+        "done": "ClientFence core patch: WHMCS custom client fields: the active ones by Display Order"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "ClientFence core patch: WHMCS custom client fields: type, options, description, validation, display order, admin only,"
+    },
+    {
+        "file": "modules/Client/templates/admin/mod_client_settings.html.twig",
+        "done": "ClientFence core patch: the VAT number can be required too."
+    },
+    {
+        "file": "themes/palisade/html/mod_page_signup.html.twig",
+        "done": "ClientFence core patch: WHMCS custom client fields shown on the order form, each as its type"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "ClientFence core patch: the sign-up here asks name, email, password, country and the custom fields shown on the order form"
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the custom client fields shown on the invoice, copied when it is made (JSON)."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the invoice custom client fields migration."
+    },
+    {
+        "file": "modules/Clientfence/Migrations.php",
+        "done": "21: invoice.buyer_custom, the custom client fields with Show on Invoice"
+    },
+    {
         "file": "install/sql/structure.sql",
         "done": "ClientFence core patch: encrypted ticket secrets and their retained audit events."
     },
@@ -9178,5 +9278,13 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: the batch pays without the gateway fee line and its tax"
+    },
+    {
+        "file": "library/ClientFence/Log.php",
+        "done": "ClientFence core patch: client custom fields (custom_N) can hold a Password answer before it is sealed."
+    },
+    {
+        "file": "modules/Client/Service.php",
+        "done": "ClientFence core patch: Password custom fields in clear only for staff who may view clients"
     }
 ]
