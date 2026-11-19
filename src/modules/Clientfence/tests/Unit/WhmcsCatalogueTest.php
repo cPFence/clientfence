@@ -440,7 +440,7 @@ function whmcsServicesTarget(): Connection
     $db = whmcsCatalogueTarget();
     foreach ([
         'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT, email TEXT, company TEXT, first_name TEXT, last_name TEXT, address_1 TEXT, address_2 TEXT, city TEXT, state TEXT, postcode TEXT, country TEXT, phone_cc TEXT, phone TEXT)',
-        'CREATE TABLE client_order (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, product_id INTEGER, form_id INTEGER, promo_id INTEGER, promo_recurring INTEGER, promo_used INTEGER, group_id TEXT, group_master INTEGER, invoice_option TEXT, title TEXT, currency TEXT, unpaid_invoice_id INTEGER, service_id INTEGER, service_type TEXT, period TEXT, quantity INTEGER, unit TEXT, price REAL, discount REAL, status TEXT, reason TEXT, notes TEXT, config TEXT, referred_by TEXT, expires_at TEXT, activated_at TEXT, suspended_at TEXT, unsuspended_at TEXT, canceled_at TEXT, created_at TEXT, updated_at TEXT)',
+        'CREATE TABLE client_order (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, product_id INTEGER, form_id INTEGER, promo_id INTEGER, promo_recurring INTEGER, promo_used INTEGER, group_id TEXT, group_master INTEGER, invoice_option TEXT, title TEXT, currency TEXT, unpaid_invoice_id INTEGER, service_id INTEGER, service_type TEXT, period TEXT, quantity INTEGER, unit TEXT, price REAL, discount REAL, status TEXT, reason TEXT, notes TEXT, config TEXT, referred_by TEXT, expires_at TEXT, activated_at TEXT, suspended_at TEXT, unsuspended_at TEXT, canceled_at TEXT, created_at TEXT, updated_at TEXT, gateway_id INTEGER)',
         'CREATE TABLE client_order_status (id INTEGER PRIMARY KEY AUTOINCREMENT, client_order_id INTEGER, status TEXT, notes TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_order_meta (id INTEGER PRIMARY KEY AUTOINCREMENT, client_order_id INTEGER, name TEXT, value TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_order_cancel_request (id INTEGER PRIMARY KEY AUTOINCREMENT, client_order_id INTEGER, client_id INTEGER, type TEXT, reason TEXT, status TEXT, created_at TEXT, updated_at TEXT)',
@@ -705,7 +705,7 @@ function whmcsMoneyTarget(): Connection
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, status TEXT, title TEXT, period TEXT, quantity INTEGER, unit TEXT, price REAL, charged INTEGER, taxed INTEGER, attempts INTEGER, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE "transaction" (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, gateway_id INTEGER, txn_id TEXT, txn_status TEXT, s_id TEXT, s_period TEXT, amount TEXT, currency TEXT, type TEXT, status TEXT, ip TEXT, error TEXT, error_code INTEGER, validate_ipn INTEGER, ipn TEXT, ipn_hash TEXT, output TEXT, note TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, type TEXT, rel_id TEXT, invoice_item_id INTEGER, amount REAL, description TEXT, created_at TEXT, updated_at TEXT)',
-        'CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, gateway TEXT)',
+        'CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, gateway TEXT, enabled INTEGER DEFAULT 0)',
         'CREATE TABLE setting (id INTEGER PRIMARY KEY AUTOINCREMENT, param TEXT UNIQUE, value TEXT, public INTEGER, category TEXT, hash TEXT, created_at TEXT, updated_at TEXT)',
     ] as $sql) {
         $db->executeStatement($sql);
@@ -933,3 +933,26 @@ test('WHMCS Prorata Billing is imported as the product\'s prorata day (CF-145)',
         // A one-time product has nothing to prorate.
         ->toContain('Product "Setup service": prorata billing is not imported.');
 });
+
+test('a service keeps its WHMCS payment method; Bank Transfer is the one enabled manual gateway, on invoices too', function (bool $second): void {
+    $source = whmcsMoneySource();
+    $source->update('tblhosting', ['paymentmethod' => 'paypal'], ['id' => 1]);
+    $source->update('tblhosting', ['paymentmethod' => 'banktransfer'], ['id' => 2]);
+    $target = whmcsMoneyTarget();
+    $target->update('pay_gateway', ['enabled' => 1], ['gateway' => 'Custom']);
+    if ($second) {
+        $target->insert('pay_gateway', ['name' => 'Bank transfer (EUR)', 'gateway' => 'CustomConvert', 'enabled' => 1]);
+    }
+    whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+    $warnings = [...whmcsServicesAll($source, $target)->warnings(), ...whmcsMoneyAll($source, $target)->warnings()];
+    // With two manual gateways enabled, WHMCS Bank Transfer could be either: none, with the warning.
+    $manual = $second ? null : (int) $target->fetchOne("SELECT id FROM pay_gateway WHERE gateway = 'Custom'");
+    $id = fn (mixed $value): ?int => $value === null ? null : (int) $value;
+
+    expect($id(whmcsOrderOf($target, 'service', 1)['gateway_id']))->toBe((int) $target->fetchOne("SELECT id FROM pay_gateway WHERE gateway = 'PayPalEmail'"))
+        ->and($id(whmcsOrderOf($target, 'service', 2)['gateway_id']))->toBe($manual)
+        ->and($id(whmcsOrderOf($target, 'service', 7)['gateway_id']))->toBeNull()
+        // The invoices and transactions share the gateway mapping.
+        ->and($id($target->fetchOne('SELECT gateway_id FROM invoice WHERE id = 12')))->toBe($manual)
+        ->and(in_array('Payment gateway "banktransfer": this install has no such gateway; its services, invoices and transactions show none (the transactions name it in their note).', $warnings, true))->toBe($second);
+})->with(['one manual gateway' => [false], 'two manual gateways' => [true]]);

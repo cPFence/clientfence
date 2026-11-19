@@ -25,7 +25,7 @@ test('maps the existing order tables without changing their columns', function (
             'group_id', 'group_master', 'invoice_option', 'title', 'currency', 'unpaid_invoice_id',
             'service_id', 'service_type', 'period', 'quantity', 'unit', 'price', 'discount', 'status',
             'reason', 'notes', 'config', 'referred_by', 'expires_at', 'activated_at', 'suspended_at',
-            'unsuspended_at', 'canceled_at', 'created_at', 'updated_at',
+            'unsuspended_at', 'canceled_at', 'created_at', 'updated_at', 'gateway_id',
         ])
         ->and($order->getFieldMapping('groupMaster')['nullable'])->toBeTrue()
         ->and($order->getFieldMapping('quantity')['nullable'])->toBeTrue()

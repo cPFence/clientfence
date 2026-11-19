@@ -121,7 +121,7 @@ final class UpgradesTestDb
 
     public function load(string $type, int $id): ?object
     {
-        $table = ['ClientOrder' => 'client_order', 'Client' => 'client', 'Invoice' => 'invoice', 'InvoiceItem' => 'invoice_item'][$type];
+        $table = ['ClientOrder' => 'client_order', 'Client' => 'client', 'Invoice' => 'invoice', 'InvoiceItem' => 'invoice_item', 'PayGateway' => 'pay_gateway'][$type];
         $row = $this->db->fetchAssociative("SELECT * FROM {$table} WHERE id = ?", [$id]);
         if ($row === false) {
             return null;
@@ -2094,4 +2094,44 @@ test('Edit Order refuses a recalculated price while a gateway subscription it ca
     expect(fn () => upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['recalculate' => 1]))->toThrow(InformationException::class, 'could not be canceled')
         ->and((float) $db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(7.5)
         ->and($notes)->toBe([]);
+});
+
+test('Edit Order saves the service payment method: an enabled gateway that takes its currency, or empty for the client\'s choice', function (): void {
+    $db = upgradesDb();
+    $db->executeStatement('CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, enabled INTEGER, accepted_currencies TEXT, allow_single INTEGER DEFAULT 1)');
+    $db->insert('pay_gateway', ['id' => 3, 'enabled' => 1, 'accepted_currencies' => '["USD"]']);
+    $db->insert('pay_gateway', ['id' => 4, 'enabled' => 0, 'accepted_currencies' => '["USD"]']);
+    // EUR only: order 1 is in USD.
+    $db->insert('pay_gateway', ['id' => 5, 'enabled' => 1, 'accepted_currencies' => '["EUR"]']);
+    // Subscriptions only: a renewal invoice is never issued with it (Invoice\Service::renewalGatewayId()).
+    $db->insert('pay_gateway', ['id' => 6, 'enabled' => 1, 'accepted_currencies' => '["USD"]', 'allow_single' => 0]);
+    $di = upgradesContainer($db);
+    $gateways = new ClientFence\Mod\Invoice\ServicePayGateway();
+    $gateways->setDi($di);
+    $services = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => $sub === 'PayGateway' ? $gateways : $services($name, $sub));
+    $notes = [];
+    $service = upgradesOrderService($di, $notes);
+    $order = upgradesOrder($di, 1);
+    $save = fn (mixed $id) => fn () => $service->updateOrder($order, ['gateway_id' => $id]);
+
+    // Not a gateway id: never read as gateway 3.
+    foreach (['3oops', '0', -3, true] as $bad) {
+        expect($save($bad))->toThrow(InformationException::class, 'Payment gateway not found');
+    }
+    expect($order->gateway_id)->toBeNull()
+        // Disabled, not taking the service's currency, or subscriptions only.
+        ->and($save(4))->toThrow(InformationException::class, 'Payment gateway not found')
+        ->and($save(5))->toThrow(InformationException::class, 'Payment gateway not found')
+        ->and($save(6))->toThrow(InformationException::class, 'Payment gateway not found');
+
+    $service->updateOrder($order, ['gateway_id' => '3']);
+    expect($order->gateway_id)->toBe(3);
+
+    // Disabled later: saving the order again keeps it, until staff choose another or the client's choice.
+    $db->update('pay_gateway', ['enabled' => 0], ['id' => 3]);
+    $service->updateOrder($order, ['gateway_id' => '3']);
+    expect($order->gateway_id)->toBe(3);
+    $service->updateOrder($order, ['gateway_id' => '']);
+    expect($order->gateway_id)->toBeNull();
 });

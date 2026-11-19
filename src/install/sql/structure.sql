@@ -378,6 +378,8 @@ CREATE TABLE `client_order` (
   `canceled_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
+  -- ClientFence core patch: the service's payment method (WHMCS), preselected on its renewal invoices.
+  `gateway_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `client_id_idx` (`client_id`),
   KEY `product_id_idx` (`product_id`),

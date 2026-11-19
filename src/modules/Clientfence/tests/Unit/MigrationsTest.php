@@ -153,6 +153,8 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY)');
     // 19 adds the client profile switches and checks the import's state.
     $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT, updated_at TEXT)');
+    // 20 adds the service's payment method.
+    $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY)');
     $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)');
     $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT)');
     $db->insert('activity_client_history', ['client_id' => 7, 'ip' => '203.0.113.7', 'created_at' => '2026-11-01 10:00:00']);
@@ -162,7 +164,8 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $columns = static fn (string $table): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns($table)));
     $details = ['country', 'asn', 'network', 'browser', 'session_id'];
 
-    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19])
+    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19, 20])
+        ->and($columns('client_order'))->toBe(['id', 'gateway_id'])
         ->and([$columns('pay_gateway'), $columns('client'), $columns('invoice')])->toBe([['id', 'gateway', 'position'], ['id', 'po_number', 'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update'], ['id', 'po_number']])
         ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('activity_admin_history'))->toBe(['id', 'admin_id', 'ip', 'created_at', ...$details])
@@ -173,8 +176,10 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     // Run again (an interrupted update repeats it): nothing is added twice.
     (new ReflectionMethod(Migrations::class, 'm12SignInHistory'))->invoke(null, $di);
     (new ReflectionMethod(Migrations::class, 'm18GatewayOrderPoNumber'))->invoke(null, $di);
+    (new ReflectionMethod(Migrations::class, 'm20OrderPaymentMethod'))->invoke(null, $di);
     expect($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
-        ->and($columns('invoice'))->toBe(['id', 'po_number']);
+        ->and($columns('invoice'))->toBe(['id', 'po_number'])
+        ->and($columns('client_order'))->toBe(['id', 'gateway_id']);
 });
 
 test('migration 19 adds the profile switches once, and removes the opt-outs only a non-WHMCS import wrote by mistake', function (string $system, array $kept): void {

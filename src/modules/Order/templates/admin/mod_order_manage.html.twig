@@ -583,6 +583,23 @@
                                     <div class="form-hint">{{ 'When on, saving sets the price from the product for this billing cycle and its options, at the current exchange rate. The amount typed above is ignored.'|trans }}</div>
                                     {% endif %}
                                 </div>
+                                {# ClientFence core patch: the service's payment method, as WHMCS: its renewal invoices preselect it (Invoice/Service.php finishRenewalInvoice()). #}
+                                <div class="col-lg-6">
+                                    <label class="form-label" for="order_gateway_id">{{ 'Payment Method'|trans }}</label>
+                                    {# The gateways that take the service's currency; a stored one no longer listed stays selected, marked, so another save keeps it. #}
+                                    {% set order_gateways = guest.invoice_gateways({ 'format': 'pairs', 'currency': order.currency, 'single': true }) %}
+                                    <select class="form-select" name="gateway_id" id="order_gateway_id">
+                                        <option value="">{{ "Client's choice"|trans }}</option>
+                                        {% for id, name in order_gateways %}
+                                        <option value="{{ id }}"{% if order.gateway_id == id %} selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                        {% if order.gateway_id and order_gateways[order.gateway_id] is not defined %}
+                                        {% set gateway_names = has_permission('invoice') ? admin.invoice_gateway_get_pairs : {} %}
+                                        <option value="{{ order.gateway_id }}" selected>{{ ':gateway (disabled)'|trans({ ':gateway': gateway_names[order.gateway_id] ?? ('#' ~ order.gateway_id) }) }}</option>
+                                        {% endif %}
+                                    </select>
+                                    <div class="form-hint">{{ 'Renewal invoices of this service select this method. The client can still pay another way.'|trans }}</div>
+                                </div>
                                 <div class="col-lg-6">
                                     <label class="form-label">{{ 'Period'|trans }}</label>
                                     {{ mf.selectbox('period', guest.system_periods, order.period, 0, 'Not recurrent'|trans) }}

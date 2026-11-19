@@ -337,7 +337,7 @@ VALUES
 	-- ClientFence core patch: fresh installs include the unique Support PIN migration.
 	-- ClientFence core patch: fresh installs include the client groups and automatic promotions migration.
 	-- ClientFence core patch: fresh installs include the passkeys, ID documents, API request log and low balance alert migrations.
-	(33,'clientfence_patch','19',0,NULL,NULL,NOW(),NOW()),
+	(33,'clientfence_patch','20',0,NULL,NULL,NOW(),NOW()),
 	(34,'clientfence_setup','pending',0,NULL,NULL,NOW(),NOW()),
 	(35,'invoice_series_paid','CF',0,NULL,NULL,NOW(),NOW());
 

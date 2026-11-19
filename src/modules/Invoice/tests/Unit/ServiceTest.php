@@ -4391,6 +4391,146 @@ test('renews each order of a client with Separate Invoices on its own invoice', 
         ->and($renewed)->toBe([1, 2]);
 });
 
+test('renews services with different payment methods on separate invoices, as WHMCS; one left out renews with the client\'s choice', function (): void {
+    $orderService = Mockery::mock(OrderService::class);
+    $due = date('Y-m-d', strtotime('+5 days'));
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->with([])->andReturn([
+        ['id' => 1, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 10:00:00', 'gateway_id' => 1],
+        ['id' => 2, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 11:00:00', 'gateway_id' => 2],
+        ['id' => 3, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 12:00:00', 'gateway_id' => 1],
+        // Its gateway is disabled (renewalGatewayId() leaves it out): it renews with #5, on the client's choice.
+        ['id' => 4, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 13:00:00', 'gateway_id' => 9],
+        ['id' => 5, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 14:00:00', 'gateway_id' => null],
+    ]);
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->andReturnUsing(fn (array $f): array => [['id' => $f['id']]]);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): object => $orderService);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $model = function (string $type, int $id): Model_ClientOrder {
+        $order = new Model_ClientOrder();
+        $order->loadBean(new Tests\Helpers\DummyBean());
+        $order->id = $id;
+
+        return $order;
+    };
+    $di['db']->shouldReceive('getExistingModelById')->andReturnUsing($model);
+    $di['db']->shouldReceive('load')->with('ClientOrder', Mockery::any())->andReturnUsing($model);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
+    $dbal->shouldReceive('fetchOne')->with('SELECT separate_invoices FROM client WHERE id = ?', [7])->andReturn(0);
+    $di['dbal'] = $dbal;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $alone = $together = [];
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('renewalGatewayId')->andReturnUsing(fn (Model_ClientOrder $o): ?int => [1 => 1, 2 => 2, 3 => 1, 4 => null][$o->id]);
+    $service->shouldReceive('renewTogether')->twice()->andReturnUsing(function (array $ids) use (&$together): array {
+        $together[] = $ids;
+
+        return [];
+    });
+    $service->shouldReceive('generateForOrder')->once()->andReturnUsing(function (Model_ClientOrder $o) use (&$alone, $invoice): Model_Invoice {
+        $alone[] = $o->id;
+
+        return $invoice;
+    });
+    $service->shouldReceive('applyPartCreditToRenewal');
+    $service->shouldReceive('approveInvoice')->once();
+    $service->setDi($di);
+
+    expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
+        ->and($together)->toBe([[1, 3], [4, 5]])
+        ->and($alone)->toBe([2]);
+});
+
+test('a renewal invoice preselects the service payment method while that gateway is enabled, takes its currency and one-time payments, and no gateway subscription pays it', function (bool $enabled, string $currency, bool $subscribed, ?int $expected, bool $single = true): void {
+    $di = container();
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gateway->id = 12;
+    $gateway->enabled = (int) $enabled;
+    $gateway->allow_single = (int) $single;
+    $gateway->accepted_currencies = json_encode(['USD']);
+    $di['db']->shouldReceive('load')->with('PayGateway', 12)->andReturn($gateway);
+    $gateways = new ClientFence\Mod\Invoice\ServicePayGateway();
+    $gateways->setDi($di);
+    $subscriptions = Mockery::mock(ServiceSubscription::class)->shouldIgnoreMissing();
+    $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->andReturn($subscribed);
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => $sub === 'PayGateway' ? $gateways : $subscriptions);
+    $di['db']->shouldReceive('store')->times($expected === null ? 0 : 1);
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('applyInclusiveTax');
+    $service->setDi($di);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->gateway_id = 12;
+    $order->currency = $currency;
+
+    (fn () => $this->finishRenewalInvoice($invoice, $order))->call($service);
+
+    expect($invoice->gateway_id)->toBe($expected);
+})->with([
+    'enabled' => [true, 'USD', false, 12],
+    'disabled' => [false, 'USD', false, null],
+    'not in the service currency' => [true, 'EUR', false, null],
+    'paid by a gateway subscription' => [true, 'USD', true, null],
+    'subscriptions only' => [true, 'USD', false, null, false],
+]);
+
+test('account credit alone pays without the gateway fee and removes its line; the invoice\'s own payment keeps it', function (bool $withoutFee, float $balance, float $paid, ?float $debit): void {
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 10;
+    $invoice->client_id = 20;
+    $invoice->approved = 1;
+    $invoice->status = Model_Invoice::STATUS_UNPAID;
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 20;
+    // 100.00 and a 5.00 gateway fee line, untaxed.
+    $fee = new Model_InvoiceItem();
+    $fee->loadBean(new Tests\Helpers\DummyBean());
+    $fee->price = 5.0;
+    $fee->quantity = 1;
+    $fee->taxed = 0;
+    $balanceService = Mockery::mock(ClientFence\Mod\Client\ServiceBalance::class);
+    $balanceService->shouldReceive('getClientBalance')->with($client)->andReturn($balance);
+    $items = Mockery::mock(ClientFence\Mod\Invoice\ServiceInvoiceItem::class);
+    $items->shouldReceive('remove')->times($withoutFee && $paid === 0.0 ? 1 : 0)->with($fee)->andReturnTrue();
+    $dbalMock = Mockery::mock();
+    expectCreditPaymentLock($dbalMock, 20, Model_Invoice::STATUS_UNPAID);
+    $dbalMock->shouldReceive('fetchOne')->with('SELECT status FROM invoice WHERE id = ?', [10])->andReturn(Model_Invoice::STATUS_UNPAID);
+    $taken = new Model_ClientBalance();
+    $taken->loadBean(new Tests\Helpers\DummyBean());
+    $db = Mockery::mock(\ClientFence\Database::class);
+    $db->shouldReceive('load')->with('Client', 20)->andReturn($client);
+    $db->shouldReceive('findOne')->with('InvoiceItem', Mockery::any(), [10, Model_InvoiceItem::TYPE_CUSTOM, ClientFence\Mod\Invoice\GatewayFees::TASK])->andReturn($fee);
+    $db->shouldReceive('find')->andReturn([]);
+    $db->shouldReceive('dispense')->times($debit === null ? 0 : 1)->with('ClientBalance')->andReturn($taken);
+    $db->shouldReceive('store')->times($debit === null ? 0 : 1);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getTotalWithTax')->with($invoice)->andReturn(105.0);
+    $service->shouldReceive('getAmountPaid')->with($invoice)->andReturn($paid);
+    $service->shouldReceive('markAsPaid')->times($debit === null ? 0 : 1)->andReturnTrue();
+    $di = container();
+    $di['db'] = $db;
+    $di['dbal'] = $dbalMock;
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => $sub === 'InvoiceItem' ? $items : $balanceService);
+    $service->setDi($di);
+
+    expect($service->tryPayWithCredits($invoice, $withoutFee))->toBe($debit !== null)
+        ->and($taken->amount)->toBe($debit);
+})->with([
+    // The credit batch, or approval with credit: 100.00 of credit pays it, the fee line goes.
+    'credit only' => [true, 100.0, 0.0, -100.0],
+    // A gateway payment of 105.00 recorded on the invoice pays it with its fee.
+    'its own gateway payment' => [true, 105.0, 105.0, -105.0],
+    // After a gateway payment that is still in the balance (adapters): the fee stays, 100.00 is not enough.
+    'after a gateway payment' => [false, 100.0, 0.0, null],
+]);
+
 test('activates paid invoices in batch', function (): void {
     $service = new Service();
     $invoiceItemModel = new Model_InvoiceItem();
@@ -5113,6 +5253,21 @@ test('finds all unpaid invoices', function (): void {
 
     $result = $service->findAllUnpaid();
     expect($result)->toBeArray();
+});
+
+test('the credit batch picks an invoice the credit covers without its gateway fee line', function (): void {
+    $service = new Service();
+    $dbMock = Mockery::mock('ClientFence\Database');
+    // 100.00 of credit pays a 100.00 renewal that carries a 5.00 fee line: the line and its tax come off the total compared.
+    $dbMock->shouldReceive('getAll')->once()
+        ->with(Mockery::on(fn (string $sql): bool => str_contains($sql, ' - 0.02 - (SELECT COALESCE(SUM(f.price * f.quantity * IF(f.taxed <> 0, 1 + CAST(m.taxrate AS DECIMAL(20, 10)) / 100, 1)), 0) FROM invoice_item f WHERE f.invoice_id = m.id AND f.task = :fee_task)')),
+            Mockery::on(fn (array $params): bool => $params['fee_task'] === ClientFence\Mod\Invoice\GatewayFees::TASK))
+        ->andReturn([]);
+    $di = container();
+    $di['db'] = $dbMock;
+    $service->setDi($di);
+
+    expect($service->findAllUnpaid())->toBe([]);
 });
 
 test('unpaid invoices are matched to the summed credit, not to one credit row', function (): void {

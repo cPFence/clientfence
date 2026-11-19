@@ -220,6 +220,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional bool   $auto_suspend_override - Override Auto-Suspend: the cron neither suspends nor cancels the order (ClientFence)
      * @optional string $auto_suspend_until - with the override: do not suspend until this date (YYYY-MM-DD), blank for no end
      * @optional bool   $recalculate - ClientFence core patch: Recalculate on Save (WHMCS): the price comes from the product, its cycle and options; $price is ignored
+     * @optional int    $gateway_id - ClientFence core patch: the service's payment method, preselected on its renewal invoices; empty for the client's choice
      *
      * @return bool
      */

@@ -792,6 +792,8 @@ class Service implements InjectionAwareInterface
             'canceled_at' => $model instanceof Order ? $model->getCanceledAt()?->format('Y-m-d H:i:s') : $model->canceled_at,
             'created_at' => $model instanceof Order ? $model->getCreatedAt()?->format('Y-m-d H:i:s') : $model->created_at,
             'updated_at' => $model instanceof Order ? $model->getUpdatedAt()?->format('Y-m-d H:i:s') : $model->updated_at,
+            // ClientFence core patch: the service's payment method (null: the client's choice).
+            'gateway_id' => $model instanceof Order ? $model->getGatewayId() : ($model->gateway_id ? (int) $model->gateway_id : null),
         ];
 
         // ClientFence core patch: the promotion's code for the client, and whether it still comes off the renewals: not once disabled (Product\Service::getRenewalPromoAdjustment()).
@@ -1848,6 +1850,24 @@ class Service implements InjectionAwareInterface
         } else {
             $order->notes = $notes;
             $order->reason = $reason;
+        }
+
+        // ClientFence core patch: the service's payment method, as WHMCS: its renewal invoices preselect that gateway (empty: the client's choice).
+        if (array_key_exists('gateway_id', $data)) {
+            $raw = $data['gateway_id'];
+            // A gateway id, or blank for the client's choice; anything else ("12oops") is refused, never read as 12.
+            $gatewayId = $raw === null || $raw === '' ? null : ((is_int($raw) || (is_string($raw) && ctype_digit($raw))) ? (int) $raw : 0);
+            $current = $order instanceof Order ? $order->getGatewayId() : ($order->gateway_id ? (int) $order->gateway_id : null);
+            // A new one must be enabled and take the service's currency and one-time payments (the renewal preset, Invoice\Service::renewalGatewayId());
+            // the stored one stays when it no longer does (disabled), unless staff change it.
+            if ($gatewayId !== null && $gatewayId !== $current && $this->di['mod_service']('Invoice', 'PayGateway')->enabledFor($gatewayId, (string) $this->orderCurrency($order)) === null) {
+                throw new InformationException('Payment gateway not found');
+            }
+            if ($order instanceof Order) {
+                $order->setGatewayId($gatewayId);
+            } else {
+                $order->gateway_id = $gatewayId;
+            }
         }
 
         // A recalculated price must not keep charging the old gateway subscription (as Order\Upgrades::staffMove()).

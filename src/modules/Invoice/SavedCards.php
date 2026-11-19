@@ -8,7 +8,8 @@ declare(strict_types=1);
  * Email with its REST API keys and "Saved PayPal accounts" on), agrees to a PayPal billing agreement (PayPal Auto-Pay),
  * or saves a card on PayTabs' or eWAY's payment page (PayTabs, eWAY) or a card or bank account at Mollie (Mollie) or sets up a Direct Debit on GoCardless' page, when paying an invoice or on the client area's Payment methods page (/payment-methods). Each gateway keeps the saved method in pay_gateway_customer
  * (default_payment_method); the one the client saved or chose last (auto_pay_at) pays. The cron charges it for unpaid
- * invoices without a payment method or with one of these gateways: the set number of days before the due date, then
+ * invoices without a payment method; an invoice with one of these gateways is charged only with the client's saved method on
+ * that gateway (WHMCS), else left for the client to pay. Both the set number of days before the due date, then
  * every set number of days up to the set number of retries (invoice_card_charge counts the tries). A failed charge
  * emails the client (mod_invoice_card_failed). Invoices of orders that a gateway subscription pays are left to it.
  * Staff can charge the saved method from the invoice page. A client with Disable CC Processing on (client.auto_charge 0,
@@ -204,7 +205,7 @@ final class SavedCards
         $settings = self::settings($di);
         foreach ($adapters as $adapter) {
             $rows = $di['dbal']->fetchAllAssociative(
-                "SELECT i.id, i.client_id, i.due_at, COALESCE(c.attempts, 0) AS attempts FROM invoice i
+                "SELECT i.id, i.client_id, i.due_at, i.gateway_id, COALESCE(c.attempts, 0) AS attempts FROM invoice i
                    JOIN pay_gateway_customer g ON g.client_id = i.client_id AND g.pay_gateway_id = ? AND g.test_mode = ? AND g.saved_cards = 1
                         AND g.default_payment_method IS NOT NULL AND g.default_payment_method <> ''
                    JOIN client cl ON cl.id = i.client_id AND cl.auto_charge = 1
@@ -224,8 +225,10 @@ final class SavedCards
             );
             $today = date('Y-m-d');
             foreach ($rows as $row) {
-                if (self::tryDate((string) $row['due_at'], (int) $row['attempts'], $settings) > $today
-                    || !(self::method($di, (int) $row['client_id'])['adapter'] ?? null) instanceof $adapter) {
+                // An invoice with a payment method (the service's, as WHMCS) is charged only with the client's saved method on
+                // that gateway (the join above); one without, with the method that pays the client's invoices.
+                $pays = $row['gateway_id'] !== null ? (int) $row['gateway_id'] === $adapter->gatewayId() : (self::method($di, (int) $row['client_id'])['adapter'] ?? null) instanceof $adapter;
+                if (!$pays || self::tryDate((string) $row['due_at'], (int) $row['attempts'], $settings) > $today) {
                     continue;
                 }
                 $invoice = $di['db']->load('Invoice', (int) $row['id']);
@@ -291,8 +294,9 @@ final class SavedCards
             if (PendingPayments::forInvoice($di, (int) $invoice->id) !== null) {
                 return ['paid' => false, 'error' => __trans('A payment for this invoice is still clearing.')];
             }
-            // A cron try leaves an invoice the client chose to pay another way after runDue read it (a receipt sent meanwhile).
-            if (!$byStaff && $row['gateway_id'] !== null && !in_array((int) $row['gateway_id'], array_map(static fn (object $a): int => $a->gatewayId(), self::adapters($di)), true)) {
+            // A cron try charges only the invoice's own gateway: it leaves an invoice the client chose to pay another way after
+            // runDue read it (a receipt sent meanwhile), and one whose payment method is another gateway.
+            if (!$byStaff && $row['gateway_id'] !== null && (int) $row['gateway_id'] !== $adapter->gatewayId()) {
                 return ['paid' => false, 'error' => null];
             }
             $attempt = (int) $db->fetchOne('SELECT attempts FROM invoice_card_charge WHERE invoice_id = ?', [(int) $invoice->id]);

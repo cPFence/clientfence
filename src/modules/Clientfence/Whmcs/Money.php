@@ -671,17 +671,25 @@ final class Money
         ];
     }
 
-    /**
-     * This install's payment gateway for a WHMCS gateway module: PayPal's, or one of the same
-     * name; none (with a warning, once) for the others.
-     */
     private function gateway(string $module): ?int
+    {
+        return self::gatewayId($this->db, $this->map, $module, $this->warn(...));
+    }
+
+    /**
+     * This install's payment gateway for a WHMCS gateway module: PayPal's, one of the same name, or for Bank Transfer the
+     * one enabled manual gateway; none (with a warning, once) for the others. For invoices, transactions and a service's
+     * payment method (Services).
+     *
+     * @param \Closure(string): void $warn
+     */
+    public static function gatewayId(Connection $db, Map $map, string $module, \Closure $warn): ?int
     {
         $module = strtolower(trim($module));
         if ($module === '') {
             return null;
         }
-        $known = $this->map->get('gateway', $module);
+        $known = $map->get('gateway', $module);
         if ($known !== null) {
             return $known === 0 ? null : $known;
         }
@@ -692,14 +700,19 @@ final class Money
         };
         $id = false;
         foreach ($names as $name) {
-            $id = $this->db->fetchOne('SELECT id FROM pay_gateway WHERE LOWER(gateway) = ? OR LOWER(name) = ? ORDER BY id', [$name, $name]);
+            $id = $db->fetchOne('SELECT id FROM pay_gateway WHERE LOWER(gateway) = ? OR LOWER(name) = ? ORDER BY id', [$name, $name]);
             if ($id !== false) {
                 break;
             }
         }
-        $this->map->put('gateway', $module, $id === false ? 0 : (int) $id);
+        // WHMCS Bank Transfer: this install's manual gateway, when exactly one is enabled.
+        if ($id === false && $module === 'banktransfer') {
+            $manual = $db->fetchFirstColumn("SELECT id FROM pay_gateway WHERE gateway IN ('Custom', 'CustomConvert') AND enabled = 1");
+            $id = count($manual) === 1 ? $manual[0] : false;
+        }
+        $map->put('gateway', $module, $id === false ? 0 : (int) $id);
         if ($id === false) {
-            $this->warn(sprintf('Payment gateway "%s": this install has no such gateway; its invoices and transactions show none (the transactions name it in their note).', $module));
+            $warn(sprintf('Payment gateway "%s": this install has no such gateway; its services, invoices and transactions show none (the transactions name it in their note).', $module));
         }
 
         return $id === false ? null : (int) $id;

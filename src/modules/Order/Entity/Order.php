@@ -142,6 +142,10 @@ class Order
     #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $updatedAt = null;
 
+    // ClientFence core patch: the service's payment method, as WHMCS: its renewal invoices preselect it (null: the client's choice).
+    #[ORM\Column(name: 'gateway_id', type: Types::BIGINT, nullable: true)]
+    private ?int $gatewayId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -460,6 +464,16 @@ class Order
     public function setUpdatedAt(?\DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function getGatewayId(): ?int
+    {
+        return $this->gatewayId;
+    }
+
+    public function setGatewayId(?int $gatewayId): void
+    {
+        $this->gatewayId = $gatewayId;
     }
 
     #[ORM\PrePersist]

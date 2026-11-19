@@ -465,6 +465,11 @@ class ServicePayGateway implements InjectionAwareInterface
         $gateways = $this->di['db']->find('PayGateway', 'enabled = 1 ORDER BY position, id');
         $result = [];
         foreach ($gateways as $gtw) {
+            // ClientFence core patch: with a currency, only the gateways that take it; with single, only those that take one-time
+            // payments (a service's Payment Method on Edit Order).
+            if ((!empty($data['currency']) && !$this->acceptsCurrency($gtw, (string) $data['currency'])) || (!empty($data['single']) && !$this->canPerformSinglePayment($gtw))) {
+                continue;
+            }
             if ($format == 'pairs') {
                 $result[$gtw->id] = $gtw->name;
             } else {
@@ -609,6 +614,24 @@ class ServicePayGateway implements InjectionAwareInterface
         }
 
         return $class;
+    }
+
+    /** ClientFence core patch: whether a gateway takes payments in $currency, as the client's payment methods list it (Receipts::paymentMethods()). */
+    public function acceptsCurrency(\Model_PayGateway $model, string $currency): bool
+    {
+        return in_array($currency, $this->getAcceptedCurrencies($model), true);
+    }
+
+    /**
+     * ClientFence core patch: gateway $id when it is enabled and takes $currency (not checked when empty) and one-time payments,
+     * else null: a service's payment method (Order\Service::updateOrder(), Invoice\Service::renewalGatewayId()).
+     */
+    public function enabledFor(int $id, string $currency): ?int
+    {
+        $gateway = $this->di['db']->load('PayGateway', $id);
+
+        return $gateway instanceof \Model_PayGateway && $gateway->id && $gateway->enabled && ($currency === '' || $this->acceptsCurrency($gateway, $currency))
+            && $this->canPerformSinglePayment($gateway) ? (int) $gateway->id : null;
     }
 
     public function getAcceptedCurrencies(\Model_PayGateway $model): array

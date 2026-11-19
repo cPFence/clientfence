@@ -9110,5 +9110,57 @@
     {
         "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
         "done": "ClientFence core patch: First Payment Amount, read-only as WHMCS (order/first_payment)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: the service's payment method, as WHMCS: its renewal invoices preselect that gateway"
+    },
+    {
+        "file": "modules/Order/Entity/Order.php",
+        "done": "ClientFence core patch: the service's payment method, as WHMCS: its renewal invoices preselect it"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the service's payment method preselects the invoice's gateway"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: services with different payment methods renew on separate invoices, as WHMCS: the method"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the service's payment method, as WHMCS: its renewal invoices preselect it (Invoice/Service.php"
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: the service's payment method (WHMCS), preselected on its renewal invoices."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the gateway a service's renewal invoice is issued with"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: credit pays without the gateway fee line, unless the invoice's own payments pay it with the fee."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: only credit pays here, without the gateway fee."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: with a currency, only the gateways that take it"
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: whether a gateway takes payments in $currency"
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: gateway $id when it is enabled and takes $currency"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: the batch pays without the gateway fee line and its tax"
     }
 ]

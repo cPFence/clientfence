@@ -644,6 +644,8 @@ final class Services
         $values['config'] = json_encode($values['config'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $values['title'] = self::cut($values['title'], 255); // "Product for a-very-long-domain" stopped the whole import
         $this->db->insert('client_order', $values + [
+            // The service's payment method (tblhosting, tblhostingaddons, tbldomains paymentmethod), as its invoices map it.
+            'gateway_id' => Money::gatewayId($this->db, $this->map, (string) ($row['paymentmethod'] ?? ''), $this->warn(...)),
             'promo_recurring' => 0,
             'promo_used' => null,
             // donotrenew on a service or add-on: only a snapshot sets it (FOSSBilling's "no-invoice" orders).

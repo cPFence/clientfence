@@ -43,6 +43,7 @@ final class Migrations
         17 => 'm17BalanceAlert',
         18 => 'm18GatewayOrderPoNumber',
         19 => 'm19ClientProfileOptions',
+        20 => 'm20OrderPaymentMethod',
     ];
 
     public static function latest(): int
@@ -345,6 +346,16 @@ final class Migrations
             if ($removed > 0) {
                 $di['logger']->info('Removed %s marketing email opt-outs written by mistake by the %s import', $removed, Whmcs\Import::system(Whmcs\Import::settings($di)));
             }
+        }
+    }
+
+    /** 20: client_order.gateway_id, the service's payment method (WHMCS): its renewal invoices preselect it. */
+    private static function m20OrderPaymentMethod(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $columns = array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns('client_order'));
+        if (!in_array('gateway_id', $columns, true)) {
+            $db->executeStatement('ALTER TABLE `client_order` ADD COLUMN `gateway_id` bigint(20) DEFAULT NULL');
         }
     }
 }

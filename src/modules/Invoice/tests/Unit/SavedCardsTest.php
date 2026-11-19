@@ -230,7 +230,8 @@ test('the method a client saved or chose last pays: a saved PayPal account over 
     $world->db->insert('pay_gateway_customer', ['pay_gateway_id' => 2, 'client_id' => 7, 'test_mode' => 0, 'external_customer_id' => 'paypal-customer', 'saved_cards' => 1, 'default_payment_method' => 'vault-token', 'default_card' => 'PayPal buyer@example.com', 'auto_pay_at' => '2026-11-05 10:00:00']);
     $paypal = savedCardsPaypal($world);
     $stripe = SavedCards::stripe($world->di);
-    $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => 1]);
+    // No payment method on the invoice: the client's newest saved method pays.
+    $world->db->insert('invoice', ['id' => 1, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);
 
     expect(SavedCards::method($world->di, 7))->toMatchArray(['payment_method' => 'vault-token', 'card' => 'PayPal buyer@example.com', 'adapter' => $paypal]);
 
@@ -242,6 +243,29 @@ test('the method a client saved or chose last pays: a saved PayPal account over 
     // Choosing the card again makes it pay.
     SavedCards::choose($world->di, 1, false, 7);
     expect(SavedCards::method($world->di, 7)['adapter'])->toBe($stripe);
+});
+
+test('an invoice with a payment method is charged only with the client\'s saved method on that gateway, as WHMCS', function (): void {
+    $world = savedCardsWorld();
+    // Client 7 saved a card and, later, a PayPal account; client 8 only a PayPal account (its Stripe customer has no card).
+    $world->db->update('pay_gateway_customer', ['auto_pay_at' => '2026-11-01 10:00:00'], ['client_id' => 7]);
+    foreach ([7, 8] as $client) {
+        $world->db->insert('pay_gateway_customer', ['pay_gateway_id' => 2, 'client_id' => $client, 'test_mode' => 0, 'external_customer_id' => 'paypal-' . $client, 'saved_cards' => 1, 'default_payment_method' => 'vault-' . $client, 'default_card' => 'PayPal', 'auto_pay_at' => '2026-11-05 10:00:00']);
+    }
+    $paypal = savedCardsPaypal($world);
+    // Both invoices have Stripe as their payment method (the service's).
+    foreach ([1 => 7, 2 => 8] as $id => $client) {
+        $world->db->insert('invoice', ['id' => $id, 'client_id' => $client, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => 1]);
+    }
+
+    SavedCards::runDue($world->di);
+
+    // The card pays #1 over the newer PayPal account; #2 is left for the client to pay.
+    expect($world->charged)->toBe([[1, 'attempt_1']])
+        ->and($world->recorded[0])->toMatchArray(['invoice_id' => 1, 'gateway_id' => 1])
+        // Checked again under the charge's lock: a cron try never takes #2 with PayPal.
+        ->and(SavedCards::charge($world->di, $world->di['db']->load('Invoice', 2), $paypal, false))->toBe(['paid' => false, 'error' => null])
+        ->and($world->charged)->toHaveCount(1);
 });
 
 test('a payment taken but not completed, or maybe taken without an answer, is never charged again automatically', function (bool $byStaff, Closure $charge): void {

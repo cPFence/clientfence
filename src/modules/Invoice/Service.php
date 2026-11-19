@@ -1487,7 +1487,7 @@ class Service implements InjectionAwareInterface
         $this->di['dbal']->executeStatement('UPDATE invoice SET approved = 1, updated_at = ? WHERE id = ?', [$invoice->updated_at, $invoice->id]);
 
         if (isset($data['use_credits']) && $data['use_credits']) {
-            $this->tryPayWithCredits($invoice);
+            $this->tryPayWithCredits($invoice, true);
         }
         // ClientFence core patch: an invoice issued with a gateway carries its fee on what credit left due (GatewayFees.php).
         if ($invoice->gateway_id) {
@@ -1526,7 +1526,8 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    public function tryPayWithCredits(\Model_Invoice $invoice): bool
+    /** ClientFence core patch: $withoutFee when only account credit pays (not after a gateway payment): no gateway fee (GatewayFees.php). */
+    public function tryPayWithCredits(\Model_Invoice $invoice, bool $withoutFee = false): bool
     {
         if (!$invoice->approved) {
             return false;
@@ -1586,6 +1587,9 @@ class Service implements InjectionAwareInterface
             // ClientFence core patch: what other unpaid invoices have received waits for them (WHMCS keeps it on the invoice).
             $balance = $cbrepo->getClientBalance($client) - $this->getReservedCredit($clientId, (int) $invoice->id);
             $required = $this->getTotalWithTax($invoice);
+            // ClientFence core patch: credit pays without the gateway fee line, unless the invoice's own payments pay it with the fee.
+            $fee = $withoutFee && $this->getAmountPaid($invoice) < round($required, 2) ? GatewayFees::amount($this->di, $invoice) : 0.0;
+            $required = round($required - $fee, 2);
             // Compare at two-decimal monetary scale: balances are DECIMAL(18,2) sums while the
             // total is float arithmetic, so e.g. 0.30 and 0.1 * 3 differ as raw floats.
             // ClientFence core patch: the invoice's own payments pay it even when an old debt holds the balance below zero (WHMCS).
@@ -1605,7 +1609,10 @@ class Service implements InjectionAwareInterface
 
             // ClientFence core patch: the debit and the paid status are written together. A database failure between
             // them kept the money without paying the invoice, and the next cron took it again.
-            $this->di['dbal']->transactional(function () use ($invoice, $clientId, $required): void {
+            $this->di['dbal']->transactional(function () use ($invoice, $clientId, $required, $fee): void {
+                if ($fee > 0) {
+                    GatewayFees::remove($this->di, $invoice);
+                }
                 if ($required > 0.0) {
                     // Nothing is charged against the client's balance for a zero or negative invoice,
                     // so don't record a $0 credit transaction.
@@ -2855,7 +2862,8 @@ class Service implements InjectionAwareInterface
         foreach ($unpaid as $proforma) {
             try {
                 $model = $this->di['db']->getExistingModelById('Invoice', $proforma['id'] ?? null);
-                $this->tryPayWithCredits($model);
+                // ClientFence core patch: only credit pays here, without the gateway fee.
+                $this->tryPayWithCredits($model, true);
             } catch (\Exception $e) {
                 // @phpstan-ignore if.alwaysFalse
                 if (DEBUG) {
@@ -2989,8 +2997,27 @@ class Service implements InjectionAwareInterface
         return $proforma;
     }
 
+    /**
+     * ClientFence core patch: the gateway a service's renewal invoice is issued with: its payment method while that gateway
+     * is enabled, takes the service's currency and one-time payments (a grouped invoice may not be subscribable: the client
+     * could not pay with it, as Receipts::paymentMethods() lists them), and no gateway subscription pays the service (its fee
+     * would leave the invoice short); else none (the client's choice). The renewal grouping uses it too, so the two never disagree.
+     */
+    public function renewalGatewayId(\Model_ClientOrder $order): ?int
+    {
+        $id = $order->gateway_id ? $this->di['mod_service']('Invoice', 'PayGateway')->enabledFor((int) $order->gateway_id, (string) $order->currency) : null;
+
+        return $id !== null && !$this->di['mod_service']('Invoice', 'Subscription')->hasGatewaySubscriptionForOrder($order) ? $id : null;
+    }
+
     protected function finishRenewalInvoice(\Model_Invoice $proforma, \Model_ClientOrder $order, $due_days = null): void
     {
+        // ClientFence core patch: the service's payment method preselects the invoice's gateway, as WHMCS (the client may still pay
+        // another way). Renewals together share it (generateInvoicesForExpiringOrders()).
+        if (!$proforma->gateway_id && ($gatewayId = $this->renewalGatewayId($order)) !== null) {
+            $proforma->gateway_id = $gatewayId;
+            $this->di['db']->store($proforma);
+        }
         // ClientFence core patch: catalog prices that include tax (WHMCS Inclusive Tax).
         $this->applyInclusiveTax($proforma);
 
@@ -3099,7 +3126,11 @@ class Service implements InjectionAwareInterface
 
         $groups = [];
         foreach ($orders as $order) {
-            $groups[($order['client_id'] ?? '') . '|' . ($order['currency'] ?? '') . '|' . substr((string) ($order['expires_at'] ?? ''), 0, 10)][] = (int) $order['id'];
+            // ClientFence core patch: services with different payment methods renew on separate invoices, as WHMCS: the method
+            // the invoice gets (renewalGatewayId()), so one that is left out renews with the client's choice.
+            $model = empty($order['gateway_id']) ? null : $this->di['db']->load('ClientOrder', (int) $order['id']);
+            $gatewayId = $model instanceof \Model_ClientOrder ? $this->renewalGatewayId($model) : null;
+            $groups[($order['client_id'] ?? '') . '|' . ($order['currency'] ?? '') . '|' . substr((string) ($order['expires_at'] ?? ''), 0, 10) . '|' . $gatewayId][] = (int) $order['id'];
         }
         $single = [];
         foreach ($groups as $key => $ids) {
@@ -3554,8 +3585,11 @@ class Service implements InjectionAwareInterface
                 WHERE m.status = :status
                     AND m.approved = 1
                     AND pi.type != :type
-                    AND (SELECT COALESCE(SUM(b.amount), 0) FROM client_balance b WHERE b.client_id = m.client_id) >= ' . self::TOTAL_WITH_TAX_SQL . ' - 0.02';
-        $params = ['status' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_DEPOSIT];
+                    AND (SELECT COALESCE(SUM(b.amount), 0) FROM client_balance b WHERE b.client_id = m.client_id) >= ' . self::TOTAL_WITH_TAX_SQL . ' - 0.02'
+                    // ClientFence core patch: the batch pays without the gateway fee line and its tax (tryPayWithCredits() $withoutFee), so credit
+                    // that covers the rest qualifies; generous on the tax's rounding, the payment re-checks.
+                    . ' - (SELECT COALESCE(SUM(f.price * f.quantity * IF(f.taxed <> 0, 1 + CAST(m.taxrate AS DECIMAL(20, 10)) / 100, 1)), 0) FROM invoice_item f WHERE f.invoice_id = m.id AND f.task = :fee_task)';
+        $params = ['status' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_DEPOSIT, 'fee_task' => GatewayFees::TASK];
 
         $client_id = isset($filter['client_id']) ? (int) $filter['client_id'] : null;
 

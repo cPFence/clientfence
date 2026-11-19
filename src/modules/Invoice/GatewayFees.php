@@ -78,9 +78,15 @@ final class GatewayFees
     /** The invoice's balance due without its fee line: what a fee is a share of. */
     public static function base(\Pimple\Container $di, \Model_Invoice $invoice): float
     {
+        return round($di['mod_service']('Invoice')->getBalanceDue($invoice) - self::amount($di, $invoice), 2);
+    }
+
+    /** What the fee line adds to the invoice, with its tax (0 without one): account credit pays without it (Service::tryPayWithCredits()). */
+    public static function amount(\Pimple\Container $di, \Model_Invoice $invoice): float
+    {
         $line = self::line($di, (int) $invoice->id);
 
-        return round($di['mod_service']('Invoice')->getBalanceDue($invoice) - ($line === null ? 0.0 : self::total($di, $invoice, $line)), 2);
+        return $line === null ? 0.0 : self::total($di, $invoice, $line);
     }
 
     /**
