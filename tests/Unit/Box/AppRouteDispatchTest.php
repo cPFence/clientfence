@@ -134,6 +134,20 @@ class BoxAppMaintenanceCheckApp extends \ClientFence\App
     {
         return $this->ipMatchesMaintenanceAllowlist($visitorIP, $allowedIPs);
     }
+
+    public string $path = '/';
+
+    protected function getRequestPath(): string
+    {
+        return $this->path;
+    }
+
+    public function blocked(string $path): bool
+    {
+        $this->path = $path;
+
+        return $this->checkAllowedURLs();
+    }
 }
 
 function routeDispatchApp(string $routeMode, string $path): BoxAppRouteDispatchApp
@@ -235,3 +249,15 @@ test('maintenance IP allowlist supports exact IPs, CIDR ranges, and IPv6', funct
         ->and($app->ipAllowed('198.51.100.10', ['203.0.113.0/24']))->toBeFalse()
         ->and($app->ipAllowed('198.51.100.10', ['not-an-ip-range']))->toBeFalse();
 });
+
+test('maintenance mode lets staff sign in with a passkey and reset their password (GitHub #54)', function (string $call, bool $blocked): void {
+    $base = rtrim((string) parse_url(SYSTEM_URL, PHP_URL_PATH), '/');
+
+    expect((new BoxAppMaintenanceCheckApp())->blocked($base . '/api/guest/' . $call))->toBe($blocked);
+})->with([
+    'passkey options' => ['staff/passkey_signin_options', false],
+    'passkey sign-in' => ['staff/passkey_signin', false],
+    'password reset' => ['staff/passwordreset', false],
+    'new password' => ['staff/update_password', false],
+    'client sign-in' => ['client/login', true],
+]);

@@ -398,6 +398,11 @@ class App
             '/api/guest/staff/login_code',
             '/api/guest/staff/login_code_email',
             '/api/guest/staff/login_pin_app',
+            // ClientFence core patch: the staff passkey sign-in and password reset (Staff/Api/Guest.php).
+            '/api/guest/staff/passkey_signin_options',
+            '/api/guest/staff/passkey_signin',
+            '/api/guest/staff/passwordreset',
+            '/api/guest/staff/update_password',
             // ClientFence core patch: licence servers keep checking during maintenance (Servicelicense/WhmcsCheck.php).
             '/licence/verify',
             '/licence/report',
