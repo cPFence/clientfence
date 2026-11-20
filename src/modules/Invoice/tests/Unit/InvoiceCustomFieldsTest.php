@@ -75,7 +75,7 @@ test('the PDF buyer block prints the company number and the copied fields, one l
     $buyer = (new ReflectionMethod(Service::class, 'getBuyerData'))->invokeArgs(new Service(), [[
         'buyer' => ['company' => 'Acme SA', 'company_number' => '30-71234567-1', 'first_name' => 'Ana', 'last_name' => 'Paz',
             'custom' => [['title' => 'Condición IVA', 'value' => 'Exenta']]],
-    ], &$lines]);
+    ], &$lines, 'en_US']);
 
     expect($buyer)->toBe(['Company' => 'Acme SA', 'Company Number' => '30-71234567-1', 'Name' => 'Ana Paz', 'custom:0' => 'Condición IVA: Exenta'])
         ->and($lines)->toBe(4);

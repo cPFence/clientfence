@@ -321,6 +321,7 @@ test('the CSV has a byte order mark, plain numbers and country names in the lang
         ->and($arabic->headers->get('Content-Type'))->toBe('text/csv; charset=utf-8')
         ->and($arabic->headers->get('Content-Disposition'))->toContain('clients_by_country');
     expect((string) Reports::csv($report, 'en_US')->getContent())->toContain('Egypt,1,1');
+    expect((string) Reports::csv($report, 'sr_RS')->getContent())->toContain('Egipat,1,1');
 
     $db->insert('"transaction"', ['invoice_id' => null, 'amount' => '1234.5', 'currency' => 'USD', 'type' => 'payment', 'status' => 'processed', 'created_at' => '2026-10-02 10:00:00']);
     $money = (string) Reports::csv(Reports::run(reportsContainer($db), 'monthly_transactions', ['month' => '2026-10'], reportsNow()), 'en_US')->getContent();

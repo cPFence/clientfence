@@ -798,7 +798,7 @@ final class Reports
         return match ($type) {
             'money' => number_format((float) $value, 2, '.', ''),
             'link' => is_array($value) ? (string) ($value[0] ?? '') : (string) $value,
-            'country' => $value === '' ? '' : (Countries::exists((string) $value) ? Countries::getName((string) $value, $locale) : (string) $value),
+            'country' => $value === '' ? '' : (Countries::exists((string) $value) ? Countries::getName((string) $value, $locale === 'sr_RS' ? 'sr_Latn_RS' : $locale) : (string) $value),
             default => (string) $value,
         };
     }

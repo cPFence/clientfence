@@ -25,6 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Intl\Countries;
 use Twig\Loader\FilesystemLoader;
 
 class Service implements InjectionAwareInterface
@@ -3615,7 +3616,7 @@ class Service implements InjectionAwareInterface
             'seller' => $this->getSellerData($invoice, $sellerLines),
             'seller_lines' => $sellerLines,
             'footer' => $this->getFooterInfo($c, $invoice['seller'] ?? []),
-            'buyer' => $this->getBuyerData($invoice, $buyerLines),
+            'buyer' => $this->getBuyerData($invoice, $buyerLines, RtlPdf::labels($locale)),
             'buyer_lines' => $buyerLines,
             'invoice' => $invoice,
             'locale' => $locale,
@@ -4199,8 +4200,9 @@ class Service implements InjectionAwareInterface
         return $sourceData;
     }
 
-    private function getBuyerData(array $invoice, int &$lines): array
+    private function getBuyerData(array $invoice, int &$lines, string $locale): array
     {
+        $country = (string) ($invoice['buyer']['country'] ?? '');
         $sourceData = [
             'Company' => $invoice['buyer']['company'] ?? null,
             // ClientFence core patch: the company number is printed when the client has one.
@@ -4210,7 +4212,8 @@ class Service implements InjectionAwareInterface
             'City' => $invoice['buyer']['city'] ?? null,
             'State' => $invoice['buyer']['state'] ?? null,
             'Zip' => $invoice['buyer']['zip'] ?? null,
-            'Country' => $invoice['buyer']['country'] ?? null,
+            // ClientFence core patch (GitHub #53): the country by name in the PDF's language (our sr_RS is Latin script, Symfony's is Cyrillic).
+            'Country' => Countries::exists($country) ? Countries::getName($country, $locale === 'sr_RS' ? 'sr_Latn_RS' : $locale) : $country,
             'Phone' => $invoice['buyer']['phone'] ?? null,
             'VAT Number' => $invoice['buyer']['company_vat'] ?? null,
         ];

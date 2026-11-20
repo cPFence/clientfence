@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use ClientFence\Mod\Invoice\Service;
 
-// GitHub #53: the seller block of the invoice.
+// GitHub #53: the seller and buyer blocks of the invoice.
 test('the PDF seller block prints the company number', function (): void {
     $lines = 0;
     $seller = (new ReflectionMethod(Service::class, 'getSellerData'))->invokeArgs(new Service(), [[
@@ -13,6 +13,21 @@ test('the PDF seller block prints the company number', function (): void {
 
     expect($seller)->toBe(['Name' => 'Example Hosting', 'VAT Number' => 'GB123', 'Company Number' => '09876543'])
         ->and($lines)->toBe(3);
+});
+
+test('the PDF buyer block names the country in the PDF\'s language; an unknown code stays as it is', function (): void {
+    $buyer = new ReflectionMethod(Service::class, 'getBuyerData');
+    $country = function (string $code, string $locale) use ($buyer): ?string {
+        $lines = 0;
+
+        return $buyer->invokeArgs(new Service(), [['buyer' => ['country' => $code]], &$lines, $locale])['Country'] ?? null;
+    };
+
+    expect($country('GR', 'en_US'))->toBe('Greece')
+        ->and($country('GR', 'de_DE'))->toBe('Griechenland')
+        ->and($country('RS', 'sr_RS'))->toBe('Srbija')
+        ->and($country('XX', 'en_US'))->toBe('XX')
+        ->and($country('', 'en_US'))->toBeNull();
 });
 
 test('the PDF footer prints the VAT and company numbers the invoice stored', function (): void {
