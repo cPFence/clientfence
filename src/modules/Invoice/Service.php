@@ -418,14 +418,17 @@ class Service implements InjectionAwareInterface
         $client = isset($row['client_id']) ? $this->di['db']->load('Client', $row['client_id']) : null;
         // ClientFence core patch (GitHub #51): seller details an invoice did not store come in its client's language.
         $c = $systemService->getCompany($client instanceof \Model_Client ? ($client->lang ?: null) : null);
+        $address = self::sellerAddress($c, $row['seller_address'] ?? null);
+        // The PDF has three address lines: blank lines are dropped, a fourth or later line joins the third.
+        $addressLines = array_values(array_filter(array_map('trim', explode("\n", $address)), static fn (string $line): bool => $line !== ''));
         $result['seller'] = [
             'company' => !empty($row['seller_company']) ? $row['seller_company'] : ($c['name'] ?? ''),
             'company_vat' => $row['seller_company_vat'] ?? '',
             'company_number' => $row['seller_company_number'] ?? '',
-            'address' => !empty($row['seller_address']) ? $row['seller_address'] : trim(($c['address_1'] ?? '') . ' ' . ($c['address_2'] ?? '') . ' ' . ($c['address_3'] ?? '')),
-            'address_1' => !empty($row['seller_address_1']) ? $row['seller_address_1'] : ($c['address_1'] ?? ''),
-            'address_2' => !empty($row['seller_address_2']) ? $row['seller_address_2'] : ($c['address_2'] ?? ''),
-            'address_3' => !empty($row['seller_address_3']) ? $row['seller_address_3'] : ($c['address_3'] ?? ''),
+            'address' => $address,
+            'address_1' => $addressLines[0] ?? '',
+            'address_2' => $addressLines[1] ?? '',
+            'address_3' => implode(', ', array_slice($addressLines, 2)),
             'phone' => !empty($row['seller_phone']) ? $row['seller_phone'] : ($c['tel'] ?? ''),
             'email' => !empty($row['seller_email']) ? $row['seller_email'] : ($c['email'] ?? ''),
             'account_number' => $c['account_number'] ?? null,
@@ -1418,6 +1421,22 @@ class Service implements InjectionAwareInterface
         return $value === '' ? null : $value;
     }
 
+    /**
+     * ClientFence core patch (GitHub #53): the seller address with one line per address line of the settings. Invoices
+     * made before stored the lines joined by spaces (the WHMCS import without the empty ones): while that still matches the
+     * settings, they get the settings' lines.
+     */
+    private static function sellerAddress(array $company, ?string $stored = null): string
+    {
+        $lines = [$company['address_1'] ?? '', $company['address_2'] ?? '', $company['address_3'] ?? ''];
+        $words = static fn (string $text): string => trim((string) preg_replace('/\s+/u', ' ', $text));
+        if ((string) $stored !== '' && (str_contains((string) $stored, "\n") || $words((string) $stored) !== $words(implode(' ', $lines)))) {
+            return $stored;
+        }
+
+        return implode("\n", array_filter(array_map(static fn ($line): string => trim((string) $line), $lines), static fn (string $line): bool => $line !== ''));
+    }
+
     public function setInvoiceDefaults(\Model_Invoice $model): void
     {
         $clientService = $this->di['mod_service']('Client');
@@ -1431,7 +1450,7 @@ class Service implements InjectionAwareInterface
         $model->seller_company = $seller['name'] ?? null;
         $model->seller_company_vat = $seller['vat_number'] ?? null;
         $model->seller_company_number = $seller['number'] ?? null;
-        $model->seller_address = trim(($seller['address_1'] ?? '') . ' ' . ($seller['address_2'] ?? '') . ' ' . ($seller['address_3'] ?? ''));
+        $model->seller_address = self::sellerAddress($seller);
         $model->seller_phone = $seller['tel'] ?? null;
         $model->seller_email = $seller['email'] ?? null;
 
@@ -4216,6 +4235,7 @@ class Service implements InjectionAwareInterface
                 $company[$key] = $seller[$stored];
             }
         }
+
         // Keep all keys defined so PDF templates rendered with strict_variables don't fail on missing optional company details.
         return [
             'company_name' => $company['name'] ?? null,

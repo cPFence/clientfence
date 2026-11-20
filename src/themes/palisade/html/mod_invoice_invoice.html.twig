@@ -174,7 +174,8 @@
                         <dt>{{ 'From'|trans }}</dt>
                         <dd>
                             {% if seller.company|trim %}<strong>{{ seller.company }}</strong><br>{% endif %}
-                            {% if seller.address|trim %}{{ seller.address }}<br>{% endif %}
+                            {# ClientFence core patch (GitHub #53): the seller address keeps its lines. #}
+                            {% if seller.address|trim %}{{ seller.address|nl2br }}<br>{% endif %}
                             {% if seller.company_vat|trim %}{{ company.tax_label|default('') ?: 'VAT'|trans }} {{ seller.company_vat }}<br>{% endif %}
                             {# ClientFence core patch (GitHub #53): the seller's company number. #}
                             {% if seller.company_number|trim %}{{ 'Company Number'|trans }} {{ seller.company_number }}<br>{% endif %}

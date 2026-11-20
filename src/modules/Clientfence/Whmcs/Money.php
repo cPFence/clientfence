@@ -638,7 +638,7 @@ final class Money
                 'seller_company' => $s('company_name'),
                 'seller_company_vat' => $s('company_vat_number'),
                 'seller_company_number' => $s('company_number'),
-                'seller_address' => trim(implode(' ', array_filter([$s('company_address_1'), $s('company_address_2'), $s('company_address_3')]))) ?: null,
+                'seller_address' => trim(implode("\n", array_filter([$s('company_address_1'), $s('company_address_2'), $s('company_address_3')]))) ?: null,
                 'seller_phone' => $s('company_tel'),
                 'seller_email' => $s('company_email'),
             ];

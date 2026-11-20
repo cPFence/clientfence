@@ -2506,7 +2506,8 @@ test('sets invoice defaults', function (): void {
     // GitHub #31: a new invoice starts with the client's purchase order number.
     expect($invoiceModel->po_number)->toBe('PO-31')
         ->and($invoiceModel->seller_company)->toBe('Тесла')
-        ->and($invoiceModel->seller_address)->toBe('Главна 1 Београд');
+        // GitHub #53: one line per address line.
+        ->and($invoiceModel->seller_address)->toBe("Главна 1\nБеоград");
 });
 
 test('approves an invoice', function (): void {

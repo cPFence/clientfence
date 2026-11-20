@@ -304,6 +304,14 @@ function container(): Container
             return extensionServiceWithoutClientfence();
         }
 
+        // getCompany() always returns an array (the invoice serializer passes it to typed code).
+        if (strtolower($name) === 'system') {
+            $system = \Mockery::mock()->shouldIgnoreMissing();
+            $system->allows('getCompany')->andReturn([]);
+
+            return $system;
+        }
+
         return \Mockery::mock()->shouldIgnoreMissing();
     });
 

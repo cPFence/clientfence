@@ -72,7 +72,8 @@
                 {% endif %}
                 {% if seller.address %}
                     <dt>{{ 'Address'|trans }}</dt>
-                    <dd>{{ seller.address }}</dd>
+                    {# ClientFence core patch (GitHub #53): the seller address keeps its lines. #}
+                    <dd>{{ seller.address|nl2br }}</dd>
                 {% endif %}
                 {% if seller.phone %}
                     <dt>{{ 'Phone'|trans }}</dt>

@@ -796,7 +796,8 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label" for="seller_address">{{ 'Address'|trans }}</label>
-                                    <input class="form-control" id="seller_address" type="text" name="seller_address" value="{{ seller.address }}">
+                                    {# ClientFence core patch (GitHub #53): the seller address keeps its lines. #}
+                                    <textarea class="form-control" id="seller_address" name="seller_address" rows="3">{{ seller.address }}</textarea>
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="form-label" for="seller_email">{{ 'Email'|trans }}</label>

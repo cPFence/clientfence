@@ -9306,5 +9306,21 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch (GitHub #53): the VAT and company numbers the invoice stored, as in its seller block."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #53): the seller address with one line per address line of the settings."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_invoice.html.twig",
+        "done": "{{ seller.address|nl2br }}"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_print.html.twig",
+        "done": "{{ seller.address|nl2br }}"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_invoice.html.twig",
+        "done": "ClientFence core patch (GitHub #53): the seller address keeps its lines."
     }
 ]
