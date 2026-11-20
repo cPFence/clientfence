@@ -18,6 +18,7 @@
     <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
                     <div class="mb-3">
                         <label class="form-label" for="inputEmail">{{ 'Email'|trans }}</label>
+                        {# ClientFence core patch: no autofocus while passkeys are on (clientfence-passkeys.js focuses it except on touch devices; GitHub #55). #}
                         <input class="form-control"
                             id="inputEmail"
                             type="email"
@@ -26,7 +27,7 @@
                             placeholder="{{ 'Enter your email address'|trans }}"
                             {% if passkey_on %}autocomplete="username webauthn"{% endif %}
                             required
-                            autofocus>
+                            {% if not passkey_on %}autofocus{% endif %}>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="inputPassword">

@@ -101,10 +101,14 @@ function initSignIn(button) {
       autofill();
     });
   });
-  document.querySelector('input[autocomplete~="webauthn"]')?.addEventListener('focus', autofill);
+  const field = document.querySelector('input[autocomplete~="webauthn"]');
+  field?.addEventListener('focus', autofill);
   // Back from a password manager app (iPhone): the browser may have ended the request meanwhile.
   document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && autofill());
   autofill();
+  // ClientFence: no autofocus while passkeys are on: an iPhone shows a focused field's waiting request as a sheet on load
+  // that does nothing (GitHub #55); other devices get it focused unless the visitor is already in a field.
+  if (field && document.activeElement === document.body && !window.matchMedia('(pointer: coarse)').matches) field.focus();
 }
 
 function initList(root) {
