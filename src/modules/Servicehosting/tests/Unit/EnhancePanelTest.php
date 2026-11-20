@@ -314,3 +314,17 @@ test('plans read a resource the plan leaves out as 0 and one without a total as 
 
     expect($panel->plans()[0])->toMatchArray(['max_addon' => 0, 'max_sub' => null, 'max_pop' => 5, 'max_park' => 0, 'max_ftp' => 0, 'max_sql' => 0]);
 });
+
+// Forum #165 sweep: a subscription without the mailboxes resource allows none; one without a total allows any number.
+test('mailbox allowance reads a left-out mailboxes resource as 0 and one without a total as unlimited', function (array $resources, ?int $limit): void {
+    $http = new MockHttpClient(fn (string $method, string $url): MockResponse => new MockResponse(json_encode(str_contains($url, '/subscriptions/7')
+        ? ['id' => 7, 'resources' => $resources]
+        : ['items' => [], 'total' => 0])));
+    $mail = new ClientFence\Mod\Servicehosting\Panel\Enhance\Mail(new Api($http, 'https://panel.test', 'token'), 'O', ['id' => 'W', 'subscriptionId' => 7]);
+
+    expect($mail->allowance())->toBe(['used' => 0, 'limit' => $limit]);
+})->with([
+    'left out' => [[['name' => 'websites', 'total' => 1]], 0],
+    'no total' => [[['name' => 'mailboxes', 'usage' => 0]], null],
+    'a total' => [[['name' => 'mailboxes', 'usage' => 0, 'total' => 5]], 5],
+]);

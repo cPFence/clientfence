@@ -87,6 +87,8 @@ final class Mail implements Mailboxes
         $subscriptionId = Panel::subscriptionOf($this->website);
         if ($subscriptionId !== null) {
             $subscription = $this->api->find('/orgs/' . rawurlencode($this->orgId) . "/subscriptions/{$subscriptionId}");
+            // A plan without mailboxes leaves the resource out (Enhance shows 0); a listed one without total is unlimited.
+            $limit = is_array($subscription) ? 0 : null;
             foreach (is_array($subscription) ? ($subscription['resources'] ?? []) : [] as $resource) {
                 if (is_array($resource) && ($resource['name'] ?? '') === 'mailboxes') {
                     $used = is_numeric($resource['usage'] ?? null) ? (int) $resource['usage'] : null;
