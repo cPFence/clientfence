@@ -19,7 +19,7 @@
 {% block breadcrumbs %}
 <ul class="breadcrumb">
     <li class="breadcrumb-item">
-        <svg class="icon"><use href="#home" /></svg>
+        <a href="{{ '/'|url }}"><svg class="icon"><use href="#home" /></svg></a>
     </li>
     <li class="breadcrumb-item"><a href="{{ 'massmailer'|url }}">{{ 'Mass Mail'|trans }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
