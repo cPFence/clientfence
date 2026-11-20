@@ -88,7 +88,8 @@
                     <dd>{{ seller.note }}</dd>
                 {% endif %}
             </dl>
-            {% if seller.bank_name or seller.bic or seller.account_number %}
+            {# ClientFence core patch (GitHub #53): bank details only with "Display Bank Account Information on Documents", as on the PDF. #}
+            {% if company.display_bank_info|default(0) == 1 and (seller.bank_name or seller.bic or seller.account_number) %}
                 <dl class="bf-kv cf-print-box">
                     {% if seller.bank_name %}
                         <dt>{{ 'Bank Name'|trans }}</dt>

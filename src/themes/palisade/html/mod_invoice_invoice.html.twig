@@ -181,7 +181,8 @@
                             {% if seller.company_number|trim %}{{ 'Company Number'|trans }} {{ seller.company_number }}<br>{% endif %}
                             {% if seller.phone|trim %}<bdi dir="ltr">{{ seller.phone }}</bdi><br>{% endif %}
                             {% if seller.email|trim %}{{ seller.email }}<br>{% endif %}
-                            {% if seller.account_number|trim %}{{ 'Account'|trans }} {{ seller.account_number }}<br>{% endif %}
+                            {# ClientFence core patch (GitHub #53): bank details only with "Display Bank Account Information on Documents", as on the PDF. #}
+                            {% if company.display_bank_info|default(0) == 1 and seller.account_number|trim %}{{ 'Account'|trans }} {{ seller.account_number }}<br>{% endif %}
                             {% if seller.note|default('')|trim %}{{ seller.note }}{% endif %}
                         </dd>
                     </dl>
