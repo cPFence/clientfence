@@ -436,7 +436,7 @@
             document.addEventListener('click', (event) => {
                 const button = event.target.closest('[data-bf-copy]');
                 if (button) {
-                    navigator.clipboard?.writeText(button.dataset.bfCopy).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+                    navigator.clipboard?.writeText(button.dataset.bfCopy).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'), (error) => ClientFence.message(error.message, 'error'));
                 }
             });
 

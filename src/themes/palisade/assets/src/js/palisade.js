@@ -346,13 +346,14 @@ function initBell() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
+  // Only an API error the page left unhandled is shown, as in the admin area: other script errors (captcha, Stripe.js,
+  // browser extensions) mean nothing to the client and stay in the console.
   window.addEventListener('unhandledrejection', (event) => {
-    ClientFence.message(errorText(event.reason), 'error');
+    if (event.reason && typeof event.reason === 'object' && event.reason.code) {
+      event.preventDefault();
+      ClientFence.message(errorText(event.reason), 'error');
+    }
   });
-
-  window.onerror = (message, source, lineno, colno, error) => {
-    ClientFence.message(error?.message || message, 'error');
-  };
 
   initTheme();
   initMenuCollapse();

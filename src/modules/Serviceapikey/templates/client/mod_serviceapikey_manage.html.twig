@@ -87,7 +87,7 @@
             toggle.setAttribute('aria-pressed', String(show));
         });
         document.getElementById('cf-apikey-copy').addEventListener('click', () => {
-            navigator.clipboard?.writeText(field.value).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'));
+            navigator.clipboard?.writeText(field.value).then(() => ClientFence.message({{ 'Copied'|trans|json_encode|raw }}, 'success'), (error) => ClientFence.message(error.message, 'error'));
         });
         document.getElementById('cf-apikey-regenerate').addEventListener('click', () => {
             ClientFence.api.client.post('serviceapikey/reset', { order_id: {{ order.id }} }, () => {
