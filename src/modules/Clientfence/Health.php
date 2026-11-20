@@ -448,16 +448,41 @@ final class Health
         yield self::check('integrity', 'int_patches', self::msg('Core patches'), $undone === [] ? 'ok' : 'bad', $undone === [] ? self::msg(':count core patches applied.') : self::msg(':undone file(s) without their core patch: :list. Install the ClientFence release again.'),
             params: [':count' => count($patches), ':undone' => count($undone), ':list' => implode(', ', array_slice($undone, 0, 3)) . (count($undone) > 3 ? ', …' : '')]);
 
-        $changed = [];
-        foreach ($manifest['files'] ?? [] as $relative => $hash) {
-            $path = PATH_ROOT . '/' . $relative;
-            if (!is_file($path) || hash_file('sha256', $path) !== $hash) {
-                $changed[] = $relative;
+        // Every file of the release, as System → Update compares them (Customized.php): a hand edit shows until the next
+        // release replaces it. Without that list (built from source, or the file is gone) only the pack files are checked, as a warning.
+        $changed = Customized::files(PATH_ROOT, $files, $missing);
+        $listed = $changed !== null;
+        if ($listed) {
+            $changed = [...$changed, ...self::deleted($missing ?? [], PATH_ROOT)];
+        } else {
+            $changed = [];
+            foreach ($manifest['files'] ?? [] as $relative => $hash) {
+                $path = PATH_ROOT . '/' . $relative;
+                if (!is_file($path) || hash_file('sha256', $path) !== $hash) {
+                    $changed[] = $relative;
+                }
             }
+            $files = count($manifest['files'] ?? []);
         }
-        $files = count($manifest['files'] ?? []);
-        yield self::check('integrity', 'int_files', self::msg('Pack files unchanged'), $changed === [] ? 'ok' : 'bad', $changed === [] ? self::msg(':count files as installed.') : self::msg(':changed file(s) changed or missing: :list. Install the ClientFence release again.'),
+        yield self::check('integrity', 'int_files', self::msg('Release files unchanged'), $changed !== [] ? 'bad' : ($listed ? 'ok' : 'warn'), $changed !== []
+            ? self::msg(':changed file(s) changed or missing: :list. Install the ClientFence release again.')
+            : ($listed ? self::msg(':count files as installed.') : self::msg('The release file list (library/ClientFence/release-files.json) is missing, so only :count pack files were checked. Install the ClientFence release again.')),
             params: [':count' => $files, ':changed' => count($changed), ':list' => implode(', ', array_slice($changed, 0, 3)) . (count($changed) > 3 ? ', …' : '')]);
+    }
+
+    /**
+     * The missing release files that count as changes: not the install folder (load.php removes it), the cache and log
+     * folders (a cloud backup leaves them out) or an extension uninstalled from the admin (Extension\Service::uninstall()
+     * removes its whole folder).
+     *
+     * @param list<string> $missing
+     *
+     * @return list<string>
+     */
+    public static function deleted(array $missing, string $root): array
+    {
+        return array_values(array_filter($missing, static fn (string $path): bool => preg_match('#^(?:install|data/cache|data/log)/#', $path) !== 1
+            && !(preg_match('#^(?:modules|themes|locale)/[^/]+/#', $path, $folder) === 1 && !is_dir($root . '/' . $folder[0]))));
     }
 
     // ---- Services.

@@ -81,8 +81,8 @@ for folder, dirs, files in os.walk(tree):
             sys.exit(f'private or planning file in the release tree: {rel}')
 
 # The SHA-256 of every file of the release, so System → Update can find the files a site changed
-# before the next update overwrites them (src/modules/Clientfence/Customized.php). The GeoIP
-# databases are left out: the cron replaces them every week.
+# before the next update overwrites them (src/modules/Clientfence/Customized.php). The two GeoIP
+# databases (.mmdb) are left out: the cron replaces them every week.
 listed = 'library/ClientFence/release-files.json'
 refreshed = 'library/ClientFence/GeoIP/Databases/'
 hashes = {}
@@ -90,7 +90,7 @@ for folder, dirs, files in os.walk(tree):
     for f in files:
         path = os.path.join(folder, f)
         rel = os.path.relpath(path, tree).replace(os.sep, '/')
-        if rel != listed and not rel.startswith(refreshed) and not os.path.islink(path):
+        if rel != listed and not (rel.startswith(refreshed) and rel.endswith('.mmdb')) and not os.path.islink(path):
             with open(path, 'rb') as fh:
                 hashes[rel] = hashlib.file_digest(fh, 'sha256').hexdigest()
 with open(os.path.join(tree, listed), 'w', encoding='utf-8') as fh:

@@ -21,21 +21,27 @@ final class Customized
      * The changed files, or null when the installed version has no list (installed from source,
      * or from a release before the list existed).
      *
+     * $checked receives the number of files in the list and $missing the listed files that are gone (System Health shows them).
+     *
      * @return list<string>|null
      */
-    public static function files(string $root = PATH_ROOT): ?array
+    public static function files(string $root = PATH_ROOT, ?int &$checked = null, ?array &$missing = null): ?array
     {
         $list = json_decode((string) @file_get_contents($root . '/' . self::LIST), true);
         if (!is_array($list) || ($list['version'] ?? null) !== \ClientFence\Version::CLIENTFENCE || !is_array($list['files'] ?? null)) {
             return null;
         }
+        $checked = count($list['files']);
+        $missing = [];
         $changed = [];
         foreach ($list['files'] as $path => $hash) {
             if (!is_string($path) || !\ClientFence\Update::isSafeArchiveEntry($path)) {
                 continue;
             }
             $file = $root . '/' . $path;
-            if (is_file($file) && hash_file('sha256', $file) !== $hash) {
+            if (!is_file($file)) {
+                $missing[] = $path;
+            } elseif (hash_file('sha256', $file) !== $hash) {
                 $changed[] = $path;
             }
         }

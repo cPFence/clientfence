@@ -33,7 +33,9 @@ afterEach(function (): void {
 test('only the release files changed on the site are listed, and zipped', function (): void {
     ($this->list)(ClientFence\Version::CLIENTFENCE);
 
-    expect(Customized::files($this->site))->toBe(['themes/x/changed.twig']);
+    expect(Customized::files($this->site, $checked, $missing))->toBe(['themes/x/changed.twig'])
+        ->and($checked)->toBe(4)
+        ->and($missing)->toBe(['install/index.php']);
 
     $file = Customized::zip($this->site);
     try {

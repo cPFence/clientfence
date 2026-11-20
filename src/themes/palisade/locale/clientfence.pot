@@ -638,6 +638,10 @@ msgstr ""
 msgid ":domain was not found in the Openprovider account."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":domain was refused: :error"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid ":driver could not be reached, so files are used. Check the server and the cache settings."
 msgstr ""
@@ -794,6 +798,34 @@ msgstr ""
 msgid ":reason"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar accepted the lock, but :domain is still unlocked. The change has not been applied."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar accepted the registration of :domain but does not hold it."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar accepted the unlock, but :domain is still locked. The change has not been applied."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar answered about :other when asked about :domain."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar did not report an expiry date for :domain."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar did not return a transfer code for :domain."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar did not say whether :domain is available."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php
 msgid ":registrar does not support this action."
 msgstr ""
@@ -802,12 +834,32 @@ msgstr ""
 msgid ":registrar has no test system: turn test mode off for this registrar."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar holds no transfer code for :domain. Request it from WebHosting|4U."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":registrar needs the PHP soap extension."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid ":registrar refused the request: :error"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar rejected the credentials. Check the API username and key."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar returned an unreadable response (HTTP :status)."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar returned no result for :domain."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":registrar returned prices in more than one currency (:a and :b), which cannot be imported as one list."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Porkbun.php
@@ -916,6 +968,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid ":tld domains need registry details ClientFence does not ask for: register them at :registrar directly."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid ":tld is sold in two-year terms only, not for the ordered term (in years: :years)."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Nominet.php
@@ -1454,7 +1510,7 @@ msgstr ""
 msgid "API call is missing arguments"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Ovh.php
+#: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid "API endpoint"
 msgstr ""
 
@@ -1504,6 +1560,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
 msgid "API token"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "API username"
 msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_iplookup.html.twig
@@ -7418,6 +7478,10 @@ msgstr ""
 msgid "Could not reach :program: :error"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Could not reach :registrar. Please try again shortly."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "Could not reach :registrar: :error"
 msgstr ""
@@ -8088,6 +8152,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Customized"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Cyprus"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -11658,6 +11726,10 @@ msgstr ""
 msgid "Found in the source"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "France"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_hold_notice.html.twig src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_settings.html.twig
 msgid "Fraud check"
 msgstr ""
@@ -11912,6 +11984,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "GeoIP database"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Germany"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
@@ -12216,6 +12292,10 @@ msgstr ""
 
 #: src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "Graph date range help"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Greece"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig
@@ -14090,6 +14170,10 @@ msgstr ""
 msgid "Italian public organisation"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Italy"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Its MX records point to another mail service, so the mailboxes here do not receive its mail."
 msgstr ""
@@ -14604,6 +14688,10 @@ msgstr ""
 
 #: src/modules/News/templates/admin/mod_news_post.html.twig
 msgid "Leave empty to publish now."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Leave empty unless WebHosting|4U gave you a different address."
 msgstr ""
 
 #: src/modules/Massmailer/templates/admin/mod_massmailer_message.html.twig
@@ -17458,8 +17546,16 @@ msgstr ""
 msgid "No refund or credit is given"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "No registrant contact was given for :domain."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "No registrar action: the expiry date is read from the registrar when it can tell."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "No registration period was given for :domain."
 msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_article.html.twig
@@ -19010,11 +19106,15 @@ msgstr ""
 msgid "Organisation"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Organisation or company name"
+msgstr ""
+
 #: src/library/Server/Manager/Enhance.php src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Organization ID"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Realtimeregister.php src/library/Registrar/Adapter/Synergywholesale.php src/modules/Client/templates/client/mod_client_google_profile.html.twig …
+#: src/library/Registrar/Adapter/Realtimeregister.php src/library/Registrar/Adapter/Synergywholesale.php src/library/Registrar/Adapter/Webhosting4u.php …
 msgid "Other"
 msgstr ""
 
@@ -19272,10 +19372,6 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Pack .htaccess rules"
-msgstr ""
-
-#: src/modules/Clientfence/Health.php
-msgid "Pack files unchanged"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -22262,8 +22358,44 @@ msgstr ""
 msgid "Registrant ID type"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant city"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant country"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant email address"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant first name (leave empty to use the contact details)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant last name"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Registrant name (business or person)"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant phone, as +30.2101234567"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant postal code"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant state or province"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Registrant street address"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Nominet.php src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
@@ -22384,6 +22516,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Relative to the login folder; it must exist. Empty: the login folder."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "Release files unchanged"
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -23992,6 +24128,10 @@ msgstr ""
 
 #: src/modules/Serviceapikey/manifest.json
 msgid "Sell API keys: each order gets a key that your application can check, with allowed IPs and usage."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Sells .gr, .ελ and the other WebHosting|4U extensions through your WebHosting|4U domain reseller account. You need a reseller account and its API key: no registry accreditation and no EPP details are required, because WebHosting|4U talks to the registry for you. Ask WebHosting|4U to confirm which extensions your account may sell before you put them on sale. The Greek registry sells .gr and .ελ for two years at a time: give those TLDs a minimum of 2 years and the allowed periods 2,4,6,8,10."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_summary_cards.html.twig src/modules/Embed/templates/client/mod_embed_contact.html.twig …
@@ -26322,6 +26462,10 @@ msgstr ""
 msgid "Terms of Service / Privacy Policy Requirement for the Signup Page"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Test API endpoint"
+msgstr ""
+
 #: src/library/Payment/Adapter/Mollie.php
 msgid "Test API key:"
 msgstr ""
@@ -26594,6 +26738,14 @@ msgstr ""
 msgid "The :field is too long (:max characters at most)."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "The :label is not a valid URL."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "The :label must use https: an http endpoint would send the API token and the registrant details in clear."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Snapshot.php
 msgid "The :name import needs PHP's pdo_sqlite extension. Turn it on for this site's PHP version, then try again."
 msgstr ""
@@ -26652,6 +26804,10 @@ msgstr ""
 
 #: src/modules/Order/Proration.php
 msgid "The :what is not valid."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "The API key issued to your reseller account."
 msgstr ""
 
 #: src/library/Server/Manager/CWP.php
@@ -27316,6 +27472,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Mail.php
 msgid "The email address :address: was not found on this hosting account."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "The email address of your WebHosting|4U reseller account."
 msgstr ""
 
 #: src/modules/Servicehosting/Api/Client.php
@@ -28067,12 +28227,20 @@ msgstr ""
 msgid "The registrar returned no prices. Nothing was changed; try again later."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "The registry of :tld does not offer privacy protection."
+msgstr ""
+
 #: src/library/ClientFence/Update.php
 msgid "The release could not be unpacked, and putting the previous files back failed too: restore them from :file. Further details are available in the error log."
 msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The release could not be unpacked: check the free disk space and the file and folder permissions. The previous files were put back and the site runs ClientFence :version again. Further details are available in the error log."
+msgstr ""
+
+#: src/modules/Clientfence/Health.php
+msgid "The release file list (library/ClientFence/release-files.json) is missing, so only :count pack files were checked. Install the ClientFence release again."
 msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_price_changed.html.twig
@@ -29137,6 +29305,10 @@ msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
 msgid "This redirect will be deleted:"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "This registrar is in test mode and no test API endpoint is set, so it does not send registrations, transfers or renewals to the live registry. Turn test mode off, or enter a test API endpoint."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Email.php
@@ -30423,6 +30595,14 @@ msgstr ""
 msgid "Unit price"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "United Kingdom"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "United States"
+msgstr ""
+
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "Units"
 msgstr ""
@@ -31237,6 +31417,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
 msgid "Used only for max-use enforcement, not historical reporting."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Webhosting4u.php
+msgid "Used only while this registrar is in test mode. Leave it empty and test mode will refuse registrations, transfers and renewals rather than send them to the live registry."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig

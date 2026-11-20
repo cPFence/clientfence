@@ -278,3 +278,22 @@ test('a help desk still on the installer placeholder email is a warning that lin
 
     expect($found)->toMatchArray(['id' => 'svc_helpdesk_1', 'state' => 'warn', 'url' => 'support/helpdesk/1', 'params' => [':name' => 'General', ':email' => 'info@yourcompany.com']]);
 });
+
+test('a deleted release file counts, but not the install folder, the cache and log folders or an uninstalled extension', function (): void {
+    $root = sys_get_temp_dir() . '/cf-health-deleted-' . bin2hex(random_bytes(4));
+    mkdir($root . '/modules/Seo', 0o755, true);
+    try {
+        expect(Health::deleted([
+            'install/index.php',
+            'data/cache/.gitkeep',
+            'data/log/index.html',
+            'data/.htaccess',
+            'modules/Seo/Service.php',
+            'modules/Embed/Service.php',
+            'locale/de_DE/LC_MESSAGES/messages.mo',
+            'library/ClientFence/Session.php',
+        ], $root))->toBe(['data/.htaccess', 'modules/Seo/Service.php', 'library/ClientFence/Session.php']);
+    } finally {
+        (new Symfony\Component\Filesystem\Filesystem())->remove($root);
+    }
+});
