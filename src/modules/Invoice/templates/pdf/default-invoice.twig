@@ -56,6 +56,8 @@
 					{% if key == 'Name' %}<b>{% endif %}
 					{% if key == 'Phone' %} {{ 'Phone'|trans }} :{% endif %}
 					{% if key == 'VAT Number' %} {{ 'VAT Number'|trans }} :{% endif %}
+					{# ClientFence core patch (GitHub #53): the seller's company number has its label. #}
+					{% if key == 'Company Number' %} {{ 'Company Number'|trans }} :{% endif %}
 							{{ value }}<br>
 					{% if key == 'Name' %}</b>{% endif %}
 				{% endfor %}

@@ -3592,7 +3592,7 @@ class Service implements InjectionAwareInterface
             'logo_source' => $logoSource,
             'seller' => $this->getSellerData($invoice, $sellerLines),
             'seller_lines' => $sellerLines,
-            'footer' => $this->getFooterInfo($c),
+            'footer' => $this->getFooterInfo($c, $invoice['seller'] ?? []),
             'buyer' => $this->getBuyerData($invoice, $buyerLines),
             'buyer_lines' => $buyerLines,
             'invoice' => $invoice,
@@ -4162,6 +4162,8 @@ class Service implements InjectionAwareInterface
             'Phone' => $invoice['seller']['phone'] ?? null,
             'Email' => $invoice['seller']['email'] ?? null,
             'VAT Number' => $invoice['seller']['company_vat'] ?? null,
+            // ClientFence core patch (GitHub #53): the seller's company number is printed when it has one.
+            'Company Number' => $invoice['seller']['company_number'] ?? null,
         ];
 
         foreach ($sourceData as $label => $data) {
@@ -4206,8 +4208,14 @@ class Service implements InjectionAwareInterface
         return $sourceData;
     }
 
-    private function getFooterInfo(array $company): array
+    private function getFooterInfo(array $company, array $seller = []): array
     {
+        // ClientFence core patch (GitHub #53): the VAT and company numbers the invoice stored, as in its seller block.
+        foreach (['vat_number' => 'company_vat', 'number' => 'company_number'] as $key => $stored) {
+            if ((string) ($seller[$stored] ?? '') !== '') {
+                $company[$key] = $seller[$stored];
+            }
+        }
         // Keep all keys defined so PDF templates rendered with strict_variables don't fail on missing optional company details.
         return [
             'company_name' => $company['name'] ?? null,

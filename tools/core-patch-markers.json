@@ -9286,5 +9286,25 @@
     {
         "file": "modules/Client/Service.php",
         "done": "ClientFence core patch: Password custom fields in clear only for staff who may view clients"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #53): the seller's company number is printed when it has one."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_invoice.html.twig",
+        "done": "{% if seller.company_number|trim %}{{ 'Company Number'|trans }} {{ seller.company_number }}<br>{% endif %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_print.html.twig",
+        "done": "{% if seller.company_number %}"
+    },
+    {
+        "file": "modules/Invoice/templates/pdf/default-invoice.twig",
+        "done": "ClientFence core patch (GitHub #53): the seller's company number has its label."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (GitHub #53): the VAT and company numbers the invoice stored, as in its seller block."
     }
 ]

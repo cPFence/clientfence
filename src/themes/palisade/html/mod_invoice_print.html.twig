@@ -65,6 +65,11 @@
                     <dt>{{ company.tax_label|default('') ?: 'VAT'|trans }}</dt>
                     <dd>{{ seller.company_vat }}</dd>
                 {% endif %}
+                {# ClientFence core patch (GitHub #53): the seller's company number. #}
+                {% if seller.company_number %}
+                    <dt>{{ 'Company Number'|trans }}</dt>
+                    <dd>{{ seller.company_number }}</dd>
+                {% endif %}
                 {% if seller.address %}
                     <dt>{{ 'Address'|trans }}</dt>
                     <dd>{{ seller.address }}</dd>

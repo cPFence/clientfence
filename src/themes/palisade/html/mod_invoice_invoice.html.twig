@@ -176,6 +176,8 @@
                             {% if seller.company|trim %}<strong>{{ seller.company }}</strong><br>{% endif %}
                             {% if seller.address|trim %}{{ seller.address }}<br>{% endif %}
                             {% if seller.company_vat|trim %}{{ company.tax_label|default('') ?: 'VAT'|trans }} {{ seller.company_vat }}<br>{% endif %}
+                            {# ClientFence core patch (GitHub #53): the seller's company number. #}
+                            {% if seller.company_number|trim %}{{ 'Company Number'|trans }} {{ seller.company_number }}<br>{% endif %}
                             {% if seller.phone|trim %}<bdi dir="ltr">{{ seller.phone }}</bdi><br>{% endif %}
                             {% if seller.email|trim %}{{ seller.email }}<br>{% endif %}
                             {% if seller.account_number|trim %}{{ 'Account'|trans }} {{ seller.account_number }}<br>{% endif %}
