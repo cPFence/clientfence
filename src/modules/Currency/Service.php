@@ -741,7 +741,8 @@ class Service implements InjectionAwareInterface
             $from_currency = urlencode($from);
 
             $httpClient = $this->di['http_client'];
-            $response = $httpClient->request('GET', 'https://api.apilayer.com/currency_data/live', [
+            // ClientFence core patch: currencylayer's own API reads access_key (the APILayer URL wants an apikey header).
+            $response = $httpClient->request('GET', 'https://api.currencylayer.com/live', [
                 'query' => [
                     'access_key' => $key,
                     'source' => $from_currency,

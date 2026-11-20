@@ -872,3 +872,27 @@ test('removeCurrency throws exception when currency not found by code', function
     expect(fn (): bool => $service->removeCurrency($code))
         ->toThrow(ClientFence\Exception::class);
 });
+
+test('currencylayer rates are requested from the currencylayer API with an access key', function (): void {
+    $urls = [];
+    $http = new Symfony\Component\HttpClient\MockHttpClient(function (string $method, string $url) use (&$urls): Symfony\Component\HttpClient\Response\MockResponse {
+        $urls[] = $url;
+
+        return new Symfony\Component\HttpClient\Response\MockResponse((string) json_encode(['success' => true, 'source' => 'USD', 'quotes' => ['USDEUR' => 0.9]]));
+    });
+    $di = container();
+    $em = Mockery::mock(Doctrine\ORM\EntityManager::class);
+    $em->allows('getRepository')->andReturn(Mockery::mock(ClientFence\Mod\Currency\Repository\CurrencyRepository::class)->shouldIgnoreMissing());
+    $di['em'] = $em;
+    $di['cache'] = static fn (): Symfony\Component\Cache\Adapter\ArrayAdapter => new Symfony\Component\Cache\Adapter\ArrayAdapter();
+    $di['http_client'] = static fn (): Symfony\Component\HttpClient\MockHttpClient => $http;
+    $service = new ClientFence\Mod\Currency\Service();
+    $service->setDi($di);
+
+    $rates = (new ReflectionMethod($service, 'getCurrencyLayerRates'))->invoke($service, 'USD', 3600, 'test-key');
+
+    expect($urls)->toHaveCount(1)
+        ->and($urls[0])->toStartWith('https://api.currencylayer.com/live?')
+        ->and($urls[0])->toContain('access_key=test-key')
+        ->and($rates)->toBe(['EUR' => 0.9]);
+});
