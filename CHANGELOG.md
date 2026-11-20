@@ -31,6 +31,8 @@ Several fixes in this release build on the work of [FOSSBilling](https://github.
 - Plesk sign-in behind Cloudflare or another proxy used the proxy's IP.
 - Client-area pages showed red error messages from other scripts such as the captcha or Stripe.js.
 - The home icon in the breadcrumbs of the admin client, custom page and mass mail pages was not a link.
+- PDF invoices print the client's full country name instead of its code. ([#53](https://github.com/cPFence/clientfence/issues/53))
+- On iPhone, the client and staff sign-in pages opened a passkey sheet on load that did nothing. ([#55](https://github.com/cPFence/clientfence/issues/55))
 
 ## 1.0.60 (2026-11-19)
 
