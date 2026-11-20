@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(18)
+    expect($patches)->toHaveCount(19)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -52,7 +52,8 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[128][1])->toBe('patch128')
         ->and($patches[129][1])->toBe('patch129')
         ->and($patches[130][1])->toBe('patch130')
-        ->and($patches[131][1])->toBe('patch131');
+        ->and($patches[131][1])->toBe('patch131')
+        ->and($patches[132][1])->toBe('patch132');
 });
 
 test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {
@@ -906,4 +907,74 @@ test('the activity patch indexes created_at once on the four activity tables', f
         'ALTER TABLE `activity_client_email` ADD INDEX `created_at_idx` (`created_at`)',
         'ALTER TABLE `activity_client_history` ADD INDEX `created_at_idx` (`created_at`)',
     ]);
+});
+
+test('secrets patch encrypts the stored gateway and registrar secrets once and leaves the rest readable', function (): void {
+    $crypt = new ClientFence\Crypt();
+    $tables = [
+        'pay_gateway' => [
+            1 => '{"api_key":"example-key-secret","pub_key":"pk_live_visible","fee":{"percent":"2"}}',
+            2 => json_encode(['api_key' => $crypt->encrypt('example-key-done')]),
+            3 => '{"api_key":"adapter-gone"}',
+            4 => null,
+        ],
+        'tld_registrar' => [1 => '{"api-key":"registrar-secret","username":"reseller"}'],
+    ];
+    $writes = 0;
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->allows('prepare')->andReturnUsing(function (string $sql) use (&$tables, &$writes): PDOStatement {
+        $statement = Mockery::mock(PDOStatement::class);
+        if (preg_match('/^SELECT id, config FROM (\\w+)$/', $sql, $m) === 1) {
+            $statement->allows('execute')->andReturnTrue();
+            $statement->allows('fetchAll')->andReturnUsing(fn (): array => array_map(fn (int $id, ?string $config): array => ['id' => $id, 'config' => $config], array_keys($tables[$m[1]]), $tables[$m[1]]));
+        } else {
+            expect(preg_match('/^UPDATE `(\\w+)` SET `config` = :set_config WHERE `id` = :where_id AND `config` = :where_config$/', $sql, $m))->toBe(1);
+            $statement->allows('execute')->andReturnUsing(function (array $params) use (&$tables, &$writes, $m): bool {
+                if ($tables[$m[1]][$params['where_id']] === $params['where_config']) {
+                    $tables[$m[1]][$params['where_id']] = $params['set_config'];
+                    ++$writes;
+                }
+
+                return true;
+            });
+        }
+
+        return $statement;
+    });
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->allows('load')->andReturnUsing(function (string $name, int $id): object {
+        $model = $name === 'PayGateway' ? new Model_PayGateway() : new Model_TldRegistrar();
+        $model->loadBean(new Tests\Helpers\DummyBean());
+        $model->id = $id;
+
+        return $model;
+    });
+    $gateways = Mockery::mock(ClientFence\Mod\Invoice\ServicePayGateway::class);
+    $gateways->allows('getSecretFields')->andReturnUsing(fn (Model_PayGateway $model): array => (int) $model->id === 3 ? throw new ClientFence\Exception('Payment gateway was not found.') : ['api_key', 'webhook_secret']);
+    $domains = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class);
+    $domains->allows('registrarGetSecretFields')->andReturn(['api-key']);
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+    $di['db'] = $db;
+    $di['crypt'] = $crypt;
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => $module === 'Invoice' ? $gateways : $domains);
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+    $before = $tables;
+
+    (new ReflectionMethod($patcher, 'patch132'))->invoke($patcher);
+    $once = $tables;
+    (new ReflectionMethod($patcher, 'patch132'))->invoke($patcher);
+
+    $gateway = json_decode((string) $tables['pay_gateway'][1], true);
+    $registrar = json_decode((string) $tables['tld_registrar'][1], true);
+    expect($writes)->toBe(2)
+        ->and($tables)->toBe($once)
+        ->and($gateway['api_key'])->toStartWith(ClientFence\Crypt::CURRENT_FORMAT_PREFIX)
+        ->and($crypt->decrypt($gateway['api_key']))->toBe('example-key-secret')
+        ->and($gateway['pub_key'])->toBe('pk_live_visible')
+        ->and($gateway['fee'])->toBe(['percent' => '2'])
+        ->and($crypt->decrypt($registrar['api-key']))->toBe('registrar-secret')
+        ->and($registrar['username'])->toBe('reseller')
+        ->and(array_diff_key($tables['pay_gateway'], [1 => true]))->toBe(array_diff_key($before['pay_gateway'], [1 => true]));
 });

@@ -9410,5 +9410,41 @@
     {
         "file": "library/ClientFence/UpdatePatcher.php",
         "done": "ClientFence core patch: the daily activity clean-up (Activity\\Service) deletes by created_at, which had no index."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: secrets are stored encrypted (SecretConfig); staff still see only whether one is set."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: the gateway's secret fields are encrypted at rest."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: the adapter gets its secrets decrypted."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: secret fields are stored encrypted (SecretConfig); every reader gets them decrypted here."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the registrar's secret fields are encrypted at rest."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the secret fields of a registrar, for the migration that encrypts stored ones (UpdatePatcher patch132)."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch: payment gateway and registrar secrets are stored encrypted (SecretConfig)."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: a password field is a secret even when the adapter does not list it."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a password field is a secret even when the adapter does not list it."
     }
 ]

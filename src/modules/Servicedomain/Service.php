@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Servicedomain;
 
 use ClientFence\Mod\Product\Entity\Product;
+use ClientFence\SecretConfig;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
@@ -1572,6 +1573,8 @@ class Service implements \ClientFence\InjectionAwareInterface
     public function registrarGetConfiguration(\Model_TldRegistrar $model): array
     {
         $config = json_decode($model->config ?? '', true) ?? [];
+        // ClientFence core patch: secret fields are stored encrypted (SecretConfig); every reader gets them decrypted here.
+        $config = is_array($config) ? SecretConfig::decryptMarkedValues($config, $this->di['crypt']) : $config;
         // ClientFence core patch: an older config's use_whois is the RDAP switch, so its form and a save keep it.
         if (is_array($config) && !array_key_exists('use_rdap', $config) && array_key_exists('use_whois', $config)) {
             $config['use_rdap'] = $config['use_whois'];
@@ -1709,7 +1712,8 @@ class Service implements \ClientFence\InjectionAwareInterface
                 }
             }
 
-            $model->config = json_encode($configuration, JSON_THROW_ON_ERROR);
+            // ClientFence core patch: the registrar's secret fields are encrypted at rest.
+            $model->config = json_encode(SecretConfig::encryptSecretFields($configuration, $secretFields, $this->di['crypt']), JSON_THROW_ON_ERROR);
             $this->registrarValidateConfiguration($model);
         }
 
@@ -1797,6 +1801,16 @@ class Service implements \ClientFence\InjectionAwareInterface
     }
 
     /**
+     * ClientFence core patch: the secret fields of a registrar, for the migration that encrypts stored ones (UpdatePatcher patch132).
+     *
+     * @return string[]
+     */
+    public function registrarGetSecretFields(\Model_TldRegistrar $model): array
+    {
+        return $this->resolveRegistrarSecretFields($model, $this->registrarGetRegistrarAdapterConfig($model));
+    }
+
+    /**
      * Config field names for this registrar's adapter whose stored values must
      * be hidden in the API and admin UI: the adapter's own declared secrets
      * plus any form field marked `'secret' => true`. Takes the already-resolved
@@ -1823,7 +1837,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         if (is_array($form)) {
             foreach ($form as $name => $element) {
                 $options = $element[1] ?? [];
-                if (!empty($options['secret'])) {
+                // ClientFence core patch: a password field is a secret even when the adapter does not list it.
+                if (!empty($options['secret']) || ($element[0] ?? null) === 'password') {
                     $secrets[] = (string) $name;
                 }
             }

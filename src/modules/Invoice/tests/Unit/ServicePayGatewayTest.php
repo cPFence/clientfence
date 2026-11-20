@@ -277,7 +277,7 @@ test('converts to api array masks secrets for an admin', function (): void {
     $payGatewayModel->accepted_currencies = json_encode(['USD']);
     $payGatewayModel->config = json_encode([
         'pub_key' => 'pk_live_visible',
-        'api_key' => 'sk_live_secret',
+        'api_key' => 'example-key-secret',
         'webhook_secret' => 'whsec_secret',
     ]);
 
@@ -307,7 +307,7 @@ test('update keeps the existing secret gateway value when the incoming value is 
     $payGatewayModel = new Model_PayGateway();
     $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
     $payGatewayModel->gateway = 'Stripe';
-    $payGatewayModel->config = json_encode(['api_key' => 'sk_live_existing', 'pub_key' => 'pk_live_existing']);
+    $payGatewayModel->config = json_encode(['api_key' => 'example-key-existing', 'pub_key' => 'pk_live_existing']);
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('store')->atLeast()->once();
@@ -328,16 +328,19 @@ test('update keeps the existing secret gateway value when the incoming value is 
     ]);
 
     expect($result)->toBeTrue();
-    $config = json_decode((string) $payGatewayModel->config, true);
-    expect($config['api_key'])->toBe('sk_live_existing');
-    expect($config['pub_key'])->toBe('pk_live_new');
+    $stored = json_decode((string) $payGatewayModel->config, true);
+    $config = ClientFence\SecretConfig::decryptMarkedValues($stored, $di['crypt']);
+    // The plaintext key from before is encrypted on this save; the publishable key stays readable.
+    expect($stored['api_key'])->toStartWith(ClientFence\Crypt::CURRENT_FORMAT_PREFIX);
+    expect($config['api_key'])->toBe('example-key-existing');
+    expect($stored['pub_key'])->toBe('pk_live_new');
 });
 
 test('update rotates a secret gateway value when a new value is submitted', function (): void {
     $payGatewayModel = new Model_PayGateway();
     $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
     $payGatewayModel->gateway = 'Stripe';
-    $payGatewayModel->config = json_encode(['api_key' => 'sk_live_old']);
+    $payGatewayModel->config = json_encode(['api_key' => 'example-key-old']);
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('store')->atLeast()->once();
@@ -350,11 +353,40 @@ test('update rotates a secret gateway value when a new value is submitted', func
     $service = new ServicePayGateway();
     $service->setDi($di);
 
-    $result = $service->update($payGatewayModel, ['config' => ['api_key' => 'sk_live_new']]);
+    $result = $service->update($payGatewayModel, ['config' => ['api_key' => 'example-key-new']]);
 
     expect($result)->toBeTrue();
-    $config = json_decode((string) $payGatewayModel->config, true);
-    expect($config['api_key'])->toBe('sk_live_new');
+    $stored = json_decode((string) $payGatewayModel->config, true);
+    expect($stored['api_key'])->not->toBe('example-key-new')
+        ->and(ClientFence\SecretConfig::decryptMarkedValues($stored, $di['crypt'])['api_key'])->toBe('example-key-new');
+});
+
+test('the payment adapter gets encrypted and legacy plaintext secrets decrypted', function (): void {
+    $di = container();
+    $payGatewayModel = new Model_PayGateway();
+    $payGatewayModel->loadBean(new Tests\Helpers\DummyBean());
+    $payGatewayModel->id = 3;
+    $payGatewayModel->gateway = 'Stripe';
+    $payGatewayModel->test_mode = 0;
+    $payGatewayModel->config = json_encode([
+        'api_key' => $di['crypt']->encrypt('example-key-secret'),
+        'webhook_secret' => 'whsec_legacy',
+        'pub_key' => 'pk_live_visible',
+    ]);
+    $url = Mockery::mock('ClientFence\Url');
+    $url->shouldReceive('link')->andReturn('http://example.com/');
+    $tools = Mockery::mock(ClientFence\Tools::class);
+    $tools->shouldReceive('url')->andReturn('http://example.com/');
+    $di['url'] = $url;
+    $di['tools'] = $tools;
+    $service = new ServicePayGateway();
+    $service->setDi($di);
+
+    $config = Tests\Helpers\accessPrivate($service->getPaymentAdapter($payGatewayModel), 'config');
+
+    expect($config['api_key'])->toBe('example-key-secret')
+        ->and($config['webhook_secret'])->toBe('whsec_legacy')
+        ->and($config['pub_key'])->toBe('pk_live_visible');
 });
 
 test('deletes a gateway', function (): void {
@@ -724,4 +756,22 @@ test('moves a gateway up or down in the order and puts a copied one last', funct
     $service->copy($gateway(1));
 
     expect($copy->position)->toBe(4);
+});
+
+test('a password field of a gateway is a secret even when the adapter does not list it', function (): void {
+    if (!class_exists('Payment_Adapter_PasswordOnlyTest')) {
+        class_alias((new class {
+            public static function getConfig(): array
+            {
+                return ['form' => ['merchant' => ['text', ['label' => 'Merchant']], 'token' => ['password', ['label' => 'Token']]]];
+            }
+        })::class, 'Payment_Adapter_PasswordOnlyTest');
+    }
+    $model = new Model_PayGateway();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->gateway = 'PasswordOnlyTest';
+    $service = new ServicePayGateway();
+    $service->setDi(container());
+
+    expect($service->getSecretFields($model))->toBe(['token']);
 });

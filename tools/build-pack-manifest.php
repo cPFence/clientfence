@@ -66,6 +66,7 @@ $paths = [
     'library/ClientFence/Doctrine/RowLock.php',
     'library/ClientFence/Http/PaymentReturn.php',
     'library/ClientFence/IpSeats.php',
+    'library/ClientFence/SecretConfig.php',
     'library/Server/PackageExistsException.php',
     'clientfence-security-headers.php',
     'modules/Clientfence',

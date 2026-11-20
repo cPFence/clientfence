@@ -579,6 +579,7 @@ class UpdatePatcher implements InjectionAwareInterface
             129 => 'patch129',
             130 => 'patch130',
             131 => 'patch131',
+            132 => 'patch132',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2758,6 +2759,34 @@ class UpdatePatcher implements InjectionAwareInterface
                AND EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = i.id AND d.type = 'deposit')
                AND NOT EXISTS (SELECT 1 FROM invoice_item o WHERE o.invoice_id = i.id AND o.type <> 'deposit')" . $imported
         );
+    }
+
+    private function patch132(): void
+    {
+        // ClientFence core patch: payment gateway and registrar secrets are stored encrypted (SecretConfig).
+        $salt = Config::getProperty('info.salt');
+        foreach (['PayGateway' => 'pay_gateway', 'TldRegistrar' => 'tld_registrar'] as $modelName => $table) {
+            foreach ($this->fetchAll(sprintf('SELECT id, config FROM %s', $this->quoteIdentifier($table))) as $row) {
+                $config = json_decode((string) $row['config'], true);
+                if (!is_array($config) || $config === []) {
+                    continue;
+                }
+                try {
+                    $model = $this->di['db']->load($modelName, (int) $row['id']);
+                    $secretFields = $table === 'pay_gateway'
+                        ? $this->di['mod_service']('Invoice', 'PayGateway')->getSecretFields($model)
+                        : $this->di['mod_service']('servicedomain')->registrarGetSecretFields($model);
+                } catch (\Throwable) {
+                    // The adapter is gone: its row stays as it is (it still reads as plaintext).
+                    continue;
+                }
+                $encrypted = SecretConfig::encryptSecretFields($config, $secretFields, $this->di['crypt'], $salt);
+                if ($encrypted !== $config) {
+                    // Only the row as read: a staff save in the meantime keeps its values.
+                    $this->updateTable($table, ['config' => json_encode($encrypted)], ['id' => $row['id'], 'config' => $row['config']]);
+                }
+            }
+        }
     }
 
     private function patch131(): void

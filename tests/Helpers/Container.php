@@ -165,6 +165,8 @@ function container(): Container
     };
     $di['mod_config'] = $di->protect(fn (string $name): array => []);
     $di['period'] = $di->protect(fn ($code): \ClientFence\Period => new \ClientFence\Period($code));
+    // Gateway and registrar configs decrypt their secret fields (SecretConfig) with the install's key.
+    $di['crypt'] = fn (): \ClientFence\Crypt => new \ClientFence\Crypt();
     // ClientFence is built in: its code reads module settings through $di['mod'] on every install.
     // A test that does not set them gets each module's defaults (an empty config).
     $di['mod'] = $di->protect(static function (string $name) use ($di): object {

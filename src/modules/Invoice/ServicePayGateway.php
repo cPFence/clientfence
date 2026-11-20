@@ -13,6 +13,7 @@ namespace ClientFence\Mod\Invoice;
 
 use ClientFence\InformationException;
 use ClientFence\InjectionAwareInterface;
+use ClientFence\SecretConfig;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
@@ -201,7 +202,8 @@ class ServicePayGateway implements InjectionAwareInterface
         ];
 
         if ($identity instanceof \Model_Admin) {
-            $config = json_decode($model->config ?? '', true) ?? [];
+            // ClientFence core patch: secrets are stored encrypted (SecretConfig); staff still see only whether one is set.
+            $config = SecretConfig::decryptMarkedValues(json_decode($model->config ?? '', true) ?? [], $this->di['crypt']);
             $secretFields = $this->getSecretFields($model);
             foreach ($secretFields as $field) {
                 $value = $config[$field] ?? null;
@@ -250,7 +252,8 @@ class ServicePayGateway implements InjectionAwareInterface
         if (is_array($form)) {
             foreach ($form as $name => $element) {
                 $options = $element[1] ?? [];
-                if (!empty($options['secret'])) {
+                // ClientFence core patch: a password field is a secret even when the adapter does not list it.
+                if (!empty($options['secret']) || ($element[0] ?? null) === 'password') {
                     $secrets[] = (string) $name;
                 }
             }
@@ -309,8 +312,9 @@ class ServicePayGateway implements InjectionAwareInterface
 
         $newEnabled = isset($data['enabled']) ? (bool) $data['enabled'] : (bool) $model->enabled;
         $newTestMode = isset($data['test_mode']) ? (bool) $data['test_mode'] : (bool) $model->test_mode;
-        $existingConfig = json_decode($model->config ?? '', true) ?? [];
+        $existingConfig = SecretConfig::decryptMarkedValues(json_decode($model->config ?? '', true) ?? [], $this->di['crypt']);
         $mergedConfig = $existingConfig;
+        $secretFields = [];
         if (isset($data['config']) && is_array($data['config'])) {
             $secretFields = $this->getSecretFields($model);
             foreach ($data['config'] as $key => $value) {
@@ -329,7 +333,8 @@ class ServicePayGateway implements InjectionAwareInterface
         }
 
         if (isset($data['config']) && is_array($data['config'])) {
-            $model->config = json_encode($mergedConfig);
+            // ClientFence core patch: the gateway's secret fields are encrypted at rest.
+            $model->config = json_encode(SecretConfig::encryptSecretFields($mergedConfig, $secretFields, $this->di['crypt']));
         }
 
         if (isset($data['accepted_currencies']) && is_array($data['accepted_currencies'])) {
@@ -527,7 +532,8 @@ class ServicePayGateway implements InjectionAwareInterface
 
     public function getPaymentAdapter(\Model_PayGateway $pg, ?\Model_Invoice $model = null, $optional = []): object
     {
-        $config = json_decode($pg->config ?? '', true) ?? [];
+        // ClientFence core patch: the adapter gets its secrets decrypted.
+        $config = SecretConfig::decryptMarkedValues(json_decode($pg->config ?? '', true) ?? [], $this->di['crypt']);
         $defaults = [];
         $defaults['auto_redirect'] = false;
         $defaults['gateway_id'] = (int) $pg->id;

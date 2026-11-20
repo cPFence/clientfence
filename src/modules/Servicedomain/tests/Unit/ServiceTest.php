@@ -2332,6 +2332,7 @@ test('gets registrar configuration', function (): void {
 
 test('an older registrar config keeps its use_whois switch as use_rdap', function (): void {
     $service = new Service();
+    $service->setDi(container());
     $model = new Model_TldRegistrar();
     $model->loadBean(new Tests\Helpers\DummyBean());
     $model->config = json_encode(['email' => 'ops@example.com', 'use_whois' => '1']);
@@ -2547,9 +2548,11 @@ test('registrarUpdate keeps the existing secret when the incoming value is blank
     ]);
 
     expect($result)->toBeTrue();
-    $config = json_decode((string) $model->config, true);
-    expect($config['api-key'])->toBe('existing-secret');
-    expect($config['api-user-id'])->toBe('new-reseller-id');
+    $stored = json_decode((string) $model->config, true);
+    // The plaintext key from before is encrypted on this save; the other fields stay readable.
+    expect($stored['api-key'])->toStartWith(ClientFence\Crypt::CURRENT_FORMAT_PREFIX);
+    expect($service->registrarGetConfiguration($model)['api-key'])->toBe('existing-secret');
+    expect($stored['api-user-id'])->toBe('new-reseller-id');
 });
 
 test('registrarUpdate rotates a secret when a new value is submitted', function (): void {
@@ -2578,8 +2581,25 @@ test('registrarUpdate rotates a secret when a new value is submitted', function 
     $result = $service->registrarUpdate($model, ['config' => ['api-key' => 'new-secret']]);
 
     expect($result)->toBeTrue();
-    $config = json_decode((string) $model->config, true);
-    expect($config['api-key'])->toBe('new-secret');
+    expect(json_decode((string) $model->config, true)['api-key'])->not->toBe('new-secret')
+        ->and($service->registrarGetConfiguration($model)['api-key'])->toBe('new-secret');
+});
+
+test('the registrar adapter gets encrypted and legacy plaintext secrets decrypted', function (): void {
+    $service = new Service();
+    $di = container();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $service->setDi($di);
+    $model = new Model_TldRegistrar();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->registrar = 'Namecheap';
+    $model->config = json_encode(['api-key' => $di['crypt']->encrypt('super-secret-key'), 'username' => 'my-username', 'ip' => '127.0.0.1']);
+
+    expect($service->registrarGetRegistrarAdapter($model)->config['api-key'])->toBe('super-secret-key');
+
+    $model->config = json_encode(['api-key' => 'legacy-plain-key', 'username' => 'my-username', 'ip' => '127.0.0.1']);
+
+    expect($service->registrarGetRegistrarAdapter($model)->config['api-key'])->toBe('legacy-plain-key');
 });
 
 test('creates tld', function (): void {
