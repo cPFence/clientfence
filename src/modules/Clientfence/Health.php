@@ -453,7 +453,7 @@ final class Health
         $changed = Customized::files(PATH_ROOT, $files, $missing);
         $listed = $changed !== null;
         if ($listed) {
-            $changed = [...$changed, ...self::deleted($missing ?? [], PATH_ROOT)];
+            $changed = self::counted($changed, $missing ?? [], PATH_ROOT);
         } else {
             $changed = [];
             foreach ($manifest['files'] ?? [] as $relative => $hash) {
@@ -471,18 +471,22 @@ final class Health
     }
 
     /**
-     * The missing release files that count as changes: not the install folder (load.php removes it), the cache and log
-     * folders (a cloud backup leaves them out) or an extension uninstalled from the admin (Extension\Service::uninstall()
-     * removes its whole folder).
+     * The changed and missing release files that count: not the root .htaccess (sites add their own rules; the pack's
+     * blocks have their own check), and of the missing ones not the install folder (load.php removes it), the cache and
+     * log folders (a cloud backup leaves them out) or an extension uninstalled from the admin
+     * (Extension\Service::uninstall() removes its whole folder).
      *
+     * @param list<string> $changed
      * @param list<string> $missing
      *
      * @return list<string>
      */
-    public static function deleted(array $missing, string $root): array
+    public static function counted(array $changed, array $missing, string $root): array
     {
-        return array_values(array_filter($missing, static fn (string $path): bool => preg_match('#^(?:install|data/cache|data/log)/#', $path) !== 1
-            && !(preg_match('#^(?:modules|themes|locale)/[^/]+/#', $path, $folder) === 1 && !is_dir($root . '/' . $folder[0]))));
+        $deleted = array_filter($missing, static fn (string $path): bool => preg_match('#^(?:install|data/cache|data/log)/#', $path) !== 1
+            && !(preg_match('#^(?:modules|themes|locale)/[^/]+/#', $path, $folder) === 1 && !is_dir($root . '/' . $folder[0])));
+
+        return array_values(array_diff([...$changed, ...$deleted], ['.htaccess']));
     }
 
     // ---- Services.
