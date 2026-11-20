@@ -232,6 +232,38 @@ test('Renew Now leaves a draft invoice staff hold back on the order alone (CF-17
         ->toThrow(ClientFence\InformationException::class, 'being prepared');
 });
 
+test('Renew Now refuses a domain renewal past 10 years ahead, before any invoice', function (): void {
+    $api = apiEndpoint(new Client());
+    $serviceMock = Mockery::mock(Service::class);
+    $serviceMock->shouldNotReceive('generateForOrder');
+
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 1;
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->service_type = 'domain';
+    $order->period = '6Y';
+    // A fresh six-year registration: six more years would hold it 12 years ahead.
+    $order->expires_at = date('Y-m-d H:i:s', strtotime('+6 years'));
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('findOne')->twice()->andReturn($order, $order);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['dbal'] = $dbal;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+    $identity = new Model_Client();
+    $identity->loadBean(new Tests\Helpers\DummyBean());
+    $identity->id = 3;
+    $api->setIdentity($identity);
+
+    expect(fn () => $api->renewal_invoice(['order_id' => 1]))
+        ->toThrow(ClientFence\InformationException::class, 'at most 10 years ahead');
+});
+
 test('refuses a renewal click made before another click renewed the order', function (): void {
     $api = apiEndpoint(new Client());
     $serviceMock = Mockery::mock(Service::class);

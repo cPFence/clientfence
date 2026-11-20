@@ -1962,6 +1962,14 @@ class Service implements InjectionAwareInterface
     {
         $orderId = $this->orderId($order);
 
+        // ClientFence core patch: a domain term over 9 years renews as 9 years, also on a staff Renew (Servicedomain\Service::capRenewalTerm()).
+        if ($this->orderServiceType($order) === 'domain') {
+            $model = $order instanceof Order ? $this->di['db']->load('ClientOrder', $orderId) : $order;
+            if ($model instanceof \Model_ClientOrder && $this->di['mod_service']('servicedomain')->capRenewalTerm($model) && $order instanceof Order) {
+                $order->setPeriod($model->period);
+            }
+        }
+
         try {
             $result = $this->_callOnService($order, Order::ACTION_RENEW);
         } catch (\Exception $e) {

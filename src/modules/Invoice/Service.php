@@ -2969,6 +2969,8 @@ class Service implements InjectionAwareInterface
             $product = $productService->findProductById((int) $order->product_id);
 
             if ($productService instanceof \ClientFence\Mod\Product\Service && $product->getType() === \ClientFence\Mod\Product\Service::DOMAIN) {
+                // ClientFence core patch: a domain term over 9 years renews as 9 years (Servicedomain\Service::capRenewalTerm()).
+                $this->di['mod_service']('servicedomain')->capRenewalTerm($order);
                 $config = json_decode($order->config ?? '', true) ?? [];
                 $currencyService = $this->di['mod_service']('Currency');
                 $currencyRepository = $currencyService->getCurrencyRepository();

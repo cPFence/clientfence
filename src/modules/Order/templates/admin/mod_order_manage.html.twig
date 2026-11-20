@@ -602,7 +602,12 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="form-label">{{ 'Period'|trans }}</label>
-                                    {{ mf.selectbox('period', guest.system_periods, order.period, 0, 'Not recurrent'|trans) }}
+                                    {# ClientFence core patch: an order's own longer term (a 6-10 year domain) stays selected, so a save keeps its renewals. #}
+                                    {% set order_periods = guest.system_periods %}
+                                    {% if order.period and order_periods[order.period] is not defined %}
+                                    {% set order_periods = order_periods|merge({ (order.period): order.period|period_title }) %}
+                                    {% endif %}
+                                    {{ mf.selectbox('period', order_periods, order.period, 0, 'Not recurrent'|trans) }}
                                 </div>
                                 {# ClientFence core patch: the activation day is editable as WHMCS Registration Date (order/update activated_at). #}
                                 <div class="col-lg-6">

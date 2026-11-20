@@ -185,9 +185,9 @@
         const t = TLDS.filter((x) => n.endsWith(x.tld) && n.length > x.tld.length).sort((a, b) => b.tld.length - a.tld.length)[0];
         return t ? { sld: n.slice(0, -t.tld.length), tld: t.tld, info: t } : null;
     };
-    // As the client order form: the TLD's own periods, or five years from its minimum.
-    const yearsFor = (t) => t && Array.isArray(t.periods) && t.periods.length ? t.periods
-        : Array.from({ length: 5 }, (_, i) => i + (Number(t?.min_years) > 0 ? Number(t.min_years) : 1));
+    // As the client order form: the TLD's own periods, or five years from its minimum (ten for an existing domain), at most 10.
+    const yearsFor = (t, existing = false) => (t && Array.isArray(t.periods) && t.periods.length ? t.periods
+        : Array.from({ length: existing ? 10 : 5 }, (_, i) => i + (Number(t?.min_years) > 0 ? Number(t.min_years) : 1))).filter((y) => y <= 10);
 
     function addProduct(id) {
         const p = product(id);
@@ -258,7 +258,7 @@
         $('cf-domains').innerHTML = state.domains.length ? state.domains.map((d, i) => {
             const s = split(d.name), t = s?.info;
             const link = state.products.findIndex((p) => p.key === d.linkedTo);
-            const years = yearsFor(t);
+            const years = yearsFor(t, d.action === 'existing');
             if (!years.includes(Number(d.years))) d.years = years[0];
             return `<div class="cf-order-item" data-key="${d.key}">
                 <div class="d-flex align-items-center gap-2 px-3 py-2 border-bottom">

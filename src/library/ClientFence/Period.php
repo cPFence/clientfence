@@ -46,11 +46,12 @@ class Period
 
     public function __construct(string $code)
     {
-        if (strlen($code) != 2) {
+        // ClientFence core patch: a quantity of up to two digits, so a domain can be registered for up to 10 years ("10Y").
+        if (preg_match('/^(\d{1,2})([A-Za-z])$/', $code, $parts) !== 1) {
             throw new \ClientFence\Exception('Invalid period code. Period definition must be 2 chars length');
         }
 
-        [$qty, $unit] = str_split($code);
+        [, $qty, $unit] = $parts;
 
         $units = $this->getUnits();
         $qty = (int) $qty;
@@ -80,7 +81,7 @@ class Period
             self::UNIT_DAY => [1, 90],
             self::UNIT_WEEK => [1, 52],
             self::UNIT_MONTH => [1, 24],
-            self::UNIT_YEAR => [1, 5],
+            self::UNIT_YEAR => [1, 10],
         ];
     }
 

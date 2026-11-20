@@ -65,10 +65,11 @@ export default function initHostingDomain(root, money, rate, texts, onChange) {
     let years = Array.isArray(prices.periods) && prices.periods.length ? prices.periods.map(Number) : null;
     if (!years) {
       const min = Number(prices.min_years) > 0 ? Number(prices.min_years) : 1;
-      years = [0, 1, 2, 3, 4].map((i) => min + i);
+      // Five years from the minimum unless the TLD lists longer terms (some registries cap them, .co: 5 years).
+      years = Array.from({ length: 5 }, (_, i) => min + i);
     }
-    // A registration holds at most 5 years (Servicedomain\Service::validateOrderData()).
-    field('register_years').replaceChildren(...years.filter((y) => y >= 1 && y <= 5)
+    // A registration holds at most 10 years (Servicedomain\Service::validateOrderData()).
+    field('register_years').replaceChildren(...years.filter((y) => y >= 1 && y <= 10)
       .map((y) => new Option(`${y}${y === 1 ? texts.year : texts.years}${money(registrationTotal(prices, y) * rate)}`, y)));
   };
 

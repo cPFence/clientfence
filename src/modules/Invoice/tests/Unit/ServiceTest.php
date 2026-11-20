@@ -4127,9 +4127,12 @@ test('a domain renewal is billed at the TLD price, or free while its hosting giv
 
     $di = container();
     $di['db'] = $dbMock;
+    $domainService = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class);
+    $domainService->shouldReceive('capRenewalTerm')->once()->with($orderModel)->andReturn(false);
     $di['mod_service'] = $di->protect(fn (string $module): Mockery\MockInterface => match ($module) {
         'Product' => $productService,
         'Currency' => $currencyService,
+        'servicedomain' => $domainService,
         default => $invoiceItemServiceMock,
     });
 

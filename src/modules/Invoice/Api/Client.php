@@ -133,6 +133,14 @@ class Client extends \ClientFence\Api\AbstractApi
             if (!empty($model->unpaid_invoice_id) && $this->getDi()['dbal']->fetchOne('SELECT 1 FROM invoice WHERE id = ? AND status = ? AND approved = 0', [(int) $model->unpaid_invoice_id, \Model_Invoice::STATUS_UNPAID])) {
                 throw new \ClientFence\InformationException('The invoice for this service is being prepared. You will receive it by email.');
             }
+            // ClientFence core patch: a registry holds a domain at most 10 years ahead (a term over 9 years renews as 9), so
+            // Renew Now refuses a renewal the registrar would reject, before the client pays for it.
+            if ($model->service_type === 'domain' && $model->expires_at !== null) {
+                $renewable = strtotime(sprintf('+%d years -10 years', min(9, (int) $model->period)), (int) strtotime((string) $model->expires_at));
+                if ($renewable > time()) {
+                    throw new \ClientFence\InformationException('A registry holds a domain at most 10 years ahead, so this domain can be renewed from :date.', [':date' => date('Y-m-d', $renewable)]);
+                }
+            }
             $invoice = $service->generateForOrder($model);
             // ClientFence core patch: Renew Now takes the part of the credit that does not cover the invoice, as the cron does.
             $service->applyPartCreditToRenewal($invoice);

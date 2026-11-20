@@ -484,7 +484,8 @@ class ServiceSubscription implements InjectionAwareInterface
                 continue;
             }
 
-            if (empty($period)) {
+            // ClientFence core patch: gateways bill at most every 5 years (PayPal), so a 6-10 year domain term is paid once.
+            if (empty($period) || (preg_match('/^(\d+)Y$/', (string) $period, $years) === 1 && (int) $years[1] > 5)) {
                 return null;
             }
 

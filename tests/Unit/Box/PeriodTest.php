@@ -60,6 +60,18 @@ test('keeps the anchor day through short months, or adds calendar months without
     'calendar months back' => ['1M', '2026-03-31 00:00', null, -1, '2026-03-03 00:00'],
 ]);
 
+// ClientFence: a domain registers for up to 10 years, so the year codes go to 10Y (WHMCS imports them too).
+test('year codes go up to 10 years', function (string $code, string $expected): void {
+    expect(date('Y-m-d', (new \ClientFence\Period($code))->getExpirationTime((int) strtotime('2026-11-20 12:00'))))->toBe($expected);
+})->with([
+    '6Y' => ['6Y', '2032-11-20'],
+    '10Y' => ['10Y', '2036-11-20'],
+]);
+
+test('throws exception for more than 10 years', function (): void {
+    expect(fn (): \ClientFence\Period => new \ClientFence\Period('11Y'))->toThrow(ClientFence\Exception::class, 'Invalid period quantity 11 for unit Y. Allowed range is from 1 to 10');
+});
+
 test('throws exception for invalid period code length', function (): void {
     expect(fn (): \ClientFence\Period => new \ClientFence\Period('1'))->toThrow(ClientFence\Exception::class, 'Invalid period code. Period definition must be 2 chars length');
 });

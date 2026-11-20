@@ -51,8 +51,11 @@ export default function initDomainSearch(root) {
     let years = Array.isArray(result.periods) && result.periods.length ? result.periods : null;
     if (!years) {
       const min = Number(result.min_years) > 0 ? Number(result.min_years) : 1;
-      years = [0, 1, 2, 3, 4].map((i) => min + i);
+      // Five years from the minimum unless the TLD lists longer terms (some registries cap them, .co: 5 years).
+      years = Array.from({ length: 5 }, (_, i) => min + i);
     }
+    // A registration holds at most 10 years (Servicedomain\Service::validateOrderData()).
+    years = years.filter((y) => y <= 10);
     years.forEach((i) => {
       const total = (reg + (i - 1) * renew) * Number(data.rate);
       select.append(new Option(`${i}${i === 1 ? texts.year : texts.years}${money(total)}`, i));

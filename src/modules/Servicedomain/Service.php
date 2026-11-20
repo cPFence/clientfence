@@ -159,7 +159,8 @@ class Service implements \ClientFence\InjectionAwareInterface
                 throw new \ClientFence\InformationException('A transfer code (EPP/auth code) is required to transfer :domain', [':domain' => $domain]);
             }
 
-            $data['period'] = '1Y';
+            // ClientFence core patch: a transfer takes the TLD's shortest term, so a TLD sold only in longer terms (.gr: two years) can renew.
+            $data['period'] = max(1, $this->getTldPeriodsArray($tld)[0] ?? (int) ($tld->min_years ?? 1)) . 'Y';
             $data['quantity'] = 1;
             // ClientFence core patch: a transfer's own fields (the form sends transfer_fields; a stored order has domain_fields).
             $data['domain_fields'] = $this->checkDomainFields($tld, $data['transfer_fields'] ?? $data['domain_fields'] ?? [], 'transfer');
@@ -190,9 +191,9 @@ class Service implements \ClientFence\InjectionAwareInterface
             if ($years === false || $years < 1) {
                 throw new \ClientFence\InformationException('Domain registration period must be a positive integer');
             }
-            // ClientFence core patch: a period code holds at most 5 years, so a longer registration failed at checkout.
-            if ($years > 5) {
-                throw new \ClientFence\InformationException(':tld can be registered for at most :years years', [':tld' => $tld->tld, ':years' => 5]);
+            // ClientFence core patch: a registration holds at most 10 years (the registries' ceiling, as in WHMCS).
+            if ($years > 10) {
+                throw new \ClientFence\InformationException(':tld can be registered for at most :years years', [':tld' => $tld->tld, ':years' => 10]);
             }
 
             $allowedPeriods = $this->getTldPeriodsArray($tld);
@@ -202,6 +203,10 @@ class Service implements \ClientFence\InjectionAwareInterface
                 }
             } elseif ($years < ($tld->min_years ?? 1)) {
                 throw new \ClientFence\Exception(':tld can be registered for at least :years years', [':tld' => $tld->tld, ':years' => $tld->min_years]);
+            } elseif (empty($data['import']) && $years > (int) ($tld->min_years ?? 1) + 4) {
+                // ClientFence core patch: without a period list a TLD sells five years from its minimum; longer terms are listed
+                // per TLD, as some registries cap them (.co: 5 years). An existing domain (staff import) keeps its term.
+                throw new \ClientFence\Exception(':tld can only be registered for :periods years', [':tld' => $tld->tld, ':periods' => implode(', ', range((int) ($tld->min_years ?? 1), (int) ($tld->min_years ?? 1) + 4))]);
             }
 
             $domain = $data['register_sld'] . $tld->tld;
@@ -431,6 +436,28 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
 
         return $model;
+    }
+
+    /**
+     * ClientFence core patch: a registry holds a domain at most 10 years ahead, so a term over 9 years renews as 9 years:
+     * the order, its billing settings and the registrar term (WHMCS imports bring 10-year terms too). True when changed.
+     */
+    public function capRenewalTerm(\Model_ClientOrder $order): bool
+    {
+        if (preg_match('/^(\d+)Y$/', (string) $order->period, $term) !== 1 || (int) $term[1] <= 9) {
+            return false;
+        }
+        $config = json_decode($order->config ?? '', true) ?? [];
+        $order->period = $config['period'] = '9Y';
+        $order->config = json_encode($config);
+        $this->di['db']->store($order);
+        $domain = $this->di['mod_service']('Order')->getOrderService($order);
+        if ($domain instanceof \Model_ServiceDomain) {
+            $domain->period = 9;
+            $this->di['db']->store($domain);
+        }
+
+        return true;
     }
 
     public function action_renew(\Model_ClientOrder $order): bool

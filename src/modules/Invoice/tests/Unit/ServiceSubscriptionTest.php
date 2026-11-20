@@ -696,6 +696,22 @@ test('gets subscription period', function (): void {
     expect($result)->toBeString()->toBe($period);
 });
 
+test('has no subscription period beyond five years', function (string $period, ?string $expected): void {
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getAll')->once()->andReturn([['type' => 'custom', 'period' => $period, 'price' => 20, 'quantity' => 1]]);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $service = new ServiceSubscription();
+    $service->setDi($di);
+
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 2;
+
+    expect($service->getSubscriptionPeriod($invoice))->toBe($expected);
+})->with([['5Y', '5Y'], ['6Y', null], ['10Y', null]]);
+
 test('has no subscription period for an invoice with a discount line', function (): void {
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('getAll')->once()->andReturn([

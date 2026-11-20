@@ -207,6 +207,37 @@ test('throws exception when a tld requires a transfer code and none is provided'
     'whitespace only' => ['   '],
 ]);
 
+test('a transfer takes the TLD shortest term', function (?string $periods, ?int $minYears, string $expected): void {
+    $tldModel = new Model_Tld();
+    $tldModel->loadBean(new Tests\Helpers\DummyBean());
+    $tldModel->tld = '.gr';
+    $tldModel->active = true;
+    $tldModel->periods = $periods;
+    $tldModel->min_years = $minYears;
+
+    $data = ['action' => 'transfer', 'transfer_sld' => 'example', 'transfer_tld' => '.gr'];
+
+    $validatorMock = Mockery::mock(ClientFence\Validate::class);
+    $validatorMock->shouldReceive('isSldValid')->andReturn(true);
+    $validatorMock->shouldReceive('checkRequiredParamsForArray')->zeroOrMoreTimes();
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('tldFindOneByTld')->andReturn($tldModel);
+    $serviceMock->shouldReceive('canBeTransferred')->andReturn(true);
+
+    $di = container();
+    $di['validator'] = $validatorMock;
+    $serviceMock->setDi($di);
+
+    $serviceMock->validateOrderData($data);
+
+    expect($data['period'])->toBe($expected);
+})->with([
+    'period list' => ['4,2,6', 1, '2Y'],
+    'minimum years' => [null, 2, '2Y'],
+    'any term' => [null, null, '1Y'],
+]);
+
 test('accepts a transfer order data when the transfer code requirement is satisfied', function (bool $requireTransferCode, ?string $transferCode): void {
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());
@@ -340,7 +371,7 @@ test('rejects a registration period outside the tld allowed periods list', funct
         ->toThrow(ClientFence\Exception::class);
 });
 
-test('rejects a registration longer than five years, which no period code can hold', function (?string $periods): void {
+test('rejects a registration longer than ten years, the registries\' ceiling', function (?string $periods): void {
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());
     $tldModel->tld = '.com';
@@ -348,7 +379,7 @@ test('rejects a registration longer than five years, which no period code can ho
     $tldModel->periods = $periods;
     $tldModel->active = true;
 
-    $data = ['action' => 'register', 'register_sld' => 'example', 'register_years' => 10, 'register_tld' => '.com'];
+    $data = ['action' => 'register', 'register_sld' => 'example', 'register_years' => 11, 'register_tld' => '.com'];
 
     $validatorMock = Mockery::mock(ClientFence\Validate::class);
     $validatorMock->shouldReceive('isSldValid')->andReturn(true);
@@ -363,20 +394,20 @@ test('rejects a registration longer than five years, which no period code can ho
     $serviceMock->setDi($di);
 
     expect(fn () => $serviceMock->validateOrderData($data))->toThrow(ClientFence\InformationException::class, 'at most');
-})->with(['no periods set' => [null], 'ten years listed' => ['1,10']]);
+})->with(['no periods set' => [null], 'eleven years listed' => ['1,11']]);
 
 test('accepts a registration period within the tld allowed periods list', function (): void {
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());
     $tldModel->tld = '.com';
     $tldModel->min_years = 1;
-    $tldModel->periods = '1,2,5';
+    $tldModel->periods = '1,2,10';
     $tldModel->active = true;
 
     $data = [
         'action' => 'register',
         'register_sld' => 'example',
-        'register_years' => 5,
+        'register_years' => 10,
         'register_tld' => '.com',
     ];
 
@@ -394,7 +425,7 @@ test('accepts a registration period within the tld allowed periods list', functi
 
     $serviceMock->validateOrderData($data);
 
-    expect($data['period'])->toBe('5Y');
+    expect($data['period'])->toBe('10Y');
 });
 
 test('rejects a crafted order for an inactive tld before contacting the registrar', function (string $action): void {
@@ -3132,4 +3163,34 @@ test('an own domain may be a subdomain', function (string $sld, bool $valid): vo
     'name with the extension' => ['example.com', false],
     'name ending in the extension' => ['shop.example.com', false],
     'name equal to the extension (com.com)' => ['com', true],
+]);
+
+test('a domain term over 9 years renews as 9 years: order, billing settings and registrar term', function (string $period, bool $changed, string $expected): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->period = $period;
+    $order->config = json_encode(['action' => 'register', 'period' => $period]);
+    $domain = new Model_ServiceDomain();
+    $domain->loadBean(new Tests\Helpers\DummyBean());
+    $domain->period = (int) $period;
+
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('getOrderService')->times($changed ? 1 : 0)->with($order)->andReturn($domain);
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('store')->times($changed ? 2 : 0);
+
+    $di = container();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->capRenewalTerm($order))->toBe($changed)
+        ->and($order->period)->toBe($expected)
+        ->and(json_decode($order->config, true)['period'])->toBe($expected)
+        ->and($domain->period)->toBe((int) $expected);
+})->with([
+    'ten years' => ['10Y', true, '9Y'],
+    'nine years' => ['9Y', false, '9Y'],
+    'one year' => ['1Y', false, '1Y'],
 ]);

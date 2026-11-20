@@ -2836,6 +2836,39 @@ test('renewFromOrder treats a missing Doctrine expiration as now', function (): 
         ->and($order->getStatus())->toBe(Order::STATUS_ACTIVE);
 });
 
+test('a staff Renew of a domain term over 9 years renews 9 years', function (): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('_callOnService')->once();
+    $serviceMock->shouldReceive('saveStatusChange')->once();
+
+    $order = createEntity(Order::class, ['period' => '10Y', 'serviceType' => 'domain']);
+    $model = new Model_ClientOrder();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->period = '9Y';
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('load')->once()->andReturn($model);
+    $domainService = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class);
+    $domainService->shouldReceive('capRenewalTerm')->once()->with($model)->andReturn(true);
+    $periodMock = Mockery::mock(\ClientFence\Period::class);
+    $periodMock->shouldReceive('getExpirationTime')->once()->andReturn(strtotime('2035-01-01 00:00:00'));
+
+    $di = container();
+    $di['db'] = $db;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $domainService);
+    $di['mod_config'] = $di->protect(fn ($name): array => []);
+    $di['period'] = $di->protect(function (string $code) use ($periodMock): Mockery\MockInterface {
+        expect($code)->toBe('9Y');
+
+        return $periodMock;
+    });
+
+    $serviceMock->setDi($di);
+    $serviceMock->renewFromOrder($order);
+
+    expect($order->getPeriod())->toBe('9Y');
+});
+
 test('periodEnd keeps the day the service started through short months, or adds calendar months when set', function (string $mode, string $from, ?string $activated, int $count, string $expected, string $logic = ''): void {
     $di = container();
     $di['mod_config'] = $di->protect(fn (): array => ($mode === '' ? [] : ['renewal_day' => $mode]) + ['order_renewal_logic' => $logic]);
