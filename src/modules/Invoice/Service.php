@@ -1322,7 +1322,8 @@ class Service implements InjectionAwareInterface
         foreach ($this->di['db']->find('InvoiceItem', 'invoice_id = ?', [$invoice->id]) ?? [] as $item) {
             if ($item->unit === \ClientFence\Mod\Clientfence\Whmcs\Money::RECEIVED_UNIT) {
                 $received -= (float) $item->price * (float) $item->quantity;
-            } elseif (MassPay::inItems([$item])) {
+            } elseif (MassPay::inItems([$item]) || $item->type === \Model_InvoiceItem::TYPE_DEPOSIT) {
+                // ClientFence core patch: Add Funds is not income either: the credit counts when it pays an invoice.
                 $lines += (float) $item->price * (float) $item->quantity;
             }
         }

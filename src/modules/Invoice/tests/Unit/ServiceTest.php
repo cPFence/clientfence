@@ -2266,6 +2266,38 @@ test('money received before the invoice came here counts as income', function ()
     expect($invoiceModel->base_income)->toBe(50.0);
 });
 
+test('an Add Funds line is not income: the credit counts when it pays an invoice', function (): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getTotal')->andReturn(100.0);
+
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->id = 17;
+    $invoiceModel->currency = 'USD';
+    $invoiceModel->refund = null;
+
+    $deposit = new Model_InvoiceItem();
+    $deposit->loadBean(new Tests\Helpers\DummyBean());
+    $deposit->type = Model_InvoiceItem::TYPE_DEPOSIT;
+    $deposit->price = 100.0;
+    $deposit->quantity = 1;
+
+    $currencyService = Mockery::mock(CurrencyService::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $currencyService->shouldReceive('toBaseCurrency')->once()->with('USD', 0.0)->andReturn(0.0);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('find')->with('InvoiceItem', 'invoice_id = ?', [17])->andReturn([$deposit]);
+    $dbMock->shouldReceive('store')->once();
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $currencyService);
+
+    $serviceMock->setDi($di);
+    $serviceMock->countIncome($invoiceModel);
+    expect($invoiceModel->base_income)->toBe(0.0);
+});
+
 test('a refund of a taxed invoice counts without its tax, as the income does', function (float $refund, float $counted, float $received = 0.0, float $income = 50.0): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     // 50.00 at 24%: 62.00 paid (or the rest of one a WHMCS import found partly paid: a "received" line).

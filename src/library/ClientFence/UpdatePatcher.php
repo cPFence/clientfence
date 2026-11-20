@@ -577,6 +577,7 @@ class UpdatePatcher implements InjectionAwareInterface
             127 => 'patch127',
             128 => 'patch128',
             129 => 'patch129',
+            130 => 'patch130',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2740,6 +2741,22 @@ class UpdatePatcher implements InjectionAwareInterface
                 $this->updateTable('service_hosting_hp', ['config' => json_encode($config + ['server_id' => (string) $servers[0]])], ['id' => $row['id']]);
             }
         }
+    }
+
+    private function patch130(): void
+    {
+        // ClientFence core patch: Add Funds is not income (Invoice\Service::countIncome()): the credit counted again when it
+        // paid an invoice. Paid Add Funds invoices of deposit lines only are taken out of the income figures, except imported
+        // ones: an import counts the deposit and takes the credit off the invoices it paid (Clientfence/Whmcs/Money.php).
+        $imported = $this->tableExists('mod_clientfence_import_map')
+            ? " AND NOT EXISTS (SELECT 1 FROM mod_clientfence_import_map m WHERE m.entity = 'invoice' AND m.target_id = i.id)"
+            : '';
+        $this->executeSql(
+            "UPDATE invoice i SET i.base_income = 0, i.base_refund = IF(i.base_refund IS NULL, NULL, 0)
+             WHERE i.status IN ('paid', 'refunded')
+               AND EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = i.id AND d.type = 'deposit')
+               AND NOT EXISTS (SELECT 1 FROM invoice_item o WHERE o.invoice_id = i.id AND o.type <> 'deposit')" . $imported
+        );
     }
 
     private function patch128(): void
