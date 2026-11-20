@@ -19,6 +19,12 @@ Custom client fields like WHMCS, and the service page in WHMCS's terms. Guide: [
 - Services are named as in WHMCS: Products & Services tab on the admin client page with links on its Overview, the Addons tab on every main service, and services instead of orders in the client area.
 - Edit Order: Price is now Recurring Amount.
 
+### Fixed
+
+- Invoices show your company number with your company details on the invoice page, the print view and the PDF. ([#53](https://github.com/cPFence/clientfence/issues/53))
+- Invoices show your company address on separate lines, as in your settings. ([#53](https://github.com/cPFence/clientfence/issues/53))
+- The invoice page and print view show your bank details only when Display Bank Account Information on Documents is on, as the PDF does. ([#53](https://github.com/cPFence/clientfence/issues/53))
+
 ## 1.0.59 (2026-11-19)
 
 Client options from WHMCS: per-client switches and an Inactive client status. Guide: [Client options and the Inactive status](https://clientfence.com/docs/clients-and-billing/client-options/).
