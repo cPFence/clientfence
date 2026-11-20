@@ -1696,6 +1696,17 @@ if (prices) {
     if (error !== undefined) { if (!quiet) notifyError(error); return; }
     preview = result;
     preview.rows.forEach((r) => { r.ticked = r.status === 'change'; });
+    // A first fetch has nothing changed: show the new endings rather than an empty table, and the
+    // changes again (they are preselected) as soon as there are some.
+    const filter = part('filter');
+    const changed = preview.rows.some((r) => r.status === 'change');
+    if (filter.value === 'change' && !changed && preview.rows.some((r) => r.status === 'new')) {
+      filter.value = 'new';
+      filter.dataset.auto = '1';
+    } else if (filter.dataset.auto && changed) {
+      filter.value = 'change';
+      delete filter.dataset.auto;
+    }
     part('currency').textContent = `(${preview.currency})`;
     part('status').textContent = say(t.fetched, { date: preview.fetched_at });
     ['tools', 'table', 'actions'].forEach((n) => { part(n).hidden = false; });
@@ -1714,7 +1725,7 @@ if (prices) {
     prices.querySelectorAll('[data-cf-prices-fetch]').forEach((b) => { b.disabled = false; });
   };
   prices.querySelectorAll('[data-cf-prices-fetch]').forEach((b) => b.addEventListener('click', () => fetchList(b.dataset.cfPricesFetch === '1')));
-  part('filter').addEventListener('change', render);
+  part('filter').addEventListener('change', () => { delete part('filter').dataset.auto; render(); });
   part('search').addEventListener('input', render);
   const ticked = () => (preview ? preview.rows.filter((r) => r.ticked && tickable(r)) : []);
   part('apply').addEventListener('click', () => {
