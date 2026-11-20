@@ -4,7 +4,7 @@
 
 The WebHosting|4U registrar built in, domains for up to 10 years, and payment gateway and registrar keys stored encrypted. Guide: [Registrars](https://clientfence.com/docs/hosting-and-domains/registrars/).
 
-Several fixes in this release build on the work of [FOSSBilling](https://github.com/FOSSBilling/FOSSBilling), with thanks to its team and [@admdly](https://github.com/admdly): the PDF download sign-out, Add Funds income, the activity log index, encrypted gateway and registrar keys, currencylayer rates, Plesk sign-in, the client-area error messages and the breadcrumb link. Some were adapted for ClientFence.
+Several fixes in this release build on the work of [FOSSBilling](https://github.com/FOSSBilling/FOSSBilling), with thanks to its team: the PDF download sign-out, Add Funds income, the activity log index, encrypted gateway and registrar keys, currencylayer rates, Plesk sign-in, the client-area error messages and the breadcrumb link. Some were adapted for ClientFence.
 
 ### Added
 
