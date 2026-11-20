@@ -978,3 +978,15 @@ test('secrets patch encrypts the stored gateway and registrar secrets once and l
         ->and($registrar['username'])->toBe('reseller')
         ->and(array_diff_key($tables['pay_gateway'], [1 => true]))->toBe(array_diff_key($before['pay_gateway'], [1 => true]));
 });
+
+test('a patch run gives the autoloader the class map of the release on disk', function (): void {
+    $loader = new Composer\Autoload\ClassLoader();
+    $loader->register();
+    try {
+        (new ReflectionMethod(UpdatePatcher::class, 'loadReleaseClassMap'))->invoke(new UpdatePatcher());
+
+        expect($loader->getClassMap())->toHaveKey(ClientFence\SecretConfig::class);
+    } finally {
+        $loader->unregister();
+    }
+});

@@ -196,6 +196,9 @@ class UpdatePatcher implements InjectionAwareInterface
         try {
             $patchLevel = $this->getPatchLevel();
             $patches = $this->getPatches($patchLevel);
+            if ($patches !== []) {
+                $this->loadReleaseClassMap();
+            }
             foreach ($patches as $patchLevel => $patch) {
                 call_user_func($patch);
                 $this->setPatchLevel($patchLevel);
@@ -1410,6 +1413,23 @@ class UpdatePatcher implements InjectionAwareInterface
 
         if (!class_exists($uuidClass)) {
             throw new Exception('Unable to load the Symfony UID package from Composer. Please reinstall dependencies and try again.');
+        }
+    }
+
+    /**
+     * ClientFence core patch: an update runs the patches in the request that unpacked it, whose autoloader
+     * still holds the previous release's class map, so a class new in this release was not found.
+     */
+    private function loadReleaseClassMap(): void
+    {
+        $map = Path::join(PATH_VENDOR, 'composer', 'autoload_classmap.php');
+        if (!$this->filesystem->exists($map)) {
+            return;
+        }
+        foreach (spl_autoload_functions() as $loader) {
+            if (is_array($loader) && $loader[0] instanceof \Composer\Autoload\ClassLoader) {
+                $loader[0]->addClassMap(require $map);
+            }
         }
     }
 
