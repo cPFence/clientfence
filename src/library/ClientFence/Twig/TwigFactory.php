@@ -155,6 +155,7 @@ class TwigFactory
         $twig->addGlobal('theme', $theme);
         $twig->addGlobal('current_theme', $theme['code']);
         $twig->addGlobal('app_area', AppArea::ADMIN->value);
+        $twig->addGlobal('redirect_uri', self::redirectUri($this->di, AppArea::ADMIN));
         $twig->addGlobal('admin', $this->di['auth']->isAdminLoggedIn() ? $this->di['api_admin'] : null);
         $twig->addGlobal('client', $this->di['auth']->isClientLoggedIn() ? $this->di['api_client'] : null);
         // ClientFence core patch: maintenance mode as WHMCS: every admin page shows a banner while it is on.
@@ -190,6 +191,7 @@ class TwigFactory
         $twig->addGlobal('current_theme', $code);
         $twig->addGlobal('settings', $settings);
         $twig->addGlobal('app_area', AppArea::CLIENT->value);
+        $twig->addGlobal('redirect_uri', self::redirectUri($this->di, AppArea::CLIENT));
         $twig->addGlobal('client', $this->di['auth']->isClientLoggedIn() ? $this->di['api_client'] : null);
         $twig->addGlobal('admin', $this->di['auth']->isAdminLoggedIn() ? $this->di['api_admin'] : null);
 
@@ -443,16 +445,10 @@ class TwigFactory
             $requestData['ajax'] = true;
         }
 
-        $session = $this->di['session'];
-        $redirectUri = $session->get('redirect_uri');
-        if (!empty($redirectUri)) {
-            $twig->addGlobal('redirect_uri', $redirectUri);
-        }
-
         $twig->addGlobal('default_currency', $this->getDefaultCurrencyCode());
 
         $twig->addGlobal('CSRFToken', $csrfToken);
-        $twig->addGlobal('flashes', $session->get('flashes') ?? []);
+        $twig->addGlobal('flashes', $this->di['session']->get('flashes') ?? []);
         $twig->addGlobal('request', new RequestDataView($requestData));
         $twig->addGlobal('request_query', $requestQuery);
         $twig->addGlobal('request_path', $requestPath);
@@ -461,6 +457,19 @@ class TwigFactory
         $twig->addGlobal('ClientFenceVersion', Version::CLIENTFENCE);
         // ClientFence core patch: the script policy nonce, on every script tag of the themes.
         $twig->addGlobal('csp_nonce', \ClientFence\Csp::nonce());
+    }
+
+    /**
+     * ClientFence core patch: a sign-in returns only to an address of its own area: a client page that asked for a
+     * sign-in must not send the next staff sign-in to that path under the admin prefix (a 404), nor the reverse.
+     */
+    public static function redirectUri(\Pimple\Container $di, AppArea $area): ?string
+    {
+        $session = $di['session'];
+        $uri = $session->get('redirect_uri');
+        $from = $session->get('redirect_area');
+
+        return empty($uri) || ($from !== null && $from !== $area->value) ? null : $uri;
     }
 
     private function getDefaultCurrencyCode(): ?string

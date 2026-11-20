@@ -461,7 +461,8 @@ $di['set_return_uri'] = function () use ($di): void {
     $query = $request->query->all();
     unset($query['_url']);
 
-    if (str_starts_with($url, ADMIN_PREFIX)) {
+    $admin = str_starts_with($url, ADMIN_PREFIX);
+    if ($admin) {
         $url = substr($url, strlen(ADMIN_PREFIX));
     }
     // ClientFence core patch: never back to a sign-out page (the next sign-in signed the person out again).
@@ -476,6 +477,8 @@ $di['set_return_uri'] = function () use ($di): void {
     /** @var ClientFence\Session $session */
     $session = $di['session'];
     $session->set('redirect_uri', $url);
+    // ClientFence core patch: one session serves both areas, so the address remembers its area (TwigFactory).
+    $session->set('redirect_area', $admin ? 'admin' : 'client');
 };
 
 /*

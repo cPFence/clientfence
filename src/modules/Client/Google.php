@@ -555,7 +555,7 @@ final class Google
         }
         self::checkUsable($di, $kind, $id);
         $db->update('client_google', ['last_used_at' => date('Y-m-d H:i:s')], ['google_sub' => $claims['sub']]);
-        $redirect = self::localPath((string) ($flow['return'] ?? '') !== '' ? (string) $flow['return'] : (string) $di['session']->get('redirect_uri'));
+        $redirect = self::localPath((string) ($flow['return'] ?? '') !== '' ? (string) $flow['return'] : (string) \ClientFence\Twig\TwigFactory::redirectUri($di, \ClientFence\Twig\Enum\AppArea::CLIENT));
         $user = $kind === 'user' ? Users::loginFor($di, $id) : null;
         $clientId = $kind === 'user' ? (int) $user['client_id'] : $id;
         $di['logger']->setChannel('security')->info('Google sign-in of %s #%s', $kind, $id);

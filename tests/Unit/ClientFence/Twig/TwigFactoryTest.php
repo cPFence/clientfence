@@ -66,3 +66,18 @@ test('the email environment gives the company name and address in the email\'s l
 
     expect($twig->createTemplate('{{ guest.system_company.name }}, {{ guest.system_company.address_1 }}')->render())->toBe('Тесла, Главна 1');
 });
+
+test('a sign-in (password, passkey or Google) returns only to an address of its own area', function (?string $from, ClientFence\Twig\Enum\AppArea $area, ?string $expected): void {
+    $di = Tests\Helpers\container();
+    $session = Mockery::mock(ClientFence\Session::class);
+    $session->allows('get')->with('redirect_uri')->andReturn('client/balance');
+    $session->allows('get')->with('redirect_area')->andReturn($from);
+    $di['session'] = $session;
+
+    expect(TwigFactory::redirectUri($di, $area))->toBe($expected);
+})->with([
+    'a client page, then the staff sign-in' => ['client', ClientFence\Twig\Enum\AppArea::ADMIN, null],
+    'a client page, then the client sign-in' => ['client', ClientFence\Twig\Enum\AppArea::CLIENT, 'client/balance'],
+    'an admin page, then the client sign-in' => ['admin', ClientFence\Twig\Enum\AppArea::CLIENT, null],
+    'saved before this change' => [null, ClientFence\Twig\Enum\AppArea::ADMIN, 'client/balance'],
+]);
