@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.62 (2026-11-20)
+
+### Changed
+
+- System Health's Release files unchanged check no longer counts the root .htaccess, where you add your own rules; Pack .htaccess rules still checks ClientFence's own blocks.
+
+### Fixed
+
+- Enhance plans imported a limit left at 0 in Enhance, such as Addon domains, as Unlimited.
+- On an Enhance plan without mailboxes, the client area showed no mailbox limit instead of none.
+
 ## 1.0.61 (2026-11-20)
 
 The WebHosting|4U registrar built in, domains for up to 10 years, and payment gateway and registrar keys stored encrypted. Guide: [Registrars](https://clientfence.com/docs/hosting-and-domains/registrars/).
