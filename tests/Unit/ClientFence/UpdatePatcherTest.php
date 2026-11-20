@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(17)
+    expect($patches)->toHaveCount(18)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -51,7 +51,8 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[127][1])->toBe('patch127')
         ->and($patches[128][1])->toBe('patch128')
         ->and($patches[129][1])->toBe('patch129')
-        ->and($patches[130][1])->toBe('patch130');
+        ->and($patches[130][1])->toBe('patch130')
+        ->and($patches[131][1])->toBe('patch131');
 });
 
 test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {
@@ -873,4 +874,36 @@ test('the Add Funds patch takes only paid invoices of deposit lines out of the i
         ->and($sql)->toContain("d.type = 'deposit'")
         ->and($sql)->toContain("o.type <> 'deposit'")
         ->and($sql)->toContain("m.entity = 'invoice' AND m.target_id = i.id");
+});
+
+test('the activity patch indexes created_at once on the four activity tables', function (): void {
+    $added = [];
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->allows('prepare')->andReturnUsing(function (string $sql) use (&$added): PDOStatement {
+        $statement = Mockery::mock(PDOStatement::class);
+        if (str_starts_with($sql, 'SHOW INDEX FROM `activity_system`')) {
+            $statement->allows('execute')->andReturnTrue();
+            $statement->allows('fetchAll')->andReturn([['Key_name' => 'created_at_idx']]);
+        } elseif (str_starts_with($sql, 'SHOW INDEX')) {
+            $statement->allows('execute')->andReturnTrue();
+            $statement->allows('fetchAll')->andReturn([['Key_name' => 'PRIMARY']]);
+        } else {
+            $added[] = $sql;
+            $statement->allows('execute')->andReturnTrue();
+        }
+
+        return $statement;
+    });
+
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+    (new ReflectionMethod($patcher, 'patch131'))->invoke($patcher);
+
+    expect($added)->toBe([
+        'ALTER TABLE `activity_admin_history` ADD INDEX `created_at_idx` (`created_at`)',
+        'ALTER TABLE `activity_client_email` ADD INDEX `created_at_idx` (`created_at`)',
+        'ALTER TABLE `activity_client_history` ADD INDEX `created_at_idx` (`created_at`)',
+    ]);
 });

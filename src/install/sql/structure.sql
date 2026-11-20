@@ -33,7 +33,8 @@ CREATE TABLE `activity_admin_history` (
   `session_id` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `admin_id_idx` (`admin_id`),
-  KEY `admin_signin_session_idx` (`session_id`)
+  KEY `admin_signin_session_idx` (`session_id`),
+  KEY `created_at_idx` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,7 +58,8 @@ CREATE TABLE `activity_client_email` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `client_id_idx` (`client_id`)
+  KEY `client_id_idx` (`client_id`),
+  KEY `created_at_idx` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -81,7 +83,8 @@ CREATE TABLE `activity_client_history` (
   PRIMARY KEY (`id`),
   KEY `client_id_idx` (`client_id`),
   KEY `user_id_idx` (`user_id`),
-  KEY `client_signin_session_idx` (`session_id`)
+  KEY `client_signin_session_idx` (`session_id`),
+  KEY `created_at_idx` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -101,7 +104,8 @@ CREATE TABLE `activity_system` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `admin_id_idx` (`admin_id`),
-  KEY `client_id_idx` (`client_id`)
+  KEY `client_id_idx` (`client_id`),
+  KEY `created_at_idx` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

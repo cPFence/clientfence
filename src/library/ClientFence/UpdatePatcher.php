@@ -578,6 +578,7 @@ class UpdatePatcher implements InjectionAwareInterface
             128 => 'patch128',
             129 => 'patch129',
             130 => 'patch130',
+            131 => 'patch131',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2757,6 +2758,16 @@ class UpdatePatcher implements InjectionAwareInterface
                AND EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = i.id AND d.type = 'deposit')
                AND NOT EXISTS (SELECT 1 FROM invoice_item o WHERE o.invoice_id = i.id AND o.type <> 'deposit')" . $imported
         );
+    }
+
+    private function patch131(): void
+    {
+        // ClientFence core patch: the daily activity clean-up (Activity\Service) deletes by created_at, which had no index.
+        foreach (['activity_admin_history', 'activity_client_email', 'activity_client_history', 'activity_system'] as $table) {
+            if (!$this->tableHasIndex($table, 'created_at_idx')) {
+                $this->executeSql(sprintf('ALTER TABLE `%s` ADD INDEX `created_at_idx` (`created_at`)', $table));
+            }
+        }
     }
 
     private function patch128(): void
