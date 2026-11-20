@@ -3220,6 +3220,32 @@ test('cancelFromOrder cancels linked subscriptions before the service action', f
         ->and($calls)->toBe(['subscriptions', 'service']);
 });
 
+// ClientFence: a blank cancel reason writes the plain note, a reason follows "Order canceled:".
+test('cancelFromOrder writes the cancel note', function (?string $reason, string $note): void {
+    $order = orderServiceCreateLegacyOrderModel(10);
+    $order->status = Order::STATUS_ACTIVE;
+
+    $subscriptionService = Mockery::mock(ClientFence\Mod\Invoice\ServiceSubscription::class)->shouldIgnoreMissing();
+    $productService = Mockery::mock(ClientFence\Mod\Product\Service::class)->shouldIgnoreMissing();
+    $di = container();
+    $di['db'] = Mockery::mock(\ClientFence\Database::class)->shouldIgnoreMissing();
+    $di['logger'] = new \ClientFence\Log();
+    $di['mod_service'] = $di->protect(fn (string $module, string $service = '') => $module === 'Invoice' ? $subscriptionService : $productService);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('_callOnService');
+    $serviceMock->shouldReceive('getOrderAddonsList')->andReturn([]);
+    $serviceMock->shouldReceive('saveStatusChange')->once()->with(Mockery::any(), $note);
+    $serviceMock->setDi($di);
+
+    expect($serviceMock->cancelFromOrder($order, $reason, true))->toBeTrue();
+})->with([
+    'no reason' => [null, 'Order canceled'],
+    'blank reason' => [' ', 'Order canceled'],
+    'a reason' => ['No longer needed', 'Order canceled: No longer needed'],
+]);
+
 test('cancelFromOrder cancels the addons of a RedBean order too (staff Retry)', function (): void {
     $master = orderServiceCreateLegacyOrderModel(10);
     $master->status = Order::STATUS_ACTIVE;

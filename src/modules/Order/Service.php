@@ -2143,7 +2143,8 @@ class Service implements InjectionAwareInterface
         $productService = $this->di['mod_service']('Product');
         $productService->releaseReservedPromoRedemptionsForOrder($order, 'order_canceled');
 
-        $note = ($reason === null) ? 'Order canceled' : 'Canceled order for ' . $reason;
+        // ClientFence core patch: a blank reason (Terminate with the box left empty) writes the plain note, as suspend does.
+        $note = ($reason === null || trim((string) $reason) === '') ? 'Order canceled' : 'Order canceled: ' . $reason;
         $this->saveStatusChange($order, $note);
 
         if (!$skipEvent) {
