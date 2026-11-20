@@ -1591,6 +1591,8 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
   box-shadow: 0 16px 34px -18px color-mix(in srgb, var(--bf-brand) 55%, transparent);
 }
 .cf-update-versions .avatar { border-radius: 12px; }
+/* The new release's side stripe follows the card's rounded corners. */
+.cf-update-versions .card { overflow: hidden; }
 .card-title > .bf-chip { vertical-align: middle; }
 
 /* Error page and update finalizing (sign-in frame): the glow behind, the error on a glass card. */
