@@ -69,7 +69,8 @@ class Server_Manager_Plesk extends Server_Manager
         $protocol = $this->_config['secure'] ? 'https' : 'http';
         $url = $protocol . '://' . $this->_config['host'] . ':' . $this->_config['port'];
         if ($account) {
-            $sessionId = $this->_client->session()->create($account->getUsername(), $_SERVER['REMOTE_ADDR']);
+            // ClientFence core patch: the visitor's IP through the trusted proxies (behind a proxy REMOTE_ADDR is the proxy's).
+            $sessionId = $this->_client->session()->create($account->getUsername(), (string) \Symfony\Component\HttpFoundation\Request::createFromGlobals()->getClientIp());
             $url .= '/enterprise/rsession_init.php?PHPSESSID=' . $sessionId;
         }
 
