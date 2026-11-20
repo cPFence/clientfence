@@ -73,11 +73,14 @@ class Fingerprint
             ],
             'platform' => [
                 'source' => $this->request->headers->get('Sec-Ch-Ua-Platform', ''),
-                'weight' => 100, // Should more-or-less match the 'OS'. This also should never randomly change
+                'weight' => 100, // Reject conflicting platforms when both requests supply one.
+                // ClientFence core patch: Client Hints are optional, as Chrome's PDF viewer download and other requests omit them.
+                'optional' => true,
             ],
             'mobile' => [
                 'source' => $this->request->headers->get('Sec-Ch-Ua-Mobile', ''),
                 'weight' => 2,
+                'optional' => true,
             ],
             'geoIpCountry' => [
                 'source' => $this->getIpCountry(),
@@ -91,15 +94,17 @@ class Fingerprint
     }
 
     /**
-     * Generates a fingerprint for the device that made the request to the server.
+     * Generates a fingerprint, retaining previously supplied optional hints when omitted.
      */
-    public function fingerprint(): array
+    public function fingerprint(array $previousFingerprint = []): array
     {
         $fingerprint = [];
 
         foreach ($this->fingerprintProperties as $name => $properties) {
             if (!empty($properties['source'])) {
                 $fingerprint[$name] = hash('md5', (string) $properties['source']);
+            } elseif (($properties['optional'] ?? false) && isset($previousFingerprint[$name])) {
+                $fingerprint[$name] = $previousFingerprint[$name];
             }
         }
 
@@ -124,6 +129,10 @@ class Fingerprint
         foreach ($this->fingerprintProperties as $name => $properties) {
             $exitsInFingerprint = array_key_exists($name, $fingerprint);
             $exitsInCurrentFingerprint = !empty($properties['source']);
+
+            if (($properties['optional'] ?? false) && (!$exitsInFingerprint || !$exitsInCurrentFingerprint)) {
+                continue;
+            }
 
             if ((!$exitsInFingerprint && $exitsInCurrentFingerprint) || ($exitsInFingerprint && !$exitsInCurrentFingerprint)) {
                 // The property exists in one fingerprint and not the other, so we increment the total count and deduct from the score.

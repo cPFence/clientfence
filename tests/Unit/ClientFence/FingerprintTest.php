@@ -118,3 +118,29 @@ test('behind a trusted proxy the visitor address and its country header are used
         Request::setTrustedProxies($proxies, $headers);
     }
 });
+
+function browserRequest(array $headers): Request
+{
+    $request = Request::create('https://example.com/admin/invoice/pdf/abc', 'GET');
+    $request->server->set('REMOTE_ADDR', '203.0.113.42');
+    $request->headers->set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36');
+    $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
+    $request->headers->add($headers);
+
+    return $request;
+}
+
+test('a request without Client Hints (the PDF viewer download) keeps the session, and the hints stay stored', function (): void {
+    $page = new Fingerprint(browserRequest(['Sec-Ch-Ua-Platform' => '"Windows"', 'Sec-Ch-Ua-Mobile' => '?0', 'Upgrade-Insecure-Requests' => '1']));
+    $download = new Fingerprint(browserRequest([]));
+    $stored = $page->fingerprint();
+
+    expect($download->checkFingerprint($stored))->toBeTrue()
+        ->and($download->fingerprint($stored)['platform'] ?? null)->toBe($stored['platform']);
+});
+
+test('a conflicting platform hint still rejects the fingerprint', function (): void {
+    $stored = (new Fingerprint(browserRequest(['Sec-Ch-Ua-Platform' => '"Windows"'])))->fingerprint();
+
+    expect((new Fingerprint(browserRequest(['Sec-Ch-Ua-Platform' => '"macOS"'])))->checkFingerprint($stored))->toBeFalse();
+});

@@ -210,7 +210,9 @@ class Session implements InjectionAwareInterface
         $fingerprint = new Fingerprint($this->di['request']);
 
         if (Config::getProperty('security.perform_session_fingerprinting', true)) {
-            $updatedFingerprint = $fingerprint->fingerprint();
+            // ClientFence core patch: keep the session's Client Hints when a request omits them (Fingerprint.php).
+            $previous = is_null($session) ? [] : json_decode($session->fingerprint ?: '[]', true);
+            $updatedFingerprint = $fingerprint->fingerprint(is_array($previous) ? $previous : []);
         } else {
             $updatedFingerprint = [];
         }
