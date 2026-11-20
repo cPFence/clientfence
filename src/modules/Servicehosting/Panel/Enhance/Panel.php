@@ -112,8 +112,9 @@ final class Panel
                 'quota' => self::mb($totals['diskspace']['total'] ?? null),
                 'bandwidth' => self::mb($totals['transfer']['total'] ?? null),
             ];
+            // Enhance: a resource without total is unlimited; one the plan does not list is not sold (0, forum #165).
             foreach (self::PLAN_LIMITS as $name => $field) {
-                $row[$field] = self::number($totals[$name]['total'] ?? null);
+                $row[$field] = isset($totals[$name]) ? self::number($totals[$name]['total'] ?? null) : 0;
             }
             $row['config'] = ['plan_id' => (string) $plan['id']];
             $plans[] = $row;

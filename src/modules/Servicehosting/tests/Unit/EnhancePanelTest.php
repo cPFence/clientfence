@@ -302,3 +302,15 @@ test('sites lists the subscription\'s websites and site picks only one of them',
         ->and(fn () => $site('other.example'))->toThrow(Server_Exception::class, 'is not part of this hosting account')
         ->and(fn () => $site('gone.example'))->toThrow(Server_Exception::class, 'is not part of this hosting account');
 })->with(['stored subscription' => [true], 'found by the client email' => [false]]);
+
+// Forum #165: a resource the plan does not list is not sold (0); one without a total is unlimited (null).
+test('plans read a resource the plan leaves out as 0 and one without a total as unlimited', function (): void {
+    $requests = [];
+    $panel = enhancePanelFake(['/api/orgs/M/plans' => [['id' => 3, 'name' => 'Small', 'resources' => [
+        ['name' => 'subdomains'],
+        ['name' => 'mailboxes', 'total' => 5],
+        ['name' => 'domainAliases', 'total' => 0],
+    ]]]], $requests);
+
+    expect($panel->plans()[0])->toMatchArray(['max_addon' => 0, 'max_sub' => null, 'max_pop' => 5, 'max_park' => 0, 'max_ftp' => 0, 'max_sql' => 0]);
+});
