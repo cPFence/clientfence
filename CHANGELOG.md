@@ -2,7 +2,9 @@
 
 ## 1.0.61 (2026-11-20)
 
-The WebHosting|4U registrar built in, and domains for up to 10 years. Guide: [Registrars](https://clientfence.com/docs/hosting-and-domains/registrars/).
+The WebHosting|4U registrar built in, domains for up to 10 years, and payment gateway and registrar keys stored encrypted. Guide: [Registrars](https://clientfence.com/docs/hosting-and-domains/registrars/).
+
+Several fixes in this release build on the work of [FOSSBilling](https://github.com/FOSSBilling/FOSSBilling), with thanks to its team and [@admdly](https://github.com/admdly): the PDF download sign-out, Add Funds income, the activity log index, encrypted gateway and registrar keys, currencylayer rates, Plesk sign-in, the client-area error messages and the breadcrumb link. Some were adapted for ClientFence.
 
 ### Added
 
@@ -13,6 +15,8 @@ The WebHosting|4U registrar built in, and domains for up to 10 years. Guide: [Re
 
 - System Health checks every release file for changes, not only ClientFence's own files.
 - A domain transfer takes the extension's shortest period (for example 2 years for .gr) instead of always 1 year.
+- Payment gateway and registrar keys and passwords are stored encrypted. The update encrypts the saved ones.
+- The daily activity log clean-up is faster on large installs.
 
 ### Fixed
 
@@ -20,6 +24,13 @@ The WebHosting|4U registrar built in, and domains for up to 10 years. Guide: [Re
 - A registrar's Prices tab shows the new extensions after a first price fetch instead of "Nothing to show".
 - Domains imported from WHMCS with 6 to 10-year terms now renew.
 - Renew Now tells the client from which date a domain can be renewed when the registry's 10-year limit is reached.
+- Add Funds was counted as income twice (the Add Funds invoice and the invoice its credit paid) in Stats, the dashboard and TrustScore. Saved figures are corrected; imported ones are kept.
+- After an update signed staff out, signing in could open a client-area address and show "Page not found".
+- Maintenance mode blocked the staff passkey sign-in and password reset. ([#54](https://github.com/cPFence/clientfence/issues/54))
+- currencylayer exchange rates failed to update.
+- Plesk sign-in behind Cloudflare or another proxy used the proxy's IP.
+- Client-area pages showed red error messages from other scripts such as the captcha or Stripe.js.
+- The home icon in the breadcrumbs of the admin client, custom page and mass mail pages was not a link.
 
 ## 1.0.60 (2026-11-19)
 
