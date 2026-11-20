@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.0.61 (2026-11-20)
+
+The WebHosting|4U registrar built in, and domains for up to 10 years. Guide: [Registrars](https://clientfence.com/docs/hosting-and-domains/registrars/).
+
+### Added
+
+- WebHosting|4U registrar: sells .gr, .ελ and about 295 other extensions through a WebHosting|4U reseller account. Thanks to [scool](https://community.cpfence.app/u/scool). A registrar set up from their module keeps its settings.
+- Domains can be registered for up to 10 years (Allowed Registration Periods per TLD); without a list a TLD offers five years from its minimum. A 10-year term renews for 9 years. Reported by [scool](https://community.cpfence.app/u/scool).
+
+### Changed
+
+- System Health checks every release file for changes, not only ClientFence's own files.
+- A domain transfer takes the extension's shortest period (for example 2 years for .gr) instead of always 1 year.
+
+### Fixed
+
+- Staff and clients were signed out when downloading an invoice PDF in Chrome.
+- A registrar's Prices tab shows the new extensions after a first price fetch instead of "Nothing to show".
+- Domains imported from WHMCS with 6 to 10-year terms now renew.
+- Renew Now tells the client from which date a domain can be renewed when the registry's 10-year limit is reached.
+
 ## 1.0.60 (2026-11-19)
 
 Custom client fields like WHMCS, and the service page in WHMCS's terms. Guide: [Custom client fields](https://clientfence.com/docs/clients-and-billing/custom-client-fields/).
