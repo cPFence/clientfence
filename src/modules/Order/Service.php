@@ -1170,6 +1170,11 @@ class Service implements InjectionAwareInterface
                 $se->validateOrderData($config);
             }
         }
+        // ClientFence core patch (CF-239): the single staff order (order/create) checks the registrant details as the
+        // order form does (Cart\Service::assertRegistrantDetails()); it activated a domain the registrar then refused.
+        if ($this->getProductType($product) === \ClientFence\Mod\Product\Service::DOMAIN && in_array($config['action'] ?? null, ['register', 'transfer'], true)) {
+            $cartService->assertRegistrantDetails([['type' => 'domain', 'action' => $config['action'], 'import' => $config['import'] ?? null]], $client, true);
+        }
 
         // ClientFence core patch: staff domain orders take their billing period from the validated domain config.
         if ($period === null && $this->getProductType($product) === \ClientFence\Mod\Product\Service::DOMAIN) {

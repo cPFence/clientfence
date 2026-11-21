@@ -1032,7 +1032,7 @@ class Service implements InjectionAwareInterface
      *
      * @throws \ClientFence\InformationException
      */
-    private function assertRegistrantDetails(array $items, Client|\Model_Client $client, bool $staff): void
+    public function assertRegistrantDetails(array $items, Client|\Model_Client $client, bool $staff): void
     {
         $registers = array_filter($items, static fn (array $item): bool => ($item['type'] ?? '') === 'domain' && in_array($item['action'] ?? null, ['register', 'transfer'], true) && empty($item['import']));
         $missing = $registers === [] ? [] : $this->registrantMissing($client);

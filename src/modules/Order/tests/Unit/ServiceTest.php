@@ -1633,6 +1633,40 @@ test('createOrder throws when out of stock', function (): void {
         ->toThrow(ClientFence\Exception::class, 'Product 1 is out of stock.');
 });
 
+// CF-239: the single staff order checks the registrant details as the order form does (it activated a domain the registrar refused).
+test('createOrder of a domain registration or transfer checks the client\'s registrant details', function (string $action): void {
+    $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['currency' => 'USD']);
+    $modelProduct = orderServiceCreateProductEntity(1, 'domain');
+    $currencyModel = Mockery::mock(ClientFence\Mod\Currency\Entity\Currency::class)->shouldIgnoreMissing();
+    $currencyRepositoryMock = Mockery::mock(ClientFence\Mod\Currency\Repository\CurrencyRepository::class);
+    $currencyRepositoryMock->shouldReceive('findOneByCode')->andReturn($currencyModel);
+    $currencyServiceMock = Mockery::mock(ClientFence\Mod\Currency\Service::class);
+    $currencyServiceMock->shouldReceive('getCurrencyRepository')->andReturn($currencyRepositoryMock);
+    $cartServiceMock = Mockery::mock(ClientFence\Mod\Cart\Service::class);
+    $cartServiceMock->shouldReceive('isStockAvailable')->andReturn(true);
+    $cartServiceMock->shouldReceive('isRecurrentPricing')->andReturn(false);
+    $cartServiceMock->shouldReceive('assertRegistrantDetails')->once()
+        ->with([['type' => 'domain', 'action' => $action, 'import' => null]], $modelClient, true)
+        ->andThrow(new ClientFence\InformationException('The client\'s profile has no Phone Number.'));
+    $domainServiceMock = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class);
+    $domainServiceMock->shouldReceive('attachOrderConfig')->andReturnArg(1);
+    $domainServiceMock->shouldReceive('validateOrderData')->once()->andReturn(true);
+    $eventMock = Mockery::mock(\ClientFence\EventManager::class);
+    $eventMock->shouldReceive('fire');
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $name) => match ($name) {
+        'currency' => $currencyServiceMock,
+        'cart' => $cartServiceMock,
+        'servicedomain' => $domainServiceMock,
+    });
+    $di['events_manager'] = $eventMock;
+    $svc = new Service();
+    $svc->setDi($di);
+
+    expect(fn () => $svc->createOrder($modelClient, $modelProduct, ['period' => '1Y', 'config' => ['action' => $action, $action . '_sld' => 'example', $action . '_tld' => '.com']]))
+        ->toThrow(ClientFence\InformationException::class, 'no Phone Number');
+})->with(['register', 'transfer']);
+
 test('createOrder refuses a period the product does not sell unless staff set a price', function (): void {
     $modelClient = createEntity(ClientFence\Mod\Client\Entity\Client::class, ['currency' => 'USD']);
     $modelProduct = orderServiceCreateProductEntity(1);
@@ -2109,6 +2143,7 @@ test('createOrder keeps the validated staff domain period and uses domain pricin
 
     $cartServiceMock = Mockery::mock(ClientFence\Mod\Cart\Service::class);
     $cartServiceMock->shouldReceive('isRecurrentPricing')->andReturn(false);
+    $cartServiceMock->shouldReceive('assertRegistrantDetails')->once(); // CF-239: a client with full details passes
     $cartServiceMock->shouldReceive('isStockAvailable')
         ->atLeast()->once()
         ->with($modelProduct, Mockery::any())
