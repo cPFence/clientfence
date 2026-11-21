@@ -141,7 +141,7 @@ test('email template example renders without calling email globals in admin cont
     $templateSource = file_get_contents(PATH_MODS . '/Email/templates/admin/mod_email_template.html.twig');
     expect($templateSource)->not()->toBeFalse();
 
-    preg_match('/<textarea class="form-control" id="email-sample-template" rows="20">(.*?)<\/textarea>/s', $templateSource, $matches);
+    preg_match('/<textarea[^>]*id="email-sample-template"[^>]*>(.*?)<\/textarea>/s', $templateSource, $matches);
     expect($matches[1] ?? null)->toBeString();
 
     $twig = new Environment(new ArrayLoader(['example' => $matches[1]]), [
