@@ -1,6 +1,6 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Payment received: invoice #%number%'|trans({'%number%': invoice.serie_nr|default('')}) }}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ 'Payment received'|trans }}{% endset %}
 {% set email_preheader %}{{ 'Thank you for your payment of %total%.'|trans({'%total%': invoice.total|default(0)|format_currency(invoice.currency|default(default_currency))}) }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Payment received'|trans }}</h1>

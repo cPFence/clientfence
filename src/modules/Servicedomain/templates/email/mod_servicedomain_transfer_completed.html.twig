@@ -1,6 +1,6 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Domain transfer of %domain% completed'|trans({'%domain%': service.domain|default('')}) }}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ 'Your domain transfer is complete'|trans }}{% endset %}
 {% set email_preheader %}{{ 'The transfer of %domain% to us is complete.'|trans({'%domain%': service.domain|default('')}) }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Your domain transfer is complete'|trans }}</h1>

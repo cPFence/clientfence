@@ -1,9 +1,9 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
+{# ClientFence: a tracked transfer has started, not finished (Servicedomain/DomainSync.php). #}
 {% block subject %}[{{ guest.system_company.name }}] {% if service.transfer_status|default == 'pending' %}{{ 'Transfer of %title% started'|trans({'%title%': order.title|default}) }}{% else %}{{ '%title% is now active'|trans({'%title%': order.title|default}) }}{% endif %}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ (service.transfer_status|default('') == 'pending' ? 'Your domain transfer has started'|trans : 'Your domain is active'|trans) }}{% endset %}
 {% set email_preheader %}{% if service.transfer_status|default('') == 'pending' %}{{ 'Transfer of %title% started'|trans({'%title%': order.title|default('')}) }}{% else %}{{ 'Your domain %title% is active.'|trans({'%title%': order.title|default('')}) }}{% endif %}{% endset %}
-		{# ClientFence: a tracked transfer has started, not finished (Servicedomain/DomainSync.php). #}
 		{% if service.transfer_status|default('') == 'pending' %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Your domain transfer has started'|trans }}</h1>
 		<p style="margin:0 0 16px;">{{ 'Dear %first_name% %last_name%,'|trans({'%first_name%': c.first_name|default(''), '%last_name%': c.last_name|default('')}) }}</p>

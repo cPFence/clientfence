@@ -1,6 +1,6 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Invoice #%number% is ready'|trans({'%number%': invoice.serie_nr|default('')}) }}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ 'Invoice #%number%'|trans({'%number%': invoice.serie_nr|default('')}) }}{% endset %}
 {% set email_preheader %}{{ 'Invoice #%number% for %balance_due% is due on %due_at%.'|trans({'%number%': invoice.serie_nr|default(''), '%balance_due%': (invoice.balance_due ?? invoice.total)|default(0)|format_currency(invoice.currency|default(default_currency)), '%due_at%': invoice.due_at|default('')|format_date}) }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Your invoice is ready'|trans }}</h1>

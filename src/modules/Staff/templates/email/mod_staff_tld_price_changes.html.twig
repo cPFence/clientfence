@@ -1,6 +1,6 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% block subject %}[{{ guest.system_company.name }}] {{ 'TLD price changes'|trans }}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ 'TLD price changes'|trans }}{% endset %}
 {% set email_audience = 'staff' %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'TLD price changes'|trans }}</h1>

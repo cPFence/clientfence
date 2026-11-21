@@ -1,6 +1,6 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% block subject %}[{{ guest.system_company.name }}] [Ticket #{{ ticket.id|default('') }}] {{ ticket.subject|default('') }}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
 {% set ticket_url = is_guest_ticket ? "support/ticket/#{ticket.hash|default('')}"|url(area: 'client') : "support/ticket/#{ticket.id|default('')}"|url(area: 'client') %}
 {% set email_title %}{{ 'Ticket #%id%'|trans({'%id%': ticket.id|default('')}) }}{% endset %}

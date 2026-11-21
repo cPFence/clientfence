@@ -1,6 +1,7 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
+{# ClientFence core patch: Google sign-up, the welcome email of an account made with Google (ClientFence). #}
 {% block subject %}[{{ guest.system_company.name }}] {{ 'Welcome to %company%'|trans({'%company%': guest.system_company.name}) }}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ 'Welcome'|trans }}{% endset %}
 {% set email_preheader %}{{ 'Your account is ready.'|trans }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Welcome to %company%'|trans({'%company%': guest.system_company.name}) }}</h1>
@@ -14,7 +15,6 @@
 				</table>
 			</td></tr>
 		</table>
-{# ClientFence core patch: Google sign-up, the welcome email of an account made with Google (ClientFence). #}
 {% if clientfence_google.google|default(false) and clientfence_google.password_step|default(false) %}
 		<p style="margin:0 0 16px;">{{ 'You signed up with your Google account. Right after, you choose a password: next time, sign in with your email and that password.'|trans }}</p>
 {% elseif clientfence_google.google|default(false) %}

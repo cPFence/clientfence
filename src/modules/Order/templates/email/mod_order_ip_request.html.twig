@@ -1,6 +1,6 @@
+{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% block subject %}[{{ guest.system_company.name }}] {% if approved|default(false) %}{{ 'IP address change approved: %title%'|trans({'%title%': order.title ?? ''}) }}{% else %}{{ 'IP address change refused: %title%'|trans({'%title%': order.title ?? ''}) }}{% endif %}{% endblock %}
 {% block content %}
-{# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {% set email_title %}{{ approved|default(false) ? 'IP address change approved'|trans : 'IP address change refused'|trans }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ approved|default(false) ? 'IP address change approved'|trans : 'IP address change refused'|trans }}</h1>
 		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': c.first_name|default('')}) }}</p>
