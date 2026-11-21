@@ -302,4 +302,46 @@ abstract class Registrar_AdapterAbstract
 
         return $this;
     }
+
+    /**
+     * ClientFence core patch (CF-240): the domain's contact for a role (registrant, admin, tech, billing); a role without
+     * its own contact is the registrant. Servicedomain _getD() gives admin, tech and billing the default contact when
+     * "Use the client's details" is off.
+     *
+     * @param 'registrant'|'admin'|'tech'|'billing' $role
+     */
+    protected function roleContact(Registrar_Domain $domain, string $role): Registrar_Domain_Contact
+    {
+        $contact = match ($role) {
+            'registrant' => null,
+            'admin' => $domain->getContactAdmin(),
+            'tech' => $domain->getContactTech(),
+            'billing' => $domain->getContactBilling(),
+        } ?? $domain->getContactRegistrar();
+        if (!$contact instanceof Registrar_Domain_Contact) {
+            throw new Registrar_Exception('The registrant contact is missing.');
+        }
+
+        return $contact;
+    }
+
+    /**
+     * ClientFence: a registrar handle for each role (registrant, admin, tech, billing) from $create(contact), made once
+     * per distinct contact.
+     *
+     * @param callable(Registrar_Domain_Contact): (int|string) $create
+     *
+     * @return array{registrant: int|string, admin: int|string, tech: int|string, billing: int|string}
+     */
+    protected function roleHandles(Registrar_Domain $domain, callable $create): array
+    {
+        $made = [];
+        $handles = [];
+        foreach (['registrant', 'admin', 'tech', 'billing'] as $role) {
+            $contact = $this->roleContact($domain, $role);
+            $handles[$role] = $made[spl_object_id($contact)] ??= $create($contact);
+        }
+
+        return $handles;
+    }
 }

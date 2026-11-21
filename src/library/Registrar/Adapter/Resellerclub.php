@@ -146,7 +146,7 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
         // order, so the default replace-existing behaviour could delete an unrelated active contact
         // belonging to the same customer.
         $customer = $this->_getCustomerDetails($domain);
-        [$reg_contact_id, $admin_contact_id, $tech_contact_id, $billing_contact_id] = $this->_getAllContacts($domain->getTld(), $customer['customerid'], $domain->getContactRegistrar(), replaceExisting: false);
+        [$reg_contact_id, $admin_contact_id, $tech_contact_id, $billing_contact_id] = $this->roleContactIds($domain, $domain->getTld(), $customer['customerid'], $this->_getAllContacts($domain->getTld(), $customer['customerid'], $domain->getContactRegistrar(), replaceExisting: false));
 
         $params = [
             'order-id' => $this->_getDomainOrderId($domain),
@@ -310,7 +310,7 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
             $ns[] = $domain->getNs4();
         }
 
-        [$reg_contact_id, $admin_contact_id, $tech_contact_id, $billing_contact_id] = $this->_getAllContacts($tld, $customer_id, $domain->getContactRegistrar());
+        [$reg_contact_id, $admin_contact_id, $tech_contact_id, $billing_contact_id] = $this->roleContactIds($domain, $tld, $customer_id, $this->_getAllContacts($tld, $customer_id, $domain->getContactRegistrar()));
 
         $params = [
             'domain-name' => $domain->getName(),
@@ -985,6 +985,24 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
         }
 
         return [$reg_contact_id, $admin_contact_id, $tech_contact_id, $billing_contact_id];
+    }
+
+    /**
+     * ClientFence core patch (CF-240): admin, tech and billing get the domain's admin contact where it is not the
+     * registrant (Servicedomain _getD() gives the three one contact), keeping each TLD's -1 roles. .es, .asia and .ru
+     * contacts carry the registrant's ID document, so those keep the registrant.
+     */
+    private function roleContactIds(Registrar_Domain $domain, $tld, $customer_id, array $ids): array
+    {
+        $admin = $this->roleContact($domain, 'admin');
+        // A TLD that takes none of the three roles (-1: .uk, .eu, .ru...) gets no unused contact made at ResellerClub.
+        if ($admin === $domain->getContactRegistrar() || preg_match('/\.(es|asia|ru)$/', strtolower((string) $tld)) === 1 || [$ids[1], $ids[2], $ids[3]] === [-1, -1, -1]) {
+            return $ids;
+        }
+        // Added, never replacing: the registrant's contact was just made with the same type.
+        [, $admin_contact_id, $tech_contact_id, $billing_contact_id] = $this->_getAllContacts($tld, $customer_id, $admin, replaceExisting: false);
+
+        return [$ids[0], $admin_contact_id, $tech_contact_id, $billing_contact_id];
     }
 
     private function _getContact($contact, $customer_id, $type = 'Contact', bool $replaceExisting = true)

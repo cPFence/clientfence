@@ -64,3 +64,22 @@ test('the transfer status is the newest incoming transfer\'s: completed, cancell
     'bad code' => ['auth code needed', Registrar_TransferStatus::PENDING],
     'unknown' => ['something new', Registrar_TransferStatus::PENDING],
 ]);
+
+test('a registration makes one contact for the client and one for the default contact on admin, tech and billing (CF-240)', function (): void {
+    $calls = [];
+    $httpClient = new MockHttpClient(function (string $method, string $url) use (&$calls): MockResponse {
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
+        $calls[] = $query;
+
+        return new MockResponse((string) json_encode($query['command'] === 'create_contact'
+            ? ['CreateContactResponse' => ['ResponseCode' => '0', 'CreateContactContent' => ['ContactId' => 100 + count($calls)]]]
+            : ['RegisterResponse' => ['ResponseCode' => '0']]));
+    });
+    $contact = (new Registrar_Domain_Contact())->setFirstName('Ann')->setLastName('Lee')->setEmail('ann@example.com')
+        ->setAddress1('12 Main St')->setCity('London')->setZip('N1 1AA')->setCountry('gb')->setTelCc('44')->setTel('2079460000');
+    createDynadotAdapter($httpClient)->registerDomain(Tests\Helpers\withDefaultContact((new Registrar_Domain())->setSld('example')->setTld('.com')->setRegistrationPeriod(1)->setContactRegistrar($contact)));
+
+    expect(array_column($calls, 'command'))->toBe(['create_contact', 'create_contact', 'register'])
+        ->and([$calls[0]['email'], $calls[1]['email'], $calls[1]['organization']])->toBe(['ann@example.com', 'domains@host.example', 'Host Ltd'])
+        ->and($calls[2])->toMatchArray(['registrant_contact' => '101', 'admin_contact' => '102', 'technical_contact' => '102', 'billing_contact' => '102']);
+});

@@ -9538,5 +9538,33 @@
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
         "done": "ClientFence core patch (CF-241): the reload shows the new registrar and its domain fields."
+    },
+    {
+        "file": "library/Registrar/AdapterAbstract.php",
+        "done": "ClientFence core patch (CF-240): the domain's contact for a role (registrant, admin, tech, billing); a role without"
+    },
+    {
+        "file": "library/Registrar/Adapter/Internetbs.php",
+        "done": "// ClientFence core patch (CF-240): each role gets its own contact (Registrar_AdapterAbstract::roleContact())."
+    },
+    {
+        "file": "library/Registrar/Adapter/Resellerclub.php",
+        "done": "ClientFence core patch (CF-240): admin, tech and billing get the domain's admin contact where it is not the"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "// ClientFence core patch (CF-240): with \"Use the client's details\" off, admin, tech and billing are the default contact (as WHMCS)."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch (CF-240): saves \"Use the client's details\" and the default contact for the admin, tech and billing"
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch (CF-240): saves \"Use the client's details\" and the default contact for the admin, tech and billing"
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig",
+        "done": "ClientFence core patch (CF-240): the default contact for the admin, tech and billing contacts (as WHMCS)."
     }
 ]

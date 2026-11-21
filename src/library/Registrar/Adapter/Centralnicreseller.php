@@ -466,23 +466,30 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
         return $params;
     }
 
-    /** The client's contact inline for each role (OWNERCONTACT0FIRSTNAME=...), as the Blesta module sends it. */
+    /** Each role's contact inline (OWNERCONTACT0FIRSTNAME=...), as the Blesta module sends it. */
     private function contacts(Registrar_Domain $domain, array $roles): array
     {
-        if ($roles === []) {
-            return [];
+        $params = [];
+        foreach ($roles as $role) {
+            $c = $this->roleContact($domain, ['OWNERCONTACT0' => 'registrant', 'ADMINCONTACT0' => 'admin', 'TECHCONTACT0' => 'tech', 'BILLINGCONTACT0' => 'billing'][$role]);
+            foreach ($this->contactFields($c) as $key => $value) {
+                $params[$role . $key] = $value;
+            }
         }
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
-        }
+
+        return $params;
+    }
+
+    private function contactFields(Registrar_Domain_Contact $c): array
+    {
         $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
         $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
         // The international form drops the national trunk 0 (Italian numbers keep it).
         if ($cc !== '39') {
             $tel = ltrim($tel, '0');
         }
-        $fields = array_filter([
+
+        return array_filter([
             'FIRSTNAME' => (string) $c->getFirstName(),
             'LASTNAME' => (string) $c->getLastName(),
             'ORGANIZATION' => (string) $c->getCompany(),
@@ -495,14 +502,5 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
             'PHONE' => $tel === '' ? '' : '+' . $cc . '.' . $tel,
             'EMAIL' => (string) $c->getEmail(),
         ], fn (string $value) => $value !== '');
-
-        $params = [];
-        foreach ($roles as $role) {
-            foreach ($fields as $key => $value) {
-                $params[$role . $key] = $value;
-            }
-        }
-
-        return $params;
     }
 }

@@ -381,37 +381,16 @@ class Registrar_Adapter_Realtimeregister extends Registrar_AdapterAbstract imple
     }
 
     /**
-     * A new contact per role from the client's details (each with its own handle, so a later change of one role touches
+     * A new contact per role from that role's details (each with its own handle, so a later change of one role touches
      * no other); the registrant also gets the order's registry properties.
      *
      * @return array<string, string> role => handle
      */
     private function contacts(Registrar_Domain $domain, array $roles): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
-        }
-        $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
-        $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
-        // The international form drops the national trunk 0 (Italian numbers keep it).
-        if ($cc !== '39') {
-            $tel = ltrim($tel, '0');
-        }
-        $contact = array_filter([
-            'name' => trim((string) $c->getFirstName() . ' ' . (string) $c->getLastName()),
-            'organization' => trim((string) $c->getCompany()),
-            'addressLine' => array_values(array_filter([trim((string) $c->getAddress1()), trim((string) $c->getAddress2())], fn (string $line) => $line !== '')),
-            'postalCode' => trim((string) $c->getZip()),
-            'city' => trim((string) $c->getCity()),
-            'state' => trim((string) $c->getState()),
-            'country' => strtoupper(trim((string) $c->getCountry())),
-            'email' => trim((string) $c->getEmail()),
-            'voice' => '+' . $cc . '.' . $tel,
-        ], fn ($value) => $value !== '' && $value !== []);
-
         $handles = [];
         foreach ($roles as $role) {
+            $contact = $this->contact($this->roleContact($domain, strtolower($role)));
             $handles[$role] = strtolower($role) . '-' . bin2hex(random_bytes(6));
             // Only the registrant may be a company: some registries refuse organisation admin, billing or tech contacts (.ca admin).
             $this->request('POST', $this->customerPath('/contacts/' . $handles[$role]), $role === 'REGISTRANT' ? $contact : array_diff_key($contact, ['organization' => true]));
@@ -428,6 +407,29 @@ class Registrar_Adapter_Realtimeregister extends Registrar_AdapterAbstract imple
         }
 
         return $handles;
+    }
+
+    /** A contact in the API's fields. */
+    private function contact(Registrar_Domain_Contact $c): array
+    {
+        $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
+        $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
+        // The international form drops the national trunk 0 (Italian numbers keep it).
+        if ($cc !== '39') {
+            $tel = ltrim($tel, '0');
+        }
+
+        return array_filter([
+            'name' => trim((string) $c->getFirstName() . ' ' . (string) $c->getLastName()),
+            'organization' => trim((string) $c->getCompany()),
+            'addressLine' => array_values(array_filter([trim((string) $c->getAddress1()), trim((string) $c->getAddress2())], fn (string $line) => $line !== '')),
+            'postalCode' => trim((string) $c->getZip()),
+            'city' => trim((string) $c->getCity()),
+            'state' => trim((string) $c->getState()),
+            'country' => strtoupper(trim((string) $c->getCountry())),
+            'email' => trim((string) $c->getEmail()),
+            'voice' => '+' . $cc . '.' . $tel,
+        ], fn ($value) => $value !== '' && $value !== []);
     }
 
     /** The registry (provider) name the contact properties of a TLD are stored under, from Realtime Register's TLD metadata. */

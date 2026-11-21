@@ -348,6 +348,20 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * ClientFence core patch (CF-240): saves "Use the client's details" and the default contact for the admin, tech and billing
+     * contacts (WHMCS Domains settings).
+     *
+     * @param array $data use_client_details (1/0) and the contact: first_name, last_name, company, email, address1, address2,
+     *                    city, state, postcode, country, phone_cc, phone
+     */
+    public function default_contact_update($data): bool
+    {
+        $this->checkPermissions('system', 'update_params');
+
+        return $this->getService()->defaultContactUpdate($data);
+    }
+
+    /**
      * Get paginated registrars list.
      *
      * @return array

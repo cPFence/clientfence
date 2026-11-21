@@ -8,7 +8,7 @@ declare(strict_types=1);
  * parameters of INWX's own WHMCS module (https://github.com/inwx/WHMCS, MIT). Uses the INWX DomRobot JSON-RPC API
  * (https://www.inwx.com/en/help/apidoc): account.login opens a session (the domrobot cookie) for the other calls; the
  * registrar's test mode uses the OT&E system with an OT&E account. Each registration, transfer and contact change creates
- * an INWX contact from the client's details. .us names ask the nexus questions and .eu names the registrant's EU
+ * an INWX contact for each role's details. .us names ask the nexus questions and .eu names the registrant's EU
  * citizenship on the order form (getDomainFields()), sent as extData.
  */
 use ClientFence\Mod\Invoice\EuVat;
@@ -340,13 +340,14 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
         return $ext === [] ? [] : ['extData' => $ext];
     }
 
-    /** A new INWX contact from the client's contact, used for all four roles. */
+    /** A new INWX contact for each role (registrant, admin, tech, billing), one per distinct contact. */
     private function handles(Registrar_Domain $domain): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
-        }
+        return $this->roleHandles($domain, fn (Registrar_Domain_Contact $c): int => $this->createContact($c));
+    }
+
+    private function createContact(Registrar_Domain_Contact $c): int
+    {
         $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
         $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
         // The international form drops the national trunk 0 (Italian numbers keep it).
@@ -371,6 +372,6 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
             throw new Registrar_Exception('INWX did not return a contact ID.');
         }
 
-        return ['registrant' => $id, 'admin' => $id, 'tech' => $id, 'billing' => $id];
+        return $id;
     }
 }

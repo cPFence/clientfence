@@ -247,3 +247,16 @@ test('without the soap extension the adapter says so', function (): void {
     expect(fn () => (new Registrar_Adapter_Subreg(['login' => 'reseller', 'password' => 'x']))->isDomainAvailable(subregDomain()))
         ->toThrow(Registrar_Exception::class, 'needs the PHP soap extension');
 })->skip(class_exists('SoapClient'), 'the soap extension is installed: this would reach the network');
+
+test('with a default contact, admin, tech and billing get it and the registrant stays the client (CF-240)', function (): void {
+    $adapter = subregAdapter();
+    $adapter->registerDomain(Tests\Helpers\withDefaultContact(subregDomain()));
+    $adapter->transferDomain(Tests\Helpers\withDefaultContact(subregDomain()));
+    $staff = ['new' => ['name' => 'Sam', 'surname' => 'Host', 'org' => 'Host Ltd', 'street' => '5 Port Road', 'city' => 'Leeds', 'pc' => 'LS1 4AP', 'cc' => 'GB',
+        'phone' => '+44.1134960000', 'email' => 'domains@host.example']];
+    [$create, $transfer] = subregOrders($adapter);
+
+    expect($create[1]['registrant'])->toBe(subregContact())
+        ->and($create[1]['contacts'])->toBe(['admin' => $staff, 'tech' => $staff, 'billing' => $staff])
+        ->and($transfer[1]['new'])->toBe(['registrant' => subregContact(), 'admin' => $staff]);
+});

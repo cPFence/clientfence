@@ -247,3 +247,10 @@ test('the price list: setup plus annual to register, annual to renew, the transf
     ], 'remaining' => []])
         ->and(array_keys($adapter->getTldPrices(['.co.uk', '.net'])['prices']))->toBe(['.co.uk']);
 });
+
+test('with a default contact, admin, tech and billing get it inline and the owner stays the client (CF-240)', function (): void {
+    centralnicresellerAdapter([])->registerDomain(Tests\Helpers\withDefaultContact(centralnicresellerDomain('.com')));
+
+    expect($GLOBALS['centralnicreseller_calls'][0]['command'])->toMatchArray(['COMMAND' => 'AddDomain', 'OWNERCONTACT0EMAIL' => 'ann@example.com', 'OWNERCONTACT0ORGANIZATION' => 'Lee Ltd',
+        'ADMINCONTACT0EMAIL' => 'domains@host.example', 'ADMINCONTACT0FIRSTNAME' => 'Sam', 'TECHCONTACT0ORGANIZATION' => 'Host Ltd', 'BILLINGCONTACT0PHONE' => '+44.1134960000']);
+});

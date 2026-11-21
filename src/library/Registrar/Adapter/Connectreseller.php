@@ -91,13 +91,17 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
     public function modifyContact(Registrar_Domain $domain): bool
     {
         $info = $this->info($domain);
-        // A new contact for this domain only: changing the current one would also change the customer's other domains.
-        $id = (string) ($this->request('AddRegistrantContact', $this->contact($domain) + ['Id' => $info['customerId'] ?? ''])['responseMsg']['id'] ?? '');
-        if ($id === '' || $id === '0') {
-            throw new Registrar_Exception('ConnectReseller did not return a contact ID.');
-        }
+        // New contacts for this domain only: changing the current one would also change the customer's other domains.
+        $ids = $this->roleHandles($domain, function (Registrar_Domain_Contact $c) use ($info): string {
+            $id = (string) ($this->request('AddRegistrantContact', $this->contact($c) + ['Id' => $info['customerId'] ?? ''])['responseMsg']['id'] ?? '');
+            if ($id === '' || $id === '0') {
+                throw new Registrar_Exception('ConnectReseller did not return a contact ID.');
+            }
+
+            return $id;
+        });
         $this->request('updatecontact', ['domainNameId' => $info['domainNameId'], 'websiteName' => $domain->getName(),
-            'registrantContactId' => $id, 'adminContactId' => $id, 'technicalContactId' => $id, 'billingContactId' => $id]);
+            'registrantContactId' => $ids['registrant'], 'adminContactId' => $ids['admin'], 'technicalContactId' => $ids['tech'], 'billingContactId' => $ids['billing']]);
 
         return true;
     }
@@ -336,7 +340,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
     /** The client's ConnectReseller customer, found by email address, or created with the client's contact. */
     private function customerId(Registrar_Domain $domain): int
     {
-        $c = $this->contact($domain);
+        $c = $this->contact($this->roleContact($domain, 'registrant'));
         $find = fn (): int => (int) ($this->request('ViewClient', ['UserName' => $c['EmailAddress']], [200, 400])['responseData']['clientId'] ?? 0);
         $id = $find();
         if ($id === 0) {
@@ -363,13 +367,9 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
         return $hosts;
     }
 
-    /** The registrant in AddRegistrantContact's fields. */
-    private function contact(Registrar_Domain $domain): array
+    /** A contact in AddRegistrantContact's fields. */
+    private function contact(Registrar_Domain_Contact $c): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
-        }
         $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
         $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
         // The international form drops the national trunk 0 (Italian numbers keep it).

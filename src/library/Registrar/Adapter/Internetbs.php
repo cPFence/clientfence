@@ -93,25 +93,25 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
 
     public function modifyContact(Registrar_Domain $domain): bool
     {
-        $c = $domain->getContactRegistrar();
-
         $params = [
             'domain' => $domain->getName(),
         ];
 
         // Set contact data
-        foreach (['Registrant', 'Admin', 'Technical', 'Billing'] as $contactType) {
-            $params[$contactType . '_Organization'] = $c->getCompany();
-            $params[$contactType . '_FirstName'] = $c->getFirstName();
-            $params[$contactType . '_LastName'] = $c->getLastName();
-            $params[$contactType . '_Email'] = $c->getEmail();
-            $params[$contactType . '_PhoneNumber'] = '+' . $c->getTelCc() . '.' . ClientFence\Tools::validatePhoneNumber((string) $c->getTel());
-            $params[$contactType . '_Street'] = $c->getAddress1();
-            $params[$contactType . '_Street2'] = $c->getAddress2();
-            $params[$contactType . '_Street3'] = $c->getAddress3();
-            $params[$contactType . '_City'] = $c->getCity();
-            $params[$contactType . '_CountryCode'] = $c->getCountry();
-            $params[$contactType . '_PostalCode'] = $c->getZip();
+        // ClientFence core patch (CF-240): each role gets its own contact (Registrar_AdapterAbstract::roleContact()).
+        foreach (['Registrant' => 'registrant', 'Admin' => 'admin', 'Technical' => 'tech', 'Billing' => 'billing'] as $contactType => $role) {
+            $rc = $this->roleContact($domain, $role);
+            $params[$contactType . '_Organization'] = $rc->getCompany();
+            $params[$contactType . '_FirstName'] = $rc->getFirstName();
+            $params[$contactType . '_LastName'] = $rc->getLastName();
+            $params[$contactType . '_Email'] = $rc->getEmail();
+            $params[$contactType . '_PhoneNumber'] = '+' . $rc->getTelCc() . '.' . ClientFence\Tools::validatePhoneNumber((string) $rc->getTel());
+            $params[$contactType . '_Street'] = $rc->getAddress1();
+            $params[$contactType . '_Street2'] = $rc->getAddress2();
+            $params[$contactType . '_Street3'] = $rc->getAddress3();
+            $params[$contactType . '_City'] = $rc->getCity();
+            $params[$contactType . '_CountryCode'] = $rc->getCountry();
+            $params[$contactType . '_PostalCode'] = $rc->getZip();
             $params[$contactType . '_Language'] = 'en';
         }
 
@@ -122,25 +122,25 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        $c = $domain->getContactRegistrar();
-
         $params = [
             'domain' => $domain->getName(),
         ];
 
         // Set contact data
-        foreach (['Registrant', 'Admin', 'Technical', 'Billing'] as $contactType) {
-            $params[$contactType . '_Organization'] = $c->getCompany();
-            $params[$contactType . '_FirstName'] = $c->getFirstName();
-            $params[$contactType . '_LastName'] = $c->getLastName();
-            $params[$contactType . '_Email'] = $c->getEmail();
-            $params[$contactType . '_PhoneNumber'] = '+' . $c->getTelCc() . '.' . ClientFence\Tools::validatePhoneNumber((string) $c->getTel());
-            $params[$contactType . '_Street'] = $c->getAddress1();
-            $params[$contactType . '_Street2'] = $c->getAddress2();
-            $params[$contactType . '_Street3'] = $c->getAddress3();
-            $params[$contactType . '_City'] = $c->getCity();
-            $params[$contactType . '_CountryCode'] = $c->getCountry();
-            $params[$contactType . '_PostalCode'] = $c->getZip();
+        // ClientFence core patch (CF-240): each role gets its own contact (Registrar_AdapterAbstract::roleContact()).
+        foreach (['Registrant' => 'registrant', 'Admin' => 'admin', 'Technical' => 'tech', 'Billing' => 'billing'] as $contactType => $role) {
+            $rc = $this->roleContact($domain, $role);
+            $params[$contactType . '_Organization'] = $rc->getCompany();
+            $params[$contactType . '_FirstName'] = $rc->getFirstName();
+            $params[$contactType . '_LastName'] = $rc->getLastName();
+            $params[$contactType . '_Email'] = $rc->getEmail();
+            $params[$contactType . '_PhoneNumber'] = '+' . $rc->getTelCc() . '.' . ClientFence\Tools::validatePhoneNumber((string) $rc->getTel());
+            $params[$contactType . '_Street'] = $rc->getAddress1();
+            $params[$contactType . '_Street2'] = $rc->getAddress2();
+            $params[$contactType . '_Street3'] = $rc->getAddress3();
+            $params[$contactType . '_City'] = $rc->getCity();
+            $params[$contactType . '_CountryCode'] = $rc->getCountry();
+            $params[$contactType . '_PostalCode'] = $rc->getZip();
             $params[$contactType . '_Language'] = 'en';
         }
 
@@ -209,18 +209,20 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
         $params['ns_list'] = implode(',', $nsList);
 
         // Set contact data
-        foreach (['Registrant', 'Admin', 'Technical', 'Billing'] as $contactType) {
-            $params[$contactType . '_Organization'] = $c->getCompany();
-            $params[$contactType . '_FirstName'] = $c->getFirstName();
-            $params[$contactType . '_LastName'] = $c->getLastName();
-            $params[$contactType . '_Email'] = $c->getEmail();
-            $params[$contactType . '_PhoneNumber'] = '+' . $c->getTelCc() . '.' . ClientFence\Tools::validatePhoneNumber((string) $c->getTel());
-            $params[$contactType . '_Street'] = $c->getAddress1();
-            $params[$contactType . '_Street2'] = $c->getAddress2();
-            $params[$contactType . '_Street3'] = $c->getAddress3();
-            $params[$contactType . '_City'] = $c->getCity();
-            $params[$contactType . '_CountryCode'] = $c->getCountry();
-            $params[$contactType . '_PostalCode'] = $c->getZip();
+        // ClientFence core patch (CF-240): each role gets its own contact (Registrar_AdapterAbstract::roleContact()).
+        foreach (['Registrant' => 'registrant', 'Admin' => 'admin', 'Technical' => 'tech', 'Billing' => 'billing'] as $contactType => $role) {
+            $rc = $this->roleContact($domain, $role);
+            $params[$contactType . '_Organization'] = $rc->getCompany();
+            $params[$contactType . '_FirstName'] = $rc->getFirstName();
+            $params[$contactType . '_LastName'] = $rc->getLastName();
+            $params[$contactType . '_Email'] = $rc->getEmail();
+            $params[$contactType . '_PhoneNumber'] = '+' . $rc->getTelCc() . '.' . ClientFence\Tools::validatePhoneNumber((string) $rc->getTel());
+            $params[$contactType . '_Street'] = $rc->getAddress1();
+            $params[$contactType . '_Street2'] = $rc->getAddress2();
+            $params[$contactType . '_Street3'] = $rc->getAddress3();
+            $params[$contactType . '_City'] = $rc->getCity();
+            $params[$contactType . '_CountryCode'] = $rc->getCountry();
+            $params[$contactType . '_PostalCode'] = $rc->getZip();
             $params[$contactType . '_Language'] = 'en';
         }
 
@@ -235,9 +237,9 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
             $params['registrant_dotFRContactEntityType'] = 'OTHER';
             $params['admin_dotFRContactEntityType'] = 'OTHER';
             $params['registrant_dotFRContactEntityName'] = $c->getName();
-            $params['admin_dotFRContactEntityName'] = $c->getName();
+            $params['admin_dotFRContactEntityName'] = $this->roleContact($domain, 'admin')->getName();
             $params['registrant_dotFROtherContactEntity'] = $c->getName();
-            $params['admin_dotFROtherContactEntity'] = $c->getName();
+            $params['admin_dotFROtherContactEntity'] = $this->roleContact($domain, 'admin')->getName();
             $params['registrant_dotFRContactEntityTrademark'] = $tm;
             $params['admin_dotFRContactEntityTrademark'] = $tm;
         }
@@ -252,8 +254,8 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
                 $params['Registrant_dotItTerm' . $i] = 'YES';
             }
             $params['Registrant_clientIp'] = '1.1.1.1';
-            $params['Admin_dotitProvince'] = $c->getState();
-            $params['Technical_dotitProvince'] = $c->getState();
+            $params['Admin_dotitProvince'] = $this->roleContact($domain, 'admin')->getState();
+            $params['Technical_dotitProvince'] = $this->roleContact($domain, 'tech')->getState();
         }
 
         if ($domain->getTld() == '.us') {

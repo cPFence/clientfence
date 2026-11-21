@@ -188,3 +188,12 @@ test('a refused transfer status request other than 2303 is a registrar error, ch
     expect(fn () => inwxAdapter(['domain.info' => ['code' => 2400, 'msg' => 'Command failed']])->getTransferStatus(inwxDomain()))
         ->toThrow(Registrar_Exception::class, 'Command failed');
 });
+
+test('with a default contact, admin, tech and billing get their own INWX contact and the registrant stays the client (CF-240)', function (): void {
+    inwxAdapter(['contact.create' => ['id' => 501]])->registerDomain(Tests\Helpers\withDefaultContact(inwxDomain()));
+    $created = array_values(array_filter($GLOBALS['inwx_calls'], fn (array $call) => $call[0] === 'contact.create'));
+
+    expect(array_map(fn (array $call) => $call[1]['email'], $created))->toBe(['ann@example.com', 'domains@host.example'])
+        ->and($created[1][1])->toMatchArray(['name' => 'Sam Host', 'org' => 'Host Ltd', 'city' => 'Leeds'])
+        ->and(inwxCall('domain.create')[1])->toHaveKeys(['registrant', 'admin', 'tech', 'billing']);
+});

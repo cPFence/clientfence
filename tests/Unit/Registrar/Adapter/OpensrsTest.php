@@ -272,3 +272,13 @@ test('the order form asks the registry questions of .us, .uk, .ca, .fr, .it, .la
         ->and(Registrar_Adapter_Opensrs::getDomainFields('.xxx'))->toHaveKey('icm_membership_id')
         ->and(Registrar_Adapter_Opensrs::getDomainFields('.com'))->toBe([]);
 });
+
+test('with a default contact, the contact set has it for admin, billing and tech and the client as owner (CF-240)', function (): void {
+    opensrsAdapter(['sw_register' => '<item key="id">3735281</item>'])->registerDomain(Tests\Helpers\withDefaultContact(opensrsDomain()));
+    $set = $GLOBALS['opensrs_calls'][0][1]['contact_set'];
+
+    expect(array_keys($set))->toBe(['owner', 'admin', 'billing', 'tech'])
+        ->and($set['owner'])->toMatchArray(['first_name' => 'Ann', 'email' => 'ann@example.com'])
+        ->and($set['owner'])->not->toHaveKey('org_name')
+        ->and([$set['admin']['email'], $set['billing']['org_name'], $set['tech']['phone']])->toBe(['domains@host.example', 'Host Ltd', '+44.1134960000']);
+});

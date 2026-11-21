@@ -222,3 +222,11 @@ test('the transfer status is the newest transfer order\'s: 5 completed, a "Cance
     'pending' => ['<TransferOrder><orderid>200</orderid><statusid>14</statusid><statusdesc>Domain transfer initiated and awaiting approval</statusdesc></TransferOrder>', Registrar_TransferStatus::PENDING, 'Domain transfer initiated and awaiting approval'],
     'unknown' => ['<TransferOrder><orderid>200</orderid><statusid>77</statusid><statusdesc>Something new</statusdesc></TransferOrder>', Registrar_TransferStatus::PENDING, 'Something new'],
 ]);
+
+test('with a default contact, Admin, Tech and AuxBilling get it and the Registrant stays the client (CF-240)', function (): void {
+    enomAdapter(['Purchase' => '<RRPCode>200</RRPCode><RRPText>Command completed successfully</RRPText>'])->registerDomain(Tests\Helpers\withDefaultContact(enomDomain()));
+
+    expect($GLOBALS['enom_calls'][0][1])->toMatchArray(['RegistrantEmailAddress' => 'ann@example.com', 'AdminEmailAddress' => 'domains@host.example',
+        'AdminOrganizationName' => 'Host Ltd', 'AdminJobTitle' => 'N/A', 'TechFirstName' => 'Sam', 'AuxBillingCity' => 'Leeds'])
+        ->and($GLOBALS['enom_calls'][0][1])->not->toHaveKey('RegistrantJobTitle');
+});

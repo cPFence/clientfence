@@ -226,3 +226,14 @@ test('the order form asks the registry properties of .us, .eu, .ca, .uk and .fr 
     $adapter = realtimeregisterAdapter();
     expect($adapter->deleteDomain(realtimeregisterDomain()))->toBeTrue()->and($GLOBALS['realtimeregister_calls'])->toBe([]);
 });
+
+test('with a default contact, the admin, billing and tech contacts are made from it and the registrant from the client (CF-240)', function (): void {
+    realtimeregisterAdapter(['POST /domains/example.com' => [201, ['domainName' => 'example.com', 'expiryDate' => '2028-01-02T00:00:00Z', 'status' => ['OK']]]])
+        ->registerDomain(Tests\Helpers\withDefaultContact(realtimeregisterDomain()));
+    $contacts = realtimeregisterCalls('POST /customers/acme/contacts/*');
+
+    expect(array_map(fn (array $call) => $call[1]['email'], $contacts))->toBe(['ann@example.com', 'domains@host.example', 'domains@host.example', 'domains@host.example'])
+        ->and($contacts[0][1]['organization'])->toBe('Acme Ltd')
+        ->and($contacts[1][1])->toMatchArray(['name' => 'Sam Host', 'city' => 'Leeds', 'voice' => '+44.1134960000'])
+        ->and($contacts[1][1])->not->toHaveKey('organization');
+});

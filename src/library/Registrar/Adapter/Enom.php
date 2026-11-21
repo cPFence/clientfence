@@ -7,7 +7,7 @@ declare(strict_types=1);
  * Based on the Enom adapter for FOSSBilling by TAJ IT Solutions (https://github.com/TAJ-IT-Solutions-Limited/fossbilling-enom,
  * Apache-2.0), reworked for ClientFence. Uses the Enom reseller API (https://api.enom.com/docs): POST to interface.asp
  * with the reseller ID and API token in the body, XML replies; the registrar's test mode uses resellertest.enom.com with
- * an Enom test account. The client's contact is sent for all four roles. .us names ask the nexus questions on the order
+ * an Enom test account. Each role's contact is sent (Registrant, Admin, Tech, AuxBilling). .us names ask the nexus questions on the order
  * form (getDomainFields()), sent as Enom's extended attributes.
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -389,13 +389,22 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
         ]) : [];
     }
 
-    /** The client's contact for each of the given Enom roles (Registrant, Admin, Tech, AuxBilling). */
+    /** Each given Enom role's contact (Registrant, Admin, Tech, AuxBilling). */
     private function contacts(Registrar_Domain $domain, array $roles): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
+        $params = [];
+        foreach ($roles as $role) {
+            $c = $this->roleContact($domain, ['Registrant' => 'registrant', 'Admin' => 'admin', 'Tech' => 'tech', 'AuxBilling' => 'billing'][$role]);
+            foreach ($this->contactFields($c) as $key => $value) {
+                $params[$role . $key] = $value;
+            }
         }
+
+        return $params;
+    }
+
+    private function contactFields(Registrar_Domain_Contact $c): array
+    {
         $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
         $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
         // The international form drops the national trunk 0 (Italian numbers keep it).
@@ -420,13 +429,6 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
             $fields['JobTitle'] = 'N/A';
         }
 
-        $params = [];
-        foreach ($roles as $role) {
-            foreach ($fields as $key => $value) {
-                $params[$role . $key] = $value;
-            }
-        }
-
-        return $params;
+        return $fields;
     }
 }

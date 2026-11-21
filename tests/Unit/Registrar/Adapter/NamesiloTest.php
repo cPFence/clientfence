@@ -165,3 +165,21 @@ test('the transfer status maps NameSilo\'s status text: completed, cancelled or 
     'pending' => ['Pending at Registry', Registrar_TransferStatus::PENDING],
     'unknown' => ['Something New', Registrar_TransferStatus::PENDING],
 ]);
+
+test('a contact change with a default contact adds it for admin, billing and tech and the client\'s for the registrant (CF-240)', function (): void {
+    namesiloAdapter(['contactAdd' => '<contact_id>991</contact_id>'])->modifyContact(Tests\Helpers\withDefaultContact(namesiloDomain('.com')));
+
+    expect(array_column($GLOBALS['namesilo_calls'], 0))->toBe(['contactAdd', 'contactAdd', 'contactDomainAssociate'])
+        ->and([$GLOBALS['namesilo_calls'][0][1]['em'], $GLOBALS['namesilo_calls'][1][1]['em'], $GLOBALS['namesilo_calls'][1][1]['cp']])->toBe(['ann@example.com', 'domains@host.example', 'Host Ltd'])
+        ->and($GLOBALS['namesilo_calls'][2][1])->toHaveKeys(['registrant', 'administrative', 'billing', 'technical']);
+});
+
+test('a contact change sends the .us and .eu eligibility answers with the registrant only, not the default contact (CF-240)', function (string $tld, array $fields, array $keys): void {
+    namesiloAdapter(['contactAdd' => '<contact_id>991</contact_id>'])->modifyContact(Tests\Helpers\withDefaultContact(namesiloDomain($tld)->setFields($fields)));
+
+    expect(array_intersect_key($GLOBALS['namesilo_calls'][0][1], array_flip($keys)))->toHaveCount(count($keys))
+        ->and(array_intersect_key($GLOBALS['namesilo_calls'][1][1], array_flip($keys)))->toBe([]);
+})->with([
+    '.us' => ['.us', ['nexus_category' => 'C11', 'app_purpose' => 'P1'], ['usnc', 'usap']],
+    '.eu' => ['.eu', ['eu_citizenship' => 'DE'], ['eucs']],
+]);

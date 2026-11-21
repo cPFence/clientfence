@@ -127,11 +127,16 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
 
     public function modifyContact(Registrar_Domain $domain): bool
     {
-        $id = trim((string) ($this->request('contactAdd', $this->contact($domain->getContactRegistrar()) + $this->eligibility($domain))->reply->contact_id ?? ''));
-        if ($id === '') {
-            throw new Registrar_Exception('NameSilo did not return a contact ID.');
-        }
-        $this->request('contactDomainAssociate', ['domain' => $domain->getName(), 'registrant' => $id, 'administrative' => $id, 'billing' => $id, 'technical' => $id]);
+        $ids = $this->roleHandles($domain, function (Registrar_Domain_Contact $c) use ($domain): string {
+            // The eligibility answers are the registrant's: never on another role's contact.
+            $id = trim((string) ($this->request('contactAdd', $this->contact($c) + ($c === $domain->getContactRegistrar() ? $this->eligibility($domain) : []))->reply->contact_id ?? ''));
+            if ($id === '') {
+                throw new Registrar_Exception('NameSilo did not return a contact ID.');
+            }
+
+            return $id;
+        });
+        $this->request('contactDomainAssociate', ['domain' => $domain->getName(), 'registrant' => $ids['registrant'], 'administrative' => $ids['admin'], 'billing' => $ids['billing'], 'technical' => $ids['tech']]);
 
         return true;
     }

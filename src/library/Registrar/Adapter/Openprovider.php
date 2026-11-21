@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Apache-2.0), rewritten for ClientFence. Uses the Openprovider REST API (https://docs.openprovider.com):
  * POST /v1beta/auth/login gives a bearer token for the other calls; the registrar's test mode uses the sandbox
  * (https://api.sandbox.openprovider.nl; the old http port 8480 no longer answers) with a sandbox account. Each registration, transfer and contact change
- * creates an Openprovider customer (contact handle) from the client's details. .us names ask the nexus questions on the
+ * creates an Openprovider customer (contact handle) for each role's details. .us names ask the nexus questions on the
  * order form (getDomainFields()), sent as the customer's extension data.
  */
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
@@ -308,13 +308,16 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
         return array_map(fn (string $host, int $i) => ['name' => $host, 'seq_nr' => $i + 1], $hosts, array_keys($hosts));
     }
 
-    /** A new customer handle from the client's contact, used for all four roles. */
+    /** A new customer handle for each role (owner, admin, tech, billing), one per distinct contact. */
     private function handles(Registrar_Domain $domain): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
-        }
+        $h = $this->roleHandles($domain, fn (Registrar_Domain_Contact $c): string => $this->customer($domain, $c));
+
+        return ['owner_handle' => $h['registrant'], 'admin_handle' => $h['admin'], 'tech_handle' => $h['tech'], 'billing_handle' => $h['billing']];
+    }
+
+    private function customer(Registrar_Domain $domain, Registrar_Domain_Contact $c): string
+    {
         $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
         $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
         // The international form drops the national trunk 0 (Italian numbers keep it).
@@ -340,7 +343,8 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
                 'state' => (string) $c->getState(), 'country' => strtoupper((string) $c->getCountry())],
         ];
         $f = $domain->getFields();
-        if ($domain->getTld() === '.us') {
+        // The nexus answers are the registrant's: never on another role's contact (CF-240).
+        if ($domain->getTld() === '.us' && $c === $domain->getContactRegistrar()) {
             // Openprovider writes C31 and C32 with the organisation's country: C31/DE.
             $category = (string) ($f['nexus_category'] ?? '');
             if (in_array($category, ['C31', 'C32'], true) && !empty($f['nexus_country'])) {
@@ -354,6 +358,6 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
             throw new Registrar_Exception('Openprovider did not return a contact handle.');
         }
 
-        return ['owner_handle' => $handle, 'admin_handle' => $handle, 'tech_handle' => $handle, 'billing_handle' => $handle];
+        return $handle;
     }
 }

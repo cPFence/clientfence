@@ -200,3 +200,23 @@ test('the transfer status reads the domain\'s status: ACT completed, FAI failed,
     'awaiting approval' => ['PEN', Registrar_TransferStatus::PENDING],
     'unknown' => ['XYZ', Registrar_TransferStatus::PENDING],
 ]);
+
+test('with a default contact, admin, tech and billing get a second handle and the owner stays the client (CF-240)', function (): void {
+    openproviderAdapter()->registerDomain(Tests\Helpers\withDefaultContact(openproviderDomain()));
+    $customers = array_values(array_filter($GLOBALS['openprovider_calls'], fn (array $call) => $call[0] === 'POST /customers'));
+
+    expect(array_map(fn (array $call) => $call[1]['email'], $customers))->toBe(['ann@example.com', 'domains@host.example'])
+        ->and($customers[1][1]['company_name'])->toBe('Host Ltd')
+        ->and($customers[1][1]['address'])->toMatchArray(['street' => 'Port Road', 'number' => '5', 'city' => 'Leeds'])
+        ->and(openproviderCall('POST /domains')[1])->toHaveKeys(['owner_handle', 'admin_handle', 'tech_handle', 'billing_handle']);
+});
+
+test('the .us nexus answers go on the client\'s owner handle only, never on the default contact\'s (CF-240)', function (): void {
+    openproviderAdapter()->registerDomain(Tests\Helpers\withDefaultContact(openproviderDomain('.us')->setFields(['nexus_category' => 'C11', 'app_purpose' => 'P1'])));
+    $customers = array_values(array_filter($GLOBALS['openprovider_calls'], fn (array $call) => $call[0] === 'POST /customers'));
+
+    expect($customers[0][1]['email'])->toBe('ann@example.com')
+        ->and($customers[0][1]['extension_additional_data'])->toBe([['name' => 'us', 'data' => ['nexus_category' => 'C11', 'applicant_purpose' => 'P1']]])
+        ->and($customers[1][1]['email'])->toBe('domains@host.example')
+        ->and($customers[1][1])->not->toHaveKey('extension_additional_data');
+});

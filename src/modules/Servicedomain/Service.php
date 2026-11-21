@@ -27,6 +27,10 @@ class Service implements \ClientFence\InjectionAwareInterface
     public const string REGISTRAR_CREDENTIAL_KEEP_SENTINEL = '__KEEP__';
     public const string PINNED_TLDS = 'servicedomain_pinned_tlds';
     public const int PINNED_MAX = 8;
+    /** ClientFence core patch (CF-240): "Use the client's details" for the admin, tech and billing contacts, on by default. */
+    public const string USE_CLIENT_DETAILS = 'servicedomain_use_client_details';
+    /** The default contact's fields, each saved as servicedomain_contact_<field>. */
+    public const array DEFAULT_CONTACT_FIELDS = ['first_name', 'last_name', 'company', 'email', 'address1', 'address2', 'city', 'state', 'postcode', 'country', 'phone_cc', 'phone'];
 
     protected ?\Pimple\Container $di = null;
     private Filesystem $filesystem;
@@ -1074,10 +1078,12 @@ class Service implements \ClientFence\InjectionAwareInterface
             ->setBirthday($birthday)
             ->setDocumentNr($document_nr);
 
+        // ClientFence core patch (CF-240): with "Use the client's details" off, admin, tech and billing are the default contact (as WHMCS).
+        $roles = $this->defaultContact() ?? $contact;
         $d->setContactRegistrar($contact);
-        $d->setContactAdmin($contact);
-        $d->setContactTech($contact);
-        $d->setContactBilling($contact);
+        $d->setContactAdmin($roles);
+        $d->setContactTech($roles);
+        $d->setContactBilling($roles);
 
         $d->setTld($model->tld);
         $d->setSld($model->sld);
@@ -1393,6 +1399,65 @@ class Service implements \ClientFence\InjectionAwareInterface
         $this->di['logger']->info('Updated the pinned TLDs');
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch (CF-240): saves "Use the client's details" and the default contact for the admin, tech and billing
+     * contacts (WHMCS Default Contact Details). Off needs the details registrars require.
+     */
+    public function defaultContactUpdate(array $data): bool
+    {
+        $useClient = \ClientFence\Tools::normalizeBoolean($data['use_client_details'] ?? true, true);
+        $contact = [];
+        foreach (self::DEFAULT_CONTACT_FIELDS as $field) {
+            $contact[$field] = is_scalar($data[$field] ?? null) ? trim((string) $data[$field]) : '';
+        }
+        if (!$useClient) {
+            $required = ['first_name' => __trans('First Name'), 'last_name' => __trans('Last Name'), 'email' => __trans('Email'), 'address1' => __trans('Address Line 1'),
+                'city' => __trans('City'), 'postcode' => __trans('Zip'), 'country' => __trans('Country'), 'phone_cc' => __trans('Phone Country Code'), 'phone' => __trans('Phone Number')];
+            foreach ($required as $field => $label) {
+                if ($contact[$field] === '') {
+                    throw new \ClientFence\InformationException("Enter :field for the default contact, or turn on Use the client's details.", [':field' => $label]);
+                }
+            }
+            $this->di['tools']->validateAndSanitizeEmail($contact['email']);
+            $contact['country'] = strtoupper($contact['country']);
+            if (!\Symfony\Component\Intl\Countries::exists($contact['country'])) {
+                throw new \ClientFence\InformationException('Invalid country code: :code', [':code' => $contact['country']]);
+            }
+            $contact['phone_cc'] = ltrim(\ClientFence\Tools::latinDigits($contact['phone_cc']), '+');
+            if (preg_match('/^[0-9]{1,4}$/', $contact['phone_cc']) !== 1) {
+                throw new \ClientFence\InformationException('The phone country code is not valid.');
+            }
+            $contact['phone'] = \ClientFence\Tools::validatePhoneNumber($contact['phone']);
+        }
+        $system = $this->di['mod_service']('system');
+        foreach ($contact as $field => $value) {
+            $system->setParamValue('servicedomain_contact_' . $field, $value);
+        }
+        // Last, so an order placed while this saves never reads the switch off with the contact half saved.
+        $system->setParamValue(self::USE_CLIENT_DETAILS, $useClient ? '1' : '0');
+        $this->di['logger']->info('Updated the default domain contact');
+
+        return true;
+    }
+
+    /** ClientFence core patch (CF-240): the default contact for admin, tech and billing; null while "Use the client's details" is on. */
+    private function defaultContact(): ?\Registrar_Domain_Contact
+    {
+        $system = $this->di['mod_service']('system');
+        if ((string) $system->getParamValue(self::USE_CLIENT_DETAILS, '1') !== '0') {
+            return null;
+        }
+        $v = [];
+        foreach (self::DEFAULT_CONTACT_FIELDS as $field) {
+            $v[$field] = (string) $system->getParamValue('servicedomain_contact_' . $field, '');
+        }
+
+        return (new \Registrar_Domain_Contact())
+            ->setEmail($v['email'])->setUsername($v['email'])->setFirstName($v['first_name'])->setLastName($v['last_name'])
+            ->setCompany($v['company'])->setAddress1($v['address1'])->setAddress2($v['address2'])->setCity($v['city'])->setState($v['state'])
+            ->setZip($v['postcode'])->setCountry($v['country'])->setTelCc($v['phone_cc'])->setTel($v['phone'])->setFaxCc($v['phone_cc'])->setFax($v['phone']);
     }
 
     public function tldFindOneActiveById($id)

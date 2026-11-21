@@ -489,3 +489,25 @@ test('the transfer status reads the order: Active completed, a deleted order or 
     'pending' => [['currentstatus' => 'InActive', 'actiontype' => 'AddTransferDomain', 'actionstatus' => 'RFASent', 'actionstatusdesc' => 'Transfer waiting for Admin Contact Approval'], Registrar_TransferStatus::PENDING],
     'unknown' => [['currentstatus' => 'Something new'], Registrar_TransferStatus::PENDING],
 ]);
+
+test('modifyContact with a default contact adds it for admin, tech and billing and keeps the client as registrant (CF-240)', function (string $tld, array $replies, array $expected): void {
+    $bodies = [];
+    $responses = [json_encode(['customerid' => '555']), ...$replies, '333333', json_encode(['status' => 'Success'])];
+    $httpClient = new MockHttpClient(function (string $method, string $url, array $options) use (&$responses, &$bodies): MockResponse {
+        parse_str((string) ($options['body'] ?? ''), $body);
+        $bodies[] = [parse_url($url, PHP_URL_PATH), $body];
+
+        return new MockResponse(array_shift($responses));
+    });
+    $domain = createResellerclubDomain(tld: $tld)->setContactRegistrar(createResellerclubTestContact()->setDocumentNr('X1234567'));
+
+    expect(createResellerclubAdapter($httpClient)->modifyContact(Tests\Helpers\withDefaultContact($domain)))->toBeTrue();
+    $added = array_values(array_filter($bodies, fn (array $call) => $call[0] === '/api/contacts/add.json'));
+    $sent = end($bodies)[1];
+    expect(array_map(fn (array $call) => $call[1]['email'], $added))->toBe($expected[0])
+        ->and([$sent['reg-contact-id'], $sent['admin-contact-id'], $sent['tech-contact-id'], $sent['billing-contact-id']])->toBe($expected[1]);
+})->with([
+    '.com: a second contact' => ['.com', ['998877', '445566'], [['jane@example.com', 'domains@host.example'], ['998877', '445566', '445566', '445566']]],
+    '.es: the registrant\'s ID document, so the registrant everywhere' => ['.es', ['111111', '222222'], [['jane@example.com', 'jane@example.com'], ['222222', '222222', '222222', '222222']]],
+    '.co.uk: no admin, tech or billing roles, so no unused contact is made' => ['.co.uk', ['111111', '222222'], [['jane@example.com', 'jane@example.com'], ['222222', '-1', '-1', '-1']]],
+]);

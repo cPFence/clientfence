@@ -7,8 +7,8 @@ declare(strict_types=1);
  * Based on the OpenSRS module for Blesta (https://github.com/blesta/module-opensrs, Copyright 2021 Blesta, MIT),
  * reworked for ClientFence. Uses the OpenSRS Domains API (https://domains.opensrs.guide/docs): XML (OPS envelope)
  * POSTed to https://rr-n1-tor.opensrs.net:55443 with the headers X-Username and X-Signature = md5(md5(xml + key) + key);
- * the registrar's test mode uses the test environment (https://horizon.opensrs.net:55443) with a test account. The
- * client's contact is sent for all four roles. The order form asks for the registry details of .us, .ca, .uk, .fr,
+ * the registrar's test mode uses the test environment (https://horizon.opensrs.net:55443) with a test account. Each
+ * role's contact is sent (owner, admin, billing, tech). The order form asks for the registry details of .us, .ca, .uk, .fr,
  * .it, .law, .abogado and .xxx names (getDomainFields()), sent as OpenSRS's tld_data or registrant_extra_info.
  */
 use Symfony\Component\Intl\Countries;
@@ -395,7 +395,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
         return is_numeric($price) && (float) $price >= 0 ? (float) $price : null;
     }
 
-    /** A registration or transfer (sw_register): the client's contact for all four roles, no OpenSRS auto-renewal. */
+    /** A registration or transfer (sw_register): each role's contact, no OpenSRS auto-renewal. */
     private function order(Registrar_Domain $domain, string $type, array $params): void
     {
         $contacts = $this->contacts($domain);
@@ -532,7 +532,6 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
         return array_map(fn (string $host, int $i) => ['name' => $host, 'sortorder' => $i + 1], $hosts, array_keys($hosts));
     }
 
-    /** The client's contact as OpenSRS's contact set (owner, admin, billing, tech). */
     private function asked(Registrar_Domain $domain): void
     {
         if (in_array(strtolower((string) $domain->getTld()), self::UNASKED, true)) {
@@ -548,17 +547,25 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
         }
     }
 
+    /** Each role's contact as OpenSRS's contact set (owner, admin, billing, tech). */
     private function contacts(Registrar_Domain $domain): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing.');
+        $set = [];
+        foreach (['owner' => 'registrant', 'admin' => 'admin', 'billing' => 'billing', 'tech' => 'tech'] as $key => $role) {
+            $set[$key] = $this->contact($domain, $this->roleContact($domain, $role));
         }
+
+        return $set;
+    }
+
+    private function contact(Registrar_Domain $domain, Registrar_Domain_Contact $c): array
+    {
         $cc = (string) preg_replace('/\D+/', '', (string) $c->getTelCc());
         $tel = (string) preg_replace('/\D+/', '', (string) $c->getTel());
         // +CC.NUMBER; the international form drops the national trunk 0 (Italian numbers keep it).
         $phone = '+' . $cc . '.' . ($cc === '39' ? $tel : ltrim($tel, '0'));
-        $contact = array_filter([
+
+        return array_filter([
             'first_name' => (string) $c->getFirstName(),
             'last_name' => (string) $c->getLastName(),
             // .uk: OpenSRS wants the individual's full name here when there is no company.
@@ -572,7 +579,5 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
             'phone' => $phone,
             'email' => (string) $c->getEmail(),
         ], fn (string $value) => trim($value) !== '');
-
-        return array_fill_keys(['owner', 'admin', 'billing', 'tech'], $contact);
     }
 }

@@ -419,19 +419,24 @@ class Registrar_Adapter_Spaceship extends Registrar_AdapterAbstract implements R
         return $this->request('GET', $this->path($domain));
     }
 
-    /** The client's contact saved at Spaceship (the same details give the same ID), for all four roles. */
+    /** Each role's contact saved at Spaceship (the same details give the same ID). */
     private function contacts(Registrar_Domain $domain): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
+        if (!$domain->getContactRegistrar() instanceof Registrar_Domain_Contact) {
             throw new Registrar_Exception('No registrant contact was given for :domain.', [':domain' => $domain->getName()]);
         }
+
+        return $this->roleHandles($domain, fn (Registrar_Domain_Contact $c): string => $this->contactIdOf($c));
+    }
+
+    private function contactIdOf(Registrar_Domain_Contact $c): string
+    {
         // Spaceship's contact fields take ASCII only, each its own characters (ContactDetails patterns): "José St. Müller"
         // goes as "Jose St Muller"; any other character becomes a space.
         $ascii = static fn (mixed $v, string $allowed = '\x20-\x7E'): string => trim((string) preg_replace(['~[^' . $allowed . ']~', '~\s+~'], ' ',
             (string) transliterator_transliterate('Any-Latin; Latin-ASCII; [:^ASCII:] Remove', (string) $v)), " `");
         $name = "A-Za-z'`\\s-";
-        $id = $this->contactId($this->request('PUT', '/v1/contacts', array_filter([
+        return $this->contactId($this->request('PUT', '/v1/contacts', array_filter([
             'firstName' => $ascii($c->getFirstName(), $name),
             'lastName' => $ascii($c->getLastName(), $name),
             'organization' => $ascii($c->getCompany()),
@@ -444,8 +449,6 @@ class Registrar_Adapter_Spaceship extends Registrar_AdapterAbstract implements R
             'postalCode' => $ascii($c->getZip(), '\\dA-Za-z\\s-'),
             'phone' => '+' . preg_replace('/\D/', '', (string) $c->getTelCc()) . '.' . preg_replace('/\D/', '', (string) $c->getTel()),
         ], static fn (string $v): bool => $v !== '')));
-
-        return ['registrant' => $id, 'admin' => $id, 'tech' => $id, 'billing' => $id];
     }
 
     /** The order's .us answers saved as "us" contact attributes; null for other TLDs. */

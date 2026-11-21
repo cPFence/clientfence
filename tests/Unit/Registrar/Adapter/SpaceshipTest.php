@@ -315,3 +315,12 @@ test('an API error is a registrar error with the detail and field messages, logg
     expect(fn () => $adapter->modifyNs(spaceshipDomain()))->toThrow(Registrar_Exception::class, 'Validation failed. hosts: Unknown host');
     expect(json_encode($adapter->getLog()->calls))->toContain('business.validation')->not->toContain('ship-secret');
 });
+
+test('with a default contact, admin, tech and billing get its saved contact ID and the registrant the client\'s (CF-240)', function (): void {
+    $adapter = spaceshipAdapter(['PUT /v1/contacts' => [['contactId' => 'ct1'], ['contactId' => 'ct2']]]);
+    $adapter->registerDomain(Tests\Helpers\withDefaultContact(spaceshipDomain()));
+    $saved = array_values(array_filter($adapter->calls->getArrayCopy(), fn (array $call) => $call[0] === 'PUT /v1/contacts'));
+
+    expect(array_map(fn (array $call) => $call[1]['email'], $saved))->toBe(['ann@example.com', 'domains@host.example'])
+        ->and(spaceshipBody($adapter, 'POST /v1/domains/example.com')['contacts'])->toBe(['registrant' => 'ct1', 'admin' => 'ct2', 'tech' => 'ct2', 'billing' => 'ct2']);
+});

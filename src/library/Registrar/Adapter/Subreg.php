@@ -103,11 +103,9 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public function registerDomain(Registrar_Domain $domain): bool
     {
-        $contact = ['new' => $this->contact($domain)];
         $this->order($domain, 'Create_Domain', [
             'period' => $this->period($domain),
-            'registrant' => $contact,
-            'contacts' => ['admin' => $contact, 'tech' => $contact, 'billing' => $contact],
+        ] + $this->contacts($domain) + [
             'ns' => ['hosts' => $this->nameservers($domain)],
         ] + $this->tldParams($domain));
 
@@ -116,8 +114,7 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        $contact = ['new' => $this->contact($domain)];
-        $this->order($domain, 'Transfer_Domain', ['authid' => (string) $domain->getEpp(), 'new' => ['registrant' => $contact, 'admin' => $contact]]);
+        $this->order($domain, 'Transfer_Domain', ['authid' => (string) $domain->getEpp(), 'new' => ['registrant' => ['new' => $this->contact($domain, 'registrant')], 'admin' => ['new' => $this->contact($domain, 'admin')]]]);
 
         return true;
     }
@@ -167,8 +164,7 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public function modifyContact(Registrar_Domain $domain): bool
     {
-        $contact = ['new' => $this->contact($domain)];
-        $this->order($domain, 'Modify_Domain', ['registrant' => $contact, 'contacts' => ['admin' => $contact, 'tech' => $contact, 'billing' => $contact]]);
+        $this->order($domain, 'Modify_Domain', $this->contacts($domain));
 
         return true;
     }
@@ -361,13 +357,21 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
         return array_map(static fn (string $host): array => ['hostname' => $host], array_values($hosts));
     }
 
-    /** Type_Contact "new": name, surname, org, street, city, pc, sp, cc, phone (+cc.number), email. */
-    private function contact(Registrar_Domain $domain): array
+    /** The registrant and the admin, tech and billing contacts of Create_Domain and Modify_Domain. */
+    private function contacts(Registrar_Domain $domain): array
     {
-        $c = $domain->getContactRegistrar();
-        if (!$c instanceof Registrar_Domain_Contact) {
+        $new = fn (string $role): array => ['new' => $this->contact($domain, $role)];
+
+        return ['registrant' => $new('registrant'), 'contacts' => ['admin' => $new('admin'), 'tech' => $new('tech'), 'billing' => $new('billing')]];
+    }
+
+    /** A role's Type_Contact "new": name, surname, org, street, city, pc, sp, cc, phone (+cc.number), email. */
+    private function contact(Registrar_Domain $domain, string $role): array
+    {
+        if (!$domain->getContactRegistrar() instanceof Registrar_Domain_Contact) {
             throw new Registrar_Exception('No registrant contact was given for :domain.', [':domain' => $domain->getName()]);
         }
+        $c = $this->roleContact($domain, $role);
 
         return array_filter([
             'name' => trim((string) $c->getFirstName()),

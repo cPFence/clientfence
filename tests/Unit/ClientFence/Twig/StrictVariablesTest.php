@@ -281,3 +281,17 @@ function formatFindings(array $findings): string
 
     return implode("\n", $lines);
 }
+
+test('domain registration settings render before the default contact is saved', function (): void {
+    $renderer = new StrictTemplateRenderer();
+
+    // A fresh install has no servicedomain_contact_* rows: the Contacts tab must not crash the page.
+    $html = $renderer->renderTemplate(PATH_MODS . '/Servicedomain/templates/admin/mod_servicedomain_index.html.twig', [
+        'admin' => new PermissiveStub([
+            'system_get_params' => ['nameserver_1' => 'ns1.example.test', 'nameserver_2' => '', 'nameserver_3' => '', 'nameserver_4' => ''],
+        ]),
+    ]);
+
+    expect($html)->toContain('name="use_client_details" value="1" checked')
+        ->and($html)->toContain('id="cf-dc-first-name" name="first_name" value=""');
+});

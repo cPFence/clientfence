@@ -9,8 +9,8 @@ declare(strict_types=1);
  * The registrar's test mode switches to api-sandbox.dynadot.com with the sandbox key.
  *
  * Dynadot keeps WHOIS data as reusable contact records, so registrations and contact
- * changes create a contact from the FOSSBilling registrant and assign it to all four
- * roles. Dynadot only accepts name servers that exist in the account, so the adapter
+ * changes create a contact for each role (the registrant, and the admin, technical and
+ * billing contacts). Dynadot only accepts name servers that exist in the account, so the adapter
  * adds them first.
  *
  * Install: copy to library/Registrar/Adapter/Dynadot.php in the FOSSBilling root.
@@ -114,14 +114,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
 
     public function modifyContact(Registrar_Domain $domain): bool
     {
-        $contactId = $this->createContact($this->registrantOf($domain));
-        $this->request('set_whois', [
-            'domain' => $domain->getName(),
-            'registrant_contact' => $contactId,
-            'admin_contact' => $contactId,
-            'technical_contact' => $contactId,
-            'billing_contact' => $contactId,
-        ]);
+        $this->request('set_whois', ['domain' => $domain->getName()] + $this->contactIds($domain));
 
         return true;
     }
@@ -143,10 +136,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
             $params['name_servers'] = implode(',', $nameservers);
         }
         if ($domain->getContactRegistrar() instanceof Registrar_Domain_Contact) {
-            $contactId = $this->createContact($domain->getContactRegistrar());
-            foreach (['registrant_contact', 'admin_contact', 'technical_contact', 'billing_contact'] as $role) {
-                $params[$role] = $contactId;
-            }
+            $params += $this->contactIds($domain);
         }
 
         $this->request('transfer', $params);
@@ -228,16 +218,11 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
 
     public function registerDomain(Registrar_Domain $domain): bool
     {
-        $contactId = $this->createContact($this->registrantOf($domain));
         $this->request('register', [
             'domain' => $domain->getName(),
             'duration' => max(1, (int) $domain->getRegistrationPeriod()),
             'currency' => $this->config['currency'],
-            'registrant_contact' => $contactId,
-            'admin_contact' => $contactId,
-            'technical_contact' => $contactId,
-            'billing_contact' => $contactId,
-        ]);
+        ] + $this->contactIds($domain));
 
         // Dynadot registers with the account defaults; apply the order's name servers.
         if (count($this->nameservers($domain)) >= 2) {
@@ -458,14 +443,12 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
         }
     }
 
-    private function registrantOf(Registrar_Domain $domain): Registrar_Domain_Contact
+    /** A Dynadot contact record for each role, one per distinct contact. */
+    private function contactIds(Registrar_Domain $domain): array
     {
-        $contact = $domain->getContactRegistrar();
-        if (!$contact instanceof Registrar_Domain_Contact) {
-            throw new Registrar_Exception('The registrant contact is missing for :domain', [':domain' => $domain->getName()]);
-        }
+        $ids = $this->roleHandles($domain, fn (Registrar_Domain_Contact $c): string => $this->createContact($c));
 
-        return $contact;
+        return ['registrant_contact' => $ids['registrant'], 'admin_contact' => $ids['admin'], 'technical_contact' => $ids['tech'], 'billing_contact' => $ids['billing']];
     }
 
     /**

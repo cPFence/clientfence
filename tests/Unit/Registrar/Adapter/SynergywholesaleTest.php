@@ -150,3 +150,13 @@ test('the transfer status reads domainInfo: an active name completed, a rejected
     'pending' => [['status' => 'OK', 'transfer_status' => 'Pending registrant approval'], Registrar_TransferStatus::PENDING, 'Pending registrant approval'],
     'unknown' => [['status' => 'OK', 'domain_status' => 'somethingNew'], Registrar_TransferStatus::PENDING, 'somethingNew'],
 ]);
+
+test('a contact change with a default contact sends it for admin, technical and billing and the client as registrant (CF-240)', function (): void {
+    $adapter = synergyAdapter([]);
+
+    expect($adapter->modifyContact(Tests\Helpers\withDefaultContact(synergyDomain('.com'))))->toBeTrue();
+    [$command, $request] = $adapter->calls[0];
+    expect($command)->toBe('updateContact')
+        ->and($request)->toMatchArray(['registrant_email' => 'ann@example.com', 'registrant_organisation' => 'Example Pty Ltd', 'admin_email' => 'domains@host.example',
+            'technical_firstname' => 'Sam', 'billing_organisation' => 'Host Ltd', 'billing_suburb' => 'Leeds']);
+});

@@ -130,8 +130,8 @@ class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract imple
     public function modifyContact(Registrar_Domain $domain): bool
     {
         $request = ['domainName' => $domain->getName()];
-        foreach (['registrant', 'admin', 'technical', 'billing'] as $role) {
-            $request += $this->contact($domain->getContactRegistrar(), $role . '_');
+        foreach (['registrant' => 'registrant', 'admin' => 'admin', 'technical' => 'tech', 'billing' => 'billing'] as $prefix => $role) {
+            $request += $this->contact($this->roleContact($domain, $role), $prefix . '_');
         }
         $this->request('updateContact', $request);
 

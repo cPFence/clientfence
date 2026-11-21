@@ -240,3 +240,12 @@ test('the transfer status maps syncTransfer\'s status: completed, cancelled or r
     'stalled' => ['Stall', Registrar_TransferStatus::PENDING],
     'unknown' => ['In Process', Registrar_TransferStatus::PENDING],
 ]);
+
+test('a contact change with a default contact adds it as a second contact for admin, tech and billing (CF-240)', function (): void {
+    connectresellerAdapter(['AddRegistrantContact' => connectresellerReply(200, null, 'Contact added', 3456)])->modifyContact(Tests\Helpers\withDefaultContact(connectresellerDomain()));
+    $added = array_values(array_filter($GLOBALS['connectreseller_calls'], fn (array $call) => $call[0] === 'AddRegistrantContact'));
+
+    expect(array_column($GLOBALS['connectreseller_calls'], 0))->toBe(['ViewDomain', 'AddRegistrantContact', 'AddRegistrantContact', 'updatecontact'])
+        ->and([$added[0][1]['EmailAddress'], $added[1][1]['EmailAddress'], $added[1][1]['CompanyName']])->toBe(['ann@example.com', 'domains@host.example', 'Host Ltd'])
+        ->and(connectresellerCall('updatecontact')[1])->toHaveKeys(['registrantContactId', 'adminContactId', 'technicalContactId', 'billingContactId']);
+});

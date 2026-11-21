@@ -164,3 +164,18 @@ test('the transfer status reads Domain/Info: a registered name completed, PENDIN
     'pending' => ['PENDING TRANSFER', Registrar_TransferStatus::PENDING],
     'unknown' => ['SOMETHING NEW', Registrar_TransferStatus::PENDING],
 ]);
+
+test('Internetbs sends the default contact for Admin, Technical and Billing and the client as Registrant (CF-240)', function (string $operation): void {
+    $httpClient = new MockHttpClient(function (string $method, string $url, array $options): MockResponse {
+        parse_str($options['body'], $params);
+        expect([$params['Registrant_Email'], $params['Admin_Email'], $params['Technical_Organization'], $params['Billing_City']])
+            ->toBe(['ann@example.com', 'domains@host.example', 'Host Ltd', 'Leeds']);
+
+        return new MockResponse("status=SUCCESS\nproduct_0_status=SUCCESS");
+    });
+    $contact = (new Registrar_Domain_Contact())->setFirstName('Ann')->setEmail('ann@example.com')->setTelCc('44')->setTel('2079460000');
+    $domain = Tests\Helpers\withDefaultContact((new Registrar_Domain())->setSld('example')->setTld('.com')->setRegistrationPeriod(1)->setContactRegistrar($contact));
+
+    expect(createInternetbsAdapter($httpClient)->{$operation}($domain))->toBeTrue()
+        ->and($httpClient->getRequestsCount())->toBe(1);
+})->with(['registerDomain', 'transferDomain', 'modifyContact']);

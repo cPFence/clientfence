@@ -38,6 +38,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#tab-nameservers" data-bs-toggle="tab">{{ 'Nameservers'|trans }}</a>
                         </li>
+                        {# ClientFence core patch (CF-240): the default contact for the admin, tech and billing contacts (as WHMCS). #}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tab-contacts" data-bs-toggle="tab">{{ 'Contacts'|trans }}</a>
+                        </li>
                         {# ClientFence core patch: the daily domain sync and transfer tracking (DomainSync.php). #}
                         <li class="nav-item">
                             <a class="nav-link" href="#tab-sync" data-bs-toggle="tab">{{ 'Sync'|trans }}</a>
@@ -239,6 +243,91 @@
 
                                     {% block form_actions %}
                                         <button class="btn btn-primary" type="submit">{{ 'Update Nameservers'|trans }}</button>
+                                    {% endblock %}
+                                {% endembed %}
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab-contacts" role="tabpanel">
+                        <div class="p-3">
+                            <form method="post" action="{{ 'servicedomain/default_contact_update'|api_url }}" novalidate {{ fb_api_form({message: 'Saved.'|trans}) }}>
+                                {% embed 'partial_admin_form_card.html.twig' with {
+                                    title: 'Default Contact Details'|trans,
+                                    subtitle: 'The Registrant of a domain is always the client. These settings choose the Admin, Billing and Technical contacts.'|trans
+                                } %}
+                                    {% block form_content %}
+                                        {% set params = admin.system_get_params %}
+                                        <div class="mb-3">
+                                            <input type="hidden" name="use_client_details" value="0">
+                                            <label class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" name="use_client_details" value="1"{% if params.servicedomain_use_client_details|default('1') != '0' %} checked{% endif %}>
+                                                <span class="form-check-label">{{ "Use the client's details"|trans }}</span>
+                                            </label>
+                                            <div class="form-hint">{{ 'On: the client\'s details are used for the Admin, Billing and Technical contacts too. Off: the contact below is used for them.'|trans }}</div>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-first-name">{{ 'First Name'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-first-name" name="first_name" value="{{ params.servicedomain_contact_first_name|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-last-name">{{ 'Last Name'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-last-name" name="last_name" value="{{ params.servicedomain_contact_last_name|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-company">{{ 'Company'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-company" name="company" value="{{ params.servicedomain_contact_company|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-email">{{ 'Email'|trans }}</label>
+                                                <input class="form-control" type="email" id="cf-dc-email" name="email" value="{{ params.servicedomain_contact_email|default('') }}" dir="ltr" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-address1">{{ 'Address Line 1'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-address1" name="address1" value="{{ params.servicedomain_contact_address1|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-address2">{{ 'Address Line 2'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-address2" name="address2" value="{{ params.servicedomain_contact_address2|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-city">{{ 'City'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-city" name="city" value="{{ params.servicedomain_contact_city|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-state">{{ 'State'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-state" name="state" value="{{ params.servicedomain_contact_state|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-postcode">{{ 'Zip'|trans }}</label>
+                                                <input class="form-control" type="text" id="cf-dc-postcode" name="postcode" value="{{ params.servicedomain_contact_postcode|default('') }}" autocomplete="off">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="form-label" for="cf-dc-country">{{ 'Country'|trans }}</label>
+                                                <select class="form-select" id="cf-dc-country" name="country">
+                                                    <option value="">{{ 'Select Country'|trans }}</option>
+                                                    {% for code, name in country_names() %}
+                                                        <option value="{{ code }}"{% if params.servicedomain_contact_country|default('') == code %} selected{% endif %}>{{ name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <label class="form-label" for="cf-dc-phone-cc">{{ 'Phone Country Code'|trans }}</label>
+                                                <div class="input-group" dir="ltr">
+                                                    <span class="input-group-text">+</span>
+                                                    <input class="form-control fb-phone-country-code" type="text" id="cf-dc-phone-cc" name="phone_cc" value="{{ params.servicedomain_contact_phone_cc|default('') }}" inputmode="numeric" maxlength="4" autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-9">
+                                                <label class="form-label" for="cf-dc-phone">{{ 'Phone Number'|trans }}</label>
+                                                <input class="form-control" type="tel" id="cf-dc-phone" name="phone" value="{{ params.servicedomain_contact_phone|default('') }}" dir="ltr" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    {% endblock %}
+
+                                    {% block form_actions %}
+                                        <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
                                     {% endblock %}
                                 {% endembed %}
                             </form>

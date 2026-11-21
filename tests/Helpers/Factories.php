@@ -98,3 +98,15 @@ function admin(array $attributes = []): object
 
     return model(\Model_Admin::class, array_merge($defaults, $attributes));
 }
+
+/**
+ * ClientFence (CF-240): gives the domain the default contact as its admin, tech and billing contact, as
+ * Servicedomain _getD() does with "Use the client's details" off.
+ */
+function withDefaultContact(\Registrar_Domain $domain): \Registrar_Domain
+{
+    $staff = (new \Registrar_Domain_Contact())->setFirstName('Sam')->setLastName('Host')->setCompany('Host Ltd')->setEmail('domains@host.example')
+        ->setAddress1('5 Port Road')->setCity('Leeds')->setZip('LS1 4AP')->setCountry('GB')->setTelCc('44')->setTel('1134960000');
+
+    return $domain->setContactAdmin($staff)->setContactTech($staff)->setContactBilling($staff);
+}
