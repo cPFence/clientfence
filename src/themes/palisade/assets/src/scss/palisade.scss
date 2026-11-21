@@ -5176,3 +5176,7 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 @media (prefers-reduced-motion: reduce) {
   .cf-dc-choice .bf-seg-item { transition: none; }
 }
+
+// A form around a scrollable modal's body and footer: Bootstrap scrolls only a .modal-body inside the flex
+// .modal-content, so the form carries that flex column (forum #173: a long Upgrade list hid Continue).
+.modal-dialog-scrollable .modal-content > form { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; }
