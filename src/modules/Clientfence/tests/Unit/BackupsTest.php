@@ -349,3 +349,28 @@ test('a dump is loaded back statement by statement and tables made since are dro
     expect(fn () => DatabaseDump::restore($db, $file))->toThrow(RuntimeException::class, 'incomplete');
     unlink($file);
 });
+
+test('the backup email goes out in the staff email layout', function (): void {
+    [$di] = backupsContainer();
+    $di['mod'] = $di->protect(fn (): object => new class {
+        public function getConfig(): array
+        {
+            return ['from_email' => 'billing@example.com'];
+        }
+    });
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->allows('getParamValue')->andReturn('');
+    $system->allows('getCompany')->andReturn(['name' => 'Acme']);
+    $email = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $email->expects('renderHtmlInLayout')->once()->with(Mockery::on(fn (string $html): bool => str_contains($html, 'database backup')), 'staff')->andReturn('<html>wrapped</html>');
+    $di['mod_service'] = $di->protect(fn (string $name): object => strtolower($name) === 'email' ? $email : $system);
+    $logger = Mockery::mock(ClientFence\Monolog::class);
+    $logger->allows('setChannel')->andReturnSelf();
+    $logger->allows('info');
+    $di['logger'] = $logger;
+    $file = tempnam(sys_get_temp_dir(), 'cfbk');
+    file_put_contents($file, gzencode('-- dump'));
+
+    (new ReflectionMethod(Backups::class, 'email'))->invoke(null, $di, 'b@example.com', $file, 'backup.sql.gz');
+    unlink($file);
+});

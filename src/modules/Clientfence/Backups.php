@@ -609,6 +609,8 @@ final class Backups
         $body = '<p>The ' . htmlspecialchars($company) . ' billing database backup of ' . date('Y-m-d H:i') . ' is attached ('
             . htmlspecialchars($name) . ', ' . round($bytes / 1048576, 2) . ' MB).</p><p>It holds all client data unencrypted: keep it safe. Restore with:<br><code>gunzip &lt; '
             . htmlspecialchars($name) . ' | mysql database_name</code></p><p>Sent by ClientFence (System → Settings → System → Backups).</p>';
+        // The staff email layout (Email/Layout.php) around the message.
+        $body = $di['mod_service']('email')->renderHtmlInLayout($body, 'staff');
         $mail = new \ClientFence\Mail(['email' => $from, 'name' => (string) ($settings['from_name'] ?? '') ?: $company], $address, $subject, $body, $settings['mailer'] ?? 'sendmail', $settings['custom_dsn'] ?? null);
         $mail->attach((string) file_get_contents($file), $name, 'application/gzip');
         if (!\ClientFence\Environment::isProduction()) {
