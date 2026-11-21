@@ -82,7 +82,7 @@
                     <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#address-book"/></svg></span>
                     <div>
                         <h3 class="h6 mb-1">{{ 'Update Domain Contact Details'|trans }}</h3>
-                        <span class="small text-secondary">{{ 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update Technical, Billing and Admin contacts for this service. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans }}</span>
+                        <span class="small text-secondary">{{ service.company_contact|default(false) ? 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant) contact of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans : 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update Technical, Billing and Admin contacts for this service. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans }}</span>
                     </div>
                 </div>
                 <form method="post" action="{{ 'servicedomain/update_contacts'|api_url }}" {{ fb_api_form(service.ticket_mode|default(false) ? {message: 'Request sent: our team will make the change and reply on your ticket.'|trans, reload: true} : {message: 'Contact Details Updated'|trans}) }}>

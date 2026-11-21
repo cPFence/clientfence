@@ -128,7 +128,7 @@
             <div class="card-body tab-pane" id="whois-tab-pane" role="tabpanel" tabindex="0">
                 <div class="mb-3">
                     <h5 class="mt-1 mb-1">{{ 'Update Domain Contact Details'|trans }}</h5>
-                    <span class="small text-secondary">{{ 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update Technical, Billing and Admin contacts for this service. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans }}</span>
+                    <span class="small text-secondary">{{ service.company_contact|default(false) ? 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant) contact of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans : 'Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update Technical, Billing and Admin contacts for this service. You can enable domain privacy protection if you want to hide your public WHOIS information.'|trans }}</span>
                 </div>
                 <form method="post" action="{{ 'servicedomain/update_contacts'|api_url }}" {{ fb_api_form({message: 'Contact Details Updated'|trans}) }}>
                     <div class="mb-3 row">

@@ -1730,13 +1730,19 @@ test('converts to api array', function (?Model_Admin $identity, string $dbLoadCa
         ->andReturn($tldRegistrar);
     $dbMock->shouldReceive('getAssoc')->andReturn([2 => 'INWX', 1 => 'ResellerClub']);
 
+    // "Use the client's details" off: the client's Contact tab says the form is the owner (registrant) contact.
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('getParamValue')->with(Service::USE_CLIENT_DETAILS, '1')->andReturn('0');
     $di = container();
     $di['db'] = $dbMock;
+    $services = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name): object => strtolower($name) === 'system' ? $system : $services($name));
     $service->setDi($di);
 
     $result = $service->toApiArray($model, true, $identity);
 
     expect($result)->toBeArray();
+    expect($result['company_contact'])->toBeTrue();
     expect($result)->toHaveKey('domain');
     expect($result)->toHaveKey('sld');
     expect($result)->toHaveKey('tld');

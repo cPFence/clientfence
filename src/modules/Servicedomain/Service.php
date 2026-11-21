@@ -938,6 +938,8 @@ class Service implements \ClientFence\InjectionAwareInterface
             'ns4' => $model->ns4,
             'period' => $model->period,
             'privacy' => $model->privacy,
+            // ClientFence core patch (CF-240): with the company contact on, the client's Contact tab says the form is the owner (registrant) contact.
+            'company_contact' => (string) $this->di['mod_service']('system')->getParamValue(self::USE_CLIENT_DETAILS, '1') === '0',
             'locked' => $model->locked,
             'registered_at' => $model->registered_at,
             'expires_at' => $model->expires_at,
