@@ -2,6 +2,10 @@
 
 ## 1.0.62 (2026-11-20)
 
+### Added
+
+- **Email layout:** one header, footer and CSS around every email, in Email Settings > Email Layout, as WHMCS's global email header and footer. Built-in templates now hold only their message; a template you edited before keeps its own design until you reset it.
+
 ### Changed
 
 - System Health's Release files unchanged check no longer counts the root .htaccess, where you add your own rules; Pack .htaccess rules still checks ClientFence's own blocks.
