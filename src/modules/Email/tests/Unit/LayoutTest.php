@@ -76,3 +76,41 @@ test('saving keeps a part equal to the default empty, so it follows the default'
 
     expect($saved)->toBe(['signature' => 'Thanks', 'layout_header' => '', 'layout_footer' => '<p>Own</p>', 'layout_css' => '', 'ext' => 'mod_email']);
 });
+
+test('a layout that fails names the box that fails', function (): void {
+    $di = container();
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->expects('setConfig')->never();
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->allows('checkEmailTplSyntax')->andReturnUsing(static function (string $tpl): void {
+        if (str_contains($tpl, 'include')) {
+            throw new ClientFence\InformationException('Tag "include" is not allowed');
+        }
+    });
+    $di['mod_service'] = $di->protect(fn (string $name): object => strtolower($name) === 'extension' ? $extension : $system);
+    $service = new ClientFence\Mod\Email\Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->saveLayout(['layout_header' => '', 'layout_footer' => "<p>{% include 'x' %}</p>", 'layout_css' => '']))
+        ->toThrow(ClientFence\InformationException::class, 'Footer: Tag "include" is not allowed');
+});
+
+test('a block opened in one box and closed in another names the box whose own error it is', function (): void {
+    $di = container();
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    // As Twig: the unknown filter fails wherever it is; the header alone also fails, for its unclosed if.
+    $system->allows('checkEmailTplSyntax')->andReturnUsing(static function (string $tpl): void {
+        if (str_contains($tpl, 'defualt')) {
+            throw new ClientFence\InformationException('Unknown "defualt" filter');
+        }
+        if (str_contains($tpl, '{% if') && !str_contains($tpl, 'endif')) {
+            throw new ClientFence\InformationException('Unexpected end of template');
+        }
+    });
+    $di['mod_service'] = $di->protect(fn (string $name): object => $system);
+    $service = new ClientFence\Mod\Email\Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->saveLayout(['layout_header' => '{% if locale %}', 'layout_footer' => "{{ locale|defualt('') }}{% endif %}", 'layout_css' => '']))
+        ->toThrow(ClientFence\InformationException::class, 'Footer: Unknown "defualt" filter');
+});

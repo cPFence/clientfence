@@ -873,8 +873,30 @@ class Service implements \ClientFence\InjectionAwareInterface
             $value = is_string($data[$key] ?? null) ? $data[$key] : '';
             $layout[$key] = $norm($value) === $norm($defaults[$key]) ? '' : $value;
         }
-        // No line number in the error: the wrapper's own lines would shift it.
-        $this->di['mod_service']('System')->checkEmailTplSyntax(Layout::wrap('', Layout::fromConfig($layout)), false);
+        $system = $this->di['mod_service']('System');
+        try {
+            // No line number in the error: the wrapper's own lines would shift it.
+            $system->checkEmailTplSyntax(Layout::wrap('', Layout::fromConfig($layout)), false);
+        } catch (\ClientFence\InformationException $e) {
+            // Name the box that fails alone with this same error, with its own line (a tag opened in one box and closed
+            // in another fails alone with another error: that box is not named).
+            foreach (['layout_header' => __trans('Header'), 'layout_footer' => __trans('Footer'), 'layout_css' => __trans('CSS')] as $key => $label) {
+                try {
+                    $system->checkEmailTplSyntax($layout[$key], false);
+                } catch (\ClientFence\InformationException $part) {
+                    if ($part->getMessage() !== $e->getMessage()) {
+                        continue;
+                    }
+                    try {
+                        $system->checkEmailTplSyntax($layout[$key]);
+                    } catch (\ClientFence\InformationException $lined) {
+                        throw new \ClientFence\InformationException(':box: :error', [':box' => $label, ':error' => $lined->getMessage()]);
+                    }
+                }
+            }
+
+            throw $e;
+        }
 
         $extension = $this->di['mod_service']('extension');
         $extension->setConfig(array_merge($extension->getConfig('mod_email'), $layout, ['ext' => 'mod_email']));
