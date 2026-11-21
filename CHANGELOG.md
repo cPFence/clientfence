@@ -6,9 +6,9 @@
 
 - **Email layout:** one header, footer and CSS around every email, in Email Settings > Email Layout, as WHMCS's global email header and footer. Built-in templates now hold only their message; a template you edited before keeps its own design until you reset it.
 - **Subreg and Spaceship registrars** built in ([#56](https://github.com/cPFence/clientfence/issues/56)).
-- **Default domain contact:** Settings > Domain registration > Contacts sends one company contact as the admin, tech and billing contact of every domain, as WHMCS; the registrant is always the client. "Use the client's details" stays the default.
+- **Default domain contact:** Settings > Domain registration > Contacts sends one company contact as the admin, tech and billing contact of every domain, as WHMCS; the registrant is always the client, and the client's Contact tab says its form updates the registrant. "Use the client's details" stays the default.
 - **Change a domain's registrar** from its admin page, for a domain moved to another registrar ([#58](https://github.com/cPFence/clientfence/issues/58)).
-- The checkout summary shows what the domain renews at, next to the plan's renewal, and the client's domain page shows what its next renewal costs.
+- The checkout summary shows what the domain renews at, next to the plan's renewal, and the client's domain page shows what its next renewal costs, tax included.
 - **Tax rule names per language:** a tax rule (Settings > Tax) has a name for each language, shown on the client's invoices, quotes and checkout.
 - **Hide Birthday and Gender:** one switch in Clients > Settings > General takes both fields off the client's sign-up, checkout and profile pages.
 
@@ -30,10 +30,10 @@
 - A long Upgrade / Downgrade or Change options list in the client area scrolls, so its Continue button can be reached.
 - The checkout's domain box has room for longer domain extensions, which were cut off.
 - The email template list shows one subject for a template with two, such as IP address change approved or refused.
-- Code boxes (email templates and layout, embed code, blocked IPs) stay left to right in right-to-left languages, and email subjects and domain extensions (.com) show the right way round.
+- Code boxes (email templates and layout, embed code, blocked IPs) stay left to right in right-to-left languages, and email and ticket subjects, domain names and extensions (.com) show the right way round.
 - Saving a built-in email template without changes, or only adding a language version, marked it Customized, so it stopped following built-in updates and the email layout; templates saved this way follow the built-in again after the update.
 - An email layout that can't be saved names the box (Header, Footer or CSS) and its line.
-- The email template editor no longer shows internal notes in built-in templates.
+- The email template and layout editors no longer show internal notes in the built-in text.
 
 ## 1.0.61 (2026-11-20)
 
