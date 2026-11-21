@@ -220,6 +220,7 @@ test('the email template check refuses what the email sandbox blocks, without th
     'include' => ["{% include 'x.twig' %}", 'Email template contains disallowed Twig syntax: Tag "include" is not allowed at line 1.'],
     'a blocked function' => ["<p>\n{{ source('x') }}", 'Email template contains disallowed Twig syntax: Function "source" is not allowed at line 2.'],
     'a syntax error' => ['{{ broken', 'Email template syntax error: Unexpected token "end of template" ("end of print statement" expected) at line 1 column 10.'],
+    'a template it cannot load' => ["<p>\n{% use 'x.html.twig' %}", 'Email template syntax error: Template "x.html.twig" is not defined at line 2.'],
 ]);
 
 test('getParams returns system parameters', function (): void {
