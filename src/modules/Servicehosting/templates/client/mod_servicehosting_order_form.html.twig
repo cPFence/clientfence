@@ -34,7 +34,7 @@
                 <label class="form-label" for="cf-dc-register">{{ 'Register a new domain'|trans }}</label>
                 <div class="d-flex flex-wrap gap-2">
                     <div class="input-group cf-dc-input">
-                        <input class="form-control" type="text" id="cf-dc-register" name="domain[register_sld]" autocomplete="off"
+                        <input class="form-control" type="text" dir="ltr" id="cf-dc-register" name="domain[register_sld]" autocomplete="off"
                                value="{{ request.register_sld }}"
                                placeholder="{{ 'Enter new domain name to register'|trans }}">
                         <select class="form-select cf-dc-tld" name="domain[register_tld]" dir="ltr" aria-label="{{ 'Register a new domain'|trans }}">
@@ -58,7 +58,7 @@
                 <label class="form-label" for="cf-dc-transfer">{{ 'Transfer your existing domain'|trans }}</label>
                 <div class="d-flex flex-wrap gap-2">
                     <div class="input-group cf-dc-input">
-                        <input class="form-control" type="text" id="cf-dc-transfer" name="domain[transfer_sld]" autocomplete="off"
+                        <input class="form-control" type="text" dir="ltr" id="cf-dc-transfer" name="domain[transfer_sld]" autocomplete="off"
                                value="{{ request.transfer_sld }}"
                                placeholder="{{ 'Enter your domain name to transfer'|trans }}">
                         <select class="form-select cf-dc-tld" name="domain[transfer_tld]" dir="ltr" aria-label="{{ 'Transfer your existing domain'|trans }}">
@@ -83,7 +83,7 @@
             <div data-domain-pane="owndomain"{% if default_action != 'owndomain' %} hidden{% endif %}>
                 <label class="form-label" for="cf-dc-own">{{ 'Use your existing domain'|trans }}</label>
                 <div class="input-group cf-dc-input">
-                    <input class="form-control" type="text" id="cf-dc-own" name="domain[owndomain_sld]" autocomplete="off"
+                    <input class="form-control" type="text" dir="ltr" id="cf-dc-own" name="domain[owndomain_sld]" autocomplete="off"
                            value="{{ request.owndomain_sld }}"
                            placeholder="{{ 'Your existing domain'|trans }}">
                     <input class="form-control cf-dc-tld" type="text" name="domain[owndomain_tld]" dir="ltr" autocomplete="off"
@@ -98,7 +98,7 @@
             <div data-domain-pane="subdomain"{% if default_action != 'subdomain' %} hidden{% endif %}>
                 <label class="form-label" for="cf-dc-subdomain">{{ 'Choose your free subdomain'|trans }}</label>
                 <div class="input-group cf-dc-input cf-dc-input-wide">
-                    <input class="form-control" type="text" id="cf-dc-subdomain" name="domain[subdomain_sld]" autocomplete="off"
+                    <input class="form-control" type="text" dir="ltr" id="cf-dc-subdomain" name="domain[subdomain_sld]" autocomplete="off"
                            value="{{ request.subdomain_sld }}"
                            placeholder="{{ 'Subdomain'|trans }}">
                     <span class="input-group-text input-group-text-sm" dir="ltr">.{{ subdomain_base_domain|trim('.') }}</span>

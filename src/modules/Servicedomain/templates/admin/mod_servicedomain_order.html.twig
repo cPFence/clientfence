@@ -20,7 +20,7 @@
         <div class="row g-3">
             <div class="col-lg-8">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="config[register_sld]" value="{{ request.register_sld }}" placeholder="{{ 'Domain Name to Register'|trans }}">
+                    <input class="form-control" type="text" dir="ltr" name="config[register_sld]" value="{{ request.register_sld }}" placeholder="{{ 'Domain Name to Register'|trans }}">
                     {{ mf.selectboxtld('config[register_tld]', guest.serviceDomain_tlds({ 'allow_register': 1 })) }}
                 </div>
             </div>
@@ -39,7 +39,7 @@
         <div class="row g-3">
             <div class="col-lg-8">
                 <div class="input-group">
-                    <input class="form-control" type="text" name="config[transfer_sld]" value="{{ request.transfer_sld }}" placeholder="{{ 'Domain Name to Transfer'|trans }}">
+                    <input class="form-control" type="text" dir="ltr" name="config[transfer_sld]" value="{{ request.transfer_sld }}" placeholder="{{ 'Domain Name to Transfer'|trans }}">
                     {{ mf.selectboxtld('config[transfer_tld]', guest.serviceDomain_tlds({ 'allow_transfer': 1 })) }}
                 </div>
             </div>

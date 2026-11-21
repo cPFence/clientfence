@@ -66,7 +66,7 @@
             {% set domain_href = ('order/' ~ (domain_product.slug ?: domain_product.id))|url %}
             <form class="bf-domain-search" method="get" action="{{ domain_href }}" role="search">
                 <label class="visually-hidden" for="bf-domain-sld">{{ 'Register a new domain'|trans }}</label>
-                <input class="form-control" type="text" id="bf-domain-sld" name="register_sld" required pattern="[^.\s]+" autocomplete="off" placeholder="{{ 'Enter new domain name to register'|trans }}">
+                <input class="form-control" type="text" dir="ltr" id="bf-domain-sld" name="register_sld" required pattern="[^.\s]+" autocomplete="off" placeholder="{{ 'Enter new domain name to register'|trans }}">
                 <select class="form-select" name="tld" dir="ltr" aria-label="{{ 'Register a new domain'|trans }}">
                     {% for tld in tlds %}<option value="{{ tld.tld }}">{{ tld.tld }}</option>{% endfor %}
                 </select>
