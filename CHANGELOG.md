@@ -8,12 +8,13 @@
 - **Subreg and Spaceship registrars** built in. Thanks to [insxa](https://github.com/insxa) ([#56](https://github.com/cPFence/clientfence/issues/56)).
 - **Default domain contact:** Settings > Domain registration > Contacts sends one company contact as the admin, tech and billing contact of every domain, as WHMCS; the registrant is always the client. "Use the client's details" stays the default.
 - **Change a domain's registrar** from its admin page, for a domain moved to another registrar ([#58](https://github.com/cPFence/clientfence/issues/58)).
-- The checkout summary shows what the domain renews at, next to the plan's renewal.
+- The checkout summary shows what the domain renews at, next to the plan's renewal, and the client's domain page shows what its next renewal costs.
+- **Tax rule names per language:** a tax rule (Settings > Tax) has a name for each language, shown on the client's invoices.
 
 ### Changed
 
 - System Health's Release files unchanged check no longer counts the root .htaccess, where you add your own rules; Pack .htaccess rules still checks ClientFence's own blocks.
-- A domain registration or transfer asks for the client's address, city, postal code and phone before payment, so the registrar can register it.
+- A domain registration or transfer asks for the client's address, city, postal code, phone and country before payment, so the registrar can register it; a staff order or quote for a client whose profile lacks them is refused until they are added.
 
 ### Fixed
 
@@ -24,6 +25,11 @@
 - A PayPal subscription can be tried again on the same invoice after an abandoned try; an invoice whose PayPal subscription is already set up says so instead of offering a second one ([#63](https://github.com/cPFence/clientfence/issues/63)).
 - A wide logo no longer runs over the Admin tag in the admin menu.
 - An email template or layout that can't be saved no longer shows an internal template name in the error.
+- A help desk's Close Tickets After set to 0 closed every answered ticket at the next cron; 0 now turns automatic closing off, as WHMCS.
+- A long Upgrade / Downgrade or Change options list in the client area scrolls, so its Continue button can be reached.
+- The checkout's domain box has room for longer domain extensions, which were cut off.
+- The email template list shows one subject for a template with two, such as IP address change approved or refused.
+- Code boxes (email templates and layout, embed code, blocked IPs) stay left to right in right-to-left languages.
 
 ## 1.0.61 (2026-11-20)
 
