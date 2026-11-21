@@ -22,10 +22,16 @@
                 } %}
                     {% import 'macro_functions.html.twig' as mf %}
                     {% block form_content %}
+                        {# ClientFence core patch (forum #172): the name per language, as on the client's invoices (mod_product_translations.html.twig). #}
+                        {% set cf_item = { id: tax.id, title: tax.name, description: '' } %}
+                        {{ include('mod_product_translations.html.twig', { part: 'bar', kind: 'tax', item: cf_item }) }}
                         <div class="row g-3">
                             <div class="col-md-6">
+                                <div data-cf-text-pane="">
                                 <label class="form-label" for="tax_name">{{ 'Tax Title'|trans }}</label>
                                 <input class="form-control" id="tax_name" type="text" name="name" value="{{ tax.name }}" required placeholder="{{ 'Sales Tax'|trans }}">
+                                </div>
+                                {{ include('mod_product_translations.html.twig', { part: 'title', kind: 'tax', item: cf_item }) }}
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="tax_rate">{{ 'Tax Rate'|trans }}</label>

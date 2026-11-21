@@ -72,6 +72,29 @@ class ServiceTax implements InjectionAwareInterface
         return 0;
     }
 
+    /**
+     * ClientFence core patch (forum #172): an invoice's tax name as its reader sees it, as WHMCS dynamic translations:
+     * the own name in $locale (the page language when null, Product/Translations.php kind `tax`) of the rule with the
+     * saved name and rate for the buyer's place (its country and state, its country, or every country, as
+     * getLocationTaxRate() picks); else the name saved on the invoice. The invoice keeps the rule's saved name (the accounting sync and reports key on it).
+     */
+    public function displayName(\Model_Invoice $invoice, ?string $locale = null): string
+    {
+        $name = (string) $invoice->taxname;
+        $rules = $name === '' ? [] : array_filter($this->di['db']->find('Tax'), static fn (\Model_Tax $tax): bool => trim((string) $tax->name) === trim($name) && abs((float) $tax->taxrate - (float) $invoice->taxrate) < 0.00005);
+        $fit = static fn (\Model_Tax $tax): int => match (true) {
+            $tax->country && $tax->country === $invoice->buyer_country && $tax->state && $tax->state === $invoice->buyer_state => 3,
+            $tax->country && $tax->country === $invoice->buyer_country && !$tax->state => 2,
+            !$tax->country => 1,
+            default => 0,
+        };
+        // Another country's rule never names this invoice (its own rule was deleted): the saved name then.
+        $rules = array_values(array_filter($rules, static fn (\Model_Tax $tax): bool => $fit($tax) > 0));
+        usort($rules, static fn (\Model_Tax $a, \Model_Tax $b): int => $fit($b) <=> $fit($a));
+
+        return $rules ? \ClientFence\Mod\Product\Translations::text($this->di, 'tax', (int) $rules[0]->id, 'title', $name, $locale) ?? $name : $name;
+    }
+
     public function getTax(\Model_Invoice $invoice)
     {
         if ($invoice->taxrate <= 0) {

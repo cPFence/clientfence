@@ -348,3 +348,40 @@ test('a tax rate is a number from 0 to 100, with a decimal comma read as a point
         expect(fn () => ServiceTax::validRate($bad))->toThrow(ClientFence\InformationException::class);
     }
 });
+
+// Forum #172: an invoice's tax name is shown in its reader's language when its rule has one; the invoice keeps the saved name.
+test('an invoice tax name shows as its rule\'s own name in the language, else as saved', function (string $name, float $rate, string $country, string $locale, string $shown): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('product_translation', ['kind' => 'tax', 'ref_id' => 3, 'lang' => 'de_DE', 'title' => 'MwSt.']);
+    $db->insert('product_translation', ['kind' => 'tax', 'ref_id' => 5, 'lang' => 'de_DE', 'title' => 'USt. AT']);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $rules = [];
+    foreach ([[3, 'VAT', 19, 'DE'], [4, 'Sales Tax', 19, ''], [5, 'VAT', 19, 'AT']] as [$id, $saved, $taxrate, $at]) {
+        $tax = new Model_Tax();
+        $tax->loadBean(new Tests\Helpers\DummyBean());
+        [$tax->id, $tax->name, $tax->taxrate, $tax->country, $tax->state] = [$id, $saved, $taxrate, $at, ''];
+        $rules[] = $tax;
+    }
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('find')->with('Tax')->andReturn($rules);
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['em'] = $em;
+    $service = new ClientFence\Mod\Invoice\ServiceTax();
+    $service->setDi($di);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    [$invoice->taxname, $invoice->taxrate, $invoice->buyer_country, $invoice->buyer_state] = [$name, $rate, $country, ''];
+
+    expect($service->displayName($invoice, $locale))->toBe($shown);
+})->with([
+    'its German name' => ['VAT', 19.0, 'DE', 'de_DE', 'MwSt.'],
+    'the rule of the buyer\'s country among rules of one name' => ['VAT', 19.0, 'AT', 'de_DE', 'USt. AT'],
+    'only other countries\' rules of that name: the saved name' => ['VAT', 19.0, 'FR', 'de_DE', 'VAT'],
+    'another language: the saved name' => ['VAT', 19.0, 'DE', 'fr_FR', 'VAT'],
+    'a rule of the same rate without a translation' => ['Sales Tax', 19.0, 'DE', 'de_DE', 'Sales Tax'],
+    'another rate (the rule changed since): the saved name' => ['VAT', 20.0, 'DE', 'de_DE', 'VAT'],
+    'no rule of that name (imported)' => ['Tax', 19.0, 'DE', 'de_DE', 'Tax'],
+]);

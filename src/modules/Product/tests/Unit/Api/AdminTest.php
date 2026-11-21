@@ -292,6 +292,22 @@ test('a category\'s names and descriptions per language are saved with it and re
         ->and(fn () => $api->translations_get(['kind' => 'tld', 'id' => 3]))->toThrow(ClientFence\InformationException::class, 'Unknown item.');
 });
 
+test('a tax rule\'s names per language are read with Manage tax rules, as its page (forum #172)', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $staff = Mockery::mock();
+    $staff->shouldReceive('checkPermissionsAndThrowException')->once()->with('invoice', 'manage_tax', null, Mockery::any());
+    $di = container();
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (): object => $staff);
+    $api = apiEndpoint(new Admin());
+    $api->setDi($di);
+
+    expect($api->translations_get(['kind' => 'tax', 'id' => 3])['translations'])->toBe([]);
+});
+
 test('gets a category', function (): void {
     $api = apiEndpoint(new Admin());
     $data = ['id' => 1];

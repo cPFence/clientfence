@@ -12,7 +12,8 @@ use ClientFence\RequestCache;
 
 /**
  * ClientFence: names and descriptions of products, add-ons (`product`) and categories (`category`),
- * order form questions (`field`: label as title, description) and help desk names (`helpdesk`)
+ * order form questions (`field`: label as title, description), help desk names (`helpdesk`) and tax rule names (`tax`, on
+ * the client's invoices: Invoice\ServiceTax)
  * per language, as WHMCS's Dynamic Field Translation. The store, cart and client area show the
  * page language's text (Product\Service), the order title is written in it at checkout, and a
  * blank text or a language that is turned off shows the default text. Staff pages show the
@@ -24,7 +25,7 @@ use ClientFence\RequestCache;
 final class Translations
 {
     public const TABLE = 'product_translation';
-    public const KINDS = ['product', 'category', 'field', 'helpdesk'];
+    public const KINDS = ['product', 'category', 'field', 'helpdesk', 'tax'];
 
     /** The language a client's texts are written in: theirs when it is turned on, else the default one. */
     public static function locale(?string $lang): string

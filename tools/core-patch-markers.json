@@ -9598,5 +9598,25 @@
     {
         "file": "themes/palisade/html/mod_order_manage.html.twig",
         "done": "ClientFence core patch: what the domain renews at, as WHMCS's Recurring Amount (Invoice\\Service::domainRenewal())."
+    },
+    {
+        "file": "modules/Invoice/ServiceTax.php",
+        "done": "ClientFence core patch (forum #172): an invoice's tax name as its reader sees it, as WHMCS dynamic translations:"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch (forum #172): the name per language (Product/Translations.php), saved with its form."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_taxupdate.html.twig",
+        "done": "ClientFence core patch (forum #172): the name per language, as on the client's invoices (mod_product_translations.html.twig)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (forum #172): the tax rule's name in the reader's language; staff see the saved one."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (forum #172): the tax rule's name in the PDF's language (staff download it in the client's)."
     }
 ]

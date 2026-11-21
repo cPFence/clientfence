@@ -2,7 +2,7 @@
    pages, saved with their form as translations[lang][title|description] (blank: the default text). Included three
    times in the form: `part` 'bar' above the Title field, 'title' after it and 'description' after the Description
    field; the page wraps its own Title and Description fields in data-cf-text-pane="". Gets `kind` (product,
-   category, field or helpdesk), `item` (with `id`, `title`, `description`) and optionally `title_label`. Shown only
+   category, field, helpdesk or tax), `item` (with `id`, `title`, `description`) and optionally `title_label`. Shown only
    when more than one language is turned on; a page may hold several (one per order form field). #}
 {% set language_names = {} %}
 {% for l in guest.extension_languages(true) %}

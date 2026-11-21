@@ -1161,8 +1161,11 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $model = $this->getDi()['db']->getExistingModelById('Tax', $data['id'], 'Tax rule not found');
         $taxService = $this->getDi()['mod_service']('Invoice', 'Tax');
+        $id = (int) $model->id;
+        $deleted = $taxService->delete($model);
+        \ClientFence\Mod\Product\Translations::forget($this->getDi(), 'tax', $id); // ClientFence core patch (forum #172)
 
-        return $taxService->delete($model);
+        return $deleted;
     }
 
     /**
@@ -1217,8 +1220,13 @@ class Admin extends \ClientFence\Api\AbstractApi
         $tax = $this->getDi()['db']->getExistingModelById('Tax', $data['id'], 'Tax rule not found');
 
         $taxService = $this->getDi()['mod_service']('Invoice', 'Tax');
+        $updated = $taxService->update($tax, $data);
+        // ClientFence core patch (forum #172): the name per language (Product/Translations.php), saved with its form.
+        if (is_array($data['translations'] ?? null)) {
+            \ClientFence\Mod\Product\Translations::save($this->getDi(), 'tax', (int) $tax->id, $data['translations']);
+        }
 
-        return $taxService->update($tax, $data);
+        return $updated;
     }
 
     /**

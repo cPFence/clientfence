@@ -366,7 +366,8 @@ class Service implements InjectionAwareInterface
         $result['hash'] = $row['hash'];
         $result['hash_expires_at'] = $row['hash_expires_at'] ?? null;
         $result['gateway_id'] = $row['gateway_id'] ?? null;
-        $result['taxname'] = $row['taxname'];
+        // ClientFence core patch (forum #172): the tax rule's name in the reader's language; staff see the saved one.
+        $result['taxname'] = $identity instanceof \Model_Admin || (string) $row['taxname'] === '' ? $row['taxname'] : $this->di['mod_service']('Invoice', 'Tax')->displayName($invoice);
         $result['taxrate'] = $row['taxrate'];
         $result['currency'] = $row['currency'];
         $result['currency_rate'] = $row['currency_rate'] ?? 1;
@@ -3668,6 +3669,8 @@ class Service implements InjectionAwareInterface
             [$logoSource] = $this->getPdfLogoSource($c['logo_url']);
         }
 
+        // ClientFence core patch (forum #172): the tax rule's name in the PDF's language (staff download it in the client's).
+        $invoice['taxname'] = $this->di['mod_service']('Invoice', 'Tax')->displayName($invoiceModel, $locale);
         $vars = [
             'currency_code' => $currencyCode,
             'logo_source' => $logoSource,

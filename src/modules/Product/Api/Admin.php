@@ -768,7 +768,7 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new \ClientFence\InformationException('Unknown item.');
         }
         // Each kind is read by the staff who edit it.
-        $this->checkPermissions(['field' => 'formbuilder', 'helpdesk' => 'support'][$kind] ?? 'product', 'view');
+        $this->checkPermissions(['field' => 'formbuilder', 'helpdesk' => 'support', 'tax' => 'invoice'][$kind] ?? 'product', $kind === 'tax' ? 'manage_tax' : 'view');
 
         return [
             'default_locale' => (string) \ClientFence\Config::getProperty('i18n.locale', 'en_US'),
