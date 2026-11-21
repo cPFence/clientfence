@@ -174,7 +174,8 @@ final class SignInSecurity
                 throw new InformationException('You are signing in from :ip, which is not on the list: this would lock you out. Add :ip to the list.', [':ip' => $ip]);
             }
         }
-        if ($countriesOn && !($saveIps ? $ipsOn : self::ipListed($di, $ip))) {
+        // An address on the list passes the country rule at sign-in whether the IP switch is on or off (checkStaffCountry).
+        if ($countriesOn && !($saveIps ? in_array($ip, $ips, true) : self::ipListed($di, $ip))) {
             $own = self::countryOf($di, $ip);
             if ($own === null) {
                 throw new InformationException('The country of your address (:ip) is not known, so this would lock you out. Add your address to the staff IP address list first.', [':ip' => $ip]);

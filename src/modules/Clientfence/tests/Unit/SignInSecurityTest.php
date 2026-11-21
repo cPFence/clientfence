@@ -264,13 +264,19 @@ test('saving staff IPs uses the new list and keeps other staff settings', functi
     'array' => [[' 198.51.100.1 ', '203.0.113.9', '198.51.100.1', '', '2001:db8::1']],
 ]);
 
-test('turning staff IPs off checks the country rule without the stored exemption', function (): void {
+test('a save checks the country rule against the new IP list, with the IP switch on or off', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->staffConfig = ['check_ip' => 1, 'allowed_ips' => '198.51.100.1'];
 
-    expect(fn () => $world->save(['ips_on' => 0, 'ips' => ['198.51.100.1'], 'countries_on' => 1, 'countries' => ['US']]))
+    // The stored list does not count: the new one leaves the address out.
+    expect(fn () => $world->save(['ips_on' => 0, 'ips' => ['203.0.113.9'], 'countries_on' => 1, 'countries' => ['US']]))
         ->toThrow(InformationException::class, 'would lock you out')
         ->and($world->staffConfig['check_ip'])->toBe(1);
+
+    // An address on the new list passes at sign-in also with the switch off, so the save goes through.
+    expect($world->save(['ips_on' => 0, 'ips' => ['198.51.100.1'], 'countries_on' => 1, 'countries' => ['US']]))->toBe(['saved' => true])
+        ->and($world->staffConfig['check_ip'])->toBe(0);
+    SignInSecurity::checkStaffCountry($world->di, '198.51.100.1');
 });
 
 test('a save without the IP switch leaves the staff config untouched', function (): void {
