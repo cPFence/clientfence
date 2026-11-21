@@ -34512,3 +34512,25 @@ msgstr "레이아웃 저장"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "템플릿과 같은 Twig입니다. 각 메시지는 머리글과 바닥글이 사용할 email_title, email_preheader, email_audience(client, affiliate, guest 또는 staff), email_reply_line을 설정할 수 있습니다. CSS는 style 태그에 넣습니다. 일부 이메일 앱은 이를 무시하므로 인라인 스타일이 가장 안전합니다."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr "상표 클레임이 있어 등록 대행업체(:registrar)를 통해 도메인(:domain)을 등록할 수 없습니다."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "등록 대행업체(:registrar)가 읽을 수 없는 응답을 반환했습니다."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "Subreg.CZ 계정으로 Subreg API를 통해 도메인을 등록하고 관리합니다(PHP soap 확장이 필요합니다). 테스트 모드에서는 모든 호출을 실제 레지스트리 대신 Subreg OT&E 테스트 시스템(demoreg.net)으로 보냅니다. 개인정보 보호는 지원되지 않습니다."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "Subreg 로그인 정보입니다. 계정 관리자는 admin#username과 관리자 비밀번호를 입력하세요. 관리자에게 API 접근 권한이 필요합니다."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr "도메인(:domain)이 등록 대행업체(:registrar)의 다른 계정에 있어 해당 업체(:registrar) 내부 이전이 필요합니다."

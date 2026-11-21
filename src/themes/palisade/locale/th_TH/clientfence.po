@@ -29863,3 +29863,25 @@ msgstr "บันทึกเลย์เอาต์"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "Twig เหมือนในเทมเพลต แต่ละข้อความสามารถตั้งค่า email_title, email_preheader, email_audience (client, affiliate, guest หรือ staff) และ email_reply_line ให้ส่วนหัวและส่วนท้ายใช้ CSS ใส่ในแท็ก style แอปอีเมลบางตัวจะไม่สนใจ ดังนั้นสไตล์แบบอินไลน์ปลอดภัยที่สุด"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr "โดเมน :domain มีข้อเรียกร้องเรื่องเครื่องหมายการค้า จึงไม่สามารถจดทะเบียนผ่าน :registrar ได้"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "ผู้รับจดทะเบียน :registrar ส่งการตอบกลับที่อ่านไม่ได้"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "จดทะเบียนและจัดการโดเมนผ่านบัญชี Subreg.CZ ของคุณด้วย Subreg API (ต้องใช้ส่วนขยาย PHP soap) โหมดทดสอบจะส่งทุกคำขอไปยังระบบทดสอบ Subreg OT&E (demoreg.net) แทนระบบจริง การปกป้องความเป็นส่วนตัวไม่รองรับ"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "ข้อมูลเข้าสู่ระบบ Subreg ของคุณ สำหรับผู้ดูแลบัญชี ให้ใส่ admin#username และรหัสผ่านของผู้ดูแล ผู้ดูแลต้องมีสิทธิ์เข้าถึง API"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr "โดเมน :domain อยู่ในบัญชีอื่นที่ :registrar และต้องโอนภายในที่ :registrar"

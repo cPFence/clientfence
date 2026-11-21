@@ -32473,3 +32473,25 @@ msgstr "Tallenna ulkoasu"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "Twig, kuten pohjissa. Jokainen viesti voi asettaa arvot email_title, email_preheader, email_audience (client, affiliate, guest tai staff) ja email_reply_line, joita ylä- ja alatunniste käyttävät. CSS kirjoitetaan style-tagiin; jotkin sähköpostisovellukset ohittavat sen, joten sisäiset tyylit ovat varmin vaihtoehto."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr "Verkkotunnuksella :domain on tavaramerkkivaatimus, eikä sitä voi rekisteröidä rekisterinpitäjän :registrar kautta."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "Rekisterinpitäjä :registrar palautti lukukelvottoman vastauksen."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "Rekisteröi ja hallitsee verkkotunnuksia Subreg.CZ-tilisi kautta Subreg API -rajapinnan avulla (vaatii PHP soap -laajennuksen). Testitila lähettää jokaisen kutsun Subreg OT&E -testijärjestelmään (demoreg.net) todellisen rekisterin sijaan. Yksityisyyden suojaa ei tueta."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "Subreg-tunnuksesi. Tilin ylläpitäjälle anna admin#username ja ylläpitäjän salasana; ylläpitäjällä on oltava API-käyttöoikeus."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr "Verkkotunnus :domain on toisella tilillä rekisterinpitäjällä :registrar ja vaatii sisäisen siirron rekisterinpitäjällä :registrar."

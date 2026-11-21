@@ -598,6 +598,10 @@ msgstr ""
 msgid ":domain cannot be transferred!"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Centralnicreseller.php
 msgid ":domain has a transfer lock: unlock it at the current registrar first."
 msgstr ""
@@ -612,6 +616,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid ":domain is already registered!"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Ovh.php
@@ -814,19 +822,19 @@ msgstr ""
 msgid ":registrar answered about :other when asked about :domain."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar did not report an expiry date for :domain."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar did not return a transfer code for :domain."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar did not say whether :domain is available."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php
+#: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not support this action."
 msgstr ""
 
@@ -838,7 +846,7 @@ msgstr ""
 msgid ":registrar holds no transfer code for :domain. Request it from WebHosting|4U."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Synergywholesale.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":registrar needs the PHP soap extension."
 msgstr ""
 
@@ -854,11 +862,15 @@ msgstr ""
 msgid ":registrar returned an unreadable response (HTTP :status)."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar returned no result for :domain."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar returned prices in more than one currency (:a and :b), which cannot be imported as one list."
 msgstr ""
 
@@ -17570,7 +17582,7 @@ msgstr ""
 msgid "No refund or credit is given"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid "No registrant contact was given for :domain."
 msgstr ""
 
@@ -17578,7 +17590,7 @@ msgstr ""
 msgid "No registrar action: the expiry date is read from the registrar when it can tell."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
+#: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid "No registration period was given for :domain."
 msgstr ""
 
@@ -22376,6 +22388,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Registered or transferred with this order (see Domains)."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -33265,6 +33281,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Your Realtime Register customer handle."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
 msgstr ""
 
 #: src/themes/palisade/html/partials/guest_dashboard.html.twig

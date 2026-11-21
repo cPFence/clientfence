@@ -32038,3 +32038,25 @@ msgstr "Elrendezés mentése"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "Twig, mint a sablonokban. Minden üzenet beállíthatja az email_title, email_preheader, email_audience (client, affiliate, guest vagy staff) és email_reply_line értékeket, amelyeket a fejléc és a lábléc használ. A CSS style címkébe kerül; néhány e-mail-alkalmazás figyelmen kívül hagyja, ezért a soron belüli stílusok a legbiztonságosabbak."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr "A(z) :domain domainre védjegyigény vonatkozik, ezért nem regisztrálható a(z) :registrar útján."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "A(z) :registrar regisztrátor olvashatatlan választ adott vissza."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "Domaineket regisztrál és kezel az Ön Subreg.CZ fiókján keresztül a Subreg API segítségével (a PHP soap bővítmény szükséges). A tesztmód minden hívást az éles nyilvántartás helyett a Subreg OT&E tesztrendszerre (demoreg.net) küld. Az adatvédelem nem támogatott."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "Az Ön Subreg-bejelentkezése. Fiókadminisztrátor esetén adja meg az admin#username értéket és az adminisztrátor jelszavát; az adminisztrátornak API-hozzáférésre van szüksége."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr "A(z) :domain domain a(z) :registrar egy másik fiókjában van, és belső átvitelre van szükség a(z) :registrar rendszerében."

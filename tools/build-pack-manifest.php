@@ -53,6 +53,7 @@ $paths = [
     'library/Registrar/Adapter/Ovh.php',
     'library/Registrar/Adapter/Nominet.php',
     'library/Registrar/Adapter/Webhosting4u.php',
+    'library/Registrar/Adapter/Subreg.php',
     'library/Registrar/TldPrices.php',
     'library/Registrar/TransferStatus.php',
     'modules/Servicedomain/PriceSync.php',

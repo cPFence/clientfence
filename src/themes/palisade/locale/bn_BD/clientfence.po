@@ -34520,3 +34520,25 @@ msgstr "লেআউট সংরক্ষণ করুন"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "Twig, টেমপ্লেটের মতোই। হেডার ও ফুটারের ব্যবহারের জন্য প্রতিটি বার্তা email_title, email_preheader, email_audience (client, affiliate, guest বা staff) এবং email_reply_line সেট করতে পারে। CSS style ট্যাগে বসে; কিছু ইমেইল অ্যাপ এটি উপেক্ষা করে, তাই ইনলাইন স্টাইলই সবচেয়ে নিরাপদ।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr "ট্রেডমার্ক দাবির কারণে ডোমেইন :domain রেজিস্ট্রারের (:registrar) মাধ্যমে নিবন্ধন করা যাবে না।"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "রেজিস্ট্রার :registrar একটি অপাঠযোগ্য প্রতিক্রিয়া ফেরত দিয়েছে।"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "আপনার Subreg.CZ অ্যাকাউন্টের মাধ্যমে Subreg API ব্যবহার করে ডোমেইন নিবন্ধন ও পরিচালনা করে (PHP soap এক্সটেনশন প্রয়োজন)। টেস্ট মোড প্রতিটি অনুরোধ লাইভ রেজিস্ট্রির বদলে Subreg OT&E টেস্ট সিস্টেমে (demoreg.net) পাঠায়। প্রাইভেসি সুরক্ষা সমর্থিত নয়।"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "আপনার Subreg লগইন। অ্যাকাউন্ট অ্যাডমিনের জন্য admin#username এবং অ্যাডমিনের পাসওয়ার্ড লিখুন; অ্যাডমিনের API অ্যাক্সেস থাকতে হবে।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr "ডোমেইন :domain :registrar-এর অন্য একটি অ্যাকাউন্টে আছে এবং :registrar-এ অভ্যন্তরীণ ট্রান্সফার প্রয়োজন।"

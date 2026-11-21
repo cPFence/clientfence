@@ -32033,3 +32033,25 @@ msgstr "Sačuvaj izgled"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "Twig, kao u šablonima. Svaka poruka može da postavi email_title, email_preheader, email_audience (client, affiliate, guest ili staff) i email_reply_line koje će zaglavlje i podnožje koristiti. CSS ide u style oznaku; neke aplikacije za imejl ga ignorišu, pa su ugrađeni (inline) stilovi najsigurniji."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr "Domen :domain ima zahtev za žig i ne može da se registruje preko :registrar."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "Registrar :registrar je vratio nečitljiv odgovor."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "Registruje domene i njima upravlja preko vašeg naloga na Subreg.CZ putem Subreg API (potrebno je PHP soap proširenje). Probni režim šalje svaki poziv Subreg OT&E test sistemu (demoreg.net) umesto pravom registru. Zaštita privatnosti nije podržana."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "Vaše Subreg korisničko ime. Za administratora naloga unesite admin#username i lozinku administratora; administrator mora da ima API pristup."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr "Domen :domain je na drugom nalogu kod :registrar i potreban je interni prenos kod :registrar."

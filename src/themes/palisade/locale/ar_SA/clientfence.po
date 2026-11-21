@@ -31427,3 +31427,25 @@ msgstr "حفظ التخطيط"
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr "Twig، كما في القوالب. يمكن لكل رسالة تعيين email_title وemail_preheader وemail_audience (client أو affiliate أو guest أو staff) وemail_reply_line لتستخدمها الترويسة والتذييل. يوضع CSS في وسم style؛ بعض تطبيقات البريد تتجاهله، لذا فالأنماط المضمّنة هي الأكثر أمانًا."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain has a trademark claim and cannot be registered through :registrar."
+msgstr ":domain عليه مطالبة بعلامة تجارية ولا يمكن تسجيله عبر :registrar."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar returned an unreadable response."
+msgstr "أعاد المسجّل :registrar استجابة غير قابلة للقراءة."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgstr "يسجّل النطاقات ويديرها عبر حسابك في Subreg.CZ من خلال Subreg API (يتطلب امتداد PHP soap). يرسل وضع الاختبار كل طلب إلى نظام اختبار Subreg OT&E (demoreg.net) بدلاً من السجل الفعلي. حماية الخصوصية غير مدعومة."
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Your Subreg login. For an account admin, enter admin#username and the admin's password; the admin needs API access."
+msgstr "اسم تسجيل دخولك في Subreg. لمسؤول الحساب، أدخل admin#username وكلمة مرور المسؤول؛ ويحتاج المسؤول إلى صلاحية API."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":domain is in another :registrar account and needs an internal transfer at :registrar."
+msgstr ":domain موجود في حساب آخر لدى :registrar ويحتاج إلى نقل داخلي لدى :registrar."
