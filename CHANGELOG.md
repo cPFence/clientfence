@@ -5,7 +5,7 @@
 ### Added
 
 - **Email layout:** one header, footer and CSS around every email, in Email Settings > Email Layout, as WHMCS's global email header and footer. Built-in templates now hold only their message; a template you edited before keeps its own design until you reset it.
-- **Subreg and Spaceship registrars** built in. Thanks to [insxa](https://github.com/insxa) ([#56](https://github.com/cPFence/clientfence/issues/56)).
+- **Subreg and Spaceship registrars** built in ([#56](https://github.com/cPFence/clientfence/issues/56)).
 - **Default domain contact:** Settings > Domain registration > Contacts sends one company contact as the admin, tech and billing contact of every domain, as WHMCS; the registrant is always the client. "Use the client's details" stays the default.
 - **Change a domain's registrar** from its admin page, for a domain moved to another registrar ([#58](https://github.com/cPFence/clientfence/issues/58)).
 - The checkout summary shows what the domain renews at, next to the plan's renewal, and the client's domain page shows what its next renewal costs.
