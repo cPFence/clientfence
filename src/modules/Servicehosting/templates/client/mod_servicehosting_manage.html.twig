@@ -114,7 +114,7 @@
                             <label class="col-form-label" >{{ 'New Domain'|trans }}: </label>
                             <div class="controls row">
                                 <input class="form-control w-50 ms-2" type="text" name="sld" value="{{ request.domain|default(service.sld) }}" required="required" class="span2">
-                                <input class="form-control w-25" type="text" name="tld" value="{{ request.domain|default(service.tld) }}" required="required" class="span1">
+                                <input class="form-control w-25" type="text" name="tld" dir="ltr" value="{{ request.domain|default(service.tld) }}" required="required" class="span1">
                             </div>
                         </div>
                         <input type="hidden" name="order_id" value="{{ order.id }}">

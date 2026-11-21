@@ -37,7 +37,7 @@
                         <input class="form-control" type="text" id="cf-dc-register" name="domain[register_sld]" autocomplete="off"
                                value="{{ request.register_sld }}"
                                placeholder="{{ 'Enter new domain name to register'|trans }}">
-                        <select class="form-select cf-dc-tld" name="domain[register_tld]" aria-label="{{ 'Register a new domain'|trans }}">
+                        <select class="form-select cf-dc-tld" name="domain[register_tld]" dir="ltr" aria-label="{{ 'Register a new domain'|trans }}">
                             {% for tld in tlds %}
                                 <option value="{{ tld.tld }}">{{ tld.tld }}</option>
                             {% endfor %}
@@ -61,7 +61,7 @@
                         <input class="form-control" type="text" id="cf-dc-transfer" name="domain[transfer_sld]" autocomplete="off"
                                value="{{ request.transfer_sld }}"
                                placeholder="{{ 'Enter your domain name to transfer'|trans }}">
-                        <select class="form-select cf-dc-tld" name="domain[transfer_tld]" aria-label="{{ 'Transfer your existing domain'|trans }}">
+                        <select class="form-select cf-dc-tld" name="domain[transfer_tld]" dir="ltr" aria-label="{{ 'Transfer your existing domain'|trans }}">
                             {% for tld in transfer_tlds %}
                                 <option value="{{ tld.tld }}" data-require-transfer-code="{{ tld.require_transfer_code ? '1' : '0' }}">{{ tld.tld }}</option>
                             {% endfor %}
@@ -86,7 +86,7 @@
                     <input class="form-control" type="text" id="cf-dc-own" name="domain[owndomain_sld]" autocomplete="off"
                            value="{{ request.owndomain_sld }}"
                            placeholder="{{ 'Your existing domain'|trans }}">
-                    <input class="form-control cf-dc-tld" type="text" name="domain[owndomain_tld]" autocomplete="off"
+                    <input class="form-control cf-dc-tld" type="text" name="domain[owndomain_tld]" dir="ltr" autocomplete="off"
                            value="{{ request.owndomain_tld|default('.com') }}"
                            placeholder=".com" aria-label="{{ 'Use your existing domain'|trans }}">
                 </div>

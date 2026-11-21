@@ -101,7 +101,7 @@
                                 <input class="form-control form-control-sm" type="text" name="transfer_sld"
                                        value="{{ request.transfer_sld }}"
                                        placeholder="{{ 'Enter your domain name to transfer'|trans }}">
-                                <select class="form-select form-select-sm" name="transfer_tld" style="width: 30%; max-width: 120px;">
+                                <select class="form-select form-select-sm" name="transfer_tld" dir="ltr" style="width: 30%; max-width: 120px;">
                                     {% for tld in transfer_tlds %}
                                         <option value="{{ tld.tld }}" label="{{ tld.tld }}" data-require-transfer-code="{{ tld.require_transfer_code ? '1' : '0' }}">{{ tld.tld }}</option>
                                     {% endfor %}
