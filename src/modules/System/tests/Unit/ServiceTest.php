@@ -200,6 +200,26 @@ test('renderEmailTplString translates in the recipient\'s language and restores 
     'no recipient language: the page language' => [null, 'Invoice Number'],
 ]);
 
+test('the email template check refuses what the email sandbox blocks, without the variables a send gives', function (string $tpl, ?string $error): void {
+    $twig = new Twig\Environment(new Twig\Loader\ArrayLoader(), ['strict_variables' => true]);
+    $twig->addExtension(new Twig\Extension\SandboxExtension(ClientFence\Twig\EmailPolicy::create(), true));
+    $factory = Mockery::mock(ClientFence\Twig\TwigFactory::class);
+    $factory->allows('createEmailEnvironment')->andReturn($twig);
+    $di = container();
+    $di['twig_factory'] = $factory;
+    $service = new Service();
+    $service->setDi($di);
+
+    $check = fn () => $service->checkEmailTplSyntax($tpl);
+    $error === null ? $check() : expect($check)->toThrow(ClientFence\InformationException::class, $error);
+    expect(true)->toBeTrue();
+})->with([
+    'a variable the send fills in' => ['<p>{{ c.first_name }}</p>', null],
+    'include' => ["{% include 'x.twig' %}", 'disallowed Twig syntax'],
+    'a blocked function' => ["{{ source('x') }}", 'disallowed Twig syntax'],
+    'a syntax error' => ['{{ broken', 'syntax error'],
+]);
+
 test('getParams returns system parameters', function (): void {
     $service = new Service();
     $expected = [

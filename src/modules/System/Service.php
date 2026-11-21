@@ -661,8 +661,9 @@ class Service
         $twig = $twigFactory->createEmailEnvironment();
 
         try {
-            $stream = $twig->tokenize(new \Twig\Source($tpl, '__validation__'));
-            $twig->parse($stream);
+            // ClientFence core patch: the sandbox checks tags, filters and functions (include, ...) only when a
+            // template runs; checkSecurity() runs that check now, without the variables a render would need.
+            $twig->createTemplate($tpl, '__validation__')->unwrap($twig)->checkSecurity();
         } catch (\Twig\Error\SyntaxError $e) {
             throw new \ClientFence\InformationException('Email template syntax error: ' . $e->getMessage());
         } catch (\Twig\Sandbox\SecurityError $e) {
