@@ -2033,7 +2033,7 @@ test('competing automatic promotions are ranked by what they take off: a free se
     'renewal of an order priced 10: 5 off its own price beats 1' => [['order' => ['price' => 10.0, 'quantity' => 1.0, 'rate' => 1.0]], 2],
 ]);
 
-test('a renewal without a recurring promotion gets the recurring automatic one, then carries it like a code', function (bool $orderRecurring, ?float $expected): void {
+test('a renewal without a recurring promotion gets the recurring automatic one, then carries it like a code', function (bool $orderRecurring, ?float $expected, bool $preview = false): void {
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY, promo_id INTEGER, promo_recurring INTEGER, promo_used INTEGER, discount REAL, updated_at TEXT)');
     $db->insert('client_order', ['id' => 9, 'promo_recurring' => (int) $orderRecurring, 'discount' => 0]);
@@ -2057,7 +2057,7 @@ test('a renewal without a recurring promotion gets the recurring automatic one, 
     $service->shouldReceive('findAutoPromo')->with($client, [['product_id' => 2, 'config' => ['period' => '1M'], 'order' => ['price' => 50.0, 'quantity' => 1.0, 'rate' => 1.0]]], true)->andReturn($promo);
     $service->allows('isPromoApplicableToProduct')->andReturnTrue();
     $service->shouldNotReceive('getRenewalProductDiscount');
-    $service->allows('usePromo');
+    $preview ? $service->shouldNotReceive('usePromo') : $service->allows('usePromo');
     $service->allows('getPromoDiscountTitle')->andReturn('AUTO');
     $rates = Mockery::mock();
     $rates->allows('getRateByCode')->andReturn(1.0);
@@ -2068,17 +2068,22 @@ test('a renewal without a recurring promotion gets the recurring automatic one, 
     $di['mod_service'] = $di->protect(fn (): object => $currency);
     $service->setDi($di);
 
-    $adjustment = $service->getAutoRenewalPromoAdjustment($order, $client, 50.0, 1.0);
+    $adjustment = $service->getAutoRenewalPromoAdjustment($order, $client, 50.0, 1.0, $preview);
 
     expect($adjustment['discount_amount'] ?? null)->toBe($expected)
         // Its first use on the order counted a use: a release gives it back (phase checkout).
-        ->and($adjustment['phase'] ?? null)->toBe($expected === null ? null : PromoRedemption::PHASE_CHECKOUT);
-    // Recorded on the order: the next renewals take it through getRenewalPromoAdjustment(), as with a code.
+        ->and($adjustment['phase'] ?? null)->toBe($expected === null || $preview ? null : PromoRedemption::PHASE_CHECKOUT);
+    // Recorded on the order: the next renewals take it through getRenewalPromoAdjustment(), as with a code. A preview stores nothing.
     expect($db->fetchAssociative('SELECT promo_id, promo_recurring, discount FROM client_order WHERE id = 9'))
-        ->toEqual($expected === null ? ['promo_id' => null, 'promo_recurring' => 1, 'discount' => 0.0] : ['promo_id' => 4, 'promo_recurring' => 1, 'discount' => 12.5]);
+        ->toEqual(match (true) {
+            $preview => ['promo_id' => null, 'promo_recurring' => 0, 'discount' => 0.0],
+            $expected === null => ['promo_id' => null, 'promo_recurring' => 1, 'discount' => 0.0],
+            default => ['promo_id' => 4, 'promo_recurring' => 1, 'discount' => 12.5],
+        });
 })->with([
     'no recurring promotion on the order' => [false, 12.5],
     'the order carries a recurring promotion: nothing more' => [true, null],
+    'a preview (the domain page): the discount, nothing stored or used' => [false, 12.5, true],
 ]);
 
 test('a promotion on an existing order takes its share of the order\'s own price, not the catalog\'s', function (string $type, float $value, float $price, bool $applies, float $expected): void {

@@ -4175,6 +4175,132 @@ test('a domain renewal is billed at the TLD price, or free while its hosting giv
     'free' => [true, 0.0],
 ]);
 
+// The client's domain page shows what the renewal invoice will bill (WHMCS Recurring Amount), without storing anything.
+test('domainRenewal gives the next renewal of an active domain: 9 years at most, less the recurring promotion', function (string $period, int $years, float $price, float $discount, float $auto, bool $free, float $amount, bool $exemptInclusive = false): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 20;
+    $order->client_id = 5;
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->product_id = 2;
+    $order->currency = 'EUR';
+    $order->period = $period;
+    $order->config = json_encode(['action' => 'register', 'register_tld' => '.com', 'period' => $period]);
+
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->with(2)->andReturn((new Product())->setType(ProductService::DOMAIN));
+    $productService->shouldReceive('inCurrency')->with('EUR')->andReturnSelf();
+    $productService->shouldReceive('getProductRenewalLineConfig')->once()
+        ->with(Mockery::any(), Mockery::on(fn (array $config): bool => $config['period'] === "{$years}Y"))->andReturn(['price' => $price, 'quantity' => $years]);
+    $productService->shouldReceive('hasFreeDomainRenewal')->with(20)->andReturn($free);
+    $productService->shouldReceive('getRenewalPromoAdjustment')->once()->andReturn($discount > 0 ? ['discount_amount' => $discount] : null);
+    $client = new Model_Client();
+    $productService->shouldReceive('getAutoRenewalPromoAdjustment')->times($discount > 0 ? 0 : 1)
+        ->with($order, $client, Mockery::any(), (float) $years, true)->andReturn($auto > 0 ? ['discount_amount' => $auto] : null);
+    $db = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->with('Client', 5)->andReturn($client);
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE setting (param TEXT, value TEXT)');
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+    if ($exemptInclusive) {
+        $dbal->insert('setting', ['param' => 'tax_enabled', 'value' => '1']);
+        $dbal->insert('setting', ['param' => 'tax_inclusive', 'value' => '1']);
+    }
+    // Exempt from tax, in a place with 20%: a price that includes tax loses it.
+    $taxService = Mockery::mock(ServiceTax::class);
+    $taxService->shouldReceive('getTaxRateForClient')->andReturn(0);
+    $taxService->shouldReceive('getLocationTaxRate')->andReturn(20);
+    $currencies = Mockery::mock(CurrencyRepository::class);
+    $currencies->shouldReceive('getRateByCode')->with('EUR')->andReturn(2.0);
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->andReturn($currencies);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $module): Mockery\MockInterface => match ($module) {
+        'Product' => $productService,
+        'Currency' => $currencyService,
+        'Invoice' => $taxService,
+    });
+    $di['db'] = $db;
+    $di['dbal'] = $dbal;
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->domainRenewal($order))->toBe(['amount' => $amount, 'years' => $years, 'free' => $free])
+        ->and($order->period)->toBe($period);
+})->with([
+    'a year' => ['1Y', 1, 7.0, 0.0, 0.0, false, 14.0],
+    'two years less a promotion' => ['2Y', 2, 7.0, 5.5, 0.0, false, 22.5],
+    'less the client\'s automatic promotion' => ['1Y', 1, 7.0, 0.0, 1.404, false, 12.6],
+    'rounded per year as the invoice line' => ['2Y', 2, 5.997, 0.0, 0.0, false, 23.98],
+    '10 years renews as 9' => ['10Y', 9, 7.0, 0.0, 0.0, false, 126.0],
+    'free with its hosting' => ['1Y', 1, 7.0, 0.0, 0.0, true, 0.0],
+    'a price with tax in it, for a client exempt from tax' => ['1Y', 1, 7.0, 0.0, 0.0, false, 11.67, true],
+]);
+
+test('domainRenewal is null for a domain cancelled at the end of its period', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 20;
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->product_id = 2;
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE client_order_meta (client_order_id INTEGER, name TEXT, value TEXT)');
+    $dbal->insert('client_order_meta', ['client_order_id' => 20, 'name' => OrderService::META_CANCEL_AT_PERIOD_END, 'value' => '1']);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->with(2)->andReturn((new Product())->setType(ProductService::DOMAIN));
+    $productService->shouldReceive('getProductRenewalLineConfig')->never();
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $productService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->domainRenewal($order))->toBeNull();
+});
+
+test('domainRenewal is null when the renewal has no price', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 20;
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $order->product_id = 2;
+    $order->currency = 'EUR';
+    $order->period = '1Y';
+    $order->config = json_encode(['action' => 'register', 'register_tld' => '.zz', 'period' => '1Y']);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->with(2)->andReturn((new Product())->setType(ProductService::DOMAIN));
+    $productService->shouldReceive('inCurrency')->with('EUR')->andReturnSelf();
+    $productService->shouldReceive('getProductRenewalLineConfig')->once()->andThrow(new ClientFence\Exception('Unknown TLD. Could not determine registration price'));
+    $currencies = Mockery::mock(CurrencyRepository::class);
+    $currencies->shouldReceive('getRateByCode')->with('EUR')->andReturn(1.0);
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->andReturn($currencies);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $module): Mockery\MockInterface => match ($module) {
+        'Product' => $productService,
+        'Currency' => $currencyService,
+    });
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->domainRenewal($order))->toBeNull()->and($order->period)->toBe('1Y');
+});
+
+test('domainRenewal is null for an order that is not an active domain', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->product_id = 2;
+    $order->status = Model_ClientOrder::STATUS_PENDING_SETUP;
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->never();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $productService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->domainRenewal($order))->toBeNull();
+});
+
 test('generates invoice for zero amount order', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('setInvoiceDefaults')

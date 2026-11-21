@@ -9586,5 +9586,17 @@
     {
         "file": "modules/Support/Repository/SupportTicketRepository.php",
         "done": "ClientFence core patch: 0 turns automatic closing off, as WHMCS (it closed every answered ticket at the next cron)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: what an active domain's next renewal invoice bills, for the client's domain page (WHMCS's"
+    },
+    {
+        "file": "modules/Order/Api/Client.php",
+        "done": "ClientFence core patch: a domain's next renewal for its page (Invoice\\Service::domainRenewal())."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: what the domain renews at, as WHMCS's Recurring Amount (Invoice\\Service::domainRenewal())."
     }
 ]

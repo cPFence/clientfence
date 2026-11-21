@@ -62,7 +62,13 @@ class Client extends \ClientFence\Api\AbstractApi
         $model = $this->_getOrder($data);
 
         // ClientFence: as the client (no staff notes or staff-only meta).
-        return $this->getService()->toApiArray($model, true, $this->getIdentity());
+        $order = $this->getService()->toApiArray($model, true, $this->getIdentity());
+        // ClientFence core patch: a domain's next renewal for its page (Invoice\Service::domainRenewal()).
+        if (($order['service_type'] ?? null) === 'domain' && $model instanceof \Model_ClientOrder) {
+            $order['domain_renewal'] = $this->di['mod_service']('Invoice')->domainRenewal($model);
+        }
+
+        return $order;
     }
 
     /**

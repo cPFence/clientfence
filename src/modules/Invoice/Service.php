@@ -2940,6 +2940,81 @@ class Service implements InjectionAwareInterface
     }
 
     /** ClientFence core patch: $into adds the renewal to an invoice already made; $finish = false leaves tax and due date to the caller. */
+    /**
+     * ClientFence core patch: a domain's renewal line, the TLD's renewal price in the order's currency for the order's
+     * term, shared by the renewal invoice (generateForOrderLocked()) and the client's domain page (domainRenewal()).
+     *
+     * @return array{price: float, quantity: mixed}
+     */
+    private function domainRenewalLine(\Model_ClientOrder $order, \ClientFence\Mod\Product\Service $productService, \ClientFence\Mod\Product\Entity\Product $product): array
+    {
+        $config = json_decode($order->config ?? '', true) ?? [];
+        $rate = $this->di['mod_service']('Currency')->getCurrencyRepository()->getRateByCode($order->currency);
+        if ($rate === null) {
+            throw new \ClientFence\Exception("Currency rate for '{$order->currency}' is not configured");
+        }
+
+        // ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php).
+        $renewalLine = $productService->inCurrency((string) $order->currency)->getProductRenewalLineConfig($product, $config);
+        $price = $renewalLine['price'] * $rate;
+        // ClientFence core patch: a free domain renews free while its hosting lasts (WHMCS free domain renewal).
+        if ($productService->hasFreeDomainRenewal((int) $order->id)) {
+            $price = 0.0;
+        }
+
+        return ['price' => $price, 'quantity' => $renewalLine['quantity']];
+    }
+
+    /**
+     * ClientFence core patch: what an active domain's next renewal invoice bills, for the client's domain page (WHMCS's
+     * Recurring Amount): the renewal line for at most 9 years (capRenewalTerm(), not stored here) less the order's
+     * recurring promotion, else the client's automatic one, before tax added on top (a client exempt from tax pays prices
+     * that include it without it). Null for other orders, a domain cancelled at its period end or one with no price.
+     *
+     * @return array{amount: float, years: int, free: bool}|null
+     */
+    public function domainRenewal(\Model_ClientOrder $order): ?array
+    {
+        $productService = $this->di['mod_service']('Product');
+        if (!$productService instanceof \ClientFence\Mod\Product\Service || !$order->product_id || !in_array($order->status, [\Model_ClientOrder::STATUS_ACTIVE, \Model_ClientOrder::STATUS_FAILED_RENEW, \Model_ClientOrder::STATUS_SUSPENDED], true)) {
+            return null;
+        }
+        $product = $productService->findProductById((int) $order->product_id);
+        // Not for a domain cancelled at the end of its period: it does not renew.
+        if ($product->getType() !== \ClientFence\Mod\Product\Service::DOMAIN || $this->di['dbal']->fetchOne('SELECT 1 FROM client_order_meta WHERE client_order_id = ? AND name = ? AND value = ?', [(int) $order->id, \ClientFence\Mod\Order\Service::META_CANCEL_AT_PERIOD_END, '1'])) {
+            return null;
+        }
+        $client = $this->di['db']->getExistingModelById('Client', (int) $order->client_id);
+        // The capped term only for this calculation (a cloned model shares its bean): nothing is stored.
+        $kept = [$order->period, $order->config];
+        try {
+            if (preg_match('/^(\d+)Y$/', (string) $order->period, $term) === 1 && (int) $term[1] > 9) {
+                $config = json_decode($order->config ?? '', true) ?? [];
+                $order->period = $config['period'] = '9Y';
+                $order->config = json_encode($config);
+            }
+            $line = $this->domainRenewalLine($order, $productService, $product);
+            $years = (int) $line['quantity'];
+            // As the renewal invoice: the order's recurring promotion, else the client's recurring automatic one (not stored here).
+            $promo = $productService->getRenewalPromoAdjustment($order, (float) $line['price'], (float) $years)
+                ?? $productService->getAutoRenewalPromoAdjustment($order, $client, (float) $line['price'], (float) $years, true);
+        } catch (\ClientFence\Exception) {
+            return null; // no renewal price (a TLD not on sale here): the page leaves the line out, the renewal says why
+        } finally {
+            [$order->period, $order->config] = $kept;
+        }
+        // Rounded as the stored invoice lines are: the price per year, then the discount line.
+        [$unit, $off] = [round($line['price'], 2), round((float) ($promo['discount_amount'] ?? 0), 2)];
+        // Prices that include tax lose it for a client exempt from tax (applyInclusiveTax()).
+        $taxService = $this->di['mod_service']('Invoice', 'Tax');
+        if ($this->pricesIncludeTax() && (float) $taxService->getTaxRateForClient($client) <= 0 && ($rate = (float) $taxService->getLocationTaxRate($client)) > 0) {
+            [$unit, $off] = [round($unit * 100 / (100 + $rate), 2), round($off * 100 / (100 + $rate), 2)];
+        }
+        $amount = $unit * $years - $off;
+
+        return ['amount' => round(max(0.0, $amount), 2), 'years' => $years, 'free' => $productService->hasFreeDomainRenewal((int) $order->id)];
+    }
+
     protected function generateForOrderLocked(\Model_ClientOrder $order, $due_days = null, ?\Model_Invoice $into = null, bool $finish = true)
     {
         // check if we do have invoice prepared already
@@ -2973,25 +3048,8 @@ class Service implements InjectionAwareInterface
             if ($productService instanceof \ClientFence\Mod\Product\Service && $product->getType() === \ClientFence\Mod\Product\Service::DOMAIN) {
                 // ClientFence core patch: a domain term over 9 years renews as 9 years (Servicedomain\Service::capRenewalTerm()).
                 $this->di['mod_service']('servicedomain')->capRenewalTerm($order);
-                $config = json_decode($order->config ?? '', true) ?? [];
-                $currencyService = $this->di['mod_service']('Currency');
-                $currencyRepository = $currencyService->getCurrencyRepository();
-                $rate = $currencyRepository->getRateByCode($order->currency);
-                if ($rate === null) {
-                    throw new \ClientFence\Exception("Currency rate for '{$order->currency}' is not configured");
-                }
-
-                // ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php).
-                $renewalLine = $productService->inCurrency((string) $order->currency)->getProductRenewalLineConfig($product, $config);
-                $price = $renewalLine['price'] * $rate;
-                // ClientFence core patch: a free domain renews free while its hosting lasts (WHMCS free domain renewal).
-                if ($productService->hasFreeDomainRenewal((int) $order->id)) {
-                    $price = 0.0;
-                }
-                $line = [
-                    'price' => $price,
-                    'quantity' => $renewalLine['quantity'],
-                ];
+                $line = $this->domainRenewalLine($order, $productService, $product);
+                $price = $line['price'];
             }
         }
 

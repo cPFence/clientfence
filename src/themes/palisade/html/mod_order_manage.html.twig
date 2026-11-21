@@ -81,6 +81,13 @@
                         <span class="cf-label">{{ 'Payment Amount'|trans }}</span>
                         <span class="cf-svc-amount">{{ (order.total - order.discount)|format_currency(order.currency ?? default_currency) }}</span>
                         <span class="cf-svc-sub">{{ order.created_at|format_date }}</span>
+                        {# ClientFence core patch: what the domain renews at, as WHMCS's Recurring Amount (Invoice\Service::domainRenewal()). #}
+                        {% set renewal = order.domain_renewal ?? null %}
+                        {# A renewal invoice already issued shows what it bills, in the Pay invoice strip. #}
+                        {% if renewal and not open_invoice %}
+                            {% set renew_amount = renewal.amount|format_currency(order.currency ?? default_currency) %}
+                            <span class="cf-svc-sub" data-cf-domain-renewal>{{ renewal.free ? 'The domain renews free while this plan is active.'|trans : (renewal.years > 1 ? 'The domain renews at :amount every :years years.'|trans({':amount': renew_amount, ':years': renewal.years}) : 'The domain renews at :amount a year.'|trans({':amount': renew_amount})) }}</span>
+                        {% endif %}
                     {% else %}
                         <span class="cf-label">{{ 'Price'|trans }}</span>
                         <span class="cf-svc-amount">{{ (order.promo_renews ? order.total - order.discount : order.total)|format_currency(order.currency ?? default_currency) }}</span>

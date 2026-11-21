@@ -1579,11 +1579,12 @@ class Service implements InjectionAwareInterface
     /**
      * ClientFence core patch: the renewal of an order with no recurring promotion gets the client's recurring automatic
      * promotion, as a WHMCS group discount comes off every invoice. It is then recorded on the order like a code, so the
-     * next renewals carry it (getRenewalPromoAdjustment()). Returns the same shape as getRenewalPromoAdjustment().
+     * next renewals carry it (getRenewalPromoAdjustment()). Returns the same shape as getRenewalPromoAdjustment();
+     * $preview only returns the discount, with no use counted and nothing stored (a page showing the next renewal).
      *
-     * @return array{promo: Promo, discount_amount: float, title: string, currency: string, phase: string}|null
+     * @return array{promo: Promo, discount_amount: float, title?: string, currency?: string, phase?: string}|null
      */
-    public function getAutoRenewalPromoAdjustment(\Model_ClientOrder $order, \Model_Client $client, float $price, float $quantity): ?array
+    public function getAutoRenewalPromoAdjustment(\Model_ClientOrder $order, \Model_Client $client, float $price, float $quantity, bool $preview = false): ?array
     {
         if ($order->promo_recurring || !$order->product_id) {
             return null;
@@ -1602,6 +1603,9 @@ class Service implements InjectionAwareInterface
         $discount = $this->getOrderPromoDiscount($product, $promo, $config, $price, $quantity, $rate);
         if ($discount <= 0) { // also when the currency has no rate
             return null;
+        }
+        if ($preview) {
+            return ['promo' => $promo, 'discount_amount' => $discount];
         }
         try {
             $this->usePromo($promo);
