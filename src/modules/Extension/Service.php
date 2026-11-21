@@ -779,6 +779,9 @@ class Service implements InjectionAwareInterface
         if ($ext === 'mod_email' && !$this->di['mod_service']('Staff')->isSuperAdministrator()) {
             $transportKeys = array_flip(['mailer', 'custom_dsn', 'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'sendgrid_key']);
             $data = array_diff_key($data, $transportKeys) + array_intersect_key($stored, $transportKeys);
+            // ClientFence core patch: nor the email layout, which wraps the sign-in link emails (Email/Layout.php, layout_save).
+            $layoutKeys = array_flip(\ClientFence\Mod\Email\Layout::KEYS);
+            $data = array_diff_key($data, $layoutKeys) + array_intersect_key($stored, $layoutKeys);
         }
         // ClientFence: settings a module's settings page saves with their own forms
         // (Clientfence\Service::SETTINGS, the hosting panels' switches, Google sign-in, ticket files,
@@ -792,6 +795,10 @@ class Service implements InjectionAwareInterface
             $kept = [...$kept, ...array_keys(\ClientFence\Mod\Client\Google::DEFAULTS)];
             // ClientFence core patch: the ID documents tab saves its own form (Client/IdDocuments.php).
             $kept = [...$kept, ...array_keys(\ClientFence\Mod\Client\IdDocuments::DEFAULTS)];
+        }
+        if ($ext === 'mod_email') {
+            // ClientFence core patch: the email layout is saved by its own tab (Email/Layout.php).
+            $kept = [...$kept, ...\ClientFence\Mod\Email\Layout::KEYS];
         }
         if ($ext === 'mod_staff') {
             // The staff IP address rule is saved by Sign-in security (Clientfence/SignInSecurity.php).

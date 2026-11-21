@@ -61,7 +61,9 @@ test('sendMessage builds the mail payload from the client entity without a fatal
 
     $systemService = Mockery::mock(ClientFence\Mod\System\Service::class);
     $systemService->shouldReceive('renderEmailSubjectString')->once()->andReturn('');
-    $systemService->shouldReceive('renderEmailTplString')->once()->andReturn('');
+    // The message goes out in the email layout (Email\Service::renderMessage()).
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $emailService->shouldReceive('renderMessage')->once()->andReturn('');
 
     $extensionService = Mockery::mock(ClientFence\Mod\Extension\Service::class);
     $extensionService->shouldReceive('isExtensionActive')->with('mod', 'demo')->once()->andReturn(false);
@@ -74,6 +76,7 @@ test('sendMessage builds the mail payload from the client entity without a fatal
     $di['mod_service'] = $di->protect(moduleService([
         'client' => $clientService,
         'system' => $systemService,
+        'email' => $emailService,
         'extension' => $extensionService,
     ]));
     $service->setDi($di);
@@ -267,14 +270,16 @@ test('the content is rendered as Markdown with the email signature after it', fu
     $clientService->shouldReceive('toApiArray')->andReturn(['first_name' => 'Ann']);
     $systemService = Mockery::mock(ClientFence\Mod\System\Service::class);
     $systemService->shouldReceive('renderEmailSubjectString')->with('Hi', ['c' => ['first_name' => 'Ann']], (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), null)->andReturn('Hi');
-    $systemService->shouldReceive('renderEmailTplString')
-        ->with("{% apply markdown_to_html %}\n**Hi {{ c.first_name }}**\n{% endapply %}\n{{ guest.system_email.signature }}", ['c' => ['first_name' => 'Ann']], (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), null)
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    // The unsubscribe line goes inside the message, so the layout keeps its footer last.
+    $emailService->shouldReceive('renderMessage')
+        ->with("{% apply markdown_to_html %}\n**Hi {{ c.first_name }}**\n{% endapply %}\n{{ guest.system_email.signature }}{{ email_unsubscribe }}", Mockery::on(static fn (array $vars): bool => $vars['c'] === ['first_name' => 'Ann'] && (string) $vars['email_unsubscribe'] === '<p>Unsubscribe</p>'), (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), null)
         ->once()->andReturn('<p><strong>Hi Ann</strong></p>');
 
     $di = createMassmailerDi();
-    $di['mod_service'] = $di->protect(moduleService(['client' => $clientService, 'system' => $systemService]));
+    $di['mod_service'] = $di->protect(moduleService(['client' => $clientService, 'system' => $systemService, 'email' => $emailService]));
     $service = new ClientFence\Mod\Massmailer\Service();
     $service->setDi($di);
 
-    expect($service->getParsed((new MassmailerMessage())->setSubject('Hi')->setContent('**Hi {{ c.first_name }}**'), 1))->toBe(['Hi', '<p><strong>Hi Ann</strong></p>']);
+    expect($service->getParsed((new MassmailerMessage())->setSubject('Hi')->setContent('**Hi {{ c.first_name }}**'), 1, '<p>Unsubscribe</p>'))->toBe(['Hi', '<p><strong>Hi Ann</strong></p>']);
 });

@@ -107,6 +107,11 @@
                             <a class="nav-link{% if active_tab == 'email' %} active{% endif %}" href="#tab-email" data-bs-toggle="tab" role="tab">{{ 'Email Settings'|trans }}</a>
                         </li>
                         {% endif %}
+                        {% if can_manage_templates %}
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" href="#tab-layout" data-bs-toggle="tab" role="tab">{{ 'Email Layout'|trans }}</a>
+                        </li>
+                        {% endif %}
                     </ul>
             <div class="tab-content border-top">
                 {% if can_access_templates %}
@@ -571,6 +576,41 @@
                             <input type="submit" value="{{ 'Update Email Settings'|trans }}" class="btn btn-primary">
                         </div>
                     </form>
+                </div>
+                {% endif %}
+
+                {# ClientFence core patch: the email layout around every email (Email/Layout.php, CF-234), as WHMCS's global header, footer and CSS. #}
+                {% if can_manage_templates %}
+                {% set email_layout = admin.email_layout_get() %}
+                <div class="tab-pane fade" id="tab-layout" role="tabpanel">
+                    <form method="post" action="{{ 'email/layout_save'|api_url }}" {{ fb_api_form({ message: 'Email layout saved'|trans, reload: true }) }}>
+                        <div class="card-body cf-sys-sec">
+                            <p class="text-secondary">{{ 'Every email is sent in this layout: the header, the template\'s message, then the footer. Change it here once instead of in each template. A part you keep as it is follows the built-in design in updates. A template that still holds a whole page of its own is sent as it is.'|trans }}</p>
+                            {% if not email_layout.can_edit %}
+                            <div class="alert alert-info" role="alert">{{ 'Only a Super Administrator can change the email layout.'|trans }}</div>
+                            {% endif %}
+                            {% for key, label in { 'layout_header': 'Header'|trans, 'layout_footer': 'Footer'|trans, 'layout_css': 'CSS'|trans } %}
+                            <div class="mb-3">
+                                <label class="form-label" for="email-{{ key }}">{{ label }}</label>
+                                <textarea class="form-control font-monospace" id="email-{{ key }}" name="{{ key }}" rows="{{ key == 'layout_css' ? 6 : 12 }}" spellcheck="false"{% if not email_layout.can_edit %} readonly{% endif %}>{{ email_layout.layout[key] ?: email_layout.defaults[key] }}</textarea>
+                            </div>
+                            {% endfor %}
+                            <small class="form-hint d-block mb-3">{{ 'Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest.'|trans }}</small>
+                            {% if email_layout.can_edit %}
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-primary" type="submit">{{ 'Save Layout'|trans }}</button>
+                                <button class="btn btn-outline-secondary" type="submit" form="email-layout-restore">{{ 'Restore Defaults'|trans }}</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </form>
+                    {% if email_layout.can_edit %}
+                    <form id="email-layout-restore" method="post" action="{{ 'email/layout_save'|api_url }}" {{ fb_api_form({ message: 'Email layout saved'|trans, reload: true }) }}>
+                        <input type="hidden" name="layout_header" value="">
+                        <input type="hidden" name="layout_footer" value="">
+                        <input type="hidden" name="layout_css" value="">
+                    </form>
+                    {% endif %}
                 </div>
                 {% endif %}
 

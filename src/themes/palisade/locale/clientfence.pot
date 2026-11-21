@@ -2450,7 +2450,7 @@ msgstr ""
 msgid "Admin address, captcha, sign-in"
 msgstr ""
 
-#: src/modules/Clientfence/templates/email/mod_clientfence_health_alert.html.twig src/modules/Email/templates/email/mod_email_test.html.twig src/modules/Staff/templates/email/mod_staff_affiliate_payout_request.html.twig …
+#: src/modules/Email/templates/layout/footer.html.twig src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
 msgid "Admin area"
 msgstr ""
 
@@ -4790,6 +4790,10 @@ msgstr ""
 msgid "CSRF token invalid"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "CSS"
+msgstr ""
+
 #: src/library/Server/Manager/CWP.php
 msgid "CWP"
 msgstr ""
@@ -6234,7 +6238,7 @@ msgstr ""
 msgid "Client and guest changes: their API calls that change something, not reads"
 msgstr ""
 
-#: src/modules/Client/templates/email/mod_client_affiliate_payout_declined.html.twig src/modules/Client/templates/email/mod_client_affiliate_payout_paid.html.twig src/modules/Client/templates/email/mod_client_affiliate_report.html.twig …
+#: src/modules/Email/templates/layout/footer.html.twig src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
 msgid "Client area"
 msgstr ""
 
@@ -9642,6 +9646,10 @@ msgstr ""
 msgid "Email ID was not passed"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Email Layout"
+msgstr ""
+
 #: src/modules/Activity/templates/admin/mod_activity_settings.html.twig
 msgid "Email Log Retention"
 msgstr ""
@@ -9776,6 +9784,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig src/modules/Support/templates/admin/mod_support_settings_mail.html.twig
 msgid "Email importing"
+msgstr ""
+
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Email layout saved"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -10818,6 +10830,10 @@ msgstr ""
 msgid "Every day"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Every email is sent in this layout: the header, the template's message, then the footer. Change it here once instead of in each template. A part you keep as it is follows the built-in design in updates. A template that still holds a whole page of its own is sent as it is."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Every email read from the help desk mailboxes and what became of it. An email that was not imported keeps a copy until the log is cleaned, so you can import it anyway. Mailboxes are set on each help desk; the rules are in Support settings."
 msgstr ""
@@ -11506,7 +11522,7 @@ msgstr ""
 msgid "Follow the Visitor’s Device"
 msgstr ""
 
-#: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/themes/palisade/config/settings.html.twig
+#: src/modules/Custompages/templates/admin/mod_custompages_index.html.twig src/modules/Email/templates/admin/mod_email_settings.html.twig src/themes/palisade/config/settings.html.twig
 msgid "Footer"
 msgstr ""
 
@@ -12420,6 +12436,10 @@ msgstr ""
 
 #: src/modules/Client/Service.php
 msgid "Hash required"
+msgstr ""
+
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Header"
 msgstr ""
 
 #: src/themes/palisade/config/settings.html.twig
@@ -18366,6 +18386,10 @@ msgstr ""
 msgid "Only Super Administrators create groups or update group details."
 msgstr ""
 
+#: src/modules/Email/Api/Admin.php src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Only a Super Administrator can change the email layout."
+msgstr ""
+
 #: src/modules/Email/Api/Admin.php
 msgid "Only a Super Administrator can change this email: it carries a sign-in link or code."
 msgstr ""
@@ -21394,7 +21418,7 @@ msgstr ""
 msgid "Products and services"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Client/templates/email/mod_client_clientfence_signin_pin.html.twig …
+#: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Email/templates/layout/footer.html.twig …
 msgid "Profile"
 msgstr ""
 
@@ -23150,6 +23174,10 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Restore Defaults"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
 msgid "Restore backup"
 msgstr ""
@@ -23532,6 +23560,10 @@ msgstr ""
 
 #: src/modules/Servicedownloadable/templates/admin/mod_servicedownloadable_config.html.twig
 msgid "Save Config"
+msgstr ""
+
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Save Layout"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
@@ -30313,6 +30345,10 @@ msgstr ""
 
 #: src/modules/Antispam/templates/admin/mod_antispam_settings.html.twig
 msgid "Turnstile Site Key"
+msgstr ""
+
+#: src/modules/Email/templates/admin/mod_email_settings.html.twig
+msgid "Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest."
 msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig

@@ -1,0 +1,17 @@
+<body style="margin:0; padding:0; background-color:#eef3f6;">
+{% if email_reply_line|default(false) %}
+{# ClientFence: replies by email go to the ticket (Support/MailImport.php): [Ticket #id] in the subject; text from this line on is cut. #}
+<p class="reply-line" style="margin:0; padding:8px 12px; font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#94a3b8; text-align:center;">====== Please reply above this line ======</p>
+{% endif %}
+{% if email_preheader|default('') %}<div style="display:none; max-height:0; overflow:hidden;">{{ email_preheader }}</div>{% endif %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef3f6" style="background-color:#eef3f6; background-image:linear-gradient(180deg, #d7eeec 0px, #eef3f6 360px);">
+<tr><td align="center" style="padding:{{ email_reply_line|default(false) ? '12px 12px 24px' : '24px 12px' }};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:600px; background-color:#ffffff; border:1px solid #e4eaee; border-radius:16px; box-shadow:0 8px 28px rgba(12,39,56,0.10);">
+	<tr><td bgcolor="#0c2738" style="padding:24px 32px; background-color:#0c2738; background-image:linear-gradient(135deg, #0c2738 0%, #11334a 55%, #0e5a7a 100%); border-radius:16px 16px 0 0; border-bottom:3px solid {{ guest.system_company.brand_color|default('#2563eb') }};">
+		{% if guest.system_company.logo_url_email|default('') %}
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#ffffff" style="padding:8px 14px; background-color:#ffffff; border-radius:12px;"><img src="{{ guest.system_company.logo_url_email }}" alt="{{ guest.system_company.name }}" height="40" style="display:block; height:40px; width:auto; border:0;"></td></tr></table>
+		{% else %}
+		<span style="font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:bold; color:#ffffff;">{{ guest.system_company.name }}</span>
+		{% endif %}
+	</td></tr>
+	<tr><td style="padding:32px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#334155;">

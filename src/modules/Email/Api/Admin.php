@@ -72,12 +72,17 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $client_id = $data['client_id'] ?? null;
         $emailService = $this->getService();
+        // ClientFence core patch: the message goes out in the email layout (Email/Layout.php); plain text keeps its lines.
+        $content = (string) ($data['content'] ?? '');
+        if (!\ClientFence\Mod\Email\Layout::isPage($content)) {
+            $content = $emailService->renderHtmlInLayout($content === strip_tags($content) ? nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8', false)) : $content, 'client', ['c' => ['email' => (string) ($data['to'] ?? '')]]);
+        }
 
         return $emailService->sendMail(
             $data['to'] ?? null,
             $data['from'] ?? null,
             $data['subject'] ?? null,
-            $data['content'] ?? null,
+            $content,
             $data['to_name'] ?? null,
             $data['from_name'] ?? null,
             $client_id
@@ -377,7 +382,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @optional string $_tpl - string to be rendered. Default is email template.
      *
-     * @return bool
+     * @return string
      */
     public function template_render($data)
     {
@@ -392,9 +397,43 @@ class Admin extends \ClientFence\Api\AbstractApi
         // ClientFence core patch: a language version previews in its language (`lang`, a turned-on language).
         $locale = in_array($data['lang'] ?? null, \ClientFence\i18n::getLocales(), true) ? $data['lang'] : null;
 
+        // ClientFence core patch: `layout` previews a message inside the email layout (Layout.php).
+        if (!empty($data['layout'])) {
+            return html_entity_decode($this->getService()->renderMessage($vars['_tpl'], $vars, null, $locale), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+
         // Preview-only output, which the modal re-escapes for display: decoded
         // form keeps subject previews accurate, content previews unchanged.
         return $systemService->renderEmailSubjectString($vars['_tpl'], $vars, null, $locale);
+    }
+
+    /**
+     * ClientFence core patch: the email layout (Email Settings > Email Layout, Layout.php): the parts in use, the
+     * built-in defaults, and whether this staff member may change it.
+     */
+    public function layout_get(): array
+    {
+        $this->checkPermissions('email', 'manage_templates');
+        $config = $this->getDi()['mod']('email')->getConfig();
+
+        return [
+            'layout' => array_intersect_key($config, array_flip(\ClientFence\Mod\Email\Layout::KEYS)) + array_fill_keys(\ClientFence\Mod\Email\Layout::KEYS, ''),
+            'defaults' => \ClientFence\Mod\Email\Layout::defaults(),
+            'can_edit' => $this->getDi()['mod_service']('Staff')->isSuperAdministrator(),
+        ];
+    }
+
+    /**
+     * ClientFence core patch: saves the email layout. Only Super Administrators: the layout wraps the emails that
+     * carry a sign-in link or code (SIGN_IN_LINK_TEMPLATES).
+     */
+    public function layout_save($data): bool
+    {
+        if (!$this->getDi()['mod_service']('Staff')->isSuperAdministrator()) {
+            throw new \ClientFence\InformationException('Only a Super Administrator can change the email layout.', [], 403);
+        }
+
+        return $this->getService()->saveLayout(is_array($data) ? $data : []);
     }
 
     /**

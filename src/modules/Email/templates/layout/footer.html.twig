@@ -1,0 +1,9 @@
+	</td></tr>
+	<tr><td bgcolor="#f7fafb" style="padding:20px 32px; background-color:#f7fafb; border-top:1px solid #eef2f5; border-radius:0 0 16px 16px; text-align:center; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#94a3b8;">
+		{{ guest.system_company.name }}{% if guest.system_company.address_1|default('') %} &middot; {{ guest.system_company.address_1 }}{% endif %}<br>
+		{% if email_audience|default('client') == 'staff' %}<a href="{{ 'staff/login'|url(area: 'admin') }}" target="_blank" style="color:#64748b;">{{ 'Admin area'|trans }}</a>{% else %}{% if email_audience|default('client') != 'guest' %}<a href="{{ 'login'|url(query: { 'email': c.email|default('') }, area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Client area'|trans }}</a> &middot; {% if email_audience|default('client') == 'affiliate' %}<a href="{{ 'affiliates'|url(area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Affiliates'|trans }}</a>{% else %}<a href="{{ 'client/profile'|url(area: 'client') }}" target="_blank" style="color:#64748b;">{{ 'Profile'|trans }}</a>{% endif %}{% if guest.system_company.email|default('') %} &middot; {% endif %}{% endif %}{% if guest.system_company.email|default('') %}<a href="mailto:{{ guest.system_company.email }}" style="color:#64748b;">{{ guest.system_company.email }}</a>{% endif %}{% endif %}
+	</td></tr>
+</table>
+</td></tr>
+</table>
+</body>

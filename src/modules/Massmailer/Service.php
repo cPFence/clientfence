@@ -356,7 +356,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         return json_encode($this->normalizeFilter($filter, true), JSON_THROW_ON_ERROR);
     }
 
-    public function getParsed(MassmailerMessage $model, int $client_id): array
+    public function getParsed(MassmailerMessage $model, int $client_id, string $footer = ''): array
     {
         $clientService = $this->di['mod_service']('client');
         $systemService = $this->di['mod_service']('system');
@@ -371,7 +371,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         $locale = !empty($clientArr['lang']) ? (string) $clientArr['lang'] : null;
         $ps = $systemService->renderEmailSubjectString($model->getSubject(), $vars, $timezone, $locale);
         // ClientFence core patch (ext massmailer): the rich editor writes Markdown; the signature is HTML, so it goes after.
-        $pc = $systemService->renderEmailTplString("{% apply markdown_to_html %}\n" . $model->getContent() . "\n{% endapply %}\n{{ guest.system_email.signature }}", $vars, $timezone, $locale);
+        // ClientFence core patch: mass emails go out in the email layout too (Email/Layout.php), as WHMCS sends them.
+        // $footer (the unsubscribe line) goes inside the message, above the layout's footer.
+        $pc = $this->di['mod_service']('email')->renderMessage("{% apply markdown_to_html %}\n" . $model->getContent() . "\n{% endapply %}\n{{ guest.system_email.signature }}{{ email_unsubscribe }}", $vars + ['email_unsubscribe' => new \Twig\Markup($footer, 'UTF-8')], $timezone, $locale);
 
         return [$ps, $pc];
     }
@@ -391,12 +393,13 @@ class Service implements \ClientFence\InjectionAwareInterface
             }
         }
 
-        [$ps, $pc] = $this->getParsed($model, $client_id);
+        $footer = '';
         if ($unsubscribe !== null) {
             // ClientFence core patch: in the client's language, as the email above it, not the sending staff member's.
             $lang = $this->di['em']->getConnection()->fetchOne('SELECT lang FROM client WHERE id = ?', [$client_id]);
-            $pc .= \ClientFence\Mod\Client\Privacy::footer($unsubscribe, $lang ?: null);
+            $footer = \ClientFence\Mod\Client\Privacy::footer($unsubscribe, $lang ?: null);
         }
+        [$ps, $pc] = $this->getParsed($model, $client_id, $footer);
 
         $clientService = $this->di['mod_service']('client');
 

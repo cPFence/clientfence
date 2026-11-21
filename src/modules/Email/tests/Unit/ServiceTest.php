@@ -352,7 +352,7 @@ test('sendTemplate masks secrets in saved previews while rendering the full vari
         return 'encrypted';
     });
     $system = Mockery::mock(ClientFence\Mod\System\Service::class);
-    $system->shouldReceive('renderEmailTplString')->once()->with('Body', $vars, (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), 'en_US')->andReturn('Rendered body');
+    $system->shouldReceive('renderEmailTplString')->once()->with(Mockery::on(static fn (string $tpl): bool => str_starts_with($tpl, '{% set email_message %}Body{% endset %}')), $vars, (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), 'en_US')->andReturn('Rendered body');
     $system->shouldReceive('renderEmailSubjectString')->once()->with('Subject', $vars, (string) ClientFence\Config::getProperty('i18n.timezone', 'UTC'), 'en_US')->andReturn('Rendered subject');
     $system->shouldReceive('getParamValue')->with('company_email')->andReturn('billing@example.test');
     $system->shouldReceive('getParamValue')->with('company_name')->andReturn('Company');
@@ -1349,6 +1349,8 @@ test('an email uses the version in the recipient\'s language, else the default t
     $di['mod_service'] = $di->protect(fn (): object => $system);
     $service = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
     $service->shouldReceive('getVars')->andReturn(['a' => 1]);
+    // The layout around the message is LayoutTest's: here the message alone.
+    $service->shouldReceive('renderMessage')->andReturnArg(0);
     $service->setDi($di);
 
     expect($service->renderTemplate('mod_email_test', ['a' => 1], [], null, $locale))->toBe($expected)

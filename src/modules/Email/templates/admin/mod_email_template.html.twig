@@ -369,6 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
             _tpl: pane.querySelector('[data-cf-field="content"]').value,
             id: '{{ template.id }}',
             lang: pane.dataset.cfLangPane,
+            layout: 1,
         };
 
         let subjectResult = '';
@@ -494,6 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentParams = {
             _tpl: `{{ '{%' }} apply markdown_to_html {{ '%}' }}\n${sampleTemplate}\n{{ '{%' }} endapply {{ '%}' }}`,
             id: '{{ template.id }}',
+            layout: 1,
         };
 
         ClientFence.api.admin.post('email/template_render', subjectParams, function(subject) {

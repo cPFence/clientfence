@@ -112,9 +112,12 @@ test('send', function (): void {
     ];
 
     $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    // The plain-text message goes out in the email layout, its lines kept.
+    $emailService->shouldReceive('renderHtmlInLayout')->once()->with('Content', 'client', ['c' => ['email' => 'to@example.com']])->andReturn('<html>Content</html>');
     $emailService
     ->shouldReceive('sendMail')
     ->atLeast()->once()
+    ->with('to@example.com', 'from@example.com', 'Subject', '<html>Content</html>', 'Recipient Name', 'Sender Name', null)
     ->andReturn(true);
 
     $di = container();
@@ -125,6 +128,29 @@ test('send', function (): void {
     $result = $adminApi->send($data);
 
     expect($result)->toBeTrue();
+});
+
+test('send escapes plain text once: entities already in it stay as they are', function (): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldReceive('renderHtmlInLayout')->once()->with("Tom &amp; Jerry<br />\nhttps://example.com/?id=10&amp;view=full", 'client', ['c' => ['email' => 'to@example.com']])->andReturn('<html>x</html>');
+    $emailService->shouldReceive('sendMail')->once()->andReturn(true);
+    $adminApi->setDi(container());
+    $adminApi->setService($emailService);
+
+    expect($adminApi->send(['to' => 'to@example.com', 'to_name' => 'R', 'from' => 'from@example.com', 'from_name' => 'S', 'subject' => 'S', 'content' => "Tom & Jerry\nhttps://example.com/?id=10&amp;view=full"]))->toBeTrue();
+});
+
+test('send keeps a whole HTML page as it is, outside the layout', function (): void {
+    $adminApi = apiEndpoint(new ClientFence\Mod\Email\Api\Admin());
+    $page = '<!DOCTYPE html><html><body>Own page</body></html>';
+    $emailService = Mockery::mock(ClientFence\Mod\Email\Service::class)->makePartial();
+    $emailService->shouldNotReceive('renderHtmlInLayout');
+    $emailService->shouldReceive('sendMail')->once()->with('to@example.com', 'from@example.com', 'Subject', $page, 'Recipient Name', 'Sender Name', null)->andReturn(true);
+    $adminApi->setDi(container());
+    $adminApi->setService($emailService);
+
+    expect($adminApi->send(['to' => 'to@example.com', 'to_name' => 'Recipient Name', 'from' => 'from@example.com', 'from_name' => 'Sender Name', 'subject' => 'Subject', 'content' => $page]))->toBeTrue();
 });
 
 test('resend', function (): void {

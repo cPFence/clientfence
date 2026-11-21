@@ -906,6 +906,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         $content = '<p>These domains need attention:</p><ul>' . $items . '</ul><p>Sent by ClientFence.</p>';
 
         $company = (string) ($di['mod_service']('system')->getCompany()['name'] ?? '') ?: 'ClientFence';
+        // The staff email layout (Email/Layout.php) around the list.
+        $content = $di['mod_service']('email')->renderHtmlInLayout($content, 'staff');
         $di['mod_service']('email')->sendMail($to, $to, $subject, $content, $company, $company);
 
         $stamp = date('Y-m-d H:i:s', $now);

@@ -57,6 +57,16 @@ test('shipped email templates use only what the email sandbox allows', function 
     expect(true)->toBeTrue();
 })->with('shipped email templates');
 
+test('shipped email templates are the message only and render in the email layout', function (string $file): void {
+    // CF-234: the layout (Email\Layout) adds the page; a template that kept its own page would skip the layout.
+    preg_match('/{%.?block content.?%}((.*?\n)+){%.?endblock.?%}/m', (string) file_get_contents($file), $mc);
+    $html = emailSandboxEnvironment()->createTemplate(ClientFence\Mod\Email\Layout::wrap($mc[1], ClientFence\Mod\Email\Layout::defaults()), basename($file))->render([]);
+
+    expect(ClientFence\Mod\Email\Layout::isPage($mc[1]))->toBeFalse()
+        ->and(substr_count($html, '<html'))->toBe(1)
+        ->and($html)->toContain('</body>');
+})->with('shipped email templates');
+
 test('shipped email subjects fit the email_template.subject column', function (string $file): void {
     // The installer and the template sync store the subject block's source in varchar(255): longer fails the install.
     preg_match('#{%.?block subject.?%}((.*?)+){%.?endblock.?%}#', (string) file_get_contents($file), $ms);

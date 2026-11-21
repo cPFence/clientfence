@@ -822,6 +822,65 @@ class Service implements \ClientFence\InjectionAwareInterface
         return $str . '{% endapply %}';
     }
 
+    /**
+     * ClientFence core patch: an email's message inside the email layout (Layout.php, CF-234). A layout the staff
+     * changed that fails to render sends the built-in one, so a mistake there never stops the emails.
+     */
+    public function renderMessage(string $content, array $vars, ?string $timezone = null, ?string $locale = null): string
+    {
+        $systemService = $this->di['mod_service']('System');
+        $layout = $this->getLayout();
+        try {
+            return $systemService->renderEmailTplString(Layout::wrap($content, $layout), $vars, $timezone, $locale);
+        } catch (\ClientFence\Exception $e) {
+            if ($layout === Layout::defaults() || Layout::isPage($content)) {
+                throw $e;
+            }
+            $this->di['logger']->setChannel('email')->warning('The email layout failed, the built-in layout was used: ' . $e->getMessage());
+
+            return $systemService->renderEmailTplString(Layout::wrap($content, Layout::defaults()), $vars, $timezone, $locale);
+        }
+    }
+
+    /**
+     * ClientFence core patch: HTML built by code (a staff member's message, an alert) inside the email layout;
+     * $audience picks the footer links (Layout.php).
+     */
+    public function renderHtmlInLayout(string $html, string $audience = 'client', array $vars = []): string
+    {
+        return $this->renderMessage("{% set email_audience = '" . $audience . "' %}{{ email_body }}", ['email_body' => new \Twig\Markup($html, 'UTF-8')] + $vars);
+    }
+
+    /**
+     * The email layout in use (empty settings are the built-in default).
+     *
+     * @return array{layout_header: string, layout_footer: string, layout_css: string}
+     */
+    public function getLayout(): array
+    {
+        return Layout::fromConfig($this->di['mod']('email')->getConfig());
+    }
+
+    /**
+     * Saves the email layout; a part left empty or equal to the default is stored empty, so it follows the default.
+     */
+    public function saveLayout(array $data): bool
+    {
+        $defaults = Layout::defaults();
+        $norm = static fn (string $text): string => trim(str_replace("\r\n", "\n", $text));
+        $layout = [];
+        foreach (Layout::KEYS as $key) {
+            $value = is_string($data[$key] ?? null) ? $data[$key] : '';
+            $layout[$key] = $norm($value) === $norm($defaults[$key]) ? '' : $value;
+        }
+        $this->di['mod_service']('System')->checkEmailTplSyntax(Layout::wrap('', Layout::fromConfig($layout)));
+
+        $extension = $this->di['mod_service']('extension');
+        $extension->setConfig(array_merge($extension->getConfig('mod_email'), $layout, ['ext' => 'mod_email']));
+
+        return true;
+    }
+
     private function _parse(EmailTemplate $template, array $vars, ?string $timezone = null, ?string $locale = null): array
     {
         $systemService = $this->di['mod_service']('System');
@@ -835,7 +894,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         $version = $locale === null ? null : ($versions[$locale] ?? null);
         if ($version !== null) {
             try {
-                $pc = $systemService->renderEmailTplString($version['content'], $vars, $timezone, $locale);
+                $pc = $this->renderMessage($version['content'], $vars, $timezone, $locale);
                 $ps = $systemService->renderEmailSubjectString($version['subject'], $vars, $timezone, $locale);
 
                 return [$ps, $pc];
@@ -846,7 +905,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
 
         try {
-            $pc = $systemService->renderEmailTplString($contentTemplate, $vars, $timezone, $locale);
+            $pc = $this->renderMessage($contentTemplate, $vars, $timezone, $locale);
             $ps = $systemService->renderEmailSubjectString($subjectTemplate, $vars, $timezone, $locale);
 
             if ($versionError !== null) {
