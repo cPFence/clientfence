@@ -1087,9 +1087,13 @@ class Service implements \ClientFence\InjectionAwareInterface
         $template->clearError();
 
         if (!$isCustom && $default !== null) {
-            $subjectMatches = $template->getSubject() === $default['subject'];
-            $contentMatches = $template->getContent() === $default['content'];
-            $template->setIsOverridden(!($subjectMatches && $contentMatches));
+            // ClientFence core patch: compare like saveLayout(); the editor's textarea drops a leading newline and forms send CRLF.
+            $norm = static fn (?string $text): string => trim(str_replace("\r\n", "\n", (string) $text));
+            $matches = $norm($template->getSubject()) === $norm($default['subject']) && $norm($template->getContent()) === $norm($default['content']);
+            if ($matches) {
+                $template->setSubject($default['subject'])->setContent($default['content']);
+            }
+            $template->setIsOverridden(!$matches);
         }
 
         $this->di['em']->flush();

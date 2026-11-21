@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(19)
+    expect($patches)->toHaveCount(20)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -53,7 +53,8 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[129][1])->toBe('patch129')
         ->and($patches[130][1])->toBe('patch130')
         ->and($patches[131][1])->toBe('patch131')
-        ->and($patches[132][1])->toBe('patch132');
+        ->and($patches[132][1])->toBe('patch132')
+        ->and($patches[133][1])->toBe('patch133');
 });
 
 test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {
@@ -466,6 +467,32 @@ test('legacy email patch restores untouched 0.7.2 defaults without replacing cus
     $patcher = new UpdatePatcher();
     $patcher->setDi($di);
     (new ReflectionMethod($patcher, 'patch90'))->invoke($patcher);
+});
+
+test('patch133 lets a built-in template saved unchanged in 1.0.61 follow the built-in again', function (): void {
+    $template = (new Filesystem())->readFile(Path::join(PATH_TESTS, 'Fixtures', 'Email', 'mod_client_signup_1.0.61.html.twig'));
+    preg_match('#{%\s*block subject\s*%}(.*?){%\s*endblock\s*%}#s', $template, $subjectMatches);
+    preg_match('/{%.?block content.?%}((.*?\n)+){%.?endblock.?%}/m', $template, $contentMatches);
+    // As the 1.0.61 editor saved it: the first newline dropped by the textarea, lines posted as CRLF.
+    $saved = str_replace("\n", "\r\n", ltrim($contentMatches[1]));
+
+    $selectStatement = Mockery::mock(PDOStatement::class);
+    $selectStatement->expects('execute')->with([])->andReturnTrue();
+    $selectStatement->expects('fetchAll')->with(PDO::FETCH_ASSOC)->andReturn([
+        ['id' => 1, 'action_code' => 'mod_client_signup', 'subject' => $subjectMatches[1], 'content' => $saved],
+        ['id' => 2, 'action_code' => 'mod_client_signup', 'subject' => $subjectMatches[1], 'content' => $saved . '<p>Our own line</p>'],
+    ]);
+    $updateStatement = Mockery::mock(PDOStatement::class);
+    $updateStatement->expects('execute')->once()->with(Mockery::on(fn (array $params): bool => $params['id'] === 1 && !str_contains($params['content'], '<!DOCTYPE')))->andReturnTrue();
+    $pdo = Mockery::mock(PDO::class);
+    $pdo->expects('prepare')->with('SELECT id, action_code, subject, content FROM email_template WHERE is_overridden = 1 AND is_custom = 0')->andReturn($selectStatement);
+    $pdo->expects('prepare')->with('UPDATE email_template SET is_overridden = 0, subject = :subject, content = :content WHERE id = :id')->andReturn($updateStatement);
+    $di = new Pimple\Container();
+    $di['pdo'] = $pdo;
+
+    $patcher = new UpdatePatcher();
+    $patcher->setDi($di);
+    (new ReflectionMethod($patcher, 'patch133'))->invoke($patcher);
 });
 
 test('custom pages slug unique patch follows the client balance gateway repair', function (): void {

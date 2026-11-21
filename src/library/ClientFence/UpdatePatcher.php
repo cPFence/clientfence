@@ -583,6 +583,7 @@ class UpdatePatcher implements InjectionAwareInterface
             130 => 'patch130',
             131 => 'patch131',
             132 => 'patch132',
+            133 => 'patch133',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2779,6 +2780,26 @@ class UpdatePatcher implements InjectionAwareInterface
                AND EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = i.id AND d.type = 'deposit')
                AND NOT EXISTS (SELECT 1 FROM invoice_item o WHERE o.invoice_id = i.id AND o.type <> 'deposit')" . $imported
         );
+    }
+
+    private function patch133(): void
+    {
+        // ClientFence core patch (CF-252): a built-in template saved unchanged was marked Customized (the editor dropped its first
+        // newline); one still holding a shipped text follows the built-in again, so it gets the email layout and later updates.
+        $shipped = require __DIR__ . '/UpdatePatcher/shipped-email-templates.php';
+        $norm = static fn (string $text): string => trim(str_replace("\r\n", "\n", $text));
+        foreach ($this->fetchAll('SELECT id, action_code, subject, content FROM email_template WHERE is_overridden = 1 AND is_custom = 0') as $row) {
+            $code = (string) $row['action_code'];
+            $hash = hash('sha256', $norm((string) $row['subject']) . "\0" . $norm((string) $row['content']));
+            $default = in_array($hash, $shipped[$code] ?? [], true) ? $this->getDefaultEmailTemplateData($code) : null;
+            if ($default !== null) {
+                $this->executeSql('UPDATE email_template SET is_overridden = 0, subject = :subject, content = :content WHERE id = :id', [
+                    'subject' => $default['subject'],
+                    'content' => $default['content'],
+                    'id' => $row['id'],
+                ]);
+            }
+        }
     }
 
     private function patch132(): void

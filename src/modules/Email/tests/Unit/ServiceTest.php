@@ -1812,6 +1812,26 @@ test('updateTemplate updates template', function (array $data, string $templateR
     expect($result)->toBeTrue();
 })->with('template_updateProvider');
 
+test('updateTemplate keeps a built-in template default when the editor sends its text back unchanged', function (bool $edited): void {
+    $service = new ClientFence\Mod\Email\Service();
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $system->shouldReceive('renderEmailTplString');
+    $di = container();
+    $di['em'] = emailBuildEm();
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(moduleService(['system' => $system]));
+    $service->setDi($di);
+    $default = (fn (): ?array => $this->getDefaultTemplate('mod_client_signup'))->call($service);
+    $template = emailTemplate('mod_client_signup', 1, ['subject' => $default['subject'], 'content' => $default['content']]);
+
+    // What a browser posts back: the textarea dropped the leading newline, and lines end in CRLF.
+    $content = str_replace("\n", "\r\n", ltrim($default['content'])) . ($edited ? '<p>Extra</p>' : '');
+    $service->updateTemplate($template, null, null, $default['subject'], $content);
+
+    expect($template->isOverridden())->toBe($edited)
+        ->and($template->getContent())->toBe($edited ? $content : $default['content']);
+})->with(['unchanged' => false, 'edited' => true]);
+
 test('templateCreate creates new template', function (): void {
     $service = new ClientFence\Mod\Email\Service();
 
