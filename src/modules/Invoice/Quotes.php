@@ -717,6 +717,20 @@ final class Quotes
         ] + $totals;
     }
 
+    /** The quote's tax name in $locale (ServiceTax::ruleName(), forum #172), for the place taxRule() taxed it for. */
+    public static function taxName(\Pimple\Container $di, array $quote, ?string $locale = null): string
+    {
+        $country = $quote['recipient']['country'];
+        $state = null;
+        if ($quote['client_id'] !== null) {
+            $state = (string) self::db($di)->fetchOne('SELECT state FROM client WHERE id = ?', [$quote['client_id']]);
+        } elseif ($country === '') {
+            $country = (string) ($di['mod']('system')->getConfig()['default_country'] ?? '');
+        }
+
+        return $di['mod_service']('Invoice', 'Tax')->ruleName($quote['taxname'], $quote['taxrate'], $country, $state, $locale);
+    }
+
     /** What the client area shows: no admin notes. */
     public static function forViewer(array $quote): array
     {

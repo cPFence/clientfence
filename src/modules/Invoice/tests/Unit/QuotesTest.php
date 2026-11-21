@@ -18,7 +18,7 @@ function quotesDb(): Connection
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     foreach ([
         'CREATE TABLE currency (code TEXT PRIMARY KEY, is_default INTEGER)',
-        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, currency TEXT, lang TEXT, email_approved INTEGER DEFAULT 0)',
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, company TEXT, email TEXT, country TEXT, state TEXT, currency TEXT, lang TEXT, email_approved INTEGER DEFAULT 0)',
         'CREATE TABLE tax (id INTEGER PRIMARY KEY, name TEXT, taxrate REAL, country TEXT, state TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT, taxname TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0)',
@@ -119,6 +119,11 @@ function quotesContainer(Connection $db, float $clientTax = 0.0): array
                 $title = $this->rate > 0 ? 'VAT' : '';
 
                 return $this->rate;
+            }
+
+            public function ruleName(string $name, float $rate, ?string $country, ?string $state, ?string $locale = null): string
+            {
+                return $name;
             }
         },
         'currency' => new class {

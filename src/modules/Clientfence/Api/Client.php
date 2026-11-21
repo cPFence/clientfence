@@ -91,7 +91,10 @@ class Client extends \ClientFence\Api\AbstractApi
         $inclusive = $di['mod_service']('invoice')->pricesIncludeTax();
         $deduct = $inclusive && $rate <= 0 ? (float) $di['mod_service']('Invoice', 'Tax')->getLocationTaxRate($client) : 0.0;
 
-        return ['name' => (string) $name, 'rate' => max(0.0, $rate), 'inclusive' => $inclusive, 'deduct' => max(0.0, $deduct)];
+        // The rule's name in the page language (forum #172).
+        $name = $di['mod_service']('Invoice', 'Tax')->ruleName((string) $name, $rate, $client->country, $client->state);
+
+        return ['name' => $name, 'rate' => max(0.0, $rate), 'inclusive' => $inclusive, 'deduct' => max(0.0, $deduct)];
     }
 
     private function clientId(): int

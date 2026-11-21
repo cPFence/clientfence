@@ -80,11 +80,18 @@ class ServiceTax implements InjectionAwareInterface
      */
     public function displayName(\Model_Invoice $invoice, ?string $locale = null): string
     {
-        $name = (string) $invoice->taxname;
-        $rules = $name === '' ? [] : array_filter($this->di['db']->find('Tax'), static fn (\Model_Tax $tax): bool => trim((string) $tax->name) === trim($name) && abs((float) $tax->taxrate - (float) $invoice->taxrate) < 0.00005);
+        return $this->ruleName((string) $invoice->taxname, (float) $invoice->taxrate, $invoice->buyer_country, $invoice->buyer_state, $locale);
+    }
+
+    /** displayName() for any taxed document (a quote, the checkout): its saved tax name and rate, the buyer's place. */
+    public function ruleName(string $name, float $rate, ?string $country, ?string $state, ?string $locale = null): string
+    {
+        // Rates to the cent (a quote stores two decimals) and places as the database compares them (case-insensitive).
+        $rules = $name === '' ? [] : array_filter($this->di['db']->find('Tax'), static fn (\Model_Tax $tax): bool => trim((string) $tax->name) === trim($name) && abs(round((float) $tax->taxrate, 2) - round($rate, 2)) < 0.00001);
+        $same = static fn (mixed $a, ?string $b): bool => strcasecmp(trim((string) $a), trim((string) $b)) === 0;
         $fit = static fn (\Model_Tax $tax): int => match (true) {
-            $tax->country && $tax->country === $invoice->buyer_country && $tax->state && $tax->state === $invoice->buyer_state => 3,
-            $tax->country && $tax->country === $invoice->buyer_country && !$tax->state => 2,
+            $tax->country && $same($tax->country, $country) && $tax->state && $same($tax->state, $state) => 3,
+            $tax->country && $same($tax->country, $country) && !$tax->state => 2,
             !$tax->country => 1,
             default => 0,
         };

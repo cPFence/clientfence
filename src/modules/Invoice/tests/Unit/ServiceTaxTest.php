@@ -350,18 +350,19 @@ test('a tax rate is a number from 0 to 100, with a decimal comma read as a point
 });
 
 // Forum #172: an invoice's tax name is shown in its reader's language when its rule has one; the invoice keeps the saved name.
-test('an invoice tax name shows as its rule\'s own name in the language, else as saved', function (string $name, float $rate, string $country, string $locale, string $shown): void {
+test('an invoice tax name shows as its rule\'s own name in the language, else as saved', function (string $name, float $rate, string $country, string $locale, string $shown, string $state = ''): void {
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE product_translation (id INTEGER PRIMARY KEY, kind TEXT, ref_id INTEGER, lang TEXT, title TEXT, description TEXT, created_at TEXT, updated_at TEXT)');
     $db->insert('product_translation', ['kind' => 'tax', 'ref_id' => 3, 'lang' => 'de_DE', 'title' => 'MwSt.']);
     $db->insert('product_translation', ['kind' => 'tax', 'ref_id' => 5, 'lang' => 'de_DE', 'title' => 'USt. AT']);
+    $db->insert('product_translation', ['kind' => 'tax', 'ref_id' => 6, 'lang' => 'de_DE', 'title' => 'TPS ON']);
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getConnection')->andReturn($db);
     $rules = [];
-    foreach ([[3, 'VAT', 19, 'DE'], [4, 'Sales Tax', 19, ''], [5, 'VAT', 19, 'AT']] as [$id, $saved, $taxrate, $at]) {
+    foreach ([[3, 'VAT', 19, 'DE', ''], [4, 'Sales Tax', 19, '', ''], [5, 'VAT', 19, 'AT', ''], [6, 'GST', 8.875, 'CA', 'Ontario']] as [$id, $saved, $taxrate, $at, $in]) {
         $tax = new Model_Tax();
         $tax->loadBean(new Tests\Helpers\DummyBean());
-        [$tax->id, $tax->name, $tax->taxrate, $tax->country, $tax->state] = [$id, $saved, $taxrate, $at, ''];
+        [$tax->id, $tax->name, $tax->taxrate, $tax->country, $tax->state] = [$id, $saved, $taxrate, $at, $in];
         $rules[] = $tax;
     }
     $dbMock = Mockery::mock('ClientFence\Database');
@@ -373,7 +374,7 @@ test('an invoice tax name shows as its rule\'s own name in the language, else as
     $service->setDi($di);
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
-    [$invoice->taxname, $invoice->taxrate, $invoice->buyer_country, $invoice->buyer_state] = [$name, $rate, $country, ''];
+    [$invoice->taxname, $invoice->taxrate, $invoice->buyer_country, $invoice->buyer_state] = [$name, $rate, $country, $state];
 
     expect($service->displayName($invoice, $locale))->toBe($shown);
 })->with([
@@ -384,4 +385,6 @@ test('an invoice tax name shows as its rule\'s own name in the language, else as
     'a rule of the same rate without a translation' => ['Sales Tax', 19.0, 'DE', 'de_DE', 'Sales Tax'],
     'another rate (the rule changed since): the saved name' => ['VAT', 20.0, 'DE', 'de_DE', 'VAT'],
     'no rule of that name (imported)' => ['Tax', 19.0, 'DE', 'de_DE', 'Tax'],
+    'a rate kept to the cent (a quote) and the state in another case' => ['GST', 8.88, 'ca', 'de_DE', 'TPS ON', 'ontario'],
+    'that state\'s rule for a buyer in another state: the saved name' => ['GST', 8.88, 'CA', 'de_DE', 'GST', 'Quebec'],
 ]);

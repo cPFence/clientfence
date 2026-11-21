@@ -201,6 +201,9 @@ class Guest extends \ClientFence\Api\AbstractApi
         $mine = $quote['client_id'] !== null && $quote['client_id'] === $this->signedInClient();
         $invoiceHash = $mine && $quote['invoice_id'] !== null ? $this->getDi()['db']->getCell('SELECT hash FROM invoice WHERE id = :id', [':id' => $quote['invoice_id']]) : null;
 
+        // The tax rule's name in the page language (forum #172).
+        $quote['taxname'] = \ClientFence\Mod\Invoice\Quotes::taxName($this->getDi(), $quote);
+
         return \ClientFence\Mod\Invoice\Quotes::forViewer($quote) + [
             'mine' => $mine,
             'invoice_url' => $invoiceHash ? $this->getDi()['url']->link('invoice/' . $invoiceHash) : null,

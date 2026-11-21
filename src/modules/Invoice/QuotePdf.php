@@ -44,6 +44,7 @@ final class QuotePdf
             $company = $di['mod_service']('system')->getCompany(Quotes::recipientLocale($di, $quote));
             $money = static fn (float $amount): string => RtlPdf::money($di, $amount, $quote['currency']);
             $link = $quote['open'] ? Quotes::link($di, $quote) : '';
+            $quote['taxname'] = Quotes::taxName($di, $quote, $locale);
             $pdf->writeHTML(self::html($quote, $company, $money, RtlPdf::isRtl($locale), $title, $link), true, false, true, false, '');
 
             return $pdf->Output(self::fileName($quote), 'S');
