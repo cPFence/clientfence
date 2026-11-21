@@ -14,6 +14,8 @@
 
 - Enhance plans imported a limit left at 0 in Enhance, such as Addon domains, as Unlimited.
 - On an Enhance plan without mailboxes, the client area showed no mailbox limit instead of none.
+- Staff sign-in limit: saving the countries together with an IP list that is switched off but holds your address is no longer refused as a lock-out.
+- An email template language version or the email layout using a tag emails can't run, such as include, is refused when you save it, instead of failing when the email is sent.
 
 ## 1.0.61 (2026-11-20)
 
