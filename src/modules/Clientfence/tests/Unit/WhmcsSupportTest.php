@@ -263,6 +263,16 @@ test('departments become help desks with their ids, hidden ones hidden, mailboxe
         ->not->toContain('mailbox-secret');
 });
 
+// WHMCS's "Close Inactive Tickets" at 0 is off; here 0 is off too (it was 32767 hours while 0 closed at once).
+test('help desks keep WHMCS inactive ticket closing off as 0', function (): void {
+    $source = whmcsSupportSource();
+    $source->executeStatement("UPDATE tblconfiguration SET value = '0' WHERE setting = 'CloseInactiveTickets'");
+    $target = whmcsSupportTarget();
+    whmcsSupportAll($source, $target, '', whmcsSupportFolder('files'));
+
+    expect((int) $target->fetchOne('SELECT close_after FROM support_helpdesk WHERE id = 1'))->toBe(0);
+});
+
 test('department names in other languages become the help desks\' names in those languages', function (): void {
     $source = whmcsSupportSource();
     $source->executeStatement('CREATE TABLE tbldynamic_translations (id INTEGER PRIMARY KEY, related_type TEXT, related_id INTEGER, language TEXT, translation TEXT)');

@@ -40,7 +40,7 @@
             </div>
         </div>
         <dl class="cf-facts">
-            <div><dt>{{ 'Close Tickets After'|trans }}</dt><dd><bdi>{{ helpdesk.close_after }}</bdi> {{ 'hour(s)'|trans }}</dd></div>
+            <div><dt>{{ 'Close Tickets After'|trans }}</dt><dd>{% if helpdesk.close_after > 0 %}<bdi>{{ helpdesk.close_after }}</bdi> {{ 'hour(s)'|trans }}{% else %}{{ 'Off'|trans }}{% endif %}</dd></div>
             <div><dt>{{ 'Tickets Can Be Reopened?'|trans }}</dt><dd>{{ helpdesk.can_reopen ? 'Yes'|trans : 'No'|trans }}</dd></div>
         </dl>
     </div>
@@ -81,7 +81,7 @@
                     <div class="col-lg-6">
                         <label class="form-label">{{ 'Close Tickets After (in hours)'|trans }}</label>
                         <input class="form-control" type="text" name="close_after" value="{{ helpdesk.close_after }}" required>
-                        <div class="form-text">{{ 'Define a very large number of hours to disable auto close ticket option.'|trans }}</div>
+                        <div class="form-text">{{ 'Enter 0 to never close tickets automatically.'|trans }}</div>
                     </div>
                     {# ClientFence core patch: the feedback email when a ticket closes, as WHMCS's Feedback Request (Support/TicketFeedback.php). #}
                     {# ClientFence core patch: hidden from clients, as WHMCS's "Hide from clients" (Support/HiddenHelpdesks.php). #}

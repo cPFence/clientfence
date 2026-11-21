@@ -24,7 +24,7 @@
                     {% if helpdesk.hidden ?? false %}<span class="badge bg-secondary-lt ms-1">{{ 'Hidden from clients'|trans }}</span>{% endif %}
                 </td>
                 <td>{{ helpdesk.email }}</td>
-                <td>{{ helpdesk.close_after }} {{ 'hour(s)'|trans }}</td>
+                <td>{% if helpdesk.close_after > 0 %}{{ helpdesk.close_after }} {{ 'hour(s)'|trans }}{% else %}{{ 'Off'|trans }}{% endif %}</td>
                 <td>
                     <a class="btn btn-icon" href='{{ "support/helpdesk/#{helpdesk.id}"|url }}' data-bs-toggle="tooltip" data-bs-title="{{ 'Edit'|trans }}">
                         <svg class="icon">

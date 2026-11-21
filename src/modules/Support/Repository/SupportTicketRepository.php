@@ -332,6 +332,7 @@ class SupportTicketRepository extends EntityRepository
 
     /**
      * Return on_hold tickets whose helpdesk close_after window has elapsed.
+     * ClientFence core patch: 0 turns automatic closing off, as WHMCS (it closed every answered ticket at the next cron).
      *
      * Implemented via DBAL because the predicate mixes a column argument into
      * `DATE_ADD(... INTERVAL ... HOUR)`, which is awkward to express in DQL.
@@ -346,6 +347,7 @@ class SupportTicketRepository extends EntityRepository
                 FROM support_ticket AS st
                     LEFT JOIN support_helpdesk sh ON sh.id = st.support_helpdesk_id
                 WHERE st.status = :status
+                  AND sh.close_after > 0
                   AND DATE_ADD(st.updated_at, INTERVAL sh.close_after HOUR) < :now
                 ORDER BY st.id ASC';
 

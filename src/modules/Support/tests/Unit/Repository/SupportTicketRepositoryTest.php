@@ -55,3 +55,17 @@ test('hasPendingTaskForClient checks pending task criteria', function (): void {
 
     expect($repo->hasPendingTaskForClient(1, 7, SupportTicket::REL_TYPE_ORDER, SupportTicket::REL_TASK_UPGRADE))->toBeTrue();
 });
+
+// A helpdesk with Close Tickets After 0 closed every answered ticket at the next cron; 0 is off, as WHMCS.
+test('findExpiredOnHold leaves out helpdesks whose close after is 0', function (): void {
+    $conn = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $conn->shouldReceive('fetchAllAssociative')->once()
+        ->with(Mockery::on(fn (string $sql): bool => str_contains($sql, 'sh.close_after > 0')), Mockery::any())
+        ->andReturn([]);
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($conn);
+    $repo = Mockery::mock(SupportTicketRepository::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $repo->shouldReceive('getEntityManager')->andReturn($em);
+
+    expect($repo->findExpiredOnHold(new DateTime('2026-11-21 12:00:00')))->toBe([]);
+});

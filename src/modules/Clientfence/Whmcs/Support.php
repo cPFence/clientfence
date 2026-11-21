@@ -65,7 +65,7 @@ final class Support
         'emails' => ['Email log', 'tblemails'],
     ];
 
-    /** WHMCS's inactive ticket closing off (0 hours): the longest close-after a help desk holds. */
+    /** The longest close-after a help desk holds (a smallint column); WHMCS's 0 stays 0, which is off here too. */
     public const NEVER_CLOSE = 32767;
 
     /** WHMCS network issue values => ClientFence's (NetworkIssues). */
@@ -326,7 +326,7 @@ final class Support
         $values = [
             'name' => $name,
             'email' => self::cut($row['email'] ?? '', 255) ?: null,
-            'close_after' => $hours > 0 ? min($hours, self::NEVER_CLOSE) : self::NEVER_CLOSE,
+            'close_after' => $hours > 0 ? min($hours, self::NEVER_CLOSE) : 0,
             'can_reopen' => 1,
             'signature' => null,
             'updated_at' => $this->now,
