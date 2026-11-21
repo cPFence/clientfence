@@ -212,12 +212,14 @@ test('the email template check refuses what the email sandbox blocks, without th
 
     $check = fn () => $service->checkEmailTplSyntax($tpl);
     $error === null ? $check() : expect($check)->toThrow(ClientFence\InformationException::class, $error);
+    // The layout check leaves the line out (Email\Service::saveLayout()).
+    $error === null || expect(fn () => $service->checkEmailTplSyntax($tpl, false))->toThrow(ClientFence\InformationException::class, (string) preg_replace('/ at line \d+( column \d+)?/', '', $error));
     expect(true)->toBeTrue();
 })->with([
     'a variable the send fills in' => ['<p>{{ c.first_name }}</p>', null],
-    'include' => ["{% include 'x.twig' %}", 'disallowed Twig syntax'],
-    'a blocked function' => ["{{ source('x') }}", 'disallowed Twig syntax'],
-    'a syntax error' => ['{{ broken', 'syntax error'],
+    'include' => ["{% include 'x.twig' %}", 'Email template contains disallowed Twig syntax: Tag "include" is not allowed at line 1.'],
+    'a blocked function' => ["<p>\n{{ source('x') }}", 'Email template contains disallowed Twig syntax: Function "source" is not allowed at line 2.'],
+    'a syntax error' => ['{{ broken', 'Email template syntax error: Unexpected token "end of template" ("end of print statement" expected) at line 1 column 10.'],
 ]);
 
 test('getParams returns system parameters', function (): void {

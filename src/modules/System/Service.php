@@ -655,7 +655,7 @@ class Service
         return html_entity_decode($rendered, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 
-    public function checkEmailTplSyntax(string $tpl): void
+    public function checkEmailTplSyntax(string $tpl, bool $withLine = true): void
     {
         $twigFactory = $this->di['twig_factory'];
         $twig = $twigFactory->createEmailEnvironment();
@@ -665,9 +665,9 @@ class Service
             // template runs; checkSecurity() runs that check now, without the variables a render would need.
             $twig->createTemplate($tpl, '__validation__')->unwrap($twig)->checkSecurity();
         } catch (\Twig\Error\SyntaxError $e) {
-            throw new \ClientFence\InformationException('Email template syntax error: ' . $e->getMessage());
+            throw new \ClientFence\InformationException('Email template syntax error: ' . SandboxedStringRenderer::message($e, $withLine));
         } catch (\Twig\Sandbox\SecurityError $e) {
-            throw new \ClientFence\InformationException('Email template contains disallowed Twig syntax: ' . $e->getMessage());
+            throw new \ClientFence\InformationException('Email template contains disallowed Twig syntax: ' . SandboxedStringRenderer::message($e, $withLine));
         }
     }
 

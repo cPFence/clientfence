@@ -29,11 +29,25 @@ final class SandboxedStringRenderer
                 $onSecurityError($e);
             }
 
-            throw new \ClientFence\InformationException($errorPrefix . ' contains disallowed Twig syntax: ' . $e->getMessage());
+            throw new \ClientFence\InformationException($errorPrefix . ' contains disallowed Twig syntax: ' . self::message($e));
         } catch (\Twig\Error\SyntaxError $e) {
-            throw new \ClientFence\InformationException($errorPrefix . ' syntax error: ' . $e->getMessage());
+            throw new \ClientFence\InformationException($errorPrefix . ' syntax error: ' . self::message($e));
         } catch (\Twig\Error\Error $e) {
-            throw new \ClientFence\InformationException($errorPrefix . ' rendering error: ' . $e->getMessage());
+            throw new \ClientFence\InformationException($errorPrefix . ' rendering error: ' . self::message($e));
         }
+    }
+
+    /**
+     * ClientFence core patch: the error for staff without Twig's internal template name ("__string_template__…");
+     * without the line too when it would count lines the staff member did not write.
+     */
+    public static function message(\Twig\Error\Error $e, bool $withLine = true): string
+    {
+        $e->setSourceContext(null);
+        if (!$withLine) {
+            $e->setTemplateLine(-1);
+        }
+
+        return $e->getMessage();
     }
 }

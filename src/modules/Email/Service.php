@@ -873,7 +873,8 @@ class Service implements \ClientFence\InjectionAwareInterface
             $value = is_string($data[$key] ?? null) ? $data[$key] : '';
             $layout[$key] = $norm($value) === $norm($defaults[$key]) ? '' : $value;
         }
-        $this->di['mod_service']('System')->checkEmailTplSyntax(Layout::wrap('', Layout::fromConfig($layout)));
+        // No line number in the error: the wrapper's own lines would shift it.
+        $this->di['mod_service']('System')->checkEmailTplSyntax(Layout::wrap('', Layout::fromConfig($layout)), false);
 
         $extension = $this->di['mod_service']('extension');
         $extension->setConfig(array_merge($extension->getConfig('mod_email'), $layout, ['ext' => 'mod_email']));
