@@ -43,9 +43,16 @@ export default function initCheckout(root) {
   const recurrent = product.type === 'recurrent';
   // The tax the invoice adds for a signed-in client (rounded once, as the invoice does). With prices that include
   // tax, the invoice asks for the price, less the tax for an exempt client (deduct).
-  const inclusive = !!data.tax?.inclusive;
-  const taxRate = inclusive ? 0 : Number(data.tax?.rate) || 0;
-  const deduct = inclusive ? Number(data.tax?.deduct) || 0 : 0;
+  let inclusive = false;
+  let taxRate = 0;
+  let deduct = 0;
+  const setTax = (tax) => {
+    data.tax = tax;
+    inclusive = !!tax?.inclusive;
+    taxRate = inclusive ? 0 : Number(tax?.rate) || 0;
+    deduct = inclusive ? Number(tax?.deduct) || 0 : 0;
+  };
+  setTax(data.tax);
   const withTax = (amount) => (deduct > 0 ? Math.round(amount * 10000 / (100 + deduct)) / 100 : amount + (taxRate > 0 ? Math.round(amount * taxRate) / 100 : 0));
   const addonPrice = (addon, cycle) => {
     if (addon.type === 'recurrent') {
@@ -161,7 +168,15 @@ export default function initCheckout(root) {
     return null;
   };
 
-  const signupMissing = () => !state.signedIn && $$('[data-bf-signup] input, [data-bf-signup] select').some((input) => input.required && input.value.trim() === '');
+  // CF-239: a registered or transferred domain needs the registrant details (partials/registrant_fields): asked with the
+  // sign-up, or the ones the profile lacks, while the plan's domain is a registration or transfer.
+  const registrantBox = $('[data-cf-registrant]');
+  const registrantAction = domainRoot?.querySelector('[name="domain[action]"]');
+  const registrantShown = () => !!registrantBox && !registrantBox.hidden;
+  const registrant = () => Object.fromEntries($$('[data-cf-registrant] [name]').map((input) => [input.name, input.value.trim()]));
+
+  const signupMissing = () => [...(state.signedIn ? [] : $$('[data-bf-signup] input, [data-bf-signup] select')), ...(registrantShown() ? $$('[data-cf-registrant] [name]') : [])]
+    .some((input) => input.required && input.value.trim() === '');
 
   const selectedMethod = () => form.querySelector('input[name="gateway_id"]:checked');
 
@@ -175,6 +190,9 @@ export default function initCheckout(root) {
   };
 
   const render = () => {
+    if (registrantBox) {
+      registrantBox.hidden = state.accountReady || !['register', 'transfer'].includes(registrantAction?.value);
+    }
     const now = compute(state.cycle);
     const due = state.promo ? state.promo.total * rate : now.due;
 
@@ -641,6 +659,10 @@ export default function initCheckout(root) {
             account[name] = fields[name];
           }
         }
+        // ClientFence (CF-239): the registrant details of a domain registration or transfer.
+        if (registrantShown()) {
+          Object.assign(account, registrant());
+        }
         await api('guest', 'client/create', account);
         // With "auto login after sign-up" on (Settings → Clients), the sign-up signed in too, with
         // its own CAPTCHA. Otherwise the customer signs in on the sign-in page (a second sign-in
@@ -651,6 +673,21 @@ export default function initCheckout(root) {
           return;
         }
         state.signedIn = true;
+      } else if (registrantShown()) {
+        // ClientFence (CF-239): the details the profile lacks, saved before the domain is ordered.
+        const saved = registrant();
+        await api('client', 'profile/update', saved);
+        // A new country can change the invoice's tax: show the new total first, as for a changed cart total (CF-146).
+        if ('country' in saved) {
+          const before = [taxRate, deduct];
+          setTax(await api('client', 'clientfence/tax'));
+          if (before[0] !== taxRate || before[1] !== deduct) {
+            setBusy(false);
+            render();
+            ClientFence.message(fill(t.totalChanged, { amount: money(withTax(state.promo ? state.promo.total * rate : compute(state.cycle).due)) }), 'info');
+            return;
+          }
+        }
       }
       const promo = state.promo;
       await api('guest', 'cart/add_item', cartItem());

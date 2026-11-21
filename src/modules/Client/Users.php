@@ -84,7 +84,8 @@ final class Users
         // The bell (Clientfence/Notifications.php): every user, each item only if its page is theirs.
         // The tax rate: the order page shows it in the total (mod_order_product).
         'clientfence' => ['notifications_get' => '*', 'notifications_read' => '*', 'notifications_dismiss' => '*', 'tax' => '*'],
-        'cart' => ['checkout' => 'orders'],
+        // The registrant details the checkout asks for a domain (Cart\Service::registrantMissing(), CF-239).
+        'cart' => ['checkout' => 'orders', 'registrant_missing' => 'orders'],
         'client' => [
             'balance_get_list' => 'invoices', 'balance_get_total' => ['invoices', 'orders'], 'is_taxable' => '*',
             // The low balance alert on the Wallet page (BalanceAlert.php): the Wallet's permission.

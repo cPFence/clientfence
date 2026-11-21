@@ -1008,6 +1008,45 @@ class Service implements InjectionAwareInterface
     }
 
     /**
+     * ClientFence core patch (CF-239): the client details a registered or transferred domain sends the registrar as its
+     * contact (Servicedomain\Service::_getD()), by field with its label.
+     */
+    public const REGISTRANT_FIELDS = ['address_1' => 'Address Line 1', 'city' => 'City', 'postcode' => 'Zip/Postal Code', 'phone' => 'Phone Number', 'country' => 'Country'];
+
+    /**
+     * ClientFence core patch (CF-239): the registrant details the client has not filled in (blank, also a no-break space, counts as missing).
+     *
+     * @return list<string> field names of REGISTRANT_FIELDS
+     */
+    public function registrantMissing(Client|\Model_Client $client): array
+    {
+        $legacy = $this->getLegacyClient($client);
+
+        return array_values(array_filter(array_keys(self::REGISTRANT_FIELDS), static fn (string $field): bool => preg_match('/[^\s\p{Z}]/u', (string) $legacy->{$field}) !== 1));
+    }
+
+    /**
+     * ClientFence core patch (CF-239): a domain registered or transferred in the client's name needs their address and
+     * phone, as WHMCS asks at checkout: without them the registrar refused it at activation, after payment. An existing
+     * domain (staff "Already set up") gets no registrar action.
+     *
+     * @throws \ClientFence\InformationException
+     */
+    private function assertRegistrantDetails(array $items, Client|\Model_Client $client, bool $staff): void
+    {
+        $registers = array_filter($items, static fn (array $item): bool => ($item['type'] ?? '') === 'domain' && in_array($item['action'] ?? null, ['register', 'transfer'], true) && empty($item['import']));
+        $missing = $registers === [] ? [] : $this->registrantMissing($client);
+        if ($missing === []) {
+            return;
+        }
+        $fields = implode(', ', array_map(static fn (string $field): string => __trans(self::REGISTRANT_FIELDS[$field]), $missing));
+
+        throw $staff
+            ? new \ClientFence\InformationException('The client\'s profile has no :fields. A domain is registered in the client\'s name, so add them to the profile first.', [':fields' => $fields])
+            : new \ClientFence\InformationException('Add your :fields to your profile: the domain is registered in your name and the registry needs them.', [':fields' => $fields]);
+    }
+
+    /**
      * @param array{reason: string, note: string}|null $hold ClientFence core patch: the orders wait for staff review (Order/Holds.php):
      *                                                    the invoice stays a draft and nothing is paid or set up
      */
@@ -1018,6 +1057,8 @@ class Service implements InjectionAwareInterface
         if (\ClientFence\Tools::safeCount($ca['items']) == 0) {
             throw new \ClientFence\InformationException('Cannot checkout an empty cart');
         }
+        // ClientFence core patch (CF-239): every checkout and staff order (quotes too) checks the registrant details first.
+        $this->assertRegistrantDetails($ca['items'], $client, $staff !== null);
 
         $currencyService = $this->di['mod_service']('currency');
         /** @var \ClientFence\Mod\Currency\Repository\CurrencyRepository $currencyRepository */

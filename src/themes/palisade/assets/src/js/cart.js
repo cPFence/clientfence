@@ -51,7 +51,9 @@ export default function initCart(root) {
   checkout?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const pay = checkout.querySelector('[data-bf-cart-pay]');
-    const invalid = [...checkout.querySelectorAll('input')].find((input) => !input.checkValidity());
+    // CF-239: the registrant details a domain in the cart needs, which the profile lacks (partials/registrant_fields).
+    const registrant = [...root.querySelectorAll('[data-cf-registrant] [name]')];
+    const invalid = [...registrant, ...checkout.querySelectorAll('input')].find((input) => !input.checkValidity());
     if (invalid) {
       invalid.reportValidity();
       return;
@@ -59,6 +61,14 @@ export default function initCart(root) {
     const method = root.querySelector('[data-bf-pay-list] input:checked');
     pay.disabled = true;
     try {
+      if (registrant.length) {
+        await api('client', 'profile/update', Object.fromEntries(registrant.map((input) => [input.name, input.value.trim()])));
+        // A new country can change the tax: the page shows the new total (as after a promo code), then Pay again.
+        if (registrant.some((input) => input.name === 'country')) {
+          window.location.reload();
+          return;
+        }
+      }
       const result = await api('client', 'cart/checkout', method ? { gateway_id: method.value } : {});
       if (result?.redirect) {
         window.location.assign(result.redirect);

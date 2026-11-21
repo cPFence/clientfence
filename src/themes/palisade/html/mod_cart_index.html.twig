@@ -89,6 +89,9 @@
                             <span>{{ 'The order and its invoice go to this account.'|trans }}</span>
                         </div>
                     </div>
+                    {# ClientFence (CF-239): a domain registered or transferred in the client's name needs the registrant details the profile lacks (cart.js saves them before the order). #}
+                    {% set registrant = cart.items|filter(i => i.type|default('') == 'domain' and i.action|default('') in ['register', 'transfer'])|length > 0 ? client.cart_registrant_missing : [] %}
+                    {% if registrant %}{{ include('partials/registrant_fields.html.twig', { fields: registrant, country: profile.country|default('') }) }}{% endif %}
                 {% else %}
                     <p class="mb-0">{{ 'Sign in to place your order; you come back to this cart.'|trans }}</p>
                     <div class="bf-cart-signin">

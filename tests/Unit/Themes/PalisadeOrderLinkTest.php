@@ -35,8 +35,9 @@ final class PalisadeOrderLinkGuestStub
  * @param array<string, mixed> $query  the link's query string
  * @param string               $type   the product type: a domain product has its own order form, configured on the page and paid on the cart page
  * @param array<string, mixed> $config the product's public config
+ * @param array<string, mixed>|null $client the signed-in client's API answers (null: a guest)
  */
-function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = [], ?array $cart = null): string
+function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = [], ?array $cart = null, ?array $client = null): string
 {
     $loader = new ChainLoader([
         new ArrayLoader([
@@ -62,7 +63,7 @@ function renderPalisadeOrderLink(string $template, array $query, string $type = 
 
     return $twig->render($template, [
         'request' => new RequestDataView(['ajax' => true] + $query),
-        'client' => null,
+        'client' => $client === null ? null : new PalisadeOrderLinkGuestStub($client),
         'settings' => [],
         'product' => [
             'id' => 7, 'type' => $type, 'title' => 'Trial', 'slug' => 'trial', 'description' => '', 'form_id' => 0,
@@ -194,4 +195,74 @@ test('a promo link reapplies its code without asking only over the plan and its 
         ->and($redo([['domain' => ['action' => 'owndomain']] + $plan, $ownDomain]))->toBeFalse()
         // The plan's own domain was removed and another one added: not the plan's, so the link asks first.
         ->and($redo([$plan, ['register_sld' => 'other'] + $ownDomain]))->toBeFalse();
+});
+
+// ClientFence (CF-239): a domain registration or transfer needs the registrant details (Cart\Service::REGISTRANT_FIELDS).
+/** The registrant box of a page, or '' without one. */
+function palisadeRegistrantBox(string $html): string
+{
+    $start = strpos($html, '<div data-cf-registrant');
+
+    return $start === false ? '' : substr($html, $start, strpos($html, '</div></div>', $start) - $start);
+}
+
+test('a new client ordering a hosting plan gives the registrant details with the sign-up, shown for a registered or transferred domain', function (): void {
+    $box = palisadeRegistrantBox(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'hosting'));
+
+    // Hidden until checkout.js sees a registration or transfer chosen in the domain section; the state is optional.
+    // The hidden box has no display class: Bootstrap's .d-flex (!important) would win over [hidden].
+    expect($box)->toStartWith('<div data-cf-registrant hidden><div class="d-flex flex-column gap-2 mt-3">')
+        ->toContain('name="address_1" autocomplete="address-line1" maxlength="100" required')
+        ->toContain('name="city" autocomplete="address-level2" maxlength="100" required')
+        ->toContain('name="state" autocomplete="address-level1" maxlength="100">')
+        ->toContain('name="postcode" autocomplete="postal-code" maxlength="100" required')
+        ->toContain('<input type="hidden" name="phone_cc" value="">')
+        ->toContain('class="form-control js-phone-input" id="cf-registrant-phone" type="tel" name="phone"')
+        ->toContain('data-initial-country="us" required')
+        // The sign-up has its own country field.
+        ->not->toContain('name="country"')
+        ->not->toContain(' style=');
+    // A product without a domain section asks none of them.
+    expect(palisadeRegistrantBox(renderPalisadeOrderLink('mod_order_product.html.twig', [])))->toBe('');
+
+    $js = (string) file_get_contents(PATH_THEMES . '/palisade/assets/src/js/checkout.js');
+    expect($js)->toContain("registrantBox.hidden = state.accountReady || !['register', 'transfer'].includes(registrantAction?.value);")
+        ->toContain('Object.assign(account, registrant());')
+        ->toContain("await api('client', 'profile/update', saved);")
+        // A saved country that changes the tax shows the new total before the order (the client selects Pay again).
+        ->toContain("setTax(await api('client', 'clientfence/tax'));");
+});
+
+test('a signed-in client is asked only the registrant details the profile lacks, on the checkout and the cart page', function (): void {
+    $client = fn (array $missing): array => [
+        'profile_get' => ['first_name' => 'Ann', 'last_name' => 'Lee', 'country' => 'DE', 'balance' => 0, 'currency' => 'USD'],
+        'clientfence_tax' => ['name' => '', 'rate' => 0],
+        'client_balance_get_total' => 0,
+        'cart_registrant_missing' => $missing,
+    ];
+    $checkout = palisadeRegistrantBox(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'hosting', [], null, $client(['city', 'phone', 'country'])));
+    expect($checkout)->toContain('data-cf-registrant hidden>')
+        ->toContain('name="city"')
+        ->toContain('data-initial-country="de" required')
+        ->toContain('<select class="form-select" name="country" autocomplete="country" required>')
+        ->not->toContain('name="address_1"')
+        ->not->toContain('name="postcode"')
+        ->not->toContain('name="state"');
+    // A complete profile is asked nothing.
+    expect(palisadeRegistrantBox(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'hosting', [], null, $client([]))))->toBe('');
+
+    // The cart page shows them (not hidden) when it holds a domain registration or transfer, never for an own domain.
+    $line = ['product_id' => 3, 'title' => 'mine.com', 'type' => 'domain', 'period' => '1Y', 'quantity' => 1, 'setup_price' => 0, 'discount_setup' => 0, 'total' => 0, 'discount_price' => 0];
+    $cart = fn (array ...$items): array => ['promocode' => null, 'subtotal' => 0, 'discount' => 0, 'total' => 0, 'items' => $items];
+    $page = fn (array $items, array $missing): string => palisadeRegistrantBox(renderPalisadeOrderLink('mod_cart_index.html.twig', [], 'custom', [], $cart(...$items), $client($missing)));
+    foreach (['register', 'transfer'] as $action) {
+        expect($page([['id' => 2, 'action' => $action] + $line], ['postcode']))->toContain('data-cf-registrant>')
+            ->toContain('name="postcode"')
+            ->not->toContain('name="city"');
+    }
+    $hosting = ['id' => 1, 'product_id' => 7, 'title' => 'Plan', 'type' => 'hosting', 'domain' => ['action' => 'owndomain']] + $line;
+    expect($page([$hosting], ['postcode']))->toBe('')
+        ->and($page([['id' => 2, 'action' => 'register'] + $line], []))->toBe('')
+        ->and((string) file_get_contents(PATH_THEMES . '/palisade/assets/src/js/cart.js'))
+        ->toContain("await api('client', 'profile/update', Object.fromEntries(registrant.map((input) => [input.name, input.value.trim()])));");
 });

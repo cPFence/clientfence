@@ -31,4 +31,15 @@ class Client extends \ClientFence\Api\AbstractApi
 
         return $this->getService()->checkoutCart($cart, $client, $gateway_id);
     }
+
+    /**
+     * ClientFence core patch (CF-239): the registrant details a domain registration or transfer needs that the client's
+     * profile lacks (the checkout and cart pages ask them).
+     *
+     * @return list<string> field names (address_1, city, postcode, phone, country)
+     */
+    public function registrant_missing($data): array
+    {
+        return $this->getService()->registrantMissing($this->getIdentity());
+    }
 }

@@ -288,6 +288,9 @@
                             <span>{{ 'The order and its invoice go to this account.'|trans }}</span>
                         </div>
                     </div>
+                    {# ClientFence (CF-239): the registrant details the profile lacks, saved to it before a domain is ordered. #}
+                    {% set registrant = product.type == 'hosting' ? client.cart_registrant_missing : [] %}
+                    {% if registrant %}{{ include('partials/registrant_fields.html.twig', { fields: registrant, country: profile.country|default(''), hidden: true }) }}{% endif %}
                 {% elseif signup_page %}
                     <p class="mb-0">{{ 'Create your account first, then come back to this page.'|trans }} <a href="{{ 'signup'|url({back: '/' ~ back}) }}">{{ 'Sign up'|trans }}</a> · <a href="{{ 'login'|url({back: '/' ~ back}) }}">{{ 'Sign in'|trans }}</a></p>
                 {% elseif store.signup|default(false) %}
@@ -322,6 +325,8 @@
                             {% endif %}
                         {% endfor %}
                     </div>
+                    {# ClientFence (CF-239): a new client registering or transferring a domain gives the registrant details with the sign-up. #}
+                    {% if product.type == 'hosting' %}{{ include('partials/registrant_fields.html.twig', { fields: ['address_1', 'city', 'state', 'postcode', 'phone'], country: guest.system_default_country, hidden: true }) }}{% endif %}
                     {% import "macro_functions.html.twig" as mf %}
                     <div class="bf-captcha" data-bf-signup-part>{{ mf.recaptcha }}</div>
                     <span class="bf-hint" data-bf-signup-part>{{ 'Already a client?'|trans }} <a href="{{ 'login'|url({back: '/' ~ back}) }}">{{ 'Sign in'|trans }}</a> {{ 'and your details fill in.'|trans }}</span>
