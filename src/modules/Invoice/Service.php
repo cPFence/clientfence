@@ -2969,8 +2969,9 @@ class Service implements InjectionAwareInterface
     /**
      * ClientFence core patch: what an active domain's next renewal invoice bills, for the client's domain page (WHMCS's
      * Recurring Amount): the renewal line for at most 9 years (capRenewalTerm(), not stored here) less the order's
-     * recurring promotion, else the client's automatic one, before tax added on top (a client exempt from tax pays prices
-     * that include it without it). Null for other orders, a domain cancelled at its period end or one with no price.
+     * recurring promotion, else the client's automatic one, with the tax the invoice adds on top for a taxed client, as the
+     * checkout shows it (a client exempt from tax pays prices that include it without it). Null for other orders, a domain
+     * cancelled at its period end or one with no price.
      *
      * @return array{amount: float, years: int, free: bool}|null
      */
@@ -3011,9 +3012,13 @@ class Service implements InjectionAwareInterface
         if ($this->pricesIncludeTax() && (float) $taxService->getTaxRateForClient($client) <= 0 && ($rate = (float) $taxService->getLocationTaxRate($client)) > 0) {
             [$unit, $off] = [round($unit * 100 / (100 + $rate), 2), round($off * 100 / (100 + $rate), 2)];
         }
-        $amount = $unit * $years - $off;
+        $amount = max(0.0, $unit * $years - $off);
+        // Prices without tax: the invoice adds it on the line total (taxOf()).
+        if (!$this->pricesIncludeTax()) {
+            $amount += self::taxOf($amount, (float) $taxService->getTaxRateForClient($client), 0.0);
+        }
 
-        return ['amount' => round(max(0.0, $amount), 2), 'years' => $years, 'free' => $productService->hasFreeDomainRenewal((int) $order->id)];
+        return ['amount' => round($amount, 2), 'years' => $years, 'free' => $productService->hasFreeDomainRenewal((int) $order->id)];
     }
 
     protected function generateForOrderLocked(\Model_ClientOrder $order, $due_days = null, ?\Model_Invoice $into = null, bool $finish = true)

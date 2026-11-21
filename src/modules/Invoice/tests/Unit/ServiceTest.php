@@ -4176,7 +4176,7 @@ test('a domain renewal is billed at the TLD price, or free while its hosting giv
 ]);
 
 // The client's domain page shows what the renewal invoice will bill (WHMCS Recurring Amount), without storing anything.
-test('domainRenewal gives the next renewal of an active domain: 9 years at most, less the recurring promotion', function (string $period, int $years, float $price, float $discount, float $auto, bool $free, float $amount, bool $exemptInclusive = false): void {
+test('domainRenewal gives the next renewal of an active domain: 9 years at most, less the recurring promotion', function (string $period, int $years, float $price, float $discount, float $auto, bool $free, float $amount, bool $exemptInclusive = false, float $clientRate = 0.0): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $order->id = 20;
@@ -4206,9 +4206,9 @@ test('domainRenewal gives the next renewal of an active domain: 9 years at most,
         $dbal->insert('setting', ['param' => 'tax_enabled', 'value' => '1']);
         $dbal->insert('setting', ['param' => 'tax_inclusive', 'value' => '1']);
     }
-    // Exempt from tax, in a place with 20%: a price that includes tax loses it.
+    // Exempt from tax (unless $clientRate), in a place with 20%: a price that includes tax loses it.
     $taxService = Mockery::mock(ServiceTax::class);
-    $taxService->shouldReceive('getTaxRateForClient')->andReturn(0);
+    $taxService->shouldReceive('getTaxRateForClient')->andReturn($clientRate);
     $taxService->shouldReceive('getLocationTaxRate')->andReturn(20);
     $currencies = Mockery::mock(CurrencyRepository::class);
     $currencies->shouldReceive('getRateByCode')->with('EUR')->andReturn(2.0);
@@ -4235,6 +4235,7 @@ test('domainRenewal gives the next renewal of an active domain: 9 years at most,
     '10 years renews as 9' => ['10Y', 9, 7.0, 0.0, 0.0, false, 126.0],
     'free with its hosting' => ['1Y', 1, 7.0, 0.0, 0.0, true, 0.0],
     'a price with tax in it, for a client exempt from tax' => ['1Y', 1, 7.0, 0.0, 0.0, false, 11.67, true],
+    'a price without tax, for a taxed client: the invoice\'s 10% on the total after the promotion' => ['1Y', 1, 7.0, 0.0, 1.404, false, 13.86, false, 10.0],
 ]);
 
 test('domainRenewal is null for a domain cancelled at the end of its period', function (): void {
