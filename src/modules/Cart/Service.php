@@ -1128,7 +1128,7 @@ class Service implements InjectionAwareInterface
                     // ClientFence core patch: an add-on for the client's own service (Order/AddonOrders.php), checked again now.
                     $addonFor = (int) ($item[self::CART_ADDON_FOR_KEY] ?? 0) > 0 ? $this->di['db']->load('ClientOrder', (int) $item[self::CART_ADDON_FOR_KEY]) : null;
                     [$recurringPrice, $recurringDiscount, $promoLine] = [$item['recurring_price'], $item['recurring_discount'], $item['promo_line'] ?? false];
-                    unset($item[self::CART_ADDON_FOR_KEY], $item['recurring_price'], $item['recurring_discount'], $item['promo_line']);
+                    unset($item[self::CART_ADDON_FOR_KEY], $item['recurring_price'], $item['recurring_discount'], $item['renewal_discount'], $item['promo_line']);
                     $product = $this->getProductService()->findProductById((int) $item['product_id']);
                     if ($addonFor !== null) {
                         if (!$addonFor instanceof \Model_ClientOrder || (int) $addonFor->client_id !== $this->clientId($client)) {
@@ -1686,6 +1686,16 @@ class Service implements InjectionAwareInterface
             $discount_total = $discount_price + $discount_setup;
         }
 
+        // ClientFence core patch (CF-165): a domain's renewal discount under a recurring promotion, as its renewal invoice
+        // takes it (Product\Service::getRenewalProductDiscount()), for the checkout's domain renewal line. Only where the
+        // order keeps the promotion: a line it discounts (createFromCart() reserves it only then).
+        $renewalDiscount = 0.0;
+        $promo = $promoLine && abs($discount_total) > 0 && $cart !== null && $productView['type'] === \ClientFence\Mod\Product\Service::DOMAIN
+            ? ($this->cartPromoId($cart) ? $this->getProductService()->findPromoById((int) $this->cartPromoId($cart)) : $this->autoPromo) : null;
+        if ($promo instanceof Promo && $promo->isRecurring()) {
+            $renewalDiscount = $this->getProductService()->getRenewalProductDiscount($this->getProductService()->findProductById((int) $productView['product_id']), $promo, $config);
+        }
+
         return array_merge($config, [
             'id' => $this->cartProductId($model),
             'product_id' => $productView['product_id'],
@@ -1702,6 +1712,7 @@ class Service implements InjectionAwareInterface
             'total' => $subtotal,
             'recurring_price' => $recurringPrice,
             'recurring_discount' => $recurringDiscount,
+            'renewal_discount' => $renewalDiscount,
             'promo_line' => $promoLine,
             'addon_due' => $addonFor !== null && !empty($config['period']) ? (string) $addonFor->expires_at : ($prorata['due'] ?? null),
             // An add-on for a service renews on that service's prorata day.

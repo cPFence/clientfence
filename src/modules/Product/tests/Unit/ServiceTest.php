@@ -3089,8 +3089,10 @@ test('a product shows clients its free domain terms but never its server setting
         'free_domain_renewals' => '1', 'server_id' => 2, 'hosting_plan_id' => 3, 'reseller' => true,
     ];
 
-    // The one-page checkout prices the plan's free domain with them (checkout.js), as the cart does.
+    // The one-page checkout prices the plan's free domain with them (checkout.js), as the cart does, and says
+    // whether the domain renews free (CF-165).
     expect((new ReflectionMethod(Service::class, 'getPublicConfig'))->invoke(new Service(), $config))->toBe([
         'allow_domain_register' => true, 'free_domain' => '1', 'free_transfer' => '0', 'free_tlds' => ['.com'], 'free_domain_periods' => ['1Y', '2Y'],
+        'free_domain_renewals' => '1',
     ]);
 });

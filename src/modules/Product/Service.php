@@ -313,6 +313,7 @@ class Service implements InjectionAwareInterface
             'free_transfer',
             'free_tlds',
             'free_domain_periods',
+            'free_domain_renewals', // ClientFence core patch (CF-165): the summary's domain renewal line.
         ];
 
         return array_intersect_key($config, array_flip($publicConfigKeys));

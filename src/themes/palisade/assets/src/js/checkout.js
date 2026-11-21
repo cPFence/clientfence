@@ -95,13 +95,20 @@ export default function initCheckout(root) {
     const register = chosen.action === 'register';
     const price = register ? registrationTotal(chosen.prices, chosen.years) : Number(chosen.prices.price_transfer) || 0;
     let off = 0;
+    const freeRegister = register && free.domain && (!freeTlds.length || freeTlds.includes(chosen.tld)) && freePeriods.includes(cycle);
     if (!register && free.transfer) {
       off = price;
-    } else if (register && free.domain && (!freeTlds.length || freeTlds.includes(chosen.tld)) && freePeriods.includes(cycle)) {
+    } else if (freeRegister) {
       off = registrationTotal(chosen.prices, freeYears(cycle, chosen.years));
     }
+    // CF-165: the renewal invoice charges the term's years at the renewal price, free under the plan's free domain
+    // renewals (Product\Service::hasFreeDomainRenewal()). The term: a registration's years or a transfer's (the TLD's
+    // shortest, validateOrderData()), at most 9 (Servicedomain\Service::capRenewalTerm()).
+    const renewFree = !!free.renewals && (register ? freeRegister : !!free.transfer);
+    const periods = Array.isArray(chosen.prices.periods) ? chosen.prices.periods.map(Number) : [];
+    const term = Math.min(9, register ? chosen.years : Math.max(1, periods[0] ?? (Number(chosen.prices.min_years) || 1)));
     const label = register ? `${chosen.domain} · ${chosen.years} ${chosen.years === 1 ? t.yearOne : t.yearMany}` : `${chosen.domain} · ${t.transfer}`;
-    return { label, price, off };
+    return { label, price, off, years: term, renew: Number(chosen.prices.price_renew) || 0, renewFree };
   };
 
   /** Lines, today's total and the renewal amount for a cycle (without a promo code). */
@@ -150,7 +157,7 @@ export default function initCheckout(root) {
       lines.push([line.label, line.price - line.off, line.price]);
       due += line.price - line.off;
     }
-    return { lines, due: due * rate, renew: renew * rate };
+    return { lines, due: due * rate, renew: renew * rate, domain: line };
   };
 
   const fieldsMissing = () => {
@@ -303,6 +310,16 @@ export default function initCheckout(root) {
       then.hidden = false;
     } else {
       then.hidden = true;
+    }
+    // The domain renews on its own schedule, not with the plan (CF-165, as WHMCS lists each recurring amount).
+    const domainRenew = $('[data-bf-domain-renew]');
+    domainRenew.hidden = !now.domain;
+    if (now.domain) {
+      const { years, renew: yearly, renewFree } = now.domain;
+      // As the invoice line: the yearly price in the currency (two decimals) times the years, less a recurring promotion.
+      const amount = Math.max(0, Math.round(yearly * rate * 100) / 100 * years - (state.promo ? state.promo.domainRenewDiscount * rate : 0));
+      domainRenew.textContent = renewFree ? t.domainRenewFree
+        : fill(years > 1 ? t.domainRenewYears : t.domainRenew, { amount: money(withTax(amount)), years });
     }
     // An automatic promotion cannot be removed; a typed code takes its place (Cart\Service::autoPromo()).
     $('[data-bf-promo]').hidden = !!state.promo && !state.promo.auto;
@@ -493,7 +510,9 @@ export default function initCheckout(root) {
     // A recurring promo also comes off each renewal: the order keeps the price part of the discount (the full
     // period's, not a prorated first charge's). CF-146: not a domain's discount (the domain renews on its own).
     const renewDiscount = cart.promo_recurring ? (cart.items ?? []).filter((item) => item.type !== 'domain').reduce((sum, item) => sum + Number(item.recurring_discount ?? item.discount_price ?? 0), 0) : 0;
-    return { code, auto, discount: Number(cart.discount) - kept, total: Number(cart.total), renewDiscount, keepFree: kept > 0 };
+    // CF-165: the domain's own renewal discount (Cart\Service: renewal_discount, set only under a recurring promotion).
+    const domainRenewDiscount = (cart.items ?? []).filter((item) => item.type === 'domain').reduce((sum, item) => sum + Number(item.renewal_discount ?? 0), 0);
+    return { code, auto, discount: Number(cart.discount) - kept, total: Number(cart.total), renewDiscount, domainRenewDiscount, keepFree: kept > 0 };
   };
 
   async function applyPromo() {

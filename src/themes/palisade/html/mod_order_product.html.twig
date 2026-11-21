@@ -92,6 +92,7 @@
             transfer: product.config.free_transfer|default(false) ? true : false,
             tlds: product.config.free_tlds|default([]) is iterable ? product.config.free_tlds|default([]) : [],
             periods: product.config.free_domain_periods|default([]) is iterable ? product.config.free_domain_periods|default([]) : [],
+            renewals: product.config.free_domain_renewals|default(false) ? true : false,
         } : null,
     },
     addons: addons,
@@ -127,6 +128,9 @@
         promo: 'Promo code :code'|trans,
         discount: 'Discount'|trans,
         then: 'Then :amount :per, from :date.'|trans,
+        domainRenew: 'The domain renews at :amount a year.'|trans,
+        domainRenewYears: 'The domain renews at :amount every :years years.'|trans,
+        domainRenewFree: 'The domain renews free while this plan is active.'|trans,
         lines: ':count lines'|trans,
         line: '1 line'|trans,
         fillIn: 'Add :field to continue'|trans,
@@ -357,6 +361,8 @@
                     <strong data-bf-due></strong>
                 </div>
                 <span class="bf-hint" data-bf-then></span>
+                {# ClientFence core patch: the domain's own renewal amount under the plan's (checkout.js, CF-165). #}
+                <span class="bf-hint" data-bf-domain-renew hidden></span>
                 {% if not client and guest.clientfence_tax_enabled %}<span class="bf-hint bf-small">{{ 'Tax for your country, if any, is added on the invoice.'|trans }}</span>{% endif %}
                 <div class="bf-promo" data-bf-promo>
                     <label class="bf-label" for="bf-promo">{{ 'Promo code'|trans }}</label>

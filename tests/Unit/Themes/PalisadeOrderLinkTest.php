@@ -171,7 +171,7 @@ test('a hosting plan is ordered on the checkout with its domain section; a domai
 
     // checkout.js prices the domain line with the plan's free domain terms, as the cart does, and keeps a link's code.
     $data = palisadeOrderLinkData($html);
-    expect($data['product']['freeDomain'])->toBe(['domain' => true, 'transfer' => false, 'tlds' => ['.com'], 'periods' => ['1Y']])
+    expect($data['product']['freeDomain'])->toBe(['domain' => true, 'transfer' => false, 'tlds' => ['.com'], 'periods' => ['1Y'], 'renewals' => false])
         ->and($data['texts']['domainCheck'])->toBe('Check the domain to continue')
         ->and($data['period'])->toBe('1Y')
         ->and($data['promo'])->toBe('FREETRIAL');
@@ -181,6 +181,19 @@ test('a hosting plan is ordered on the checkout with its domain section; a domai
     expect(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'domain'))->toContain('data-redirect="/cart"')->not->toContain('data-bf-checkout-data')
         ->and($other)->not->toContain('data-cf-hosting-domain')
         ->and(palisadeOrderLinkData($other)['product']['freeDomain'])->toBeNull();
+});
+
+test('the summary has a line for the domain renewal, free under the plan\'s free domain renewals (CF-165)', function (): void {
+    $html = renderPalisadeOrderLink('mod_order_product.html.twig', [], 'hosting', [
+        'free_domain' => '1', 'free_tlds' => [], 'free_domain_periods' => ['1Y'], 'free_domain_renewals' => '1',
+    ]);
+    $data = palisadeOrderLinkData($html);
+
+    expect($html)->toContain('<span class="bf-hint" data-bf-domain-renew hidden></span>')
+        ->and($data['product']['freeDomain']['renewals'])->toBeTrue()
+        ->and($data['texts']['domainRenew'])->toBe('The domain renews at :amount a year.')
+        ->and($data['texts']['domainRenewYears'])->toBe('The domain renews at :amount every :years years.')
+        ->and($data['texts']['domainRenewFree'])->toBe('The domain renews free while this plan is active.');
 });
 
 test('a promo link reapplies its code without asking only over the plan and its own domain (CF-146)', function (): void {
