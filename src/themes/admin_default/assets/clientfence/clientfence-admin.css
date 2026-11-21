@@ -231,9 +231,11 @@ body { font-family: var(--bf-font); }
 .bf-brand { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 12px; }
 .bf-brand-link { display: flex; align-items: center; min-width: 0; color: #ffffff; text-decoration: none; }
 .bf-brand-link:hover { text-decoration: none; }
-.bf-brand-logo { display: block; height: 26px; width: auto; max-width: 150px; }
+/* A wide logo shrinks inside its link instead of running over the Admin tag. */
+.bf-brand-logo { display: block; min-width: 0; height: 26px; width: auto; max-width: min(150px, 100%); object-fit: contain; object-position: left center; }
+[dir="rtl"] .bf-brand-logo { object-position: right center; }
 .bf-brand-name { font-family: var(--bf-font-h); font-weight: 800; font-size: 18px; color: #ffffff; }
-.bf-brand-tag { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--bf-side-muted); }
+.bf-brand-tag { flex: none; white-space: nowrap; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--bf-side-muted); }
 .bf-brand-collapse { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 30px; height: 30px; margin-inline-start: auto; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--bf-side-muted); cursor: pointer; }
 .bf-brand-collapse:hover { background: var(--bf-side-hover); color: var(--bf-side-ink); }
 .bf-brand-collapse:focus-visible { outline: 2px solid var(--bf-brand); outline-offset: 1px; }
