@@ -310,6 +310,8 @@ test('template get list names each template by its subject without the Twig tags
     'escaped quote' => ["{{ 'Your client\\'s order'|trans }}", "Your client's order"],
     'plain text and variables' => ['Your order {{ order.title }} {% if paid %}is paid{% endif %}', 'Your order is paid'],
     'variables only' => ['{{ subject }}', 'mod_custom_note'],
+    'if and else' => ["[{{ c }}] {% if ok %}{{ 'Approved: %title%'|trans }}{% elseif x %}{{ 'Held'|trans }}{% else %}{{ 'Refused: %title%'|trans }}{% endif %}", 'Approved: %title%'],
+    'a nested if or a loop else keeps its text' => ["{% if ok %}Approved{% else %}Refused{% if u %} now{% endif %}. Resubmit{% endif %} {% for i in l %}{{ i }}{% else %}None{% endfor %} notice", 'ApprovedRefused now. Resubmit None notice'],
 ]);
 
 test('template get', function (): void {

@@ -165,6 +165,8 @@ class Admin extends \ClientFence\Api\AbstractApi
      */
     private function listTitle(string $subject, string $code): string
     {
+        // The first branch of an if/else subject only ("approved: …refused: …" ran together); a branch holding other tags stays.
+        $subject = (string) preg_replace('/{%-?\s*else(?:if\b.*?)?\s*-?%}(?:(?!{%(?!-?\s*else)).)*(?={%-?\s*endif\b)/s', '', $subject);
         $title = preg_replace_callback('/{{.*?}}|{%.*?%}/s', static function (array $tag): string {
             // The first quoted string the tag translates, as in {{ 'Invoice #%number% is ready'|trans({...}) }}.
             if (!preg_match('/([\'"])((?:\\\\.|(?!\1).)*)\1\s*\|\s*trans\b/s', $tag[0], $text)) {
