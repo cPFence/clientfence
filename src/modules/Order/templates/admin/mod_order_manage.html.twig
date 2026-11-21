@@ -1012,7 +1012,7 @@
                                     <td>{{ ticket.id }}</td>
                                     <td>{{ ticket.helpdesk.name }}</td>
                                     <td>
-                                        <a href='{{ "support/ticket/#{ticket.id}"|url }}'>{{ ticket.subject|truncate(30) }}</a>
+                                        <a href='{{ "support/ticket/#{ticket.id}"|url }}'><bdi>{{ ticket.subject|truncate(30) }}</bdi></a>
                                     </td>
                                     <td>{{ mf.status_badge(ticket.status, 'ticket') }}</td>
                                     <td>

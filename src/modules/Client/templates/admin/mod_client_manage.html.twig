@@ -951,7 +951,7 @@
                                     <td>{{ ticket.id }}</td>
                                     <td>{{ ticket.helpdesk.name }}</td>
                                     <td>
-                                        <a href='{{ "support/ticket/#{ticket.id}"|url }}'>{{ ticket.subject|truncate(30) }}</a>
+                                        <a href='{{ "support/ticket/#{ticket.id}"|url }}'><bdi>{{ ticket.subject|truncate(30) }}</bdi></a>
                                     </td>
                                     <td>{{ mf.status_badge(ticket.status, 'ticket') }}</td>
                                     <td>
@@ -1153,7 +1153,7 @@
                             <tbody>
                                 {% for i, email in emails.list %}
                                 <tr>
-                                    <td>{{ email.subject }}</td>
+                                    <td><bdi>{{ email.subject }}</bdi></td>
                                     <td>{{ email.recipients }}</td>
                                     <td>{{ email.created_at|format_datetime }}</td>
                                     <td>

@@ -73,7 +73,7 @@
                             {% set url = ('massmailer/message/' ~ msg.id)|url %}
                             <tr data-id="{{ msg.id }}" data-title="{{ msg.subject }}" data-search="{{ (msg.subject ~ ' ' ~ msg.from_name ~ ' ' ~ msg.from_email)|lower }}">
                                 <td class="text-break">
-                                    <a href="{{ url }}">{{ msg.subject ?: '–' }}</a>
+                                    <a href="{{ url }}"><bdi>{{ msg.subject ?: '–' }}</bdi></a>
                                     <div class="text-secondary small">{{ msg.from_name }} &lt;{{ msg.from_email }}&gt;</div>
                                 </td>
                                 <td><span class="badge {{ badge[0] }}">{{ badge[1] }}</span></td>

@@ -196,7 +196,7 @@
                                            class="list-group-item d-flex justify-content-between align-items-center" aria-current="true">
                                             <div>
                                                 <div>
-                                                    <span><strong>#{{ ticket.id }}</strong></span>&nbsp;<span>{{ ticket.subject|truncate(45) }}</span>
+                                                    <span><strong>#{{ ticket.id }}</strong></span>&nbsp;<span><bdi>{{ ticket.subject|truncate(45) }}</bdi></span>
                                                 </div>
                                                 <span class="text-secondary small" title="{{ ticket.updated_at|format_date }}">{{ ticket.updated_at|timeago }} {{ 'ago'|trans }}</span>
                                             </div>

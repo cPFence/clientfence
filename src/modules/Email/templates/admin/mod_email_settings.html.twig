@@ -387,7 +387,7 @@
                             {% for i, queuedEmail in queue.list %}
                                 <tr>
                                     <td>
-                                        {{ queuedEmail.subject }}
+                                        <bdi>{{ queuedEmail.subject }}</bdi>
                                     </td>
                                     <td>
                                         {{ queuedEmail.to_name }}

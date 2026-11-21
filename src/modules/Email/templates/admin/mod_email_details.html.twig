@@ -18,14 +18,14 @@
         <li class="breadcrumb-item">
             <a href="{{ 'email/history'|url }}">{{ 'Email History'|trans }}</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">{{ email.subject }}</li>
+        <li class="breadcrumb-item active" aria-current="page"><bdi>{{ email.subject }}</bdi></li>
     </ol>
 {% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-body">
-        <h5>{{ email.subject }}</h5>
+        <h5><bdi>{{ email.subject }}</bdi></h5>
     </div>
 
     <table class="table card-table table-vcenter table-striped text-nowrap">

@@ -19,7 +19,7 @@
     <div class="card cf-acct-narrow">
         <div class="card-header cf-acct-who py-3">
             <span class="cf-acct-icon" aria-hidden="true"><svg class="icon"><use href="#headset"/></svg></span>
-            <h1 class="h5 mb-0 min-w-0">{{ 'Ticket Feedback'|trans }}{% if ticket.id|default(0) %} · <bdi>#{{ ticket.id }}</bdi> {{ ticket.subject }}{% endif %}</h1>
+            <h1 class="h5 mb-0 min-w-0">{{ 'Ticket Feedback'|trans }}{% if ticket.id|default(0) %} · <bdi>#{{ ticket.id }}</bdi> <bdi>{{ ticket.subject }}</bdi>{% endif %}</h1>
         </div>
         <div class="card-body">
             {% if feedback.state == 'invalid' %}

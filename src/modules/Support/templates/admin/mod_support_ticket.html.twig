@@ -19,7 +19,7 @@
         <li class="breadcrumb-item">
             <a href="{{ 'support'|url }}">{{ 'Tickets'|trans }}</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">#{{ ticket.id }} - {{ ticket.subject }}</li>
+        <li class="breadcrumb-item active" aria-current="page">#{{ ticket.id }} - <bdi>{{ ticket.subject }}</bdi></li>
     </ul>
 {% endblock %}
 
@@ -103,7 +103,7 @@
                                 {% if task.task == 'upgrade' %}<div><dt>{{ 'Upgrade To'|trans }}</dt><dd><a href='{{ "product/manage/#{task.new_value}"|url }}'>{{ admin.product_get_pairs[task.new_value] }}</a></dd></div>{% endif %}
                                 {# ClientFence core patch: the tickets merged into this one (Support/TicketMerge.php). #}
                                 {% if ticket.merged_tickets|default([]) is not empty %}
-                                    <div class="cf-facts-wide"><dt>{{ 'Merged Tickets'|trans }}</dt><dd>{% for merged in ticket.merged_tickets %}<bdi>#{{ merged.id }}</bdi> {{ merged.subject|truncate(40) }} ({{ merged.merged_at|format_date }}){% if not loop.last %}<br>{% endif %}{% endfor %}</dd></div>
+                                    <div class="cf-facts-wide"><dt>{{ 'Merged Tickets'|trans }}</dt><dd>{% for merged in ticket.merged_tickets %}<bdi>#{{ merged.id }}</bdi> <bdi>{{ merged.subject|truncate(40) }}</bdi> ({{ merged.merged_at|format_date }}){% if not loop.last %}<br>{% endif %}{% endfor %}</dd></div>
                                 {% endif %}
                             </dl>
                         </div>
@@ -501,7 +501,7 @@
                                 <tr>
                                     <td>{{ related_ticket.id }}</td>
                                     <td>{{ related_ticket.helpdesk.name }}</td>
-                                    <td><a href='{{ "support/ticket/#{related_ticket.id}"|url }}'>{{ related_ticket.subject|truncate(30) }}</a></td>
+                                    <td><a href='{{ "support/ticket/#{related_ticket.id}"|url }}'><bdi>{{ related_ticket.subject|truncate(30) }}</bdi></a></td>
                                     <td>{{ mf.status_badge(related_ticket.status, 'ticket') }}</td>
                                     <td>
                                         <a class="btn btn-icon" href='{{ "support/ticket/#{related_ticket.id}"|url }}'>

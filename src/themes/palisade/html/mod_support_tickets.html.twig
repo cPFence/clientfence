@@ -121,7 +121,7 @@
                     {% for i, ticket in tickets.list %}
                         <tr{% if ticket.status == 'on_hold' %} class="is-answered"{% endif %}>
                             <td data-label="{{ 'ID'|trans }}"><bdi>#{{ticket.id}}</bdi></td>
-                            <td data-label="{{ 'Subject'|trans }}"><a class="cf-tk-subject" href='{{ "support/ticket/#{ticket.id}"|url }}'>{{ ticket.subject|truncate(40) }}</a></td>
+                            <td data-label="{{ 'Subject'|trans }}"><a class="cf-tk-subject" href='{{ "support/ticket/#{ticket.id}"|url }}'><bdi>{{ ticket.subject|truncate(40) }}</bdi></a></td>
                             <td data-label="{{ 'Help Desk'|trans }}">{{ ticket.helpdesk.name|trans }}</td>
                             <td data-label="{{ 'Status'|trans }}">
                                 {{ mf.status_badge(ticket.status, 'ticket') }}

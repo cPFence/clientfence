@@ -20,7 +20,7 @@
     {% else %}
         <li class="breadcrumb-item"><a href="{{ 'support'|url }}">{{ 'Support Tickets'|trans }}</a></li>
     {% endif %}
-    <li class="breadcrumb-item active" aria-current="page">{{ ticket.subject }}</li>
+    <li class="breadcrumb-item active" aria-current="page"><bdi>{{ ticket.subject }}</bdi></li>
 {% endblock %}
 
 {% block content %}

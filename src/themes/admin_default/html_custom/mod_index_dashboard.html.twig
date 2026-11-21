@@ -572,7 +572,7 @@
                     {% else %}
                     <a class="bf-row bf-row-top" href="{{ ('email/' ~ row.id)|url }}">
                         <span class="bf-row-main">
-                            <span class="bf-strong bf-ellipsis">{{ row.subject|default('')|truncate(70) }}</span>
+                            <span class="bf-strong bf-ellipsis"><bdi>{{ row.subject|default('')|truncate(70) }}</bdi></span>
                             <span class="bf-muted bf-small bf-ellipsis" dir="ltr">{{ row.recipients|default('') }}</span>
                         </span>
                         <span class="bf-muted bf-small bf-nowrap">{{ ':time ago'|trans({ ':time': row.created_at|timeago }) }}</span>

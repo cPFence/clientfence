@@ -306,7 +306,7 @@
                         <td>
                             <div>
                                 {% if ticket.id in bf_pins %}<svg class="icon bf-pin" aria-label="{{ 'Pinned'|trans }}"><title>{{ 'Pinned'|trans }}</title><use href="#pinned" /></svg>{% endif %}
-                                <a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>#{{ ticket.id }} - {{ ticket.subject|truncate(50) }} ({{ ticket.replies }})</a>
+                                <a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>#{{ ticket.id }} - <bdi>{{ ticket.subject|truncate(50) }}</bdi> ({{ ticket.replies }})</a>
                             </div>
                             {% if ticket.notes is defined and ticket.notes|length %}
                                 <a href="#" rel="{{ ticket.id }}" title="{{ ticket.notes|length }}" class="show-notes">

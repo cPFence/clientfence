@@ -46,7 +46,7 @@
                     {% for i, ticket in tickets.list %}
                         <tr>
                             <td>#{{ticket.id}}</td>
-                            <td><a href='{{ "support/ticket/#{ticket.id}"|url }}'>{{ ticket.subject|truncate(40) }}</a></td>
+                            <td><a href='{{ "support/ticket/#{ticket.id}"|url }}'><bdi>{{ ticket.subject|truncate(40) }}</bdi></a></td>
                             <td>{{ ticket.helpdesk.name }}</td>
                             <td>
                                 {{ mf.status_badge(ticket.status, 'ticket') }}

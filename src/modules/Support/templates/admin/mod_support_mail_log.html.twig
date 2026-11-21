@@ -64,7 +64,7 @@
                         <span class="text-muted">{{ entry.from_email }}</span>
                     </td>
                     <td class="text-nowrap">{{ entry.helpdesk_name|default('-') }}</td>
-                    <td class="text-break">{{ entry.subject }}</td>
+                    <td class="text-break"><bdi>{{ entry.subject }}</bdi></td>
                     <td>
                         <span class="badge {{ entry.imported ? 'bg-success-lt' : (entry.status starts with 'rejected' or entry.status == 'failed' ? 'bg-danger-lt' : 'bg-warning-lt') }}">{{ status_names[entry.status]|default(entry.status) }}</span>
                         {# ClientFence core patch: the ticket number kept whole in right-to-left languages, an empty log under the tray icon (CF-135 redesign). #}

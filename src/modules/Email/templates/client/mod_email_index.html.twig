@@ -30,7 +30,7 @@
                                     <a class="list-group-item list-group-item-action mt-0{% if loop.first %} active{% endif %}"
                                        href="#mail-{{ loop.index }}" data-bs-toggle="list" role="tab">
                                         <div class="flex-column py-1">
-                                            <p class="m-0" style="font-size: 80%;">{{ email.subject|truncate }}</p>
+                                            <p class="m-0" style="font-size: 80%;"><bdi>{{ email.subject|truncate }}</bdi></p>
                                             <span class="text-muted small" style="font-size: 80%;">{{ email.created_at|format_datetime }}</span>
                                         </div>
                                     </a>
@@ -43,7 +43,7 @@
                                 <div class="tab-pane fade{% if loop.first %} show active{% endif %}"
                                      id="mail-{{ loop.index }}" role="tabpanel">
                                     <div class="card-body">
-                                        <h6 class="mb-0">{{ email.subject }}</h6>
+                                        <h6 class="mb-0"><bdi>{{ email.subject }}</bdi></h6>
                                         <div class="card-header px-0">
                                             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 gap-md-0">
                                                 <div class="d-flex flex-column gap-1 min-w-0">

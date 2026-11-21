@@ -210,7 +210,7 @@
                         {% for ticket in dashboard.recent_tickets %}
                             <a class="list-row" href="{{ "support/ticket/#{ticket.id}"|url }}">
                                 <div class="min-w-0">
-                                    <div class="list-row-title text-truncate">{{ ticket.subject|truncate(48) }}</div>
+                                    <div class="list-row-title text-truncate"><bdi>{{ ticket.subject|truncate(48) }}</bdi></div>
                                     <div class="list-row-meta" title="{{ ticket.updated_at|format_date }}">#{{ ticket.id }} · {{ ':time ago'|trans({ ':time': ticket.updated_at|timeago }) }}</div>
                                 </div>
                                 {{ mf.status_badge(ticket.status, 'ticket') }}

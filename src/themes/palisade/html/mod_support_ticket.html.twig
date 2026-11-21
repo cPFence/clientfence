@@ -22,7 +22,7 @@
     {% else %}
         <li class="breadcrumb-item"><a href="{{ 'support'|url }}">{{ 'Support Tickets'|trans }}</a></li>
     {% endif %}
-    <li class="breadcrumb-item active" aria-current="page">{{ ticket.subject }}</li>
+    <li class="breadcrumb-item active" aria-current="page"><bdi>{{ ticket.subject }}</bdi></li>
 {% endblock %}
 
 {% block content %}
@@ -35,7 +35,7 @@
                 <span class="clientfence-hosting-monogram is-large" aria-hidden="true"><svg class="icon"><use href="#headset"/></svg></span>
                 <div class="min-w-0 flex-grow-1">
                     <span class="cf-tk-number">{{ 'Ticket'|trans }} <bdi>#{{ ticket.id }}</bdi></span>
-                    <h1 class="cf-tk-title">{{ ticket.subject }}</h1>
+                    <h1 class="cf-tk-title"><bdi>{{ ticket.subject }}</bdi></h1>
                     {{ mf.status_badge(ticket.status, 'ticket') }}
                 </div>
                 <div class="d-flex flex-wrap gap-2">

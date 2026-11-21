@@ -142,7 +142,7 @@
             <td>{{ email.recipients }}</td>
             <td>{{ email.sender }}</td>
             <td>
-                <a href='{{ "email/#{email.id}"|url }}'>{{ email.subject|truncate(40) }}</a>
+                <a href='{{ "email/#{email.id}"|url }}'><bdi>{{ email.subject|truncate(40) }}</bdi></a>
             </td>
             <td>{{ email.created_at|format_date }}</td>
             <td>
