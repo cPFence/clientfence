@@ -592,7 +592,7 @@
                             {% for key, label in { 'layout_header': 'Header'|trans, 'layout_footer': 'Footer'|trans, 'layout_css': 'CSS'|trans } %}
                             <div class="mb-3">
                                 <label class="form-label" for="email-{{ key }}">{{ label }}</label>
-                                <textarea class="form-control font-monospace" id="email-{{ key }}" name="{{ key }}" rows="{{ key == 'layout_css' ? 6 : 12 }}" spellcheck="false"{% if not email_layout.can_edit %} readonly{% endif %}>{{ email_layout.layout[key] ?: email_layout.defaults[key] }}</textarea>
+                                <textarea dir="ltr" class="form-control font-monospace" id="email-{{ key }}" name="{{ key }}" rows="{{ key == 'layout_css' ? 6 : 12 }}" spellcheck="false"{% if not email_layout.can_edit %} readonly{% endif %}>{{ email_layout.layout[key] ?: email_layout.defaults[key] }}</textarea>
                             </div>
                             {% endfor %}
                             <small class="form-hint d-block mb-3">{{ 'Twig, as in the templates. Each message can set email_title, email_preheader, email_audience (client, affiliate, guest or staff) and email_reply_line for the header and footer to use. The CSS goes in a style tag; some email apps ignore it, so inline styles are the safest.'|trans }}</small>
@@ -658,7 +658,7 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="new-template-content">{{ 'Content'|trans }}</label>
-                                <textarea class="form-control" id="new-template-content" name="content" rows="6">{{ request.content }}</textarea>
+                                <textarea dir="ltr" class="form-control" id="new-template-content" name="content" rows="6">{{ request.content }}</textarea>
                             </div>
                         </div>
                     </div>

@@ -18,7 +18,7 @@
         </div>
         <form class="card-body border-bottom" method="post" action="{{ 'embed/save_settings'|api_url }}" {{ fb_api_form({ message: 'Saved.'|trans }) }}>
             <label class="form-label" for="embed-origins">{{ 'Websites allowed to embed'|trans }}</label>
-            <textarea class="form-control font-monospace" rows="4" name="allowed_origins" id="embed-origins" placeholder="https://example.com" spellcheck="false">{{ settings.allowed_origins|join("\n") }}</textarea>
+            <textarea dir="ltr" class="form-control font-monospace" rows="4" name="allowed_origins" id="embed-origins" placeholder="https://example.com" spellcheck="false">{{ settings.allowed_origins|join("\n") }}</textarea>
             <div class="form-hint">{{ 'One per line, up to 20, such as https://example.com. Empty: the parts show only on this site.'|trans }}</div>
             <div class="text-end mt-3">
                 <button type="submit" class="btn btn-primary">{{ 'Save'|trans }}</button>
@@ -54,7 +54,7 @@
             </div>
             <label class="form-label mt-3" for="embed-code">{{ 'Embed Code'|trans }}</label>
             <div class="input-group">
-                <textarea id="embed-code" rows="2" class="form-control font-monospace" readonly spellcheck="false"></textarea>
+                <textarea dir="ltr" id="embed-code" rows="2" class="form-control font-monospace" readonly spellcheck="false"></textarea>
                 <button type="button" class="btn" id="embed-copy">
                     <svg class="icon"><use href="#copy" /></svg>
                     {{ 'Copy'|trans }}

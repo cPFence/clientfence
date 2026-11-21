@@ -120,7 +120,7 @@
                                                 </div>
                                                 <div class="col-12">
                                                     <label class="form-label" for="email-template">{{ 'Email Message'|trans }}</label>
-                                                    <textarea class="form-control" name="content" id="email-template" data-cf-field="content" rows="10" required{% if not can_manage_templates %} readonly{% endif %}>{{ template.content }}</textarea>
+                                                    <textarea dir="ltr" class="form-control" name="content" id="email-template" data-cf-field="content" rows="10" required{% if not can_manage_templates %} readonly{% endif %}>{{ template.content }}</textarea>
                                                     {% if show_languages %}<div class="form-hint">{{ 'Sent for the default language and every language without its own version.'|trans }}</div>{% endif %}
                                                 </div>
                                             </div>
@@ -298,7 +298,7 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label" for="email-sample-template">{{ 'Example Message'|trans }}</label>
-                                        <textarea class="form-control" id="email-sample-template" rows="20">{% verbatim %}
+                                        <textarea dir="ltr" class="form-control" id="email-sample-template" rows="20">{% verbatim %}
 This is an example of markdown syntax in email template
 
 *Italic text*
