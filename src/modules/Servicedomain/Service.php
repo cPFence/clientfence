@@ -974,6 +974,9 @@ class Service implements \ClientFence\InjectionAwareInterface
             $data['sync_error'] = $model->sync_error;
 
             $data['registrar'] = $tldRegistrar instanceof \Model_TldRegistrar ? $tldRegistrar->name : null;
+            // ClientFence core patch (CF-241): the Registrar select of the admin domain page (staff with manage_domains, not only manage_registrars).
+            $data['registrar_id'] = $tldRegistrar instanceof \Model_TldRegistrar ? (int) $tldRegistrar->id : null;
+            $data['registrars'] = $this->registrarGetPairs();
             $data['domain_fields'] = $this->tldDomainFields($model);
             $data['transfer_fields'] = $this->tldDomainFields($model, 'transfer');
         }
@@ -1849,6 +1852,24 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function updateDomain(\Model_ServiceDomain $s, $data): bool
     {
+        // ClientFence core patch (CF-241): staff change the domain's registrar (as WHMCS): the record only, no registrar call.
+        // Checked before anything is saved; the old registrar's state (sync error, tracked transfer) goes with it.
+        $note = null;
+        if (!empty($data['tld_registrar_id']) && (int) $data['tld_registrar_id'] !== (int) $s->tld_registrar_id) {
+            $new = $this->di['db']->getExistingModelById('TldRegistrar', $data['tld_registrar_id'], 'Registrar not found');
+            $this->registrarValidateConfiguration($new);
+            $old = $s->tld_registrar_id ? $this->di['db']->load('TldRegistrar', $s->tld_registrar_id) : null;
+            $s->tld_registrar_id = $new->id;
+            $s->sync_error = null;
+            if (in_array($s->action, [DomainSync::PENDING, DomainSync::FAILED], true)) {
+                $s->action = null;
+                $s->transfer_since = null;
+            }
+            $note = sprintf('Registrar changed from %s to %s.', $old instanceof \Model_TldRegistrar ? $old->name : '-', $new->name);
+            // The form sent the old registrar's domain fields; the page reloads with the new one's.
+            unset($data['domain_fields']);
+        }
+
         $s->ns1 = $data['ns1'] ?? $s->ns1;
         $s->ns2 = $data['ns2'] ?? $s->ns2;
         $s->ns3 = $data['ns3'] ?? $s->ns3;
@@ -1873,6 +1894,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         }
 
         $this->di['db']->store($s);
+
+        $order = $note !== null ? $this->di['mod_service']('order')->getServiceOrder($s) : null;
+        if ($order instanceof \Model_ClientOrder) {
+            $orderService = $this->di['mod_service']('order');
+            $orderService->saveStatusChange($order, $note);
+            // A renewal mark holds the old registrar's expiry: at the new one it would pass a failed renewal as done.
+            $orderService->updateOrderMeta($this->di['em']->getReference(\ClientFence\Mod\Order\Entity\Order::class, (int) $order->id), ['domain_renewal_expiry' => null]);
+        }
 
         $this->di['logger']->info('Updated domain #%s without sending actions to server', $s->id);
 

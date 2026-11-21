@@ -1728,6 +1728,7 @@ test('converts to api array', function (?Model_Admin $identity, string $dbLoadCa
     $dbMock->shouldReceive('load')
         ->{$dbLoadCalled}()
         ->andReturn($tldRegistrar);
+    $dbMock->shouldReceive('getAssoc')->andReturn([2 => 'INWX', 1 => 'ResellerClub']);
 
     $di = container();
     $di['db'] = $dbMock;
@@ -1798,6 +1799,9 @@ test('converts to api array', function (?Model_Admin $identity, string $dbLoadCa
         expect($result)->toHaveKey('registrar');
         expect($result['transfer_code'])->toBe($model->transfer_code);
         expect($result['registrar'])->toBe($tldRegistrar->name);
+        expect($result['registrars'])->toBe([2 => 'INWX', 1 => 'ResellerClub']);
+    } else {
+        expect($result)->not->toHaveKey('registrars');
     }
 })->with([
     [function () {

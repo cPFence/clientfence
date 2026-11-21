@@ -32,6 +32,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional bool $privacy - flag to define if domain privacy protection is enabled/disabled
      * @optional bool $locked - flag to define if domain is locked or not
      * @optional string $transfer_code - domain EPP code
+     * @optional int $tld_registrar_id - ClientFence core patch (CF-241): the domain's registrar, noted in the order history
      *
      * @return bool
      */

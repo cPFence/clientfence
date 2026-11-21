@@ -121,9 +121,10 @@
     </form>
 {% endif %}
 
-{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry. #}
-{% if order.status in ['active', 'failed_setup'] %}
-    <form method="post" action="{{ 'servicedomain/update'|api_url }}" {{ fb_api_form({message: 'Domain Data Updated'|trans}) }}>
+{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry, and after a failed renewal (CF-241: its registrar). #}
+{% if order.status in ['active', 'failed_setup', 'failed_renew'] %}
+    {# ClientFence core patch (CF-241): the reload shows the new registrar and its domain fields. #}
+    <form method="post" action="{{ 'servicedomain/update'|api_url }}" {{ fb_api_form({message: 'Domain Data Updated'|trans, reload: true}) }}>
         <div class="card mb-4">
             <div class="card-body">
                 <div class="d-flex flex-column gap-1 mb-4">
@@ -131,6 +132,17 @@
                     <p class="text-secondary mb-0">{{ 'Maintain the registrar transfer code and renewal period stored for this service.'|trans }}</p>
                 </div>
                 <div class="row g-3">
+                    {# ClientFence core patch (CF-241): the domain's registrar, as WHMCS: the record only, nothing is sent to either registrar. #}
+                    <div class="col-12">
+                        <label class="form-label" for="domain-registrar">{{ 'Registrar'|trans }}</label>
+                        <select class="form-select" name="tld_registrar_id" id="domain-registrar" aria-describedby="domain-registrar-hint">
+                            {% if service.registrar_id is null or service.registrars[service.registrar_id] is not defined %}<option value="" selected>-</option>{% endif %}
+                            {% for id, title in service.registrars|default({}) %}
+                                <option value="{{ id }}"{% if id == service.registrar_id %} selected{% endif %}>{{ title }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-hint" id="domain-registrar-hint">{{ 'Only changes the registrar stored for this domain: nothing is sent to either registrar. Transfer the domain to the new registrar first.'|trans }}</div>
+                    </div>
                     <div class="col-lg-6">
                         <label class="form-label">{{ 'Transfer Code (EPP)'|trans }}</label>
                         <input class="form-control" type="text" name="transfer_code" value="{{ request.transfer_code|default(service.transfer_code) }}">

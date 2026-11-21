@@ -4529,7 +4529,7 @@
     },
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
-        "done": "{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry. #}"
+        "done": "{# ClientFence core patch: also after a failed registration, to correct its domain fields before the retry, and after a failed renewal (CF-241: its registrar). #}"
     },
     {
         "file": "modules/Servicedomain/Service.php",
@@ -9518,5 +9518,25 @@
     {
         "file": "modules/Cart/Api/Client.php",
         "done": "ClientFence core patch (CF-239): the registrant details a domain registration or transfer needs that the client's"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch (CF-241): staff change the domain's registrar (as WHMCS): the record only, no registrar call."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch (CF-241): the Registrar select of the admin domain page"
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch (CF-241): the domain's registrar, noted in the order history"
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
+        "done": "ClientFence core patch (CF-241): the domain's registrar, as WHMCS: the record only, nothing is sent to either registrar."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig",
+        "done": "ClientFence core patch (CF-241): the reload shows the new registrar and its domain fields."
     }
 ]
