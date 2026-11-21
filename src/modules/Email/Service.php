@@ -878,20 +878,23 @@ class Service implements \ClientFence\InjectionAwareInterface
             // No line number in the error: the wrapper's own lines would shift it.
             $system->checkEmailTplSyntax(Layout::wrap('', Layout::fromConfig($layout)), false);
         } catch (\ClientFence\InformationException $e) {
-            // Name the box that fails alone with this same error, with its own line (a tag opened in one box and closed
-            // in another fails alone with another error: that box is not named).
+            // Name the box with its own line: the only box that fails alone (an unclosed {{ fails alone with another
+            // message), else the one that fails alone with this same error (a tag opened in one box and closed in
+            // another: neither is named).
+            $failing = [];
             foreach (['layout_header' => __trans('Header'), 'layout_footer' => __trans('Footer'), 'layout_css' => __trans('CSS')] as $key => $label) {
                 try {
                     $system->checkEmailTplSyntax($layout[$key], false);
                 } catch (\ClientFence\InformationException $part) {
-                    if ($part->getMessage() !== $e->getMessage()) {
-                        continue;
-                    }
-                    try {
-                        $system->checkEmailTplSyntax($layout[$key]);
-                    } catch (\ClientFence\InformationException $lined) {
-                        throw new \ClientFence\InformationException(':box: :error', [':box' => $label, ':error' => $lined->getMessage()]);
-                    }
+                    $failing[$key] = [$label, $part->getMessage() === $e->getMessage()];
+                }
+            }
+            $named = count($failing) === 1 ? array_key_first($failing) : array_search(true, array_map(fn ($f) => $f[1], $failing), true);
+            if ($named !== false) {
+                try {
+                    $system->checkEmailTplSyntax($layout[$named]);
+                } catch (\ClientFence\InformationException $lined) {
+                    throw new \ClientFence\InformationException(':box: :error', [':box' => $failing[$named][0], ':error' => $lined->getMessage()]);
                 }
             }
 

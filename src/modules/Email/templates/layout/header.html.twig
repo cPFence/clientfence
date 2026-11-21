@@ -1,6 +1,5 @@
 <body style="margin:0; padding:0; background-color:#eef3f6;">
 {% if email_reply_line|default(false) %}
-{# ClientFence: replies by email go to the ticket (Support/MailImport.php): [Ticket #id] in the subject; text from this line on is cut. #}
 <p class="reply-line" style="margin:0; padding:8px 12px; font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#94a3b8; text-align:center;">====== Please reply above this line ======</p>
 {% endif %}
 {% if email_preheader|default('') %}<div style="display:none; max-height:0; overflow:hidden;">{{ email_preheader }}</div>{% endif %}

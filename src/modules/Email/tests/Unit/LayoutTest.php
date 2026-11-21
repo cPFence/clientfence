@@ -114,3 +114,20 @@ test('a block opened in one box and closed in another names the box whose own er
     expect(fn () => $service->saveLayout(['layout_header' => '{% if locale %}', 'layout_footer' => "{{ locale|defualt('') }}{% endif %}", 'layout_css' => '']))
         ->toThrow(ClientFence\InformationException::class, 'Footer: Unknown "defualt" filter');
 });
+
+test('an unclosed variable at the end of a box names that box, though alone it fails with another message', function (): void {
+    $di = container();
+    $system = Mockery::mock(ClientFence\Mod\System\Service::class);
+    // As Twig: in the whole layout the wrapper's text follows, so the message differs from the box's own.
+    $system->allows('checkEmailTplSyntax')->andReturnUsing(static function (string $tpl): void {
+        if (str_contains($tpl, '{{ broken')) {
+            throw new ClientFence\InformationException($tpl === '{{ broken' ? 'Unexpected token "end of template"' : 'Unclosed "variable"');
+        }
+    });
+    $di['mod_service'] = $di->protect(fn (string $name): object => $system);
+    $service = new ClientFence\Mod\Email\Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->saveLayout(['layout_header' => '', 'layout_footer' => '{{ broken', 'layout_css' => '']))
+        ->toThrow(ClientFence\InformationException::class, 'Footer: Unexpected token "end of template"');
+});
