@@ -5099,6 +5099,8 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 .cf-dc-input { max-width: 360px; }
 .cf-dc-input-wide { max-width: 440px; }
 .cf-dc-input > .cf-dc-tld { flex: 0 0 auto; width: auto; min-width: 5.5rem; max-width: 7rem; }
+// A TLD select is sized to its longest TLD (.example.com hid under the arrow at 7rem); the own domain's text field keeps 7rem.
+.cf-dc-input > select.cf-dc-tld { max-width: 11rem; }
 .cf-dc-code { max-width: 260px; }
 
 // Cookie notice: frosted glass with a brand glow, rising in when it opens.
