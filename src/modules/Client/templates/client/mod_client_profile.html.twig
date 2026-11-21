@@ -75,6 +75,7 @@
                                 </div>
                             </div>
                             <div class="row">
+                                {% if not guest.client_hide_birthday_gender %}
                                 <div class="mb-3 col-md-5">
                                     <label class="form-label" for="birthday">{{ 'Birthdate'|trans }}</label>
                                     <input type="date" class="form-control" id="birthday" name="birthday"
@@ -98,6 +99,7 @@
                                         </option>
                                     </select>
                                 </div>
+                                {% endif %}
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-md-10">

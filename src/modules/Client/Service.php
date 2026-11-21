@@ -1281,10 +1281,24 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
         return true;
     }
 
+    /** ClientFence core patch (CF-254): Clients > Settings "Hide Birthday and Gender" keeps both off every client page and form. */
+    public static function hidesBirthdayGender(\Pimple\Container $di): bool
+    {
+        return !empty($di['mod_config']('client')['hide_birthday_gender']);
+    }
+
+    /** The Required Profile Fields of Clients > Settings, less Birthday and Gender while they are hidden (CF-254). */
+    public static function requiredFields(\Pimple\Container $di): array
+    {
+        $required = $di['mod_config']('client')['required'] ?? [];
+        $required = is_array($required) ? $required : [];
+
+        return self::hidesBirthdayGender($di) ? array_values(array_diff($required, ['birthday', 'gender'])) : $required;
+    }
+
     public function checkExtraRequiredFields(array $checkArr): void
     {
-        $config = $this->di['mod_config']('client');
-        $required = $config['required'] ?? [];
+        $required = self::requiredFields($this->di);
         foreach ($required as $field) {
             if (!isset($checkArr[$field]) || empty($checkArr[$field])) {
                 $name = ucwords(str_replace('_', ' ', $field));

@@ -85,6 +85,15 @@
                                                     <input class="form-check-input" name="disable_change_email" type="checkbox" {% if params.disable_change_email|default(false) %}checked="checked"{% endif %}>
                                                     <span class="form-check-label">{{ 'Disable Email Change'|trans }}</span>
                                                 </label>
+                                                {# ClientFence core patch (CF-254): one switch hides Birthday and Gender from every client page. #}
+                                                <div>
+                                                    <input type="hidden" name="hide_birthday_gender" value="0">
+                                                    <label class="form-check form-switch form-switch-2 mb-1">
+                                                        <input class="form-check-input" name="hide_birthday_gender" value="1" type="checkbox" {% if params.hide_birthday_gender|default(false) %}checked="checked"{% endif %}>
+                                                        <span class="form-check-label">{{ 'Hide Birthday and Gender'|trans }}</span>
+                                                    </label>
+                                                    <small class="form-hint">{{ 'Clients no longer see or fill in these two fields on the sign-up, checkout and profile pages, even when they are Required Profile Fields. Staff still see the birthday on the client page. Some registrars read the birthday for a few domain extensions (ResellerClub .ru, Namecheap .fr).'|trans }}</small>
+                                                </div>
                                             </div>
                                         </div>
                                     </section>

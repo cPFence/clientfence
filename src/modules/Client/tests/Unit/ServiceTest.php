@@ -1159,6 +1159,17 @@ test('checkExtraRequiredFields throws exception for missing field', function ():
     $service->checkExtraRequiredFields($data);
 })->throws(ClientFence\Exception::class, 'Field Id cannot be empty');
 
+test('Birthday and Gender leave the required fields only while Clients > Settings hides them', function (bool $hidden): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (): array => ['required' => ['birthday', 'gender', 'city'], 'hide_birthday_gender' => $hidden]);
+    $service = new ClientFence\Mod\Client\Service();
+    $service->setDi($di);
+
+    expect(ClientFence\Mod\Client\Service::requiredFields($di))->toBe($hidden ? ['city'] : ['birthday', 'gender', 'city']);
+    $check = fn () => $service->checkExtraRequiredFields(['city' => 'Austin']);
+    $hidden ? $check() : expect($check)->toThrow(ClientFence\Exception::class, 'Field Birthday cannot be empty');
+})->with(['shown' => false, 'hidden' => true]);
+
 test('checkCustomFields throws exception for required field', function (): void {
     $service = new ClientFence\Mod\Client\Service();
     $custom_field = [

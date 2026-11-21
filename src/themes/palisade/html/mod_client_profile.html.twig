@@ -80,6 +80,8 @@
                                     <input type="email" class="form-control" id="billing_email" name="billing_email" value="{{ profile.billing_email }}" placeholder="{{ profile.email }}">
                                     <small class="form-hint text-muted">{{ 'Invoice notifications are sent here. Leave blank to use your account email.'|trans }}</small>
                                 </div>
+                                {# ClientFence core patch (CF-254): hidden while Clients > Settings hides Birthday and Gender. #}
+                                {% if not guest.client_hide_birthday_gender %}
                                 <div class="col-md-6">
                                     <label class="form-label" for="birthday">{{ 'Birthdate'|trans }}</label>
                                     <input type="date" class="form-control" id="birthday" name="birthday"
@@ -105,6 +107,7 @@
                                         </option>
                                     </select>
                                 </div>
+                                {% endif %}
                             </div>
                             <h3 class="cf-pf-section">{{ 'Company Details'|trans }}</h3>
                             <div class="row g-3">

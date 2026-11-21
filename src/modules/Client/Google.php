@@ -688,7 +688,7 @@ final class Google
             return [];
         }
         $config = $di['mod_config']('client');
-        $required = is_array($config['required'] ?? null) ? $config['required'] : [];
+        $required = Service::requiredFields($di);
         $missing = [];
         foreach (self::PROFILE_FIELDS as $field) {
             if (in_array($field, $required, true) && trim((string) ($client[$field] ?? '')) === '') {

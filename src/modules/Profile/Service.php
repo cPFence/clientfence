@@ -192,9 +192,13 @@ class Service implements InjectionAwareInterface
             $client->setBillingEmail($data['billing_email']);
         }
         $client->setLastName($data['last_name'] ?? $client->getLastName());
-        $client->setGender(ClientValidator::validateGender($data['gender'] ?? $client->getGender()));
-        $birthday = ClientValidator::validateBirthday($data['birthday'] ?? $client->getBirthday()?->format('Y-m-d'));
-        $client->setBirthday($birthday !== null ? new \DateTime($birthday) : null);
+        // ClientFence core patch (CF-254): Birthday and Gender hidden in Clients > Settings keep their stored values, unchecked
+        // (the client cannot correct a hidden one).
+        if (!\ClientFence\Mod\Client\Service::hidesBirthdayGender($this->di)) {
+            $client->setGender(ClientValidator::validateGender($data['gender'] ?? $client->getGender()));
+            $birthday = ClientValidator::validateBirthday($data['birthday'] ?? $client->getBirthday()?->format('Y-m-d'));
+            $client->setBirthday($birthday !== null ? new \DateTime($birthday) : null);
+        }
         $client->setCompany($data['company'] ?? $client->getCompany());
         $oldVat = $client->getCompanyVat();
         $oldCountry = $client->getCountry();

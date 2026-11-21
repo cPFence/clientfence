@@ -103,7 +103,7 @@ test('changes admin password', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('updates client', function (): void {
+test('updates client; Birthday and Gender keep their values while Clients > Settings hides them', function (bool $hidden): void {
     $emMock = Mockery::mock('ClientFence\EventManager');
     $emMock->shouldReceive('fire')
         ->atLeast()->once()
@@ -130,8 +130,12 @@ test('updates client', function (): void {
     $di['mod_service'] = $di->protect(fn ($name): Mockery\MockInterface => $clientServiceMock);
     $di['mod'] = $di->protect(fn (): Mockery\MockInterface => $modMock);
     $di['tools'] = $toolsMock;
+    $di['mod_config'] = $di->protect(fn (): array => ['hide_birthday_gender' => $hidden]);
 
     $model = createEntity(ClientFence\Mod\Client\Entity\Client::class);
+    $model->setGender('female');
+    // Hidden, a stored birthday the client check would refuse (a staff typo in the future) does not block the save.
+    $model->setBirthday(new DateTime($hidden ? '2999-05-05' : '1990-05-05'));
 
     $data = [
         'email' => 'email@example.com',
@@ -180,8 +184,10 @@ test('updates client', function (): void {
     $service->setDi($di);
     $result = $service->updateClient($model, $data);
     expect($result)->toBeTrue();
-    expect($model->getBillingEmail())->toBe('billing@example.com');
-});
+    expect($model->getBillingEmail())->toBe('billing@example.com')
+        ->and($model->getGender())->toBe($hidden ? 'female' : 'other')
+        ->and($model->getBirthday()?->format('Y-m-d'))->toBe($hidden ? '2999-05-05' : '1981-01-01');
+})->with(['shown' => false, 'hidden' => true]);
 
 test('throws exception when email change is not allowed', function (): void {
     $emMock = Mockery::mock('ClientFence\EventManager');

@@ -82,6 +82,11 @@ class Guest extends \ClientFence\Api\AbstractApi
         try {
             $this->getDi()['rate_limiter']->consumeOrThrow('client_signup', (string) $this->getIp());
 
+            // ClientFence core patch (CF-254): Birthday and Gender hidden in Clients > Settings are not taken from the form.
+            if (\ClientFence\Mod\Client\Service::hidesBirthdayGender($this->getDi())) {
+                unset($data['birthday'], $data['gender']);
+            }
+
             $config = $this->getDi()['mod_config']('client');
 
             // ClientFence core patch: store preview. Sign-up stays off except for a browser session
@@ -472,9 +477,14 @@ class Guest extends \ClientFence\Api\AbstractApi
      */
     public function required()
     {
-        $config = $this->getDi()['mod_config']('client');
+        // ClientFence core patch (CF-254): less Birthday and Gender while Clients > Settings hides them.
+        return \ClientFence\Mod\Client\Service::requiredFields($this->getDi());
+    }
 
-        return $config['required'] ?? [];
+    /** ClientFence: whether Clients > Settings hides Birthday and Gender from the client's pages (CF-254). */
+    public function hide_birthday_gender(): bool
+    {
+        return \ClientFence\Mod\Client\Service::hidesBirthdayGender($this->getDi());
     }
 
     /**
