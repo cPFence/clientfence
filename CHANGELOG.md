@@ -5,10 +5,15 @@
 ### Added
 
 - **Email layout:** one header, footer and CSS around every email, in Email Settings > Email Layout, as WHMCS's global email header and footer. Built-in templates now hold only their message; a template you edited before keeps its own design until you reset it.
+- **Subreg and Spaceship registrars** built in. Thanks to [insxa](https://github.com/insxa) ([#56](https://github.com/cPFence/clientfence/issues/56)).
+- **Default domain contact:** Settings > Domain registration > Contacts sends one company contact as the admin, tech and billing contact of every domain, as WHMCS; the registrant is always the client. "Use the client's details" stays the default.
+- **Change a domain's registrar** from its admin page, for a domain moved to another registrar ([#58](https://github.com/cPFence/clientfence/issues/58)).
+- The checkout summary shows what the domain renews at, next to the plan's renewal.
 
 ### Changed
 
 - System Health's Release files unchanged check no longer counts the root .htaccess, where you add your own rules; Pack .htaccess rules still checks ClientFence's own blocks.
+- A domain registration or transfer asks for the client's address, city, postal code and phone before payment, so the registrar can register it.
 
 ### Fixed
 
@@ -16,6 +21,9 @@
 - On an Enhance plan without mailboxes, the client area showed no mailbox limit instead of none.
 - Staff sign-in limit: saving the countries together with an IP list that is switched off but holds your address is no longer refused as a lock-out.
 - An email template language version or the email layout using a tag emails can't run, such as include, is refused when you save it, instead of failing when the email is sent.
+- A PayPal subscription can be tried again on the same invoice after an abandoned try; an invoice whose PayPal subscription is already set up says so instead of offering a second one ([#63](https://github.com/cPFence/clientfence/issues/63)).
+- A wide logo no longer runs over the Admin tag in the admin menu.
+- An email template or layout that can't be saved no longer shows an internal template name in the error.
 
 ## 1.0.61 (2026-11-20)
 
