@@ -106,6 +106,12 @@ class Payment_Adapter_PayPalEmail extends Payment_AdapterAbstract implements Cli
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoice = $invoiceService->toApiArray($invoiceModel, true);
 
+        // ClientFence core patch (GitHub #63): PayPal no longer blocks a second subscription of the invoice (its reference is new per
+        // try), so an invoice whose subscription is set up, its payment perhaps still pending at PayPal, gets none again.
+        if ($subscription && $this->di['db']->findOne('Subscription', 'rel_type = :type AND rel_id = :id AND pay_gateway_id = :gateway AND status = :status', [':type' => 'invoice', ':id' => (int) $invoice_id, ':gateway' => $this->gatewayId(), ':status' => 'active']) instanceof Model_Subscription) {
+            return '<p>' . htmlspecialchars(__trans('A PayPal subscription is already set up for this invoice. Its payment can take a few days to reach us.'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
+        }
+
         $data = [];
         if ($subscription) {
             $data = $this->getSubscriptionFields($invoice);
@@ -747,7 +753,8 @@ document.addEventListener('DOMContentLoaded', function() {
         $data['cmd'] = '_xclick-subscriptions';
         $data['rm'] = '1';
 
-        $data['invoice'] = $invoice['id'];
+        // ClientFence core patch (GitHub #63): unique per try, as PayPal refuses an invoice reference used before; verifyIpnEcho() reads the id back with (int).
+        $data['invoice'] = $invoice['id'] . '-' . bin2hex(random_bytes(4));
 
         // Recurrence info
         $data['a3'] = $this->moneyFormat($invoice['total'], $invoice['currency']); // Regular subscription price.

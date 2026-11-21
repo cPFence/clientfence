@@ -1232,3 +1232,43 @@ test('"Pay and save" takes the approved order\'s payment for its own invoice and
     $other = paypalVaultAdapter(PAYPAL_TOKEN + ['POST /v2/checkout/orders/ORDER-1/capture' => $order('cf-invoice-99')], $calls, paypalVaultDb());
     expect(fn () => $other->vaultCapture(paypalVaultInvoice(), 'ORDER-1'))->toThrow(ClientFence\InformationException::class, 'PayPal did not take the payment');
 });
+
+// GitHub #63: PayPal refuses a subscription checkout whose invoice reference was used before (an abandoned or pending try).
+test('each PayPal subscription checkout sends its own invoice reference, which the IPN check still reads as the invoice', function (): void {
+    $adapter = new Payment_Adapter_PayPalEmail(['email' => 'merchant@example.com', 'test_mode' => true, 'thankyou_url' => 'https://x.test/ok', 'cancel_url' => 'https://x.test/no', 'notify_url' => 'https://x.test/ipn']);
+    $adapter->setDi(container());
+    $invoice = [
+        'id' => 16, 'nr' => '00042', 'serie' => 'INV', 'currency' => 'EUR', 'total' => 10, 'lines' => [['title' => 'Hosting']],
+        'subscription' => ['cycle' => 1, 'unit' => 'M'],
+        'buyer' => ['address' => '', 'city' => '', 'email' => 'a@x.test', 'first_name' => 'A', 'last_name' => 'B', 'zip' => '', 'state' => ''],
+    ];
+    $first = $adapter->getSubscriptionFields($invoice)['invoice'];
+    $second = $adapter->getSubscriptionFields($invoice)['invoice'];
+
+    expect($first)->toMatch('/^16-[0-9a-f]{8}$/')->and($second)->toMatch('/^16-[0-9a-f]{8}$/')->and($second)->not->toBe($first);
+    invokePrivateMethod($adapter, 'verifyIpnEcho', [['invoice' => $first], paypalBean(Model_Invoice::class, ['id' => 16, 'nr' => '00042'])]);
+    expect(fn () => invokePrivateMethod($adapter, 'verifyIpnEcho', [['invoice' => '17-' . substr($first, 3)], paypalBean(Model_Invoice::class, ['id' => 16, 'nr' => '00042'])]))
+        ->toThrow(Payment_Exception::class, 'PayPal invoice reference does not match invoice 16');
+});
+
+// GitHub #63: with a reference new per try PayPal no longer blocks a second subscription, so an invoice whose subscription is
+// set up (its payment perhaps pending at PayPal) is not subscribed again: two subscriptions would both charge the client.
+test('an invoice with an active PayPal subscription gets no second subscription checkout', function (bool $active): void {
+    $redbean = Mockery::mock(ClientFence\Database::class);
+    $redbean->allows('load')->with('Invoice', 16)->andReturn(paypalBean(Model_Invoice::class, ['id' => 16, 'client_id' => 9]));
+    $redbean->shouldReceive('findOne')->once()
+        ->with('Subscription', 'rel_type = :type AND rel_id = :id AND pay_gateway_id = :gateway AND status = :status', [':type' => 'invoice', ':id' => 16, ':gateway' => 2, ':status' => 'active'])
+        ->andReturn($active ? paypalBean(Model_Subscription::class, ['id' => 5, 'status' => 'active']) : null);
+    $invoices = Mockery::mock();
+    $invoices->allows('toApiArray')->andReturn([
+        'id' => 16, 'nr' => '00042', 'serie' => 'INV', 'currency' => 'EUR', 'total' => 10, 'lines' => [['title' => 'Hosting']],
+        'subscription' => ['cycle' => 1, 'unit' => 'M'],
+        'buyer' => ['address' => '', 'city' => '', 'email' => 'a@x.test', 'first_name' => 'A', 'last_name' => 'B', 'zip' => '', 'state' => ''],
+    ]);
+    $adapter = paypalVaultAdapter([], $calls, paypalVaultDb(), $invoices, $redbean);
+    setPrivateProperty($adapter, 'config', ['email' => 'merchant@example.com', 'test_mode' => true, 'gateway_id' => 2, 'thankyou_url' => 'https://x.test/ok', 'cancel_url' => 'https://x.test/no', 'notify_url' => 'https://x.test/ipn.php']);
+
+    $html = $adapter->getHtml(null, 16, true);
+    expect(str_contains($html, '_xclick-subscriptions'))->toBe(!$active)
+        ->and(str_contains($html, 'A PayPal subscription is already set up for this invoice.'))->toBe($active);
+})->with(['active subscription' => [true], 'none' => [false]]);
