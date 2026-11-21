@@ -430,9 +430,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.id += lang;
                 label.htmlFor = input.id;
                 input.lang = lang.slice(0, 2);
-                // The message is HTML code: only the subject reads right to left.
-                if (field === 'subject' && {{ constant('ClientFence\\Twig\\Extension\\RtlDateExtension::RTL_LANGUAGES')|json_encode|raw }}.includes(input.lang)) {
-                    input.dir = 'rtl';
+                // The message is HTML code: only the subject takes its language's direction (on a right-to-left page too).
+                if (field === 'subject') {
+                    input.dir = {{ constant('ClientFence\\Twig\\Extension\\RtlDateExtension::RTL_LANGUAGES')|json_encode|raw }}.includes(input.lang) ? 'rtl' : 'ltr';
                 }
                 input.value = panes.querySelector('[data-cf-lang-pane=""] [data-cf-field="' + field + '"]').value;
             });

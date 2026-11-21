@@ -17,7 +17,7 @@
     <div class="row g-3">
         <div class="col-lg-8">
             <label class="form-label" for="email-subject-{{ lang }}">{{ 'Email Subject'|trans }}</label>
-            <input class="form-control" type="text" name="translations[{{ lang }}][subject]" value="{{ subject }}" id="email-subject-{{ lang }}" data-cf-field="subject" lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}{% if not can_edit %} readonly{% endif %}>
+            <input class="form-control" type="text" name="translations[{{ lang }}][subject]" value="{{ subject }}" id="email-subject-{{ lang }}" data-cf-field="subject" lang="{{ lang[:2] }}" dir="{{ rtl ? 'rtl' : 'ltr' }}"{% if not can_edit %} readonly{% endif %}>
         </div>
         <div class="col-12">
             <label class="form-label" for="email-template-{{ lang }}">{{ 'Email Message'|trans }}</label>
