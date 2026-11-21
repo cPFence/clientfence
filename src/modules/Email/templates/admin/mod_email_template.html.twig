@@ -116,7 +116,7 @@
                                             <div class="row g-3">
                                                 <div class="col-lg-8">
                                                     <label class="form-label" for="email-subject">{{ 'Email Subject'|trans }}</label>
-                                                    <input class="form-control" type="text" name="subject" value="{{ template.subject }}" id="email-subject" data-cf-field="subject" required{% if not can_manage_templates %} readonly{% endif %}>
+                                                    <input dir="auto" class="form-control" type="text" name="subject" value="{{ template.subject }}" id="email-subject" data-cf-field="subject" required{% if not can_manage_templates %} readonly{% endif %}>
                                                 </div>
                                                 <div class="col-12">
                                                     <label class="form-label" for="email-template">{{ 'Email Message'|trans }}</label>
@@ -294,7 +294,7 @@
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label" for="email-sample-subject">{{ 'Example Subject'|trans }}</label>
-                                        <input class="form-control" id="email-sample-subject" type="text" value="{{ template.subject }}">
+                                        <input dir="ltr" class="form-control" id="email-sample-subject" type="text" value="{{ template.subject }}">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label" for="email-sample-template">{{ 'Example Message'|trans }}</label>
