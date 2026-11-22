@@ -54,3 +54,16 @@ test('PDF logo embeds a remote raster image', function (): void {
     $client = new MockHttpClient(new MockResponse(pdfLogoPng(), ['response_headers' => ['content-type: image/png']]));
     expect(pdfLogoService($client)->logo('https://8.8.8.8/logo.png'))->toBe(['data:image/png;base64,' . base64_encode(pdfLogoPng()), false]);
 });
+
+test('PDF logo reads an SVG logo of this site from its folder when there is no DOCUMENT_ROOT (cron)', function (): void {
+    $path = 'public/uploads/brand/logo-0000000000000065.svg';
+    @mkdir(PATH_ROOT . '/public/uploads/brand', 0755, true);
+    file_put_contents(PATH_ROOT . '/' . $path, '<svg xmlns="http://www.w3.org/2000/svg" width="3" height="1"><rect width="3" height="1"/></svg>');
+    $service = pdfLogoService(new MockHttpClient());
+    $service->getDi()['request']->server->set('DOCUMENT_ROOT', '');
+    try {
+        expect($service->logo(SYSTEM_URL . $path)[0])->toStartWith('data:image/svg+xml;base64,');
+    } finally {
+        unlink(PATH_ROOT . '/' . $path);
+    }
+});

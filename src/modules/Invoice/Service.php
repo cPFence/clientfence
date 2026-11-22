@@ -4180,6 +4180,11 @@ class Service implements InjectionAwareInterface
             return [$this->fetchPdfLogo($originalUrl), false];
         }
 
+        // ClientFence core patch: a logo on this site is read from its folder, also from cron, which has no DOCUMENT_ROOT.
+        $local = PATH_ROOT . '/' . substr($originalUrl, strlen(SYSTEM_URL));
+        if (str_starts_with($originalUrl, SYSTEM_URL) && $this->filesystem->exists($local)) {
+            $source = $local;
+        }
         // prevent openbasedir error from preventing pdf creation when debug mode is enabled
         if (@!$this->filesystem->exists($source)) {
             $source = Path::join($this->di['request']->server->get('DOCUMENT_ROOT', ''), $source);
