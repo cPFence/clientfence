@@ -32738,3 +32738,139 @@ msgstr ":image alapértelmezettjének visszaállítása"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "Töltsön fel érvényes, grafikát tartalmazó SVG-t."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar már tartja a(z) :domain domaint a fiókban. Ha a rendelés korábbi próbálkozása regisztrálta vagy átvitte, aktiválja a rendelést kézzel."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar nem találta a(z) :domain domaint a fiókban."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar nincs teljesen beállítva. Kérjük, állítsa be: :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar nem tudta végrehajtani a(z) :command parancsot: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar kétlépéses bejelentkezést használ a fiókon: az API-hoz használjon olyan fiókot, amely nélkülözi."
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar nem tudja megrendelni a(z) :domain domaint: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar nem tudta végrehajtani a(z) :command parancsot (HTTP-állapot: :status)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar nem adott vissza kapcsolattartói azonosítót."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar nem adott vissza kapcsolattartói handle-t."
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar nem adott vissza ügyfélazonosítót."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar nem kínál :years éves átvitelt a(z) :tld végződéshez."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar nem rendelkezik adatvédelmi szolgáltatással: a .uk WHOIS csak a jogosult hozzájárulásával mutatja a nevét és a címét."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar házszámot igényel az ügyfél címében."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar olvashatatlan választ adott a(z) :command parancsra"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar nem adott vissza adatokat a(z) :domain domainről"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar nem adott vissza fizetve-eddig dátumot a(z) :domain domainhez."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar nem adott vissza keresési találatot a(z) :domain domainre"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar nem adott vissza átviteli kódot. Először oldja fel a domain zárolását."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar nem tudta elvégezni a keresést: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar az API-n keresztül nem engedi a(z) :tld végződésű domainek regisztrálását. Ok: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar az API-n keresztül nem engedi a(z) :tld végződésű domainek átvitelét."
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "Módosítsa a .dk domainek névszervereit és kapcsolattartóit a vezérlőpulton (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar nem volt elérhető a(z) :command parancshoz"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: sikertelen (:type:). További részletekért nézze meg a hibanaplókat."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "A regisztrátor e-mailben elküldte az átviteli kódot a domain jogosultjának."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "A regisztrátor nem tudja végrehajtani ezt a műveletet: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "A domain regisztrátora az API-ján keresztül nem támogatja ezt a műveletet."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "A domain regisztrátora nem támogatja ezt a műveletet. Kérjük, forduljon az ügyfélszolgálathoz."
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "a regisztrátor"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "A regisztrátor e-mailben elküldte az átviteli kódot a domain adminisztratív kapcsolattartójának."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar a(z) :order rendeléshez a(z) :status állapotot jelzi. Ellenőrizze a rendelést a megfelelő fiókban."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar a WHOIS-adatvédelmet fizetős szolgáltatásként értékesíti: kapcsolja be a megfelelő vezérlőpulton."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar nem rendelkezik a szükséges konfigurációval: :field"

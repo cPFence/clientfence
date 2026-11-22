@@ -35208,3 +35208,139 @@ msgstr "還原 :image 的預設值"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "請上傳包含圖稿的有效 SVG。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar 已在帳戶中持有 :domain。如果此訂單先前的嘗試已註冊或轉移了它，請手動啟用訂單。"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar 在帳戶中找不到 :domain。"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar 尚未完全設定。請設定 :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar 無法執行指令 :command：:error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar 在帳戶上使用兩步驟登入：請為 API 使用未啟用該功能的帳戶。"
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar 無法訂購 :domain：:error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar 無法執行指令 :command（HTTP 狀態 :status）。"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar 未傳回聯絡人 ID。"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar 未傳回聯絡人控點。"
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar 未傳回客戶 ID。"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar 不提供 :tld 的 :years 年轉移。"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar 沒有隱私服務：.uk 的 WHOIS 僅在註冊人同意時才顯示其姓名和地址。"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar 需要客戶地址中的門牌號碼。"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar 為 :command 傳回了無法讀取的回應"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar 未傳回 :domain 的任何詳細資料"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar 未傳回 :domain 的付費截止日期。"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar 未傳回 :domain 的搜尋結果"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar 未傳回轉移碼。請先解鎖域名。"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar 無法執行搜尋：:error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar 不允許透過 API 註冊後綴為 :tld 的域名。原因：:reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar 不允許透過 API 轉移後綴為 :tld 的域名。"
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "請在控制台（:registrar）中變更 .dk 域名的名稱伺服器和聯絡人。"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar 對 :command 無法使用"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: 失敗（:type:）。請查看錯誤記錄以取得更多詳細資料。"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "註冊商已透過電子郵件將轉移碼寄給域名註冊人。"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "註冊商無法執行此操作：:action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "此域名的註冊商不支援透過其 API 執行此操作。"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "此域名的註冊商不支援此操作。請聯絡支援團隊。"
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "註冊商"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "註冊商已透過電子郵件將轉移碼寄給域名的管理聯絡人。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar 回報訂單 :order 的狀態為 :status。請在對應帳戶中檢查該訂單。"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar 將 WHOIS 隱私作為付費服務販售：請在對應的控制台中開啟。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar 缺少必要設定：:field"

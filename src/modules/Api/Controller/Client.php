@@ -111,7 +111,14 @@ class Client implements InjectionAwareInterface
      */
     private function sanitizeGuestError($role, $class, $call, \Exception $exc): \Exception
     {
-        if (!in_array($role, ['guest', 'client'], true) || $exc instanceof \ClientFence\Exception) {
+        if (!in_array($role, ['guest', 'client'], true)) {
+            return $exc;
+        }
+        // ClientFence core patch: a registrar error names no registrar to clients (Registrar_Exception::withoutRegistrarName).
+        if ($exc instanceof \Registrar_Exception) {
+            return $exc->withoutRegistrarName();
+        }
+        if ($exc instanceof \ClientFence\Exception) {
             return $exc;
         }
 

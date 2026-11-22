@@ -119,8 +119,8 @@ test('a .uk individual sends the name as org_name; a .it contact change carries 
         ->and($sent[1]['contact_set']['admin'])->not->toHaveKey('reg_code');
 
     $adapter = opensrsAdapter();
-    expect(fn () => $adapter->modifyNs(opensrsDomain('.dk')))->toThrow(Registrar_Exception::class, 'OpenSRS control panel')
-        ->and(fn () => $adapter->modifyContact(opensrsDomain('.dk')))->toThrow(Registrar_Exception::class, 'OpenSRS control panel')
+    expect(fn () => $adapter->modifyNs(opensrsDomain('.dk')))->toThrow(Registrar_Exception::class, 'control panel of OpenSRS')
+        ->and(fn () => $adapter->modifyContact(opensrsDomain('.dk')))->toThrow(Registrar_Exception::class, 'control panel of OpenSRS')
         ->and(fn () => $adapter->isDomainAvailable(opensrsDomain('.com.au')))->toThrow(Registrar_Exception::class, 'registry details')
         ->and(fn () => $adapter->isDomaincanBeTransferred(opensrsDomain('.com.au')))->toThrow(Registrar_Exception::class, 'registry details')
         ->and($GLOBALS['opensrs_calls'])->toBe([])

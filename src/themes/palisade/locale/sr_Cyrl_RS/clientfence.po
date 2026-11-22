@@ -35224,3 +35224,139 @@ msgstr "Врати подразумевано за :image"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "Отпремите важећи SVG са графичким садржајем."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar већ држи :domain у налогу. Ако га је ранији покушај ове поруџбине регистровао или пренео, активирајте поруџбину ручно."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar није пронашао :domain у налогу."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar није у потпуности конфигурисан. Конфигуришите :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar није могао да изврши наредбу :command: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar користи двофакторску пријаву на налогу: за API користите налог без ње."
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar не може да наручи :domain: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar није могао да изврши наредбу :command (HTTP статус :status)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar није вратио ID контакта."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar није вратио handle контакта."
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar није вратио ID купца."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar не нуди пренос на :years год. за :tld."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar нема услугу приватности: .uk WHOIS приказује име и адресу носиоца само уз његов пристанак."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar тражи кућни број у адреси клијента."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar је вратио нечитљив одговор за :command"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar није вратио детаље за :domain"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar није вратио датум плаћености до за :domain."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar није вратио резултат претраге за :domain"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar није вратио код за пренос. Прво откључајте домен."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar није могао да изврши претрагу: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar не дозвољава путем API-ја регистрацију домена са наставком :tld. Разлог: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar не дозвољава путем API-ја пренос домена са наставком :tld."
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "Промените наме сервере и контакте .dk домена у контролном панелу (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar није био доступан за :command"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: није успело (:type:). Погледајте записе грешака за више детаља."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "Регистрар је е-поштом послао код за пренос носиоцу домена."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "Регистрар не може да изврши ову радњу: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "Регистрар овог домена не подржава ову радњу путем свог API-ја."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "Регистрар овог домена не подржава ову радњу. Обратите се подршци."
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "регистрар"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "Регистрар је е-поштом послао код за пренос административном контакту домена."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar за поруџбину :order јавља статус :status. Проверите поруџбину у одговарајућем налогу."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar продаје WHOIS приватност као плаћену услугу: укључите је у одговарајућем контролном панелу."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar нема обавезну конфигурацију: :field"

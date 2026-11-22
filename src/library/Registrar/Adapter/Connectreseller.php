@@ -24,7 +24,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
     public function __construct($options)
     {
         if (trim((string) ($options['api_key'] ?? '')) === '') {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'ConnectReseller', ':missing' => 'API key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'ConnectReseller', ':missing' => 'API key'], 3001);
         }
 
         $this->config['api_key'] = trim((string) $options['api_key']);
@@ -95,7 +95,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
         $ids = $this->roleHandles($domain, function (Registrar_Domain_Contact $c) use ($info): string {
             $id = (string) ($this->request('AddRegistrantContact', $this->contact($c) + ['Id' => $info['customerId'] ?? ''])['responseMsg']['id'] ?? '');
             if ($id === '' || $id === '0') {
-                throw new Registrar_Exception('ConnectReseller did not return a contact ID.');
+                throw new Registrar_Exception(':registrar did not return a contact ID.', [':registrar' => 'ConnectReseller']);
             }
 
             return $id;
@@ -169,7 +169,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
     {
         $code = trim((string) ($this->info($domain)['authCode'] ?? ''));
         if ($code === '') {
-            throw new Registrar_Exception('ConnectReseller did not return the transfer code of :domain.', [':domain' => $domain->getName()]);
+            throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
         }
 
         return $code;
@@ -301,7 +301,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
 
         $reply = json_decode($body, true);
         if (!is_array($reply)) {
-            throw new Registrar_Exception('ConnectReseller returned an unreadable response for :command', [':command' => $command]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'ConnectReseller', ':command' => $command]);
         }
         $status = (int) ($reply['responseMsg']['statusCode'] ?? $http);
         if (!in_array($status, $ok, true)) {
@@ -331,7 +331,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
     {
         $data = $this->request('ViewDomain', ['websiteName' => $domain->getName()])['responseData'] ?? null;
         if (!is_array($data) || empty($data['domainNameId'])) {
-            throw new Registrar_Exception(':domain was not found in the ConnectReseller account.', [':domain' => $domain->getName()]);
+            throw new Registrar_Exception(':domain was not found in the account at :registrar.', [':registrar' => 'ConnectReseller', ':domain' => $domain->getName()]);
         }
 
         return $data;
@@ -351,7 +351,7 @@ class Registrar_Adapter_Connectreseller extends Registrar_AdapterAbstract implem
             $id = $find();
         }
         if ($id === 0) {
-            throw new Registrar_Exception('ConnectReseller did not return a customer ID.');
+            throw new Registrar_Exception(':registrar did not return a customer ID.', [':registrar' => 'ConnectReseller']);
         }
 
         return $id;

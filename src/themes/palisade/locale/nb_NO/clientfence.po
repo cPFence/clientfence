@@ -35216,3 +35216,139 @@ msgstr "Gjenopprett standard for :image"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "Last opp en gyldig SVG med grafisk innhold."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar har allerede :domain i kontoen. Hvis et tidligere forsøk på denne ordren har registrert eller overført det, aktiver ordren manuelt."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar fant ikke :domain i kontoen."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar er ikke fullt konfigurert. Konfigurer :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar kunne ikke utføre kommandoen :command: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar bruker totrinnspålogging på kontoen: bruk en konto uten det til API-et."
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar kan ikke bestille :domain: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar kunne ikke utføre kommandoen :command (HTTP-status :status)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar returnerte ikke en kontakt-ID."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar returnerte ikke et kontakt-handle."
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar returnerte ikke en kunde-ID."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar tilbyr ikke en overføring på :years år for :tld."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar har ingen personverntjeneste: .uk-WHOIS viser innehaverens navn og adresse bare med samtykke."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar trenger et husnummer i kundens adresse."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar returnerte et uleselig svar for :command"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar returnerte ingen detaljer for :domain"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar returnerte ingen betalt-til-dato for :domain."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar returnerte ikke noe søkeresultat for :domain"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar returnerte ingen overføringskode. Lås opp domenet først."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar kunne ikke utføre søket: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar tillater ikke registrering av domener med endelsen :tld via API-et. Årsak: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar tillater ikke overføring av domener med endelsen :tld via API-et."
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "Endre navneserverne og kontaktene for .dk-domener i kontrollpanelet (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar var ikke tilgjengelig for :command"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: mislyktes (:type:). Sjekk feilloggene for flere detaljer."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "Registraren har sendt overføringskoden på e-post til domeneinnehaveren."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "Registraren kan ikke utføre denne handlingen: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "Domenets registrar støtter ikke denne handlingen via sitt API."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "Domenets registrar støtter ikke denne handlingen. Kontakt support."
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "registraren"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "Registraren har sendt overføringskoden på e-post til domenets administrative kontakt."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar melder status :status for ordre :order. Sjekk ordren i den tilhørende kontoen."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar selger WHOIS-personvern som en betalt tjeneste: slå det på i det tilhørende kontrollpanelet."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar mangler påkrevd konfigurasjon: :field"

@@ -52,7 +52,7 @@ class Registrar_Adapter_Webhosting4u extends Registrar_AdapterAbstract implement
     {
         foreach (['username' => 'API username', 'api_key' => 'API key'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'WebHosting|4U', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'WebHosting|4U', ':missing' => $label], 3001);
             }
             $this->config[$key] = trim((string) $options[$key]);
         }
@@ -243,12 +243,8 @@ class Registrar_Adapter_Webhosting4u extends Registrar_AdapterAbstract implement
                 return trim((string) $result[$key]);
             }
         }
-        // An empty eppcode is a registry (such as .eu) that does not hand the code out through this call.
-        if (array_key_exists('eppcode', $result)) {
-            throw new Registrar_Exception(':registrar holds no transfer code for :domain. Request it from WebHosting|4U.', [':registrar' => 'WebHosting|4U', ':domain' => $domain->getName()]);
-        }
-
-        throw new Registrar_Exception(':registrar did not return a transfer code for :domain.', [':registrar' => 'WebHosting|4U', ':domain' => $domain->getName()]);
+        // No code: a registry (such as .eu) that does not hand it out through this call, or an unexpected reply.
+        throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
     }
 
     public function lock(Registrar_Domain $domain): bool

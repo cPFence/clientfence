@@ -29,13 +29,13 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!empty($options['api-key'])) {
             $this->config['api-key'] = $options['api-key'];
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Namecheap', ':missing' => 'API Key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Namecheap', ':missing' => 'API Key'], 3001);
         }
 
         if (!empty($options['username'])) {
             $this->config['username'] = $options['username'];
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Namecheap', ':missing' => 'Username'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Namecheap', ':missing' => 'Username'], 3001);
         }
 
         if (empty($options['api-user-id'])) {
@@ -47,8 +47,13 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!empty($options['ip'])) {
             $this->config['ip'] = $options['ip'];
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Namecheap', ':missing' => 'server IP address'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Namecheap', ':missing' => 'server IP address'], 3001);
         }
+    }
+
+    public static function getUnsupportedActions(): array
+    {
+        return ['getEpp'];
     }
 
     public static function getConfig(): array
@@ -143,7 +148,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
             $data = $response->getContent();
         } catch (HttpExceptionInterface|TransportExceptionInterface $error) {
             $status = $error instanceof HttpExceptionInterface ? $error->getResponse()->getStatusCode() : 0;
-            $e = new Registrar_Exception('Namecheap command :command failed with HTTP status :status.', [':command' => $params['Command'], ':status' => $status]);
+            $e = new Registrar_Exception(':registrar command :command failed with HTTP status :status.', [':registrar' => 'Namecheap', ':command' => $params['Command'], ':status' => $status]);
             $this->getLog()->error($e->getMessage());
 
             throw $e;
@@ -160,14 +165,14 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
             error_log('Namecheap error: ' . PHP_EOL . $result->Errors->Error);
             $placeholders = [':action:' => $params['Command'], ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         if (isset($result['Status']) && strtolower((string) $result['Status']) == 'failed') {
             error_log('Namecheap error: ' . PHP_EOL . $result->Errors->Error);
             $placeholders = [':action:' => $params['Command'], ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         return $result;
@@ -231,7 +236,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!isset($result->CommandResponse->DomainDNSSetCustomResult['Updated']) || $result->CommandResponse->DomainDNSSetCustomResult['Updated'] != 'true') {
             $placeholders = [':action:' => __trans('update nameservers'), ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         return true;
@@ -362,7 +367,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!isset($result->CommandResponse->DomainContactsResult)) {
             $placeholders = [':action:' => __trans('retrieve domain details'), ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         $contacts = $result->CommandResponse->DomainContactsResult;
@@ -587,7 +592,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         }
         $placeholders = [':action:' => __trans('retrieve privacy information'), ':type:' => 'Namecheap'];
 
-        throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+        throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
     }
 
     /**
@@ -652,7 +657,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!isset($result->CommandResponse->DomainGetRegistrarLockResult['RegistrarLockStatus'])) {
             $placeholders = [':action:' => __trans('get the domain lock status'), ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         return $result->CommandResponse->DomainGetRegistrarLockResult['RegistrarLockStatus'] == 'true';
@@ -677,7 +682,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!isset($result->CommandResponse->DomainSetRegistrarLockResult['IsSuccess'])) {
             $placeholders = [':action:' => __trans('set the domain lock status'), ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
         if ($result->CommandResponse->DomainSetRegistrarLockResult['IsSuccess'] == 'true') {
             $domain->setLocked('true');
@@ -707,7 +712,7 @@ class Registrar_Adapter_Namecheap extends Registrar_AdapterAbstract implements R
         if (!isset($result->CommandResponse->DomainSetRegistrarLockResult['IsSuccess'])) {
             $placeholders = [':action:' => __trans('set the domain lock status'), ':type:' => 'Namecheap'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
         if ($result->CommandResponse->DomainSetRegistrarLockResult['IsSuccess'] == 'true') {
             $domain->setLocked('false');

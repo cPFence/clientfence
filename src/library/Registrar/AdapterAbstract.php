@@ -64,6 +64,17 @@ abstract class Registrar_AdapterAbstract
         return [];
     }
 
+    /**
+     * ClientFence core patch: the domain actions this registrar's API cannot do (of lock, unlock, enablePrivacyProtection,
+     * disablePrivacyProtection, getEpp); the client and admin domain pages show their buttons disabled with the reason.
+     *
+     * @return string[]
+     */
+    public static function getUnsupportedActions(): array
+    {
+        return [];
+    }
+
     /** ClientFence: the .us registry's nexus and purpose questions (nexus_category, nexus_country, app_purpose), with its codes as values. */
     protected static function usNexusFields(): array
     {

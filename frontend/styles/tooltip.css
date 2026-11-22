@@ -1,0 +1,71 @@
+/* One tooltip look for the admin and client areas (Bootstrap tooltips: Tabler's --tblr- variables in the admin,
+   --bs- in the client theme). A soft dark card with a gentle rise in light mode, a light one in dark mode. */
+html .tooltip {
+  --cf-tooltip-bg: rgba(15, 23, 42, 0.94);
+  --cf-tooltip-color: #f8fafc;
+  --cf-tooltip-border: rgba(255, 255, 255, 0.08);
+  --cf-tooltip-shadow: 0 12px 28px rgba(15, 23, 42, 0.22), 0 2px 6px rgba(15, 23, 42, 0.12);
+  --bs-tooltip-bg: var(--cf-tooltip-bg);
+  --bs-tooltip-color: var(--cf-tooltip-color);
+  --bs-tooltip-opacity: 1;
+  --bs-tooltip-padding-x: 0.75rem;
+  --bs-tooltip-padding-y: 0.5rem;
+  --bs-tooltip-border-radius: 0.625rem;
+  --bs-tooltip-font-size: 0.8125rem;
+  --bs-tooltip-max-width: 18rem;
+  --tblr-tooltip-bg: var(--cf-tooltip-bg);
+  --tblr-tooltip-color: var(--cf-tooltip-color);
+  --tblr-tooltip-opacity: 1;
+  --tblr-tooltip-padding-x: 0.75rem;
+  --tblr-tooltip-padding-y: 0.5rem;
+  --tblr-tooltip-border-radius: 0.625rem;
+  --tblr-tooltip-font-size: 0.8125rem;
+  --tblr-tooltip-max-width: 18rem;
+  pointer-events: none;
+}
+
+/* The shared card for plain titles (title-tooltips.mts): as wide as its text, whatever the page layout. */
+html #cf-tooltip { width: max-content; }
+
+html[data-bs-theme='dark'] .tooltip {
+  --cf-tooltip-bg: rgba(241, 245, 249, 0.97);
+  --cf-tooltip-color: #0f172a;
+  --cf-tooltip-border: rgba(15, 23, 42, 0.08);
+  --cf-tooltip-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+html .tooltip-inner {
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  text-align: start;
+  border: 1px solid var(--cf-tooltip-border);
+  box-shadow: var(--cf-tooltip-shadow);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: transform 0.16s ease;
+}
+
+/* The arrow, drawn here for both areas (the admin theme's bundle has no arrow placement rules). */
+html .tooltip .tooltip-arrow { position: absolute; display: block; width: 0.8rem; height: 0.4rem; }
+html .tooltip .tooltip-arrow::before { position: absolute; content: ''; border: 0.4rem solid transparent; }
+html .tooltip[data-popper-placement^='top'] .tooltip-arrow { bottom: -0.4rem; }
+html .tooltip[data-popper-placement^='top'] .tooltip-arrow::before { top: -1px; border-bottom-width: 0; border-top-color: var(--cf-tooltip-bg); }
+html .tooltip[data-popper-placement^='bottom'] .tooltip-arrow { top: -0.4rem; }
+html .tooltip[data-popper-placement^='bottom'] .tooltip-arrow::before { bottom: -1px; border-top-width: 0; border-bottom-color: var(--cf-tooltip-bg); }
+html .tooltip[data-popper-placement^='left'] .tooltip-arrow,
+html .tooltip[data-popper-placement^='right'] .tooltip-arrow { width: 0.4rem; height: 0.8rem; }
+html .tooltip[data-popper-placement^='left'] .tooltip-arrow { right: -0.4rem; }
+html .tooltip[data-popper-placement^='left'] .tooltip-arrow::before { left: -1px; border-right-width: 0; border-left-color: var(--cf-tooltip-bg); }
+html .tooltip[data-popper-placement^='right'] .tooltip-arrow { left: -0.4rem; }
+html .tooltip[data-popper-placement^='right'] .tooltip-arrow::before { right: -1px; border-left-width: 0; border-right-color: var(--cf-tooltip-bg); }
+
+/* The card rises toward its target as it fades in. */
+html .tooltip.fade:not(.show)[data-popper-placement^='top'] .tooltip-inner { transform: translateY(4px); }
+html .tooltip.fade:not(.show)[data-popper-placement^='bottom'] .tooltip-inner { transform: translateY(-4px); }
+html .tooltip.fade:not(.show)[data-popper-placement^='left'] .tooltip-inner { transform: translateX(4px); }
+html .tooltip.fade:not(.show)[data-popper-placement^='right'] .tooltip-inner { transform: translateX(-4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html .tooltip-inner { transition: none; transform: none !important; }
+}

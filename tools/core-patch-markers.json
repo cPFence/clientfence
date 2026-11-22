@@ -3565,7 +3565,7 @@
     },
     {
         "file": "themes/admin_default/html/layout_default.html.twig",
-        "done": "ClientFence core patch: the shared page loader style (css/loader.css)."
+        "done": "ClientFence core patch: the shared page loader and tooltip styles (css/loader.css, css/tooltip.css)."
     },
     {
         "file": "themes/admin_default/html/layout_default.html.twig",
@@ -3573,7 +3573,7 @@
     },
     {
         "file": "themes/admin_default/html/layout_login.html.twig",
-        "done": "ClientFence core patch: the shared page loader style (css/loader.css)."
+        "done": "ClientFence core patch: the shared page loader and tooltip styles (css/loader.css, css/tooltip.css)."
     },
     {
         "file": "modules/Order/Api/Admin.php",
@@ -9754,5 +9754,37 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: a logo on this site is read from its folder, also from cron, which has no DOCUMENT_ROOT."
+    },
+    {
+        "file": "library/Registrar/Exception.php",
+        "done": "ClientFence core patch: clients and guests read \"the registrar\" for its name, so a reseller does not show which"
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: a registrar error names no registrar to clients (Registrar_Exception::withoutRegistrarName)."
+    },
+    {
+        "file": "library/Registrar/AdapterAbstract.php",
+        "done": "ClientFence core patch: the domain actions this registrar's API cannot do (of lock, unlock, enablePrivacyProtection,"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the actions the registrar cannot do, shown as disabled buttons (getUnsupportedActions)."
+    },
+    {
+        "file": "themes/palisade/html/mod_servicedomain_manage.html.twig",
+        "done": "{# ClientFence core patch: an action the registrar cannot do is a disabled button with the reason (getUnsupportedActions). #}"
+    },
+    {
+        "file": "modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig",
+        "done": "{# ClientFence core patch: an action the registrar cannot do is a disabled button with the reason (getUnsupportedActions). #}"
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig",
+        "done": "{# ClientFence core patch: an action the registrar cannot do is a disabled button with the reason (getUnsupportedActions). #}"
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: a registrar error, so clients and guests are not told which registrar this is."
     }
 ]

@@ -30,7 +30,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
     public function __construct($options)
     {
         if (empty($options['username']) || empty($options['password'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'INWX', ':missing' => 'username and password'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'INWX', ':missing' => 'username and password'], 3001);
         }
 
         $this->config['username'] = trim((string) $options['username']);
@@ -184,7 +184,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
         $date = match (true) {
             is_string($expires) && preg_match('/^\d{4}-\d{2}-\d{2}/', $expires, $m) === 1 => $m[0],
             is_array($expires) && isset($expires['timestamp']) => date('Y-m-d', (int) $expires['timestamp']),
-            default => throw new Registrar_Exception('INWX returned an unreadable response for :command', [':command' => 'domain.info']),
+            default => throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'INWX', ':command' => 'domain.info']),
         };
         $this->request('domain.renew', ['domain' => $domain->getName(), 'period' => max(1, (int) $domain->getRegistrationPeriod()) . 'Y', 'expiration' => $date]);
 
@@ -253,7 +253,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
         if ($this->session === null && $method !== 'account.login') {
             $login = $this->request('account.login', ['user' => $this->config['username'], 'pass' => $this->config['password']]);
             if (!empty($login['tfa'])) {
-                throw new Registrar_Exception('The INWX account uses two-factor sign-in: use an account without it for the API.');
+                throw new Registrar_Exception(':registrar account uses two-factor sign-in: use an account without it for the API.', [':registrar' => 'INWX']);
             }
         }
 
@@ -275,7 +275,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
         }
 
         if (!is_array($reply) || !isset($reply['code'])) {
-            throw new Registrar_Exception('INWX returned an unreadable response for :command', [':command' => $method]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'INWX', ':command' => $method]);
         }
         if (!in_array((int) $reply['code'], [1000, 1001], true)) {
             $reason = trim(($reply['msg'] ?? '') . (isset($reply['reason']) ? ': ' . $reply['reason'] : ''));
@@ -284,7 +284,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
             throw new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'INWX', ':error' => $reason !== '' ? $reason : (string) $reply['code']], (int) $reply['code']);
         }
         if ($method === 'account.login' && $this->session === null) {
-            throw new Registrar_Exception('INWX returned an unreadable response for :command', [':command' => $method]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'INWX', ':command' => $method]);
         }
 
         return is_array($reply['resData'] ?? null) ? $reply['resData'] : [];
@@ -298,7 +298,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
             }
         }
 
-        throw new Registrar_Exception('INWX returned an unreadable response for :command', [':command' => 'domain.check']);
+        throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'INWX', ':command' => 'domain.check']);
     }
 
     /** INWX dates: a "timestamp" struct (as XML-RPC clients see them) or a date string. */
@@ -369,7 +369,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
             'voice' => '+' . $cc . '.' . $tel,
         ], fn (string $value) => $value !== '') + ['extData' => ['PARSE-VOICE' => true]])['id'] ?? 0);
         if ($id === 0) {
-            throw new Registrar_Exception('INWX did not return a contact ID.');
+            throw new Registrar_Exception(':registrar did not return a contact ID.', [':registrar' => 'INWX']);
         }
 
         return $id;

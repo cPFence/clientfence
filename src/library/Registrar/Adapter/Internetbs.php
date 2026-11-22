@@ -16,14 +16,14 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
             $this->config['apikey'] = $options['apikey'];
             unset($options['apikey']);
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Internetbs', ':missing' => 'Internetbs API key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Internetbs', ':missing' => 'API key'], 3001);
         }
 
         if (isset($options['password']) && !empty($options['password'])) {
             $this->config['password'] = $options['password'];
             unset($options['password']);
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Internetbs', ':missing' => 'Internetbs API password'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Internetbs', ':missing' => 'API password'], 3001);
         }
     }
 
@@ -179,7 +179,7 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
         }
         $placeholders = [':action:' => __trans('get domain details'), ':type:' => 'Internetbs'];
 
-        throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+        throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
     }
 
     public function deleteDomain(Registrar_Domain $domain): never

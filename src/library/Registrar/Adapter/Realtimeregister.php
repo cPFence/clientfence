@@ -56,7 +56,7 @@ class Registrar_Adapter_Realtimeregister extends Registrar_AdapterAbstract imple
     {
         foreach (['customer' => 'customer handle', 'api_key' => 'API key'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Realtime Register', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Realtime Register', ':missing' => $label], 3001);
             }
             $this->config[$key] = trim((string) $options[$key]);
         }
@@ -351,7 +351,7 @@ class Registrar_Adapter_Realtimeregister extends Registrar_AdapterAbstract imple
     {
         $result = $this->request('GET', $this->domainPath($domain) . '/check');
         if (!is_bool($result['available'] ?? null)) {
-            throw new Registrar_Exception('Realtime Register returned an unreadable response for :command', [':command' => 'domains/check']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Realtime Register', ':command' => 'domains/check']);
         }
 
         return $result;

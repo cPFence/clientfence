@@ -1723,6 +1723,7 @@ test('converts to api array', function (?Model_Admin $identity, string $dbLoadCa
     $tldRegistrar = new Model_TldRegistrar();
     $tldRegistrar->loadBean(new Tests\Helpers\DummyBean());
     $tldRegistrar->name = 'ResellerClub';
+    $tldRegistrar->registrar = 'Porkbun';
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('load')
@@ -1743,6 +1744,8 @@ test('converts to api array', function (?Model_Admin $identity, string $dbLoadCa
 
     expect($result)->toBeArray();
     expect($result['company_contact'])->toBeTrue();
+    // The registrar's unsupported actions drive the disabled buttons.
+    expect($result['unsupported_actions'])->toBe(Registrar_Adapter_Porkbun::getUnsupportedActions());
     expect($result)->toHaveKey('domain');
     expect($result)->toHaveKey('sld');
     expect($result)->toHaveKey('tld');
@@ -2400,7 +2403,7 @@ test('validates required registrar fields even when the adapter constructor does
     $model->test_mode = false;
 
     expect(fn () => $service->registrarValidateConfiguration($model))
-        ->toThrow(ClientFence\InformationException::class, 'missing required configuration');
+        ->toThrow(Registrar_Exception::class, 'missing required configuration');
 });
 
 test('throws exception when getting registrar adapter for non-existing registrar', function (): void {

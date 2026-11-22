@@ -158,7 +158,7 @@ test('domain details without an expiry throw instead of keeping the stored one',
 
 test('the transfer code is the authid; none is a clear error', function (): void {
     expect(subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => ['authid' => 'rjI?5sjb']]])->getEpp(subregDomain()))->toBe('rjI?5sjb')
-        ->and(fn () => subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => []]])->getEpp(subregDomain()))->toThrow(Registrar_Exception::class, 'did not return a transfer code');
+        ->and(fn () => subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => []]])->getEpp(subregDomain()))->toThrow(Registrar_Exception::class, 'Please contact support to receive it');
 });
 
 test('lock and unlock send the client statuses with clientTransferProhibited added or removed, never ok or server statuses', function (): void {

@@ -279,8 +279,8 @@ test('the transfer code is read from eppcode and its spellings; an empty or miss
 })->with([
     'eppcode' => [['status' => 'success', 'eppcode' => ' Ab#123 '], 'Ab#123'],
     'authCode' => [['authCode' => '987654'], '987654'],
-    'empty eppcode' => [['status' => 'success', 'eppcode' => ''], null, 'holds no transfer code'],
-    'a status code only' => [['code' => 0], null, 'did not return a transfer code'],
+    'empty eppcode' => [['status' => 'success', 'eppcode' => ''], null, 'Please contact support to receive it'],
+    'a status code only' => [['code' => 0], null, 'Please contact support to receive it'],
 ]);
 
 test('a lock change is read back: a contradiction throws, an unclear state is logged', function (string $action, mixed $state, ?string $error): void {

@@ -30,7 +30,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
     public function __construct($options)
     {
         if (empty($options['api_key']) && empty($options['sandbox_api_key'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'NameSilo', ':missing' => 'API key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'NameSilo', ':missing' => 'API key'], 3001);
         }
 
         $this->config['api_key'] = trim((string) ($options['api_key'] ?? ''));
@@ -131,7 +131,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
             // The eligibility answers are the registrant's: never on another role's contact.
             $id = trim((string) ($this->request('contactAdd', $this->contact($c) + ($c === $domain->getContactRegistrar() ? $this->eligibility($domain) : []))->reply->contact_id ?? ''));
             if ($id === '') {
-                throw new Registrar_Exception('NameSilo did not return a contact ID.');
+                throw new Registrar_Exception(':registrar did not return a contact ID.', [':registrar' => 'NameSilo']);
             }
 
             return $id;
@@ -196,7 +196,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
         $this->request('retrieveAuthCode', ['domain' => $domain->getName()]);
 
         // NameSilo does not return the code: it emails it to the domain's administrative contact.
-        return __trans('NameSilo has emailed the transfer code to the domain\'s administrative contact.');
+        return __trans('The registrar has emailed the transfer code to the domain\'s administrative contact.');
     }
 
     public function registerDomain(Registrar_Domain $domain): bool
@@ -314,7 +314,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
     {
         $key = $this->_testMode ? $this->config['sandbox_api_key'] : $this->config['api_key'];
         if (empty($key)) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'NameSilo', ':missing' => $this->_testMode ? 'sandbox API key' : 'API key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'NameSilo', ':missing' => $this->_testMode ? 'sandbox API key' : 'API key'], 3001);
         }
 
         try {
@@ -331,7 +331,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
 
         $xml = @simplexml_load_string($body, SimpleXMLElement::class, LIBXML_NONET | LIBXML_NOCDATA);
         if (!$xml instanceof SimpleXMLElement || !isset($xml->reply->code)) {
-            throw new Registrar_Exception('NameSilo returned an unreadable response for :command', [':command' => $operation]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'NameSilo', ':command' => $operation]);
         }
         if (!in_array((int) $xml->reply->code, [300, 301, 302], true)) {
             $this->getLog()->err(sprintf('NameSilo %s refused: %s %s', $operation, $xml->reply->code, $xml->reply->detail));

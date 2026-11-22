@@ -28,7 +28,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
     public function __construct($options)
     {
         if (empty($options['username']) || empty($options['password'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Openprovider', ':missing' => 'username and password'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Openprovider', ':missing' => 'username and password'], 3001);
         }
 
         $this->config['username'] = trim((string) $options['username']);
@@ -258,7 +258,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
 
         $reply = json_decode($content, true);
         if (!is_array($reply) || !isset($reply['code'])) {
-            throw new Registrar_Exception('Openprovider returned an unreadable response for :command', [':command' => $method . ' ' . $path]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Openprovider', ':command' => $method . ' ' . $path]);
         }
         if ((int) $reply['code'] !== 0) {
             $this->getLog()->err(sprintf('Openprovider %s %s refused: %s %s', $method, $path, $reply['code'], $reply['desc'] ?? ''));
@@ -266,7 +266,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
             throw new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'Openprovider', ':error' => (string) ($reply['desc'] ?? $reply['code'])]);
         }
         if ($login && empty($reply['data']['token'])) {
-            throw new Registrar_Exception('Openprovider returned an unreadable response for :command', [':command' => 'auth/login']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Openprovider', ':command' => 'auth/login']);
         }
 
         return is_array($reply['data'] ?? null) ? $reply['data'] : [];
@@ -281,7 +281,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
     {
         $result = $this->request('POST', '/domains/check', ['domains' => [$this->name($domain)]])['results'][0] ?? null;
         if (!is_array($result) || !isset($result['status'])) {
-            throw new Registrar_Exception('Openprovider returned an unreadable response for :command', [':command' => 'domains/check']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Openprovider', ':command' => 'domains/check']);
         }
 
         return $result;
@@ -295,7 +295,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
             }
         }
 
-        throw new Registrar_Exception(':domain was not found in the Openprovider account.', [':domain' => $domain->getName()]);
+        throw new Registrar_Exception(':domain was not found in the account at :registrar.', [':registrar' => 'Openprovider', ':domain' => $domain->getName()]);
     }
 
     private function nameservers(Registrar_Domain $domain): array
@@ -330,7 +330,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
         if (preg_match($pattern, $line1, $m)) {
             $m[3] .= $line2 === '' ? '' : ', ' . $line2;
         } elseif (!preg_match($pattern, implode(', ', array_filter([$line1, $line2])), $m)) {
-            throw new Registrar_Exception('Openprovider needs a house number in the client\'s address.');
+            throw new Registrar_Exception(':registrar needs a house number in the client\'s address.', [':registrar' => 'Openprovider']);
         }
         [$street, $number] = [trim((string) preg_replace(['/\s+/u', '/ ,/'], [' ', ','], $m[1] . $m[3]), ' ,'), $m[2]];
 
@@ -355,7 +355,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
 
         $handle = (string) ($this->request('POST', '/customers', $customer)['handle'] ?? '');
         if ($handle === '') {
-            throw new Registrar_Exception('Openprovider did not return a contact handle.');
+            throw new Registrar_Exception(':registrar did not return a contact handle.', [':registrar' => 'Openprovider']);
         }
 
         return $handle;

@@ -35216,3 +35216,139 @@ msgstr "ნაგულისხმევის აღდგენა: :image"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "ატვირთეთ სწორი SVG გრაფიკული შიგთავსით."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":domain უკვე ინახება ანგარიშზე (:registrar). თუ ამ შეკვეთის წინა მცდელობამ ის დაარეგისტრირა ან გადაიტანა, გააქტიურეთ შეკვეთა ხელით."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":domain ანგარიშზე ვერ მოიძებნა (:registrar)."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar სრულად კონფიგურირებული არ არის. გთხოვთ, გააკეთეთ კონფიგურაცია: :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr "ბრძანება :command ვერ შესრულდა (:registrar): :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr "ანგარიშზე ორფაქტორიანი შესვლა გამოიყენება (:registrar): API-სთვის გამოიყენეთ ანგარიში მის გარეშე."
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":domain-ის შეკვეთა შეუძლებელია (:registrar): :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr "ბრძანება :command ვერ შესრულდა (:registrar, HTTP სტატუსი :status)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr "კონტაქტის ID არ დაბრუნებულა (:registrar)."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr "კონტაქტის handle არ დაბრუნებულა (:registrar)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr "კლიენტის ID არ დაბრუნებულა (:registrar)."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":tld-ისთვის :years წლიანი გადატანა მიუწვდომელია (:registrar)."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr "კონფიდენციალურობის სერვისი არ არსებობს (:registrar): .uk WHOIS მფლობელის სახელსა და მისამართს მხოლოდ მისი თანხმობით აჩვენებს."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr "კლიენტის მისამართში საჭიროა სახლის ნომერი (:registrar)."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr "ბრძანება :command დააბრუნა ამოუკითხავი პასუხი (:registrar)"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":domain-ის დეტალები არ დაბრუნებულა (:registrar)"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":domain-ისთვის გადახდილია-მდე თარიღი არ დაბრუნებულა (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":domain-ის ძიების შედეგი არ დაბრუნებულა (:registrar)"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr "გადატანის კოდი არ დაბრუნებულა (:registrar). ჯერ განბლოკეთ დომენი."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr "ძიება ვერ შესრულდა (:registrar): :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr "API-ით დომენების რეგისტრაცია დაბოლოებით :tld დაუშვებელია (:registrar). მიზეზი: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr "API-ით დომენების გადატანა დაბოლოებით :tld დაუშვებელია (:registrar)."
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "შეცვალეთ .dk დომენების სახელების სერვერები და კონტაქტები მართვის პანელში (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr "მიუწვდომელი იყო ბრძანებისთვის :command (:registrar)"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: ვერ შესრულდა (:type:). მეტი დეტალისთვის იხილეთ შეცდომების ჟურნალები."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "რეგისტრატორმა გადატანის კოდი ელფოსტით გაუგზავნა დომენის მფლობელს."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "რეგისტრატორს ამ მოქმედების შესრულება არ შეუძლია: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "ამ დომენის რეგისტრატორი ამ მოქმედებას თავისი API-ით არ უჭერს მხარს."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "ამ დომენის რეგისტრატორი ამ მოქმედებას არ უჭერს მხარს. გთხოვთ, დაუკავშირდეთ მხარდაჭერას."
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "რეგისტრატორი"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "რეგისტრატორმა გადატანის კოდი ელფოსტით გაუგზავნა დომენის ადმინისტრაციულ კონტაქტს."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr "შეკვეთა :order არის სტატუსში :status (:registrar). შეამოწმეთ შეკვეთა შესაბამის ანგარიშზე."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr "WHOIS კონფიდენციალურობა ფასიანი სერვისია (:registrar): ჩართეთ იგი შესაბამის მართვის პანელში."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr "სავალდებულო კონფიგურაცია აკლია (:registrar): :field"

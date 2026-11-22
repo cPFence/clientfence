@@ -33173,3 +33173,139 @@ msgstr "Palauta oletus: :image"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "Lataa kelvollinen SVG, jossa on kuvasisältöä."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar pitää :domain-verkkotunnusta jo tilillä. Jos tämän tilauksen aiempi yritys on rekisteröinyt tai siirtänyt sen, aktivoi tilaus käsin."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar ei löytänyt :domain-verkkotunnusta tililtä."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar ei ole täysin määritetty. Määritä :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar ei voinut suorittaa komentoa :command: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar käyttää tilillä kaksivaiheista kirjautumista: käytä API:lle tiliä ilman sitä."
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar ei voi tilata :domain-verkkotunnusta: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar ei voinut suorittaa komentoa :command (HTTP-tila :status)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar ei palauttanut yhteystiedon tunnusta."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar ei palauttanut yhteystiedon handlea."
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar ei palauttanut asiakkaan tunnusta."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar ei tarjoa :years vuoden siirtoa päätteelle :tld."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar ei tarjoa yksityisyyspalvelua: .uk-WHOIS näyttää haltijan nimen ja osoitteen vain tämän suostumuksella."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar tarvitsee talon numeron asiakkaan osoitteeseen."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar palautti komennolle :command lukukelvottoman vastauksen"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar ei palauttanut tietoja verkkotunnukselle :domain"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar ei palauttanut maksettu-asti-päivää verkkotunnukselle :domain."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar ei palauttanut hakutulosta verkkotunnukselle :domain"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar ei palauttanut siirtokoodia. Avaa ensin verkkotunnuksen lukitus."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar ei voinut suorittaa hakua: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar ei salli API:n kautta päätteellä :tld olevien verkkotunnusten rekisteröintiä. Syy: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar ei salli API:n kautta päätteellä :tld olevien verkkotunnusten siirtoa."
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "Muuta .dk-verkkotunnusten nimipalvelimet ja yhteystiedot hallintapaneelissa (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar ei ollut tavoitettavissa komennolle :command"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: epäonnistui (:type:). Katso lisätiedot virhelokeista."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "Rekisterinpitäjä lähetti siirtokoodin sähköpostilla verkkotunnuksen haltijalle."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "Rekisterinpitäjä ei voi suorittaa tätä toimintoa: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "Tämän verkkotunnuksen rekisterinpitäjä ei tue tätä toimintoa API:nsa kautta."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "Tämän verkkotunnuksen rekisterinpitäjä ei tue tätä toimintoa. Ota yhteyttä tukeen."
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "rekisterinpitäjä"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "Rekisterinpitäjä lähetti siirtokoodin sähköpostilla verkkotunnuksen hallinnolliselle yhteyshenkilölle."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar ilmoittaa tilauksen :order tilaksi :status. Tarkista tilaus vastaavalta tililtä."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar myy WHOIS-yksityisyyttä maksullisena palveluna: ota se käyttöön vastaavassa hallintapaneelissa."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr "Vaadittu määritys puuttuu (:registrar): :field"

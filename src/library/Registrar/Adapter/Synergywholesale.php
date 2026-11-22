@@ -32,7 +32,7 @@ class Registrar_Adapter_Synergywholesale extends Registrar_AdapterAbstract imple
     {
         foreach (['reseller_id' => 'Reseller ID', 'api_key' => 'API key'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Synergy Wholesale', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Synergy Wholesale', ':missing' => $label], 3001);
             }
             $this->config[$key] = trim((string) $options[$key]);
         }

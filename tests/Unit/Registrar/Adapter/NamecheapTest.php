@@ -29,7 +29,7 @@ test('Namecheap rejects error envelopes with case-sensitive status attributes', 
 
     expect(fn () => $this->adapter->isDomainAvailable($domain))->toThrow(
         Registrar_Exception::class,
-        'Failed to namecheap.domains.check with the Namecheap registrar, check the error logs for further details',
+        'Failed to namecheap.domains.check with Namecheap, check the error logs for further details',
     );
 })->with(['ERROR', 'FAILED']);
 

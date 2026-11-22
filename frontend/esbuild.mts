@@ -58,11 +58,19 @@ async function build() {
     isProduction,
   });
 
+  await buildCssFile({
+    entryPoint: resolve(__dirname, 'styles/tooltip.css'),
+    outfile: resolve(outputDir, 'css/tooltip.css'),
+    nodeModulesDir,
+    isProduction,
+  });
+
   const manifest = {
     'js/clientfence.js': '/public/assets/js/clientfence.js',
     'js/api.js': '/public/assets/js/api.js',
     'css/markdown.css': '/public/assets/css/markdown.css',
     'css/loader.css': '/public/assets/css/loader.css',
+    'css/tooltip.css': '/public/assets/css/tooltip.css',
     'editor/ckeditor.js': '/public/assets/editor/ckeditor.js',
     'editor/ckeditor.css': '/public/assets/editor/ckeditor.css',
   };

@@ -79,7 +79,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
     {
         foreach (['username' => 'reseller username', 'api_key' => 'API key'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'OpenSRS', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'OpenSRS', ':missing' => $label], 3001);
             }
             $this->config[$key] = trim((string) $options[$key]);
         }
@@ -281,7 +281,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
         $this->request('send_authcode', ['domain_name' => $domain->getName()]);
 
         // OpenSRS does not return the code here: it emails it to the domain's administrative contact.
-        return __trans('OpenSRS has emailed the transfer code to the domain\'s administrative contact.');
+        return __trans('The registrar has emailed the transfer code to the domain\'s administrative contact.');
     }
 
     public function registerDomain(Registrar_Domain $domain): bool
@@ -479,7 +479,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
         $data = $reply instanceof SimpleXMLElement && isset($reply->body->data_block) ? self::decode($reply->body->data_block) : null;
         if (!is_array($data) || !isset($data['is_success'])) {
             // Usually the server's IP address is not allowed under IP Access Rules.
-            throw new Registrar_Exception('OpenSRS returned an unreadable response for :command', [':command' => $action]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'OpenSRS', ':command' => $action]);
         }
         $attributes = is_array($data['attributes'] ?? null) ? $data['attributes'] : [];
         if ($data['is_success'] !== '1' && !in_array((int) ($data['response_code'] ?? 0), $ok, true)) {
@@ -543,7 +543,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
     {
         // OpenSRS changes .dk name servers and contacts only with update_all_info.
         if ($domain->getTld() === '.dk') {
-            throw new Registrar_Exception('Change the name servers and contacts of .dk domains in the OpenSRS control panel.');
+            throw new Registrar_Exception('Change the name servers and contacts of .dk domains in the control panel of :registrar.', [':registrar' => 'OpenSRS']);
         }
     }
 

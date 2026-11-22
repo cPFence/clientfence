@@ -28,6 +28,8 @@ import {
   dispatchLinkAction,
   createLinkLoadingState,
 } from './link-helpers.mts';
+// ClientFence: the styled tooltip for every title (title-tooltips.mts).
+import './title-tooltips.mts';
 
 /**
  * Tools for the API wrapper.

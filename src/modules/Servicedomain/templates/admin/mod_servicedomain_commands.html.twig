@@ -8,17 +8,28 @@
         </svg>
         <span>{{ 'Sync Now'|trans }}</span>
     </button>
-    <button class="btn btn-primary" type="button" id="cmd-get-epp">
+    {# ClientFence core patch: an action the registrar cannot do is a disabled button with the reason (getUnsupportedActions). #}
+    <span class="d-inline-block"{% if 'getEpp' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action through its API.'|trans }}"{% endif %}>
+    <button class="btn btn-primary" type="button" id="cmd-get-epp"{% if 'getEpp' in service.unsupported_actions %} disabled{% endif %}>
         <svg class="icon">
             <use href="#key" />
         </svg>
         <span>{{ 'Get EPP Code'|trans }}</span>
     </button>
+    </span>
 {% elseif part == 'more' %}
-    <button class="dropdown-item{% if service.locked == 0 %} d-none{% endif %}" type="button" id="cmd-domain-unlock"><svg class="icon dropdown-item-icon"><use href="#lock-open" /></svg>{{ 'Unlock'|trans }}</button>
-    <button class="dropdown-item{% if service.locked == 1 %} d-none{% endif %}" type="button" id="cmd-domain-lock"><svg class="icon dropdown-item-icon"><use href="#lock" /></svg>{{ 'Lock'|trans }}</button>
-    <button class="dropdown-item{% if service.privacy == 0 %} d-none{% endif %}" type="button" id="cmd-domain-disable-pp"><svg class="icon dropdown-item-icon"><use href="#eye" /></svg>{{ 'Disable Privacy'|trans }}</button>
-    <button class="dropdown-item{% if service.privacy == 1 %} d-none{% endif %}" type="button" id="cmd-domain-enable-pp"><svg class="icon dropdown-item-icon"><use href="#eye-off" /></svg>{{ 'Enable Privacy'|trans }}</button>
+    <span class="d-block"{% if 'unlock' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action through its API.'|trans }}"{% endif %}>
+    <button class="dropdown-item{% if service.locked == 0 %} d-none{% endif %}" type="button" id="cmd-domain-unlock"{% if 'unlock' in service.unsupported_actions %} disabled{% endif %}><svg class="icon dropdown-item-icon"><use href="#lock-open" /></svg>{{ 'Unlock'|trans }}</button>
+    </span>
+    <span class="d-block"{% if 'lock' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action through its API.'|trans }}"{% endif %}>
+    <button class="dropdown-item{% if service.locked == 1 %} d-none{% endif %}" type="button" id="cmd-domain-lock"{% if 'lock' in service.unsupported_actions %} disabled{% endif %}><svg class="icon dropdown-item-icon"><use href="#lock" /></svg>{{ 'Lock'|trans }}</button>
+    </span>
+    <span class="d-block"{% if 'disablePrivacyProtection' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action through its API.'|trans }}"{% endif %}>
+    <button class="dropdown-item{% if service.privacy == 0 %} d-none{% endif %}" type="button" id="cmd-domain-disable-pp"{% if 'disablePrivacyProtection' in service.unsupported_actions %} disabled{% endif %}><svg class="icon dropdown-item-icon"><use href="#eye" /></svg>{{ 'Disable Privacy'|trans }}</button>
+    </span>
+    <span class="d-block"{% if 'enablePrivacyProtection' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action through its API.'|trans }}"{% endif %}>
+    <button class="dropdown-item{% if service.privacy == 1 %} d-none{% endif %}" type="button" id="cmd-domain-enable-pp"{% if 'enablePrivacyProtection' in service.unsupported_actions %} disabled{% endif %}><svg class="icon dropdown-item-icon"><use href="#eye-off" /></svg>{{ 'Enable Privacy'|trans }}</button>
+    </span>
 {% else %}
 <script nonce="{{ csp_nonce }}">
     document.addEventListener("DOMContentLoaded", function() {

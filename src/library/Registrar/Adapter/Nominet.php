@@ -39,7 +39,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     public function __construct($options)
     {
         if (trim((string) ($options['username'] ?? '')) === '' || (string) ($options['password'] ?? '') === '') {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Nominet', ':missing' => 'IPS tag and EPP password'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Nominet', ':missing' => 'IPS tag and EPP password'], 3001);
         }
 
         $this->config['username'] = trim((string) $options['username']);
@@ -61,6 +61,11 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         if (is_resource($this->socket)) {
             fclose($this->socket);
         }
+    }
+
+    public static function getUnsupportedActions(): array
+    {
+        return ['enablePrivacyProtection', 'disablePrivacyProtection', 'getEpp'];
     }
 
     public static function getConfig(): array
@@ -151,7 +156,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     {
         $registrant = $this->values($this->info($domain), '//domain:infData/domain:registrant')[0] ?? '';
         if ($registrant === '') {
-            throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => 'domain:info']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'domain:info']);
         }
         $contact = $this->contact($domain);
         // Nominet changes the registrant account in place; its name (contact:org) cannot change this way.
@@ -233,7 +238,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         // Nominet renews only against the current expiry date it holds.
         $expires = $this->values($this->info($domain), '//domain:infData/domain:exDate')[0] ?? '';
         if (preg_match('/^\d{4}-\d{2}-\d{2}/', $expires) !== 1) {
-            throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => 'domain:info']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'domain:info']);
         }
         $this->command('<renew><domain:renew xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
             . '<domain:curExpDate>' . substr($expires, 0, 10) . '</domain:curExpDate><domain:period unit="y">' . min(10, max(1, (int) $domain->getRegistrationPeriod())) . '</domain:period></domain:renew></renew>');
@@ -251,12 +256,12 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
 
     public function enablePrivacyProtection(Registrar_Domain $domain): bool
     {
-        throw new Registrar_Exception('Nominet has no privacy service: the .uk WHOIS shows the registrant\'s name and address only with their consent.');
+        throw new Registrar_Exception(':registrar has no privacy service: the .uk WHOIS shows the registrant\'s name and address only with their consent.', [':registrar' => 'Nominet']);
     }
 
     public function disablePrivacyProtection(Registrar_Domain $domain): bool
     {
-        throw new Registrar_Exception('Nominet has no privacy service: the .uk WHOIS shows the registrant\'s name and address only with their consent.');
+        throw new Registrar_Exception(':registrar has no privacy service: the .uk WHOIS shows the registrant\'s name and address only with their consent.', [':registrar' => 'Nominet']);
     }
 
     public function lock(Registrar_Domain $domain): bool
@@ -342,7 +347,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         $length = unpack('N', $this->read(4))[1];
         // A frame is at least its header; anything near this cap is a broken stream, not a reply.
         if ($length <= 4 || $length > 4194304) {
-            throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => 'EPP frame']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'EPP frame']);
         }
 
         return $this->read($length - 4);
@@ -368,7 +373,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         if (!$this->loggedIn) {
             $greeting = $this->parse($this->connect(), 'greeting');
             if ($this->values($greeting, '/e:epp/e:greeting/e:svID') === []) {
-                throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => 'greeting']);
+                throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'greeting']);
             }
             $tag = $this->config['username'];
             // EPP needs 3 to 16 characters: Nominet logs 2-character tags in with a leading #.
@@ -402,7 +407,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         }
         $code = (int) ($this->values($reply, '/e:epp/e:response/e:result/@code')[0] ?? 0);
         if ($code === 0) {
-            throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => $name]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => $name]);
         }
         if ($code >= 2000) {
             $msg = $this->values($reply, '//e:result/e:msg')[0] ?? '';
@@ -420,7 +425,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     {
         $reply = @simplexml_load_string($xml, SimpleXMLElement::class, LIBXML_NONET);
         if (!$reply instanceof SimpleXMLElement) {
-            throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => $command]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => $command]);
         }
 
         return $reply;
@@ -446,7 +451,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         $reply = $this->command('<check><domain:check xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name></domain:check></check>');
         $avail = $this->values($reply, '//domain:chkData/domain:cd/domain:name/@avail');
         if ($avail === []) {
-            throw new Registrar_Exception('Nominet returned an unreadable response for :command', [':command' => 'domain:check']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'domain:check']);
         }
 
         return in_array(strtolower($avail[0]), ['1', 'true'], true);

@@ -30563,3 +30563,139 @@ msgstr "กู้คืนค่าเริ่มต้นสำหรับ :i
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "โปรดอัปโหลด SVG ที่ถูกต้องและมีภาพกราฟิก"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar เก็บ :domain ไว้ในบัญชีอยู่แล้ว หากความพยายามครั้งก่อนของคำสั่งซื้อนี้จดทะเบียนหรือโอนไปแล้ว ให้เปิดใช้งานคำสั่งซื้อด้วยตนเอง"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar ไม่พบ :domain ในบัญชี"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar ยังกำหนดค่าไม่ครบ โปรดกำหนดค่า :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar ไม่สามารถรันคำสั่ง :command ได้: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar ใช้การลงชื่อเข้าใช้สองขั้นตอนกับบัญชี: โปรดใช้บัญชีที่ไม่มีสำหรับ API"
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar ไม่สามารถสั่งซื้อ :domain ได้: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar ไม่สามารถรันคำสั่ง :command ได้ (สถานะ HTTP :status)"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar ไม่ได้ส่งคืน ID ของผู้ติดต่อ"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar ไม่ได้ส่งคืน handle ของผู้ติดต่อ"
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar ไม่ได้ส่งคืน ID ของลูกค้า"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar ไม่มีบริการโอนแบบ :years ปีสำหรับ :tld"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar ไม่มีบริการความเป็นส่วนตัว: WHOIS ของ .uk แสดงชื่อและที่อยู่ของผู้ถือครองเฉพาะเมื่อได้รับความยินยอมเท่านั้น"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar ต้องการเลขที่บ้านในที่อยู่ของลูกค้า"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar ส่งคืนการตอบกลับที่อ่านไม่ได้สำหรับ :command"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar ไม่ได้ส่งคืนรายละเอียดของ :domain"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar ไม่ได้ส่งคืนวันที่ชำระถึงของ :domain"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar ไม่ได้ส่งคืนผลการค้นหาของ :domain"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar ไม่ได้ส่งคืนรหัสโอน โปรดปลดล็อกโดเมนก่อน"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar ไม่สามารถค้นหาได้: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar ไม่อนุญาตให้จดทะเบียนโดเมนที่ลงท้ายด้วย :tld ผ่าน API เหตุผล: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar ไม่อนุญาตให้โอนโดเมนที่ลงท้ายด้วย :tld ผ่าน API"
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "เปลี่ยนเนมเซิร์ฟเวอร์และผู้ติดต่อของโดเมน .dk ในแผงควบคุม (:registrar)"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar ไม่สามารถเข้าถึงได้สำหรับ :command"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: ล้มเหลว (:type:) ตรวจสอบบันทึกข้อผิดพลาดเพื่อดูรายละเอียดเพิ่มเติม"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "ผู้รับจดทะเบียนได้ส่งรหัสโอนทางอีเมลถึงผู้ถือครองโดเมนแล้ว"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "ผู้รับจดทะเบียนไม่สามารถดำเนินการนี้ได้: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "ผู้รับจดทะเบียนของโดเมนนี้ไม่รองรับการดำเนินการนี้ผ่าน API ของตน"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "ผู้รับจดทะเบียนของโดเมนนี้ไม่รองรับการดำเนินการนี้ โปรดติดต่อฝ่ายสนับสนุน"
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "ผู้รับจดทะเบียน"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "ผู้รับจดทะเบียนได้ส่งรหัสโอนทางอีเมลถึงผู้ติดต่อด้านการบริหารของโดเมนแล้ว"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar รายงานว่าคำสั่งซื้อ :order มีสถานะ :status โปรดตรวจสอบคำสั่งซื้อในบัญชีที่เกี่ยวข้อง"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar ขายความเป็นส่วนตัว WHOIS เป็นบริการที่เสียค่าใช้จ่าย: โปรดเปิดใช้ในแผงควบคุมที่เกี่ยวข้อง"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar ขาดการกำหนดค่าที่จำเป็น: :field"

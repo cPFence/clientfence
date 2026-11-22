@@ -41,14 +41,14 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
             $this->config['userid'] = $options['userid'];
             unset($options['userid']);
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'ResellerClub', ':missing' => 'ResellerClub Reseller ID'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'ResellerClub', ':missing' => 'Reseller ID'], 3001);
         }
 
         if (isset($options['api-key']) && !empty($options['api-key'])) {
             $this->config['api-key'] = $options['api-key'];
             unset($options['api-key']);
         } else {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'ResellerClub', ':missing' => 'ResellerClub API Key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'ResellerClub', ':missing' => 'API Key'], 3001);
         }
     }
 
@@ -95,7 +95,7 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
         if (!isset($result[$domainName]['status'])) {
             $placeholders = [':action:' => 'domains/available', ':type:' => 'ResellerClub'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         return strtolower((string) $result[$domainName]['status']) === 'available';
@@ -428,7 +428,7 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
         if (!isset($data['domsecret'])) {
             $placeholders = [':action:' => __trans('get the transfer code'), ':type:' => 'ResellerClub'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         return $data['domsecret'];
@@ -717,28 +717,28 @@ class Registrar_Adapter_Resellerclub extends Registrar_AdapterAbstract implement
             $this->getLog()->error("ResellerClub API response for {$url} could not be decoded as JSON.");
             $placeholders = [':action:' => $url, ':type:' => 'ResellerClub'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         if (isset($json['status']) && $json['status'] == 'ERROR') {
             error_log('ResellerClub error: ' . $json['message']);
             $placeholders = [':action:' => $url, ':type:' => 'ResellerClub'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         if (isset($json['status']) && $json['status'] == 'error') {
             error_log('ResellerClub error: ' . $json['error']);
             $placeholders = [':action:' => $url, ':type:' => 'ResellerClub'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         if (isset($json['status']) && $json['status'] == 'Failed') {
             error_log('ResellerClub error: ' . $json['actionstatusdesc']);
             $placeholders = [':action:' => $url, ':type:' => 'ResellerClub'];
 
-            throw new Registrar_Exception('Failed to :action: with the :type: registrar, check the error logs for further details', $placeholders);
+            throw new Registrar_Exception('Failed to :action: with :type:, check the error logs for further details', $placeholders);
         }
 
         return $json;

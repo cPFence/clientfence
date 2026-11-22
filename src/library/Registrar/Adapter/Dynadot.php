@@ -31,7 +31,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
     public function __construct($options)
     {
         if (empty($options['api_key']) && empty($options['sandbox_api_key'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Dynadot', ':missing' => 'API key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Dynadot', ':missing' => 'API key'], 3001);
         }
 
         $this->config['api_key'] = trim((string) ($options['api_key'] ?? ''));
@@ -166,7 +166,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
     {
         $info = $this->request('domain_info', ['domain' => $domain->getName()])['DomainInfo'] ?? null;
         if (!is_array($info)) {
-            throw new Registrar_Exception('Dynadot returned no details for :domain', [':domain' => $domain->getName()]);
+            throw new Registrar_Exception(':registrar returned no details for :domain', [':registrar' => 'Dynadot', ':domain' => $domain->getName()]);
         }
 
         $details = new Registrar_Domain();
@@ -210,7 +210,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
     {
         $code = (string) ($this->request('get_transfer_auth_code', ['domain' => $domain->getName()])['AuthCode'] ?? '');
         if ($code === '') {
-            throw new Registrar_Exception('Dynadot returned no transfer code. Unlock the domain first.');
+            throw new Registrar_Exception(':registrar returned no transfer code. Unlock the domain first.', [':registrar' => 'Dynadot']);
         }
 
         return $code;
@@ -338,7 +338,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
     {
         $key = $this->isTestEnv() ? $this->config['sandbox_api_key'] : $this->config['api_key'];
         if (empty($key)) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Dynadot', ':missing' => $this->isTestEnv() ? 'sandbox API key' : 'API key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Dynadot', ':missing' => $this->isTestEnv() ? 'sandbox API key' : 'API key'], 3001);
         }
 
         $url = $this->isTestEnv() ? self::SANDBOX_URL : self::LIVE_URL;
@@ -354,7 +354,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
             // The message can contain the request URL, which carries the key.
             $this->getLog()->err('Dynadot ' . $command . ' HTTP error: ' . str_replace($key, '***', $e->getMessage()));
 
-            throw new Registrar_Exception('Could not reach Dynadot for :command', [':command' => $command]);
+            throw new Registrar_Exception('Could not reach :registrar for :command', [':registrar' => 'Dynadot', ':command' => $command]);
         }
 
         // Auth codes are secret; the price list is hundreds of kilobytes.
@@ -363,13 +363,13 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
         }
         $decoded = json_decode($body, true);
         if (!is_array($decoded) || $decoded === []) {
-            throw new Registrar_Exception('Dynadot returned an unreadable response for :command', [':command' => $command]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Dynadot', ':command' => $command]);
         }
 
         // Every reply is wrapped in one object, e.g. {"RegisterResponse": {...}}.
         $result = reset($decoded);
         if (!is_array($result)) {
-            throw new Registrar_Exception('Dynadot returned an unreadable response for :command', [':command' => $command]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Dynadot', ':command' => $command]);
         }
 
         $code = (string) ($result['ResponseCode'] ?? $result['SuccessCode'] ?? '');
@@ -378,7 +378,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
             $error = (string) ($result['Error'] ?? $result['Status'] ?? 'unknown error');
             $this->getLog()->err('Dynadot ' . $command . ' failed: ' . $error);
 
-            throw new Registrar_Exception('Dynadot :command failed: :error', [':command' => $command, ':error' => $error]);
+            throw new Registrar_Exception(':registrar :command failed: :error', [':registrar' => 'Dynadot', ':command' => $command, ':error' => $error]);
         }
 
         return $result;
@@ -392,10 +392,10 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
         $result = $this->request('search', ['domain0' => $domain->getName(), 'show_price' => 1, 'currency' => $this->config['currency']]);
         $row = $result['SearchResults'][0] ?? null;
         if (!is_array($row)) {
-            throw new Registrar_Exception('Dynadot returned no search result for :domain', [':domain' => $domain->getName()]);
+            throw new Registrar_Exception(':registrar returned no search result for :domain', [':registrar' => 'Dynadot', ':domain' => $domain->getName()]);
         }
         if (!empty($row['Error'])) {
-            throw new Registrar_Exception('Dynadot search failed: :error', [':error' => (string) $row['Error']]);
+            throw new Registrar_Exception(':registrar search failed: :error', [':registrar' => 'Dynadot', ':error' => (string) $row['Error']]);
         }
 
         return $row;
@@ -481,7 +481,7 @@ class Registrar_Adapter_Dynadot extends Registrar_AdapterAbstract implements Reg
 
         $id = $this->request('create_contact', $params)['CreateContactContent']['ContactId'] ?? null;
         if ($id === null || $id === '') {
-            throw new Registrar_Exception('Dynadot did not return a contact ID.');
+            throw new Registrar_Exception(':registrar did not return a contact ID.', [':registrar' => 'Dynadot']);
         }
 
         return (string) $id;

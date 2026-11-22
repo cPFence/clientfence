@@ -32837,3 +32837,139 @@ msgstr "Επαναφορά προεπιλογής για :image"
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "Ανεβάστε ένα έγκυρο SVG με γραφικό περιεχόμενο."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar έχει ήδη το :domain στον λογαριασμό. Αν προηγούμενη προσπάθεια αυτής της παραγγελίας το καταχώρισε ή το μετέφερε, ενεργοποιήστε την παραγγελία χειροκίνητα."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar δεν βρήκε το :domain στον λογαριασμό."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar δεν έχει ρυθμιστεί πλήρως. Ρυθμίστε :missing"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar δεν μπόρεσε να εκτελέσει την εντολή :command: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar χρησιμοποιεί σύνδεση δύο παραγόντων στον λογαριασμό: χρησιμοποιήστε για το API λογαριασμό χωρίς αυτήν."
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar δεν μπορεί να παραγγείλει το :domain: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar δεν μπόρεσε να εκτελέσει την εντολή :command (κατάσταση HTTP :status)."
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar δεν επέστρεψε ID επαφής."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar δεν επέστρεψε handle επαφής."
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar δεν επέστρεψε ID πελάτη."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar δεν προσφέρει μεταφορά :years ετών για το :tld."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar δεν έχει υπηρεσία απορρήτου: το WHOIS των .uk δείχνει το όνομα και τη διεύθυνση του κατόχου μόνο με τη συναίνεσή του."
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar χρειάζεται αριθμό κατοικίας στη διεύθυνση του πελάτη."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar επέστρεψε μη αναγνώσιμη απάντηση για την εντολή :command"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar δεν επέστρεψε στοιχεία για το :domain"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar δεν επέστρεψε ημερομηνία πληρωμής έως για το :domain."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar δεν επέστρεψε αποτέλεσμα αναζήτησης για το :domain"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar δεν επέστρεψε κωδικό μεταφοράς. Ξεκλειδώστε πρώτα τον τομέα."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar δεν μπόρεσε να εκτελέσει την αναζήτηση: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar δεν επιτρέπει μέσω API την καταχώριση τομέων με κατάληξη :tld. Λόγος: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar δεν επιτρέπει μέσω API τη μεταφορά τομέων με κατάληξη :tld."
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr "Αλλάξτε τους nameservers και τις επαφές των τομέων .dk στον πίνακα ελέγχου (:registrar)."
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar δεν ήταν προσβάσιμος για την εντολή :command"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: απέτυχε (:type:). Δείτε τα αρχεία καταγραφής σφαλμάτων για περισσότερες λεπτομέρειες."
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "Ο καταχωρητής έστειλε με email τον κωδικό μεταφοράς στον κάτοχο του τομέα."
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "Ο καταχωρητής δεν μπορεί να εκτελέσει αυτή την ενέργεια: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "Ο καταχωρητής αυτού του τομέα δεν υποστηρίζει αυτή την ενέργεια μέσω του API του."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "Ο καταχωρητής αυτού του τομέα δεν υποστηρίζει αυτή την ενέργεια. Επικοινωνήστε με την υποστήριξη."
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "ο καταχωρητής"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "Ο καταχωρητής έστειλε με email τον κωδικό μεταφοράς στη διοικητική επαφή του τομέα."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar αναφέρει για την παραγγελία :order την κατάσταση :status. Ελέγξτε την παραγγελία στον αντίστοιχο λογαριασμό."
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar πουλά το απόρρητο WHOIS ως επί πληρωμή υπηρεσία: ενεργοποιήστε το στον αντίστοιχο πίνακα ελέγχου."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar δεν έχει την απαιτούμενη διαμόρφωση: :field"

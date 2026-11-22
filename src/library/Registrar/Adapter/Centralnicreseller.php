@@ -28,7 +28,7 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
     public function __construct($options)
     {
         if (empty($options['username']) || empty($options['password'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'CentralNic Reseller', ':missing' => 'username and password'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'CentralNic Reseller', ':missing' => 'username and password'], 3001);
         }
 
         $this->config['username'] = trim((string) $options['username']);
@@ -209,10 +209,10 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
         }
 
         if (!isset($r['PROPERTY']['AUTH'][0])) {
-            return __trans('CentralNic Reseller has emailed the transfer code to the domain\'s registrant.');
+            return __trans('The registrar has emailed the transfer code to the domain\'s registrant.');
         }
         if ($r['PROPERTY']['AUTH'][0] === '') {
-            throw new Registrar_Exception('No transfer code is assigned to :domain: contact CentralNic Reseller support.', [':domain' => $name]);
+            throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
         }
 
         return $r['PROPERTY']['AUTH'][0];
@@ -248,7 +248,7 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
 
         $paidUntil = (string) ($this->request(['COMMAND' => 'StatusDomain', 'DOMAIN' => $domain->getName()])['PROPERTY']['PAIDUNTILDATE'][0] ?? '');
         if (!preg_match('/^\d{4}-/', $paidUntil)) {
-            throw new Registrar_Exception('CentralNic Reseller returned no paid-until date for :domain.', [':domain' => $domain->getName()]);
+            throw new Registrar_Exception(':registrar returned no paid-until date for :domain.', [':registrar' => 'CentralNic Reseller', ':domain' => $domain->getName()]);
         }
         // EXPIRATION guards against renewing twice: the registry takes it only for the year the domain is paid until.
         $this->request(['COMMAND' => 'RenewDomain', 'DOMAIN' => $domain->getName(), 'PERIOD' => $years, 'EXPIRATION' => (int) substr($paidUntil, 0, 4)]);
@@ -307,7 +307,7 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
     {
         $currency = strtoupper((string) ($this->request(['COMMAND' => 'StatusAccount'])['PROPERTY']['CURRENCY'][0] ?? ''));
         if ($currency === '') {
-            throw new Registrar_Exception('CentralNic Reseller returned an unreadable response for :command', [':command' => 'StatusAccount']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'CentralNic Reseller', ':command' => 'StatusAccount']);
         }
         $p = $this->request(['COMMAND' => 'QueryZoneList'])['PROPERTY'];
         $fee = static fn (string $column, int $i): ?float => is_numeric($p[$column][$i] ?? null) ? (float) $p[$column][$i] : null;
@@ -371,7 +371,7 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
             }
         }
         if ($reply['CODE'] === '') {
-            throw new Registrar_Exception('CentralNic Reseller returned an unreadable response for :command', [':command' => $command['COMMAND']]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'CentralNic Reseller', ':command' => $command['COMMAND']]);
         }
         if (!in_array($reply['CODE'], $ok, true)) {
             $this->getLog()->err(sprintf('CentralNic Reseller %s refused: %s %s', $command['COMMAND'], $reply['CODE'], $reply['DESCRIPTION']));
@@ -433,7 +433,7 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
             return ['PERIOD' => 0];
         }
 
-        throw new Registrar_Exception('CentralNic Reseller does not offer a :years-year transfer for :tld.', [':years' => $years, ':tld' => $domain->getTld()]);
+        throw new Registrar_Exception(':registrar does not offer a :years-year transfer for :tld.', [':registrar' => 'CentralNic Reseller', ':years' => $years, ':tld' => $domain->getTld()]);
     }
 
     /** The order's registry answers as the API's X- parameters. */

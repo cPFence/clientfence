@@ -29,10 +29,15 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
     {
         foreach (['api_key' => 'API key', 'secret_api_key' => 'secret API key'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Porkbun', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Porkbun', ':missing' => $label], 3001);
             }
             $this->config[$key] = trim((string) $options[$key]);
         }
+    }
+
+    public static function getUnsupportedActions(): array
+    {
+        return ['enablePrivacyProtection', 'disablePrivacyProtection', 'lock', 'unlock', 'getEpp'];
     }
 
     public static function getConfig(): array
@@ -76,7 +81,7 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
         // Refused before the client pays: some TLDs (registry eligibility rules) can only be registered on Porkbun's website.
         $rules = $this->request('GET', '/domain/getRegistrationRequirements/' . rawurlencode(ltrim(strtolower($domain->getTld()), '.')));
         if (empty($rules['apiRegisterable'])) {
-            throw new Registrar_Exception(':tld domains cannot be registered through the :registrar API: :reason', [':tld' => $domain->getTld(), ':registrar' => 'Porkbun', ':reason' => (string) ($rules['notApiRegisterableReason'] ?? '')]);
+            throw new Registrar_Exception(':tld domains cannot be registered through the API of :registrar: :reason', [':tld' => $domain->getTld(), ':registrar' => 'Porkbun', ':reason' => (string) ($rules['notApiRegisterableReason'] ?? '')]);
         }
 
         return true;
@@ -86,7 +91,7 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
     {
         // Porkbun's API transfers no .uk names: refused before the client pays.
         if (str_ends_with(strtolower($domain->getTld()), '.uk')) {
-            throw new Registrar_Exception(':tld domains cannot be transferred through the :registrar API.', [':tld' => $domain->getTld(), ':registrar' => 'Porkbun']);
+            throw new Registrar_Exception(':tld domains cannot be transferred through the API of :registrar.', [':tld' => $domain->getTld(), ':registrar' => 'Porkbun']);
         }
         $result = $this->check($domain);
         if ($result['avail'] === 'no' && ($result['premium'] ?? '') === 'yes') {
@@ -280,7 +285,7 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
         } catch (Registrar_Exception $e) {
             // Maybe a retry after a lost reply. Not taken over automatically: the name may be another order's, so staff check.
             if ($action !== 'renew' && !empty($this->check($domain)['inYourAccount'])) {
-                throw new Registrar_Exception(':domain is already in your :registrar account. If this order\'s earlier try registered or transferred it, activate the order by hand.', [':domain' => $domain->getName(), ':registrar' => 'Porkbun']);
+                throw new Registrar_Exception(':domain is already in the account at :registrar. If this order\'s earlier try registered or transferred it, activate the order by hand.', [':domain' => $domain->getName(), ':registrar' => 'Porkbun']);
             }
 
             throw $e;
@@ -309,7 +314,7 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
     {
         $result = $this->request('POST', '/domain/checkDomain/' . $this->name($domain))['response'] ?? null;
         if (!is_array($result) || !in_array($result['avail'] ?? null, ['yes', 'no'], true)) {
-            throw new Registrar_Exception('Porkbun returned an unreadable response for :command', [':command' => 'checkDomain']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Porkbun', ':command' => 'checkDomain']);
         }
 
         return $result;
@@ -356,7 +361,7 @@ class Registrar_Adapter_Porkbun extends Registrar_AdapterAbstract implements Reg
 
         $reply = json_decode($content, true);
         if (!is_array($reply) || !is_string($reply['status'] ?? null)) {
-            throw new Registrar_Exception('Porkbun returned an unreadable response for :command', [':command' => $path]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Porkbun', ':command' => $path]);
         }
 
         return $reply;

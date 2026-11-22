@@ -30,10 +30,15 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
     {
         foreach (['login' => 'Username', 'password' => 'Password'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Subreg', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Subreg', ':missing' => $label], 3001);
             }
             $this->config[$key] = $key === 'password' ? (string) $options[$key] : trim((string) $options[$key]);
         }
+    }
+
+    public static function getUnsupportedActions(): array
+    {
+        return ['enablePrivacyProtection', 'disablePrivacyProtection'];
     }
 
     public static function getConfig(): array
@@ -173,7 +178,7 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
     {
         $code = trim((string) ($this->info($domain)['authid'] ?? ''));
         if ($code === '') {
-            throw new Registrar_Exception(':registrar did not return a transfer code for :domain.', [':registrar' => 'Subreg', ':domain' => $domain->getName()]);
+            throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
         }
 
         return $code;

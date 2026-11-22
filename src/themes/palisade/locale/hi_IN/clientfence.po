@@ -35216,3 +35216,139 @@ msgstr ":image के लिए डिफ़ॉल्ट बहाल करे�
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "ग्राफ़िक्स वाली मान्य SVG अपलोड करें।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar के पास :domain पहले से खाते में है। यदि इस ऑर्डर के पिछले प्रयास ने उसे पंजीकृत या स्थानांतरित किया है, तो ऑर्डर को हाथ से सक्रिय करें।"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar को खाते में :domain नहीं मिला।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar पूरी तरह कॉन्फ़िगर नहीं है। कृपया :missing कॉन्फ़िगर करें"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar कमांड :command नहीं चला सका: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar खाते में दो-चरणीय साइन-इन उपयोग करता है: API के लिए उसके बिना वाला खाता इस्तेमाल करें।"
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar :domain का ऑर्डर नहीं दे सकता: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar कमांड :command नहीं चला सका (HTTP स्थिति :status)।"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar ने संपर्क ID नहीं लौटाई।"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar ने संपर्क हैंडल नहीं लौटाया।"
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar ने ग्राहक ID नहीं लौटाई।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar :tld के लिए :years वर्ष का स्थानांतरण नहीं देता।"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar के पास गोपनीयता सेवा नहीं है: .uk WHOIS पंजीकर्ता का नाम और पता केवल उसकी सहमति से दिखाता है।"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar को ग्राहक के पते में मकान नंबर चाहिए।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar ने :command के लिए अपठनीय उत्तर लौटाया"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar ने :domain के लिए कोई विवरण नहीं लौटाया"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar ने :domain के लिए भुगतान-तिथि नहीं लौटाई।"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar ने :domain के लिए कोई खोज परिणाम नहीं लौटाया"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar ने स्थानांतरण कोड नहीं लौटाया। पहले डोमेन अनलॉक करें।"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar खोज नहीं कर सका: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar API के ज़रिए :tld एक्सटेंशन वाले डोमेन का पंजीकरण नहीं होने देता। कारण: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar API के ज़रिए :tld एक्सटेंशन वाले डोमेन का स्थानांतरण नहीं होने देता।"
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr ".dk डोमेन के नेमसर्वर और संपर्क कंट्रोल पैनल (:registrar) में बदलें।"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar :command के लिए पहुँच में नहीं था"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: विफल रहा (:type:)। अधिक जानकारी के लिए त्रुटि लॉग देखें।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "रजिस्ट्रार ने स्थानांतरण कोड डोमेन के पंजीकर्ता को ईमेल कर दिया है।"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "रजिस्ट्रार यह कार्रवाई नहीं कर सकता: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "इस डोमेन का रजिस्ट्रार अपने API के ज़रिए इस कार्रवाई का समर्थन नहीं करता।"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "इस डोमेन का रजिस्ट्रार इस कार्रवाई का समर्थन नहीं करता। कृपया सपोर्ट से संपर्क करें।"
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "रजिस्ट्रार"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "रजिस्ट्रार ने स्थानांतरण कोड डोमेन के प्रशासनिक संपर्क को ईमेल कर दिया है।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar ने ऑर्डर :order की स्थिति :status बताई है। ऑर्डर को संबंधित खाते में जाँचें।"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar WHOIS गोपनीयता को सशुल्क सेवा के रूप में बेचता है: इसे संबंधित कंट्रोल पैनल में चालू करें।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar में आवश्यक कॉन्फ़िगरेशन गायब है: :field"

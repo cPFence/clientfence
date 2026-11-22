@@ -31,13 +31,18 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
     public function __construct($options)
     {
         if (empty($options['application_key']) || empty($options['secret_key']) || empty($options['consumer_key'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'OVHcloud', ':missing' => 'application key, application secret and consumer key'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'OVHcloud', ':missing' => 'application key, application secret and consumer key'], 3001);
         }
 
         $this->config['application_key'] = trim((string) $options['application_key']);
         $this->config['secret_key'] = trim((string) $options['secret_key']);
         $this->config['consumer_key'] = trim((string) $options['consumer_key']);
         $this->config['endpoint'] = isset(self::ENDPOINTS[$options['endpoint'] ?? '']) ? $options['endpoint'] : 'ovh-eu';
+    }
+
+    public static function getUnsupportedActions(): array
+    {
+        return ['enablePrivacyProtection', 'disablePrivacyProtection'];
     }
 
     public static function getConfig(): array
@@ -108,7 +113,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
         // Each domain has its own holder contact at OVHcloud: update it, keeping the fields ClientFence does not know.
         $owner = (string) ($this->request('GET', '/domain/' . $domain->getName())['whoisOwner'] ?? '');
         if ($owner === '') {
-            throw new Registrar_Exception(':domain was not found in the OVHcloud account.', [':domain' => $domain->getName()]);
+            throw new Registrar_Exception(':domain was not found in the account at :registrar.', [':registrar' => 'OVHcloud', ':domain' => $domain->getName()]);
         }
         $current = (array) $this->request('GET', '/domain/contact/' . $owner);
         unset($current['id']);
@@ -273,7 +278,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
             throw new Registrar_Exception($action === 'create' ? 'Premium domains cannot be registered.' : 'Premium domains cannot be transferred.');
         }
         if ($mode !== $action . '-default') {
-            throw new Registrar_Exception('OVHcloud cannot order :domain: :error', [':domain' => $domain->getName(), ':error' => $mode]);
+            throw new Registrar_Exception(':registrar cannot order :domain: :error', [':registrar' => 'OVHcloud', ':domain' => $domain->getName(), ':error' => $mode]);
         }
         $path = '/order/cart/' . $item['cartId'] . '/item/' . $item['itemId'];
         $this->request('POST', '/order/cart/' . $item['cartId'] . '/assign');
@@ -301,12 +306,12 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
     private function pay(int $orderId): void
     {
         if ($orderId <= 0) {
-            throw new Registrar_Exception('OVHcloud returned an unreadable response for :command', [':command' => 'order']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'OVHcloud', ':command' => 'order']);
         }
         $this->request('POST', '/me/order/' . $orderId . '/payWithRegisteredPaymentMean', ['paymentMean' => 'ovhAccount']);
         $status = (string) $this->request('GET', '/me/order/' . $orderId . '/status');
         if (!in_array($status, ['delivered', 'delivering', 'checking'], true)) {
-            throw new Registrar_Exception('OVHcloud order :order is :status: check it in your OVHcloud account.', [':order' => $orderId, ':status' => $status]);
+            throw new Registrar_Exception(':registrar order :order is :status: check it in that account.', [':registrar' => 'OVHcloud', ':order' => $orderId, ':status' => $status]);
         }
     }
 
@@ -314,7 +319,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
     {
         $cart = (string) ($this->request('POST', '/order/cart', ['ovhSubsidiary' => $this->subsidiary()])['cartId'] ?? '');
         if ($cart === '') {
-            throw new Registrar_Exception('OVHcloud returned an unreadable response for :command', [':command' => 'order/cart']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'OVHcloud', ':command' => 'order/cart']);
         }
 
         return $cart;
@@ -325,7 +330,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
     {
         $item = (array) $this->request('POST', '/order/cart/' . $this->cart() . '/domain', array_filter(['domain' => $domain->getName(), 'duration' => $duration]));
         if (empty($item['cartId']) || empty($item['itemId'])) {
-            throw new Registrar_Exception('OVHcloud returned an unreadable response for :command', [':command' => 'order/cart/domain']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'OVHcloud', ':command' => 'order/cart/domain']);
         }
 
         return $item;
@@ -341,7 +346,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
     {
         $id = (string) ($this->request('POST', '/domain/contact', $this->contact($domain->getContactRegistrar()) + ['language' => 'en_GB'])['id'] ?? '');
         if ($id === '') {
-            throw new Registrar_Exception('OVHcloud did not return a contact ID.');
+            throw new Registrar_Exception(':registrar did not return a contact ID.', [':registrar' => 'OVHcloud']);
         }
 
         return $id;
@@ -390,7 +395,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
             throw new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'OVHcloud', ':error' => $message]);
         }
         if ($reply === null && trim($content) !== '' && trim($content) !== 'null') {
-            throw new Registrar_Exception('OVHcloud returned an unreadable response for :command', [':command' => $method . ' ' . $path]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'OVHcloud', ':command' => $method . ' ' . $path]);
         }
 
         return $reply;

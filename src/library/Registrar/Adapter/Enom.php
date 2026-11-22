@@ -27,11 +27,16 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
     public function __construct($options)
     {
         if (empty($options['uid']) || empty($options['pw'])) {
-            throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Enom', ':missing' => 'reseller ID and API token'], 3001);
+            throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Enom', ':missing' => 'reseller ID and API token'], 3001);
         }
 
         $this->config['uid'] = trim((string) $options['uid']);
         $this->config['pw'] = trim((string) $options['pw']);
+    }
+
+    public static function getUnsupportedActions(): array
+    {
+        return ['enablePrivacyProtection'];
     }
 
     public static function getConfig(): array
@@ -216,7 +221,7 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
     public function enablePrivacyProtection(Registrar_Domain $domain): bool
     {
         // Enom sells WHOIS privacy (ID Protect) as a paid service: turning it on here would buy it without a charge to the client.
-        throw new Registrar_Exception('Enom sells WHOIS privacy as a paid service: turn it on in the Enom control panel.');
+        throw new Registrar_Exception(':registrar sells WHOIS privacy as a paid service: turn it on in its control panel.', [':registrar' => 'Enom']);
     }
 
     public function disablePrivacyProtection(Registrar_Domain $domain): bool
@@ -302,7 +307,7 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
         $xml = @simplexml_load_string($body, SimpleXMLElement::class, LIBXML_NONET | LIBXML_NOCDATA);
         if (!$xml instanceof SimpleXMLElement || !isset($xml->ErrCount)) {
             // Usually the server's IP address is not allowed in the Enom API settings.
-            throw new Registrar_Exception('Enom returned an unreadable response for :command', [':command' => $command]);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Enom', ':command' => $command]);
         }
         if ((int) $xml->ErrCount > 0) {
             $errors = [];
@@ -335,7 +340,7 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
     {
         $reply = $this->request('Check', $this->name($domain));
         if (!isset($reply->RRPCode)) {
-            throw new Registrar_Exception('Enom returned an unreadable response for :command', [':command' => 'Check']);
+            throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Enom', ':command' => 'Check']);
         }
 
         return $reply;

@@ -213,7 +213,7 @@ test('domain details without an expiry throw instead of keeping the stored one',
 
 test('the transfer code comes from the auth-code call; none is a clear error', function (): void {
     expect(spaceshipAdapter(['GET /v1/domains/example.com/transfer/auth-code' => ['authCode' => 'X9#y', 'expires' => '2027-01-01T00:00:00.000Z']])->getEpp(spaceshipDomain()))->toBe('X9#y')
-        ->and(fn () => spaceshipAdapter()->getEpp(spaceshipDomain()))->toThrow(Registrar_Exception::class, 'did not return a transfer code');
+        ->and(fn () => spaceshipAdapter()->getEpp(spaceshipDomain()))->toThrow(Registrar_Exception::class, 'Please contact support to receive it');
 });
 
 test('lock and unlock set the transfer lock; privacy sets the level with the user\'s consent', function (): void {

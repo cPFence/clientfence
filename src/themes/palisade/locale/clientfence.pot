@@ -611,7 +611,7 @@ msgid ":domain has a transfer lock: unlock it at the current registrar first."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Porkbun.php
-msgid ":domain is already in your :registrar account. If this order's earlier try registered or transferred it, activate the order by hand."
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
 msgstr ""
 
 #: src/modules/Cart/Service.php
@@ -638,20 +638,16 @@ msgstr ""
 msgid ":domain is registered with us."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Connectreseller.php
-msgid ":domain was not found in the ConnectReseller account."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Ovh.php
-msgid ":domain was not found in the OVHcloud account."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Openprovider.php
-msgid ":domain was not found in the Openprovider account."
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":domain was refused: :error"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -810,6 +806,10 @@ msgstr ""
 msgid ":reason"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar accepted the lock, but :domain is still unlocked. The change has not been applied."
 msgstr ""
@@ -822,36 +822,72 @@ msgstr ""
 msgid ":registrar accepted the unlock, but :domain is still locked. The change has not been applied."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar answered about :other when asked about :domain."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Spaceship.php src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar did not report an expiry date for :domain."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Spaceship.php src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
-msgid ":registrar did not return a transfer code for :domain."
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Spaceship.php src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar did not say whether :domain is available."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not support this action."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Spaceship.php …
 msgid ":registrar has no test system: turn test mode off for this registrar."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Webhosting4u.php
-msgid ":registrar holds no transfer code for :domain. Request it from WebHosting|4U."
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":registrar needs the PHP soap extension."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
@@ -866,20 +902,48 @@ msgstr ""
 msgid ":registrar returned an unreadable response (HTTP :status)."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Spaceship.php src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar returned an unreadable response."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar returned no result for :domain."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Spaceship.php src/library/Registrar/Adapter/Subreg.php src/library/Registrar/Adapter/Webhosting4u.php
 msgid ":registrar returned prices in more than one currency (:a and :b), which cannot be imported as one list."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Porkbun.php
 msgid ":registrar sells :domain only for the registry's minimum term (in years: :duration), not for the ordered term (in years: :years)."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Porkbun.php
@@ -991,11 +1055,11 @@ msgid ":tld cannot be applied. Nothing was changed."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Porkbun.php
-msgid ":tld domains cannot be registered through the :registrar API: :reason"
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Porkbun.php
-msgid ":tld domains cannot be transferred through the :registrar API."
+msgid ":tld domains cannot be transferred through the API of :registrar."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -1020,10 +1084,6 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Server/Manager/CWP.php …
 msgid ":type: does not support :action:"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Email.php
-msgid ":type: registrar is unable to :action:"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -5318,22 +5378,6 @@ msgstr ""
 msgid "Category title not passed"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Centralnicreseller.php
-msgid "CentralNic Reseller does not offer a :years-year transfer for :tld."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Centralnicreseller.php
-msgid "CentralNic Reseller has emailed the transfer code to the domain's registrant."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Centralnicreseller.php
-msgid "CentralNic Reseller returned an unreadable response for :command"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Centralnicreseller.php
-msgid "CentralNic Reseller returned no paid-until date for :domain."
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_upgrades.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig …
 msgid "Change"
 msgstr ""
@@ -5403,7 +5447,7 @@ msgid "Change plan or billing cycle"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Opensrs.php
-msgid "Change the name servers and contacts of .dk domains in the OpenSRS control panel."
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
 msgstr ""
 
 #: src/modules/Servicedomain/DomainTickets.php
@@ -7190,22 +7234,6 @@ msgstr ""
 msgid "Connect again"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Connectreseller.php
-msgid "ConnectReseller did not return a contact ID."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Connectreseller.php
-msgid "ConnectReseller did not return a customer ID."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Connectreseller.php
-msgid "ConnectReseller did not return the transfer code of :domain."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Connectreseller.php
-msgid "ConnectReseller returned an unreadable response for :command"
-msgstr ""
-
 #: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Connected"
 msgstr ""
@@ -7610,16 +7638,16 @@ msgstr ""
 msgid "Could not reach :program: :error"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid "Could not reach :registrar. Please try again shortly."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "Could not reach :registrar: :error"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Could not reach Dynadot for :command"
 msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Api.php
@@ -9702,34 +9730,6 @@ msgstr ""
 msgid "Duplicate"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot :command failed: :error"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot did not return a contact ID."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot returned an unreadable response for :command"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot returned no details for :domain"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot returned no search result for :domain"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot returned no transfer code. Unlock the domain first."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Dynadot.php
-msgid "Dynadot search failed: :error"
-msgstr ""
-
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "EPP / auth code"
 msgstr ""
@@ -10476,14 +10476,6 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Enhance only. The account owner can restore, sub-users only see the backups."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Enom.php
-msgid "Enom returned an unreadable response for :command"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Enom.php
-msgid "Enom sells WHOIS privacy as a paid service: turn it on in the Enom control panel."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk.html.twig src/modules/Support/templates/admin/modal/mod_support_new_helpdesk.html.twig
@@ -11515,7 +11507,7 @@ msgid "Failed to :action: on the :type: server, check the error logs for further
 msgstr ""
 
 #: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
-msgid "Failed to :action: with the :type: registrar, check the error logs for further details"
+msgid "Failed to :action: with :type:, check the error logs for further details"
 msgstr ""
 
 #: src/library/Server/Manager/CWP.php src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php …
@@ -13408,14 +13400,6 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
 msgid "IMAP server"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Inwx.php
-msgid "INWX did not return a contact ID."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Inwx.php
-msgid "INWX returned an unreadable response for :command"
 msgstr ""
 
 #: src/modules/Activity/templates/admin/mod_activity_api_log.html.twig src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Client/templates/admin/mod_client_login_history.html.twig …
@@ -16934,28 +16918,12 @@ msgstr ""
 msgid "NameSilo auto-renewal"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php
-msgid "NameSilo did not return a contact ID."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Namesilo.php
-msgid "NameSilo has emailed the transfer code to the domain's administrative contact."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Namesilo.php
-msgid "NameSilo returned an unreadable response for :command"
-msgstr ""
-
 #: src/library/Registrar/Adapter/Namecheap.php
 msgid "Namecheap Reseller ID. If you don't have one, leave this blank."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namecheap.php
 msgid "Namecheap Username"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Namecheap.php
-msgid "Namecheap command :command failed with HTTP status :status."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_translations.html.twig
@@ -18066,10 +18034,6 @@ msgstr ""
 msgid "No tickets selected"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Centralnicreseller.php
-msgid "No transfer code is assigned to :domain: contact CentralNic Reseller support."
-msgstr ""
-
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_prices.html.twig
 msgid "No transfers"
 msgstr ""
@@ -18108,14 +18072,6 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Nobody can order yet. You can still create orders in the admin area."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Nominet.php
-msgid "Nominet has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Nominet.php
-msgid "Nominet returned an unreadable response for :command"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
@@ -18484,22 +18440,6 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Ovh.php
 msgid "OVHcloud Europe"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Ovh.php
-msgid "OVHcloud cannot order :domain: :error"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Ovh.php
-msgid "OVHcloud did not return a contact ID."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Ovh.php
-msgid "OVHcloud order :order is :status: check it in your OVHcloud account."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Ovh.php
-msgid "OVHcloud returned an unreadable response for :command"
 msgstr ""
 
 #: src/library/Payment/Adapter/Custom.php src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php …
@@ -19178,14 +19118,6 @@ msgstr ""
 msgid "OpenPanel requires a hostname and OpenAdmin credentials."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Opensrs.php
-msgid "OpenSRS has emailed the transfer code to the domain's administrative contact."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Opensrs.php
-msgid "OpenSRS returned an unreadable response for :command"
-msgstr ""
-
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "Opened"
 msgstr ""
@@ -19212,18 +19144,6 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_affiliate_pane.html.twig src/modules/Client/templates/client/mod_client_affiliates_page.html.twig src/modules/Invoice/Reports.php …
 msgid "Opening balance"
-msgstr ""
-
-#: src/library/Registrar/Adapter/Openprovider.php
-msgid "Openprovider did not return a contact handle."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Openprovider.php
-msgid "Openprovider needs a house number in the client's address."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Openprovider.php
-msgid "Openprovider returned an unreadable response for :command"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_settings_store.html.twig
@@ -21366,10 +21286,6 @@ msgstr ""
 msgid "Poor"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Porkbun.php
-msgid "Porkbun returned an unreadable response for :command"
-msgstr ""
-
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig …
 msgid "Port"
 msgstr ""
@@ -22438,10 +22354,6 @@ msgstr ""
 msgid "Reading the global webmail domain from Enhance…"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Realtimeregister.php
-msgid "Realtime Register returned an unreadable response for :command"
-msgstr ""
-
 #: src/modules/Invoice/Reports.php src/modules/Order/templates/admin/mod_order_index.html.twig src/modules/Order/templates/admin/mod_order_ip_seats.html.twig …
 msgid "Reason"
 msgstr ""
@@ -22932,10 +22844,6 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid "Registrar :adapter was not found"
-msgstr ""
-
-#: src/modules/Servicedomain/Service.php
-msgid "Registrar :registrar is missing required configuration: :field"
 msgstr ""
 
 #: src/modules/Servicedomain/Api/Admin.php
@@ -27250,10 +27158,6 @@ msgstr ""
 msgid "Thank you: we have checked your ID document and approved it. An order that waited only for it now goes on, and you get its usual emails."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
-msgid "The \":domain_registrar\" domain registrar is not fully configured. Please configure the :missing"
-msgstr ""
-
 #: src/library/ClientFence/Cache/CacheFactory.php
 msgid "The \":driver\" cache driver requires an installation identifier (\"info.instance_id\" in the configuration file) so that installations sharing the same server don't collide. Reinstall or update ClientFence to have one generated automatically, or set it manually."
 msgstr ""
@@ -27512,10 +27416,6 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_id_documents_pane.html.twig
 msgid "The ID documents this client sent. Files are kept encrypted and deleted the set number of days after the decision; the decision stays."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Inwx.php
-msgid "The INWX account uses two-factor sign-in: use an account without it for the API."
 msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
@@ -28843,6 +28743,26 @@ msgstr ""
 msgid "The registrar did not accept the domain request."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr ""
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr ""
+
 #: src/modules/Servicedomain/PriceSync.php
 msgid "The registrar returned no prices. Nothing was changed; try again later."
 msgstr ""
@@ -29043,7 +28963,7 @@ msgstr ""
 msgid "The transfer authorization code is required."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Enom.php
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Enom.php …
 msgid "The transfer code could not be retrieved automatically. Please contact support to receive it."
 msgstr ""
 
@@ -34937,6 +34857,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "the mailbox opens at once, signed in, on mail.<the client’s domain>."
+msgstr ""
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_cart_index.html.twig

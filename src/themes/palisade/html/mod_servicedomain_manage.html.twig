@@ -175,14 +175,19 @@
                                 <span class="small text-secondary">{{ 'Domain locking is a security feature which prevents your domain name from being transferred without first unlocking it. When this is enabled, a domain cannot be transferred even with the transfer code.'|trans }}</span>
                             </div>
                         </div>
-                        <button class="btn btn-danger icon-link" type="button" id="domain-unlock" {% if service.locked == 0 %}style="display:none;"{% endif %}>
+                        {# ClientFence core patch: an action the registrar cannot do is a disabled button with the reason (getUnsupportedActions). #}
+                        <span class="d-inline-block"{% if 'unlock' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action. Please contact support.'|trans }}"{% endif %}>
+                        <button class="btn btn-danger icon-link" type="button" id="domain-unlock" {% if service.locked == 0 %}style="display:none;"{% endif %}{% if 'unlock' in service.unsupported_actions %} disabled{% endif %}>
                             <svg class="icon"><use href="#lock-open" /></svg>
                             {{ 'Unlock'|trans }}
                         </button>
-                        <button class="btn btn-primary icon-link" type="button" id="domain-lock" {% if service.locked == 1 %}style="display:none;"{% endif %}>
+                        </span>
+                        <span class="d-inline-block"{% if 'lock' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action. Please contact support.'|trans }}"{% endif %}>
+                        <button class="btn btn-primary icon-link" type="button" id="domain-lock" {% if service.locked == 1 %}style="display:none;"{% endif %}{% if 'lock' in service.unsupported_actions %} disabled{% endif %}>
                             <svg class="icon"><use href="#lock" /></svg>
                             {{ 'Lock'|trans }}
                         </button>
+                        </span>
                     </div>
                     <div class="cf-dom-block">
                         <div class="cf-dom-head">
@@ -192,8 +197,12 @@
                                 <span class="small text-muted">{{ 'If you would like to hide domain contact information which is shown on WHOIS you can enable privacy protection. Once domain privacy protection is enabled no one will know who registered this service. And once you decide to disable privacy protection, information that is listed above on "Update Domain Contact Details" section will be seen on domain WHOIS again.'|trans }}</span>
                             </div>
                         </div>
-                        <button class="btn btn-warning" type="button" id="domain-disable-pp" {% if service.privacy == 0 %}style="display:none;"{% endif %}>{{ 'Disable Privacy protection'|trans }}</button>
-                        <button class="btn btn-primary" type="button" id="domain-enable-pp" {% if service.privacy == 1 %}style="display:none;"{% endif %}>{{ 'Enable Privacy protection'|trans }}</button>
+                        <span class="d-inline-block"{% if 'disablePrivacyProtection' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action. Please contact support.'|trans }}"{% endif %}>
+                        <button class="btn btn-warning" type="button" id="domain-disable-pp" {% if service.privacy == 0 %}style="display:none;"{% endif %}{% if 'disablePrivacyProtection' in service.unsupported_actions %} disabled{% endif %}>{{ 'Disable Privacy protection'|trans }}</button>
+                        </span>
+                        <span class="d-inline-block"{% if 'enablePrivacyProtection' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action. Please contact support.'|trans }}"{% endif %}>
+                        <button class="btn btn-primary" type="button" id="domain-enable-pp" {% if service.privacy == 1 %}style="display:none;"{% endif %}{% if 'enablePrivacyProtection' in service.unsupported_actions %} disabled{% endif %}>{{ 'Enable Privacy protection'|trans }}</button>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -210,7 +219,9 @@
                 {% if service.ticket_mode|default(false) and service.transfer_code|default('') %}
                     <p>{{ 'Transfer code (EPP code): :code'|trans({':code': service.transfer_code}) }}</p>
                 {% endif %}
-                <button class="btn btn-primary" type="button" id="get-epp">{{ 'Get EPP Code'|trans }}</button>
+                <span class="d-inline-block"{% if 'getEpp' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action. Please contact support.'|trans }}"{% endif %}>
+                <button class="btn btn-primary" type="button" id="get-epp"{% if 'getEpp' in service.unsupported_actions %} disabled{% endif %}>{{ 'Get EPP Code'|trans }}</button>
+                </span>
             </div>
     </div>
 </div>

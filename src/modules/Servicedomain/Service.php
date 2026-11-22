@@ -973,6 +973,15 @@ class Service implements \ClientFence\InjectionAwareInterface
             $data['requests'] = DomainTickets::pending($this->di, $model);
             $data['transfer_code'] = $model->transfer_code;
         }
+        // ClientFence core patch: the actions the registrar cannot do, shown as disabled buttons (getUnsupportedActions).
+        $data['unsupported_actions'] = [];
+        if ($tldRegistrar instanceof \Model_TldRegistrar) {
+            try {
+                $data['unsupported_actions'] = $this->registrarGetRegistrarAdapterClassName($tldRegistrar)::getUnsupportedActions();
+            } catch (\ClientFence\InformationException) {
+                // The registrar's module is off: its actions fail on their own, the page must still open.
+            }
+        }
 
         if ($identity instanceof \Model_Admin) {
             $data['transfer_code'] = $model->transfer_code;
@@ -1727,7 +1736,8 @@ class Service implements \ClientFence\InjectionAwareInterface
 
             $value = $configuration[$field] ?? null;
             if ($required && ($value === null || $value === '' || $value === [])) {
-                throw new \ClientFence\InformationException('Registrar :registrar is missing required configuration: :field', [':registrar' => $model->name ?: $model->registrar, ':field' => $options['label'] ?? $field]);
+                // ClientFence core patch: a registrar error, so clients and guests are not told which registrar this is.
+                throw new \Registrar_Exception(':registrar is missing required configuration: :field', [':registrar' => $model->name ?: $model->registrar, ':field' => $options['label'] ?? $field]);
             }
         }
     }

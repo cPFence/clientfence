@@ -35216,3 +35216,139 @@ msgstr ":image-এর জন্য ডিফল্ট রিস্টোর ক�
 #: src/modules/Clientfence/Branding.php
 msgid "Upload a valid SVG with artwork."
 msgstr "ছবিসহ একটি বৈধ SVG আপলোড করুন।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":domain is already in the account at :registrar. If this order's earlier try registered or transferred it, activate the order by hand."
+msgstr ":registrar অ্যাকাউন্টে ইতিমধ্যে :domain ধরে রেখেছে। এই অর্ডারের আগের চেষ্টা এটি নিবন্ধন বা স্থানান্তর করে থাকলে অর্ডারটি হাতে সক্রিয় করুন।"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Openprovider.php src/library/Registrar/Adapter/Ovh.php
+msgid ":domain was not found in the account at :registrar."
+msgstr ":registrar অ্যাকাউন্টে :domain খুঁজে পায়নি।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ":domain_registrar সম্পূর্ণ কনফিগার করা নেই। অনুগ্রহ করে :missing কনফিগার করুন"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar :command failed: :error"
+msgstr ":registrar :command কমান্ড চালাতে পারেনি: :error"
+
+#: src/library/Registrar/Adapter/Inwx.php
+msgid ":registrar account uses two-factor sign-in: use an account without it for the API."
+msgstr ":registrar অ্যাকাউন্টে টু-ফ্যাক্টর সাইন-ইন ব্যবহার করে: API-এর জন্য এটি ছাড়া একটি অ্যাকাউন্ট ব্যবহার করুন।"
+
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar cannot order :domain: :error"
+msgstr ":registrar :domain অর্ডার করতে পারে না: :error"
+
+#: src/library/Registrar/Adapter/Namecheap.php
+msgid ":registrar command :command failed with HTTP status :status."
+msgstr ":registrar :command কমান্ড চালাতে পারেনি (HTTP স্ট্যাটাস :status)।"
+
+#: src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php src/library/Registrar/Adapter/Inwx.php …
+msgid ":registrar did not return a contact ID."
+msgstr ":registrar একটি যোগাযোগ আইডি ফেরত দেয়নি।"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar did not return a contact handle."
+msgstr ":registrar একটি যোগাযোগ হ্যান্ডেল ফেরত দেয়নি।"
+
+#: src/library/Registrar/Adapter/Connectreseller.php
+msgid ":registrar did not return a customer ID."
+msgstr ":registrar একটি গ্রাহক আইডি ফেরত দেয়নি।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar does not offer a :years-year transfer for :tld."
+msgstr ":registrar :tld-এর জন্য :years বছরের স্থানান্তর দেয় না।"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid ":registrar has no privacy service: the .uk WHOIS shows the registrant's name and address only with their consent."
+msgstr ":registrar-এর কোনো গোপনীয়তা সেবা নেই: .uk WHOIS নিবন্ধনকারীর নাম ও ঠিকানা শুধু তাঁর সম্মতিতে দেখায়।"
+
+#: src/library/Registrar/Adapter/Openprovider.php
+msgid ":registrar needs a house number in the client's address."
+msgstr ":registrar-এর জন্য ক্লায়েন্টের ঠিকানায় বাড়ির নম্বর লাগে।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
+msgid ":registrar returned an unreadable response for :command"
+msgstr ":registrar :command-এর জন্য পাঠের অযোগ্য উত্তর ফেরত দিয়েছে"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no details for :domain"
+msgstr ":registrar :domain-এর কোনো বিবরণ ফেরত দেয়নি"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid ":registrar returned no paid-until date for :domain."
+msgstr ":registrar :domain-এর জন্য পরিশোধিত-পর্যন্ত তারিখ ফেরত দেয়নি।"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no search result for :domain"
+msgstr ":registrar :domain-এর জন্য কোনো অনুসন্ধান ফল ফেরত দেয়নি"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar returned no transfer code. Unlock the domain first."
+msgstr ":registrar কোনো স্থানান্তর কোড ফেরত দেয়নি। আগে ডোমেইন আনলক করুন।"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid ":registrar search failed: :error"
+msgstr ":registrar অনুসন্ধান সম্পন্ন করতে পারেনি: :error"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be registered through the API of :registrar: :reason"
+msgstr ":registrar API-র মাধ্যমে :tld এক্সটেনশনের ডোমেইন নিবন্ধন করতে দেয় না। কারণ: :reason"
+
+#: src/library/Registrar/Adapter/Porkbun.php
+msgid ":tld domains cannot be transferred through the API of :registrar."
+msgstr ":registrar API-র মাধ্যমে :tld এক্সটেনশনের ডোমেইন স্থানান্তর করতে দেয় না।"
+
+#: src/library/Registrar/Adapter/Opensrs.php
+msgid "Change the name servers and contacts of .dk domains in the control panel of :registrar."
+msgstr ".dk ডোমেইনের নেমসার্ভার ও যোগাযোগ কন্ট্রোল প্যানেলে পরিবর্তন করুন (:registrar)।"
+
+#: src/library/Registrar/Adapter/Dynadot.php
+msgid "Could not reach :registrar for :command"
+msgstr ":registrar :command-এর জন্য পৌঁছানো যায়নি"
+
+#: src/library/Registrar/Adapter/Internetbs.php src/library/Registrar/Adapter/Namecheap.php src/library/Registrar/Adapter/Resellerclub.php
+msgid "Failed to :action: with :type:, check the error logs for further details"
+msgstr ":action: ব্যর্থ হয়েছে (:type:)। আরও বিবরণের জন্য ত্রুটির লগ দেখুন।"
+
+#: src/library/Registrar/Adapter/Centralnicreseller.php
+msgid "The registrar has emailed the transfer code to the domain's registrant."
+msgstr "রেজিস্ট্রার ট্রান্সফার কোডটি ডোমেইনের নিবন্ধকের কাছে ইমেইল করেছে।"
+
+#: src/library/Registrar/Adapter/Email.php
+msgid "The registrar is unable to :action:"
+msgstr "রেজিস্ট্রার এই কাজটি করতে পারছে না: :action:"
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig
+msgid "The registrar of this domain does not support this action through its API."
+msgstr "এই ডোমেইনের রেজিস্ট্রার API-র মাধ্যমে এই কাজটি সমর্থন করে না।"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "The registrar of this domain does not support this action. Please contact support."
+msgstr "এই ডোমেইনের রেজিস্ট্রার এই কাজটি সমর্থন করে না। অনুগ্রহ করে সাপোর্টের সাথে যোগাযোগ করুন।"
+
+#: src/library/Registrar/Exception.php
+msgid "the registrar"
+msgstr "রেজিস্ট্রার"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
+msgid "The registrar has emailed the transfer code to the domain's administrative contact."
+msgstr "রেজিস্ট্রার ট্রান্সফার কোডটি ডোমেইনের প্রশাসনিক যোগাযোগকারীর কাছে ইমেইল করেছে।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Ovh.php
+msgid ":registrar order :order is :status: check it in that account."
+msgstr ":registrar অর্ডার :order-এর অবস্থা :status জানিয়েছে। অর্ডারটি সেখানকার অ্যাকাউন্টে পরীক্ষা করুন।"
+
+#: src/library/Registrar/Adapter/Enom.php
+msgid ":registrar sells WHOIS privacy as a paid service: turn it on in its control panel."
+msgstr ":registrar WHOIS গোপনীয়তা একটি পেইড সেবা হিসেবে বিক্রি করে: সেখানকার কন্ট্রোল প্যানেলে এটি চালু করুন।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/Service.php
+msgid ":registrar is missing required configuration: :field"
+msgstr ":registrar-এর আবশ্যক কনফিগারেশন অনুপস্থিত: :field"

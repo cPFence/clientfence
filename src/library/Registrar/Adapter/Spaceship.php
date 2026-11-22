@@ -33,7 +33,7 @@ class Registrar_Adapter_Spaceship extends Registrar_AdapterAbstract implements R
     {
         foreach (['api_key' => 'API key', 'api_secret' => 'API secret'] as $key => $label) {
             if (trim((string) ($options[$key] ?? '')) === '') {
-                throw new Registrar_Exception('The ":domain_registrar" domain registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Spaceship', ':missing' => $label], 3001);
+                throw new Registrar_Exception(':domain_registrar is not fully configured. Please configure the :missing', [':domain_registrar' => 'Spaceship', ':missing' => $label], 3001);
             }
             $this->config[$key] = trim((string) $options[$key]);
         }
@@ -198,7 +198,7 @@ class Registrar_Adapter_Spaceship extends Registrar_AdapterAbstract implements R
     {
         $code = trim((string) ($this->request('GET', $this->path($domain) . '/transfer/auth-code')['authCode'] ?? ''));
         if ($code === '') {
-            throw new Registrar_Exception(':registrar did not return a transfer code for :domain.', [':registrar' => 'Spaceship', ':domain' => $domain->getName()]);
+            throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
         }
 
         return $code;

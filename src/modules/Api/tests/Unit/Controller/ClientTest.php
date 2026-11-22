@@ -472,3 +472,15 @@ test('authenticated internal errors keep their details for debugging', function 
     expect($controller->renderedException)->toBe($internal);
     expect($logger->errors)->toBeEmpty();
 });
+
+test('a registrar error names the registrar to staff only', function (string $role, string $message): void {
+    [$controller] = createFailingController(new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'Porkbun', ':error' => 'Invalid domain']), $role);
+
+    invokeTryCall($controller, $role, 'servicedomain', 'lock', []);
+
+    expect($controller->renderedException->getMessage())->toBe($message);
+})->with([
+    'client' => ['client', 'The registrar refused the request: Invalid domain'],
+    'guest' => ['guest', 'The registrar refused the request: Invalid domain'],
+    'admin' => ['admin', 'Porkbun refused the request: Invalid domain'],
+]);
