@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Servicednshosting\Api;
 
 use ClientFence\Api\AbstractApi;
-use ClientFence\Mod\Client\Entity\Client as ClientEntity;
 use ClientFence\Validation\Api\RequiredParams;
 
 final class Client extends AbstractApi
@@ -65,8 +64,6 @@ final class Client extends AbstractApi
 
     private function clientId(): int
     {
-        $identity = $this->getIdentity();
-
-        return (int) ($identity instanceof ClientEntity ? $identity->getId() : $identity->id);
+        return (int) $this->getIdentity()->id;
     }
 }

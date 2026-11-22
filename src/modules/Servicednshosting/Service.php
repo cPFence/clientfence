@@ -127,9 +127,9 @@ class Service implements InjectionAwareInterface
         return ['domain_name', 'period', 'quantity'];
     }
 
-    public function attachOrderConfig(Product|\Model_Product $product, array $data): array
+    public function attachOrderConfig(Product $product, array $data): array
     {
-        $config = json_decode($product instanceof Product ? ($product->getConfig() ?? '') : ($product->config ?? ''), true)['dns'] ?? [];
+        $config = json_decode($product->getConfig() ?? '', true)['dns'] ?? [];
         if (!isset(self::PROVIDERS[$config['provider'] ?? ''])) {
             throw new InformationException('This DNS hosting product is not configured.');
         }
