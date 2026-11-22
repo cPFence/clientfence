@@ -195,12 +195,12 @@ final readonly class ToApiArrayAuditor
         }
 
         if ($node instanceof Node\Stmt\TryCatch) {
-            $this->collectAssignments($node->try, $result, $where);
-            foreach ($node->catches as $catch) {
-                $this->collectAssignments($catch, $result, $where);
-            }
-            if ($node->finally !== null) {
-                $this->collectAssignments($node->finally, $result, $where);
+            // The try body is $node->stmts (there is no $node->try); catch and finally blocks hold their own stmts.
+            $blocks = [$node->stmts, ...array_map(static fn (Node\Stmt\Catch_ $catch): array => $catch->stmts, $node->catches), $node->finally->stmts ?? []];
+            foreach ($blocks as $stmts) {
+                foreach ($stmts as $child) {
+                    $this->collectAssignments($child, $result, $where);
+                }
             }
 
             return;
