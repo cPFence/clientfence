@@ -45,6 +45,8 @@ final class Migrations
         19 => 'm19ClientProfileOptions',
         20 => 'm20OrderPaymentMethod',
         21 => 'm21InvoiceCustomFields',
+        22 => 'm22Unused',
+        23 => 'm23Dns',
     ];
 
     public static function latest(): int
@@ -370,6 +372,20 @@ final class Migrations
         $columns = array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns('invoice'));
         if (!in_array('buyer_custom', $columns, true)) {
             $db->executeStatement('ALTER TABLE `invoice` ADD COLUMN `buyer_custom` mediumtext DEFAULT NULL');
+        }
+    }
+
+    // 22: no longer used.
+    private static function m22Unused(\Pimple\Container $di): void
+    {
+    }
+
+    // ClientFence core patch: existing installations get the DNS hosting service table.
+    private static function m23Dns(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        if (!$db->createSchemaManager()->tablesExist(['service_dnshosting'])) {
+            $db->executeStatement(Service::tables()['service_dnshosting']);
         }
     }
 }

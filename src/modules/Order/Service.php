@@ -70,6 +70,8 @@ class Service implements InjectionAwareInterface
         \ClientFence\Mod\Product\Service::HOSTING,
         \ClientFence\Mod\Product\Service::DOMAIN,
         \ClientFence\Mod\Product\Service::APIKEY,
+        // ClientFence core patch: DNS orders use the built-in service lifecycle.
+        \ClientFence\Mod\Product\Service::DNS,
     ];
 
     protected ?\Pimple\Container $di = null;
@@ -576,6 +578,8 @@ class Service implements InjectionAwareInterface
             \ClientFence\Mod\Product\Service::LICENSE => \ClientFence\Mod\Servicelicense\Entity\ServiceLicense::class,
             \ClientFence\Mod\Product\Service::CUSTOM => \ClientFence\Mod\Servicecustom\Entity\ServiceCustom::class,
             \ClientFence\Mod\Product\Service::APIKEY => \ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey::class,
+            // ClientFence core patch: load the DNS zone as a Doctrine entity.
+            \ClientFence\Mod\Product\Service::DNS => \ClientFence\Mod\Servicednshosting\Entity\ServiceDns::class,
             default => null,
         };
     }
@@ -584,6 +588,8 @@ class Service implements InjectionAwareInterface
         \ClientFence\Mod\Servicelicense\Entity\ServiceLicense::class => \ClientFence\Mod\Product\Service::LICENSE,
         \ClientFence\Mod\Servicecustom\Entity\ServiceCustom::class => \ClientFence\Mod\Product\Service::CUSTOM,
         \ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey::class => \ClientFence\Mod\Product\Service::APIKEY,
+        // ClientFence core patch: find the order that owns a DNS service.
+        \ClientFence\Mod\Servicednshosting\Entity\ServiceDns::class => \ClientFence\Mod\Product\Service::DNS,
     ];
 
     public function getServiceOrder($service)
@@ -1098,6 +1104,10 @@ class Service implements InjectionAwareInterface
     {
         $this->refuseOverrideInMeta($data);
         $quantity = PriceValidator::validateQuantity($data['quantity'] ?? 1);
+        // ClientFence core patch: a DNS hosting order is one zone, so it is billed for one whatever quantity staff send.
+        if ($this->getProductType($product) === \ClientFence\Mod\Product\Service::DNS) {
+            $quantity = 1;
+        }
         $price = isset($data['price']) ? PriceValidator::validateAmount($data['price']) : null;
 
         $currencyService = $this->di['mod_service']('currency');
@@ -2840,6 +2850,11 @@ class Service implements InjectionAwareInterface
 
     public function updateOrderConfig(Order|\Model_ClientOrder $order, array $config): bool
     {
+        // ClientFence core patch: raw DNS order configuration cannot override the zone or hold provider credentials.
+        if ($this->orderServiceType($order) === \ClientFence\Mod\Product\Service::DNS) {
+            throw new InformationException('DNS order configuration is set when the order is placed.');
+        }
+
         $formId = $this->orderFormId($order);
         $orderId = $this->orderId($order);
 

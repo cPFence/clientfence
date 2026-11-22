@@ -1318,6 +1318,55 @@ test('createFromCart links the setup fee invoice line to its order', function ()
     expect($service->createFromCart($client)[1])->toBe($invoice);
 });
 
+test('createFromCart refuses a DNS zone taken since it was added, or ordered twice in one checkout', function (array $domains, bool $taken, string $message): void {
+    $cart = createEntity(Cart::class, ['id' => 3, 'currency_id' => 2]);
+    $client = createEntity(Client::class, ['id' => 9, 'currency' => 'USD']);
+    $currencyRepository = Mockery::mock(CurrencyRepository::class);
+    $currencyRepository->shouldReceive('find')->with(2)->andReturn(createEntity(Currency::class, ['code' => 'USD', 'conversion_rate' => 1.0]));
+    $currencyService = Mockery::mock(CurrencyService::class);
+    $currencyService->shouldReceive('getCurrencyRepository')->andReturn($currencyRepository);
+    $clientService = Mockery::mock(ClientFence\Mod\Client\Service::class);
+    $clientService->shouldReceive('isClientTaxable')->andReturn(false);
+    $product = createEntity(Product::class, ['id' => 5, 'status' => 'enabled', 'type' => 'dnshosting', 'setup' => 'manual']);
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->with(5)->andReturn($product);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class)->shouldIgnoreMissing();
+    $dnsService = Mockery::mock(ClientFence\Mod\Servicednshosting\Service::class);
+    $check = $dnsService->shouldReceive('validateOrderData');
+    if ($taken) {
+        $check->andThrow(new ClientFence\InformationException('This DNS zone, or a zone above or below it, already has an order.'));
+    }
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class)->shouldIgnoreMissing();
+    $em->shouldReceive('wrapInTransaction')->once()->andReturnUsing(fn (Closure $work) => $work());
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getSessionCart')->andReturn($cart);
+    $service->shouldReceive('toApiArray')->andReturn(['items' => [['id' => 13], ['id' => 14]], 'total' => 20]);
+    $service->shouldReceive('getCartProducts')->andReturn([createEntity(CartProduct::class, ['id' => 13]), createEntity(CartProduct::class, ['id' => 14])]);
+    $item = [
+        'product_id' => 5, 'form_id' => null, 'title' => 'DNS hosting', 'type' => 'dnshosting', 'unit' => 'service', 'period' => '1Y',
+        'quantity' => 1, 'price' => 10, 'discount_price' => 0, 'setup_price' => 0, 'discount_setup' => 0, 'notes' => null,
+    ];
+    $service->shouldReceive('cartProductToApiArray')->andReturn(...array_map(fn (string $domain): array => $item + ['domain_name' => $domain], $domains));
+    $service->shouldReceive('isStockAvailable')->andReturn(true);
+    $di = container();
+    $di['db']->shouldReceive('getExistingModelById')->andReturn(cartServiceCreateLegacyClient());
+    $di['em'] = $em;
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => match ($name) {
+        'currency' => $currencyService,
+        'client' => $clientService,
+        'Product' => $productService,
+        'servicednshosting' => $dnsService,
+        default => $orderService,
+    });
+    $service->setDi($di);
+
+    expect(fn () => $service->createFromCart($client))->toThrow(ClientFence\InformationException::class, $message);
+})->with([
+    'the same zone twice' => [['example.com', 'example.com'], false, 'This domain is already in the cart.'],
+    'a zone and one below it' => [['example.com', 'www.example.com'], false, 'This domain is already in the cart.'],
+    'a zone another order took since' => [['example.com'], true, 'This DNS zone, or a zone above or below it, already has an order.'],
+]);
+
 test('createFromCart compensates promo usage on transaction failure', function (): void {
     $cart = createEntity(Cart::class);
     $cart->id = 3;

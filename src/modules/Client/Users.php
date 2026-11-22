@@ -127,6 +127,12 @@ final class Users
             'enable_privacy_protection' => 'managedomains', 'disable_privacy_protection' => 'managedomains',
             'get_transfer_code' => 'managedomains', 'lock' => 'managedomains', 'unlock' => 'managedomains',
         ],
+        // ClientFence core patch: delegated DNS access follows service viewing and management permissions.
+        'servicednshosting' => [
+            'zone' => 'products', 'dnssec' => 'products',
+            'add' => 'manageproducts', 'update' => 'manageproducts', 'del' => 'manageproducts',
+            'dnssec_enable' => 'manageproducts', 'dnssec_disable' => 'manageproducts',
+        ],
         'servicedownloadable' => ['send_file' => 'products'],
         'servicehosting' => [
             'accounts' => 'products', 'usage' => 'products', 'server' => 'products', 'backups' => 'products',

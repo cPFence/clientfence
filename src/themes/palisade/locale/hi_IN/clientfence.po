@@ -34814,3 +34814,388 @@ msgstr "पासवर्ड बदलना"
 #: src/library/Server/Manager/Dashmox.php
 msgid "reseller accounts"
 msgstr "रीसेलर खाते"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
+msgid ":title has been canceled"
+msgstr ":title रद्द कर दिया गया"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig
+msgid ":title has been renewed"
+msgstr ":title नवीनीकृत कर दिया गया"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_unsuspended.html.twig
+msgid ":title has been restored"
+msgstr ":title बहाल कर दिया गया"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_suspended.html.twig
+msgid ":title has been suspended"
+msgstr ":title निलंबित कर दिया गया"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid ":title is ready"
+msgstr ":title तैयार है"
+
+#: src/modules/Servicednshosting/Provider/PowerDNS.php
+msgid "A zone above this one is already on the DNS server."
+msgstr "इस ज़ोन से ऊपर का एक ज़ोन पहले से DNS सर्वर पर मौजूद है।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "API token or key"
+msgstr "API टोकन या कुंजी"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Add DNS record"
+msgstr "DNS रिकॉर्ड जोड़ें"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Add record"
+msgstr "रिकॉर्ड जोड़ें"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Allows staff to view DNS zones and records."
+msgstr "स्टाफ को DNS ज़ोन और रिकॉर्ड देखने देता है।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Choose a DNS provider"
+msgstr "कोई DNS प्रदाता चुनें"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Choose a DNS provider."
+msgstr "कोई DNS प्रदाता चुनें।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "ClouDNS"
+msgstr "ClouDNS"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "ClouDNS authentication ID"
+msgstr "ClouDNS प्रमाणीकरण ID"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "ClouDNS authentication password"
+msgstr "ClouDNS प्रमाणीकरण पासवर्ड"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "ClouDNS does not support this TTL."
+msgstr "ClouDNS इस TTL का समर्थन नहीं करता।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Cloudflare"
+msgstr "Cloudflare"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Cloudflare account ID"
+msgstr "Cloudflare खाता ID"
+
+#: src/modules/Product/Service.php src/modules/Servicednshosting/manifest.json src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DNS hosting"
+msgstr "DNS होस्टिंग"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
+msgid "DNS hosting canceled"
+msgstr "DNS होस्टिंग रद्द की गई"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS hosting for :domain"
+msgstr ":domain के लिए DNS होस्टिंग"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig
+msgid "DNS hosting renewed"
+msgstr "DNS होस्टिंग नवीनीकृत की गई"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_unsuspended.html.twig
+msgid "DNS hosting restored"
+msgstr "DNS होस्टिंग बहाल की गई"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_suspended.html.twig
+msgid "DNS hosting suspended"
+msgstr "DNS होस्टिंग निलंबित की गई"
+
+#: src/modules/Order/Service.php
+msgid "DNS order configuration is set when the order is placed."
+msgstr "DNS ऑर्डर का कॉन्फ़िगरेशन ऑर्डर देते समय तय होता है।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS order is not active."
+msgstr "DNS ऑर्डर सक्रिय नहीं है।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS order not found."
+msgstr "DNS ऑर्डर नहीं मिला।"
+
+#: src/modules/Servicednshosting/Api/Guest.php
+msgid "DNS product not found."
+msgstr "DNS उत्पाद नहीं मिला।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DNS provider"
+msgstr "DNS प्रदाता"
+
+#: src/modules/Servicednshosting/Provider/Desec.php src/modules/Servicednshosting/Provider/Hetzner.php src/modules/Servicednshosting/Provider/PowerDNS.php …
+msgid "DNS record not found. Refresh the page and try again."
+msgstr "DNS रिकॉर्ड नहीं मिला। पेज रीफ़्रेश करें और फिर प्रयास करें।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNS records"
+msgstr "DNS रिकॉर्ड"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DNS settings saved."
+msgstr "DNS सेटिंग्स सहेजी गईं।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "DNS zone"
+msgstr "DNS ज़ोन"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS zone not found."
+msgstr "DNS ज़ोन नहीं मिला।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC"
+msgstr "DNSSEC"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC is disabled."
+msgstr "DNSSEC बंद है।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC is enabled."
+msgstr "DNSSEC चालू है।"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig …
+msgid "Dear :first_name :last_name,"
+msgstr "प्रिय :first_name :last_name,"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Delete record"
+msgstr "रिकॉर्ड हटाएँ"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DigitalOcean"
+msgstr "DigitalOcean"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Disable DNSSEC"
+msgstr "DNSSEC बंद करें"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Edit or delete record"
+msgstr "रिकॉर्ड संपादित करें या हटाएँ"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Enable DNSSEC"
+msgstr "DNSSEC चालू करें"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a Cloudflare API token or an email address and global API key separated by a colon."
+msgstr "Cloudflare API टोकन, या कोलन से अलग किया गया ईमेल पता और ग्लोबल API कुंजी दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a DS record for a subdomain with key tag, algorithm, digest type, and hexadecimal digest."
+msgstr "key tag, एल्गोरिदम, डाइजेस्ट प्रकार और हेक्साडेसिमल डाइजेस्ट के साथ सबडोमेन के लिए DS रिकॉर्ड दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a TTL between :min and :max seconds."
+msgstr ":min और :max सेकंड के बीच TTL दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a full HTTP or HTTPS address for the PowerDNS API."
+msgstr "PowerDNS API के लिए पूरा HTTP या HTTPS पता दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a numeric ClouDNS authentication ID."
+msgstr "संख्यात्मक ClouDNS प्रमाणीकरण ID दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a relative record name such as www, or @ for the zone apex."
+msgstr "www जैसा सापेक्ष रिकॉर्ड नाम दर्ज करें, या ज़ोन के मूल के लिए @ दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a single-line DNS record value."
+msgstr "एक पंक्ति का DNS रिकॉर्ड मान दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid :type value of up to :max bytes."
+msgstr "अधिकतम :max बाइट का मान्य :type मान दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid Cloudflare account ID."
+msgstr "मान्य Cloudflare खाता ID दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid IP address for a :type record."
+msgstr ":type रिकॉर्ड के लिए मान्य IP पता दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid SOA email address."
+msgstr "मान्य SOA ईमेल पता दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid domain name."
+msgstr "मान्य डोमेन नाम दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter an MX priority between 0 and 65535."
+msgstr "0 और 65535 के बीच MX प्राथमिकता दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter the DNS provider credentials."
+msgstr "DNS प्रदाता के क्रेडेंशियल दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter the authoritative nameservers for PowerDNS."
+msgstr "PowerDNS के लिए अधिकारिक नेमसर्वर दर्ज करें।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_order_form.html.twig
+msgid "Enter the domain you want to host DNS for."
+msgstr "वह डोमेन दर्ज करें जिसके लिए आप DNS होस्ट करना चाहते हैं।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Hetzner DNS"
+msgstr "Hetzner DNS"
+
+#: src/modules/Servicednshosting/Provider/Hetzner.php
+msgid "Hetzner DNS did not complete the requested action."
+msgstr "Hetzner DNS ने अनुरोध की गई कार्रवाई पूरी नहीं की।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "MX priority"
+msgstr "MX प्राथमिकता"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "No DNS records found."
+msgstr "कोई DNS रिकॉर्ड नहीं मिला।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "One nameserver per line. Required for PowerDNS. Other providers can supply them automatically."
+msgstr "प्रति पंक्ति एक नेमसर्वर। PowerDNS के लिए आवश्यक। अन्य प्रदाता इन्हें अपने आप दे सकते हैं।"
+
+#: src/modules/Servicednshosting/Api/Admin.php src/modules/Servicednshosting/Api/Client.php
+msgid "Order ID is required."
+msgstr "ऑर्डर ID आवश्यक है।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "PowerDNS"
+msgstr "PowerDNS"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "PowerDNS API address"
+msgstr "PowerDNS API पता"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "PowerDNS SOA email address"
+msgstr "PowerDNS SOA ईमेल पता"
+
+#: src/modules/Servicednshosting/Api/Guest.php
+msgid "Product ID is required."
+msgstr "उत्पाद ID आवश्यक है।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Publish these DS records at your domain registrar."
+msgstr "ये DS रिकॉर्ड अपने डोमेन रजिस्ट्रार पर प्रकाशित करें।"
+
+#: src/modules/Servicednshosting/Api/Client.php
+msgid "Record ID is required."
+msgstr "रिकॉर्ड ID आवश्यक है।"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_suspended.html.twig
+msgid "Record management for :domain is suspended. The zone continues to resolve."
+msgstr ":domain के लिए रिकॉर्ड प्रबंधन निलंबित है। ज़ोन काम करता रहता है।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Remove the DS records at your domain registrar before you disable DNSSEC, or the domain stops resolving."
+msgstr "DNSSEC बंद करने से पहले अपने डोमेन रजिस्ट्रार पर DS रिकॉर्ड हटाएँ, वरना डोमेन काम करना बंद कर देगा।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Save DNS settings"
+msgstr "DNS सेटिंग्स सहेजें"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Save record"
+msgstr "रिकॉर्ड सहेजें"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid "Set these nameservers at your domain registrar."
+msgstr "ये नेमसर्वर अपने डोमेन रजिस्ट्रार पर सेट करें।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "TTL"
+msgstr "TTL"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "TTL (seconds)"
+msgstr "TTL (सेकंड)"
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "The DNS provider could not be reached."
+msgstr "DNS प्रदाता तक नहीं पहुँचा जा सका।"
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "The DNS provider refused the request (HTTP :status)."
+msgstr "DNS प्रदाता ने अनुरोध अस्वीकार कर दिया (HTTP :status)।"
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "The DNS provider returned an unsuccessful or unreadable response."
+msgstr "DNS प्रदाता ने असफल या अपठनीय उत्तर लौटाया।"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
+msgid "The DNS zone for :domain has been removed."
+msgstr ":domain का DNS ज़ोन हटा दिया गया है।"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid "The DNS zone for :domain is ready to use."
+msgstr ":domain का DNS ज़ोन उपयोग के लिए तैयार है।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "This DNS hosting product is not configured."
+msgstr "यह DNS होस्टिंग उत्पाद कॉन्फ़िगर नहीं है।"
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "This DNS provider does not allow changing DNSSEC."
+msgstr "यह DNS प्रदाता DNSSEC बदलने की अनुमति नहीं देता।"
+
+#: src/modules/Servicednshosting/Provider/Desec.php src/modules/Servicednshosting/Provider/Hetzner.php src/modules/Servicednshosting/Provider/PowerDNS.php
+msgid "This DNS record value already exists."
+msgstr "यह DNS रिकॉर्ड मान पहले से मौजूद है।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "This DNS zone, or a zone above or below it, already has an order."
+msgstr "इस DNS ज़ोन, या इसके ऊपर या नीचे के किसी ज़ोन, का पहले से ऑर्डर है।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Unsupported DNS record type."
+msgstr "असमर्थित DNS रिकॉर्ड प्रकार।"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Use @ for the zone apex."
+msgstr "ज़ोन के मूल के लिए @ का उपयोग करें।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Used by all providers except ClouDNS. For a Cloudflare global API key, enter the email address and key separated by a colon."
+msgstr "ClouDNS को छोड़कर सभी प्रदाता इसका उपयोग करते हैं। Cloudflare की ग्लोबल API कुंजी के लिए ईमेल पता और कुंजी कोलन से अलग करके दर्ज करें।"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "View DNS records"
+msgstr "DNS रिकॉर्ड देखें"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig …
+msgid "View your DNS service"
+msgstr "अपनी DNS सेवा देखें"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_unsuspended.html.twig
+msgid "You can manage DNS records for :domain again."
+msgstr "आप फिर से :domain के DNS रिकॉर्ड प्रबंधित कर सकते हैं।"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid "Your DNS hosting is ready"
+msgstr "आपकी DNS होस्टिंग तैयार है"
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig
+msgid "Your DNS hosting service :title has been renewed."
+msgstr "आपकी DNS होस्टिंग सेवा :title नवीनीकृत कर दी गई है।"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "deSEC"
+msgstr "deSEC"

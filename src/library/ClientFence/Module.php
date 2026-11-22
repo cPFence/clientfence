@@ -34,6 +34,8 @@ class Module implements InjectionAwareInterface
         'servicehosting', 'servicelicense', 'staff', 'stats',
         'support', 'system', 'theme', 'formbuilder',
         'widgets',
+        // ClientFence core patch: DNS hosting is a built-in module.
+        'servicednshosting',
         // ClientFence: built in, always on, never an extension.
         'clientfence'];
 

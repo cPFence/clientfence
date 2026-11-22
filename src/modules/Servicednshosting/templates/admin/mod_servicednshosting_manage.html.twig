@@ -1,0 +1,46 @@
+{#
+Copyright (c) 2023-2026 Taras Kondratyuk
+Copyright (c) 2025-2026 Namingo contributors
+Copyright (c) 2026 Terbora Ltd.
+
+Licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+SPDX-License-Identifier: Apache-2.0
+#}
+{# Read outside the embed: its block sees only what is set before it. #}
+{% set dns_domain = service.domain_name %}
+{% set zone = has_permission('servicednshosting', 'view') and order.status in ['active', 'suspended'] ? admin.servicednshosting_zone({ order_id: order.id }) : null %}
+{% embed 'partial_admin_related_section.html.twig' with { title: 'DNS zone'|trans, card_class: 'mb-0' } %}
+    {% block section_content %}
+        <p class="fw-semibold text-break"><bdi dir="ltr">{{ dns_domain }}</bdi></p>
+        {% if zone is not null %}
+            {% if zone.error|default('') %}
+                <div class="alert alert-warning" role="alert">{{ zone.error }}</div>
+            {% else %}
+                {% if zone.nameservers %}
+                    <h3 class="h4">{{ 'Nameservers'|trans }}</h3>
+                    <ul>{% for server in zone.nameservers %}<li><bdi dir="ltr">{{ server }}</bdi></li>{% endfor %}</ul>
+                {% endif %}
+                <h3 class="h4">{{ 'DNS records'|trans }}</h3>
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead><tr><th scope="col">{{ 'Name'|trans }}</th><th scope="col">{{ 'Type'|trans }}</th><th scope="col">{{ 'Value'|trans }}</th><th scope="col">{{ 'TTL'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for record in zone.records %}
+                                <tr>
+                                    <td><bdi dir="ltr">{{ record.name ?: '@' }}</bdi></td>
+                                    <td>{{ record.type }}</td>
+                                    <td class="text-break"><bdi dir="ltr">{% if record.priority is not null %}{{ record.priority }} {% endif %}{{ record.value }}</bdi></td>
+                                    <td>{{ record.ttl }}</td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="4">{{ 'No DNS records found.'|trans }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+{% endembed %}

@@ -315,6 +315,7 @@ test('get types', function (): void {
         'downloadable' => 'Downloadable',
         'hosting' => 'Hosting',
         'domain' => 'Domain',
+        'dnshosting' => 'DNS hosting',
     ];
 
     $expectedArray['customtest'] = 'Customtest';

@@ -1115,6 +1115,7 @@ class Service implements InjectionAwareInterface
                 $invoiceModel = null;
                 $master_order = null;
                 $requestedProductQuantities = [];
+                $dnsZones = [];
                 $familyGroupIds = [];
                 $lastGroupIdByProductId = [];
                 $familyIndex = 0;
@@ -1169,6 +1170,17 @@ class Service implements InjectionAwareInterface
 
                         // Domain TLD must begin with a period - add if not present for owndomain.
                         $item['domain']['owndomain_tld'] = (isset($item['domain']['owndomain_tld'])) ? (str_contains((string) $item['domain']['owndomain_tld'], '.') ? $item['domain']['owndomain_tld'] : '.' . $item['domain']['owndomain_tld']) : null;
+                    }
+
+                    // ClientFence core patch: a DNS zone is checked again (another order may hold it since it was added), and once per checkout.
+                    if ($item['type'] === \ClientFence\Mod\Product\Service::DNS) {
+                        $this->di['mod_service']('service' . $item['type'])->validateOrderData($item);
+                        foreach ($dnsZones as $zone) {
+                            if ($zone === $item['domain_name'] || str_ends_with($zone, '.' . $item['domain_name']) || str_ends_with($item['domain_name'], '.' . $zone)) {
+                                throw new \ClientFence\InformationException('This domain is already in the cart.');
+                            }
+                        }
+                        $dnsZones[] = $item['domain_name'];
                     }
 
                     if ($staff === null && $item['type'] === 'domain' && in_array($item['action'] ?? null, ['register', 'transfer'], true)) {

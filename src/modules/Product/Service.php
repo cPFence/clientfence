@@ -41,6 +41,8 @@ class Service implements InjectionAwareInterface
     final public const string DOWNLOADABLE = 'downloadable';
     final public const string HOSTING = 'hosting';
     final public const string VPS = 'vps';
+    // ClientFence core patch: the DNS hosting product type.
+    final public const string DNS = 'dnshosting';
     final public const string APIKEY = 'apikey';
 
     final public const string SETUP_AFTER_ORDER = 'after_order';
@@ -345,6 +347,8 @@ class Service implements InjectionAwareInterface
             self::DOWNLOADABLE => __trans('Downloadable'),
             self::HOSTING => __trans('Hosting'),
             self::DOMAIN => __trans('Domain'),
+            // ClientFence core patch: the translated label for DNS hosting products.
+            self::DNS => __trans('DNS hosting'),
         ];
 
         // attach service modules
@@ -606,6 +610,10 @@ class Service implements InjectionAwareInterface
                 }
             }
             $current = json_decode($model->getConfig() ?? '', true) ?? [];
+            // ClientFence core patch: the general product form leaves DNS credentials to the Configuration tab.
+            if ($model->getType() === self::DNS) {
+                unset($data['config']['dns']);
+            }
             $c = array_merge($current, $data['config']);
             $model->setConfig(json_encode($c));
         }
@@ -677,6 +685,19 @@ class Service implements InjectionAwareInterface
     {
         /* add new config value */
         $config = json_decode($model->getConfig() ?? '', true) ?? [];
+
+        // ClientFence core patch: DNS settings pass through encryption before product configuration is saved.
+        if ($model->getType() === self::DNS) {
+            if (isset($data['config']['dns'])) {
+                $config['dns'] = $this->getProductModuleService($model)->prepareProductConfig($data['config']['dns'], $config['dns'] ?? []);
+            }
+            if (is_array($data['config'] ?? null)) {
+                $data['config']['dns'] = $config['dns'] ?? [];
+            }
+            if (($data['new_config_name'] ?? '') === 'dns') {
+                unset($data['new_config_name']);
+            }
+        }
 
         if (isset($data['config']) && is_array($data['config'])) {
             // ClientFence core patch: the General tab saves prorata and affiliate keys through update(); this form keeps them.

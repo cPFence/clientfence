@@ -146,6 +146,7 @@ $paths = [
     'modules/Support/templates/admin/mod_support_mail_log.html.twig',
     'modules/Support/templates/email/mod_support_mail_rejected.html.twig',
     'modules/Servicehosting/Panel',
+    'modules/Servicednshosting',
     'modules/Servicehosting/Controller/Client.php',
     'modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig',
     'modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig',

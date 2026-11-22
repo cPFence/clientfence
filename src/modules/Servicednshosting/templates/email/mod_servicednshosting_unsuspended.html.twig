@@ -1,0 +1,20 @@
+{#
+Copyright (c) 2023-2026 Taras Kondratyuk
+Copyright (c) 2025-2026 Namingo contributors
+Copyright (c) 2026 Terbora Ltd.
+
+Licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+SPDX-License-Identifier: Apache-2.0
+#}
+{% block subject %}[{{ guest.system_company.name }}] {{ ':title has been restored'|trans({':title': order.title|default('')}) }}{% endblock %}
+{% block content %}
+{% set email_title %}{{ 'DNS hosting restored'|trans }}{% endset %}
+{% set email_preheader %}{{ 'You can manage DNS records for :domain again.'|trans({':domain': order.config.domain_name|default('')}) }}{% endset %}
+<h1>{{ 'DNS hosting restored'|trans }}</h1>
+<p>{{ 'Dear :first_name :last_name,'|trans({':first_name': c.first_name|default(''), ':last_name': c.last_name|default('')}) }}</p>
+<p>{{ 'You can manage DNS records for :domain again.'|trans({':domain': order.config.domain_name|default('')}) }}</p>
+<p><a href="{{ ('order/service/manage/' ~ order.id)|url(area: 'client') }}">{{ 'View your DNS service'|trans }}</a></p>
+<p>{{ guest.system_email.signature }}</p>
+{% endblock %}

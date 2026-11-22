@@ -930,6 +930,22 @@ msgstr ""
 msgid ":time ago"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
+msgid ":title has been canceled"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig
+msgid ":title has been renewed"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_unsuspended.html.twig
+msgid ":title has been restored"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_suspended.html.twig
+msgid ":title has been suspended"
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid ":title is active"
 msgstr ""
@@ -940,6 +956,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
 msgid ":title is canceled"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid ":title is ready"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -1470,6 +1490,10 @@ msgstr ""
 msgid "A yes/no or quantity option has exactly one value: its price."
 msgstr ""
 
+#: src/modules/Servicednshosting/Provider/PowerDNS.php
+msgid "A zone above this one is already on the DNS server."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig
 msgid "A4"
 msgstr ""
@@ -1588,6 +1612,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Enom.php src/library/Server/Manager/Enhance.php
 msgid "API token"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "API token or key"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Webhosting4u.php
@@ -2030,6 +2058,10 @@ msgstr ""
 msgid "Add Custom Parameter"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Add DNS record"
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Add Field Type"
 msgstr ""
@@ -2216,6 +2248,10 @@ msgstr ""
 
 #: src/modules/Cart/Service.php
 msgid "Add products to your cart before applying promo code"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Add record"
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -2988,6 +3024,10 @@ msgstr ""
 
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "Allowed staff can only assign or remove members from groups below them."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Allows staff to view DNS zones and records."
 msgstr ""
 
 #: src/modules/Client/Service.php
@@ -5602,6 +5642,14 @@ msgstr ""
 msgid "Choose Slack, Discord or Telegram."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Choose a DNS provider"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Choose a DNS provider."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Choose a PNG, JPEG, GIF or WebP image."
 msgstr ""
@@ -6782,6 +6830,22 @@ msgstr ""
 msgid "Closing balance"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "ClouDNS"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "ClouDNS authentication ID"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "ClouDNS authentication password"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "ClouDNS does not support this TTL."
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid "Cloud backups"
 msgstr ""
@@ -6802,6 +6866,10 @@ msgstr ""
 msgid "Cloud storage"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Cloudflare"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Cloudflare R2: auto."
 msgstr ""
@@ -6816,6 +6884,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Cloudflare Turnstile, keys set."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Cloudflare account ID"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -8254,6 +8326,82 @@ msgstr ""
 msgid "Cyprus"
 msgstr ""
 
+#: src/modules/Product/Service.php src/modules/Servicednshosting/manifest.json src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DNS hosting"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
+msgid "DNS hosting canceled"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS hosting for :domain"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig
+msgid "DNS hosting renewed"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_unsuspended.html.twig
+msgid "DNS hosting restored"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_suspended.html.twig
+msgid "DNS hosting suspended"
+msgstr ""
+
+#: src/modules/Order/Service.php
+msgid "DNS order configuration is set when the order is placed."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS order is not active."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS order not found."
+msgstr ""
+
+#: src/modules/Servicednshosting/Api/Guest.php
+msgid "DNS product not found."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DNS provider"
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Desec.php src/modules/Servicednshosting/Provider/Hetzner.php src/modules/Servicednshosting/Provider/PowerDNS.php …
+msgid "DNS record not found. Refresh the page and try again."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNS records"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DNS settings saved."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "DNS zone"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "DNS zone not found."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC is disabled."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC is enabled."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig
 msgid "Daily"
 msgstr ""
@@ -8514,6 +8662,10 @@ msgstr ""
 msgid "Dear %name%,"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig …
+msgid "Dear :first_name :last_name,"
+msgstr ""
+
 #: src/modules/Invoice/Reports.php src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "Debit"
 msgstr ""
@@ -8738,6 +8890,10 @@ msgstr ""
 msgid "Delete mass mail messages"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Delete record"
+msgstr ""
+
 #: src/modules/Redirect/Service.php
 msgid "Delete redirects"
 msgstr ""
@@ -8874,6 +9030,10 @@ msgstr ""
 msgid "Difference"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "DigitalOcean"
+msgstr ""
+
 #: src/library/Payment/Adapter/GoCardless.php
 msgid "Direct Debit"
 msgstr ""
@@ -8900,6 +9060,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Disable CC Processing"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Disable DNSSEC"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -9246,7 +9410,7 @@ msgstr ""
 msgid "Domain locking is a security feature which prevents your domain name from being transferred without first unlocking it. When this is enabled, a domain cannot be transferred even with the transfer code."
 msgstr ""
 
-#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_order.html.twig src/themes/palisade/html/mod_order_product.html.twig
+#: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_order_form.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_order.html.twig …
 msgid "Domain name"
 msgstr ""
 
@@ -9692,6 +9856,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Edit destination: :name"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Edit or delete record"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -10158,6 +10326,10 @@ msgstr ""
 msgid "Enable CAPTCHA for client registration and contact forms. Get keys from %recaptcha%, %turnstile%, or %hcaptcha%."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Enable DNSSEC"
+msgstr ""
+
 #: src/themes/palisade/config/settings.html.twig
 msgid "Enable Dashboard for Guests"
 msgstr ""
@@ -10342,8 +10514,20 @@ msgstr ""
 msgid "Enter Your Text for Subscription Information"
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a Cloudflare API token or an email address and global API key separated by a colon."
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Enter a Custom Interface to Use:"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a DS record for a subdomain with key tag, algorithm, digest type, and hexadecimal digest."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a TTL between :min and :max seconds."
 msgstr ""
 
 #: src/modules/Invoice/Reports.php
@@ -10352,6 +10536,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Enter a domain with a TLD this store sells:"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a full HTTP or HTTPS address for the PowerDNS API."
 msgstr ""
 
 #: src/modules/Support/TicketSecrets.php
@@ -10374,6 +10562,10 @@ msgstr ""
 msgid "Enter a name of up to 100 characters."
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a numeric ClouDNS authentication ID."
+msgstr ""
+
 #: src/modules/Support/TicketSecrets.php
 msgid "Enter a password or an SSH key."
 msgstr ""
@@ -10390,8 +10582,16 @@ msgstr ""
 msgid "Enter a price of 0 or more."
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a relative record name such as www, or @ for the zone apex."
+msgstr ""
+
 #: src/modules/Order/FraudCheck.php
 msgid "Enter a score limit above 0 and below 100, such as 20."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a single-line DNS record value."
 msgstr ""
 
 #: src/modules/Email/Translations.php
@@ -10410,6 +10610,18 @@ msgstr ""
 msgid "Enter a title of up to 255 characters."
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid :type value of up to :max bytes."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid Cloudflare account ID."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid IP address for a :type record."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Enter a valid IPv4 or IPv6 address"
 msgstr ""
@@ -10418,12 +10630,20 @@ msgstr ""
 msgid "Enter a valid IPv4 or IPv6 address to filter rate-limited IP counters."
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid SOA email address."
+msgstr ""
+
 #: src/modules/Clientfence/Api/Admin.php
 msgid "Enter a valid business email address."
 msgstr ""
 
 #: src/modules/Activity/Service.php src/modules/Client/Repository/ClientRepository.php src/modules/Client/Service.php …
 msgid "Enter a valid date."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid domain name."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -10448,6 +10668,10 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_iplookup.html.twig src/modules/Security/templates/admin/mod_security_rate_limits.html.twig
 msgid "Enter an IPv4 or IPv6 address"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter an MX priority between 0 and 65535."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_balance.html.twig
@@ -10538,6 +10762,10 @@ msgstr ""
 msgid "Enter the :name database host, name, username and password."
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter the DNS provider credentials."
+msgstr ""
+
 #: src/modules/Order/FraudCheck.php
 msgid "Enter the MaxMind account ID (a number)."
 msgstr ""
@@ -10576,6 +10804,10 @@ msgstr ""
 
 #: src/modules/Client/Affiliates/Payouts.php
 msgid "Enter the amount to pay out."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter the authoritative nameservers for PowerDNS."
 msgstr ""
 
 #: src/modules/Clientfence/ChatAlerts.php
@@ -10624,6 +10856,10 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php src/modules/Invoice/Reports.php src/modules/Invoice/Statement.php
 msgid "Enter the dates as year-month-day."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_order_form.html.twig
+msgid "Enter the domain you want to host DNS for."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -12712,6 +12948,14 @@ msgstr ""
 
 #: src/library/Server/Manager/Hestia.php
 msgid "Hestia Control Panel"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Hetzner DNS"
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Hetzner.php
+msgid "Hetzner DNS did not complete the requested action."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Product/templates/admin/mod_product_manage.html.twig …
@@ -15438,6 +15682,10 @@ msgstr ""
 msgid "MRR"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "MX priority"
+msgstr ""
+
 #: src/library/Payment/Adapter/Eway.php
 msgid "MYeWAY: My Account, API Key. Test mode uses the API key and password of your eWAY sandbox account. [How to set up eWAY](https://clientfence.com/docs/clients-and-billing/eway/)"
 msgstr ""
@@ -16742,7 +16990,7 @@ msgstr ""
 msgid "Nameserver 4"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig …
 msgid "Nameservers"
 msgstr ""
 
@@ -17288,6 +17536,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
 msgid "No :panel: plan matches the hosting plan \":plan:\". Set the plan_id custom value on the hosting plan."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "No DNS records found."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -18450,6 +18702,10 @@ msgstr ""
 msgid "One more"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "One nameserver per line. Required for PowerDNS. Other providers can supply them automatically."
+msgstr ""
+
 #: src/modules/Product/Service.php
 msgid "One or more of your selected add-ons are invalid for the associated product."
 msgstr ""
@@ -19160,6 +19416,10 @@ msgstr ""
 
 #: src/modules/Servicecustom/Api/Admin.php src/modules/Servicecustom/Api/Client.php src/modules/Servicedomain/Api/Client.php …
 msgid "Order ID is required"
+msgstr ""
+
+#: src/modules/Servicednshosting/Api/Admin.php src/modules/Servicednshosting/Api/Client.php
+msgid "Order ID is required."
 msgstr ""
 
 #: src/modules/Servicehosting/Api/Admin.php
@@ -21162,6 +21422,18 @@ msgstr ""
 msgid "Posts clients read at /news and on their dashboard. Pinned posts come first."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "PowerDNS"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "PowerDNS API address"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "PowerDNS SOA email address"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid "Pre-school"
 msgstr ""
@@ -21514,6 +21786,10 @@ msgstr ""
 msgid "Product ID is missing"
 msgstr ""
 
+#: src/modules/Servicednshosting/Api/Guest.php
+msgid "Product ID is required."
+msgstr ""
+
 #: src/modules/Product/Api/Guest.php
 msgid "Product ID or slug is missing"
 msgstr ""
@@ -21812,6 +22088,10 @@ msgstr ""
 
 #: src/modules/News/templates/admin/mod_news_index.html.twig src/modules/News/templates/admin/mod_news_post.html.twig
 msgid "Publish date"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Publish these DS records at your domain registrar."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -22314,6 +22594,10 @@ msgstr ""
 msgid "Record :amount as paid outside ClientFence (bank, PayPal)? Pay it yourself first."
 msgstr ""
 
+#: src/modules/Servicednshosting/Api/Client.php
+msgid "Record ID is required."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
 msgid "Record a manual balance credit on this client account."
 msgstr ""
@@ -22324,6 +22608,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "Record it only: I send the money back myself"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_suspended.html.twig
+msgid "Record management for :domain is suspended. The zone continues to resolve."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig
@@ -22848,6 +23136,10 @@ msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Remove the %language% version of this template?"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Remove the DS records at your domain registrar before you disable DNSSEC, or the domain stops resolving."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -23770,6 +24062,10 @@ msgstr ""
 msgid "Save Config"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Save DNS settings"
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Save Layout"
 msgstr ""
@@ -23884,6 +24180,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Save quote"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Save record"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_google.html.twig
@@ -24022,7 +24322,7 @@ msgstr ""
 msgid "Saved."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
+#: src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
 msgid "Saved. Leave empty to keep it."
 msgstr ""
 
@@ -24992,6 +25292,10 @@ msgstr ""
 
 #: src/modules/Support/TicketEscalation.php
 msgid "Set the time without a reply, in minutes (1 to :max)."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid "Set these nameservers at your domain registrar."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
@@ -26498,6 +26802,14 @@ msgstr ""
 msgid "TLDs and prices"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "TTL"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "TTL (seconds)"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig
 msgid "Table"
 msgstr ""
@@ -27108,6 +27420,26 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The ClientFence release feed provided an invalid SHA-256 digest. Update canceled for security reasons."
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "The DNS provider could not be reached."
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "The DNS provider refused the request (HTTP :status)."
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "The DNS provider returned an unsuccessful or unreadable response."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
+msgid "The DNS zone for :domain has been removed."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid "The DNS zone for :domain is ready to use."
 msgstr ""
 
 #: src/library/Server/Manager/Dashmox.php
@@ -28957,6 +29289,22 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
 msgid "This ClientFence installation has already been finalized for the current version."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "This DNS hosting product is not configured."
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Provider.php
+msgid "This DNS provider does not allow changing DNSSEC."
+msgstr ""
+
+#: src/modules/Servicednshosting/Provider/Desec.php src/modules/Servicednshosting/Provider/Hetzner.php src/modules/Servicednshosting/Provider/PowerDNS.php
+msgid "This DNS record value already exists."
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "This DNS zone, or a zone above or below it, already has an order."
 msgstr ""
 
 #: src/modules/Client/Google.php
@@ -31115,6 +31463,10 @@ msgstr ""
 msgid "Unsubscribe"
 msgstr ""
 
+#: src/modules/Servicednshosting/Service.php
+msgid "Unsupported DNS record type."
+msgstr ""
+
 #: src/library/ClientFence/Cache/CacheFactory.php
 msgid "Unsupported cache driver :driver. Supported drivers are: :supported."
 msgstr ""
@@ -31591,6 +31943,10 @@ msgstr ""
 msgid "Use :label"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Use @ for the zone apex."
+msgstr ""
+
 #: src/modules/Invoice/Service.php
 msgid "Use Mark as Paid to record payment for an Add Funds invoice."
 msgstr ""
@@ -31705,6 +32061,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Use your existing domain"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "Used by all providers except ClouDNS. For a Cloudflare global API key, enter the email address and key separated by a colon."
 msgstr ""
 
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
@@ -31895,7 +32255,7 @@ msgstr ""
 msgid "Validity Period (Blank for Indefinite)"
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig …
 msgid "Value"
 msgstr ""
 
@@ -31965,6 +32325,10 @@ msgstr ""
 
 #: src/modules/Client/Service.php
 msgid "View Client Login History"
+msgstr ""
+
+#: src/modules/Servicednshosting/Service.php
+msgid "View DNS records"
 msgstr ""
 
 #: src/modules/System/Service.php
@@ -32153,6 +32517,10 @@ msgstr ""
 
 #: src/modules/Widgets/Service.php
 msgid "View widgets"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig …
+msgid "View your DNS service"
 msgstr ""
 
 #: src/modules/Order/templates/email/mod_order_subscription_stopped.html.twig
@@ -33031,6 +33399,10 @@ msgstr ""
 msgid "You can get this at ResellerID control panel, go to Settings -> API"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_unsuspended.html.twig
+msgid "You can manage DNS records for :domain again."
+msgstr ""
+
 #: src/modules/Staff/Service.php
 msgid "You can only manage lower staff groups"
 msgstr ""
@@ -33453,6 +33825,14 @@ msgstr ""
 
 #: src/modules/System/Service.php
 msgid "Your ClientFence database is behind on database patches. Apply the pending patches to avoid issues."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_activated.html.twig
+msgid "Your DNS hosting is ready"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/email/mod_servicednshosting_renewed.html.twig
+msgid "Your DNS hosting service :title has been renewed."
 msgstr ""
 
 #: src/themes/palisade/html/mod_client_profile.html.twig
@@ -34149,6 +34529,10 @@ msgstr ""
 
 #: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php src/modules/Activity/templates/admin/mod_activity_settings.html.twig src/modules/Client/templates/admin/mod_client_settings_affiliates.html.twig …
 msgid "days"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "deSEC"
 msgstr ""
 
 #: src/library/ClientFence/Twig/Extension/ClientFenceExtension.php

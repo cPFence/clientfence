@@ -22,7 +22,8 @@
             {% set cycles = cycles|merge([{ 'code': code, 'label': periods[code]|default(code) }]) %}
         {% endfor %}
     {% endif %}
-    {% set products = products|merge([{ 'id': p.id, 'title': p.title, 'type': p.type, 'periods': cycles, 'quantity': p.allow_quantity_select }]) %}
+    {# ClientFence core patch: no quantity for DNS hosting (one order is one zone). #}
+    {% set products = products|merge([{ 'id': p.id, 'title': p.title, 'type': p.type, 'periods': cycles, 'quantity': p.allow_quantity_select and p.type != 'dnshosting' }]) %}
 {% endfor %}
 {% set tlds = [] %}
 {% for t in guest.serviceDomain_tlds %}

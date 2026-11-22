@@ -1,0 +1,23 @@
+{#
+Copyright (c) 2023-2026 Taras Kondratyuk
+Copyright (c) 2025-2026 Namingo contributors
+Copyright (c) 2026 Terbora Ltd.
+
+Licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+SPDX-License-Identifier: Apache-2.0
+#}
+{{ product_details|default('') }}
+<div class="bf-configure-row">
+    <label class="bf-label" for="dns-domain">{{ 'Domain name'|trans }}</label>
+    <input class="form-control" id="dns-domain" name="domain_name" dir="ltr" type="text" maxlength="253" placeholder="example.com" autocomplete="off" spellcheck="false" required>
+    <div class="bf-hint">{{ 'Enter the domain you want to host DNS for.'|trans }}</div>
+</div>
+{% set nameservers = guest.servicednshosting_nameservers({product_id: product.id}) %}
+{% if nameservers %}
+    <div class="bf-configure-row">
+        <span class="bf-label">{{ 'Nameservers'|trans }}</span>
+        <ul class="mb-0 text-break">{% for server in nameservers %}<li><bdi dir="ltr">{{ server }}</bdi></li>{% endfor %}</ul>
+    </div>
+{% endif %}

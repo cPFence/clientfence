@@ -294,6 +294,8 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         'activity_api',
         // ClientFence core patch: low balance alerts (Client/BalanceAlert.php).
         'client_balance_alert',
+        // ClientFence core patch: DNS zones belong to the fork schema.
+        'service_dnshosting',
     ];
 
     /**
