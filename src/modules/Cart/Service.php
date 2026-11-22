@@ -1174,12 +1174,12 @@ class Service implements InjectionAwareInterface
 
                     // ClientFence core patch: a DNS zone is checked again (another order may hold it since it was added), and once per checkout.
                     if ($item['type'] === \ClientFence\Mod\Product\Service::DNS) {
-                        $this->di['mod_service']('service' . $item['type'])->validateOrderData($item);
                         foreach ($dnsZones as $zone) {
                             if ($zone === $item['domain_name'] || str_ends_with($zone, '.' . $item['domain_name']) || str_ends_with($item['domain_name'], '.' . $zone)) {
                                 throw new \ClientFence\InformationException('This domain is already in the cart.');
                             }
                         }
+                        $this->di['mod_service']('service' . $item['type'])->validateOrderData($item);
                         $dnsZones[] = $item['domain_name'];
                     }
 
