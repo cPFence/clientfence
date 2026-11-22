@@ -382,6 +382,7 @@ final class Branding
 
         $xpath = new \DOMXPath($document);
         // Only references inside the file stay: invoice rendering and a browser opening the file follow the others.
+        /** @var \DOMAttr $href */
         foreach ($xpath->query('//@*[local-name() = "href"]') as $href) {
             if (str_starts_with($href->value, '#')) {
                 continue;
