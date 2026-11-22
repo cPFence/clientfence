@@ -31637,7 +31637,6 @@ msgstr "Οι επιλογές αυτής της υπηρεσίας δεν ται
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "Το προϊόν δεν έχει τιμή για τον κύκλο χρέωσης αυτής της υπηρεσίας, επομένως η τιμή δεν μπορεί να υπολογιστεί ξανά."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -32238,7 +32237,6 @@ msgstr "Το όνομα χώρου ανανεώνεται δωρεάν όσο α
 msgid "Enter 0 to never close tickets automatically."
 msgstr "Εισαγάγετε 0 για να μην κλείνουν ποτέ τα αιτήματα αυτόματα."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -32262,3 +32260,178 @@ msgstr "Τα στοιχεία επικοινωνίας domain θα εμφανι�
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "Τα στοιχεία επικοινωνίας domain θα εμφανιστούν όταν κάποιος θα ελέγξει την έξοδο WHOIS (η οποία είναι δημόσια) της υπηρεσίας σας. Αυτό θα ενημερώσει την επαφή κατόχου (καταχωρούμενου), την τεχνική επαφή, την επαφή χρέωσης και τη διαχειριστική επαφή αυτού του domain. Μπορείτε να ενεργοποιήσετε την προστασία απορρήτου τομέα αν θέλετε να αποκρύψετε τις δημόσιες πληροφορίες σας WHOIS."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "Οι προσφορές και ο φόρος εφαρμόζονται στο καλάθι σας."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "Αλλάξτε τον κωδικό root μετά την πρώτη σας σύνδεση."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "Η αλλαγή κωδικών από τη χρέωση απαιτεί NovaPanel 1.8.3 ή νεότερο."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "Δεν ήταν δυνατή η σύνδεση με το CyberPanel."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Δεν ήταν δυνατή η σύνδεση με το Dashmox."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "Δεν ήταν δυνατή η σύνδεση με το NovaPanel."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "Δεν ήταν δυνατή η σύνδεση με το OpenAdmin API. Ενεργοποιήστε την πρόσβαση API στο OpenPanel Enterprise και ελέγξτε τα διαπιστευτήρια του διακομιστή."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "Δεν ήταν δυνατή η επικοινωνία με το OpenAdmin API. Ελέγξτε τη διεύθυνση του διακομιστή και ενεργοποιήστε την πρόσβαση API στο OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "Δημιουργήστε ένα κλειδί στο NovaPanel στο Settings → API Keys."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Δημιουργήστε ένα διακριτικό στο Dashmox στο Server → Integrations."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "Όνομα χρήστη CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "Το CyberPanel δεν μπόρεσε να επαληθεύσει τα διαπιστευτήρια. Ελέγξτε το όνομα χρήστη, τον κωδικό και την πρόσβαση API."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "Το CyberPanel απέρριψε το αίτημα: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "Το CyberPanel απαιτεί όνομα κεντρικού υπολογιστή, όνομα χρήστη και κωδικό."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "Το CyberPanel επέστρεψε μη έγκυρη απάντηση."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Το Dashmox δεν επέστρεψε το ID του νέου πελάτη."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Το Dashmox δεν έχει πλάνο με όνομα \":name\"."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Το Dashmox εξακολουθεί να εργάζεται σε αυτόν τον ιστότοπο. Δοκιμάστε ξανά σε λίγο."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Το Dashmox απέρριψε το αίτημα: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Το Dashmox απαιτεί άδεια Pro ή Business για πρόσβαση API."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Το Dashmox απαιτεί όνομα κεντρικού υπολογιστή και διακριτικό διακομιστή."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Το Dashmox απαιτεί όνομα χώρου ιστότοπου για τη σύνδεση πελάτη."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Το Dashmox επέστρεψε μη έγκυρη απάντηση."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "Κατάσταση HTTP :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "Το NovaPanel δεν βρήκε τον λογαριασμό \":username\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "Το NovaPanel δεν έχει πακέτο με όνομα \":name\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "Το NovaPanel απέρριψε το αίτημα: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "Το NovaPanel απαιτεί άδεια Pro ή Developer για πρόσβαση API."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "Το NovaPanel απαιτεί όνομα κεντρικού υπολογιστή και κλειδί API."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "Το NovaPanel επέστρεψε μη έγκυρη απάντηση."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "Όνομα χρήστη OpenAdmin"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "Το OpenPanel απέρριψε το αίτημα: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "Το OpenPanel απαιτεί όνομα κεντρικού υπολογιστή και διαπιστευτήρια OpenAdmin."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "Διακριτικό διακομιστή"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "Το API απαιτεί OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "Ο πελάτης του Dashmox δεν βρέθηκε."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "Το πάνελ δεν επιβεβαίωσε τη λειτουργία."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "Χρησιμοποιήστε έναν λογαριασμό CyberPanel με ενεργοποιημένη πρόσβαση API."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "αλλαγές κωδικών"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "λογαριασμοί μεταπωλητών"

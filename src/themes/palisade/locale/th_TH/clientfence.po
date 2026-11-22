@@ -29363,7 +29363,6 @@ msgstr "ตัวเลือกของบริการนี้ไม่เ
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "สินค้าไม่มีราคาสำหรับรอบการเรียกเก็บเงินของบริการนี้ จึงคำนวณราคาใหม่ไม่ได้"
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -29964,7 +29963,6 @@ msgstr "โดเมนต่ออายุฟรีตราบใดที่
 msgid "Enter 0 to never close tickets automatically."
 msgstr "ใส่ 0 หากไม่ต้องการปิดคำขอสนับสนุนอัตโนมัติ"
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -29988,3 +29986,178 @@ msgstr "รายละเอียดการติดต่อของโด
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "รายละเอียดการติดต่อของโดเมนจะปรากฏขึ้นเมื่อมีคนตรวจสอบข้อมูล WHOIS (ซึ่งเป็นข้อมูลสาธารณะ) ของบริการของคุณ การดำเนินการนี้จะอัปเดตข้อมูลการติดต่อของเจ้าของโดเมน (ผู้จดทะเบียน) รวมถึงผู้ติดต่อฝ่ายเทคนิค ฝ่ายเรียกเก็บเงิน และฝ่ายผู้ดูแล คุณสามารถเปิดใช้งานการปกป้องความเป็นส่วนตัวของโดเมนได้หากต้องการซ่อนข้อมูล WHOIS สาธารณะของคุณ"
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "โปรโมชันและภาษีจะถูกนำไปใช้ในตะกร้าของคุณ"
+
+msgid "Please change the root password after your first sign-in."
+msgstr "โปรดเปลี่ยนรหัสผ่าน root หลังจากลงชื่อเข้าใช้ครั้งแรก"
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "การเปลี่ยนรหัสผ่านจากระบบเรียกเก็บเงินต้องใช้ NovaPanel 1.8.3 ขึ้นไป"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "ไม่สามารถเชื่อมต่อกับ CyberPanel ได้"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "ไม่สามารถเชื่อมต่อกับ Dashmox ได้"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "ไม่สามารถเชื่อมต่อกับ NovaPanel ได้"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "ไม่สามารถเชื่อมต่อกับ OpenAdmin API ได้ โปรดเปิดการเข้าถึง API ใน OpenPanel Enterprise และตรวจสอบข้อมูลรับรองของเซิร์ฟเวอร์"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "ไม่สามารถเข้าถึง OpenAdmin API ได้ โปรดตรวจสอบที่อยู่เซิร์ฟเวอร์และเปิดการเข้าถึง API ใน OpenPanel Enterprise"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "สร้างคีย์ใน NovaPanel ที่ Settings → API Keys"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "สร้างโทเค็นใน Dashmox ที่ Server → Integrations"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "ชื่อผู้ใช้ CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "CyberPanel ตรวจสอบข้อมูลรับรองไม่ได้ โปรดตรวจสอบชื่อผู้ใช้ รหัสผ่าน และการเข้าถึง API"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "CyberPanel ปฏิเสธคำขอ: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "CyberPanel ต้องมีชื่อโฮสต์ ชื่อผู้ใช้ และรหัสผ่าน"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "CyberPanel ส่งคืนการตอบกลับที่ไม่ถูกต้อง"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Dashmox ไม่ได้ส่งคืน ID ของลูกค้ารายใหม่"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Dashmox ไม่มีแพ็กเกจชื่อ \":name\""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Dashmox ยังทำงานกับเว็บไซต์นี้อยู่ โปรดลองอีกครั้งในอีกสักครู่"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Dashmox ปฏิเสธคำขอ: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Dashmox ต้องมีใบอนุญาต Pro หรือ Business สำหรับการเข้าถึง API"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Dashmox ต้องมีชื่อโฮสต์และโทเค็นเซิร์ฟเวอร์"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Dashmox ต้องมีโดเมนเว็บไซต์สำหรับการเข้าสู่ระบบของลูกค้า"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Dashmox ส่งคืนการตอบกลับที่ไม่ถูกต้อง"
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "สถานะ HTTP :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "NovaPanel ไม่พบบัญชี \":username\""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "NovaPanel ไม่มีแพ็กเกจชื่อ \":name\""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "NovaPanel ปฏิเสธคำขอ: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "NovaPanel ต้องมีใบอนุญาต Pro หรือ Developer สำหรับการเข้าถึง API"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "NovaPanel ต้องมีชื่อโฮสต์และคีย์ API"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "NovaPanel ส่งคืนการตอบกลับที่ไม่ถูกต้อง"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "ชื่อผู้ใช้ OpenAdmin"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "OpenPanel ปฏิเสธคำขอ: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "OpenPanel ต้องมีชื่อโฮสต์และข้อมูลรับรอง OpenAdmin"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "โทเค็นเซิร์ฟเวอร์"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "API ต้องใช้ OpenPanel Enterprise"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "ไม่พบลูกค้า Dashmox"
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "แผงควบคุมไม่ได้ยืนยันการดำเนินการ"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "ใช้บัญชี CyberPanel ที่เปิดการเข้าถึง API ไว้"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "การเปลี่ยนรหัสผ่าน"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "บัญชีรีเซลเลอร์"

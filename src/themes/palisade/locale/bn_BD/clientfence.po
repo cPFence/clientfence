@@ -34016,7 +34016,6 @@ msgstr "এই সেবার অপশনগুলো আর এর পণ্�
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "এই সেবার বিলিং চক্রের জন্য পণ্যটির কোনো মূল্য নেই, তাই মূল্য পুনরায় হিসাব করা যাবে না।"
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -34617,7 +34616,6 @@ msgstr "এই প্ল্যান সক্রিয় থাকা পর�
 msgid "Enter 0 to never close tickets automatically."
 msgstr "টিকিট কখনও স্বয়ংক্রিয়ভাবে বন্ধ না করতে 0 লিখুন।"
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -34641,3 +34639,178 @@ msgstr "কেউ আপনার সার্ভিসের WHOIS আউটপ
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "কেউ আপনার সার্ভিসের WHOIS আউটপুট (যা পাবলিক) দেখলে ডোমেইনের যোগাযোগের বিস্তারিত দেখানো হবে। এটি এই ডোমেইনের মালিকের (নিবন্ধনকারী) এবং Technical, Billing ও Admin যোগাযোগ হালনাগাদ করবে। আপনার পাবলিক WHOIS তথ্য লুকাতে চাইলে ডোমেইন প্রাইভেসি সুরক্ষা চালু করতে পারেন।"
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "প্রমোশন ও ট্যাক্স আপনার কার্টে প্রযোজ্য হয়।"
+
+msgid "Please change the root password after your first sign-in."
+msgstr "অনুগ্রহ করে প্রথমবার সাইন ইনের পর root পাসওয়ার্ড বদলে নিন।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "বিলিং থেকে পাসওয়ার্ড পরিবর্তনের জন্য NovaPanel 1.8.3 বা নতুন সংস্করণ লাগে।"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "CyberPanel-এর সাথে সংযোগ করা যায়নি।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Dashmox-এর সাথে সংযোগ করা যায়নি।"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "NovaPanel-এর সাথে সংযোগ করা যায়নি।"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "OpenAdmin API-এর সাথে সংযোগ করা যায়নি। OpenPanel Enterprise-এ API অ্যাক্সেস চালু করুন এবং সার্ভারের ক্রেডেনশিয়াল পরীক্ষা করুন।"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "OpenAdmin API-তে পৌঁছানো যায়নি। সার্ভারের ঠিকানা পরীক্ষা করুন এবং OpenPanel Enterprise-এ API অ্যাক্সেস চালু করুন।"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "NovaPanel-এ Settings → API Keys-এর অধীনে একটি কী তৈরি করুন।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Dashmox-এ Server → Integrations-এর অধীনে একটি টোকেন তৈরি করুন।"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "CyberPanel ইউজারনেম"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "CyberPanel ক্রেডেনশিয়াল যাচাই করতে পারেনি। ইউজারনেম, পাসওয়ার্ড ও API অ্যাক্সেস পরীক্ষা করুন।"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "CyberPanel অনুরোধ প্রত্যাখ্যান করেছে: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "CyberPanel-এর জন্য একটি হোস্টনেম, ইউজারনেম ও পাসওয়ার্ড লাগে।"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "CyberPanel একটি অবৈধ উত্তর ফেরত দিয়েছে।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Dashmox নতুন গ্রাহকের আইডি ফেরত দেয়নি।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Dashmox-এ \":name\" নামে কোনো প্ল্যান নেই।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Dashmox এখনও এই ওয়েবসাইটে কাজ করছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Dashmox অনুরোধ প্রত্যাখ্যান করেছে: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Dashmox-এ API অ্যাক্সেসের জন্য Pro বা Business লাইসেন্স লাগে।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Dashmox-এর জন্য একটি হোস্টনেম ও সার্ভার টোকেন লাগে।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Dashmox-এ গ্রাহকের লগইনের জন্য একটি ওয়েবসাইট ডোমেইন লাগে।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Dashmox একটি অবৈধ উত্তর ফেরত দিয়েছে।"
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "HTTP স্ট্যাটাস :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "NovaPanel \":username\" অ্যাকাউন্টটি খুঁজে পায়নি।"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "NovaPanel-এ \":name\" নামে কোনো প্যাকেজ নেই।"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "NovaPanel অনুরোধ প্রত্যাখ্যান করেছে: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "NovaPanel-এ API অ্যাক্সেসের জন্য Pro বা Developer লাইসেন্স লাগে।"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "NovaPanel-এর জন্য একটি হোস্টনেম ও API কী লাগে।"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "NovaPanel একটি অবৈধ উত্তর ফেরত দিয়েছে।"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "OpenAdmin ইউজারনেম"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "OpenPanel অনুরোধ প্রত্যাখ্যান করেছে: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "OpenPanel-এর জন্য একটি হোস্টনেম ও OpenAdmin ক্রেডেনশিয়াল লাগে।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "সার্ভার টোকেন"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "API-এর জন্য OpenPanel Enterprise লাগে।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "Dashmox গ্রাহকটিকে খুঁজে পাওয়া যায়নি।"
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "প্যানেল অপারেশনটি নিশ্চিত করেনি।"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "API অ্যাক্সেস চালু আছে এমন একটি CyberPanel অ্যাকাউন্ট ব্যবহার করুন।"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "পাসওয়ার্ড পরিবর্তন"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "রিসেলার অ্যাকাউন্ট"

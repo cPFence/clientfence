@@ -34024,7 +34024,6 @@ msgstr "Opcije ove usluge više ne odgovaraju njezinu proizvodu. Prvo ih promije
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "Proizvod nema cijenu za obračunsko razdoblje ove usluge pa se cijena ne može preračunati."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -34625,7 +34624,6 @@ msgstr "Domena se besplatno obnavlja dok je ovaj paket aktivan."
 msgid "Enter 0 to never close tickets automatically."
 msgstr "Unesite 0 da se tiketi nikada ne zatvaraju automatski."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -34649,3 +34647,178 @@ msgstr "Kontaktni podaci domene prikazat će se kada netko pogleda WHOIS ispis (
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "Kontaktni podaci domene prikazat će se kada netko pogleda WHOIS ispis (koji je javan) vaše usluge. Time se ažuriraju kontakt vlasnika (registranta) te tehnički, naplatni i administratorski kontakti ove domene. Možete omogućiti zaštitu privatnosti domene ako želite sakriti svoje javne WHOIS podatke."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "Promocije i porez primjenjuju se u vašoj košarici."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "Promijenite root lozinku nakon prve prijave."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "Promjena lozinki iz naplate zahtijeva NovaPanel 1.8.3 ili noviji."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "Nije moguće povezati se s CyberPanel."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Nije moguće povezati se s Dashmox."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "Nije moguće povezati se s NovaPanel."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "Nije moguće povezati se s OpenAdmin API-jem. Omogućite API pristup u OpenPanel Enterprise i provjerite pristupne podatke poslužitelja."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "Nije moguće dosegnuti OpenAdmin API. Provjerite adresu poslužitelja i omogućite API pristup u OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "Stvorite ključ u NovaPanel pod Settings → API Keys."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Stvorite token u Dashmox pod Server → Integrations."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "CyberPanel korisničko ime"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "CyberPanel nije mogao provjeriti pristupne podatke. Provjerite korisničko ime, lozinku i API pristup."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "CyberPanel je odbio zahtjev: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "CyberPanel zahtijeva naziv hosta, korisničko ime i lozinku."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "CyberPanel je vratio nevaljan odgovor."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Dashmox nije vratio ID novog klijenta."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Dashmox nema plan pod nazivom \":name\"."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Dashmox još radi na ovoj web-lokaciji. Pokušajte ponovno uskoro."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Dashmox je odbio zahtjev: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Dashmox zahtijeva Pro ili Business licencu za API pristup."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Dashmox zahtijeva naziv hosta i token poslužitelja."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Dashmox zahtijeva domenu web-lokacije za prijavu klijenta."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Dashmox je vratio nevaljan odgovor."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "HTTP status :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "NovaPanel nije mogao pronaći račun \":username\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "NovaPanel nema paket pod nazivom \":name\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "NovaPanel je odbio zahtjev: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "NovaPanel zahtijeva Pro ili Developer licencu za API pristup."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "NovaPanel zahtijeva naziv hosta i API ključ."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "NovaPanel je vratio nevaljan odgovor."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "OpenAdmin korisničko ime"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "OpenPanel je odbio zahtjev: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "OpenPanel zahtijeva naziv hosta i OpenAdmin pristupne podatke."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "Token poslužitelja"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "API zahtijeva OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "Dashmox klijent nije pronađen."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "Panel nije potvrdio operaciju."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "Koristite CyberPanel račun s omogućenim API pristupom."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "promjene lozinki"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "reseller računi"

@@ -403,6 +403,10 @@ class Service implements InjectionAwareInterface
         if (!$neverCreated) {
             [$adapter, $account] = $this->_getAM($model, null, false);
             $adapter->cancelAccount($account);
+            // ClientFence core patch: keep a panel account id the cancel looked up, so Uncancel restores that account.
+            if (empty($model->panel_org_id) && $account->getPanelOrgId() !== null) {
+                $model->panel_org_id = $account->getPanelOrgId();
+            }
         }
 
         $model->updated_at = date('Y-m-d H:i:s');

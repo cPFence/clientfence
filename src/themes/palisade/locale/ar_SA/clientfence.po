@@ -3011,13 +3011,11 @@ msgstr "في صفحة تسجيل الدخول فقط. يسجّل العملاء 
 msgid "On the sign-up page and the checkout only. New visitors create an account with Google and choose a password for their next sign-ins; the sign-in page has no Google button."
 msgstr "في صفحة إنشاء الحساب وصفحة الدفع فقط. يُنشئ الزوار الجدد حسابًا عبر Google ويختارون كلمة مرور لتسجيلات الدخول القادمة؛ ولا يوجد زر Google في صفحة تسجيل الدخول."
 
-
 msgid "3. New accounts with Google"
 msgstr "3. الحسابات الجديدة عبر Google"
 
 msgid "A new visitor who continues with Google gets an account at once, with the email Google confirmed. Continuing means they accept the two pages below; we record the date and IP address. If your client settings require more details (phone, address…), they fill them in right after."
 msgstr "يحصل الزائر الجديد الذي يتابع عبر Google على حساب فورًا بالبريد الذي أكّده Google. والمتابعة تعني قبوله الصفحتين أدناه؛ ونسجّل التاريخ وعنوان IP. وإذا كانت إعدادات العملاء تطلب تفاصيل أخرى (الهاتف، العنوان…) فيملؤها بعد ذلك مباشرة."
-
 
 msgid "New visitors can create an account with Google now."
 msgstr "يمكن للزوار الجدد إنشاء حساب عبر Google الآن."
@@ -3873,8 +3871,6 @@ msgstr "تاريخ الدفع"
 
 msgid "Tax amount"
 msgstr "قيمة الضريبة"
-
-
 
 msgid "Smallest amount"
 msgstr "أقل مبلغ"
@@ -30927,7 +30923,6 @@ msgstr "لم تعد خيارات هذه الخدمة تناسب منتجها. غ
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "لا يوجد للمنتج سعر لدورة الفوترة الخاصة بهذه الخدمة، لذا لا يمكن إعادة حساب السعر."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -31528,7 +31523,6 @@ msgstr "يتجدد النطاق مجانًا طالما أن هذه الباقة
 msgid "Enter 0 to never close tickets automatically."
 msgstr "أدخل 0 لعدم إغلاق التذاكر تلقائيًا."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -31552,3 +31546,178 @@ msgstr "سيتم عرض تفاصيل الاتصال بالنطاقات بمجر�
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "سيتم عرض تفاصيل الاتصال بالنطاقات بمجرد أن يقوم شخص ما بالتحقق من إخراج WHOIS (وهو عام) من خدمتك. سيؤدي هذا إلى تحديث جهة اتصال صاحب النطاق (المسجِّل) وجهات الاتصال الفنية وجهات الفوترة والإدارية لهذا النطاق. يمكنك تمكين حماية خصوصية المجال إذا كنت ترغب في إخفاء معلومات WHOIS العامة الخاصة بك."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "تُطبَّق العروض الترويجية والضريبة في سلتك."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "يُرجى تغيير كلمة مرور root بعد أول تسجيل دخول لك."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "يتطلب تغيير كلمات المرور من الفوترة NovaPanel 1.8.3 أو أحدث."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "تعذّر الاتصال بـ CyberPanel."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "تعذّر الاتصال بـ Dashmox."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "تعذّر الاتصال بـ NovaPanel."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "تعذّر الاتصال بـ OpenAdmin API. فعّل الوصول إلى API في OpenPanel Enterprise وتحقق من بيانات اعتماد الخادم."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "تعذّر الوصول إلى OpenAdmin API. تحقق من عنوان الخادم وفعّل الوصول إلى API في OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "أنشئ مفتاحًا في NovaPanel ضمن Settings → API Keys."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "أنشئ رمزًا في Dashmox ضمن Server → Integrations."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "اسم مستخدم CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "تعذّر على CyberPanel التحقق من بيانات الاعتماد. تحقق من اسم المستخدم وكلمة المرور والوصول إلى API."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "رفض CyberPanel الطلب: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "يتطلب CyberPanel اسم مضيف واسم مستخدم وكلمة مرور."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "أعاد CyberPanel استجابة غير صالحة."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "لم يُرجع Dashmox معرّف العميل الجديد."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "لا توجد في Dashmox خطة باسم \":name\"."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "لا يزال Dashmox يعمل على هذا الموقع. حاول مرة أخرى بعد قليل."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "رفض Dashmox الطلب: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "يتطلب Dashmox ترخيص Pro أو Business للوصول إلى API."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "يتطلب Dashmox اسم مضيف ورمز خادم."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "يتطلب Dashmox نطاق موقع لتسجيل دخول العميل."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "أعاد Dashmox استجابة غير صالحة."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "حالة HTTP :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "تعذّر على NovaPanel العثور على الحساب \":username\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "لا توجد في NovaPanel حزمة باسم \":name\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "رفض NovaPanel الطلب: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "يتطلب NovaPanel ترخيص Pro أو Developer للوصول إلى API."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "يتطلب NovaPanel اسم مضيف ومفتاح API."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "أعاد NovaPanel استجابة غير صالحة."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "اسم مستخدم OpenAdmin"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "رفض OpenPanel الطلب: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "يتطلب OpenPanel اسم مضيف وبيانات اعتماد OpenAdmin."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "رمز الخادم"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "يتطلب API وجود OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "تعذّر العثور على عميل Dashmox."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "لم تؤكد اللوحة العملية."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "استخدم حساب CyberPanel مع تفعيل الوصول إلى API."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "تغيير كلمات المرور"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "حسابات الموزّعين"

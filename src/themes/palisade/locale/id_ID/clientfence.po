@@ -31697,7 +31697,6 @@ msgstr "Opsi layanan ini tidak lagi sesuai dengan produknya. Ubah dulu opsinya."
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "Produk tidak memiliki harga untuk siklus penagihan layanan ini, sehingga harga tidak dapat dihitung ulang."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -32298,7 +32297,6 @@ msgstr "Domain diperpanjang gratis selama paket ini aktif."
 msgid "Enter 0 to never close tickets automatically."
 msgstr "Masukkan 0 agar tiket tidak pernah ditutup otomatis."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -32322,3 +32320,178 @@ msgstr "Rincian kontak domain akan ditampilkan ketika seseorang akan mengecek WH
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "Rincian kontak domain akan ditampilkan ketika seseorang akan mengecek WHOIS (yang dimana sifatnya publik) dari layanan Anda. Ini akan memperbarui kontak pemilik (registran) serta kontak Teknis, Penagihan, dan Admin domain ini. Anda dapat mengaktifkan proteksi privasi domain jika Anda ingin menyembunyikan informasi WHOIS publik Anda."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "Promosi dan pajak diterapkan di keranjang Anda."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "Harap ganti kata sandi root setelah masuk pertama kali."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "Mengubah kata sandi dari penagihan memerlukan NovaPanel 1.8.3 atau lebih baru."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "Tidak dapat terhubung ke CyberPanel."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Tidak dapat terhubung ke Dashmox."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "Tidak dapat terhubung ke NovaPanel."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "Tidak dapat terhubung ke API OpenAdmin. Aktifkan akses API di OpenPanel Enterprise dan periksa kredensial server."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "Tidak dapat menjangkau API OpenAdmin. Periksa alamat server dan aktifkan akses API di OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "Buat kunci di NovaPanel pada Settings → API Keys."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Buat token di Dashmox pada Server → Integrations."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "Nama pengguna CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "CyberPanel tidak dapat memverifikasi kredensial. Periksa nama pengguna, kata sandi, dan akses API."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "CyberPanel menolak permintaan: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "CyberPanel memerlukan nama host, nama pengguna, dan kata sandi."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "CyberPanel mengembalikan respons yang tidak valid."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Dashmox tidak mengembalikan ID pelanggan baru."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Dashmox tidak memiliki paket bernama \":name\"."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Dashmox masih mengerjakan situs web ini. Coba lagi sebentar lagi."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Dashmox menolak permintaan: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Dashmox memerlukan lisensi Pro atau Business untuk akses API."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Dashmox memerlukan nama host dan token server."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Dashmox memerlukan domain situs web untuk login pelanggan."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Dashmox mengembalikan respons yang tidak valid."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "Status HTTP :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "NovaPanel tidak dapat menemukan akun \":username\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "NovaPanel tidak memiliki paket bernama \":name\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "NovaPanel menolak permintaan: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "NovaPanel memerlukan lisensi Pro atau Developer untuk akses API."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "NovaPanel memerlukan nama host dan kunci API."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "NovaPanel mengembalikan respons yang tidak valid."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "Nama pengguna OpenAdmin"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "OpenPanel menolak permintaan: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "OpenPanel memerlukan nama host dan kredensial OpenAdmin."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "Token server"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "API memerlukan OpenPanel Enterprise."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "Pelanggan Dashmox tidak ditemukan."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "Panel tidak mengonfirmasi operasi tersebut."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "Gunakan akun CyberPanel dengan akses API yang diaktifkan."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "perubahan kata sandi"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "akun reseller"

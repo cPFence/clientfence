@@ -31538,7 +31538,6 @@ msgstr "A szolgáltatás opciói már nem illenek a termékhez. Először módos
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "A terméknek nincs ára a szolgáltatás számlázási ciklusához, ezért az ár nem számolható újra."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -32139,7 +32138,6 @@ msgstr "A domain ingyenesen megújul, amíg ez a csomag aktív."
 msgid "Enter 0 to never close tickets automatically."
 msgstr "Írjon be 0-t, hogy a jegyek soha ne záruljanak le automatikusan."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -32163,3 +32161,178 @@ msgstr "A domain kapcsolattartási adatai akkor jelennek meg, ha valaki ellenőr
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "A domain kapcsolattartási adatai akkor jelennek meg, ha valaki ellenőrzi a szolgáltatás WHOIS-kimenetét (amely nyilvános). Ez frissíti a domain tulajdonosának (regisztrálójának) kapcsolattartóját, valamint a műszaki, a számlázási és az adminisztratív kapcsolattartót. Engedélyezheti a domain adatvédelmét, ha el szeretné rejteni nyilvános WHOIS-adatait."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "A kedvezményeket és az adót a kosarában alkalmazzuk."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "Kérjük, az első bejelentkezés után módosítsa a root jelszót."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "A jelszavak számlázásból történő módosításához NovaPanel 1.8.3 vagy újabb szükséges."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "Nem sikerült csatlakozni a CyberPanelhez."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Nem sikerült csatlakozni a Dashmoxhoz."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "Nem sikerült csatlakozni a NovaPanelhez."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "Nem sikerült csatlakozni az OpenAdmin API-hoz. Engedélyezze az API-hozzáférést az OpenPanel Enterprise-ban, és ellenőrizze a szerver hitelesítő adatait."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "Az OpenAdmin API nem érhető el. Ellenőrizze a szerver címét, és engedélyezze az API-hozzáférést az OpenPanel Enterprise-ban."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "Hozzon létre egy kulcsot a NovaPanelben a Settings → API Keys alatt."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Hozzon létre egy tokent a Dashmoxban a Server → Integrations alatt."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "CyberPanel felhasználónév"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "A CyberPanel nem tudta ellenőrizni a hitelesítő adatokat. Ellenőrizze a felhasználónevet, a jelszót és az API-hozzáférést."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "A CyberPanel elutasította a kérést: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "A CyberPanelhez hosztnév, felhasználónév és jelszó szükséges."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "A CyberPanel érvénytelen választ adott vissza."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "A Dashmox nem adta vissza az új ügyfél azonosítóját."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "A Dashmoxban nincs \":name\" nevű csomag."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "A Dashmox még dolgozik ezen a weboldalon. Próbálja újra rövidesen."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "A Dashmox elutasította a kérést: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "A Dashmox Pro vagy Business licenszet igényel az API-hozzáféréshez."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "A Dashmoxhoz hosztnév és szervertoken szükséges."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "A Dashmoxhoz weboldal-domain szükséges az ügyfél bejelentkezéséhez."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "A Dashmox érvénytelen választ adott vissza."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "HTTP-állapot: :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "A NovaPanel nem találta a(z) \":username\" fiókot."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "A NovaPanelben nincs \":name\" nevű csomag."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "A NovaPanel elutasította a kérést: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "A NovaPanel Pro vagy Developer licenszet igényel az API-hozzáféréshez."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "A NovaPanelhez hosztnév és API-kulcs szükséges."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "A NovaPanel érvénytelen választ adott vissza."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "OpenAdmin felhasználónév"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "Az OpenPanel elutasította a kérést: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "Az OpenPanelhez hosztnév és OpenAdmin hitelesítő adatok szükségesek."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "Szervertoken"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "Az API OpenPanel Enterprise-t igényel."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "A Dashmox ügyfél nem található."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "A panel nem erősítette meg a műveletet."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "Használjon olyan CyberPanel-fiókot, amelyen engedélyezve van az API-hozzáférés."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "jelszómódosítást"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "viszonteladói fiókokat"

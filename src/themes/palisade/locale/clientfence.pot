@@ -1478,7 +1478,7 @@ msgstr ""
 msgid "API"
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namecheap.php src/library/Server/Manager/CWP.php src/modules/Client/templates/admin/mod_client_summary_cards.html.twig …
+#: src/library/Registrar/Adapter/Namecheap.php src/library/Server/Manager/CWP.php src/library/Server/Manager/Novapanel.php …
 msgid "API Key"
 msgstr ""
 
@@ -5414,6 +5414,10 @@ msgstr ""
 msgid "Changes the client asked for, with the prorated amounts. A paid change that could not be applied is listed under Orders > Failed actions."
 msgstr ""
 
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr ""
+
 #: src/modules/Extension/templates/admin/mod_extension_languages.html.twig
 msgid "Changing the Default Language"
 msgstr ""
@@ -7458,6 +7462,18 @@ msgstr ""
 msgid "Could not connect to :host::port: :error"
 msgstr ""
 
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr ""
+
 #: src/modules/Clientfence/Whmcs/Source.php
 msgid "Could not connect to the :name database: :error"
 msgstr ""
@@ -7468,6 +7484,10 @@ msgstr ""
 
 #: src/library/Server/Manager/CWP.php
 msgid "Could not connect to the CWP server. Check the server address, port and API configuration."
+msgstr ""
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
 msgstr ""
 
 #: src/library/ClientFence/Cache/CacheFactory.php
@@ -7552,6 +7572,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Api.php
 msgid "Could not reach the :panel: server: the connection was refused. Check the Connection Port, and that the panel's firewall lets this server connect."
+msgstr ""
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -7694,6 +7718,10 @@ msgstr ""
 msgid "Create a New Client"
 msgstr ""
 
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr ""
+
 #: src/modules/Page/templates/client/mod_page_signup.html.twig
 msgid "Create a new account"
 msgstr ""
@@ -7712,6 +7740,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Create a private bucket."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
 msgstr ""
 
 #: src/themes/palisade/html/mod_page_signup.html.twig
@@ -8194,6 +8226,30 @@ msgstr ""
 msgid "Customized"
 msgstr ""
 
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr ""
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr ""
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr ""
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr ""
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr ""
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid "Cyprus"
 msgstr ""
@@ -8240,6 +8296,42 @@ msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig
 msgid "Dashes do not count toward the API key length, but generated keys must include them to remain valid."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_database_panel.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
@@ -12460,6 +12552,10 @@ msgstr ""
 
 #: src/index.php
 msgid "HTTP Error :err_code occurred while attempting to load :url"
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
 msgstr ""
 
 #: src/modules/Clientfence/Health.php
@@ -18062,6 +18158,34 @@ msgstr ""
 msgid "Notify only"
 msgstr ""
 
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr ""
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_options.html.twig
 msgid "Now"
 msgstr ""
@@ -18780,6 +18904,22 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_twofactor_settings.html.twig
 msgid "Open your authenticator app and add an account."
+msgstr ""
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr ""
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr ""
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr ""
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Opensrs.php
@@ -24582,6 +24722,10 @@ msgstr ""
 msgid "Server Parameters"
 msgstr ""
 
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server Updated"
 msgstr ""
@@ -26914,6 +27058,10 @@ msgstr ""
 msgid "The API key issued to your reseller account."
 msgstr ""
 
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr ""
+
 #: src/library/Server/Manager/CWP.php
 msgid "The CWP server returned HTTP status :status. Check server availability and API configuration."
 msgstr ""
@@ -26960,6 +27108,10 @@ msgstr ""
 
 #: src/library/ClientFence/Update.php
 msgid "The ClientFence release feed provided an invalid SHA-256 digest. Update canceled for security reasons."
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
 msgstr ""
 
 #: src/library/Payment/Adapter/GoCardless.php
@@ -28121,6 +28273,10 @@ msgstr ""
 
 #: src/modules/Order/Service.php
 msgid "The paid renewal could not be applied. The order history has the error."
+msgstr ""
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
 msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
@@ -31459,6 +31615,10 @@ msgstr ""
 msgid "Use TLS"
 msgstr ""
 
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_template.html.twig
 msgid "Use a clear group name to keep related templates organized in the admin list."
 msgstr ""
@@ -33859,7 +34019,7 @@ msgstr ""
 msgid "account credit"
 msgstr ""
 
-#: src/library/Server/Manager/Plesk.php
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php src/library/Server/Manager/Plesk.php
 msgid "account synchronization"
 msgstr ""
 
@@ -33927,11 +34087,11 @@ msgstr ""
 msgid "change account password"
 msgstr ""
 
-#: src/library/Server/Manager/CWP.php src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php …
+#: src/library/Server/Manager/CWP.php src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/Dashmox.php …
 msgid "changing the account IP"
 msgstr ""
 
-#: src/library/Server/Manager/CWP.php src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php
+#: src/library/Server/Manager/CWP.php src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/Dashmox.php …
 msgid "changing the account domain"
 msgstr ""
 
@@ -34239,6 +34399,10 @@ msgstr ""
 msgid "our support team"
 msgstr ""
 
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "pending"
 msgstr ""
@@ -34301,6 +34465,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_servicelicense_manage.html.twig
 msgid "reported on :date"
+msgstr ""
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namecheap.php
@@ -34427,7 +34595,7 @@ msgstr ""
 msgid "updated"
 msgstr ""
 
-#: src/library/Server/Manager/CWP.php src/library/Server/Manager/Directadmin.php src/library/Server/Manager/Hestia.php …
+#: src/library/Server/Manager/CWP.php src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/Dashmox.php …
 msgid "username changes"
 msgstr ""
 

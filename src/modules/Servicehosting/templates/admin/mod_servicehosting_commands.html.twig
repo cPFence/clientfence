@@ -14,8 +14,8 @@
     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePackageModal">{{ 'Change Package'|trans }}</button>
     {% endif %}
     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">{{ 'Change Password'|trans }}</button>
-    {# Only for panels that can read the account back (DirectAdmin and Plesk refuse, HestiaCP and Custom change nothing). #}
-    {% if server and server.manager in ['Whm', 'CWP', 'Enhance'] %}
+    {# Only for panels that can read the account back (DirectAdmin, Plesk, CyberPanel and OpenPanel refuse; HestiaCP, Dashmox and Custom change nothing). #}
+    {% if server and server.manager in ['Whm', 'CWP', 'Enhance', 'Novapanel'] %}
     <a class="dropdown-item" href="{{ 'servicehosting/sync'|api_url(query: { 'order_id': order.id }) }}"
         {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'Account Synced'|trans}) }}>{{ 'Sync'|trans }}</a>
     {% endif %}

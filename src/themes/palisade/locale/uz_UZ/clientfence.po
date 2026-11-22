@@ -29635,7 +29635,6 @@ msgstr "Ushbu xizmatning variantlari endi mahsulotiga mos kelmaydi. Avval ularni
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "Mahsulotda ushbu xizmatning hisob-kitob davri uchun narx yo'q, shuning uchun narxni qayta hisoblab bo'lmaydi."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -30236,7 +30235,6 @@ msgstr "Bu tarif faol ekan, domen bepul yangilanadi."
 msgid "Enter 0 to never close tickets automatically."
 msgstr "Chiptalar hech qachon avtomatik yopilmasligi uchun 0 kiriting."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -30260,3 +30258,178 @@ msgstr "Kimdir xizmatingizning WHOIS chiqishini (ommaga ochiq) tekshirgandan so'
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "Kimdir xizmatingizning WHOIS chiqishini (ommaga ochiq) tekshirgandan so'ng, domen bilan bog'lanish ma'lumotlari ko'rsatiladi. Bu ushbu domen egasi (registrant) kontaktini hamda Texnik, Hisob-kitob va Admin kontaktlarni yangilaydi. Ommaviy WHOIS ma'lumotlaringizni yashirishni istasangiz, domen maxfiyligi himoyasini yoqishingiz mumkin."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "Aksiyalar va soliq savatingizda qo'llanadi."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "Iltimos, birinchi kirishdan keyin root parolini o'zgartiring."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "Parollarni hisob-kitob tizimidan o'zgartirish uchun NovaPanel 1.8.3 yoki undan yangisi kerak."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "CyberPanel bilan ulanib bo'lmadi."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Dashmox bilan ulanib bo'lmadi."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "NovaPanel bilan ulanib bo'lmadi."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "OpenAdmin API bilan ulanib bo'lmadi. OpenPanel Enterprise'da API kirishini yoqing va server kirish ma'lumotlarini tekshiring."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "OpenAdmin API ga yetib bo'lmadi. Server manzilini tekshiring va OpenPanel Enterprise'da API kirishini yoqing."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "NovaPanel'da Settings → API Keys bo'limida kalit yarating."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Dashmox'da Server → Integrations bo'limida token yarating."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "CyberPanel foydalanuvchi nomi"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "CyberPanel kirish ma'lumotlarini tekshira olmadi. Foydalanuvchi nomi, parol va API kirishini tekshiring."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "CyberPanel so'rovni rad etdi: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "CyberPanel uchun xost nomi, foydalanuvchi nomi va parol kerak."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "CyberPanel yaroqsiz javob qaytardi."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Dashmox yangi mijoz ID sini qaytarmadi."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Dashmox'da \":name\" nomli reja yo'q."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Dashmox hali bu veb-sayt ustida ishlamoqda. Birozdan keyin qayta urinib ko'ring."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Dashmox so'rovni rad etdi: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Dashmox uchun API kirishida Pro yoki Business litsenziyasi kerak."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Dashmox uchun xost nomi va server tokeni kerak."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Dashmox uchun mijoz kirishida veb-sayt domeni kerak."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Dashmox yaroqsiz javob qaytardi."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "HTTP holati :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "NovaPanel \":username\" hisobini topa olmadi."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "NovaPanel'da \":name\" nomli paket yo'q."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "NovaPanel so'rovni rad etdi: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "NovaPanel uchun API kirishida Pro yoki Developer litsenziyasi kerak."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "NovaPanel uchun xost nomi va API kaliti kerak."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "NovaPanel yaroqsiz javob qaytardi."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "OpenAdmin foydalanuvchi nomi"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "OpenPanel so'rovni rad etdi: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "OpenPanel uchun xost nomi va OpenAdmin kirish ma'lumotlari kerak."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "Server tokeni"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "API uchun OpenPanel Enterprise kerak."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "Dashmox mijozi topilmadi."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "Panel amalni tasdiqlamadi."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "API kirishi yoqilgan CyberPanel hisobidan foydalaning."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "parolni o'zgartirish"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "reseller hisoblari"

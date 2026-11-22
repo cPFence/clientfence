@@ -528,6 +528,32 @@ test('action cancel', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('action cancel keeps the panel account id the server manager looked up', function (): void {
+    $orderModel = new Model_ClientOrder();
+    $orderModel->loadBean(new Tests\Helpers\DummyBean());
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->username = 'imported';
+
+    $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderServiceMock->shouldReceive('getOrderService')->andReturn($model);
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('store')->once();
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $orderServiceMock);
+
+    $account = new Server_Account();
+    $serverManagerMock = Mockery::mock('\Server_Manager_Custom');
+    $serverManagerMock->shouldReceive('cancelAccount')->once()->andReturnUsing(fn (Server_Account $a): bool => (bool) $a->setPanelOrgId('customer-9'));
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('_getAM')->andReturn([$serverManagerMock, $account]);
+    $serviceMock->setDi($di);
+
+    expect($serviceMock->action_cancel($orderModel))->toBeTrue()
+        ->and($model->panel_org_id)->toBe('customer-9');
+});
+
 test('action cancel order without active service', function (): void {
     $service = new Service();
     $orderModel = new Model_ClientOrder();

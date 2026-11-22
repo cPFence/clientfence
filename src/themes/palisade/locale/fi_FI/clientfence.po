@@ -31973,7 +31973,6 @@ msgstr "Tämän palvelun valinnat eivät enää sovi sen tuotteeseen. Muuta ne e
 msgid "The product has no price for the billing cycle of this service, so the price cannot be recalculated."
 msgstr "Tuotteella ei ole hintaa tämän palvelun laskutuskaudelle, joten hintaa ei voi laskea uudelleen."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
 msgid "First Payment Amount"
@@ -32574,7 +32573,6 @@ msgstr "Verkkotunnus uusitaan ilmaiseksi, kun tämä paketti on aktiivinen."
 msgid "Enter 0 to never close tickets automatically."
 msgstr "Syötä 0, jos tukipyyntöjä ei suljeta koskaan automaattisesti."
 
-
 # To translate (tools/locales.py starter).
 #: src/modules/Email/Service.php
 msgid ":box: :error"
@@ -32598,3 +32596,178 @@ msgstr "Verkkotunnuksen yhteystiedot näkyvät, kun joku tarkistaa palvelusi WHO
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
 msgid "Domain contact details will be displayed once someone will check WHOIS output (which is public) of your service. This will update the owner (registrant), Technical, Billing and Admin contacts of this domain. You can enable domain privacy protection if you want to hide your public WHOIS information."
 msgstr "Verkkotunnuksen yhteystiedot näkyvät, kun joku tarkistaa palvelusi WHOIS-tulosteen (joka on julkinen). Tämä päivittää tämän verkkotunnuksen rekisteröijän (omistajan) yhteystiedon sekä teknisen, laskutus- ja hallintoyhteyshenkilön yhteystiedot. Voit ottaa verkkotunnuksen yksityisyydensuojan käyttöön, jos haluat piilottaa julkiset WHOIS-tietosi."
+
+msgid "Promotions and tax are applied in your cart."
+msgstr "Tarjoukset ja vero otetaan huomioon ostoskorissasi."
+
+msgid "Please change the root password after your first sign-in."
+msgstr "Vaihda root-salasana ensimmäisen kirjautumisen jälkeen."
+
+# To translate (tools/locales.py starter).
+#: src/library/Server/Manager/Novapanel.php
+msgid "Changing passwords from billing requires NovaPanel 1.8.3 or newer."
+msgstr "Salasanojen vaihtaminen laskutuksesta vaatii NovaPanel 1.8.3:n tai uudemman."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Could not connect to CyberPanel."
+msgstr "CyberPaneliin ei saatu yhteyttä."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Could not connect to Dashmox."
+msgstr "Dashmoxiin ei saatu yhteyttä."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Could not connect to NovaPanel."
+msgstr "NovaPaneliin ei saatu yhteyttä."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not connect to the OpenAdmin API. Enable API access on OpenPanel Enterprise and check the server credentials."
+msgstr "OpenAdmin API:in ei saatu yhteyttä. Ota API-käyttö käyttöön OpenPanel Enterprisessa ja tarkista palvelimen tunnukset."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "Could not reach the OpenAdmin API. Check the server address and enable API access on OpenPanel Enterprise."
+msgstr "OpenAdmin API:a ei tavoitettu. Tarkista palvelimen osoite ja ota API-käyttö käyttöön OpenPanel Enterprisessa."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "Create a key in NovaPanel under Settings → API Keys."
+msgstr "Luo avain NovaPanelissa kohdassa Settings → API Keys."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Create a token in Dashmox under Server → Integrations."
+msgstr "Luo tunnus Dashmoxissa kohdassa Server → Integrations."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel"
+msgstr "CyberPanel"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel Username"
+msgstr "CyberPanelin käyttäjätunnus"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel could not verify the credentials. Check the username, password and API access."
+msgstr "CyberPanel ei voinut vahvistaa tunnuksia. Tarkista käyttäjätunnus, salasana ja API-käyttö."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel refused the request: :message"
+msgstr "CyberPanel hylkäsi pyynnön: :message"
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel requires a hostname, username and password."
+msgstr "CyberPanel vaatii isäntänimen, käyttäjätunnuksen ja salasanan."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "CyberPanel returned an invalid response."
+msgstr "CyberPanel palautti virheellisen vastauksen."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox"
+msgstr "Dashmox"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox did not return the new customer ID."
+msgstr "Dashmox ei palauttanut uuden asiakkaan tunnusta."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox has no plan named \":name\"."
+msgstr "Dashmoxissa ei ole pakettia nimeltä \":name\"."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox is still working on this website. Try again shortly."
+msgstr "Dashmox työstää vielä tätä verkkosivua. Yritä hetken kuluttua uudelleen."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox refused the request: :message"
+msgstr "Dashmox hylkäsi pyynnön: :message"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a Pro or Business licence for API access."
+msgstr "Dashmox vaatii API-käyttöön Pro- tai Business-lisenssin."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a hostname and server token."
+msgstr "Dashmox vaatii isäntänimen ja palvelimen tunnuksen."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox requires a website domain for customer login."
+msgstr "Dashmox vaatii verkkosivun verkkotunnuksen asiakkaan kirjautumista varten."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Dashmox returned an invalid response."
+msgstr "Dashmox palautti virheellisen vastauksen."
+
+#: src/library/Server/Manager/Dashmox.php src/library/Server/Manager/Novapanel.php
+msgid "HTTP status :status"
+msgstr "HTTP-tila :status"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel"
+msgstr "NovaPanel"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel could not find the account \":username\"."
+msgstr "NovaPanel ei löytänyt tiliä \":username\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel has no package named \":name\"."
+msgstr "NovaPanelissa ei ole pakettia nimeltä \":name\"."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel refused the request: :message"
+msgstr "NovaPanel hylkäsi pyynnön: :message"
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a Pro or Developer licence for API access."
+msgstr "NovaPanel vaatii API-käyttöön Pro- tai Developer-lisenssin."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel requires a hostname and API key."
+msgstr "NovaPanel vaatii isäntänimen ja API-avaimen."
+
+#: src/library/Server/Manager/Novapanel.php
+msgid "NovaPanel returned an invalid response."
+msgstr "NovaPanel palautti virheellisen vastauksen."
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenAdmin Username"
+msgstr "OpenAdminin käyttäjätunnus"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel"
+msgstr "OpenPanel"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel refused the request: :message"
+msgstr "OpenPanel hylkäsi pyynnön: :message"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "OpenPanel requires a hostname and OpenAdmin credentials."
+msgstr "OpenPanel vaatii isäntänimen ja OpenAdmin-tunnukset."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "Server Token"
+msgstr "Palvelimen tunnus"
+
+#: src/library/Server/Manager/OpenPanel.php
+msgid "The API requires OpenPanel Enterprise."
+msgstr "API vaatii OpenPanel Enterprisen."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "The Dashmox customer could not be found."
+msgstr "Dashmox-asiakasta ei löytynyt."
+
+#: src/library/Server/Manager/CyberPanel.php src/library/Server/Manager/OpenPanel.php
+msgid "The panel did not confirm the operation."
+msgstr "Paneeli ei vahvistanut toimintoa."
+
+#: src/library/Server/Manager/CyberPanel.php
+msgid "Use a CyberPanel account with API access enabled."
+msgstr "Käytä CyberPanel-tiliä, jolla API-käyttö on sallittu."
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "password changes"
+msgstr "salasanan vaihtamista"
+
+#: src/library/Server/Manager/Dashmox.php
+msgid "reseller accounts"
+msgstr "jälleenmyyjätilejä"
