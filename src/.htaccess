@@ -14,6 +14,14 @@ RewriteRule ^(modules|themes)/[^/]+/manifest\.json$ - [NC,F,L]
 RewriteEngine On
 RewriteRule ^enhance/?$ /hosting [R=302,L]
 # END CLIENTFENCE OLD HOSTING PAGE
+# BEGIN CLIENTFENCE BRAND UPLOADS
+# ClientFence core patch: restrict what an uploaded SVG can load when opened directly.
+<IfModule mod_headers.c>
+    RewriteRule ^public/uploads/brand/ - [E=CLIENTFENCE_BRAND_UPLOAD:1]
+    Header always set Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'" env=CLIENTFENCE_BRAND_UPLOAD
+    Header always set X-Content-Type-Options "nosniff" env=CLIENTFENCE_BRAND_UPLOAD
+</IfModule>
+# END CLIENTFENCE BRAND UPLOADS
 # BEGIN ClientFence
 # ClientFence core patch: documentation is at https://clientfence.com/docs/.
 Options -Indexes +SymLinksIfOwnerMatch

@@ -14,27 +14,28 @@ const post = (endpoint, data) => new Promise((resolve, reject) => {
 // data-text-* hold the messages; each upload saves its setting through clientfence/setup_brand_asset.
 function bindDrops(scope, uploaded = () => {}) {
   const text = (name) => scope.dataset[name] || '';
-  const allowed = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
   scope.querySelectorAll('[data-cf-drop]').forEach((drop) => {
     const input = drop.querySelector('input[type="file"]');
     const img = drop.querySelector('[data-cf-drop-img]');
     const empty = drop.querySelector('.cf-drop-empty');
+    const restore = drop.parentElement.querySelector('[data-cf-drop-restore]');
+    const restoreButton = restore.querySelector('button');
     const kind = drop.dataset.cfDrop;
+    const accepted = input.accept.split(',');
 
-    async function upload(file) {
-      if (!file) return;
-      if (!allowed.includes(file.type)) { notify(text('textNotImage')); return; }
-      if (file.size > 2 * 1024 * 1024) { notify(text('textTooBig')); return; }
-      const data = new FormData();
-      data.append('kind', kind);
-      data.append('file', file);
+    async function save(endpoint, data, isUpload) {
+      if (drop.classList.contains('is-busy')) return;
       drop.classList.add('is-busy');
       drop.setAttribute('aria-busy', 'true');
+      restoreButton.disabled = true;
       try {
-        const result = await post('clientfence/setup_brand_asset', data);
-        img.src = result.url;
-        img.hidden = false;
-        empty?.setAttribute('hidden', ''); // an SVG has no .hidden property
+        const result = await post(endpoint, data);
+        if (result.url) img.src = result.url;
+        else img.removeAttribute('src');
+        img.hidden = !result.url;
+        empty.toggleAttribute('hidden', Boolean(result.url));
+        restore.hidden = !isUpload;
+        if (!isUpload) drop.focus();
         uploaded(kind, result.url);
         notify(text('textSaved'), 'success');
       } catch (e) {
@@ -42,10 +43,22 @@ function bindDrops(scope, uploaded = () => {}) {
       } finally {
         drop.classList.remove('is-busy');
         drop.removeAttribute('aria-busy');
-        input.value = '';
+        restoreButton.disabled = false;
       }
     }
 
+    async function upload(file) {
+      if (!file) return;
+      if (!accepted.includes('image/svg+xml') && !accepted.includes(file.type)) { notify(text('textNotImage')); return; }
+      if (file.size > 2 * 1024 * 1024) { notify(text('textTooBig')); return; }
+      const data = new FormData();
+      data.append('kind', kind);
+      data.append('file', file);
+      await save('clientfence/setup_brand_asset', data, true);
+      input.value = '';
+    }
+
+    restoreButton.addEventListener('click', () => save('clientfence/setup_brand_asset_restore', { kind }, false));
     drop.addEventListener('click', () => input.click());
     drop.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); }

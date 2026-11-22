@@ -291,6 +291,10 @@ class Service
             $logoUrlEmail = SYSTEM_URL . $logoUrlEmail;
         }
         $logoUrlEmail ??= $logoUrl;
+        // ClientFence core patch: mail apps that omit SVG use the company name in the email header.
+        if (str_ends_with(strtolower((string) parse_url((string) $logoUrlEmail, PHP_URL_PATH)), '.svg')) {
+            $logoUrlEmail = null;
+        }
 
         $faviconUrl = $results['company_favicon'] ?? null;
         if ($faviconUrl !== null && !str_contains((string) $faviconUrl, 'http')) {

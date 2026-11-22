@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace ClientFence\Mod\Clientfence;
 
 use ClientFence\InformationException;
+use enshrined\svgSanitize\Sanitizer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * ClientFence branding: uploaded logos and icon, a brand color and the sign-in page style (the
  * setup wizard's branding step, Setup.php).
  *
- * - Uploads are checked, re-encoded as PNG (so nothing but pixels is kept) and saved under
- *   public/uploads/brand with a random name; company_logo, company_logo_dark, company_logo_email and company_favicon
- *   point to them.
+ * - Uploads are saved under public/uploads/brand with random names. Raster images are re-encoded
+ *   as PNG, and SVG logos are sanitised.
  * - A brand color other than the default writes a small stylesheet (public/uploads/brand/brand-*.css)
  *   that both themes load: it sets the client theme's --pal-* variables, Bootstrap's primary
  *   colors and the admin's accent. The default color writes nothing, so the themes stay as built.
@@ -29,12 +29,12 @@ final class Branding
     public const array LOGIN_STYLES = ['dark', 'brand', 'light'];
     public const string DIR = 'public/uploads/brand';
 
-    /** Upload kinds: the setting each one fills and the largest size it is scaled to. */
+    /** Upload kinds and their defaults from install/sql/content.sql. */
     public const array ASSETS = [
-        'logo' => ['param' => 'company_logo', 'width' => 1200, 'height' => 400],
-        'logo_dark' => ['param' => 'company_logo_dark', 'width' => 1200, 'height' => 400],
-        'logo_email' => ['param' => 'company_logo_email', 'width' => 1200, 'height' => 400],
-        'icon' => ['param' => 'company_favicon', 'width' => 512, 'height' => 512],
+        'logo' => ['param' => 'company_logo', 'default' => 'public/branding/logo.png', 'width' => 1200, 'height' => 400, 'svg' => true],
+        'logo_dark' => ['param' => 'company_logo_dark', 'default' => 'public/branding/logo-dark.png', 'width' => 1200, 'height' => 400, 'svg' => true],
+        'logo_email' => ['param' => 'company_logo_email', 'default' => '', 'width' => 1200, 'height' => 400, 'svg' => false],
+        'icon' => ['param' => 'company_favicon', 'default' => 'public/branding/favicon.ico', 'width' => 512, 'height' => 512, 'svg' => false],
     ];
     public const int MAX_BYTES = 2 * 1024 * 1024;
 
@@ -296,10 +296,7 @@ final class Branding
 
     // ----- uploads --------------------------------------------------------------------------
 
-    /**
-     * Saves an uploaded logo, dark logo or icon (`kind`): an image (PNG, JPEG, GIF or WebP where
-     * the server reads it) of at most 2 MB, scaled down to fit, stored as PNG. Returns its URL.
-     */
+    /** Saves a sanitised SVG or re-encoded PNG and returns its URL. */
     public static function saveAsset(\Pimple\Container $di, string $kind, ?UploadedFile $file): string
     {
         if (!isset(self::ASSETS[$kind])) {
@@ -312,26 +309,117 @@ final class Branding
             throw new InformationException('The image is larger than 2 MB.');
         }
         $data = (string) file_get_contents($file->getPathname());
-        $png = self::toPng($data, self::ASSETS[$kind]['width'], self::ASSETS[$kind]['height'], $kind === 'icon');
+        $asset = self::ASSETS[$kind];
+        // An SVG is known by its content (markup), never by the file name or type the browser sends.
+        if ($asset['svg'] && str_starts_with(ltrim($data, "\xEF\xBB\xBF \t\r\n"), '<')) {
+            $data = self::sanitizeSvg($data);
+            $extension = 'svg';
+        } else {
+            $data = self::toPng($data, $asset['width'], $asset['height'], $kind === 'icon');
+            $extension = 'png';
+        }
 
         self::ensureDir();
-        $dir = self::dir();
-        $name = str_replace('_', '-', $kind) . '-' . bin2hex(random_bytes(8)) . '.png';
-        if (file_put_contents($dir . '/' . $name, $png) === false) {
+        $path = self::DIR . '/' . str_replace('_', '-', $kind) . '-' . bin2hex(random_bytes(8)) . '.' . $extension;
+        if (file_put_contents(PATH_ROOT . '/' . $path, $data) === false) {
             throw new InformationException('The image could not be saved: check that :dir is writable.', [':dir' => self::DIR]);
         }
+        self::setAsset($di, $kind, $path);
+
+        return SYSTEM_URL . $path;
+    }
+
+    public static function restoreAsset(\Pimple\Container $di, string $kind): ?string
+    {
+        if (!isset(self::ASSETS[$kind])) {
+            throw new InformationException('Unknown image.');
+        }
+        $path = self::ASSETS[$kind]['default'];
+        self::setAsset($di, $kind, $path);
+
+        return $path === '' ? null : SYSTEM_URL . $path;
+    }
+
+    private static function setAsset(\Pimple\Container $di, string $kind, string $path): void
+    {
         $param = self::ASSETS[$kind]['param'];
         $system = $di['mod_service']('system');
         $previous = (string) $system->getParamValue($param, '');
-        $system->setParamValue($param, self::DIR . '/' . $name);
+        $system->setParamValue($param, $path);
         // Only an earlier upload of this kind is removed, never the shipped default logo.
         $prefix = self::DIR . '/' . str_replace('_', '-', $kind) . '-';
-        if (str_starts_with($previous, $prefix) && preg_match('#\A[a-z-]+-[a-f0-9]{16}\.png\z#', basename($previous)) === 1) {
+        if (preg_match('#\A' . preg_quote($prefix, '#') . '[a-f0-9]{16}\.(?:png|svg)\z#', $previous) === 1) {
             @unlink(PATH_ROOT . '/' . $previous);
         }
         $di['cache']->clear();
+    }
 
-        return SYSTEM_URL . self::DIR . '/' . $name;
+    private static function sanitizeSvg(string $data): string
+    {
+        $sanitizer = new Sanitizer();
+        $sanitizer->removeRemoteReferences(true);
+        try {
+            $clean = $sanitizer->sanitize($data);
+        } catch (\LogicException) {
+            // The sanitiser refuses a document without exactly one svg element.
+            $clean = false;
+        }
+        $document = new \DOMDocument();
+        if (!$clean || !$document->loadXML($clean, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING)) {
+            throw new InformationException('Upload a valid SVG with artwork.');
+        }
+        $root = $document->documentElement;
+        if ($root->tagName !== 'svg' || $root->namespaceURI !== 'http://www.w3.org/2000/svg') {
+            throw new InformationException('Upload a valid SVG with artwork.');
+        }
+
+        // The invoice PDF sizes an SVG by its width and height only, so a viewBox-only logo gets them from its viewBox.
+        $box = preg_split('/[\s,]+/', trim($root->getAttribute('viewBox')));
+        if (count($box) === 4 && is_numeric($box[2]) && is_numeric($box[3]) && !$root->hasAttribute('width') && !$root->hasAttribute('height')) {
+            $root->setAttribute('width', $box[2]);
+            $root->setAttribute('height', $box[3]);
+        }
+
+        $xpath = new \DOMXPath($document);
+        // Only references inside the file stay: invoice rendering and a browser opening the file follow the others.
+        foreach ($xpath->query('//@*[local-name() = "href"]') as $href) {
+            if (str_starts_with($href->value, '#')) {
+                continue;
+            }
+            // An embedded image stays only as re-encoded pixels: the PDF renderer would follow an SVG hidden in it.
+            if (preg_match('#\Adata:image/(?:png|jpe?g|gif|webp);base64,#i', $href->value, $prefix) === 1) {
+                try {
+                    $png = self::toPng((string) base64_decode(substr($href->value, strlen($prefix[0])), true), 4000, 4000, false);
+                    $href->value = 'data:image/png;base64,' . base64_encode($png);
+
+                    continue;
+                } catch (InformationException) {
+                }
+            }
+            $href->ownerElement->removeAttributeNode($href);
+        }
+        foreach ($xpath->query('//*[local-name() = "style"]') as $style) {
+            // A CSS escape can spell @import or url( in other characters, so such a sheet is dropped whole.
+            if (str_contains($style->textContent, '\\')) {
+                $style->parentNode->removeChild($style);
+            } else {
+                $style->textContent = (string) preg_replace(['/@import\b[^;]*;?/i', '/url\(\s*(?![\'"]?\s*#)[^)]*\)/i'], ['', 'none'], $style->textContent);
+            }
+        }
+        $xpath->registerNamespace('svg', 'http://www.w3.org/2000/svg');
+        if (!$xpath->evaluate(<<<'XPATH'
+            boolean(//svg:path | //svg:rect | //svg:circle | //svg:ellipse | //svg:line | //svg:polyline |
+                    //svg:polygon | //svg:text | //svg:image[@*[local-name() = "href"]] | //svg:use[@*[local-name() = "href"]])
+            XPATH)) {
+            throw new InformationException('Upload a valid SVG with artwork.');
+        }
+        $clean = $document->saveXML($root);
+        // Re-encoded embedded images can make the file larger than the upload.
+        if (strlen($clean) > self::MAX_BYTES) {
+            throw new InformationException('The image is larger than 2 MB.');
+        }
+
+        return $clean;
     }
 
     /**

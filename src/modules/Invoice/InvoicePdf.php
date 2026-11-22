@@ -20,12 +20,14 @@ final class InvoicePdf
                 if (str_starts_with($logo, 'data:')) {
                     $logo = '@' . base64_decode(explode(',', $logo, 2)[1]);
                 }
-                if ($svg) {
-                    $pdf->ImageSVG($logo, null, null, 0, 15, '', 'N');
-                } else {
+                // The PDF library ignores <style> sheets and would draw such a logo black, so it is left out.
+                if (!$svg) {
                     $pdf->Image($logo, null, null, 0, 15, '', '', 'N');
+                    $pdf->Ln(3);
+                } elseif (!str_contains($logo, '<style')) {
+                    $pdf->ImageSVG($logo, null, null, 0, 15, '', 'N');
+                    $pdf->Ln(3);
                 }
-                $pdf->Ln(3);
             }
             $money = static fn (mixed $amount): string => RtlPdf::money($di, (float) $amount, $data['currency_code']);
             $pdf->writeHTML(self::html($di, $data, $money, $locale), true, false, true, false, '');

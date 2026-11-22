@@ -1074,7 +1074,7 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $saved;
     }
 
-    /** Uploads the logo, the logo for dark backgrounds or the square icon (`kind`, multipart "file"). */
+    /** Uploads a brand image (`kind`, multipart "file"). */
     public function setup_brand_asset($data): array
     {
         $this->setupAllowed();
@@ -1082,6 +1082,15 @@ class Admin extends \ClientFence\Api\AbstractApi
         $kind = (string) ($data['kind'] ?? '');
 
         return ['kind' => $kind, 'url' => Branding::saveAsset($di, $kind, $di['request']->files->get('file'))];
+    }
+
+    /** Restores the default brand image for the given kind. */
+    public function setup_brand_asset_restore($data): array
+    {
+        $this->setupAllowed();
+        $kind = (string) ($data['kind'] ?? '');
+
+        return ['kind' => $kind, 'url' => Branding::restoreAsset($this->getDi(), $kind)];
     }
 
     /** Brand color and sign-in page style. */

@@ -7,7 +7,9 @@ declare(strict_types=1);
  */
 
 use ClientFence\InformationException;
+use ClientFence\Mod\Clientfence\Api\Admin;
 use ClientFence\Mod\Clientfence\Branding;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 function brandingTestImage(int $width, int $height, string $type = 'png'): string
 {
@@ -87,6 +89,135 @@ test('an unknown image kind or a missing file is refused before anything is writ
 
     expect(fn () => Branding::saveAsset($di, 'background', null))->toThrow(InformationException::class)
         ->and(fn () => Branding::saveAsset($di, 'logo', null))->toThrow(InformationException::class);
+});
+
+function brandingTestUpload(string $content): UploadedFile
+{
+    $path = tempnam(sys_get_temp_dir(), 'brand-');
+    file_put_contents($path, $content);
+
+    return new UploadedFile($path, 'image.png', 'image/png', null, true);
+}
+
+test('Branding saves SVG by content, strips unsafe elements, attributes and references, and sizes a viewBox-only logo', function (string $kind, string $param): void {
+    ob_start();
+    imagepng(imagecreatetruecolor(16, 16));
+    $png = base64_encode((string) ob_get_clean());
+    // An SVG hidden in a "PNG": the PDF renderer would draw it and follow its local file reference.
+    $hidden = base64_encode('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image xlink:href="public/branding/logo.png"/></svg><!--/a.svg');
+    $file = brandingTestUpload(<<<SVG
+        <?xml version="1.0"?>
+        <!-- Exported logo -->
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 40">
+            <script>alert(1)</script>
+            <rect width="100" height="40" onload="alert(1)"/>
+            <a href="javascript:alert(1)"><circle cx="20" cy="20" r="10"/></a>
+            <use href="https://example.com/logo.svg#shape"/>
+            <image xlink:href="https://example.com/image.png" width="20" height="20"/>
+            <style>@import url(https://example.com/x.css); .a { fill: url(https://example.com/f.svg#g) }</style>
+            <image href="data:image/png;base64,{$png}" width="20" height="20"/>
+            <image href="data:image/png;base64,{$hidden}" width="20" height="20"/>
+        </svg>
+        SVG);
+    $di = new Pimple\Container();
+    $system = Mockery::mock();
+    $system->shouldReceive('getParamValue')->once()->with($param, '')->andReturn('');
+    $system->shouldReceive('setParamValue')->once()->with($param, Mockery::capture($saved));
+    $di['mod_service'] = $di->protect(fn () => $system);
+    $di['cache'] = Mockery::mock()->expects('clear')->getMock();
+
+    try {
+        $url = Branding::saveAsset($di, $kind, $file);
+        expect($saved)->toMatch('/\Apublic\/uploads\/brand\/' . str_replace('_', '-', $kind) . '-[a-f0-9]{16}\.svg\z/')
+            ->and($url)->toBe(SYSTEM_URL . $saved);
+        expect(file_get_contents(PATH_ROOT . '/' . $saved))
+            ->toContain('<rect')
+            ->toContain('width="100" height="40"')
+            ->toContain('href="data:image/png;base64,iVBOR')
+            ->not->toContain($hidden)
+            ->toContain('.a { fill: none }')
+            ->not->toMatch('~<script|onload=|javascript:|https://example\.com/~');
+    } finally {
+        unlink($file->getPathname());
+        if (isset($saved)) {
+            unlink(PATH_ROOT . '/' . $saved);
+        }
+    }
+})->with([
+    'light logo' => ['logo', 'company_logo'],
+    'dark logo' => ['logo_dark', 'company_logo_dark'],
+]);
+
+test('Branding refuses files without usable SVG artwork', function (string $content): void {
+    $file = brandingTestUpload($content);
+    try {
+        expect(fn () => Branding::saveAsset(new Pimple\Container(), 'logo', $file))->toThrow(InformationException::class);
+    } finally {
+        unlink($file->getPathname());
+    }
+})->with([
+    'plain text' => ['this is not an image'],
+    'other XML root' => ['<g xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20"/></g>'],
+    'malformed SVG' => ['<svg xmlns="http://www.w3.org/2000/svg">'],
+    'empty after sanitising' => ['<svg xmlns="http://www.w3.org/2000/svg"><g><script>alert(1)</script></g></svg>'],
+]);
+
+test('Branding refuses SVG for the email logo and square icon', function (string $kind): void {
+    $file = brandingTestUpload('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20"/></svg>');
+    try {
+        expect(fn () => Branding::saveAsset(new Pimple\Container(), $kind, $file))->toThrow(InformationException::class);
+    } finally {
+        unlink($file->getPathname());
+    }
+})->with(['logo_email', 'icon']);
+
+test('Branding restore saves the shipped default and deletes only an earlier upload of that kind', function (string $kind, string $param, string $default, string $extension, bool $managed): void {
+    $directory = PATH_ROOT . '/' . Branding::DIR;
+    if (!is_dir($directory)) {
+        mkdir($directory, 0o755, true);
+    }
+    $prefix = str_replace('_', '-', $kind) . ($managed ? '' : '-other');
+    $previous = Branding::DIR . '/' . $prefix . '-' . bin2hex(random_bytes(8)) . '.' . $extension;
+    file_put_contents(PATH_ROOT . '/' . $previous, 'previous image');
+    $di = new Pimple\Container();
+    $system = Mockery::mock();
+    $system->shouldReceive('getParamValue')->once()->with($param, '')->andReturn($previous);
+    $system->shouldReceive('setParamValue')->once()->with($param, $default);
+    $di['mod_service'] = $di->protect(fn () => $system);
+    $di['cache'] = Mockery::mock()->expects('clear')->getMock();
+
+    try {
+        $url = Branding::restoreAsset($di, $kind);
+        expect($url)->toBe($default === '' ? null : SYSTEM_URL . $default)
+            ->and(is_file(PATH_ROOT . '/' . $previous))->toBe(!$managed);
+    } finally {
+        if (is_file(PATH_ROOT . '/' . $previous)) {
+            unlink(PATH_ROOT . '/' . $previous);
+        }
+    }
+})->with([
+    'light logo SVG' => ['logo', 'company_logo', 'public/branding/logo.png', 'svg', true],
+    'dark logo PNG' => ['logo_dark', 'company_logo_dark', 'public/branding/logo-dark.png', 'png', true],
+    'email logo' => ['logo_email', 'company_logo_email', '', 'png', true],
+    'square icon' => ['icon', 'company_favicon', 'public/branding/favicon.ico', 'png', true],
+    'similar filename' => ['logo', 'company_logo', 'public/branding/logo.png', 'png', false],
+]);
+
+test('Branding restore refuses an unknown image kind', function (): void {
+    expect(fn () => Branding::restoreAsset(new Pimple\Container(), 'background'))->toThrow(InformationException::class, 'Unknown image.');
+});
+
+test('Branding restore API requires a Super Administrator', function (): void {
+    $di = new Pimple\Container(['loggedin_admin' => (object) ['id' => 2]]);
+    $staff = Mockery::mock();
+    $staff->shouldReceive('isSuperAdministrator')->once()->with(2)->andReturnFalse();
+    $di['mod_service'] = $di->protect(fn (string $name) => ['staff' => $staff][$name]);
+    $api = new Admin();
+    $api->setDi($di);
+
+    expect(fn () => $api->setup_brand_asset_restore(['kind' => 'logo']))->toThrow(function (InformationException $exception): void {
+        expect($exception->getCode())->toBe(403);
+    });
 });
 
 test('a color or sign-in style that is not offered is refused', function (): void {
