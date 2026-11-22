@@ -201,6 +201,12 @@ dd {
   transform: scaleX(-1);
 }
 
+// A translated placeholder in a left-to-right box (domain names) reads and starts on its own side, so it is not cut.
+[dir="rtl"] :is(input, textarea)[dir="ltr"]::placeholder {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
 .min-w-0 {
   min-width: 0;
 }

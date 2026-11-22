@@ -211,6 +211,8 @@ body { font-family: var(--bf-font); }
 .bf-nowrap { white-space: nowrap; }
 .bf-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 [dir="rtl"] .bf-flip { transform: scaleX(-1); }
+/* A translated placeholder in a left-to-right box (domain names) reads and starts on its own side, so it is not cut. */
+[dir="rtl"] :is(input, textarea)[dir="ltr"]::placeholder { unicode-bidi: plaintext; text-align: start; }
 /* Tabler's right-to-left build mirrors the breadcrumb "/" into "\" and its padding with it: a plain "/" reads right. */
 [dir="rtl"] .breadcrumb-item + .breadcrumb-item::before { transform: none; }
 /* FOSSBilling's back/next arrows on the inner pages point the reading way. */

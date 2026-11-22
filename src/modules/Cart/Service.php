@@ -1361,7 +1361,8 @@ class Service implements InjectionAwareInterface
                         // wrapInTransaction() below, including every order
                         // already created for this cart - not just this one.
                         $this->di['logger']->error('Order activation failed after checkout: %s', $e->getMessage());
-                        $notes = "Order could not be activated after checkout due to error: {$e->getMessage()}.";
+                        // ClientFence core patch: one full stop after a checkout activation error that ends with its own.
+                        $notes = 'Order could not be activated after checkout due to error: ' . rtrim($e->getMessage(), '.') . '.';
                         $orderService->orderStatusAdd($order, Order::STATUS_FAILED_SETUP, $notes);
                     }
                 }

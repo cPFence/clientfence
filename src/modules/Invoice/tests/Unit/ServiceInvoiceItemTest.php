@@ -214,6 +214,38 @@ test('a paid activation lifts the suspension a reversed payment left', function 
     $serviceMock->executeTask($invoiceItemModel);
 });
 
+test('a failed activation note ends with one full stop', function (): void {
+    $invoiceItemModel = new Model_InvoiceItem();
+    $invoiceItemModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceItemModel->type = Model_InvoiceItem::TYPE_ORDER;
+    $invoiceItemModel->task = Model_InvoiceItem::TASK_ACTIVATE;
+    $invoiceItemModel->status = Model_InvoiceItem::STATUS_PENDING_SETUP;
+
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->status = Model_ClientOrder::STATUS_PENDING_SETUP;
+    $order->product_id = 5;
+
+    $serviceMock = Mockery::mock(ServiceInvoiceItem::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderId')->andReturn(22);
+    $serviceMock->shouldReceive('recordTaskFailure')->once();
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('load')->with('ClientOrder', 22)->andReturn($order);
+    $product = Mockery::mock();
+    $product->shouldReceive('getSetup')->andReturn(ClientFence\Mod\Product\Service::SETUP_AFTER_PAYMENT);
+    $service = Mockery::mock();
+    $service->shouldReceive('findProductById')->with(5)->andReturn($product);
+    $service->shouldReceive('activateOrder')->andThrow(new Exception('The registrar refused the domain.'));
+    $service->shouldReceive('saveStatusChange')->once()->with($order, 'Order could not be activated due to error: The registrar refused the domain.');
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $service);
+    $serviceMock->setDi($di);
+
+    $serviceMock->executeTask($invoiceItemModel);
+});
+
 test('executes task for hook call type', function (): void {
     $service = new ServiceInvoiceItem();
     $invoiceItemModel = new Model_InvoiceItem();

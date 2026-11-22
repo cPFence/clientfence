@@ -215,7 +215,7 @@ final class Holds
             } catch (\Throwable $e) {
                 // As at checkout: one failed setup does not undo the approval of the others.
                 $di['logger']->error('Order activation failed after review: %s', $e->getMessage());
-                $orderService->orderStatusAdd($order, Order::STATUS_FAILED_SETUP, "Order could not be activated after review due to error: {$e->getMessage()}.");
+                $orderService->orderStatusAdd($order, Order::STATUS_FAILED_SETUP, 'Order could not be activated after review due to error: ' . rtrim($e->getMessage(), '.') . '.');
             }
         }
     }

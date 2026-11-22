@@ -101,7 +101,8 @@ class ServiceInvoiceItem implements InjectionAwareInterface
                                 $orderService->activateOrder($order);
                             } catch (\Exception $e) {
                                 error_log($e->getMessage());
-                                $orderService->saveStatusChange($order, "Order could not be activated due to error: {$e->getMessage()}.");
+                                // ClientFence core patch: one full stop after an error message that ends with its own.
+                                $orderService->saveStatusChange($order, 'Order could not be activated due to error: ' . rtrim($e->getMessage(), '.') . '.');
                                 $taskFailed = true;
                             }
                         }
@@ -127,7 +128,8 @@ class ServiceInvoiceItem implements InjectionAwareInterface
                             $orderService->renewOrder($order);
                         } catch (\Exception $e) {
                             error_log($e->getMessage());
-                            $orderService->saveStatusChange($order, "Order could not renew due to error: {$e->getMessage()}.");
+                            // ClientFence core patch: one full stop after a renewal error message that ends with its own.
+                            $orderService->saveStatusChange($order, 'Order could not renew due to error: ' . rtrim($e->getMessage(), '.') . '.');
                             $taskFailed = true;
                         }
 
