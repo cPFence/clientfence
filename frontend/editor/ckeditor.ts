@@ -48,6 +48,7 @@ import '@ckeditor/ckeditor5-markdown-gfm/dist/index.css';
 import '@ckeditor/ckeditor5-paste-from-office/dist/index.css';
 import '@ckeditor/ckeditor5-source-editing/dist/index.css';
 import '@ckeditor/ckeditor5-table/dist/index.css';
+import { escapeTags } from '../core/markdown-tags.mts';
 
 class ClientFenceCKEditor extends ClassicEditor {
   static builtinPlugins = [
@@ -102,6 +103,10 @@ class ClientFenceCKEditor extends ClassicEditor {
 window.ClientFence.editor.registerAdapter('ckeditor', {
   create(element, options = {}) {
     const { adapter, ...editorOptions } = options;
+    // Tag-like text in a saved description ("Protect <domain>") survives the editor (markdown-tags.mts).
+    if (element instanceof HTMLTextAreaElement) {
+      element.value = escapeTags(element.value);
+    }
 
     return ClientFenceCKEditor.create(element, editorOptions);
   },
