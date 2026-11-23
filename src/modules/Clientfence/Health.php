@@ -422,7 +422,8 @@ final class Health
     private static function integrity(\Pimple\Container $di): iterable
     {
         try {
-            $pending = Migrations::pending($di['pdo']);
+            // With the core modules' own steps (ModuleMigrations): Finalize update runs both.
+            $pending = Migrations::pending($di['pdo']) + array_sum(array_map(static fn (string $module): int => ModuleMigrations::pending($di, $module), \ClientFence\Module::CORE_MODULES));
             yield self::check('integrity', 'int_migrations', self::msg('Database updates'), $pending === 0 ? 'ok' : 'bad', $pending === 0
                 ? self::msg('ClientFence database at update :level.')
                 : self::msg(':count ClientFence database update(s) pending: open Finalize update in the admin, or run php console.php system:run-patcher.'), params: [':level' => Migrations::latest(), ':count' => $pending]);

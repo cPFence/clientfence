@@ -9680,14 +9680,6 @@
         "done": "ClientFence core patch: DNS hosting is a built-in module."
     },
     {
-        "file": "modules/Clientfence/Migrations.php",
-        "done": "ClientFence core patch: existing installations get the DNS hosting service table."
-    },
-    {
-        "file": "modules/Clientfence/Service.php",
-        "done": "ClientFence core patch: DNS zones belong to the fork schema."
-    },
-    {
         "file": "modules/Product/Service.php",
         "done": "ClientFence core patch: the DNS hosting product type."
     },
@@ -9698,10 +9690,6 @@
     {
         "file": "modules/Product/Service.php",
         "done": "ClientFence core patch: DNS settings pass through encryption before product configuration is saved."
-    },
-    {
-        "file": "modules/Clientfence/schema.json",
-        "done": "\"service_dnshosting\": \"CREATE TABLE IF NOT EXISTS `service_dnshosting`"
     },
     {
         "file": "modules/Cart/Service.php",
@@ -9794,5 +9782,17 @@
     {
         "file": "modules/Product/Service.php",
         "done": "ClientFence core patch: a product type of one unit per order (ServiceTypes) is one unit in the cart and at checkout too."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: then the module's new database steps (ModuleMigrations); a failed one leaves the old version, so it is tried again."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: then the module's database steps (ModuleMigrations)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: its tables are gone, so a new install runs its database steps again (ModuleMigrations)."
     }
 ]

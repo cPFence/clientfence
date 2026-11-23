@@ -430,6 +430,8 @@ class Service implements InjectionAwareInterface
         if ($mod->hasService() && method_exists($service = $mod->getService(), 'upgrade')) {
             $service->upgrade($from);
         }
+        // ClientFence core patch: then the module's new database steps (ModuleMigrations); a failed one leaves the old version, so it is tried again.
+        \ClientFence\Mod\Clientfence\ModuleMigrations::apply($this->di, $model->getName());
         $model->setVersion($to);
         $this->di['em']->flush();
         $this->di['logger']->info('Upgraded extension "%s" from %s to %s', $model->getName(), $from, $to);
@@ -577,6 +579,8 @@ class Service implements InjectionAwareInterface
             } catch (\Exception $e) {
                 throw new \ClientFence\Exception('An exception was thrown by the :name module: :err', [':name' => $id, ':err' => $e->getMessage()]);
             }
+            // ClientFence core patch: its tables are gone, so a new install runs its database steps again (ModuleMigrations).
+            \ClientFence\Mod\Clientfence\ModuleMigrations::forget($this->di, $id);
         }
 
         // Finally remove the extension files from disk if they exist
@@ -699,6 +703,8 @@ class Service implements InjectionAwareInterface
                 throw $e;
             }
         }
+        // ClientFence core patch: then the module's database steps (ModuleMigrations).
+        \ClientFence\Mod\Clientfence\ModuleMigrations::apply($this->di, $ext->getName());
 
         $ext->setVersion($info['version'] !== null ? (string) $info['version'] : null);
         $this->di['em']->flush();

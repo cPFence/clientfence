@@ -155,8 +155,6 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT, updated_at TEXT)');
     // 20 adds the service's payment method.
     $db->executeStatement('CREATE TABLE client_order (id INTEGER PRIMARY KEY)');
-    // ClientFence core patch: the SQLite fixture skips the DNS migration's MySQL DDL.
-    $db->executeStatement('CREATE TABLE service_dnshosting (id INTEGER PRIMARY KEY)');
     $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT)');
     $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT)');
     $db->insert('activity_client_history', ['client_id' => 7, 'ip' => '203.0.113.7', 'created_at' => '2026-11-01 10:00:00']);
@@ -214,18 +212,3 @@ test('migration 19 adds the profile switches once, and removes the opt-outs only
     'a Blesta import' => ['blesta', [2, 3]],
     'a WHMCS import keeps its clients\' choices' => ['none', [1, 2, 3]],
 ]);
-
-test('migration 23 creates the DNS hosting service table once', function (): void {
-    $db = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $schema = Mockery::mock(Doctrine\DBAL\Schema\AbstractSchemaManager::class);
-    $db->shouldReceive('createSchemaManager')->twice()->andReturn($schema);
-    $schema->shouldReceive('tablesExist')->twice()->with(['service_dnshosting'])->andReturn(false, true);
-    $db->shouldReceive('executeStatement')->once()
-        ->with(ClientFence\Mod\Clientfence\Service::tables()['service_dnshosting'])->andReturn(0);
-    $di = Tests\Helpers\container();
-    $di['dbal'] = $db;
-
-    $migration = new ReflectionMethod(Migrations::class, 'm23Dns');
-    $migration->invoke(null, $di);
-    $migration->invoke(null, $di);
-});

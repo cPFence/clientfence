@@ -46,7 +46,7 @@ final class Migrations
         20 => 'm20OrderPaymentMethod',
         21 => 'm21InvoiceCustomFields',
         22 => 'm22Unused',
-        23 => 'm23Dns',
+        23 => 'm23DnsSteps',
     ];
 
     public static function latest(): int
@@ -54,11 +54,11 @@ final class Migrations
         return (int) array_key_last(self::LIST);
     }
 
-    /** The database's level: 0 when no ClientFence migration ever ran. */
-    public static function current(\PDO $pdo): int
+    /** The database's level (in setting `$param`): 0 when no migration ever ran. */
+    public static function current(\PDO $pdo, string $param = self::SETTING): int
     {
         $statement = $pdo->prepare('SELECT value FROM setting WHERE param = :param');
-        $statement->execute(['param' => self::SETTING]);
+        $statement->execute(['param' => $param]);
         $value = $statement->fetchColumn();
 
         return $value === false ? 0 : (int) $value;
@@ -84,41 +84,49 @@ final class Migrations
             $steps[$number] = static fn () => call_user_func([self::class, $method], $di);
         }
 
-        return self::run($di['pdo'], $steps);
+        $ran = self::run($di['pdo'], $steps);
+        // Then each core module's own steps. During an update run in place the Module class (and so this list) can be
+        // the old release's: a module new to the core gets its first steps from a numbered migration here (23).
+        foreach (\ClientFence\Module::CORE_MODULES as $module) {
+            ModuleMigrations::apply($di, $module);
+        }
+
+        return $ran;
     }
 
     /**
-     * The runner behind apply(), with the steps given (tests pass their own).
+     * The runner behind apply() and ModuleMigrations, with the steps given (tests pass their own) and
+     * the setting that keeps their level.
      *
      * @param array<int, callable(): void> $steps
      *
      * @return list<int>
      */
-    public static function run(\PDO $pdo, array $steps): array
+    public static function run(\PDO $pdo, array $steps, string $param = self::SETTING): array
     {
         ksort($steps);
-        $current = self::current($pdo);
+        $current = self::current($pdo, $param);
         $ran = [];
         foreach ($steps as $number => $step) {
             if ($number <= $current) {
                 continue;
             }
             $step();
-            self::setLevel($pdo, $number);
+            self::setLevel($pdo, $number, $param);
             $ran[] = $number;
         }
 
         return $ran;
     }
 
-    private static function setLevel(\PDO $pdo, int $level): void
+    private static function setLevel(\PDO $pdo, int $level, string $param): void
     {
         $now = date('Y-m-d H:i:s');
         $update = $pdo->prepare('UPDATE setting SET value = :value, updated_at = :now WHERE param = :param');
-        $update->execute(['value' => (string) $level, 'now' => $now, 'param' => self::SETTING]);
-        if ($update->rowCount() === 0 && self::current($pdo) !== $level) {
+        $update->execute(['value' => (string) $level, 'now' => $now, 'param' => $param]);
+        if ($update->rowCount() === 0 && self::current($pdo, $param) !== $level) {
             $pdo->prepare('INSERT INTO setting (param, value, public, created_at, updated_at) VALUES (:param, :value, 0, :now, :now)')
-                ->execute(['param' => self::SETTING, 'value' => (string) $level, 'now' => $now]);
+                ->execute(['param' => $param, 'value' => (string) $level, 'now' => $now]);
         }
     }
 
@@ -380,12 +388,9 @@ final class Migrations
     {
     }
 
-    // ClientFence core patch: existing installations get the DNS hosting service table.
-    private static function m23Dns(\Pimple\Container $di): void
+    // 23: DNS hosting's own steps (its table), for an update from a release whose core module list lacks it.
+    private static function m23DnsSteps(\Pimple\Container $di): void
     {
-        $db = $di['dbal'];
-        if (!$db->createSchemaManager()->tablesExist(['service_dnshosting'])) {
-            $db->executeStatement(Service::tables()['service_dnshosting']);
-        }
+        ModuleMigrations::apply($di, 'servicednshosting');
     }
 }
