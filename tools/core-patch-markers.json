@@ -701,7 +701,7 @@
     },
     {
         "file": "library/ClientFence/AppClient.php",
-        "done": "'hosting' => 'servicehosting',"
+        "done": "(client URLs never name the module); a service module declares its own (ServiceTypes::pageModule())."
     },
     {
         "file": "modules/Servicehosting/Api/Client.php",
@@ -733,7 +733,7 @@
     },
     {
         "file": "library/ClientFence/AppClient.php",
-        "done": "'hosting' => 'servicehosting', 'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',"
+        "done": "'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',"
     },
     {
         "file": "modules/Client/Api/Client.php",
@@ -5270,10 +5270,6 @@
     {
         "file": "library/ClientFence/App.php",
         "done": "ClientFence core patch: licence servers keep checking during maintenance (Servicelicense/WhmcsCheck.php)."
-    },
-    {
-        "file": "library/ClientFence/AppClient.php",
-        "done": "'licence' => 'servicelicense',"
     },
     {
         "file": "modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig",

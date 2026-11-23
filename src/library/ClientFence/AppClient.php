@@ -28,9 +28,9 @@ class AppClient extends \ClientFence\App
             }
         }
         // ClientFence core patch: top-level client pages, each registered by the module that owns it
-        // (client URLs never name the module).
+        // (client URLs never name the module); a service module declares its own (ServiceTypes::pageModule()).
         $pageModule = [
-            'hosting' => 'servicehosting', 'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',
+            'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',
             'password-reset' => 'client', 'two-factor' => 'client', 'ticket-file' => 'support',
             'google-sign-in' => 'client', 'receipt' => 'invoice',
             // ClientFence: quote links (Invoice/Quotes.php).
@@ -45,13 +45,11 @@ class AppClient extends \ClientFence\App
             'csp-report' => 'clientfence',
             // ClientFence core patch: the client theme's custom CSS stylesheet (Clientfence/CustomCss.php).
             'custom-css' => 'clientfence',
-            // ClientFence: WHMCS Licensing Addon checks (Servicelicense/WhmcsCheck.php).
-            'licence' => 'servicelicense',
             // ClientFence core patch: the client's Affiliates page (Client/Affiliates).
             'affiliates' => 'client',
             // ClientFence core patch: the client's ID document page (Client/IdDocuments.php).
             'identity' => 'client',
-        ][$this->mod] ?? null;
+        ][$this->mod] ?? \ClientFence\ServiceTypes::pageModule($this->di, (string) $this->mod);
         if ($pageModule !== null) {
             $this->di['mod']($pageModule)->registerClientRoutes($this);
         }

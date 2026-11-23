@@ -14,7 +14,9 @@ namespace ClientFence;
  * - "client_calls": {"method": "permission"} — what an authorized user needs for each client API call of the module
  *   (a permission of Client\Users::PERMISSIONS, a list of them for any one, or '*'); a call not listed is the owner's;
  * - "rate_limits": {"<type>_name": {"policy", "limit", "interval"}} — rate limiter policies of the module, named after
- *   its type (Security\RateLimiter; the core's own policies and config.php win).
+ *   its type (Security\RateLimiter; the core's own policies and config.php win);
+ * - "client_pages": ["hosting"] — top-level client URLs whose routes the module registers (AppClient; the core's own
+ *   pages win), while the module is switched on.
  */
 final class ServiceTypes
 {
@@ -85,8 +87,7 @@ final class ServiceTypes
     {
         return RequestCache::remember($di, 'service_type_rate_limits', static function () use ($di): array {
             $policies = [];
-            foreach (glob(PATH_MODS . DIRECTORY_SEPARATOR . 'Service*' . DIRECTORY_SEPARATOR . 'manifest.json') ?: [] as $file) {
-                $type = strtolower(substr(basename(dirname($file)), strlen('Service')));
+            foreach (self::types() as $type) {
                 foreach ((array) (self::declared($di, $type)['rate_limits'] ?? []) as $name => $policy) {
                     // Named after the type, so no module takes over another module's policy; a malformed one is left out,
                     // since staff's reset by IP goes through every policy.
@@ -98,6 +99,28 @@ final class ServiceTypes
 
             return $policies;
         });
+    }
+
+    /** The switched-on service module (its id) that declares `$page` among its top-level client pages, or null. */
+    public static function pageModule(\Pimple\Container $di, string $page): ?string
+    {
+        foreach (self::types() as $type) {
+            if (in_array($page, (array) (self::declared($di, $type)['client_pages'] ?? []), true)
+                && $di['mod_service']('extension')->isExtensionActive('mod', 'service' . $type)) {
+                return 'service' . $type;
+            }
+        }
+
+        return null;
+    }
+
+    /** @return list<string> the product types of the service modules on disk */
+    private static function types(): array
+    {
+        return array_map(
+            static fn (string $file): string => strtolower(substr(basename(dirname($file)), strlen('Service'))),
+            glob(PATH_MODS . DIRECTORY_SEPARATOR . 'Service*' . DIRECTORY_SEPARATOR . 'manifest.json') ?: [],
+        );
     }
 
     /** What Symfony's RateLimiterFactory accepts (an unknown policy, limit or interval would throw there). */
