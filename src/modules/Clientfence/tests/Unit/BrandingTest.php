@@ -135,7 +135,8 @@ test('Branding saves SVG by content, strips unsafe elements, attributes and refe
             ->toContain('width="100" height="40"')
             ->toContain('href="data:image/png;base64,iVBOR')
             ->not->toContain($hidden)
-            ->toContain('.a { fill: none }')
+            // svg-sanitize 1.1 removes a remote url() in a sheet itself; the rule stays, with no remote reference.
+            ->toMatch('/\.a \{ fill:\s*(none)?\s*\}/')
             ->not->toMatch('~<script|onload=|javascript:|https://example\.com/~');
     } finally {
         unlink($file->getPathname());
