@@ -29,6 +29,20 @@
             (function (bar) {
                 const form = bar.closest('form');
                 const add = bar.querySelector('[data-cf-add-lang]');
+                // A field with an editor is set through it: the editor writes its own text back into the field.
+                const fill = function (field, value) {
+                    if (field.editor) {
+                        // Leave the Source view first: it copies its own text back over the new value on save.
+                        const raw = field.editor.raw;
+                        const source = raw && raw.plugins.has('SourceEditing') ? raw.plugins.get('SourceEditing') : null;
+                        if (source && source.isSourceEditingMode) {
+                            source.isSourceEditingMode = false;
+                        }
+                        field.editor.setData(value);
+                    } else {
+                        field.value = value;
+                    }
+                };
                 const show = function (lang) {
                     bar.querySelectorAll('[data-cf-lang]').forEach(function (button) {
                         const on = button.dataset.cfLang === lang;
@@ -38,6 +52,13 @@
                     });
                     form.querySelectorAll('[data-cf-text-pane]').forEach(function (pane) {
                         pane.hidden = pane.dataset.cfTextPane !== lang;
+                    });
+                    // ClientFence core patch (forum #180): a Markdown description gets the default one's editor in its own language and direction, started when shown (a hidden pane has no width for the toolbar).
+                    form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-editor=""]').forEach(function (field) {
+                        field.dataset.cfEditor = 'on';
+                        ClientFence.editor.create(field, { language: { ui: 'en', content: field.lang } }).catch(function (error) {
+                            console.error('Editor initialization error:', error);
+                        });
                     });
                 };
                 bar.addEventListener('click', function (e) {
@@ -56,7 +77,7 @@
                     // A new language starts as a copy of the default texts (each field's hint).
                     form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-field]').forEach(function (field) {
                         if (field.value === '') {
-                            field.value = field.placeholder;
+                            fill(field, field.placeholder);
                         }
                     });
                     show(lang);
@@ -70,7 +91,7 @@
                     const lang = remove.closest('[data-cf-text-pane]').dataset.cfTextPane;
                     const button = bar.querySelector('[data-cf-lang="' + lang + '"]');
                     form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-field]').forEach(function (field) {
-                        field.value = '';
+                        fill(field, '');
                     });
                     button.hidden = true;
                     if (button.dataset.cfOn !== undefined) {
@@ -98,7 +119,7 @@
                     <div class="form-hint">{{ 'Leave blank to use the default'|trans }}</div>
                 {% else %}
                     <label class="form-label" for="cf-description-{{ kind }}{{ item.id }}-{{ lang }}">{{ 'Description'|trans }} <span class="badge bg-blue-lt ms-1">{{ language_names[lang] ?? lang }}</span></label>
-                    <textarea class="form-control" name="translations[{{ lang }}][description]" id="cf-description-{{ kind }}{{ item.id }}-{{ lang }}" rows="5" placeholder="{{ item.description }}" data-cf-field lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>{{ own.description ?? '' }}</textarea>
+                    <textarea class="form-control" name="translations[{{ lang }}][description]" id="cf-description-{{ kind }}{{ item.id }}-{{ lang }}" rows="5" placeholder="{{ item.description }}" data-cf-field{% if kind in ['product', 'category'] %} data-cf-editor{% endif %} lang="{{ lang[:2] }}"{% if rtl %} dir="rtl"{% endif %}>{{ own.description ?? '' }}</textarea>
                     <div class="form-hint">{{ 'Leave blank to use the default'|trans }}</div>
                 {% endif %}
             </div>

@@ -2993,10 +2993,51 @@ a.list-group-item {
   font-size: .875rem;
 }
 
+// ClientFence (forum #180): a product description rendered from Markdown, sized for its card.
 .bf-product-intro {
-  margin: 0;
   font-size: .875rem;
   color: var(--bf-ink-2);
+  overflow-wrap: anywhere;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  pre,
+  table {
+    margin: 0 0 .5rem;
+  }
+
+  ul,
+  ol {
+    padding-inline-start: 1.25rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: .75rem 0 .25rem;
+    font-size: .9375rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--bf-ink);
+  }
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .bf-points {
@@ -3025,6 +3066,14 @@ a.list-group-item {
     height: 16px;
     margin-top: 2px;
     color: $success;
+  }
+
+  .bf-point {
+    min-width: 0;
+
+    > * {
+      margin: 0;
+    }
   }
 }
 
@@ -4887,6 +4936,13 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   h2 { font-size: 1.25rem; font-weight: 700; overflow-wrap: anywhere; }
 }
 .cf-order-options:not(:has([data-cf-options])) { display: none; }
+// ClientFence (forum #180): the plan's description folded under its name; an add-on's description as quiet text.
+.cf-order-desc {
+  margin-top: -.5rem;
+  summary { width: fit-content; color: var(--bs-link-color); font-size: .875rem; font-weight: 600; cursor: pointer; }
+  > .bf-product-intro { margin-top: .5rem; }
+}
+.bf-addon-text > .bf-product-intro { color: var(--bf-muted); }
 // Wrapping as the store's, two columns on a phone (CF-180).
 .bf-checkout [data-bf-cycles] {
   background: var(--pal-glass); border: 1px solid var(--bs-border-color);

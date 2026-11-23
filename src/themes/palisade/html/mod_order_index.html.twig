@@ -122,19 +122,21 @@
                     {% set points = [] %}
                     {% set highlight = '' %}
                     {% set intro = [] %}
+                    {# ClientFence core patch (forum #180): the text around the points keeps its Markdown (paragraphs, line breaks, headings, links), rendered as the category note. #}
                     {% for line in (product.description ?? '')|split("\n") %}
-                        {% set line = line|trim %}
-                        {% if line starts with '- ' or line starts with '* ' %}
-                            {% set item = line|slice(2)|trim %}
+                        {% set text = line|trim %}
+                        {% if text starts with '- ' or text starts with '* ' %}
+                            {% set item = text|slice(2)|trim %}
                             {% if item starts with '**' and item ends with '**' and item|length > 4 %}
                                 {% set highlight = item|slice(2, item|length - 4) %}
                             {% else %}
-                                {% set points = points|merge([item|replace({'**': ''})]) %}
+                                {% set points = points|merge([item]) %}
                             {% endif %}
-                        {% elseif line != '' %}
-                            {% set intro = intro|merge([line|replace({'**': ''})]) %}
+                        {% else %}
+                            {% set intro = intro|merge([line]) %}
                         {% endif %}
                     {% endfor %}
+                    {% set intro = intro|join("\n")|trim %}
                     {% set prices = {} %}
                     {% set pricing_type = product.type == 'domain' ? 'domain' : (product.pricing.type ?? '') %}
                     {% if pricing_type == 'recurrent' %}
@@ -155,12 +157,12 @@
                             </div>
                             <span class="bf-price-note" data-monthly></span>
                         </div>
-                        {% if intro is not empty %}<p class="bf-product-intro">{{ intro|join(' ') }}</p>{% endif %}
+                        {% if intro %}<div class="bf-product-intro">{{ intro|markdown_to_html }}</div>{% endif %}
                         {% if points is not empty %}
                             <ul class="bf-points">
                                 {% for point in points %}
                                     {% set hidden = points|length > 5 and not loop.last and loop.index > 4 %}
-                                    <li{% if hidden %} class="bf-more" hidden{% endif %}><svg class="icon" aria-hidden="true"><use href="#check"/></svg><span>{{ point }}</span></li>
+                                    <li{% if hidden %} class="bf-more" hidden{% endif %}><svg class="icon" aria-hidden="true"><use href="#check"/></svg><div class="bf-point">{{ point|markdown_to_html }}</div></li>
                                 {% endfor %}
                             </ul>
                             {% if points|length > 5 %}

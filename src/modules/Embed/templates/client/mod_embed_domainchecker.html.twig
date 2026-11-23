@@ -33,12 +33,20 @@
             margin-top: 8px;
         }
 
+        .embed-tlds {
+            min-width: 0;
+            margin-inline: 0;
+            padding: 0;
+            border: 0;
+        }
+
         .embed-tlds details {
             flex-basis: 100%;
         }
 
+        /* ClientFence core patch (forum #179): the link colour of the client area, readable in dark mode. */
         .embed-tlds summary {
-            color: var(--embed-primary);
+            color: var(--embed-link);
             font-size: 12px;
             cursor: pointer;
         }

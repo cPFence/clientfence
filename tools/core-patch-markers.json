@@ -9826,5 +9826,37 @@
     {
         "file": "modules/Order/Upgrades.php",
         "done": "A service module's own kind cancels after its change (changePackage()): a gateway cannot roll back."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_translations.html.twig",
+        "done": "ClientFence core patch (forum #180): a Markdown description gets the default one's editor in its own language and direction, started when shown (a hidden pane has no width for the toolbar)."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_addon_manage.html.twig",
+        "done": "ClientFence core patch (forum #180): the add-on description is Markdown (the order page renders it), so it gets the product's editor."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_addons.html.twig",
+        "done": "ClientFence core patch (forum #180): a new add-on's description gets the Markdown editor, as a new category's."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_index.html.twig",
+        "done": "ClientFence core patch (forum #180): the text around the points keeps its Markdown (paragraphs, line breaks, headings, links), rendered as the category note."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "ClientFence core patch (forum #180): the plan's full description, folded under its name, as its store card shows it."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "ClientFence core patch (forum #180): the add-on description is Markdown, as on the stock add-ons list."
+    },
+    {
+        "file": "modules/Embed/templates/client/partial_embed_styles.html.twig",
+        "done": "ClientFence core patch (forum #179): the embeds take the client area's brand (Palisade's colours, Geist, its controls), and an admin-chosen brand colour through Branding's stylesheet, loaded after these defaults."
+    },
+    {
+        "file": "modules/Embed/templates/client/mod_embed_domainchecker.html.twig",
+        "done": "ClientFence core patch (forum #179): the link colour of the client area, readable in dark mode."
     }
 ]

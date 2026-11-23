@@ -110,7 +110,8 @@
                         <div data-cf-text-pane="">
                             <label class="form-label">{{ 'Description'|trans }}</label>
                             <div class="form-text mb-2">{{ 'Describe what this addon provides on the order page and in client-facing product details.'|trans }}</div>
-                            <textarea class="form-control" name="description" rows="5">{{ product.description }}</textarea>
+                            {# ClientFence core patch (forum #180): the add-on description is Markdown (the order page renders it), so it gets the product's editor. #}
+                            <textarea class="editor-textarea" name="description" rows="5">{{ product.description }}</textarea>
                         </div>
                         {{ include('mod_product_translations.html.twig', { part: 'description', kind: 'product', item: product }) }}
                     </div>
@@ -152,3 +153,5 @@
     </form>
 </div>
 {% endblock %}
+
+{% block head %}{{ wysiwyg('.editor-textarea') }}{% endblock %}

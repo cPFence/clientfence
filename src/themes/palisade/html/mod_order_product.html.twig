@@ -189,6 +189,13 @@
                     </div>
                     <a class="bf-linkbtn" href="{{ 'order'|url }}">{{ 'Change'|trans }}</a>
                 </div>
+                {# ClientFence core patch (forum #180): the plan's full description, folded under its name, as its store card shows it. #}
+                {% if product.description|default('')|trim %}
+                    <details class="cf-order-desc">
+                        <summary>{{ 'Details'|trans }}</summary>
+                        <div class="bf-product-intro">{{ product.description|markdown_to_html }}</div>
+                    </details>
+                {% endif %}
                 {% if prices|length > 0 %}
                     <span class="bf-label" aria-hidden="true">{{ 'Billing cycle'|trans }}</span>
                     <div class="bf-seg" role="group" aria-label="{{ 'Billing cycle'|trans }}" data-bf-cycles>
@@ -227,7 +234,9 @@
                             <button type="button" class="bf-toggle" role="switch" aria-checked="false" aria-labelledby="bf-addon-{{ addon.id }}" data-addon-toggle><span></span></button>
                             <div class="bf-addon-text">
                                 <strong id="bf-addon-{{ addon.id }}">{{ addon.title }}</strong>
-                                <span><span>{{ addon.description }}</span> <span data-addon-each></span></span>
+                                {# ClientFence core patch (forum #180): the add-on description is Markdown, as on the stock add-ons list. #}
+                                {% if addon.description|default('')|trim %}<div class="bf-product-intro">{{ addon.description|markdown_to_html }}</div>{% endif %}
+                                <span><span data-addon-each></span></span>
                             </div>
                         </div>
                         {% if addon.quantity %}

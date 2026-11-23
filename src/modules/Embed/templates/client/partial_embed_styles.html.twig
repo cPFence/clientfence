@@ -1,32 +1,43 @@
+{# ClientFence core patch (forum #179): the embeds take the client area's brand (Palisade's colours, Geist, its controls), and an admin-chosen brand colour through Branding's stylesheet, loaded after these defaults. #}
 <style type="text/css">
+    @font-face { font-family: "Geist"; font-style: normal; font-weight: 400; font-display: swap; src: url("{{ 'build/fonts/geist-400.woff2'|asset_url }}") format("woff2"); }
+    @font-face { font-family: "Geist"; font-style: normal; font-weight: 600; font-display: swap; src: url("{{ 'build/fonts/geist-600.woff2'|asset_url }}") format("woff2"); }
+
     :root {
         color-scheme: light;
+        --pal-brand: #0e5a7a;
+        --pal-brand-rgb: 14, 90, 122;
+        --pal-accent: #14a39a;
         --embed-bg: #ffffff;
-        --embed-border: #d9e0e8;
-        --embed-border-strong: #c4cfdb;
-        --embed-text: #182433;
-        --embed-muted: #5f6b7a;
-        --embed-primary: #206bc4;
-        --embed-primary-hover: #18539a;
-        --embed-focus: rgba(32, 107, 196, 0.2);
-        --embed-radius: 12px;
-        --embed-shadow: 0 1px 2px rgba(24, 36, 51, 0.08);
-        --embed-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --embed-border: #e3e8f0;
+        --embed-border-strong: #d5dce7;
+        --embed-text: #1b2433;
+        --embed-muted: #5b6779;
+        --embed-primary: var(--pal-brand);
+        --embed-primary-text: var(--tblr-primary-fg, #ffffff);
+        --embed-link: var(--pal-brand);
+        --embed-focus: rgba(var(--pal-brand-rgb), 0.25);
+        --embed-radius: 14px;
+        --embed-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+        --embed-font: "Geist", "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         --embed-input-bg: #ffffff;
+        --embed-glow-at: 100% 0;
+    }
+
+    :root[dir="rtl"] {
+        --embed-glow-at: 0 0;
     }
 
     :root[data-theme="dark"] {
         color-scheme: dark;
-        --embed-bg: #1b2434;
-        --embed-border: #2c3a4f;
-        --embed-border-strong: #3a4b63;
-        --embed-text: #e6ebf1;
-        --embed-muted: #9aa7b8;
-        --embed-primary: #4a8fe0;
-        --embed-primary-hover: #3b7bc8;
-        --embed-focus: rgba(74, 143, 224, 0.3);
+        --embed-bg: #0c2738;
+        --embed-border: #1c3445;
+        --embed-border-strong: #2a4a5e;
+        --embed-text: #e6ebf3;
+        --embed-muted: #9ca8ba;
+        --embed-link: var(--pal-accent);
         --embed-shadow: none;
-        --embed-input-bg: #151d2a;
+        --embed-input-bg: #10222f;
     }
 
     * {
@@ -40,6 +51,7 @@
         background: transparent;
         color: var(--embed-text);
         font: 14px/1.4 var(--embed-font);
+        accent-color: var(--embed-primary);
     }
 
     body {
@@ -111,26 +123,37 @@
     .embed-select:focus,
     .embed-textarea:focus {
         outline: none;
-        border-color: var(--embed-primary);
-        box-shadow: 0 0 0 3px var(--embed-focus);
+        border-color: var(--pal-accent);
+        box-shadow: 0 0 0 4px var(--embed-focus);
     }
 
+    /* Palisade's primary button: a brand to accent gradient that lifts on hover. */
     .embed-button {
-        border-color: var(--embed-primary);
+        border-color: transparent;
         background: var(--embed-primary);
-        color: #ffffff;
+        background: var(--embed-primary) linear-gradient(135deg, var(--embed-primary), color-mix(in srgb, var(--pal-accent) 80%, var(--embed-primary)));
+        box-shadow: 0 6px 18px -8px var(--embed-primary);
+        color: var(--embed-primary-text);
         font-weight: 600;
         cursor: pointer;
+        transition: translate 0.2s ease, box-shadow 0.25s ease;
     }
 
     .embed-button:hover {
-        background: var(--embed-primary-hover);
-        border-color: var(--embed-primary-hover);
+        translate: 0 -1px;
+        box-shadow: 0 10px 26px -8px var(--pal-accent);
+    }
+
+    .embed-button:active {
+        translate: none;
     }
 
     .embed-button:focus {
         outline: none;
-        box-shadow: 0 0 0 3px var(--embed-focus);
+    }
+
+    .embed-button:focus-visible {
+        box-shadow: 0 0 0 4px var(--embed-focus);
     }
 
     .embed-sr-only {
@@ -177,29 +200,19 @@
     {# ClientFence core patch: the contact and sign-in embeds get a soft glow and a gradient button (CF-135 redesign). #}
     .embed-shell--contact,
     .embed-shell--login {
-        background: radial-gradient(260px 150px at 100% 0, var(--embed-focus), transparent 70%), var(--embed-bg);
+        background: radial-gradient(260px 150px at var(--embed-glow-at), var(--embed-focus), transparent 70%), var(--embed-bg);
         box-shadow: 0 18px 40px -28px var(--embed-primary);
     }
 
-    :is(.embed-shell--contact, .embed-shell--login) .embed-button {
-        border-color: transparent;
-        background-image: linear-gradient(135deg, var(--embed-primary), var(--embed-primary-hover));
-        box-shadow: 0 6px 16px -8px var(--embed-primary);
-        transition: translate 0.2s ease, box-shadow 0.25s ease;
-    }
-
-    :is(.embed-shell--contact, .embed-shell--login) .embed-button:hover {
-        translate: 0 -1px;
-        box-shadow: 0 10px 22px -8px var(--embed-primary);
-    }
-
     @media (prefers-reduced-motion: reduce) {
-        :is(.embed-shell--contact, .embed-shell--login) .embed-button {
+        .embed-button {
             transition: none;
         }
 
-        :is(.embed-shell--contact, .embed-shell--login) .embed-button:hover {
+        .embed-button:hover {
             translate: none;
         }
     }
 </style>
+{% set brand_css = guest.clientfence_brand.css_url|default(null) %}
+{% if brand_css %}<link rel="stylesheet" href="{{ brand_css }}">{% endif %}

@@ -46,6 +46,7 @@ test('the sign-in embed sends the visitor to the sign-in page in the top window,
     $twig->addFilter(new TwigFilter('trans', static fn (string $text): string => $text));
     $twig->addTest(new Twig\TwigTest('rtl', static fn (?string $locale): bool => ClientFence\Twig\Extension\RtlDateExtension::isRtl((string) $locale)));
     $twig->addFilter(new TwigFilter('url', static fn (string $path): string => '/' . $path));
+    $twig->addFilter(new TwigFilter('asset_url', static fn (string $asset): string => '/themes/palisade/assets/' . $asset));
 
     $html = $twig->render('mod_embed_loginform.html.twig', ['guest' => ['system_locale' => $locale], 'request' => ['theme' => 'dark']]);
 

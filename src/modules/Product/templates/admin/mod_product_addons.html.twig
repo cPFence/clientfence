@@ -129,7 +129,8 @@
                         </div>
                         <div class="mb-0">
                             <label class="form-label" for="new-addon-description">{{ 'Description'|trans }}</label>
-                            <textarea class="form-control" id="new-addon-description" name="description" rows="5"></textarea>
+                            {# ClientFence core patch (forum #180): a new add-on's description gets the Markdown editor, as a new category's. #}
+                            <textarea class="form-control editor-textarea" id="new-addon-description" name="description" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -171,3 +172,5 @@
     }
 </script>
 {% endblock %}
+
+{% block head %}{{ wysiwyg('.editor-textarea') }}{% endblock %}

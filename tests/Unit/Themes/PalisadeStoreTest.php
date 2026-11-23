@@ -114,3 +114,15 @@ test('a category description shows as the note of its tab', function (): void {
     expect($html)->toContain('<div class="alert alert-info bf-category-note" data-category-note="1" hidden><p>Per-website license?');
 });
 
+
+test('a product card keeps its description\'s Markdown: the text around the points as written, each point rendered, a bold point as the highlight', function (): void {
+    $html = renderPalisadeStore([[
+        'id' => 3, 'type' => 'custom', 'title' => 'Setup', 'slug' => 'setup', 'priority' => 1,
+        'description' => "Fast plan.\n\nWith **SSD**.\n- 10 GB *fast*\n- **Free SSL**",
+        'pricing' => ['type' => 'once', 'once' => ['price' => 30, 'setup' => 0]],
+    ]]);
+
+    expect($html)->toContain("<div class=\"bf-product-intro\"><p>Fast plan.\n\nWith **SSD**.</p></div>")
+        ->toContain('<div class="bf-point"><p>10 GB *fast*</p></div>')
+        ->toContain('<span class="bf-chip bf-chip-ok bf-highlight">Free SSL</span>');
+});

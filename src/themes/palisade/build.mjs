@@ -1,11 +1,12 @@
 // Builds assets/build/ for Palisade, the ClientFence client area theme:
 //   css/palisade.css       Bootstrap + theme (left to right)
 //   css/palisade.rtl.css   the same, mirrored for Arabic
+//   fonts/geist-*.woff2    Geist under fixed names, for the embeds
 //   js/palisade.js         client script (+ lazily loaded chunks)
 //   html/partials/asset_version.html.twig  short hash of the build, appended as ?v= to asset URLs
 //   symbol/icons-sprite.svg  Bootstrap Icons listed in icon-manifest.json (read by FOSSBilling's svg_sprite())
 import { createHash } from 'node:crypto';
-import { mkdir, rm, readFile, readdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
@@ -42,6 +43,9 @@ const ltr = await readFile(join(out, 'css/palisade.css'), 'utf8');
 await writeFile(join(out, 'css/palisade.css'), iti + ltr);
 await writeFile(join(out, 'css/palisade.rtl.css'), iti + rtlcss.process(ltr));
 await rm(join(out, 'css/iti.css'));
+
+// Geist under fixed names for the embeds (Embed/templates/client/partial_embed_styles.html.twig): the bundled copies are hashed.
+await cp(join(src, 'fonts'), join(out, 'fonts'), { recursive: true, filter: (path) => !path.includes('jakarta') });
 
 await esbuild.build({
   entryPoints: { palisade: join(src, 'js/palisade.js') },
