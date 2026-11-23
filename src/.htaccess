@@ -18,7 +18,7 @@ RewriteRule ^enhance/?$ /hosting [R=302,L]
 # ClientFence core patch: restrict what an uploaded SVG can load when opened directly.
 <IfModule mod_headers.c>
     RewriteRule ^public/uploads/brand/ - [E=CLIENTFENCE_BRAND_UPLOAD:1]
-    Header always set Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'" env=CLIENTFENCE_BRAND_UPLOAD
+    Header always set Content-Security-Policy "default-src 'none'; img-src data:; style-src 'unsafe-inline'" env=CLIENTFENCE_BRAND_UPLOAD
     Header always set X-Content-Type-Options "nosniff" env=CLIENTFENCE_BRAND_UPLOAD
 </IfModule>
 # END CLIENTFENCE BRAND UPLOADS
