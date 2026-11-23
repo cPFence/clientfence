@@ -16,9 +16,26 @@ beforeEach(function (): void {
     $this->extension = new LegacyExtension(null);
 });
 
-test('modAssetUrl builds URL with ucfirst module name', function (): void {
-    expect($this->extension->modAssetUrl('img/logo.png', 'invoice'))
-        ->toBe(SYSTEM_URL . 'modules/Invoice/assets/img/logo.png');
+test('modAssetUrl builds URL with ucfirst module name and a version that follows the module', function (): void {
+    $di = new Pimple\Container();
+    $versions = ['invoice' => '1.0.0', 'serviceexample' => '2.0.0'];
+    $di['mod'] = $di->protect(function (string $name) use (&$versions) {
+        $mod = Mockery::mock(ClientFence\Module::class);
+        $mod->shouldReceive('getManifest')->andReturnUsing(fn () => isset($versions[$name]) ? ['version' => $versions[$name]] : throw new ClientFence\InformationException('Missing manifest file for the :mod module.', [':mod' => $name], 5897));
+
+        return $mod;
+    });
+    $extension = new LegacyExtension($di);
+
+    $url = $extension->modAssetUrl('img/logo.png', 'invoice');
+    expect($url)->toStartWith(SYSTEM_URL . 'modules/Invoice/assets/img/logo.png?v=')
+        ->and(strlen($url) - strlen(SYSTEM_URL . 'modules/Invoice/assets/img/logo.png?v='))->toBe(10);
+
+    $before = $extension->modAssetUrl('js/example.js', 'serviceexample');
+    $versions['serviceexample'] = '2.0.1';
+    expect($extension->modAssetUrl('js/example.js', 'serviceexample'))->not->toBe($before)
+        // A module without a manifest still gets a working URL.
+        ->and($extension->modAssetUrl('a.css', 'nomodule'))->toStartWith(SYSTEM_URL . 'modules/Nomodule/assets/a.css?v=');
 });
 
 test('modAssetUrl returns empty string for null asset', function (): void {

@@ -58,7 +58,14 @@ class LegacyExtension
             return '';
         }
 
-        return SYSTEM_URL . 'modules/' . ucfirst($module) . "/assets/{$asset}";
+        // ClientFence core patch: the ?v= changes with each ClientFence or module update, so browsers and caches fetch the new file.
+        try {
+            $version = (string) ($this->di['mod']($module)->getManifest()['version'] ?? '');
+        } catch (\Exception) {
+            $version = '';
+        }
+
+        return SYSTEM_URL . 'modules/' . ucfirst($module) . "/assets/{$asset}?v=" . substr(hash('sha256', \ClientFence\Version::CLIENTFENCE . '/' . $version), 0, 10);
     }
 
     #[AsTwigFilter('period_title', isSafe: ['html'])]
