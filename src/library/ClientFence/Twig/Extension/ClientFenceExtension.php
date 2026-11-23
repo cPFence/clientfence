@@ -157,6 +157,13 @@ class ClientFenceExtension
         }
     }
 
+    /** ClientFence core patch: what a service module declares about its product type (ServiceTypes), or an empty array. */
+    #[AsTwigFunction('service_type')]
+    public function serviceType(?string $type): array
+    {
+        return \ClientFence\ServiceTypes::declared($this->di, $type);
+    }
+
     #[AsTwigFunction('antispam_honeypot')]
     public function antispamHoneypot(): array
     {

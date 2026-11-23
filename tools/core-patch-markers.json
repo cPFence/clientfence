@@ -9668,14 +9668,6 @@
         "done": "ClientFence core patch: one full stop after a checkout activation error that ends with its own."
     },
     {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch: a DNS hosting order is one zone, so it is billed for one whatever quantity staff send."
-    },
-    {
-        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
-        "done": "ClientFence core patch: no quantity for DNS hosting (one order is one zone)."
-    },
-    {
         "file": "modules/Servicehosting/Service.php",
         "done": "ClientFence core patch: keep a panel account id the cancel looked up, so Uncancel restores that account."
     },
@@ -9708,24 +9700,8 @@
         "done": "ClientFence core patch: the SQLite fixture skips the DNS migration's MySQL DDL."
     },
     {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch: DNS orders use the built-in service lifecycle."
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch: load the DNS zone as a Doctrine entity."
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch: find the order that owns a DNS service."
-    },
-    {
         "file": "modules/Product/Service.php",
         "done": "ClientFence core patch: the DNS hosting product type."
-    },
-    {
-        "file": "modules/Product/Service.php",
-        "done": "ClientFence core patch: the translated label for DNS hosting products."
     },
     {
         "file": "modules/Product/Service.php",
@@ -9738,14 +9714,6 @@
     {
         "file": "modules/Clientfence/schema.json",
         "done": "\"service_dnshosting\": \"CREATE TABLE IF NOT EXISTS `service_dnshosting`"
-    },
-    {
-        "file": "modules/Order/Service.php",
-        "done": "ClientFence core patch: raw DNS order configuration cannot override the zone or hold provider credentials."
-    },
-    {
-        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
-        "done": "ClientFence core patch: staff configure DNS on the product and view the zone on the service tab."
     },
     {
         "file": "modules/Cart/Service.php",
@@ -9798,5 +9766,45 @@
     {
         "file": "library/ClientFence/Config.php",
         "done": "ClientFence core patch: no config.old.php copy of the secrets in the web root; dumpFile() replaces the file atomically. A copy an older version left is removed."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a service module may also declare the built-in lifecycle in its manifest (ServiceTypes)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: or the entity a service module declares in its manifest (ServiceTypes)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: and the entities service modules declare in their manifests (ServiceTypes)."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a product type of one unit per order (ServiceTypes) is billed for one whatever quantity staff send."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: a product type may keep its order configuration out of staff edits (ServiceTypes)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
+        "done": "ClientFence core patch: no quantity for a product type of one unit per order (ServiceTypes)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: no raw configuration tab for a product type that keeps it out of staff edits (ServiceTypes)."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: built-in service modules too, labelled with the translated name in their manifest."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "ClientFence core patch: what a service module declares about its product type (ServiceTypes), or an empty array."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: a product type of one unit per order (ServiceTypes) is one unit in the cart and at checkout too."
     }
 ]

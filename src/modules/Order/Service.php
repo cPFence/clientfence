@@ -70,9 +70,13 @@ class Service implements InjectionAwareInterface
         \ClientFence\Mod\Product\Service::HOSTING,
         \ClientFence\Mod\Product\Service::DOMAIN,
         \ClientFence\Mod\Product\Service::APIKEY,
-        // ClientFence core patch: DNS orders use the built-in service lifecycle.
-        \ClientFence\Mod\Product\Service::DNS,
     ];
+
+    // ClientFence core patch: a service module may also declare the built-in lifecycle in its manifest (ServiceTypes).
+    private function isBuiltInServiceType(?string $serviceType): bool
+    {
+        return in_array($serviceType, self::BUILT_IN_SERVICE_TYPES, true) || \ClientFence\ServiceTypes::builtIn($this->di, $serviceType);
+    }
 
     protected ?\Pimple\Container $di = null;
 
@@ -543,7 +547,7 @@ class Service implements InjectionAwareInterface
         $serviceType = $this->orderServiceType($order);
 
         if ($serviceId !== null) {
-            if (in_array($serviceType, self::BUILT_IN_SERVICE_TYPES, true)) {
+            if ($this->isBuiltInServiceType($serviceType)) {
                 $entityClass = $this->_getServiceEntityClass($order);
                 if ($entityClass !== null) {
                     return $this->di['em']->getRepository($entityClass)->find($serviceId);
@@ -578,9 +582,8 @@ class Service implements InjectionAwareInterface
             \ClientFence\Mod\Product\Service::LICENSE => \ClientFence\Mod\Servicelicense\Entity\ServiceLicense::class,
             \ClientFence\Mod\Product\Service::CUSTOM => \ClientFence\Mod\Servicecustom\Entity\ServiceCustom::class,
             \ClientFence\Mod\Product\Service::APIKEY => \ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey::class,
-            // ClientFence core patch: load the DNS zone as a Doctrine entity.
-            \ClientFence\Mod\Product\Service::DNS => \ClientFence\Mod\Servicednshosting\Entity\ServiceDns::class,
-            default => null,
+            // ClientFence core patch: or the entity a service module declares in its manifest (ServiceTypes).
+            default => \ClientFence\ServiceTypes::entity($this->di, $serviceType),
         };
     }
 
@@ -588,8 +591,6 @@ class Service implements InjectionAwareInterface
         \ClientFence\Mod\Servicelicense\Entity\ServiceLicense::class => \ClientFence\Mod\Product\Service::LICENSE,
         \ClientFence\Mod\Servicecustom\Entity\ServiceCustom::class => \ClientFence\Mod\Product\Service::CUSTOM,
         \ClientFence\Mod\Serviceapikey\Entity\ServiceApiKey::class => \ClientFence\Mod\Product\Service::APIKEY,
-        // ClientFence core patch: find the order that owns a DNS service.
-        \ClientFence\Mod\Servicednshosting\Entity\ServiceDns::class => \ClientFence\Mod\Product\Service::DNS,
     ];
 
     public function getServiceOrder($service)
@@ -601,6 +602,11 @@ class Service implements InjectionAwareInterface
                     'serviceId' => $service->getId(),
                 ]);
             }
+        }
+        // ClientFence core patch: and the entities service modules declare in their manifests (ServiceTypes).
+        $serviceType = \ClientFence\ServiceTypes::typeOfEntity($this->di, $service);
+        if ($serviceType !== null) {
+            return $this->getOrderRepository()->findOneBy(['serviceType' => $serviceType, 'serviceId' => $service->getId()]);
         }
 
         $className = $service::class;
@@ -1104,11 +1110,11 @@ class Service implements InjectionAwareInterface
     {
         $this->refuseOverrideInMeta($data);
         $quantity = PriceValidator::validateQuantity($data['quantity'] ?? 1);
-        // ClientFence core patch: a DNS hosting order is one zone, so it is billed for one whatever quantity staff send.
-        if ($this->getProductType($product) === \ClientFence\Mod\Product\Service::DNS) {
+        $price = isset($data['price']) ? PriceValidator::validateAmount($data['price']) : null;
+        // ClientFence core patch: a product type of one unit per order (ServiceTypes) is billed for one whatever quantity staff send.
+        if (\ClientFence\ServiceTypes::singleUnit($this->di, $this->getProductType($product))) {
             $quantity = 1;
         }
-        $price = isset($data['price']) ? PriceValidator::validateAmount($data['price']) : null;
 
         $currencyService = $this->di['mod_service']('currency');
         /** @var \ClientFence\Mod\Currency\Repository\CurrencyRepository $currencyRepository */
@@ -1660,7 +1666,7 @@ class Service implements InjectionAwareInterface
 
         $repo = $this->di['mod_service']('service' . $serviceType);
 
-        if (in_array($serviceType, self::BUILT_IN_SERVICE_TYPES, true)) {
+        if ($this->isBuiltInServiceType($serviceType)) {
             $m = 'action_' . $action;
             if (!method_exists($repo, $m) || !is_callable([$repo, $m])) {
                 throw new \ClientFence\Exception('Service ' . $serviceType . ' do not support ' . $m);
@@ -2850,9 +2856,9 @@ class Service implements InjectionAwareInterface
 
     public function updateOrderConfig(Order|\Model_ClientOrder $order, array $config): bool
     {
-        // ClientFence core patch: raw DNS order configuration cannot override the zone or hold provider credentials.
-        if ($this->orderServiceType($order) === \ClientFence\Mod\Product\Service::DNS) {
-            throw new InformationException('DNS order configuration is set when the order is placed.');
+        // ClientFence core patch: a product type may keep its order configuration out of staff edits (ServiceTypes).
+        if (!\ClientFence\ServiceTypes::orderConfigEditable($this->di, $this->orderServiceType($order))) {
+            throw new InformationException('This order configuration is set when the order is placed.');
         }
 
         $formId = $this->orderFormId($order);

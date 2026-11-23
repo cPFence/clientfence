@@ -347,17 +347,24 @@ class Service implements InjectionAwareInterface
             self::DOWNLOADABLE => __trans('Downloadable'),
             self::HOSTING => __trans('Hosting'),
             self::DOMAIN => __trans('Domain'),
-            // ClientFence core patch: the translated label for DNS hosting products.
-            self::DNS => __trans('DNS hosting'),
         ];
 
         // attach service modules
+        // ClientFence core patch: built-in service modules too, labelled with the translated name in their manifest.
         $extensionService = $this->di['mod_service']('extension');
-        $list = $extensionService->getInstalledMods();
+        $list = array_merge(\ClientFence\Module::CORE_MODULES, $extensionService->getInstalledMods());
         foreach ($list as $mod) {
             if (str_starts_with((string) $mod, 'service')) {
                 $n = substr((string) $mod, strlen('service'));
-                $data[$n] = $n === 'apikey' ? __trans('API Key') : ucfirst($n);
+                if (isset($data[$n])) {
+                    continue;
+                }
+                try {
+                    $name = $this->di['mod']($mod)->getManifest()['name'] ?? null;
+                } catch (\ClientFence\InformationException|\Symfony\Component\Filesystem\Exception\IOException) {
+                    $name = null;
+                }
+                $data[$n] = $n === 'apikey' ? __trans('API Key') : (is_string($name) && $name !== '' ? __trans($name) : ucfirst($n));
             }
         }
 
@@ -2120,6 +2127,10 @@ class Service implements InjectionAwareInterface
         }
 
         $quantity = max(1, (int) ($config['quantity'] ?? 1));
+        // ClientFence core patch: a product type of one unit per order (ServiceTypes) is one unit in the cart and at checkout too.
+        if (\ClientFence\ServiceTypes::singleUnit($this->di, $product->getType())) {
+            $quantity = 1;
+        }
 
         $line = [
             'price' => (float) $this->getProductPrice($product, $config),

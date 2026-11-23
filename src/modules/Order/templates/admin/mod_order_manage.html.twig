@@ -59,8 +59,8 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-manage" data-bs-toggle="tab" role="tab">{{ 'Edit Order'|trans }}</a>
                     </li>
-                    {# ClientFence core patch: staff configure DNS on the product and view the zone on the service tab. #}
-                    {% if order.service_type != 'dnshosting' %}
+                    {# ClientFence core patch: no raw configuration tab for a product type that keeps it out of staff edits (ServiceTypes). #}
+                    {% if service_type(order.service_type).order_config ?? true %}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" href="#tab-config" data-bs-toggle="tab" role="tab">{{ 'Edit Order Config'|trans }}</a>
                     </li>

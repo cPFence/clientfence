@@ -325,6 +325,15 @@ test('get types', function (): void {
 
     $di = container();
     $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $extensionServiceMock);
+    // Built-in service modules are labelled with the name in their manifest; an unreadable manifest falls back to the ID.
+    $di['mod'] = $di->protect(function (string $id): Mockery\MockInterface {
+        $module = Mockery::mock(ClientFence\Module::class);
+        $id === 'servicednshosting'
+            ? $module->shouldReceive('getManifest')->andReturn(['name' => 'DNS hosting'])
+            : $module->shouldReceive('getManifest')->andThrow(new ClientFence\InformationException('Missing manifest file for the :mod module.'));
+
+        return $module;
+    });
 
     $service->setDi($di);
     $result = $service->getTypes();

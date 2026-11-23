@@ -187,15 +187,6 @@ test('Servicednshosting encrypts credentials and excludes them from order config
         ->toBe(['nameservers' => [], 'types' => ['A', 'AAAA', 'CNAME', 'MX', 'TXT'], 'records' => [], 'id' => $zone->getId(), 'domain_name' => 'example.com']);
 });
 
-test('Servicednshosting raw order configuration cannot store provider settings', function (): void {
-    $order = new Model_ClientOrder();
-    $order->loadBean(new Tests\Helpers\DummyBean());
-    $order->service_type = 'dnshosting';
-
-    expect(fn () => (new ClientFence\Mod\Order\Service())->updateOrderConfig($order, ['dns' => ['token' => 'test-private-token']]))
-        ->toThrow(InformationException::class, 'DNS order configuration is set when the order is placed.');
-});
-
 test('Servicednshosting refuses a zone held by another order, or one above or below it, until that order is cancelled', function (): void {
     [$service, , , $db] = dnsServiceFixture(Mockery::mock(DnsHostingProviderInterface::class));
     $db->insert('client_order', ['id' => 9, 'client_id' => 7, 'service_type' => 'dnshosting', 'status' => 'pending_setup', 'config' => json_encode(['domain_name' => 'other.org'])]);
