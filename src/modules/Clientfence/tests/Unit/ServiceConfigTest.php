@@ -106,9 +106,12 @@ test('a closed store refuses the bulk domain check and shows no pinned TLDs (CF-
     };
     $di['request'] = Request::create('/order/domain-checker');
 
+    // Declared by the service modules in their manifests ("store_calls"), not in Service::STORE_CALLS.
     expect(fn () => Service::storeGate($di, 'guest', 'servicedomain', 'check_bulk', new stdClass(), ['sld' => 'example', 'tlds' => ['.com']]))
         ->toThrow(ClientFence\InformationException::class, 'The store is not available.')
-        ->and(Service::storeGate($di, 'guest', 'servicedomain', 'pinned_tlds', new stdClass(), []))->toBe(['result' => []]);
+        ->and(Service::storeGate($di, 'guest', 'servicedomain', 'pinned_tlds', new stdClass(), []))->toBe(['result' => []])
+        ->and(Service::storeGate($di, 'guest', 'ServiceHosting', 'Free_Tlds', new stdClass(), []))->toBe(['result' => []])
+        ->and(Service::storeGate($di, 'guest', 'servicedomain', 'nosuchcall', new stdClass(), []))->toBeNull();
 });
 
 test('a closed store lists its TLDs on admin pages to signed-in staff only', function (string $path, bool $staff, ?array $answer): void {

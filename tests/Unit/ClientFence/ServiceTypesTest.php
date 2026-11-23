@@ -23,6 +23,11 @@ test('a service module declares its product type in its manifest; DNS hosting us
         ->and(ServiceTypes::clientPermission($di, 'dnshosting', 'add'))->toBe('manageproducts')
         ->and(ServiceTypes::clientPermission($di, 'dnshosting', 'nosuchcall'))->toBeNull()
         ->and(ServiceTypes::clientPermission($di, 'custom', 'call'))->toBeNull()
+        ->and(ServiceTypes::storeCall($di, 'domain', 'guest', 'check'))->toBe('closed')
+        ->and(ServiceTypes::storeCall($di, 'domain', 'guest', 'tlds'))->toBe('list')
+        ->and(ServiceTypes::storeCall($di, 'domain', 'client', 'tlds'))->toBeNull()
+        ->and(ServiceTypes::storeCall($di, 'hosting', 'guest', 'free_tlds'))->toBe('list')
+        ->and(ServiceTypes::storeCall($di, 'custom', 'guest', 'call'))->toBeNull()
         // A module that declares nothing, an unknown type, a type that is not a plain name: nothing declared.
         ->and(ServiceTypes::declared($di, 'custom'))->toBe([])
         ->and(ServiceTypes::typeOfEntity($di, new ServiceCustom()))->toBeNull()
@@ -63,4 +68,14 @@ test('the cart and checkout keep one unit of a type that declares one unit per o
     // A saved cart line asks for 3 (the line is worked out again for the cart view and at checkout).
     expect($service->getProductOrderLineConfig($product, ['quantity' => 3])['quantity'])->toBe(1)
         ->and($service->getProductOrderLineConfig($product->setType('custom'), ['quantity' => 3])['quantity'])->toBe(3);
+});
+
+test('a store call declared with no answer, or with one that is not a name, stays closed', function (): void {
+    $di = container();
+    // A module's declaration as read from its manifest (the per-request cache holds it).
+    $di['request_cache'] = new ArrayObject(['service_type.example' => ['store_calls' => ['guest' => ['offers' => null, 'quote' => 7]]]]);
+
+    expect(ServiceTypes::storeCall($di, 'example', 'guest', 'offers'))->toBe('closed')
+        ->and(ServiceTypes::storeCall($di, 'example', 'guest', 'quote'))->toBe('closed')
+        ->and(ServiceTypes::storeCall($di, 'example', 'guest', 'other'))->toBeNull();
 });

@@ -168,8 +168,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
                 // its Category list through it (an empty list cleared the category on save).
             ],
             'cart' => ['add_item' => 'closed', 'apply_promo' => 'closed'],
-            'servicedomain' => ['tlds' => 'list', 'pinned_tlds' => 'list', 'pricing' => 'closed', 'check' => 'closed', 'check_bulk' => 'closed', 'can_be_transferred' => 'closed'],
-            'servicehosting' => ['free_tlds' => 'list'],
+            // Service modules declare their own (ServiceTypes::storeCall()): domain search, a hosting product's free domains.
         ],
         // Not order_upgradables: it only fills the "Request Upgrade" ticket of an existing order.
         'client' => [
@@ -506,7 +505,9 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
     public static function storeGate(\Pimple\Container $di, string $role, string $mod, string $method, object $identity, array $data): ?array
     {
         // PHP method names ignore case, so the dispatcher runs "Get_List" as get_list.
-        $deny = self::STORE_CALLS[$role][strtolower($mod)][strtolower($method)] ?? null;
+        [$mod, $method] = [strtolower($mod), strtolower($method)];
+        $deny = self::STORE_CALLS[$role][$mod][$method]
+            ?? (str_starts_with($mod, 'service') ? \ClientFence\ServiceTypes::storeCall($di, substr($mod, 7), $role, $method) : null);
         if ($deny === null) {
             return null;
         }

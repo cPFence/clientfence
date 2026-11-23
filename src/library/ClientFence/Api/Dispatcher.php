@@ -126,7 +126,7 @@ final class Dispatcher implements InjectionAwareInterface
         // ClientFence core patch: store gate. Guest and client calls that show or fill the store
         // (products, cart, checkout, domain search) run only when the ClientFence module opens the
         // store to the caller (modules/Clientfence/Service.php "Store gate").
-        if ($role !== 'admin' && isset(\ClientFence\Mod\Clientfence\Service::STORE_CALLS[$role][$mod])) {
+        if ($role !== 'admin') {
             $gate = \ClientFence\Mod\Clientfence\Service::storeGate($this->getDi(), $role, $mod, $methodName, $identity, $data);
             if ($gate !== null) {
                 return $gate['result'];

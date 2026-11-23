@@ -16,7 +16,9 @@ namespace ClientFence;
  * - "rate_limits": {"<type>_name": {"policy", "limit", "interval"}} — rate limiter policies of the module, named after
  *   its type (Security\RateLimiter; the core's own policies and config.php win);
  * - "client_pages": ["hosting"] — top-level client URLs whose routes the module registers (AppClient; the core's own
- *   pages win), while the module is switched on.
+ *   pages win), while the module is switched on;
+ * - "store_calls": {"guest": {"method": "list"}} — guest and client calls a closed store answers instead of running
+ *   (Clientfence\Service::storeGate(): "page", "list", "not_found", anything else refused; the core's list wins).
  */
 final class ServiceTypes
 {
@@ -99,6 +101,18 @@ final class ServiceTypes
 
             return $policies;
         });
+    }
+
+    /** What a closed store answers to `$role`'s call `$method` of the module, or null when the module does not gate it. */
+    public static function storeCall(\Pimple\Container $di, ?string $type, string $role, string $method): ?string
+    {
+        $calls = (self::declared($di, $type)['store_calls'] ?? [])[$role] ?? [];
+        if (!is_array($calls) || !array_key_exists($method, $calls)) {
+            return null;
+        }
+
+        // Anything declared but not a name (null included) still closes the call (storeGate() refuses an unknown answer).
+        return is_string($calls[$method]) ? $calls[$method] : 'closed';
     }
 
     /** The switched-on service module (its id) that declares `$page` among its top-level client pages, or null. */

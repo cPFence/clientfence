@@ -5,6 +5,13 @@
   "description": "ClientFence core module",
   "version": "1.0.0",
   "service": {
-    "client_pages": ["hosting"]
+    "client_pages": [
+      "hosting"
+    ],
+    "store_calls": {
+      "guest": {
+        "free_tlds": "list"
+      }
+    }
   }
 }
