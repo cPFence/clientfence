@@ -104,3 +104,62 @@ test('staff see only the settings pages they may open', function (): void {
             'url' => 'extension/settings/security#tab-signin',
         ]);
 });
+
+test('a switched-on module added after the release is read from its own settings template, through the cache', function (bool $active, bool $broken = false): void {
+    $dir = sys_get_temp_dir() . '/settings-index-' . bin2hex(random_bytes(4));
+    mkdir($dir . '/Demo/templates/admin', 0o777, true);
+    file_put_contents($dir . '/Demo/templates/admin/mod_demo_settings.html.twig', '<div class="tab-pane" id="tab-api"><label class="form-label">{{ \'API token\'|trans }}</label></div>');
+    $di = new Pimple\Container();
+    $di['mod_service'] = $di->protect(fn () => new class($active) {
+        public function __construct(private readonly bool $active)
+        {
+        }
+
+        public function isExtensionActive(string $type, string $id): bool
+        {
+            return $id !== 'demo' || $this->active;
+        }
+
+        public function hasManagePermission(string $module): void
+        {
+        }
+    });
+    $di['mod'] = $di->protect(fn (string $name) => new class($name, $broken) {
+        public function __construct(private readonly string $name, private readonly bool $broken)
+        {
+        }
+
+        public function getManifest(): array
+        {
+            if ($this->broken && $this->name === 'demo') {
+                throw new RuntimeException('manifest.json is not valid JSON');
+            }
+
+            return ['name' => ucfirst($this->name) . ' module', 'version' => '1.2.0'];
+        }
+    });
+    $di['cache'] = new class {
+        public array $keys = [];
+
+        public function get(string $key, callable $make): array
+        {
+            $this->keys[] = $key;
+
+            return $make();
+        }
+    };
+
+    try {
+        $all = SettingsIndex::forAdmin($di, $dir);
+        $demo = array_values(array_filter($all, fn (array $e): bool => str_starts_with($e['url'], 'extension/settings/demo')));
+        expect($all)->not->toBeEmpty()
+            ->and($demo)->toBe($active && !$broken ? [['label' => 'API token', 'kind' => 'field', 'page' => 'Demo module', 'tab' => '', 'words' => '', 'url' => 'extension/settings/demo#tab-api']] : [])
+            ->and(count($di['cache']->keys))->toBe($active && !$broken ? 1 : 0);
+    } finally {
+        unlink($dir . '/Demo/templates/admin/mod_demo_settings.html.twig');
+        rmdir($dir . '/Demo/templates/admin');
+        rmdir($dir . '/Demo/templates');
+        rmdir($dir . '/Demo');
+        rmdir($dir);
+    }
+})->with(['switched on' => [true], 'switched off' => [false], 'switched on with a broken manifest' => [true, true]]);

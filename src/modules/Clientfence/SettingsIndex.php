@@ -9,7 +9,8 @@ declare(strict_types=1);
  * search opens its page and tab and points at it.
  *
  * settings-index.json is built from the templates by tools/build-settings-index.php; a unit test
- * fails when it is out of date. WORDS adds the short words people search for (2FA, SMTP…).
+ * fails when it is out of date. A module added after the release is read from its own templates
+ * when switched on (added()). WORDS adds the short words people search for (2FA, SMTP…).
  */
 
 namespace ClientFence\Mod\Clientfence;
@@ -46,11 +47,13 @@ final class SettingsIndex
     ];
 
     /**
-     * Reads every module's settings templates under $modules (src/modules).
+     * Reads every module's settings templates under $modules (src/modules), or only those of the modules in $only.
+     *
+     * @param list<string>|null $only
      *
      * @return list<array{mod: string, tab: string, kind: string, label: string}>
      */
-    public static function build(string $modules): array
+    public static function build(string $modules, ?array $only = null): array
     {
         $templates = [];
         foreach (glob($modules . '/*/templates/admin/*.html.twig') ?: [] as $file) {
@@ -59,7 +62,7 @@ final class SettingsIndex
         ksort($templates);
         $entries = [];
         foreach ($templates as $name => $file) {
-            if (preg_match('/\Amod_([a-z0-9]+)_settings\.html\.twig\z/', $name, $m) === 1) {
+            if (preg_match('/\Amod_([a-z0-9]+)_settings\.html\.twig\z/', $name, $m) === 1 && ($only === null || in_array($m[1], $only, true))) {
                 self::read($file, $m[1], '', $templates, $entries, []);
             }
         }
@@ -77,12 +80,13 @@ final class SettingsIndex
      *
      * @return list<array{label: string, kind: string, page: string, tab: string, words: string, url: string}>
      */
-    public static function forAdmin(\Pimple\Container $di): array
+    public static function forAdmin(\Pimple\Container $di, string $modules = PATH_MODS): array
     {
         $entries = json_decode((string) @file_get_contents(self::FILE), true);
         if (!is_array($entries)) {
             return [];
         }
+        $entries = [...$entries, ...self::added($di, $modules, array_column($entries, 'mod'))];
         $extension = $di['mod_service']('extension');
         $pages = [];
         $tabs = [];
@@ -120,6 +124,36 @@ final class SettingsIndex
         }
 
         return $out;
+    }
+
+    /**
+     * The settings of switched-on modules that settings-index.json does not know (added after the release), read from
+     * their templates and kept in the cache until one of them or ClientFence changes version.
+     *
+     * @param list<string> $known
+     *
+     * @return list<array{mod: string, tab: string, kind: string, label: string}>
+     */
+    private static function added(\Pimple\Container $di, string $modules, array $known): array
+    {
+        $extension = $di['mod_service']('extension');
+        $versions = [];
+        foreach (glob($modules . '/*/templates/admin/mod_*_settings.html.twig') ?: [] as $file) {
+            if (preg_match('/\Amod_([a-z0-9]+)_settings\.html\.twig\z/', basename($file), $m) === 1 && !in_array($m[1], $known, true)
+                && $extension->isExtensionActive('mod', $m[1])) {
+                try {
+                    $versions[$m[1]] = (string) ($di['mod']($m[1])->getManifest()['version'] ?? '');
+                } catch (\Throwable) {
+                    // A broken manifest leaves out only that module, as in forAdmin().
+                }
+            }
+        }
+        if ($versions === []) {
+            return [];
+        }
+        ksort($versions);
+
+        return $di['cache']->get('settings_index.' . md5(\ClientFence\Version::CLIENTFENCE . json_encode($versions)), fn (): array => self::build($modules, array_keys($versions)));
     }
 
     /**
