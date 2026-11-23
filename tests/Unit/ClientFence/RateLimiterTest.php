@@ -218,3 +218,32 @@ test('whitelisted IP does not track counters', function (): void {
     expect($result->getReason())->toBe(RateLimitResult::REASON_WHITELISTED);
     expect($limiter->listIpCounters())->toBe([]);
 });
+
+test('a service module adds its own policies from its manifest; the core policies stay', function (): void {
+    $di = Tests\Helpers\container();
+    $di['rate_limit_cache'] = new ArrayAdapter();
+    $request = Mockery::mock(Request::class);
+    $request->shouldReceive('getClientIp')->andReturn('192.0.2.7');
+    $di['request'] = $request;
+    $limiter = new ClientFence\Security\RateLimiter();
+    $limiter->setDi($di);
+
+    // Domain lookup declares domain_lookup_ip (60 an hour) in Servicedomain/manifest.json.
+    expect($limiter->consume('domain_lookup_ip', '192.0.2.7')->getLimit())->toBe(60)
+        ->and($limiter->consume('domain_lookup_batch_ip', '192.0.2.7')->getLimit())->toBe(180)
+        ->and($limiter->consume('api_login', '192.0.2.7')->getLimit())->toBe(10)
+        ->and(ClientFence\ServiceTypes::rateLimits($di))->toHaveKeys(['domain_lookup_ip', 'domain_lookup_batch_ip'])
+        ->and(array_filter(array_keys(ClientFence\ServiceTypes::rateLimits($di)), fn (string $n): bool => !preg_match('/^[a-z0-9]+_/', $n)))->toBe([]);
+});
+
+test('a malformed module policy is left out, so it cannot break the reset of every policy', function (array $policy, bool $valid): void {
+    expect((new ReflectionMethod(ClientFence\ServiceTypes::class, 'validPolicy'))->invoke(null, $policy))->toBe($valid);
+})->with([
+    'domain lookup' => [['policy' => 'fixed_window', 'limit' => 60, 'interval' => '1 hour'], true],
+    'unknown policy' => [['policy' => 'fixed-window', 'limit' => 60, 'interval' => '1 hour'], false],
+    'limit as text' => [['policy' => 'fixed_window', 'limit' => '60', 'interval' => '1 hour'], false],
+    'zero limit' => [['policy' => 'fixed_window', 'limit' => 0, 'interval' => '1 hour'], false],
+    'bad interval' => [['policy' => 'fixed_window', 'limit' => 60, 'interval' => 'one hour please'], false],
+    'no time at all' => [['policy' => 'fixed_window', 'limit' => 60, 'interval' => '0 seconds'], false],
+    'no interval' => [['policy' => 'token_bucket', 'limit' => 60], false],
+]);

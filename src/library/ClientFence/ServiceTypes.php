@@ -12,7 +12,9 @@ namespace ClientFence;
  * - "single_unit": true — one unit per order (no quantity);
  * - "order_config": false — staff cannot edit the order's raw configuration;
  * - "client_calls": {"method": "permission"} — what an authorized user needs for each client API call of the module
- *   (a permission of Client\Users::PERMISSIONS, a list of them for any one, or '*'); a call not listed is the owner's.
+ *   (a permission of Client\Users::PERMISSIONS, a list of them for any one, or '*'); a call not listed is the owner's;
+ * - "rate_limits": {"<type>_name": {"policy", "limit", "interval"}} — rate limiter policies of the module, named after
+ *   its type (Security\RateLimiter; the core's own policies and config.php win).
  */
 final class ServiceTypes
 {
@@ -76,5 +78,42 @@ final class ServiceTypes
         $valid = is_string($permission) || (is_array($permission) && array_is_list($permission) && array_filter($permission, 'is_string') === $permission);
 
         return $valid ? $permission : null;
+    }
+
+    /** @return array<string, array<mixed>> the rate limiter policies every service module declares */
+    public static function rateLimits(\Pimple\Container $di): array
+    {
+        return RequestCache::remember($di, 'service_type_rate_limits', static function () use ($di): array {
+            $policies = [];
+            foreach (glob(PATH_MODS . DIRECTORY_SEPARATOR . 'Service*' . DIRECTORY_SEPARATOR . 'manifest.json') ?: [] as $file) {
+                $type = strtolower(substr(basename(dirname($file)), strlen('Service')));
+                foreach ((array) (self::declared($di, $type)['rate_limits'] ?? []) as $name => $policy) {
+                    // Named after the type, so no module takes over another module's policy; a malformed one is left out,
+                    // since staff's reset by IP goes through every policy.
+                    if (is_string($name) && str_starts_with($name, $type . '_') && self::validPolicy($policy)) {
+                        $policies[$name] = $policy;
+                    }
+                }
+            }
+
+            return $policies;
+        });
+    }
+
+    /** What Symfony's RateLimiterFactory accepts (an unknown policy, limit or interval would throw there). */
+    private static function validPolicy(mixed $policy): bool
+    {
+        if (!is_array($policy) || !in_array($policy['policy'] ?? null, ['token_bucket', 'fixed_window', 'sliding_window', 'no_limit'], true)
+            || !is_int($policy['limit'] ?? null) || $policy['limit'] < 1 || !is_string($policy['interval'] ?? null)) {
+            return false;
+        }
+
+        try {
+            $start = new \DateTimeImmutable('@0');
+
+            return $start->modify('+' . $policy['interval']) > $start;
+        } catch (\DateMalformedStringException) {
+            return false;
+        }
     }
 }

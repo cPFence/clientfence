@@ -62,9 +62,6 @@ class RateLimiter implements InjectionAwareInterface
                 'client_signup_email' => ['policy' => 'fixed_window', 'limit' => 5, 'interval' => '1 hour'],
                 'guest_ticket_create' => ['policy' => 'fixed_window', 'limit' => 3, 'interval' => '1 hour'],
                 'order_generation_ip' => ['policy' => 'fixed_window', 'limit' => 15, 'interval' => '1 hour'],
-                'domain_lookup_ip' => ['policy' => 'fixed_window', 'limit' => 60, 'interval' => '1 hour'],
-                // ClientFence core patch (CF-139): the next batches of a bulk domain search, 3 per counted lookup (20 TLDs, 5 a call).
-                'domain_lookup_batch_ip' => ['policy' => 'fixed_window', 'limit' => 180, 'interval' => '1 hour'],
                 'invoice_payment_ip' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 'invoice_payment_hash' => ['policy' => 'fixed_window', 'limit' => 10, 'interval' => '1 hour'],
                 // ClientFence core patch (GitHub #41): the transfer details on an invoice link, one call per manual method on each view.
@@ -138,6 +135,10 @@ class RateLimiter implements InjectionAwareInterface
     protected function getConfig(): array
     {
         $defaults = self::getDefaultConfig();
+        // ClientFence core patch: service modules add their own policies (ServiceTypes::rateLimits()); the core's win.
+        if ($this->di !== null) {
+            $defaults['policies'] += \ClientFence\ServiceTypes::rateLimits($this->di);
+        }
         $config = Config::getProperty('rate_limiter', []);
 
         if (!is_array($config)) {
