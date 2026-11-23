@@ -22,7 +22,7 @@ RUN set -eux; \
     zlib1g-dev; \
   docker-php-ext-configure gd --with-freetype --with-jpeg; \
   docker-php-ext-install -j"$(nproc)" bz2 gd intl pdo_mysql zip; \
-  a2enmod rewrite; \
+  a2enmod rewrite headers; \
   apt-mark auto '.*' > /dev/null; \
   apt-mark manual \
     ${savedAptMark} \
