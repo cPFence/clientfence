@@ -10,7 +10,9 @@ namespace ClientFence;
  * - "lifecycle": "built-in" — orders call the module's action_* methods with the order, as for hosting and domains;
  * - "entity": the Doctrine entity class of its service rows, in the module's own namespace;
  * - "single_unit": true — one unit per order (no quantity);
- * - "order_config": false — staff cannot edit the order's raw configuration.
+ * - "order_config": false — staff cannot edit the order's raw configuration;
+ * - "client_calls": {"method": "permission"} — what an authorized user needs for each client API call of the module
+ *   (a permission of Client\Users::PERMISSIONS, a list of them for any one, or '*'); a call not listed is the owner's.
  */
 final class ServiceTypes
 {
@@ -64,5 +66,15 @@ final class ServiceTypes
     public static function orderConfigEditable(\Pimple\Container $di, ?string $type): bool
     {
         return (self::declared($di, $type)['order_config'] ?? true) !== false;
+    }
+
+    /** @return string|list<string>|null the permission a client call of the module needs (Client\Users::checkCall()) */
+    public static function clientPermission(\Pimple\Container $di, ?string $type, string $method): string|array|null
+    {
+        $permission = (self::declared($di, $type)['client_calls'] ?? [])[$method] ?? null;
+        // Anything but a name or a list of names is not a declaration: the call stays the owner's.
+        $valid = is_string($permission) || (is_array($permission) && array_is_list($permission) && array_filter($permission, 'is_string') === $permission);
+
+        return $valid ? $permission : null;
     }
 }

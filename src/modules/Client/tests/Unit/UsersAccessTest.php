@@ -41,7 +41,21 @@ test('authorized users can call product actions with their assigned permission',
     'licence IP request withdraw' => ['servicelicense', 'ip_request_withdraw', 'manageproducts'],
     'order options quote' => ['order', 'upgrade_options_quote', 'products'],
     'new Support PIN' => ['client', 'support_pin_new', 'profile'],
+    // Declared by the module in its manifest ("client_calls"), not in Users::CALLS.
+    'DNS zone' => ['servicednshosting', 'zone', 'products'],
+    'DNS record add' => ['servicednshosting', 'add', 'manageproducts'],
 ]);
+
+test('a service module\'s own call declarations keep calls closed to users without the permission', function (): void {
+    // The user has products and invoices: viewing the zone is allowed, changing it is not, nor an undeclared call.
+    expect(Users::checkCall($this->di, $this->client, 'servicednshosting', 'zone'))->toBeNull()
+        ->and(fn () => Users::checkCall($this->di, $this->client, 'servicednshosting', 'del'))
+        ->toThrow(InformationException::class, 'You do not have permission to do this.')
+        ->and(fn () => Users::checkCall($this->di, $this->client, 'servicednshosting', 'nosuchcall'))
+        ->toThrow(InformationException::class, 'You do not have permission to do this.')
+        ->and(fn () => Users::checkCall($this->di, $this->client, 'service', 'zone'))
+        ->toThrow(InformationException::class, 'You do not have permission to do this.');
+});
 
 test('authorized users see the Support PIN but need the profile permission for a new one', function (): void {
     expect(Users::checkCall($this->di, $this->client, 'client', 'support_pin'))->toBeNull()

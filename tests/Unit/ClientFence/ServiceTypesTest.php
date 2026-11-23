@@ -20,6 +20,9 @@ test('a service module declares its product type in its manifest; DNS hosting us
         ->and(ServiceTypes::orderConfigEditable($di, 'dnshosting'))->toBeFalse()
         ->and(ServiceTypes::typeOfEntity($di, new ServiceDns()))->toBe('dnshosting')
         ->and(ServiceTypes::typeOfEntity($di, $proxy))->toBe('dnshosting')
+        ->and(ServiceTypes::clientPermission($di, 'dnshosting', 'add'))->toBe('manageproducts')
+        ->and(ServiceTypes::clientPermission($di, 'dnshosting', 'nosuchcall'))->toBeNull()
+        ->and(ServiceTypes::clientPermission($di, 'custom', 'call'))->toBeNull()
         // A module that declares nothing, an unknown type, a type that is not a plain name: nothing declared.
         ->and(ServiceTypes::declared($di, 'custom'))->toBe([])
         ->and(ServiceTypes::typeOfEntity($di, new ServiceCustom()))->toBeNull()

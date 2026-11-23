@@ -8,6 +8,15 @@
     "lifecycle": "built-in",
     "entity": "ClientFence\\Mod\\Servicednshosting\\Entity\\ServiceDns",
     "single_unit": true,
-    "order_config": false
+    "order_config": false,
+    "client_calls": {
+      "zone": "products",
+      "dnssec": "products",
+      "add": "manageproducts",
+      "update": "manageproducts",
+      "del": "manageproducts",
+      "dnssec_enable": "manageproducts",
+      "dnssec_disable": "manageproducts"
+    }
   }
 }

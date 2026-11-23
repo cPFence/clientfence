@@ -20,8 +20,8 @@ use ClientFence\Security\AuthenticationRequiredException;
  * login first, then authorize() here. The session then holds FOSSBilling's `client_id` (the
  * account) and SESSION: {user_id, client_id, version}. Everything FOSSBilling does for the
  * account works as before; the gates below narrow it:
- *   - every client API call (core patch on the API dispatcher) passes checkCall(): CALLS names
- *     the permission each call needs, '*' any signed-in user, and a call that is not listed
+ *   - every client API call (core patch on the API dispatcher) passes checkCall(): CALLS (or a
+ *     service module's manifest, \ClientFence\ServiceTypes) names the permission each call needs, '*' any signed-in user, and a call that is not listed
  *     is for the owner only (a new FOSSBilling call stays closed until it is listed here), and
  *     no user changes the owner's sign-in (OWNER_LOGIN_CALLS, OWNER_LOGIN_FIELDS);
  *   - every client page (core patch on \ClientFence\AppClient) passes pageDenied() (PAGES);
@@ -126,12 +126,6 @@ final class Users
             'sync' => 'domains', 'update_nameservers' => 'managedomains', 'update_contacts' => 'managedomains',
             'enable_privacy_protection' => 'managedomains', 'disable_privacy_protection' => 'managedomains',
             'get_transfer_code' => 'managedomains', 'lock' => 'managedomains', 'unlock' => 'managedomains',
-        ],
-        // ClientFence core patch: delegated DNS access follows service viewing and management permissions.
-        'servicednshosting' => [
-            'zone' => 'products', 'dnssec' => 'products',
-            'add' => 'manageproducts', 'update' => 'manageproducts', 'del' => 'manageproducts',
-            'dnssec_enable' => 'manageproducts', 'dnssec_disable' => 'manageproducts',
         ],
         'servicedownloadable' => ['send_file' => 'products'],
         'servicehosting' => [
@@ -453,7 +447,8 @@ final class Users
         } elseif ($context['owner']) {
             $allowed = true;
         } else {
-            $permission = self::CALLS[$mod][$method] ?? null;
+            // A service module declares its own calls in its manifest (ServiceTypes); the list here wins.
+            $permission = self::CALLS[$mod][$method] ?? (str_starts_with($mod, 'service') ? \ClientFence\ServiceTypes::clientPermission($di, substr($mod, 7), $method) : null);
             $allowed = $permission === '*' || array_filter((array) $permission, static fn (string $p): bool => self::allows($context, $p)) !== [];
         }
         if (!$allowed) {
