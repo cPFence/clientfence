@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace ClientFence;
 
 use ClientFence\Cache\CacheFactory;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -94,7 +93,7 @@ class Config
 
     /**
      * Updates the existing FOSSBilling configuration.
-     * Will automatically create a backup of the existing config file and will pretty print the new one for easier legibility.
+     * Pretty prints the new file for easier legibility.
      *
      * @throws Exception
      */
@@ -102,11 +101,8 @@ class Config
     {
         $filesystem = new Filesystem();
 
-        try {
-            $filesystem->copy(PATH_CONFIG, Path::changeExtension(PATH_CONFIG, 'old.php'));
-        } catch (FileNotFoundException|IOException) {
-            throw new Exception('An error occurred when creating a backup of the configuration file.');
-        }
+        // ClientFence core patch: no config.old.php copy of the secrets in the web root; dumpFile() replaces the file atomically. A copy an older version left is removed.
+        @unlink(Path::changeExtension(PATH_CONFIG, 'old.php'));
 
         try {
             $filesystem->dumpFile(PATH_CONFIG, self::prettyPrintArrayToPHP($newConfig));

@@ -9794,5 +9794,9 @@
     {
         "file": "modules/Servicedomain/Service.php",
         "done": "ClientFence core patch: a registrar error, so clients and guests are not told which registrar this is."
+    },
+    {
+        "file": "library/ClientFence/Config.php",
+        "done": "ClientFence core patch: no config.old.php copy of the secrets in the web root; dumpFile() replaces the file atomically. A copy an older version left is removed."
     }
 ]
