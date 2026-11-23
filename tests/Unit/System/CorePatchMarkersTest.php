@@ -19,6 +19,11 @@ test('every core patch marker is in the file it names', function (): void {
         }
     }
 
+    // The release strips module tests before it writes the markers into its pack manifest, so a marker on a test
+    // file would show as a missing core patch on every install.
+    $tests = array_filter($markers, static fn (array $marker): bool => preg_match('#(^|/)tests/#', $marker['file']) === 1);
+
     expect($markers)->not->toBeEmpty()
-        ->and($missing)->toBe([]);
+        ->and($missing)->toBe([])
+        ->and($tests)->toBe([]);
 });
