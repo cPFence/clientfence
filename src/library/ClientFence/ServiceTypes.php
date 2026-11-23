@@ -21,6 +21,8 @@ namespace ClientFence;
  *   (Clientfence\Service::storeGate(): "page", "list", "not_found", anything else refused; the core's list wins);
  * - "changeable": true — its services renew at the order's price and can move to another product (upgrades, staff
  *   moves, bulk prices); the module's action_change_package($order), if it has one, then applies the new product;
+ * - "usage": true — its services' renewals call the module's bill_usage($order, $invoice), which bills the usage with
+ *   Invoice\Service::addUsageLine();
  * - "icon": an icon of the client theme's sprite for its services in the cart and on the service page.
  */
 final class ServiceTypes

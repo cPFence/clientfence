@@ -136,7 +136,7 @@ final class Commissions
             }
             $amount = (float) $row['amount'];
             // Imported commissions have no stored base: the invoice's lines for the service, as earn() counts it.
-            $base = (float) ($row['source_amount'] ?? $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND type IN ('order', 'custom')", [$invoiceId, (string) $orderId]));
+            $base = (float) ($row['source_amount'] ?? $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND type IN ('order', 'custom') AND COALESCE(unit, '') <> 'usage'", [$invoiceId, (string) $orderId]));
             $done = $row['status'] === 'cleared' ? $db->fetchAssociative('SELECT id, amount FROM client_affiliate_entry WHERE reverses_id = ?', [$row['id']]) : false;
             // The commission per unit of the base it was earned on; a pending row's base shrinks with it, so later credits stay in proportion.
             $take = min(round($amount + ($done === false ? 0.0 : (float) $done['amount']), 2), $base > 0 ? round($amount * $credit / $base, 2) : $amount);
@@ -224,10 +224,11 @@ final class Commissions
         ) !== false)) {
             return;
         }
-        $base = round((float) $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND type IN ('order', 'custom')", [$invoice['id'], (string) $orderId]), 2);
+        // Usage billed in arrears earns no commission, as in WHMCS (Invoice\Service::addUsageLine()), here or below; nor does a gateway fee on it.
+        $base = round((float) $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND type IN ('order', 'custom') AND COALESCE(unit, '') <> 'usage'", [$invoice['id'], (string) $orderId]), 2);
         // A fixed commission ignores promotions (WHMCS): a fully discounted service still earns it, but only on an invoice
         // that took money (a 0.00 renewal of a free plan or a 100% recurring promo pays nothing).
-        if ($base < 0 || round((float) $db->fetchOne('SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ?', [$invoice['id']]), 2) <= 0) {
+        if ($base < 0 || round((float) $db->fetchOne("SELECT COALESCE(SUM(price * quantity), 0) FROM invoice_item WHERE invoice_id = ? AND COALESCE(unit, '') <> 'usage' AND COALESCE(task, '') <> ?", [$invoice['id'], \ClientFence\Mod\Invoice\GatewayFees::TASK]), 2) <= 0) {
             return;
         }
         [$type, $amount] = $rule;

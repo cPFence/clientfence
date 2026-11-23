@@ -3164,7 +3164,7 @@ test('deleteFromOrder cancels subscriptions before deletion and cancels open inv
     expect($serviceMock->deleteFromOrder($order))->toBeTrue();
 });
 
-test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the first invoice only when staff cancel, and preserves invoices with other charges', function (bool $firstInvoice, array $expected): void {
+test('cancelOpenInvoices cancels discounted renewals with usage and a gateway fee, the first invoice only when staff cancel, and preserves invoices with other charges', function (bool $firstInvoice, array $expected): void {
     $connection = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $connection->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, status TEXT, updated_at TEXT, tax_adjust REAL)');
     $connection->executeStatement("CREATE TABLE invoice_item (invoice_id INTEGER, type TEXT, rel_id TEXT, task TEXT, unit TEXT, title TEXT, status TEXT DEFAULT 'pending_payment')");
@@ -3172,6 +3172,8 @@ test('cancelOpenInvoices cancels discounted renewals with a gateway fee, the fir
         $connection->insert('invoice', ['id' => $id, 'status' => 'unpaid']);
         $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'order', 'rel_id' => '1', 'task' => 'renew', 'unit' => 'service']);
         $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'custom', 'rel_id' => '1', 'unit' => 'discount']);
+        // A usage line of the order (Invoice\Service::addUsageLine()) goes with it too.
+        $connection->insert('invoice_item', ['invoice_id' => $id, 'type' => 'custom', 'rel_id' => '1', 'unit' => 'usage']);
     }
     $connection->insert('invoice_item', ['invoice_id' => 41, 'type' => 'order', 'rel_id' => '2', 'task' => 'renew', 'unit' => 'service']);
     // The gateway fee of a payment the client started (Invoice/GatewayFees.php, no rel_id) does not keep the renewal open.

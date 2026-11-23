@@ -4175,6 +4175,94 @@ test('a domain renewal is billed at the TLD price, or free while its hosting giv
     'free' => [true, 0.0],
 ]);
 
+test('a renewal bills the usage of a service module that declares "usage", as usage lines of the order; a failing module leaves it out, logged', function (?string $fail): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('setInvoiceDefaults')->once();
+
+    $orderModel = new Model_ClientOrder();
+    $orderModel->loadBean(new Tests\Helpers\DummyBean());
+    $orderModel->id = 21;
+    $orderModel->client_id = 5;
+    $orderModel->status = Model_ClientOrder::STATUS_ACTIVE;
+    $orderModel->service_type = 'example';
+    $orderModel->product_id = 3;
+    $orderModel->currency = 'EUR';
+    $orderModel->price = 10;
+    $orderModel->quantity = 1;
+
+    $clientModel = new Model_Client();
+    $clientModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel = new Model_Invoice();
+    $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
+    $invoiceModel->id = 77;
+
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->once()->with(3)->andReturn((new Product())->setType('example'));
+    $clientService = Mockery::mock(ClientService::class);
+    $clientService->shouldReceive('isClientTaxable')->times($fail === null ? 2 : 1)->with($clientModel)->andReturn(true);
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->atLeast()->once()->andReturn($clientModel);
+    $dbMock->shouldReceive('dispense')->atLeast()->once()->andReturn($invoiceModel);
+    $dbMock->shouldReceive('store')->atLeast()->once();
+
+    $invoiceItemServiceMock = Mockery::mock(ServiceInvoiceItem::class);
+    $invoiceItemServiceMock->shouldReceive('generateFromOrder')->once();
+    $added = [];
+    $invoiceItemServiceMock->shouldReceive('addNew')->andReturnUsing(function (Model_Invoice $invoice, array $data) use (&$added): int {
+        $added[] = $data;
+
+        return count($added);
+    });
+    $module = new class($fail, $serviceMock) {
+        /** @var list<int> */
+        public array $lines = [];
+
+        public function __construct(private readonly ?string $fail, private readonly Service $invoices)
+        {
+        }
+
+        public function bill_usage(Model_ClientOrder $order, Model_Invoice $invoice): void
+        {
+            $this->lines[] = $this->invoices->addUsageLine($invoice, $order, 'Usage: 2.5 units', 1.25);
+            if ($this->fail !== null) {
+                throw str_starts_with($this->fail, 'Division') ? new DivisionByZeroError($this->fail) : new RuntimeException($this->fail);
+            }
+            $this->lines[] = $this->invoices->addUsageLine($invoice, $order, 'Usage: 10 units', 3.0);
+        }
+    };
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['request_cache'] = new ArrayObject(['service_type.example' => ['usage' => true]]);
+    // All or nothing: the line added before the failure is removed.
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('executeStatement')->times($fail === null ? 0 : 1)->with("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage'", [77, '21']);
+    $dbal->shouldIgnoreMissing();
+    $di['dbal'] = $dbal;
+    $di['mod_service'] = $di->protect(fn (string $module_name) => match ($module_name) {
+        'Product' => $productService,
+        'client' => $clientService,
+        'serviceexample' => $module,
+        default => $invoiceItemServiceMock,
+    });
+
+    $serviceMock->setDi($di);
+    expect($serviceMock->generateForOrder($orderModel))->toBe($invoiceModel)
+        ->and($added)->toBe($fail === null ? [
+            ['title' => 'Usage: 2.5 units', 'price' => 1.25, 'unit' => 'usage', 'rel_id' => 21, 'taxed' => true],
+            ['title' => 'Usage: 10 units', 'price' => 3.0, 'unit' => 'usage', 'rel_id' => 21, 'taxed' => true],
+        ] : [['title' => 'Usage: 2.5 units', 'price' => 1.25, 'unit' => 'usage', 'rel_id' => 21, 'taxed' => true]])
+        ->and($module->lines)->toBe($fail === null ? [1, 2] : [1])
+        ->and(array_column($di['logger']->calls, 'method'))->toBe($fail === null ? [] : ['warning'])
+        ->and($fail === null ? '' : $di['logger']->calls[0]['params'][0])->toBe($fail === null ? '' : "The usage of order #21 was not added to invoice #77: {$fail}");
+})->with([
+    'billed' => [null],
+    'module fails' => ['panel down'],
+    'module has a PHP error' => ['Division by zero'],
+]);
+
 // The client's domain page shows what the renewal invoice will bill (WHMCS Recurring Amount), without storing anything.
 test('domainRenewal gives the next renewal of an active domain: 9 years at most, less the recurring promotion', function (string $period, int $years, float $price, float $discount, float $auto, bool $free, float $amount, bool $exemptInclusive = false, float $clientRate = 0.0): void {
     $order = new Model_ClientOrder();

@@ -76,6 +76,10 @@
         "done": "ClientFence core patch: a renewal's recurring discount belongs to the same order."
     },
     {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch: so do its usage lines (Invoice\\Service::addUsageLine())."
+    },
+    {
         "file": "di.php",
         "done": "ClientFence core patch: web cron listeners need the cron staff identity for notifications."
     },
@@ -9266,6 +9270,14 @@
     {
         "file": "modules/Invoice/Service.php",
         "done": "ClientFence core patch: the gateway a service's renewal invoice is issued with"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a service module that declares \"usage\" bills its service's usage on the renewal, through"
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a usage line of the order on the invoice, taxed as the order's own line; it leaves the invoice"
     },
     {
         "file": "modules/Invoice/Service.php",

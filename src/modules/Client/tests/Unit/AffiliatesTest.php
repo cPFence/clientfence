@@ -29,7 +29,7 @@ function affiliateDb(): Connection
         'CREATE TABLE product (id INTEGER PRIMARY KEY, config TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, status TEXT, group_master INTEGER, service_type TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, currency TEXT, status TEXT, refund REAL DEFAULT 0, paid_at TEXT)',
-        'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id TEXT, price REAL, quantity INTEGER)',
+        'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, rel_id TEXT, price REAL, quantity INTEGER, unit TEXT, task TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY, client_id INTEGER, type TEXT, rel_id TEXT, description TEXT, amount REAL, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE client_user_account (id INTEGER PRIMARY KEY, user_id INTEGER, client_id INTEGER)',
         'CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT, updated_at TEXT)',
@@ -345,22 +345,29 @@ test('the daily job writes a commission the payment missed, but not one paid whi
     'paid while deactivated' => [true, false],
 ]);
 
-test('a fixed commission is paid on a fully discounted service of an invoice that took money, never on a 0.00 invoice', function (string $type, float $other, bool $written): void {
+test('a fixed commission is paid on a fully discounted service of an invoice that took money, never on a 0.00 invoice or for usage', function (string $type, float $other, float $usage, bool $written): void {
     $db = affiliateDb();
     $di = affiliateDi($db, ['affiliate_type' => $type, 'affiliate_amount' => '10']);
     affiliateReferring($di);
     $db->insert('invoice', ['id' => 100, 'currency' => 'USD', 'status' => 'paid', 'paid_at' => date('Y-m-d H:i:s')]);
-    foreach ([['order', '50', 20.0], ['custom', '50', -20.0], ['order', '51', $other]] as [$lineType, $rel, $price]) {
-        $db->insert('invoice_item', ['invoice_id' => 100, 'type' => $lineType, 'rel_id' => $rel, 'price' => $price, 'quantity' => 1]);
+    foreach ([['order', '50', 20.0, null], ['custom', '50', -20.0, null], ['order', '51', $other, null], ['custom', '50', $usage, 'usage']] as [$lineType, $rel, $price, $unit]) {
+        $db->insert('invoice_item', ['invoice_id' => 100, 'type' => $lineType, 'rel_id' => $rel, 'price' => $price, 'quantity' => 1, 'unit' => $unit]);
+    }
+    if ($usage > 0) {
+        // The gateway fee on the usage is no money for the service either.
+        $db->insert('invoice_item', ['invoice_id' => 100, 'type' => 'custom', 'rel_id' => null, 'price' => round($usage / 10, 2), 'quantity' => 1, 'task' => ClientFence\Mod\Invoice\GatewayFees::TASK]);
     }
 
     Commissions::onPaid($di, 100);
 
     expect(affiliateCommission($db) !== false)->toBe($written);
 })->with([
-    'fixed, with a paid domain on the invoice' => ['fixed', 15.0, true],
-    'percentage' => ['percentage', 15.0, false],
-    'fixed, 0.00 renewal invoice' => ['fixed', 0.0, false],
+    'fixed, with a paid domain on the invoice' => ['fixed', 15.0, 0.0, true],
+    'percentage' => ['percentage', 15.0, 0.0, false],
+    'fixed, 0.00 renewal invoice' => ['fixed', 0.0, 0.0, false],
+    // As WHMCS: usage billed in arrears earns nothing.
+    'fixed, a 0.00 renewal with usage' => ['fixed', 0.0, 5.0, false],
+    'percentage, usage only' => ['percentage', 0.0, 5.0, false],
 ]);
 
 test('a payout request reserves its amount: minimum, one at a time, paid as credit or declined', function (): void {

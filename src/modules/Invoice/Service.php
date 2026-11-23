@@ -3092,11 +3092,43 @@ class Service implements InjectionAwareInterface
             ? \Model_InvoiceItem::TASK_ACTIVATE
             : \Model_InvoiceItem::TASK_RENEW;
         $invoiceItemService->generateFromOrder($proforma, $order, $task, $price, $line);
+        if ($task === \Model_InvoiceItem::TASK_RENEW) {
+            $this->addUsageLines($proforma, $order);
+        }
         if ($finish) {
             $this->finishRenewalInvoice($proforma, $order, $due_days);
         }
 
         return $proforma;
+    }
+
+    /**
+     * ClientFence core patch: a service module that declares "usage" bills its service's usage on the renewal, through
+     * addUsageLine() (ServiceTypes). A module that fails leaves the renewal without any of it, logged.
+     */
+    private function addUsageLines(\Model_Invoice $invoice, \Model_ClientOrder $order): void
+    {
+        if ((\ClientFence\ServiceTypes::declared($this->di, $order->service_type)['usage'] ?? null) !== true) {
+            return;
+        }
+        try {
+            $this->di['mod_service']('service' . $order->service_type)->bill_usage($order, $invoice);
+        } catch (\Throwable $e) {
+            // All or nothing: a line the module added before it failed goes too.
+            $this->di['dbal']->executeStatement("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage'", [(int) $invoice->id, (string) $order->id]);
+            $this->di['logger']->warning("The usage of order #{$order->id} was not added to invoice #{$invoice->id}: {$e->getMessage()}");
+        }
+    }
+
+    /**
+     * ClientFence core patch: a usage line of the order on the invoice, taxed as the order's own line; it leaves the invoice
+     * with the order's renewal when the order is cancelled (Order\Service::cancelOpenInvoices()). Returns the line's ID.
+     */
+    public function addUsageLine(\Model_Invoice $invoice, \Model_ClientOrder $order, string $title, float $price): int
+    {
+        $client = $this->di['db']->getExistingModelById('Client', $order->client_id, 'Client not found');
+
+        return $this->di['mod_service']('Invoice', 'InvoiceItem')->addNew($invoice, ['title' => $title, 'price' => $price, 'unit' => 'usage', 'rel_id' => $order->id, 'taxed' => $this->di['mod_service']('client')->isClientTaxable($client)]);
     }
 
     /**

@@ -2338,13 +2338,14 @@ class Service implements InjectionAwareInterface
         }
         $in = array_combine(array_map(static fn (int $i): string => 'order' . $i, array_keys($orders)), $orders);
         // ClientFence core patch: a renewal's recurring discount belongs to the same order.
+        // ClientFence core patch: so do its usage lines (Invoice\Service::addUsageLine()).
         $this->di['dbal']->executeStatement(
             'UPDATE invoice i SET i.status = :canceled, i.updated_at = :now WHERE i.status = :unpaid
                 AND EXISTS (SELECT 1 FROM invoice_item ii WHERE ii.invoice_id = i.id AND ii.type = :type AND ii.rel_id = :order_id AND ii.task IN (:renew, :activate))
                 AND NOT EXISTS (SELECT 1 FROM invoice_item other WHERE other.invoice_id = i.id AND NOT (COALESCE(other.task, :none) = :fee
-                    OR ((other.type = :type OR COALESCE(other.unit, :none) IN (:discount, :setup))
+                    OR ((other.type = :type OR COALESCE(other.unit, :none) IN (:discount, :setup, :usage))
                         AND COALESCE(other.rel_id, :none) IN (:' . implode(', :', array_keys($in)) . '))))',
-            ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'activate' => $firstInvoice ? \Model_InvoiceItem::TASK_ACTIVATE : \Model_InvoiceItem::TASK_RENEW, 'fee' => \ClientFence\Mod\Invoice\GatewayFees::TASK, 'discount' => 'discount', 'setup' => 'service', 'none' => ''] + $in,
+            ['canceled' => \Model_Invoice::STATUS_CANCELED, 'now' => date('Y-m-d H:i:s'), 'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'activate' => $firstInvoice ? \Model_InvoiceItem::TASK_ACTIVATE : \Model_InvoiceItem::TASK_RENEW, 'fee' => \ClientFence\Mod\Invoice\GatewayFees::TASK, 'discount' => 'discount', 'setup' => 'service', 'usage' => 'usage', 'none' => ''] + $in,
         );
         // ClientFence core patch: a renewal invoice shared with other services (one invoice per due date) loses this order's lines instead, as in WHMCS.
         $db = $this->di['dbal'];
@@ -2354,8 +2355,8 @@ class Service implements InjectionAwareInterface
             'unpaid' => \Model_Invoice::STATUS_UNPAID, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'order_id' => (string) $orderId, 'renew' => \Model_InvoiceItem::TASK_RENEW, 'pending' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT,
         ]);
         foreach ($shared as $invoiceId) {
-            $db->executeStatement('DELETE FROM invoice_item WHERE invoice_id = :id AND rel_id = :order_id AND status = :pending AND (type = :type OR COALESCE(unit, :none) IN (:discount, :setup))', [
-                'id' => (int) $invoiceId, 'order_id' => (string) $orderId, 'pending' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'none' => '', 'discount' => 'discount', 'setup' => 'service',
+            $db->executeStatement('DELETE FROM invoice_item WHERE invoice_id = :id AND rel_id = :order_id AND status = :pending AND (type = :type OR COALESCE(unit, :none) IN (:discount, :setup, :usage))', [
+                'id' => (int) $invoiceId, 'order_id' => (string) $orderId, 'pending' => \Model_InvoiceItem::STATUS_PENDING_PAYMENT, 'type' => \Model_InvoiceItem::TYPE_ORDER, 'none' => '', 'discount' => 'discount', 'setup' => 'service', 'usage' => 'usage',
             ]);
             // The tax-inclusive cents were for all the invoice's lines, as in rmInvoiceItemByOrder().
             $db->executeStatement('UPDATE invoice SET tax_adjust = 0, updated_at = :now WHERE id = :id', ['now' => date('Y-m-d H:i:s'), 'id' => (int) $invoiceId]);
