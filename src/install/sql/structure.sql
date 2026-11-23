@@ -1955,6 +1955,7 @@ CREATE TABLE `activity_api` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `source` v
 -- ClientFence core patch: low balance alerts (Client/BalanceAlert.php).
 CREATE TABLE `client_balance_alert` (`client_id` bigint(20) NOT NULL, `threshold` decimal(18,2) NOT NULL, `currency` varchar(10) DEFAULT NULL, `alerted_at` datetime DEFAULT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`client_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 -- ClientFence core patch: fresh installs store one DNS zone per service.
 CREATE TABLE `service_dnshosting` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `order_id` bigint(20) NOT NULL, `domain_name` varchar(253) NOT NULL, `config` text NOT NULL, `zone_id` varchar(253) DEFAULT NULL, `nameservers` json NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `dns_order` (`order_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
