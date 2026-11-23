@@ -18,7 +18,10 @@ namespace ClientFence;
  * - "client_pages": ["hosting"] — top-level client URLs whose routes the module registers (AppClient; the core's own
  *   pages win), while the module is switched on;
  * - "store_calls": {"guest": {"method": "list"}} — guest and client calls a closed store answers instead of running
- *   (Clientfence\Service::storeGate(): "page", "list", "not_found", anything else refused; the core's list wins).
+ *   (Clientfence\Service::storeGate(): "page", "list", "not_found", anything else refused; the core's list wins);
+ * - "changeable": true — its services renew at the order's price and can move to another product (upgrades, staff
+ *   moves, bulk prices); the module's action_change_package($order), if it has one, then applies the new product;
+ * - "icon": an icon of the client theme's sprite for its services in the cart and on the service page.
  */
 final class ServiceTypes
 {
@@ -101,6 +104,15 @@ final class ServiceTypes
 
             return $policies;
         });
+    }
+
+    /** @return list<string> the product types whose module declares "changeable": true */
+    public static function changeable(\Pimple\Container $di): array
+    {
+        return RequestCache::remember($di, 'service_type_changeable', static fn (): array => array_values(array_filter(
+            self::types(),
+            static fn (string $type): bool => (self::declared($di, $type)['changeable'] ?? null) === true,
+        )));
     }
 
     /** What a closed store answers to `$role`'s call `$method` of the module, or null when the module does not gate it. */

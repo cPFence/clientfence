@@ -79,3 +79,12 @@ test('a store call declared with no answer, or with one that is not a name, stay
         ->and(ServiceTypes::storeCall($di, 'example', 'guest', 'quote'))->toBe('closed')
         ->and(ServiceTypes::storeCall($di, 'example', 'guest', 'other'))->toBeNull();
 });
+
+test('only a type that declares changeable as true joins upgrades and bulk prices', function (): void {
+    $di = container();
+    // Declarations of two modules on disk, as read from their manifests; no shipped module declares it.
+    $di['request_cache'] = new ArrayObject(['service_type.custom' => ['changeable' => true], 'service_type.hosting' => ['changeable' => 'yes']]);
+
+    expect(ServiceTypes::changeable($di))->toBe(['custom'])
+        ->and(ServiceTypes::changeable(container()))->toBe([]);
+});

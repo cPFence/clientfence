@@ -66,6 +66,17 @@ final class Upgrades
     /** Service kinds that can move between products (domains renew by registrar rules). */
     private const KINDS = ['hosting', 'license', 'custom', 'membership', 'downloadable'];
 
+    /**
+     * ClientFence core patch: the kinds whose services can change product and renew at the order's price, with the service
+     * modules' that declare "changeable" (ServiceTypes).
+     *
+     * @return list<string>
+     */
+    public static function kinds(\Pimple\Container $di): array
+    {
+        return [...self::KINDS, ...\ClientFence\ServiceTypes::changeable($di)];
+    }
+
     /** Why a service with a change waiting for payment (or being applied) cannot change again. */
     public static function waitingMessage(): string
     {
@@ -169,12 +180,12 @@ final class Upgrades
         }
         $reason = self::blocker($di, $order, $now);
         // ClientFence core patch: a service that has options but cannot change now says why on its page (GitHub #8).
-        if ($reason !== null && !(in_array((string) $order->service_type, self::KINDS, true) && (string) $order->period !== '' && (string) $order->expires_at !== '')) {
+        if ($reason !== null && !(in_array((string) $order->service_type, self::kinds($di), true) && (string) $order->period !== '' && (string) $order->expires_at !== '')) {
             return $none($reason);
         }
         // A retired product can still move to the products it lists, but not to its own cycles.
         // ClientFence core patch: fixed currency prices (Product/CurrencyPrices.php) of the order's currency.
-        $from = self::catalog($db, (int) $order->product_id, false, (string) $order->currency);
+        $from = self::catalog($di, (int) $order->product_id, false, (string) $order->currency);
         $rate = self::rate($db, (string) $order->currency);
         if ($from === null || $rate === null) {
             return $none($reason ?? 'This service cannot be changed here. Please contact us.');
@@ -201,7 +212,7 @@ final class Upgrades
             )));
         }
         foreach (array_unique(array_merge([(int) $order->product_id], $targets)) as $productId) {
-            $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($db, $productId, true, (string) $order->currency);
+            $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($di, $productId, true, (string) $order->currency);
             if ($to === null || !self::compatible($from, $to)) {
                 continue;
             }
@@ -536,7 +547,7 @@ final class Upgrades
                     throw new InformationException('The service changed after this ' . $up['kind'] . ' was priced (' . $changed . '). Change it by hand and settle the amount with the client.');
                 }
                 $order = $di['db']->load('ClientOrder', $orderId);
-                $to = self::catalog($db, (int) $up['to_product_id'], false);
+                $to = self::catalog($di, (int) $up['to_product_id'], false);
                 if ($to === null) {
                     throw new InformationException('The new product no longer exists.');
                 }
@@ -557,7 +568,10 @@ final class Upgrades
 
                 $newPrice = round((float) $up['to_price'] / $quantity, 2);
                 // ClientFence core patch: a changed price or cycle must not keep charging the old gateway subscription.
-                if ((float) $order->price !== $newPrice || (string) $order->period !== (string) $up['to_period']) {
+                $cancel = (float) $order->price !== $newPrice || (string) $order->period !== (string) $up['to_period'];
+                // A service module's own kind cancels after its change (changePackage()): a gateway cannot roll back.
+                $moduleKind = in_array((string) $order->service_type, \ClientFence\ServiceTypes::changeable($di), true);
+                if ($cancel && !$moduleKind) {
                     $renewalNote .= self::cancelSubscriptions($di, $order);
                 }
 
@@ -587,7 +601,7 @@ final class Upgrades
                 $config['period'] = (string) $up['to_period'];
                 $config['title'] = (string) $up['to_title'];
                 $config = self::hostingConfig($order, $to, $config);
-                $fromProduct = self::catalog($db, (int) $up['from_product_id'], false);
+                $fromProduct = self::catalog($di, (int) $up['from_product_id'], false);
                 $order->product_id = (int) $up['to_product_id'];
                 if (!$optionsOnly) {
                     // The old name as the title has it: in the client's language (Product/Translations.php), else the default one.
@@ -627,6 +641,10 @@ final class Upgrades
                     if ($source !== null) {
                         $di['mod_service']('invoice')->creditNote((int) $source['id'], $description, $net, $rate > 0, sprintf('Account credit for the %s of order #%d.', $up['kind'], $orderId), $orderId);
                     }
+                }
+                self::changePackage($di, $order);
+                if ($cancel && $moduleKind) {
+                    $renewalNote .= self::cancelSubscriptions($di, $order);
                 }
                 $db->update(self::TABLE, ['status' => self::STATUS_APPLIED, 'error' => null, 'applied_at' => date('Y-m-d H:i:s')], ['id' => $id]);
                 $db->commit();
@@ -793,7 +811,7 @@ final class Upgrades
         if ($order->status !== \Model_ClientOrder::STATUS_ACTIVE) {
             return __trans('Only active services can be changed.');
         }
-        if (!in_array((string) $order->service_type, self::KINDS, true)) {
+        if (!in_array((string) $order->service_type, self::kinds($di), true)) {
             return __trans('This kind of service cannot be changed here.');
         }
         if ((string) $order->period === '' || (string) $order->expires_at === '') {
@@ -846,8 +864,9 @@ final class Upgrades
      *
      * @return array{id: int, title: string, type: string, is_addon: bool, on_sale: bool, config: array<string, mixed>, upgrades: list<int>, upgrades_category: bool, prices: array<string, float>}|null
      */
-    public static function catalog(Connection $db, int $productId, bool $onSale = true, ?string $currency = null): ?array
+    public static function catalog(\Pimple\Container $di, int $productId, bool $onSale = true, ?string $currency = null): ?array
     {
+        $db = self::db($di);
         $columns = [];
         foreach (array_keys(self::PERIODS) as $key) {
             $columns[] = "pp.{$key}_price, pp.{$key}_enabled";
@@ -857,7 +876,7 @@ final class Upgrades
             . ' FROM product p JOIN product_payment pp ON pp.id = p.product_payment_id WHERE p.id = ?',
             [$productId]
         );
-        if ($row === false || ($onSale && $row['status'] !== 'enabled') || $row['payment_type'] !== 'recurrent' || !in_array((string) $row['type'], self::KINDS, true)) {
+        if ($row === false || ($onSale && $row['status'] !== 'enabled') || $row['payment_type'] !== 'recurrent' || !in_array((string) $row['type'], self::kinds($di), true)) {
             return null;
         }
         $prices = [];
@@ -933,7 +952,7 @@ final class Upgrades
         if (self::repricedSincePaid($di, $db, $order, false)) {
             throw new InformationException(__trans('This service was refunded or its price changed after its last payment, so our staff change it. Please contact us.'));
         }
-        $product = self::catalog($db, (int) $order->product_id, false);
+        $product = self::catalog($di, (int) $order->product_id, false);
         $rate = self::rate($db, (string) $order->currency);
         if ($product === null || $rate === null || Options::forProduct($di, (int) $order->product_id) === []) {
             throw new InformationException('The options of this service cannot be changed here. Please contact us.');
@@ -1379,13 +1398,13 @@ final class Upgrades
     public static function moveTargets(\Pimple\Container $di, \Model_ClientOrder $order): array
     {
         $db = self::db($di);
-        $from = self::catalog($db, (int) $order->product_id, false);
+        $from = self::catalog($di, (int) $order->product_id, false);
         if ($from === null) {
             return [];
         }
         $targets = [];
         foreach ($db->fetchFirstColumn('SELECT id FROM product WHERE type = ? AND id <> ? ORDER BY title', [$from['type'], (int) $order->product_id]) as $id) {
-            $to = self::catalog($db, (int) $id, false);
+            $to = self::catalog($di, (int) $id, false);
             if ($to !== null && self::compatible($from, $to)) {
                 $targets[(int) $id] = $to['title'];
             }
@@ -1425,7 +1444,7 @@ final class Upgrades
     private static function catalogPrice(\Pimple\Container $di, int $productId, string $currency, string $period, float $optionsPrice): ?float
     {
         $db = self::db($di);
-        $prices = self::catalog($db, $productId, false, $currency)['prices'] ?? [];
+        $prices = self::catalog($di, $productId, false, $currency)['prices'] ?? [];
         $rate = self::rate($db, $currency);
 
         return $rate === null || !isset($prices[$period]) ? null : round(($prices[$period] + $optionsPrice) * $rate, 2);
@@ -1454,7 +1473,8 @@ final class Upgrades
      * "Auto Recalculate on Save", then the Change Package module command). No invoice is made. Its options stay where
      * the new product has them. With $reprice the recurring price is the new product's for the service's cycle (with
      * its options) at today's rate; with $changePackage a hosting account moves to the new product's plan on the
-     * panel first, so a panel failure changes nothing. The history gets the change.
+     * panel first, so a panel failure changes nothing (a service module's own kind: changePackage() last, in the
+     * transaction). The history gets the change.
      */
     public static function staffMove(\Pimple\Container $di, int $orderId, int $productId, bool $reprice, bool $changePackage): void
     {
@@ -1463,8 +1483,8 @@ final class Upgrades
         if (!isset(self::moveTargets($di, $order)[$productId])) {
             throw new InformationException('The service can move only to another recurring product of the same type (hosting: on the same server, and reseller or not as now).');
         }
-        $from = self::catalog($db, (int) $order->product_id, false, (string) $order->currency);
-        $to = self::catalog($db, $productId, false, (string) $order->currency);
+        $from = self::catalog($di, (int) $order->product_id, false, (string) $order->currency);
+        $to = self::catalog($di, $productId, false, (string) $order->currency);
         $period = (string) $order->period;
         $options = self::optionsFor($di, $productId, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once');
         if ($options === null) {
@@ -1479,36 +1499,50 @@ final class Upgrades
         // The stock first: out of stock refuses before the panel changes; a panel failure gives it back.
         $quantity = max(1, (int) ($order->quantity ?? 1));
         $productService = $di['mod_service']('product');
-        $productService->reduceStock($productId, $quantity);
-        if ($changePackage && $order->service_type === 'hosting') {
-            try {
-                self::moveHosting($di, $order, $to);
-            } catch (\Throwable $e) {
-                $productService->returnStock($productId, $quantity);
+        // ClientFence core patch: one transaction, so a service module's failed change (changePackage()) changes nothing.
+        $db->beginTransaction();
+        try {
+            $productService->reduceStock($productId, $quantity);
+            if ($changePackage && $order->service_type === 'hosting') {
+                try {
+                    self::moveHosting($di, $order, $to);
+                } catch (\Throwable $e) {
+                    $productService->returnStock($productId, $quantity);
 
-                throw $e;
+                    throw $e;
+                }
             }
-        }
-        $productService->returnStock((int) $order->product_id, $quantity);
-        // A changed price must not keep charging the old gateway subscription.
-        $subscriptionNote = $price !== $old ? self::cancelSubscriptions($di, $order) : '';
+            $productService->returnStock((int) $order->product_id, $quantity);
 
-        $config = json_decode((string) $order->config, true);
-        $config = self::withOptions(self::productConfig($db, $order, $to, is_array($config) ? $config : []), $options);
-        // The names as the client reads them (Product/Translations.php), as apply() writes a client's change.
-        $locale = self::clientLocale($db, (int) $order->client_id);
-        $toName = (string) Translations::text($di, 'product', $productId, 'title', $to['title'], $locale);
-        $fromName = (string) Translations::text($di, 'product', (int) $order->product_id, 'title', $from['title'], $locale);
-        $fromName = str_contains((string) $order->title, $fromName) ? $fromName : $from['title'];
-        $config['product_id'] = $productId;
-        $config['title'] = $toName;
-        $config = self::hostingConfig($order, $to, $config);
-        $order->product_id = $productId;
-        $order->title = self::newTitle((string) $order->title, $from['title'], $toName, $fromName);
-        $order->price = $price;
-        $order->config = json_encode($config);
-        $order->updated_at = date('Y-m-d H:i:s');
-        $di['db']->store($order);
+            $config = json_decode((string) $order->config, true);
+            $config = self::withOptions(self::productConfig($db, $order, $to, is_array($config) ? $config : []), $options);
+            // The names as the client reads them (Product/Translations.php), as apply() writes a client's change.
+            $locale = self::clientLocale($db, (int) $order->client_id);
+            $toName = (string) Translations::text($di, 'product', $productId, 'title', $to['title'], $locale);
+            $fromName = (string) Translations::text($di, 'product', (int) $order->product_id, 'title', $from['title'], $locale);
+            $fromName = str_contains((string) $order->title, $fromName) ? $fromName : $from['title'];
+            $config['product_id'] = $productId;
+            $config['title'] = $toName;
+            $config = self::hostingConfig($order, $to, $config);
+            $order->product_id = $productId;
+            $order->title = self::newTitle((string) $order->title, $from['title'], $toName, $fromName);
+            $order->price = $price;
+            $order->config = json_encode($config);
+            $order->updated_at = date('Y-m-d H:i:s');
+            $di['db']->store($order);
+            if ($changePackage) {
+                self::changePackage($di, $order);
+            }
+            // A changed price must not keep charging the old gateway subscription; last, as a gateway cannot roll back.
+            $subscriptionNote = $price !== $old ? self::cancelSubscriptions($di, $order) : '';
+            $db->commit();
+        } catch (\Throwable $e) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
+
+            throw $e;
+        }
         $note = sprintf('Moved by staff from %s to %s', $from['title'], $to['title']) . ($price !== $old ? sprintf('; price %s to %s %s', number_format($old, 2, '.', ''), number_format($price, 2, '.', ''), $order->currency) : '')
             . ($changePackage && $order->service_type === 'hosting' ? '; hosting plan changed on the panel' : '') . $subscriptionNote;
         $di['mod_service']('order')->saveStatusChange($order, $note);
@@ -1537,6 +1571,20 @@ final class Upgrades
         }
 
         return ' (automatic payment by subscription at the old price stopped; client emailed)';
+    }
+
+    /**
+     * ClientFence core patch: a service module's own kind (ServiceTypes "changeable") applies the order's new product,
+     * cycle and options to its service, as WHMCS ChangePackage; it throws to cancel the change.
+     */
+    private static function changePackage(\Pimple\Container $di, \Model_ClientOrder $order): void
+    {
+        if (in_array((string) $order->service_type, \ClientFence\ServiceTypes::changeable($di), true)) {
+            $service = $di['mod_service']('service' . $order->service_type);
+            if (method_exists($service, 'action_change_package')) {
+                $service->action_change_package($order);
+            }
+        }
     }
 
     private static function moveHosting(\Pimple\Container $di, \Model_ClientOrder $order, array $to): void

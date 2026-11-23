@@ -59,7 +59,7 @@
     {% set open_invoice = can_renew and order.unpaid_invoice_id and (not clientfence_user or clientfence_user.owner or 'invoices' in clientfence_user.permissions) ? client.invoice_get_list({ 'id': order.unpaid_invoice_id, 'status': 'unpaid', 'per_page': 1 }).list|first : null %}
     {{ render_widgets('client.order.manage.content.start', { 'order': order }) }}
 
-    {% set icon = { 'hosting': 'server', 'domain': 'world', 'license': 'key', 'apikey': 'key', 'downloadable': 'folder' }[order.service_type]|default('apps') %}
+    {% set icon = { 'hosting': 'server', 'domain': 'world', 'license': 'key', 'apikey': 'key', 'downloadable': 'folder' }[order.service_type]|default(service_type(order.service_type).icon ?? 'apps') %}
     {# A domain's dates are the registrar's (Sync Now updates them); a one-off promo price does not renew. #}
     {% set is_domain = order.service_type == 'domain' and service %}
     {% set expires_at = is_domain ? service.expires_at : order.expires_at %}

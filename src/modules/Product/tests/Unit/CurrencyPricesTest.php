@@ -159,8 +159,12 @@ test('upgrades and bulk price updates read the fixed prices of the order currenc
     $db->insert('product', ['id' => 10, 'title' => 'Licence', 'type' => 'license', 'status' => 'enabled', 'is_addon' => 0, 'config' => '{}', 'upgrades' => '[]', 'product_payment_id' => 1]);
     CurrencyPrices::save($db, 'product', 10, ['EGP' => ['1Y' => ['price' => '4800']]]);
 
-    $egp = Upgrades::catalog($db, 10, true, 'EGP');
+    $di = new Pimple\Container();
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $di['em'] = $em;
+    $egp = Upgrades::catalog($di, 10, true, 'EGP');
     expect($egp['prices']['1M'])->toBe(10.0)
         ->and(round($egp['prices']['1Y'] * 51.81, 2))->toBe(4800.0)
-        ->and(Upgrades::catalog($db, 10)['prices'])->toBe(['1M' => 10.0, '1Y' => 100.0]);
+        ->and(Upgrades::catalog($di, 10)['prices'])->toBe(['1M' => 10.0, '1Y' => 100.0]);
 });

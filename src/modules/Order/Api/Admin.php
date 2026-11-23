@@ -842,7 +842,7 @@ class Admin extends \ClientFence\Api\AbstractApi
 
     /**
      * ClientFence: staff move a service to another product, as WHMCS (Order\Upgrades::staffMove()); with
-     * `recalculate`, the price is the new product's; with `change_package`, a hosting account moves to its plan.
+     * `recalculate`, the price is the new product's; with `change_package`, a hosting account moves to its plan (a service module's own type: its action_change_package()).
      */
     #[RequiredParams(['id' => 'Order ID was not passed', 'product_id' => 'Product ID was not passed'])]
     public function move_product($data): bool

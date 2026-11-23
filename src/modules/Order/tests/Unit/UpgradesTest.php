@@ -1979,6 +1979,80 @@ test('a Change Package the panel refuses moves nothing and gives the stock back'
         ->and($db->fetchAssociative('SELECT product_id, price FROM client_order WHERE id = 5'))->toBe(['product_id' => 20, 'price' => 100.0]);
 });
 
+/**
+ * Order 1 and products 1 and 2 of a service module's own type that declares "changeable" (ServiceTypes); its
+ * action_change_package() records the order it gets, or throws `$fail`.
+ */
+function upgradesModuleType(Connection $db, Pimple\Container $di, ?string $fail = null): object
+{
+    $db->executeStatement("UPDATE product SET type = 'example' WHERE id IN (1, 2)");
+    $db->update('client_order', ['service_type' => 'example'], ['id' => 1]);
+    $di['request_cache'] = new ArrayObject(['service_type_changeable' => ['example']]);
+    $module = new class($fail) {
+        /** @var list<array{int, int, string}> order id, product id, period */
+        public array $changes = [];
+
+        public function __construct(public ?string $fail)
+        {
+        }
+
+        public function action_change_package(Model_ClientOrder $order): void
+        {
+            if ($this->fail !== null) {
+                throw new RuntimeException($this->fail);
+            }
+            $this->changes[] = [(int) $order->id, (int) $order->product_id, (string) $order->period];
+        }
+    };
+    $base = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => strtolower($name) === 'serviceexample' ? $module : $base($name, $sub));
+
+    return $module;
+}
+
+test('a service module\'s changeable type is upgraded and moved by staff, and its module applies the change', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $module = upgradesModuleType($db, $di);
+    // The new price still stops the old gateway subscription, after the module's change.
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()->andReturn(0);
+
+    expect(Upgrades::kinds($di))->toContain('example')
+        ->and(Upgrades::blocker($di, upgradesOrder($di, 1), UPGRADES_NOW))->toBeNull()
+        ->and(Upgrades::moveTargets($di, upgradesOrder($di, 1)))->toHaveKey(2)
+        ->and(Upgrades::catalog($di, 2))->not->toBeNull();
+    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW);
+    upgradesPay($db, $result['id']);
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+    expect($module->changes)->toBe([[1, 2, '1M']])
+        ->and($db->fetchOne('SELECT status FROM ' . Upgrades::TABLE))->toBe('applied');
+
+    // A staff move without Change Package leaves the module alone; with it, the module applies the new product.
+    $db->executeStatement("UPDATE product SET type = 'example' WHERE id = 3");
+    Upgrades::staffMove($di, 1, 3, false, false);
+    Upgrades::staffMove($di, 1, 2, false, true);
+    expect($module->changes)->toBe([[1, 2, '1M'], [1, 2, '1M']]);
+});
+
+test('a module that refuses the change leaves the service as it was', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    upgradesModuleType($db, $di, 'Server offline');
+    // A refused change never stops the gateway subscription, which a rollback could not restart.
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->never();
+
+    $result = Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW);
+    upgradesPay($db, $result['id']);
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+    expect($db->fetchAssociative('SELECT product_id, price FROM client_order WHERE id = 1'))->toBe(['product_id' => 1, 'price' => 5.0])
+        ->and($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE))->toBe(['status' => 'failed', 'error' => 'Server offline'])
+        ->and($db->fetchOne('SELECT action FROM ' . ActionFailures::TABLE . ' WHERE status = ?', ['open']))->toBe('upgrade');
+
+    $di['services']['product']->shouldReceive('reduceStock')->once()->with(2, 1)->andReturn(true);
+    expect(fn () => Upgrades::staffMove($di, 1, 2, true, true))->toThrow(RuntimeException::class, 'Server offline')
+        ->and($db->fetchAssociative('SELECT product_id, price FROM client_order WHERE id = 1'))->toBe(['product_id' => 1, 'price' => 5.0]);
+});
+
 // ClientFence (CF-56): "Servers (IP addresses)" on the target licence product.
 test('a licence is not offered a plan whose server limit its IP addresses do not fit, and says why', function (): void {
     $db = upgradesDb();

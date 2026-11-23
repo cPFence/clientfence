@@ -35,9 +35,6 @@ final class BulkPrices
     public const STATUSES = ['active', 'suspended', 'pending_setup', 'failed_setup', 'failed_renew'];
     public const DEFAULT_STATUSES = ['active', 'suspended'];
 
-    /** Product kinds whose renewals use the order's price (domains do not). */
-    public const KINDS = ['hosting', 'license', 'custom', 'membership', 'downloadable'];
-
     /** Rows a skipped order can carry. */
     public const SKIP_NO_PRODUCT_PRICE = 'no_product_price';
     public const SKIP_BELOW_ZERO = 'below_zero';
@@ -53,7 +50,7 @@ final class BulkPrices
     public static function options(\Pimple\Container $di): array
     {
         $db = self::db($di);
-        $kinds = self::quoteList($db, self::KINDS);
+        $kinds = self::quoteList($db, Upgrades::kinds($di));
         $statuses = self::quoteList($db, self::STATUSES);
         $products = $db->fetchAllAssociative(
             "SELECT p.id, p.title, p.is_addon, COUNT(o.id) AS orders FROM product p LEFT JOIN client_order o ON o.product_id = p.id AND o.status IN ({$statuses}) AND o.period IS NOT NULL AND o.period <> ''"
@@ -96,7 +93,7 @@ final class BulkPrices
             throw new InformationException('Choose at least one product.');
         }
         $known = array_map('intval', $db->fetchFirstColumn(
-            'SELECT id FROM product WHERE type IN (' . self::quoteList($db, self::KINDS) . ') AND id IN (' . implode(',', $productIds) . ')'
+            'SELECT id FROM product WHERE type IN (' . self::quoteList($db, Upgrades::kinds($di)) . ') AND id IN (' . implode(',', $productIds) . ')'
         ));
         if (count($known) !== count($productIds)) {
             throw new InformationException('Unknown product, or a product whose renewals do not use the order price (domains).');
@@ -166,7 +163,7 @@ final class BulkPrices
             . " (SELECT i.id FROM invoice i WHERE i.id = o.unpaid_invoice_id AND i.status = 'unpaid') AS unpaid_invoice"
             . ' FROM client_order o JOIN product p ON p.id = o.product_id LEFT JOIN client c ON c.id = o.client_id'
             . ' WHERE o.product_id IN (' . implode(',', $filters['product_ids']) . ')'
-            . ' AND p.type IN (' . self::quoteList($db, self::KINDS) . ')'
+            . ' AND p.type IN (' . self::quoteList($db, Upgrades::kinds($di)) . ')'
             . ' AND o.status IN (' . self::quoteList($db, $filters['statuses']) . ')'
             . " AND o.period IS NOT NULL AND o.period <> '' AND o.currency = ?";
         $params = [$filters['currency']];
@@ -206,7 +203,7 @@ final class BulkPrices
             } else {
                 $productId = (int) $order['product_id'];
                 // ClientFence: in the order's currency, with its fixed prices (Product/CurrencyPrices.php).
-                $catalog[$productId] ??= Upgrades::catalog($db, $productId, false, (string) $filters['currency']) ?? [];
+                $catalog[$productId] ??= Upgrades::catalog($di, $productId, false, (string) $filters['currency']) ?? [];
                 $rate ??= self::rate($db, $filters['currency']);
                 $base = $catalog[$productId]['prices'][(string) $order['period']] ?? null;
                 if ($base === null || $rate === null) {

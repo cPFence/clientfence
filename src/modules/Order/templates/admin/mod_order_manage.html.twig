@@ -377,6 +377,11 @@
                                     <input class="form-check-input" type="checkbox" name="change_package" value="1" checked>
                                     <span class="form-check-label">{{ 'Change Package: move the hosting account to the new product\'s plan on the server'|trans }}</span>
                                 </label>
+                                {% elseif (service_type(order.service_type).changeable ?? false) is same as(true) %}
+                                <label class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="change_package" value="1" checked>
+                                    <span class="form-check-label">{{ 'Change Package: apply the new product to the service'|trans }}</span>
+                                </label>
                                 {% endif %}
                                 <p class="text-muted mb-0">{{ 'No invoice is made. The service keeps its billing cycle and expiry date.'|trans }}</p>
                             </div>
@@ -577,8 +582,8 @@
                                 <div class="col-lg-6">
                                     <label class="form-label" for="order_price">{{ 'Recurring Amount'|trans }}</label>
                                     <input class="form-control" id="order_price" type="number" min="0" step="any" name="price" value="{{ order.price }}" required>
-                                    {# ClientFence core patch: Recalculate on Save, as WHMCS (Order/Upgrades.php recalculate()), for the product types Upgrades prices (KINDS); domains renew at the TLD price. #}
-                                    {% if order.period and order.service_type in ['hosting', 'license', 'custom', 'membership', 'downloadable'] %}
+                                    {# ClientFence core patch: Recalculate on Save, as WHMCS (Order/Upgrades.php recalculate()), for the product types Upgrades prices (kinds()); domains renew at the TLD price. #}
+                                    {% if order.period and (order.service_type in ['hosting', 'license', 'custom', 'membership', 'downloadable'] or (service_type(order.service_type).changeable ?? false) is same as(true)) %}
                                     <label class="form-check form-switch mt-2 mb-0">
                                         <input class="form-check-input" type="checkbox" name="recalculate" value="1">
                                         <span class="form-check-label">{{ 'Recalculate on Save'|trans }}</span>

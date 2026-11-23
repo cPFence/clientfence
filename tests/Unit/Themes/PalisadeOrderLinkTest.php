@@ -60,6 +60,7 @@ function renderPalisadeOrderLink(string $template, array $query, string $type = 
     $twig->addFilter(new TwigFilter('markdown_to_html', static fn (string $text): string => $text));
     $twig->addFunction(new TwigFunction('render_widgets', static fn (string $at, array $context = []): string => (string) ($context['google_return'] ?? '')));
     $twig->addFunction(new TwigFunction('fb_api_form', static fn (array $options): string => 'data-redirect="' . htmlspecialchars((string) ($options['redirect'] ?? '')) . '"', ['is_safe' => ['html']]));
+    $twig->addFunction(new TwigFunction('service_type', static fn (?string $type): array => []));
 
     return $twig->render($template, [
         'request' => new RequestDataView(['ajax' => true] + $query),

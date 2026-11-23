@@ -1753,11 +1753,11 @@
     },
     {
         "file": "modules/Order/Upgrades.php",
-        "done": "$from = self::catalog($db, (int) $order->product_id, false, (string) $order->currency);"
+        "done": "$from = self::catalog($di, (int) $order->product_id, false, (string) $order->currency);"
     },
     {
         "file": "modules/Order/BulkPrices.php",
-        "done": "Upgrades::catalog($db, $productId, false, (string) $filters['currency'])"
+        "done": "Upgrades::catalog($di, $productId, false, (string) $filters['currency'])"
     },
     {
         "file": "modules/Servicedomain/Api/Guest.php",
@@ -9798,5 +9798,33 @@
     {
         "file": "library/ClientFence/Twig/Extension/LegacyExtension.php",
         "done": "ClientFence core patch: the ?v= changes with each ClientFence or module update, so browsers and caches fetch the new file."
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: the kinds whose services can change product and renew at the order's price, with the service"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: a service module's own kind (ServiceTypes \"changeable\") applies the order's new product,"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "ClientFence core patch: one transaction, so a service module's failed change (changePackage()) changes nothing."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "(service_type(order.service_type).changeable ?? false) is same as(true)) %}"
+    },
+    {
+        "file": "themes/palisade/html/mod_cart_index.html.twig",
+        "done": "service_type(item.type).icon ?? 'apps'"
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "default(service_type(order.service_type).icon ?? 'apps')"
+    },
+    {
+        "file": "modules/Order/Upgrades.php",
+        "done": "A service module's own kind cancels after its change (changePackage()): a gateway cannot roll back."
     }
 ]

@@ -55,7 +55,7 @@
                 <ul class="bf-cart-items">
                     {% for item in cart.items %}
                         <li class="bf-cart-item">
-                            <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#{{ item.type == 'hosting' ? 'server' : (item.type == 'domain' ? 'world' : 'apps') }}"/></svg></span>
+                            <span class="bf-cart-item-icon" aria-hidden="true"><svg class="icon"><use href="#{{ item.type == 'hosting' ? 'server' : (item.type == 'domain' ? 'world' : service_type(item.type).icon ?? 'apps') }}"/></svg></span>
                             <div class="bf-cart-item-text">
                                 <strong dir="auto">{{ item.title }}</strong>
                                 <span>
