@@ -85,3 +85,29 @@ test('an authorized user who is not the owner gets a 403 page when saving a paym
         ClientFence\Mod\Client\Users::forget();
     }
 });
+
+test('a recurring-only gateway that cannot pay the invoice once sends the client to the invoice page to pick another method', function (): void {
+    $api = new class {
+        public function invoice_get(array $data): array
+        {
+            return ['id' => 7, 'hash' => $data['hash']];
+        }
+
+        public function invoice_payment(array $data): never
+        {
+            throw new ClientFence\Exception('One-time payments are not enabled for the selected payment gateway', null, 815);
+        }
+    };
+    $hash = str_repeat('b', 32);
+    $app = Mockery::mock(\ClientFence\App::class);
+    $app->shouldReceive('getRequest')->andReturn(Symfony\Component\HttpFoundation\Request::create('/'));
+    $app->shouldReceive('redirect')->once()->with('invoice/' . $hash)->andReturn(new RedirectResponse('/invoice/' . $hash));
+    $app->shouldNotReceive('render');
+
+    $di = container();
+    $di['api_guest'] = $api;
+    $controller = new Client();
+    $controller->setDi($di);
+
+    expect($controller->get_banklink($app, $hash, 2)->headers->get('Location'))->toBe('/invoice/' . $hash);
+});

@@ -732,6 +732,13 @@ class Client implements \ClientFence\InjectionAwareInterface
             }
 
             throw $e;
+        } catch (\ClientFence\Exception $e) {
+            // ClientFence core patch: a recurring-only gateway chosen at checkout for an invoice that cannot be a subscription: its page offers the methods that can pay it.
+            if ($e->getCode() === 815) {
+                return $app->redirect('invoice/' . $invoice['hash']);
+            }
+
+            throw $e;
         }
         // ClientFence core patch: read again after the payment set the gateway and its fee line, so the amount due shown is the one charged.
         $invoice = $this->getInvoiceOrRedirect($app, $data);

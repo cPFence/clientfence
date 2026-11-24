@@ -40,7 +40,8 @@
 {% set store = guest.clientfence_store_info %}
 {% set profile = client ? client.profile_get : null %}
 {% set form = product.form_id and guest.extension_is_on({ mod: 'formbuilder' }) ? guest.formbuilder_get({ id: product.form_id }) : null %}
-{% set methods = guest.invoice_payment_methods({ amount: 0, currency: cart_currency.code }) %}
+{# ClientFence core patch: an invoice with a recurring line (the plan, a recurring add-on, a hosting plan's domain) can start a subscription, so recurring-only gateways are offered too, as checkout accepts them. #}
+{% set methods = guest.invoice_payment_methods({ amount: 0, currency: cart_currency.code, subscribable: product.pricing.type != 'once' or product.type == 'hosting' ? 1 : 0 }) %}
 {% set order = ['1W', '1M', '3M', '6M', '1Y', '2Y', '3Y'] %}
 {% set prices = {} %}
 {% if product.pricing.type == 'recurrent' %}

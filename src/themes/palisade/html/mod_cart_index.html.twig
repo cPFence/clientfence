@@ -38,7 +38,8 @@
     {% set from_balance = client and due > 0 and client.profile_get.currency|default(cur.code) == cur.code and client.client_balance_get_total >= due %}
     {# The invoice's taxed lines before tax, for the tax of a taxed payment fee (checkout.js does the same). #}
     {% set taxed = inclusive ? (tax.rate > 0 ? (total * 100 / (100 + tax.rate))|round(2) : 0) : total %}
-    {% set methods = client and due > 0 and not from_balance ? guest.invoice_payment_methods({ amount: due, currency: cur.code, taxed: taxed }) : [] %}
+    {# ClientFence core patch: a cart with a recurring item can start a subscription, so recurring-only gateways are offered too, as checkout accepts them. #}
+    {% set methods = client and due > 0 and not from_balance ? guest.invoice_payment_methods({ amount: due, currency: cur.code, taxed: taxed, subscribable: cart.items|filter(i => i.period|default(false))|length > 0 ? 1 : 0 }) : [] %}
     {% set back = 'cart' %}
     <script nonce="{{ csp_nonce }}" type="application/json" data-bf-cart-data>{{ {
         urls: { invoice: 'invoice'|url, banklink: 'invoice/banklink'|url, service: 'order/service/manage'|url },

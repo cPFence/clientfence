@@ -10270,5 +10270,17 @@
     {
         "file": "modules/Email/Service.php",
         "done": "ClientFence core patch: a staff email (the staff sign-in PIN) on the primary site, as sendTemplate()."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_product.html.twig",
+        "done": "ClientFence core patch: an invoice with a recurring line (the plan, a recurring add-on, a hosting plan's domain) can start a subscription, so recurring-only gateways are offered too, as checkout accepts them."
+    },
+    {
+        "file": "themes/palisade/html/mod_cart_index.html.twig",
+        "done": "ClientFence core patch: a cart with a recurring item can start a subscription, so recurring-only gateways are offered too, as checkout accepts them."
+    },
+    {
+        "file": "modules/Invoice/Controller/Client.php",
+        "done": "ClientFence core patch: a recurring-only gateway chosen at checkout for an invoice that cannot be a subscription: its page offers the methods that can pay it."
     }
 ]
