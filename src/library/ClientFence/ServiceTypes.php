@@ -18,8 +18,20 @@ namespace ClientFence;
  * - "changeable": true — its services renew at the order's price and can move to another product (upgrades, staff
  *   moves, bulk prices); the module's action_change_package($order), if it has one, then applies the new product. It runs
  *   inside the core's database transaction (a paid change also holds the order's renewal lock, the client's money lock
- *   and the order's row): it validates and queues, and never waits on a provider; it throws to cancel the change;
- * - "icon": an icon of the client theme's sprite for its services in the cart and on the service page.
+ *   and the order's row): it validates and queues, and never waits on a provider; it throws to cancel the change.
+ *   Before a client's change is offered or priced, the module's check_change_package($order, $to), if it has one, may
+ *   refuse it (Order\Upgrades: each product and cycle of the client's plan list, an options quote, and the request made
+ *   from them). `$order` is the service as it is; `$to` is what the change would set: product_id, period, options and
+ *   option_lines, the values action_change_package() then finds on the order and in its config. It returns a reason for
+ *   the client (already translated) to refuse, or null to allow. It is called once per offered product and cycle, outside
+ *   the money transaction and the order's row lock (a client's request holds only that service's request lock): it reads,
+ *   changes nothing and never waits on a provider. A throw refuses (logged). Staff moves and option changes do not call
+ *   it: action_change_package() refuses them at once, and nothing is paid;
+ * - "import": true — "Already set up" (staff Add New Order) still calls the module's activation (action_activate($order)
+ *   with "lifecycle": "built-in", else activate($order, $service)), and the order config then has "import" set (Order\Service::getConfig($order)['import']): the module links the existing
+ *   service instead of creating it, as hosting and domains do. Without it the core records the service without calling
+ *   the module's activation;
+ * - "icon": an icon of the client theme's sprite for its services in the cart, the services list and the service page.
  *
  * At the manifest root, any module (a service module or not) declares its hooks:
  * - "client_calls": {"method": "permission"} — what an authorized user needs for each client API call of the module
@@ -48,6 +60,15 @@ namespace ClientFence;
  *
  * Switched-off modules: their root hooks and their "changeable" do not count. Lifecycle, entity, single_unit, order_config
  * and icon keep working, so the existing orders of a switched-off module still suspend, cancel and show.
+ *
+ * Any switched-on module's Service may also have health(): rows it adds to System Health (Clientfence\Health), a list
+ * of {id, state: "ok"|"warn"|"bad", title, detail, url, params}: title and detail in English with their :name values in
+ * params (translated when read, as the core rows), url an admin path (optional). Text is cut to 100 characters (id), 200
+ * (title), 1000 (detail), 255 (url) and 500 (each params value, text or a number). The core prefixes each id with the
+ * module id ("mod_<module>:<id>"), so no module replaces a core row or another module's row; a "bad" row emails the
+ * Super Administrators once, as a core row. It runs from the hourly cron and from staff "Run checks now": it must be
+ * fast, with no long provider waits. A throw gives one "bad" row with its message; a module that cannot run is not called
+ * (the core's row says why).
  *
  * Any module also declares "module_api" (the hook level it was written for) and "requires" (PHP extensions and version):
  * a module that cannot run on this PHP stays switched on but its code is never loaded (Module::cannotRun()). invalid() checks the known keys'
@@ -245,6 +266,7 @@ final class ServiceTypes
             'service.single_unit' => 'is_bool',
             'service.order_config' => 'is_bool',
             'service.changeable' => 'is_bool',
+            'service.import' => 'is_bool',
             'service.icon' => 'is_string',
         ];
         foreach ($rules as $path => $valid) {

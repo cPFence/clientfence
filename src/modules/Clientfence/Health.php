@@ -304,13 +304,32 @@ final class Health
     }
 
     // ---- Switched-on modules this PHP cannot run (the cron's and the web's can differ): their code is left out everywhere.
+    // The others may add their own rows (their Service health(); ServiceTypes documents it), each module on its own.
     private static function modules(\Pimple\Container $di): iterable
     {
         foreach ($di['mod_service']('extension')->getExtensionRepository()->findInstalledNamesByType(\ClientFence\Mod\Extension\Entity\Extension::TYPE_MOD) as $name) {
-            $reason = $di['mod']($name)->cannotRun();
+            $mod = $di['mod']($name);
+            $reason = $mod->cannotRun();
             if ($reason !== null) {
                 yield self::check('core', 'mod_runs_' . $name, self::msg('The :mod module cannot run'), 'bad', $reason[0], 'extension', $reason[1]);
+
+                continue;
             }
+            // Prefixed with the module id (":" is in no module id), so a row never replaces a core row or another module's.
+            $prefix = 'mod_' . $name . ':';
+            $rows = [];
+            // The whole report is saved as one value, so one module's long text must not break its save.
+            $cut = static fn (string $text, int $max): string => mb_substr($text, 0, $max);
+            try {
+                $service = $mod->hasService() ? $mod->getService() : null;
+                foreach ($service !== null && method_exists($service, 'health') ? $service->health() : [] as $row) {
+                    $params = array_map(static fn (string|int|float $value): string => $cut((string) $value, 500), $row['params'] ?? []);
+                    $rows[] = self::check('services', $prefix . $cut((string) $row['id'], 100), $cut($row['title'], 200), in_array($row['state'], ['ok', 'warn', 'bad'], true) ? $row['state'] : 'warn', $cut($row['detail'], 1000), $cut($row['url'] ?? '', 255), $params);
+                }
+            } catch (\Throwable $e) {
+                $rows = [self::check('services', $prefix, self::msg('Health checks of the :mod module'), 'bad', self::msg('The check could not run: :error'), 'extension', [':mod' => $name, ':error' => self::safe($e->getMessage())])];
+            }
+            yield from $rows;
         }
     }
 
@@ -719,7 +738,8 @@ final class Health
     // An error message without anything that looks like a key, token or password.
     private static function safe(string $message): string
     {
-        return mb_substr((string) preg_replace('/(key|token|pass(word)?|secret)=\S+/i', '$1=***', $message), 0, 200);
+        // An Authorization header or a bearer token too, as an HTTP client's exception may quote the request.
+        return mb_substr((string) preg_replace(['/(authorization)["\']?\s*[:=]\s*["\']?(?:(?:bearer|basic)\s+)?[^\s"\',}]+/i', '/\b(bearer)\s+[^\s"\',}]+/i', '/(key|token|pass(word)?|secret)=\S+/i'], ['$1: ***', '$1 ***', '$1=***'], $message), 0, 200);
     }
 
     private static function ago(int $seconds): string

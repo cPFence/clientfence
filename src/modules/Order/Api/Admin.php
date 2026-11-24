@@ -776,13 +776,14 @@ class Admin extends \ClientFence\Api\AbstractApi
     /**
      * ClientFence: staff set a service's configurable options (`options`: option id => value id,
      * 0/1 or a quantity); with `reprice`, the recurring price moves by the difference. No invoice.
+     * ClientFence core patch: with `change_package`, a service module's own type applies them (its action_change_package()).
      */
     #[RequiredParams(['id' => 'Order ID was not passed'])]
     public function options_update($data): bool
     {
         $this->checkPermissions('order', 'manage');
         $choice = isset($data['options']) && is_array($data['options']) ? $data['options'] : [];
-        \ClientFence\Mod\Order\Upgrades::staffSetOptions($this->getDi(), (int) $data['id'], $choice, !empty($data['reprice']));
+        \ClientFence\Mod\Order\Upgrades::staffSetOptions($this->getDi(), (int) $data['id'], $choice, !empty($data['reprice']), !empty($data['change_package']));
 
         return true;
     }

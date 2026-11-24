@@ -10166,5 +10166,29 @@
     {
         "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
         "done": "ClientFence core patch: the gateway fee, as HostBill's Gateway Fees (GatewayFees.php, config \"fee\"); not for a gateway"
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "without running its module; a type whose manifest declares \"import\" (ServiceTypes) handles it itself."
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch: with `change_package`, a service module's own type applies them (its action_change_package())."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the admin templates hold the section, as for its tab (a module's admin-only one showed an empty tab);"
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_list.html.twig",
+        "done": "ClientFence core patch: a module's type shows the icon its manifest declares (ServiceTypes), as on the service page."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_new.html.twig",
+        "done": "ClientFence core patch: \"Already set up\" runs the activation of a type that declares import (ServiceTypes), so its label says it links (hosting has its own)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: the order form's answers show as before: for every type without a client section (a module's admin-only one too)."
     }
 ]

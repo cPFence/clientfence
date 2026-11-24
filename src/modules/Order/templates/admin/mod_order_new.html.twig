@@ -23,7 +23,8 @@
         {% endfor %}
     {% endif %}
     {# ClientFence core patch: no quantity for a product type of one unit per order (ServiceTypes). #}
-    {% set products = products|merge([{ 'id': p.id, 'title': p.title, 'type': p.type, 'periods': cycles, 'quantity': p.allow_quantity_select and not (service_type(p.type).single_unit ?? false) }]) %}
+    {# ClientFence core patch: "Already set up" runs the activation of a type that declares import (ServiceTypes), so its label says it links (hosting has its own). #}
+    {% set products = products|merge([{ 'id': p.id, 'title': p.title, 'type': p.type, 'periods': cycles, 'quantity': p.allow_quantity_select and not (service_type(p.type).single_unit ?? false), 'imports': p.type != 'hosting' and (service_type(p.type).import ?? false) is same as(true) }]) %}
 {% endfor %}
 {% set tlds = [] %}
 {% for t in guest.serviceDomain_tlds %}
@@ -156,7 +157,7 @@
         productLabel: 'Product / service'|trans, period: 'Billing cycle'|trans, quantity: 'Quantity'|trans,
         priceOverride: 'Price override'|trans, username: 'Username'|trans, password: 'Password'|trans,
         generate: 'Leave blank to generate'|trans, import: 'Import an existing account from the server (do not create it)'|trans, priceHint: 'Leave empty for the normal price.'|trans,
-        setUp: 'Already set up (do not run the module)'|trans, start: 'Start date'|trans, startHint: 'The day the service started: its first period counts from it. The invoice is dated today.'|trans,
+        setUp: 'Already set up (do not run the module)'|trans, link: 'Already set up (link the existing service, do not create it)'|trans, start: 'Start date'|trans, startHint: 'The day the service started: its first period counts from it. The invoice is dated today.'|trans,
         existing: 'Existing domain'|trans, existingHint: 'No registrar action: the expiry date is read from the registrar when it can tell.'|trans,
         ownDomain: 'The client’s own domain, or register or transfer it with this order.'|trans,
         registerToo: 'Register :domain too'|trans, transferToo: 'Transfer :domain too'|trans,
@@ -252,7 +253,7 @@
                         <small class="form-hint">${esc(text.priceHint)}</small></div>
                     ${startHtml(it)}
                     <div class="col-12"><label class="form-check mb-0"><input class="form-check-input" type="checkbox" data-f="import"${it.import ? ' checked' : ''}>
-                        <span class="form-check-label">${esc(p.type === 'hosting' ? text.import : text.setUp)}</span></label></div>
+                        <span class="form-check-label">${esc(p.type === 'hosting' ? text.import : (p.imports ? text.link : text.setUp))}</span></label></div>
                 </div></div>`;
         }).join('') : `<p class="text-secondary text-center mb-0">${esc(text.noProducts)}</p>`;
 

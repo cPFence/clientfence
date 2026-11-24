@@ -866,7 +866,9 @@
         </div>
 
         <div class="tab-pane fade" id="tab-service" role="tabpanel">
-            {% if guest.system_template_exists({ 'file': service_partial }) %}
+            {# ClientFence core patch: the admin templates hold the section, as for its tab (a module's admin-only one showed an empty tab);
+               the custom type's old form stays out as before: its Update rewrote stored lists as text. #}
+            {% if admin.system_template_exists({ 'file': service_partial }) and order.service_type != 'custom' %}
                 {% set service = order_service %}
                 {% if service is not null %}
                     {{ include(service_partial, { 'order': order, 'service': service }) }}
@@ -877,11 +879,12 @@
                         </div>
                     </div>
                 {% endif %}
-            {% elseif order.form_id and guest.extension_is_on({ 'mod': 'formbuilder' }) %}
-                {{ include('mod_formbuilder_manage.html.twig', order) }}
-            {% else %}
-                {# trans 'Order form was not found' #}
             {% endif %}
+            {# ClientFence core patch: the order form's answers show as before: for every type without a client section (a module's admin-only one too). #}
+            {% if order.form_id and not guest.system_template_exists({ 'file': service_partial }) and guest.extension_is_on({ 'mod': 'formbuilder' }) %}
+                {{ include('mod_formbuilder_manage.html.twig', order) }}
+            {% endif %}
+            {# trans 'Order form was not found' #}
         </div>
 
         <div class="tab-pane fade" id="tab-invoices" role="tabpanel">

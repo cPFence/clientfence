@@ -186,11 +186,13 @@ test('palisade pagination partial skips paginator when the list fits on a single
     expect($html)->not->toContain('class="pagination"');
 });
 
-test('service pagination links stay on the service list', function (): void {
+/** The client services list (mod_order_list.html.twig) with stub filters; `$orders` is the page's list. */
+function orderListHtml(array $orders, int $total): string
+{
     $twig = new Twig\Environment(new Twig\Loader\ChainLoader([
         new Twig\Loader\ArrayLoader([
             'layout_default.html.twig' => '{% block content %}{% endblock %}',
-            'macro_functions.html.twig' => '',
+            'macro_functions.html.twig' => '{% macro status_badge(status, type) %}{% endmacro %}',
             'partial_pagination.html.twig' => '<a href="/{{ url }}?page=2">Next</a>',
         ]),
         new Twig\Loader\FilesystemLoader(PATH_MODS . '/Order/templates/client'),
@@ -200,12 +202,35 @@ test('service pagination links stay on the service list', function (): void {
     }
     // The status filter cards pass a query, as the real url filter allows.
     $twig->addFilter(new Twig\TwigFilter('url', fn ($value, ?array $query = null) => $value));
-    $client = new class {
+    // A module's product type that declares an icon in its manifest (ServiceTypes).
+    $twig->addFunction(new Twig\TwigFunction('service_type', fn (?string $type): array => $type === 'example' ? ['icon' => 'cloud'] : []));
+    $client = new class($orders, $total) {
+        public function __construct(private readonly array $orders, private readonly int $total)
+        {
+        }
+
         public function order_get_list(): array
         {
-            return ['list' => [], 'total' => 0];
+            return ['list' => $this->orders, 'total' => $this->total];
+        }
+
+        public function servicehosting_accounts(): array
+        {
+            return [];
         }
     };
-    $html = $twig->render('mod_order_list.html.twig', ['request' => ['ajax' => false, 'page' => 1], 'client' => $client]);
-    expect($html)->toContain('href="/order/service?page=2"');
+
+    return $twig->render('mod_order_list.html.twig', ['request' => ['ajax' => false, 'page' => 1], 'client' => $client, 'default_currency' => 'USD']);
+}
+
+test('service pagination links stay on the service list', function (): void {
+    expect(orderListHtml([], 0))->toContain('href="/order/service?page=2"');
+});
+
+test('the services list shows the icon a module declares for its type, and the core types\' own icons', function (): void {
+    $order = fn (int $id, string $type): array => ['id' => $id, 'service_type' => $type, 'title' => 'Service ' . $id, 'expires_at' => null, 'total' => 5, 'currency' => 'USD', 'period' => '1M', 'status' => 'active', 'config' => []];
+    $html = orderListHtml([$order(1, 'example'), $order(2, 'hosting'), $order(3, 'custom')], 3);
+
+    preg_match_all('/<use href="#([a-z-]+)"/', $html, $icons);
+    expect($icons[1])->toBe(['cloud', 'server', 'apps']);
 });

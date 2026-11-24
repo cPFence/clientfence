@@ -298,3 +298,13 @@ test('a changed or deleted release file counts, but not the root .htaccess, the 
         (new Symfony\Component\Filesystem\Filesystem())->remove($root);
     }
 });
+
+test('an error message keeps no secret: key=value, an Authorization header or a bearer token', function (string $message, string $safe): void {
+    expect((new ReflectionMethod(Health::class, 'safe'))->invoke(null, $message))->toBe($safe);
+})->with([
+    'key=value' => ['Login failed: api_key=S3cret&x=1', 'Login failed: api_key=***'],
+    'Authorization header' => ['401 (Authorization: Bearer abc.def)', '401 (Authorization: ***'],
+    'Authorization in JSON' => ['sent {"Authorization":"Basic dXNlcjpwYXNz"}', 'sent {"Authorization: ***"}'],
+    'bearer token alone' => ['token rejected: bearer xyz123 expired', 'token rejected: bearer *** expired'],
+    'nothing secret' => ['Connection refused', 'Connection refused'],
+]);

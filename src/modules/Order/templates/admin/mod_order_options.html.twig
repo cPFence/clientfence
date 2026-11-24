@@ -73,6 +73,13 @@
                     <input class="form-check-input" type="checkbox" name="reprice" value="1" checked>
                     <span class="form-check-label">{{ 'Change the recurring price by the difference (catalog prices at today\'s exchange rate)'|trans }}</span>
                 </label>
+                {# ClientFence core patch: a service module's own type applies the new options to the service, as Change Product does. #}
+                {% if (service_type(order.service_type).changeable ?? false) is same as(true) %}
+                <label class="form-check mt-2 mb-0">
+                    <input class="form-check-input" type="checkbox" name="change_package" value="1" checked>
+                    <span class="form-check-label">{{ 'Change Package: apply the new options to the service'|trans }}</span>
+                </label>
+                {% endif %}
                 {% endif %}
             {% endblock %}
 

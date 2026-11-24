@@ -4778,6 +4778,32 @@ test('createFromOrder records an already set up service without running its modu
         ->and($order->getExpiresAt())->not->toBeNull();
 });
 
+test('an already set up service runs the activation of a type whose module declares import, with the flag; others are only recorded', function (string $type, ?array $manifest, bool $runs): void {
+    $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1M', 'serviceType' => $type, 'config' => json_encode(['import' => 1])]);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('getOrderService')->andReturn(new stdClass());
+    // The module reads the flag from the order's config (getConfig($order)['import']).
+    $serviceMock->shouldReceive('_callOnService')->times($runs ? 1 : 0)->with($order, Order::ACTION_ACTIVATE)->andReturn(true);
+    $serviceMock->shouldReceive('saveStatusChange')->once();
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => Mockery::mock()->shouldIgnoreMissing());
+    // A module's type: its manifest stands in for the ones on disk; hosting and domains use their own.
+    $di['request_cache'] = new ArrayObject($manifest === null ? [] : ['module_manifests' => ['service' . $type => $manifest]]);
+    $serviceMock->setDi($di);
+
+    $serviceMock->createFromOrder($order);
+
+    expect($order->getStatus())->toBe(Order::STATUS_ACTIVE);
+})->with([
+    'hosting' => ['hosting', null, true],
+    'domain' => ['domain', null, true],
+    'custom' => ['custom', null, false],
+    'a module type that declares import' => ['example', ['service' => ['import' => true]], true],
+    'a module type that does not' => ['example', ['service' => ['lifecycle' => 'built-in']], false],
+]);
+
 test('createFromOrder gives an existing domain the expiry its registrar reported', function (): void {
     $order = createEntity(Order::class, ['id' => 1, 'productId' => 7, 'quantity' => 1, 'period' => '1Y', 'serviceType' => 'domain', 'config' => json_encode(['import' => 1])]);
     $domain = new Model_ServiceDomain();

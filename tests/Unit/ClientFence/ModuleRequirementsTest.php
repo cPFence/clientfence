@@ -14,7 +14,7 @@ use function Tests\Helpers\container;
 
 // Modules written to disk for a test: a Service.php that records when PHP loads it, with hooks, staff permissions and a
 // registrar adapter (also recording when it is loaded).
-function requirementsModule(string $id, array $manifest): void
+function requirementsModule(string $id, array $manifest, string $methods = ''): void
 {
     $dir = PATH_MODS . '/' . ucfirst($id);
     mkdir($dir . '/Registrar/Adapter', 0o755, true);
@@ -50,6 +50,7 @@ function requirementsModule(string $id, array $manifest): void
             {
                 return ['view' => []];
             }
+            {$methods}
         }
         PHP);
 }
@@ -412,6 +413,33 @@ test('System Health shows each switched-on module this PHP cannot run, and why',
         ->and(__trans($rows[0]['detail'], $rows[0]['params']))->toContain('needs the PHP extension zz_no_such_extension');
 });
 
+test('System Health adds the rows of each switched-on module under its own id; a throw is one bad row; a module that cannot run is not asked', function (): void {
+    requirementsModule('zzreqrows', [], <<<'PHP'
+        public function health(): array
+        {
+            return [
+                ['id' => 'queue', 'state' => 'warn', 'title' => 'Queue of :name', 'detail' => 'Slow.', 'params' => [':name' => 'node 1']],
+                ['id' => 'fw', 'state' => 'unknown', 'title' => 'Firewall', 'detail' => str_repeat('Up. ', 20000), 'url' => 'zzreqrows'],
+            ];
+        }
+        PHP);
+    requirementsModule('zzreqboom', [], 'public function health(): array { throw new \RuntimeException("API down token=abc (Authorization: Bearer ey.J9-x)"); }');
+    requirementsModule('zzreqbroke', ['requires' => ['extensions' => ['zz_no_such_extension']]], 'public function health(): array { $GLOBALS["requirements_ran"][] = "health"; return []; }');
+    $di = requirementsContainer(['zzreqboom', 'zzreqbroke', 'zzreqok', 'zzreqrows']);
+
+    $rows = iterator_to_array((new ReflectionMethod(Health::class, 'modules'))->invoke(null, $di), false);
+
+    expect(array_column($rows, 'state', 'id'))->toBe(['mod_zzreqboom:' => 'bad', 'mod_runs_zzreqbroke' => 'bad', 'mod_zzreqrows:queue' => 'warn', 'mod_zzreqrows:fw' => 'warn'])
+        ->and(__trans($rows[0]['title'], $rows[0]['params']))->toBe('Health checks of the zzreqboom module')
+        ->and(__trans($rows[0]['detail'], $rows[0]['params']))->toBe('The check could not run: API down token=*** (Authorization: ***')
+        // The report is saved as one value: a module's long text is cut.
+        ->and(mb_strlen($rows[3]['detail']))->toBe(1000)
+        ->and(__trans($rows[2]['title'], $rows[2]['params']))->toBe('Queue of node 1')
+        ->and([$rows[2]['group'], $rows[3]['url']])->toBe(['services', 'zzreqrows'])
+        ->and($GLOBALS['requirements_ran'])->toBe([])
+        ->and($GLOBALS['requirements_loaded'])->not->toContain('zzreqbroke');
+});
+
 test('the manifest check refuses a known key of the wrong type and names differing only in case, not an unknown key', function (array $manifest, ?string $problem): void {
     $found = ServiceTypes::invalid('example', $manifest);
 
@@ -421,7 +449,7 @@ test('the manifest check refuses a known key of the wrong type and names differi
     'every known key well typed' => [['module_api' => 1, 'requires' => ['extensions' => ['sodium'], 'php' => '8.3'], 'sites' => true, 'migrations' => 'X', 'usage' => false,
         'client_calls' => ['a' => 'products', 'b' => ['products', 'invoices']], 'client_pages' => ['p' => null, 'q' => 'products'], 'store_calls' => ['guest' => ['m' => 'list']],
         'rate_limits' => ['example_ip' => ['policy' => 'fixed_window', 'limit' => 5, 'interval' => '1 minute']],
-        'service' => ['lifecycle' => 'built-in', 'entity' => 'E', 'single_unit' => true, 'order_config' => false, 'changeable' => true, 'icon' => 'i']], null],
+        'service' => ['lifecycle' => 'built-in', 'entity' => 'E', 'single_unit' => true, 'order_config' => false, 'changeable' => true, 'import' => true, 'icon' => 'i']], null],
     'module_api as text' => [['module_api' => '1'], 'The manifest.json of the example module is not valid: module_api has the wrong type.'],
     'php as a range' => [['requires' => ['php' => '>=8.4']], 'The manifest.json of the example module is not valid: requires.php has the wrong type.'],
     'requires as a list' => [['requires' => ['sodium']], 'The manifest.json of the example module is not valid: requires has the wrong type.'],
@@ -433,6 +461,7 @@ test('the manifest check refuses a known key of the wrong type and names differi
     'usage as text' => [['usage' => 'yes'], 'The manifest.json of the example module is not valid: usage has the wrong type.'],
     'sites as a number' => [['sites' => 1], 'The manifest.json of the example module is not valid: sites has the wrong type.'],
     'changeable as text' => [['service' => ['changeable' => 'true']], 'The manifest.json of the example module is not valid: service.changeable has the wrong type.'],
+    'import as a number' => [['service' => ['import' => 1]], 'The manifest.json of the example module is not valid: service.import has the wrong type.'],
     'client calls in two cases' => [['client_calls' => ['report' => 'products', 'Report' => 'invoices']], 'The manifest.json of the example module is not valid: client_calls has names that differ only in letter case.'],
     'pages in two cases' => [['client_pages' => ['meters' => null, 'Meters' => null]], 'The manifest.json of the example module is not valid: client_pages has names that differ only in letter case.'],
     'store roles in two cases' => [['store_calls' => ['guest' => ['m' => 'list'], 'Guest' => ['n' => 'list']]], 'The manifest.json of the example module is not valid: store_calls has names that differ only in letter case.'],

@@ -37,12 +37,13 @@
             {# A hosting service's domain: its account's (staff can change it), else the one on the order. #}
             {% set domains = client.servicehosting_accounts|column('domain', 'order_id') %}
             {% for order in orders.list %}
+                {# ClientFence core patch: a module's type shows the icon its manifest declares (ServiceTypes), as on the service page. #}
                 {% set href = "order/service/manage/#{order.id}"|url %}
                 {% set ordered = order.service_type == 'hosting' ? order.config.domain|default(null) : null %}
                 {% set sld = ordered is iterable ? ordered[ordered.action|default('') ~ '_sld']|default('') : '' %}
                 {% set domain = domains[order.id]|default('') ?: (sld ? sld ~ '.' ~ ordered[ordered.action ~ '_tld']|default('')|trim('.', 'left') : '') %}
                 <div class="cf-svc-row">
-                    <span class="clientfence-hosting-monogram" aria-hidden="true"><svg class="icon"><use href="#{{ { 'hosting': 'server', 'domain': 'world', 'license': 'key', 'apikey': 'key', 'downloadable': 'folder' }[order.service_type]|default('apps') }}"/></svg></span>
+                    <span class="clientfence-hosting-monogram" aria-hidden="true"><svg class="icon"><use href="#{{ { 'hosting': 'server', 'domain': 'world', 'license': 'key', 'apikey': 'key', 'downloadable': 'folder' }[order.service_type]|default(service_type(order.service_type).icon ?? 'apps') }}"/></svg></span>
                     <div class="cf-svc-main">
                         <a class="cf-svc-title" href="{{ href }}">{{ order.title }}</a>
                         <span class="cf-svc-meta">{% if domain %}<bdi dir="ltr">{{ domain }}</bdi> · {% endif %}<bdi>#{{ order.id }}</bdi></span>

@@ -2053,6 +2053,134 @@ test('a module that refuses the change leaves the service as it was', function (
         ->and($db->fetchAssociative('SELECT product_id, price FROM client_order WHERE id = 1'))->toBe(['product_id' => 1, 'price' => 5.0]);
 });
 
+/**
+ * The module of the type set up by upgradesModuleType() gets check_change_package(), which records each `$to` it gets
+ * (with the order id) and answers `$check($to)`.
+ */
+function upgradesCheckingModule(Pimple\Container $di, Closure $check): ArrayObject
+{
+    $calls = new ArrayObject();
+    $module = new class($check, $calls) {
+        public function __construct(private readonly Closure $check, private readonly ArrayObject $calls)
+        {
+        }
+
+        public function check_change_package(Model_ClientOrder $order, array $to): ?string
+        {
+            $this->calls->append(['order' => (int) $order->id] + $to);
+
+            return ($this->check)($to);
+        }
+    };
+    $base = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => strtolower($name) === 'serviceexample' ? $module : $base($name, $sub));
+
+    return $calls;
+}
+
+test('a service module refuses a plan change before it is offered, priced or requested, with its reason', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    upgradesModuleType($db, $di);
+    $calls = upgradesCheckingModule($di, fn (array $to): ?string => $to['product_id'] === 2 ? 'No room on the server for Pro.' : null);
+
+    $options = Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW);
+    expect($options)->toMatchArray(['available' => true, 'reason' => 'No room on the server for Pro.'])
+        ->and(array_map(fn (array $o): array => [$o['product_id'], $o['period']], $options['options']))->toBe([[1, '1Y']])
+        ->and($calls[0])->toBe(['order' => 1, 'product_id' => 1, 'period' => '1Y', 'options' => [], 'option_lines' => []])
+        ->and(fn () => Upgrades::request($di, upgradesOrder($di, 1), 2, '1M', UPGRADES_NOW))->toThrow(InformationException::class, 'This change is not available for this service.');
+
+    // Refusing every plan: its reason alone, also for the request, and nothing is invoiced.
+    upgradesCheckingModule($di, fn (): string => 'Plan changes are paused.');
+    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => 'Plan changes are paused.', 'notice' => true])
+        ->and(fn () => Upgrades::request($di, upgradesOrder($di, 1), 1, '1Y', UPGRADES_NOW))->toThrow(InformationException::class, 'Plan changes are paused.')
+        ->and((int) $db->fetchOne('SELECT COUNT(*) FROM ' . Upgrades::TABLE))->toBe(0);
+
+    // Allowing: every plan, as without the check.
+    upgradesCheckingModule($di, fn (): ?string => null);
+    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW)['options'])->toHaveCount(3);
+});
+
+test('a service module refuses an options change before it is quoted', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    upgradesModuleType($db, $di);
+    $o = upgradesWithOptions($di);
+    $calls = upgradesCheckingModule($di, fn (array $to): ?string => ($to['options'][$o['support']] ?? null) === $o['priority'] ? 'Priority support is full.' : null);
+
+    expect(fn () => Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['support'] => $o['priority']], UPGRADES_NOW))->toThrow(InformationException::class, 'Priority support is full.')
+        ->and(fn () => Upgrades::request($di, upgradesOrder($di, 1), 1, '1M', UPGRADES_NOW, [$o['support'] => $o['priority']]))->toThrow(InformationException::class, 'Priority support is full.')
+        ->and(Upgrades::optionsQuote($di, upgradesOrder($di, 1), [$o['ram'] => $o['2gb']], UPGRADES_NOW))->toMatchArray(['product_id' => 1, 'options_change' => true])
+        ->and($calls[count($calls) - 1]['options'][$o['ram']])->toBe($o['2gb'])
+        ->and(array_map('intval', array_column($calls[count($calls) - 1]['option_lines'], 'option_id')))->toContain($o['ram']);
+});
+
+test('a module whose check throws, or that cannot run here, is offered no plan change', function (bool $runs): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    upgradesModuleType($db, $di);
+    if ($runs) {
+        upgradesCheckingModule($di, fn () => throw new RuntimeException('Provider down'));
+    } else {
+        // Module::getService() throws the reason for a module that cannot run here.
+        $base = $di['mod_service'];
+        $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => strtolower($name) === 'serviceexample' ? throw new InformationException('The serviceexample module needs the PHP extension zz.') : $base($name, $sub));
+    }
+
+    expect(Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => 'This change is not available now. Please contact us.', 'notice' => true]);
+})->with(['its check throws' => [true], 'it cannot run' => [false]]);
+
+test('staff option changes reach a changeable module type when asked, and its refusal changes nothing', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $module = upgradesModuleType($db, $di);
+    $o = upgradesWithOptions($di);
+
+    Upgrades::staffSetOptions($di, 1, [$o['ram'] => $o['2gb']], false);
+    expect($module->changes)->toBe([]);
+    Upgrades::staffSetOptions($di, 1, [$o['ram'] => $o['4gb']], false, true);
+    expect($module->changes)->toBe([[1, 1, '1M']]);
+
+    $module->fail = 'Server offline';
+    expect(fn () => Upgrades::staffSetOptions($di, 1, [$o['ram'] => $o['2gb']], true, true))->toThrow(RuntimeException::class, 'Server offline')
+        ->and(upgradesOrderOptions($db, 1)['options'][$o['ram']])->toBe($o['4gb'])
+        ->and((float) $db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(13.0);
+});
+
+test('a staff options change that moves the price stops the old gateway subscription, as a staff move does', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $o = upgradesWithOptions($di);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()->andReturn(1);
+
+    // The price kept (no reprice) leaves the subscription alone; a repriced change stops it and says so.
+    Upgrades::staffSetOptions($di, 1, [$o['ram'] => $o['2gb']], false);
+    Upgrades::staffSetOptions($di, 1, [$o['support'] => $o['priority']], true);
+    expect($di['status_notes'][1][1])->toContain('automatic payment by subscription at the old price stopped');
+});
+
+test('a staff options change on a domain keeps its gateway subscription: its renewal follows the TLD price, not the order', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $o = upgradesWithOptions($di);
+    $db->update('client_order', ['service_type' => 'domain'], ['id' => 1]);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->never();
+
+    Upgrades::staffSetOptions($di, 1, [$o['support'] => $o['priority']], true);
+    expect((float) $db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe(23.0);
+});
+
+test('staff option changes of a type that is not changeable never call a module', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $o = upgradesWithOptions($di);
+    $base = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => str_starts_with(strtolower($name), 'service') ? throw new LogicException('module called') : $base($name, $sub));
+
+    Upgrades::staffSetOptions($di, 1, [$o['ram'] => $o['2gb']], false, true);
+    expect(upgradesOrderOptions($db, 1)['options'][$o['ram']])->toBe($o['2gb']);
+});
+
 // ClientFence (CF-56): "Servers (IP addresses)" on the target licence product.
 test('a licence is not offered a plan whose server limit its IP addresses do not fit, and says why', function (): void {
     $db = upgradesDb();

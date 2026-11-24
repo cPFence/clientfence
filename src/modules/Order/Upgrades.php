@@ -202,7 +202,8 @@ final class Upgrades
         $options = [];
         $locale = self::clientLocale($db, (int) $order->client_id);
         $ips = null;
-        $tooManyIps = false;
+        // Why some plans are left out, shown with the others (or alone when none is left).
+        $notice = null;
         $targets = $from['upgrades'];
         if ($from['upgrades_category']) {
             // ClientFence core patch: the category's products of the same type, read now so products added later are offered (CF-107); hidden ones are not.
@@ -221,7 +222,7 @@ final class Upgrades
             if ($productId !== (int) $order->product_id && $to['type'] === 'license' && $seats > 0) {
                 $ips ??= count(json_decode((string) $db->fetchOne('SELECT ips FROM service_license WHERE id = ?', [(int) $order->service_id]), true) ?: []);
                 if ($ips > $seats) {
-                    $tooManyIps = true;
+                    $notice ??= __trans('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.');
 
                     continue;
                 }
@@ -243,6 +244,12 @@ final class Upgrades
                 $sameCycle = isset($from['prices'][$period]) && $here !== null ? round(($from['prices'][$period] + $here['price']) * $rate * $quantity, 2) : null;
                 $quote = Proration::quote($paid, (string) $order->period, (string) $order->expires_at, $newTotal, $period, $now, $sameCycle, $anchor, Service::keepsRenewalDay($di), self::prorataDay($order));
                 if (!self::allowedBy($settings, $productRule, $orderRule, $quote['kind'])) {
+                    continue;
+                }
+                $refused = self::refusal($di, $order, ['product_id' => $productId, 'period' => $period, 'options' => $target['choice'], 'option_lines' => $target['lines']]);
+                if ($refused !== null) {
+                    $notice ??= $refused;
+
                     continue;
                 }
                 $quote = self::quoteWithTax($di, $order, $quote);
@@ -269,8 +276,8 @@ final class Upgrades
         }
 
         return $options === []
-            ? ($tooManyIps ? $none(__trans('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.'), null, $offered, true) : $none('There is nothing to change this service to.', null, $offered))
-            : ['available' => true, 'reason' => $tooManyIps ? __trans('To move to a plan with fewer servers, first remove the IP addresses it cannot hold.') : '', 'notice' => false, 'current' => $current, 'options' => $options, 'waiting' => null, 'options_change' => $offered !== [], 'product_options' => $offered];
+            ? ($notice !== null ? $none($notice, null, $offered, true) : $none('There is nothing to change this service to.', null, $offered))
+            : ['available' => true, 'reason' => $notice ?? '', 'notice' => false, 'current' => $current, 'options' => $options, 'waiting' => null, 'options_change' => $offered !== [], 'product_options' => $offered];
     }
 
     /**
@@ -976,6 +983,10 @@ final class Upgrades
         if (!self::allowedBy($settings, self::rule($di, self::SCOPE_PRODUCT, (int) $order->product_id), self::rule($di, self::SCOPE_ORDER, (int) $order->id), $quote['kind'])) {
             throw new InformationException('This change is not available for this service.');
         }
+        $refused = self::refusal($di, $order, ['product_id' => (int) $order->product_id, 'period' => (string) $order->period, 'options' => $new['choice'], 'option_lines' => $new['lines']]);
+        if ($refused !== null) {
+            throw new InformationException($refused);
+        }
 
         return [
             'product_id' => (int) $order->product_id,
@@ -1006,11 +1017,13 @@ final class Upgrades
     /**
      * Staff set a service's configurable options: any value, hidden ones too (an empty value leaves
      * a hidden option unset). With $reprice the recurring price moves by the options' difference
-     * (at today's rate); no invoice is made. The history gets the change.
+     * (at today's rate); no invoice is made. With $changePackage a service module's own kind applies
+     * the new options to its service (changePackage(), as staffMove()): its failure changes nothing.
+     * The history gets the change.
      *
      * @param array<int|string, mixed> $choice option id => value id, 0/1 or a quantity
      */
-    public static function staffSetOptions(\Pimple\Container $di, int $orderId, array $choice, bool $reprice): void
+    public static function staffSetOptions(\Pimple\Container $di, int $orderId, array $choice, bool $reprice, bool $changePackage = false): void
     {
         $order = $di['db']->getExistingModelById('ClientOrder', $orderId, 'Order not found');
         $choice = array_filter($choice, static fn (mixed $value): bool => $value !== '' && $value !== null);
@@ -1030,12 +1043,12 @@ final class Upgrades
             $config['option_lines'] = $new['lines'];
         }
         $note = sprintf('Options changed by staff: %s to %s', Options::summary($own['lines']) ?: 'none', Options::summary($new['lines']) ?: 'none');
+        $old = round((float) $order->price, 2);
         if ($reprice) {
             $rate = self::rate(self::db($di), (string) $order->currency);
             if ($rate === null) {
                 throw new InformationException('The currency of this service is unknown, so its price cannot change with the options.');
             }
-            $old = round((float) $order->price, 2);
             // ClientFence (QA r8 P-01): staff repricing uses today's prices and cycle for both choices too.
             $current = self::currentOptionsPrice($di, (int) $order->product_id, $own, $period, true);
             $order->price = max(0.0, round($old + ($new['price'] - $current) * $rate, 2));
@@ -1043,7 +1056,24 @@ final class Upgrades
         }
         $order->config = json_encode($config);
         $order->updated_at = date('Y-m-d H:i:s');
-        $di['db']->store($order);
+        $db = self::db($di);
+        $db->beginTransaction();
+        try {
+            $di['db']->store($order);
+            if ($changePackage) {
+                self::changePackage($di, $order);
+            }
+            // As staffMove(): a changed price must not keep charging the old gateway subscription; last, as a gateway cannot roll back.
+            // Only a kind that renews at the order's price (kinds()): a domain renews at its TLD price, so its subscription still fits.
+            $note .= $reprice && $order->price !== $old && in_array((string) $order->service_type, self::kinds($di), true) ? self::cancelSubscriptions($di, $order) : '';
+            $db->commit();
+        } catch (\Throwable $e) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
+
+            throw $e;
+        }
         $di['mod_service']('order')->saveStatusChange($order, $note);
         self::log($di, sprintf('Order #%d: %s', $orderId, $note));
     }
@@ -1584,6 +1614,28 @@ final class Upgrades
             if (method_exists($service, 'action_change_package')) {
                 $service->action_change_package($order);
             }
+        }
+    }
+
+    /**
+     * Why a service module's own kind refuses the change to `$to` (its check_change_package(); ServiceTypes documents
+     * it), or null. A module that cannot run is never a changeable kind (ServiceTypes::declared()), and a throw refuses.
+     *
+     * @param array{product_id: int, period: string, options: array<int, int>, option_lines: list<array<string, mixed>>} $to
+     */
+    private static function refusal(\Pimple\Container $di, \Model_ClientOrder $order, array $to): ?string
+    {
+        if (!in_array((string) $order->service_type, \ClientFence\ServiceTypes::changeable($di), true)) {
+            return null;
+        }
+        try {
+            $service = $di['mod_service']('service' . $order->service_type);
+
+            return method_exists($service, 'check_change_package') ? $service->check_change_package($order, $to) : null;
+        } catch (\Throwable $e) {
+            self::log($di, sprintf('Order #%d: the module check of a change failed: %s', (int) $order->id, $e->getMessage()));
+
+            return __trans('This change is not available now. Please contact us.');
         }
     }
 

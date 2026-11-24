@@ -1559,8 +1559,8 @@ class Service implements InjectionAwareInterface
         // the remote server.
         try {
             // ClientFence core patch: "Already set up" (staff Add New Order, WHMCS without Run Module Create) records the service
-            // without running its module; hosting (an imported account) and domains (an existing domain) handle it themselves.
-            $setUp = !empty($this->getConfig($order)['import']) && !in_array($serviceType, ['hosting', 'domain'], true);
+            // without running its module; a type whose manifest declares "import" (ServiceTypes) handles it itself.
+            $setUp = !empty($this->getConfig($order)['import']) && (\ClientFence\ServiceTypes::declared($this->di, $serviceType)['import'] ?? null) !== true;
             $result = $setUp ? null : $this->_callOnService($order, Order::ACTION_ACTIVATE);
 
             $period = $this->orderPeriod($order);
