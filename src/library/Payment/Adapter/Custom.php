@@ -38,11 +38,14 @@ class Payment_Adapter_Custom
                 'single' => [
                     'textarea', [
                         'label' => __trans('Enter Your Text for Single Payment Information'),
+                        // ClientFence core patch (forum #181): with language versions (mod_invoice_gateway.html.twig).
+                        'translatable' => true,
                     ],
                 ],
                 'recurrent' => [
                     'textarea', [
                         'label' => __trans('Enter Your Text for Subscription Information'),
+                        'translatable' => true,
                     ],
                 ],
                 // ClientFence core patch: the receipt upload on the invoice page per method (Invoice/Receipts.php receiptUpload()).
@@ -68,7 +71,8 @@ class Payment_Adapter_Custom
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoice = $invoiceService->toApiArray($invoiceModel, true);
 
-        $tpl = $subscription ? ($this->config['recurrent'] ?? '"Custom" payment adapter is not fully configured.') : ($this->config['single'] ?? '"Custom" payment adapter is not fully configured.');
+        // ClientFence core patch (forum #181): the text in the page language when it has a version (single_de_de, i18n::text()).
+        $tpl = ClientFence\i18n::text($this->config, $subscription ? 'recurrent' : 'single') ?? '"Custom" payment adapter is not fully configured.';
         $vars = [
             'invoice' => $invoice,
         ];

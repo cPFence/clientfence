@@ -70,6 +70,8 @@
                         <label class="form-label" for="invoice_default_note">{{ 'Default Invoice Note'|trans }}</label>
                         <textarea class="form-control editor-textarea" id="invoice_default_note" name="invoice_default_note" rows="5">{{ params.invoice_default_note|default('') }}</textarea>
                         <small class="form-hint">{{ 'Supports markdown format.'|trans }}</small>
+                        {# ClientFence core patch (forum #181): the note in other languages; an invoice gets its client's. #}
+                        {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'invoice_default_note', label: 'Default Invoice Note'|trans, textarea: true, rows: 5 }], values: params }) }}
                     </div>
                 </div>
             </div>
@@ -149,6 +151,7 @@
                             <label class="form-label" for="invoice_title">{{ 'Document Title'|trans }}</label>
                             <input class="form-control" id="invoice_title" type="text" maxlength="60" name="invoice_title" value="{{ params.invoice_title|default('') }}" placeholder="{{ 'Invoice'|trans }}">
                             <small class="form-hint">{{ 'Replaces "Invoice" in the PDF heading and on the client invoice pages, for example Tax Invoice. Leave empty to keep the default.'|trans }}</small>
+                            {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'invoice_title', label: 'Document Title'|trans, maxlength: 60 }], values: params }) }}
                         </div>
                         <div class="col-lg-6">
                             <label class="form-label" for="invoice_tax_label">{{ 'Tax Number Label'|trans }}</label>

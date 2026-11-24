@@ -195,13 +195,14 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('system', 'manage_settings');
         $mode = Config::getProperty('maintenance_mode', []);
 
+        // ClientFence core patch (forum #181): with the message's language versions (message_de_de, i18n::text()).
         return [
             'enabled' => Tools::normalizeBoolean($mode['enabled'] ?? false, false),
             'message' => (string) ($mode['message'] ?? ''),
             'redirect_url' => (string) ($mode['redirect_url'] ?? ''),
             'allowed_ips' => implode("\n", array_map('strval', (array) ($mode['allowed_ips'] ?? []))),
             'my_ip' => (string) $this->getDi()['request']->getClientIp(),
-        ];
+        ] + array_intersect_key((array) $mode, array_flip(\ClientFence\i18n::textKeys('message')));
     }
 
     public function maintenance_update($data): bool
@@ -226,9 +227,11 @@ class Admin extends \ClientFence\Api\AbstractApi
                 throw new \ClientFence\InformationException('The redirect address must be on another site: this portal is closed during maintenance.');
             }
         }
-        $message = trim((string) ($data['message'] ?? ''));
-        if (mb_strlen($message) > 2000) {
-            throw new \ClientFence\InformationException('The message can be at most 2000 characters.');
+        $messages = \ClientFence\i18n::postedTexts($data, 'message');
+        foreach ($messages as $message) {
+            if (mb_strlen($message) > 2000) {
+                throw new \ClientFence\InformationException('The message can be at most 2000 characters.');
+            }
         }
         $enabled = Tools::normalizeBoolean($data['enabled'] ?? false, false);
 
@@ -236,9 +239,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         $config['maintenance_mode'] = array_merge((array) ($config['maintenance_mode'] ?? []), [
             'enabled' => $enabled,
             'allowed_ips' => $ips,
-            'message' => $message,
             'redirect_url' => $url,
-        ]);
+        ] + $messages);
         Config::setConfig($config, false);
         $this->getDi()['logger']->info($enabled ? 'Turned maintenance mode on' : 'Saved maintenance mode (off)');
 

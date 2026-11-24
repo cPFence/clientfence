@@ -1,0 +1,89 @@
+{# ClientFence: language versions of staff-entered texts that clients see (forum #181, i18n::text()), under their default
+   fields: a button for each language with a version, "Add language" for the other languages turned on, and for each
+   language one field per text, named as the default one with the language added (company_tos_de_de). Gets `fields`
+   (each: key, label, and optionally textarea, rows, maxlength, hint, editor for a Markdown editor), `values` (the saved texts
+   by key) and optionally `name` (the field name with %s for the key, such as config[%s]). A blank version shows the
+   default text. Shown only when a language other than the default one is turned on. #}
+{% set cf_langs = guest.extension_languages(true)|filter(l => l.locale != default_locale) %}
+{% if cf_langs is not empty %}
+    {% set cf_filled = cf_langs|filter(l => fields|filter(f => values[f.key ~ '_' ~ l.locale|lower]|default('')|trim)|length > 0)|map(l => l.locale) %}
+    {% set cf_box = 'cf-text-versions-' ~ random() %}
+    <div class="mt-2" id="{{ cf_box }}">
+        <div class="d-flex flex-wrap align-items-center gap-2" role="tablist" aria-label="{{ 'Other languages'|trans }}">
+            <span class="text-secondary small">{{ 'Other languages'|trans }}</span>
+            {% for l in cf_langs|filter(l => l.locale in cf_filled) %}
+                <button class="btn btn-sm btn-outline-secondary" type="button" role="tab" aria-selected="false" data-cf-lang="{{ l.locale }}">{{ l.title }}</button>
+            {% endfor %}
+            {% if cf_filled|length < cf_langs|length %}
+                <select class="form-select form-select-sm w-auto" data-cf-add-lang aria-label="{{ 'Add language'|trans }}">
+                    <option value="">+ {{ 'Add language'|trans }}</option>
+                    {% for l in cf_langs|filter(l => l.locale not in cf_filled) %}
+                        <option value="{{ l.locale }}">{{ l.title }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        </div>
+        {% for l in cf_langs %}
+            <div class="mt-2" role="tabpanel" data-cf-lang-pane="{{ l.locale }}" hidden>
+                {% for f in fields %}
+                    {% set key = f.key ~ '_' ~ l.locale|lower %}
+                    <label class="form-label" for="{{ cf_box }}-{{ key }}">{{ f.label }} <span class="badge bg-blue-lt ms-1">{{ l.title }}</span></label>
+                    {% if f.textarea|default(false) %}
+                        <textarea class="form-control" id="{{ cf_box }}-{{ key }}" name="{{ name|default('%s')|format(key) }}" rows="{{ f.rows|default(4) }}"{% if f.maxlength is defined %} maxlength="{{ f.maxlength }}"{% endif %} placeholder="{{ values[f.key]|default('') }}" lang="{{ l.locale[:2] }}"{% if l.locale is rtl %} dir="rtl"{% endif %}{% if f.editor|default(false) %} data-cf-editor{% endif %}>{{ values[key]|default('') }}</textarea>
+                    {% else %}
+                        <input class="form-control" type="text" id="{{ cf_box }}-{{ key }}" name="{{ name|default('%s')|format(key) }}" value="{{ values[key]|default('') }}"{% if f.maxlength is defined %} maxlength="{{ f.maxlength }}"{% endif %} placeholder="{{ values[f.key]|default('') }}" lang="{{ l.locale[:2] }}"{% if l.locale is rtl %} dir="rtl"{% endif %}>
+                    {% endif %}
+                    <div class="form-hint mb-2">{% if f.hint is defined %}{{ f.hint }} {% endif %}{{ 'Leave blank to use the default'|trans }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <script nonce="{{ csp_nonce }}">
+        (function (box) {
+            const add = box.querySelector('[data-cf-add-lang]');
+            // One language open at a time; its button again closes it.
+            const show = function (lang) {
+                box.querySelectorAll('[data-cf-lang]').forEach(function (button) {
+                    const on = button.dataset.cfLang === lang;
+                    button.classList.toggle('btn-primary', on);
+                    button.classList.toggle('btn-outline-secondary', !on);
+                    button.setAttribute('aria-selected', on ? 'true' : 'false');
+                });
+                box.querySelectorAll('[data-cf-lang-pane]').forEach(function (pane) {
+                    pane.hidden = pane.dataset.cfLangPane !== lang;
+                });
+                // A Markdown text gets the editor in its own language and direction when shown (a hidden pane has no width for the toolbar).
+                box.querySelectorAll('[data-cf-lang-pane="' + lang + '"] [data-cf-editor=""]').forEach(function (field) {
+                    field.dataset.cfEditor = 'on';
+                    ClientFence.editor.create(field, { language: { ui: 'en', content: field.lang } }).catch(function (error) {
+                        console.error('Editor initialization error:', error);
+                    });
+                });
+            };
+            box.addEventListener('click', function (e) {
+                const button = e.target.closest('[data-cf-lang]');
+                if (button) {
+                    show(button.getAttribute('aria-selected') === 'true' ? '' : button.dataset.cfLang);
+                }
+            });
+            add?.addEventListener('change', function () {
+                const option = add.selectedOptions[0];
+                if (add.value === '') {
+                    return;
+                }
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-sm btn-outline-secondary';
+                button.setAttribute('role', 'tab');
+                button.dataset.cfLang = add.value;
+                button.textContent = option.textContent;
+                add.before(button);
+                show(add.value);
+                option.remove();
+                add.value = '';
+                add.hidden = add.options.length < 2;
+            });
+        // By id, not by position: a proxy can insert its own script before this one.
+        })(document.getElementById('{{ cf_box }}'));
+    </script>
+{% endif %}

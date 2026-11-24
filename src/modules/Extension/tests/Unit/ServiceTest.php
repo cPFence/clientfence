@@ -904,6 +904,13 @@ test('setConfig keeps the ClientFence settings a module page saves with their ow
         ['ext' => 'mod_order', 'order_renewal_logic' => 'from_today'],
         ['ext' => 'mod_order', 'order_renewal_logic' => 'from_today', 'store_mode' => 'testers', 'store_title' => 'Shop'],
     ],
+    // Forum #181: with the store title's language versions.
+    'store title versions' => [
+        'mod_order',
+        ['ext' => 'mod_order', 'store_title' => 'Shop', 'store_title_de_de' => 'Laden', 'batch_suspend_reason_de_de' => 'Alt'],
+        ['ext' => 'mod_order', 'batch_suspend_reason_de_de' => 'Neu'],
+        ['ext' => 'mod_order', 'batch_suspend_reason_de_de' => 'Neu', 'store_title' => 'Shop', 'store_title_de_de' => 'Laden'],
+    ],
     // The hosting panels' switches (Servicehosting\Panel\Panels::settingKeys()).
     'hosting panels' => [
         'mod_servicehosting',

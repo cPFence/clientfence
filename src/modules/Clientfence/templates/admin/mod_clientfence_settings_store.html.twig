@@ -1,5 +1,5 @@
 {# ClientFence: the store (who can order, its heading, the preview link), on the Orders settings
-   page. Kept in mod_order (Clientfence\Service::SETTINGS); saved with clientfence/store_update and
+   page. Kept in mod_order (Clientfence\Service::homes()); saved with clientfence/store_update and
    clientfence/store_preview_update, never with the page's main form. #}
 {% set store = admin.extension_config_get({ 'ext': 'mod_order' }) %}
 {% set mode = store.store_mode|default('closed') %}
@@ -65,6 +65,8 @@
 			<div class="clientfence-setting-control">
 				<input class="form-control mb-2" id="store_title" name="store_title" maxlength="80" value="{{ store.store_title|default('') }}" placeholder="{{ 'Store'|trans }}" aria-label="{{ 'Store title'|trans }}">
 				<textarea class="form-control mb-3" id="store_subtitle" name="store_subtitle" rows="2" maxlength="200" aria-label="{{ 'Store subtitle'|trans }}">{{ store.store_subtitle|default('') }}</textarea>
+				{# The title and subtitle in other languages (forum #181, i18n::text()). #}
+				{{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'store_title', label: 'Store title'|trans, maxlength: 80 }, { key: 'store_subtitle', label: 'Store subtitle'|trans, textarea: true, rows: 2, maxlength: 200 }], values: store }) }}
 				<div class="clientfence-store-preview">
 					<div class="text-secondary small mb-1">{{ 'Preview'|trans }}</div>
 					<div class="h2 mb-1" id="store_title_preview">{{ store.store_title|default('')|trim ?: 'Store'|trans }}</div>

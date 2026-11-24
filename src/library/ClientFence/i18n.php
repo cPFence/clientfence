@@ -258,6 +258,65 @@ class i18n
     }
 
     /**
+     * ClientFence core patch (forum #181): language versions of staff-entered texts that clients see. A version is kept
+     * next to its default text under the same key with the language added (company_tos_de_de), as GitHub #51 began for
+     * the company name. Returns $values[$key] in $locale (the page language when null): its version when that language
+     * is turned on and is not the default one and the version is not blank, else the default text.
+     */
+    public static function text(array $values, string $key, ?string $locale = null): mixed
+    {
+        $locale ??= \Locale::getDefault();
+        if ($locale !== Config::getProperty('i18n.locale', 'en_US') && in_array($locale, self::getLocales(), true)) {
+            $version = $values[self::textKey($key, $locale)] ?? null;
+            if (is_string($version) && trim($version) !== '') {
+                return $version;
+            }
+        }
+
+        return $values[$key] ?? null;
+    }
+
+    /** The key of $key's version in $locale: company_tos_de_de. */
+    public static function textKey(string $key, string $locale): string
+    {
+        return $key . '_' . strtolower($locale);
+    }
+
+    /**
+     * $keys' texts and their versions in the languages turned on, as a form sent them (trimmed, \n line ends); a version
+     * the form did not send is left out, so a saved one stays.
+     *
+     * @return array<string, string>
+     */
+    public static function postedTexts(array $data, string ...$keys): array
+    {
+        $texts = [];
+        foreach ($keys as $key) {
+            $versions = [$key];
+            foreach (self::getLocales() as $locale) {
+                $versions[] = self::textKey($key, $locale);
+            }
+            foreach ($versions as $version) {
+                if ($version === $key || array_key_exists($version, $data)) {
+                    $texts[$version] = trim(str_replace(["\r\n", "\r"], "\n", (string) ($data[$version] ?? '')));
+                }
+            }
+        }
+
+        return $texts;
+    }
+
+    /**
+     * The keys of $key's versions in every installed language, turned on or off.
+     *
+     * @return list<string>
+     */
+    public static function textKeys(string $key): array
+    {
+        return array_map(static fn (string $locale): string => self::textKey($key, $locale), array_merge(self::getLocales(), self::getLocales(false, true)));
+    }
+
+    /**
      * Retrieve a list of available locales, optionally including their details.
      *
      * @param bool $includeLocaleDetails (optional) Whether to include locale details or not. Defaults to false.

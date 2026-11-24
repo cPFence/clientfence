@@ -19,6 +19,8 @@
                 <label class="form-label" for="maintenance-message">{{ 'Message to visitors'|trans }}</label>
                 <textarea class="form-control" id="maintenance-message" name="message" rows="4" maxlength="2000" placeholder="{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}">{{ maintenance.message }}</textarea>
                 <small class="form-hint">{{ 'Shown on the maintenance page under its title. Empty shows the standard text.'|trans }}</small>
+                {# The message in other languages, by the visitor's language (forum #181, i18n::text()). #}
+                {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'message', label: 'Message to visitors'|trans, textarea: true, rows: 4, maxlength: 2000 }], values: maintenance }) }}
             </div>
             <div class="mb-3">
                 <label class="form-label" for="maintenance-redirect">{{ 'Redirect address'|trans }}</label>

@@ -160,6 +160,8 @@ class TwigFactory
         $twig->addGlobal('client', $this->di['auth']->isClientLoggedIn() ? $this->di['api_client'] : null);
         // ClientFence core patch: maintenance mode as WHMCS: every admin page shows a banner while it is on.
         $twig->addGlobal('maintenance_mode_on', Tools::normalizeBoolean(Config::getProperty('maintenance_mode.enabled', false), false));
+        // ClientFence core patch (forum #181): the default language, which has no text versions (mod_system_text_versions.html.twig).
+        $twig->addGlobal('default_locale', (string) Config::getProperty('i18n.locale', 'en_US'));
 
         $this->configureDebugging($twig, $debugBar);
 
@@ -287,10 +289,12 @@ class TwigFactory
         // Add minimal globals needed for email templates
         // Convert guest to array to prevent object method access in sandbox
         $apiGuest = $this->di['api_guest'];
+        // ClientFence core patch (GitHub #51): the company name and address in the email's language.
+        $company = $apiGuest->system_company(['locale' => $locale]);
         $twig->addGlobal('guest', [
-            // ClientFence core patch (GitHub #51): the company name and address in the email's language.
-            'system_company' => $apiGuest->system_company(['locale' => $locale]),
-            'system_email' => $this->getEmailSettingsForTemplates(),
+            'system_company' => $company,
+            // ClientFence core patch (forum #181): the email signature, or the company one it falls back to, in the email's language.
+            'system_email' => $this->getEmailSettingsForTemplates((string) ($company['signature'] ?? ''), $locale),
         ]);
         $twig->addGlobal('default_currency', $this->getDefaultCurrencyCode());
         $twig->addGlobal('ClientFenceVersion', Version::CLIENTFENCE);
@@ -304,13 +308,13 @@ class TwigFactory
     /**
      * @return array{signature: Markup}
      */
-    private function getEmailSettingsForTemplates(): array
+    private function getEmailSettingsForTemplates(string $companySignature, ?string $locale): array
     {
         $emailConfig = $this->di['mod']('email')->getConfig();
-        $signature = trim((string) ($emailConfig['signature'] ?? ''));
+        $signature = trim((string) \ClientFence\i18n::text($emailConfig, 'signature', $locale));
 
         if ($signature === '') {
-            $signature = (string) ($this->di['api_guest']->system_company()['signature'] ?? '');
+            $signature = $companySignature;
         }
 
         return [

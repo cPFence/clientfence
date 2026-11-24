@@ -54,7 +54,8 @@ class Payment_Adapter_CustomConvert extends Payment_Adapter_Custom
         $invoiceModel = $this->di['db']->load('Invoice', $invoice_id);
         $invoice = $this->di['mod_service']('Invoice')->toApiArray($invoiceModel, true);
 
-        $tpl = $subscription ? ($this->convertConfig['recurrent'] ?? '') : ($this->convertConfig['single'] ?? '');
+        // In the page language when it has a version (forum #181, i18n::text()).
+        $tpl = ClientFence\i18n::text($this->convertConfig, $subscription ? 'recurrent' : 'single') ?? '';
         if (trim((string) $tpl) === '') {
             $tpl = '"CustomConvert" payment adapter is not fully configured.';
         }

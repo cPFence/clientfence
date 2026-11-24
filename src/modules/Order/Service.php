@@ -419,6 +419,11 @@ class Service implements InjectionAwareInterface
             $s = $service->getOrderServiceData($order, $identity);
             $orderArr = $service->toApiArray($order, true, $identity);
 
+            // ClientFence core patch (forum #181): a reason from the Orders settings in the client's language.
+            if ((string) ($orderArr['reason'] ?? '') !== '') {
+                $orderArr['reason'] = $service->reasonText($orderArr['reason'], (string) ($orderArr['client']['lang'] ?? ''));
+            }
+
             $email = [];
             $email['to_client'] = $orderArr['client']['id'];
             $email['code'] = sprintf('mod_service%s_suspended', $orderArr['service_type']);
@@ -475,6 +480,10 @@ class Service implements InjectionAwareInterface
             }
             $identity = $di['loggedin_admin'] ?? null;
             $orderArr = $service->toApiArray($order, true, $identity);
+
+            if ((string) ($orderArr['reason'] ?? '') !== '') {
+                $orderArr['reason'] = $service->reasonText($orderArr['reason'], (string) ($orderArr['client']['lang'] ?? ''), true);
+            }
 
             $email = [];
             $email['to_client'] = $orderArr['client']['id'];
@@ -2674,6 +2683,27 @@ class Service implements InjectionAwareInterface
         $this->di['logger']->info('Executed action to suspend expired orders');
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch (forum #181): an order's suspension or cancellation reason in $locale when it is one of the
+     * Orders settings' reasons (Auto Suspend Reason, Required Suspension Reason or a line of Suspension Reasons, whose
+     * versions keep the same lines) and has a version in that language (i18n::text()); any other reason as it is.
+     */
+    public function reasonText(string $reason, string $locale, bool $cancel = false): string
+    {
+        $config = $this->di['mod_config']('order');
+        // The email's own field first: the two may hold the same default text.
+        foreach ($cancel ? ['batch_cancel_suspended_reason', 'batch_suspend_reason'] : ['batch_suspend_reason', 'batch_cancel_suspended_reason'] as $key) {
+            if ($reason === ($config[$key] ?? null)) {
+                return (string) \ClientFence\i18n::text($config, $key, $locale);
+            }
+        }
+        $lines = static fn ($text): array => array_map('trim', preg_split('/\R/u', trim((string) $text)) ?: []);
+        $line = array_search(trim($reason), $lines($config['suspend_reason_list'] ?? ''), true);
+        $own = $line === false ? '' : ($lines(\ClientFence\i18n::text($config, 'suspend_reason_list', $locale))[$line] ?? '');
+
+        return $own !== '' ? $own : $reason;
     }
 
     public function batchCancelSuspended(): bool

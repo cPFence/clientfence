@@ -81,3 +81,8 @@ test('an address is a hosting network by its ASN, unless the never list has it',
         // A private address has no ASN record: not known as hosting.
         ->and(Networks::match(['mode' => 'hold', 'always' => [24940], 'never' => []], '10.0.0.1'))->toBeNull();
 });
+
+test('list lines are split as UTF-8, so a non-Latin entry stays whole', function (): void {
+    // The byte 0x85 inside "م" is no line break.
+    expect(Banned::entries("spam@مثال.com\nعم@example.com"))->toBe(['spam@مثال.com', 'عم@example.com']);
+});

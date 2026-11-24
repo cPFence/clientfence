@@ -106,11 +106,23 @@ final class TicketEscalation
         if (array_diff($notify, array_keys($staff)) !== []) {
             throw new InformationException('Choose active staff members to email.');
         }
-        $reply = trim(str_replace(["\r\n", "\r"], "\n", (string) ($data['reply'] ?? '')));
-        if (mb_strlen($reply) > self::MAX_REPLY) {
-            throw new InformationException('The reply can be at most :max characters.', [':max' => self::MAX_REPLY]);
+        // With its language versions (forum #181, i18n::text()); those of languages the form did not send are kept.
+        $texts = \ClientFence\i18n::postedTexts($data, 'reply');
+        foreach ($texts as $text) {
+            if (mb_strlen($text) > self::MAX_REPLY) {
+                throw new InformationException('The reply can be at most :max characters.', [':max' => self::MAX_REPLY]);
+            }
         }
-        if ($reply === '' && $newHelpdesk === 0 && $newStatus === '' && $newPriority === '' && $assignTo === 0 && $notify === []) {
+        $reply = $texts['reply'];
+        $id = (int) ($data['id'] ?? 0);
+        $old = $id > 0 ? self::get($di, $id) : [];
+        $versions = [];
+        foreach (\ClientFence\i18n::textKeys('reply') as $key) {
+            if (($text = $texts[$key] ?? $old[$key] ?? '') !== '') {
+                $versions[$key] = $text;
+            }
+        }
+        if ($reply === '' && $versions === [] && $newHelpdesk === 0 && $newStatus === '' && $newPriority === '' && $assignTo === 0 && $notify === []) {
             throw new InformationException('Choose at least one action.');
         }
 
@@ -127,11 +139,10 @@ final class TicketEscalation
             'assign_to' => $assignTo ?: null,
             'notify' => json_encode($notify),
             'reply' => $reply,
+            'translations' => json_encode($versions),
             'updated_at' => date('Y-m-d H:i:s'),
         ];
-        $id = (int) ($data['id'] ?? 0);
         if ($id > 0) {
-            self::get($di, $id);
             $db->update(self::RULES, $row, ['id' => $id]);
             $di['logger']->info('Updated escalation rule #%s', $id);
 
@@ -270,8 +281,11 @@ final class TicketEscalation
         $support = $di['mod_service']('support');
         $ticket = $support->getTicketById($ticketId);
 
-        if ($rule['reply'] !== '') {
-            $support->ticketReply($ticket, $di['mod_service']('staff')->getCronAdmin(), self::mergeFields($di, $ticketId, $rule['reply']));
+        // In the client's language when the reply has a version in it (forum #181); a rule may have only a version.
+        $lang = (string) self::db($di)->fetchOne('SELECT c.lang FROM support_ticket t JOIN client c ON c.id = t.client_id WHERE t.id = ?', [$ticketId]);
+        $reply = (string) \ClientFence\i18n::text($rule, 'reply', $lang);
+        if ($reply !== '') {
+            $support->ticketReply($ticket, $di['mod_service']('staff')->getCronAdmin(), self::mergeFields($di, $ticketId, $reply));
         }
         // A help desk deleted after the rule was saved: the ticket is not moved (ticketUpdate refuses it), the rest still applies.
         $moveTo = $rule['new_helpdesk_id'];
@@ -347,6 +361,8 @@ final class TicketEscalation
     private static function toArray(array $row): array
     {
         $list = static fn ($json): array => is_array($decoded = json_decode((string) $json, true)) ? array_values($decoded) : [];
+        // The reply's language versions (reply_de_de) next to it; none before the column exists.
+        $versions = json_decode((string) ($row['translations'] ?? ''), true);
 
         return [
             'id' => (int) $row['id'],
@@ -364,7 +380,7 @@ final class TicketEscalation
             'reply' => (string) $row['reply'],
             'created_at' => (string) $row['created_at'],
             'updated_at' => (string) $row['updated_at'],
-        ];
+        ] + (is_array($versions) ? array_filter($versions, 'is_string') : []);
     }
 
     /** @return list<int> */

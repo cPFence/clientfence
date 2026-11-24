@@ -67,6 +67,21 @@ test('the email environment gives the company name and address in the email\'s l
     expect($twig->createTemplate('{{ guest.system_company.name }}, {{ guest.system_company.address_1 }}')->render())->toBe('Тесла, Главна 1');
 });
 
+test('the email signature is in the email\'s language, else the default one, else the company signature (forum #181)', function (array $email, string $locale, string $expected): void {
+    $di = Tests\Helpers\container();
+    unset($di['em']);
+    $di['mod_config'] = $di->protect(fn (string $name): array => $email);
+    $guest = Mockery::mock();
+    $guest->allows('system_company')->andReturn(['name' => 'Acme', 'signature' => 'Acme team']);
+    $di['api_guest'] = $guest;
+
+    expect((string) (new TwigFactory($di))->createEmailEnvironment('UTC', $locale)->createTemplate('{{ guest.system_email.signature }}')->render())->toBe($expected);
+})->with([
+    'a German version' => [['signature' => 'Thanks', 'signature_de_de' => 'Danke'], 'de_DE', 'Danke'],
+    'a blank version' => [['signature' => 'Thanks', 'signature_de_de' => ' '], 'de_DE', 'Thanks'],
+    'no email signature' => [['signature' => ''], 'de_DE', 'Acme team'],
+]);
+
 test('a sign-in (password, passkey or Google) returns only to an address of its own area', function (?string $from, ClientFence\Twig\Enum\AppArea $area, ?string $expected): void {
     $di = Tests\Helpers\container();
     $session = Mockery::mock(ClientFence\Session::class);

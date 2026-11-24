@@ -139,6 +139,7 @@ $paths = [
     'modules/Email/templates/admin/partial_email_template_version.html.twig',
     'modules/Product/Translations.php',
     'modules/Product/templates/admin/mod_product_translations.html.twig',
+    'modules/System/templates/admin/mod_system_text_versions.html.twig',
     'modules/Support/Mail',
     'modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig',
     'modules/Support/templates/admin/mod_support_settings_mail.html.twig',

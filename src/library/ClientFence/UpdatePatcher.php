@@ -584,6 +584,8 @@ class UpdatePatcher implements InjectionAwareInterface
             131 => 'patch131',
             132 => 'patch132',
             133 => 'patch133',
+            134 => 'patch134',
+            135 => 'patch135',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2780,6 +2782,20 @@ class UpdatePatcher implements InjectionAwareInterface
                AND EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = i.id AND d.type = 'deposit')
                AND NOT EXISTS (SELECT 1 FROM invoice_item o WHERE o.invoice_id = i.id AND o.type <> 'deposit')" . $imported
         );
+    }
+
+    // 134: no longer used.
+    private function patch134(): void
+    {
+    }
+
+    private function patch135(): void
+    {
+        // ClientFence core patch (forum #181): the language versions of an escalation rule's reply (Support/TicketEscalation.php).
+        // An install without the table gets it with the column from schema.json.
+        if ($this->tableExists('support_escalation_rule') && !$this->tableHasColumn('support_escalation_rule', 'translations')) {
+            $this->executeSql('ALTER TABLE `support_escalation_rule` ADD COLUMN `translations` mediumtext DEFAULT NULL AFTER `reply`');
+        }
     }
 
     private function patch133(): void

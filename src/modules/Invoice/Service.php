@@ -1497,7 +1497,9 @@ class Service implements InjectionAwareInterface
 
         // ClientFence core patch: the default note is for the client: shown on the invoice page and PDF
         // (text_2), not in the staff-only notes.
-        $defaultNote = (string) $this->di['mod_service']('system')->getParamValue('invoice_default_note');
+        // ClientFence core patch (forum #181): in the client's language when it has a version (i18n::text()).
+        $noteKey = \ClientFence\i18n::textKey('invoice_default_note', (string) $client->lang);
+        $defaultNote = (string) \ClientFence\i18n::text(['invoice_default_note' => $systemService->getParamValue('invoice_default_note'), $noteKey => $systemService->getParamValue($noteKey)], 'invoice_default_note', (string) $client->lang);
         if ($defaultNote !== '' && empty($model->text_2)) {
             $model->text_2 = $defaultNote;
         }
@@ -3690,6 +3692,8 @@ class Service implements InjectionAwareInterface
         $locale ??= ($invoice['client']['lang'] ?? '') ?: \Locale::getDefault();
         // ClientFence core patch (GitHub #51): the footer and bank block name the seller as the invoice stored it, in its client's language.
         $c = $systemService->getCompany(($invoice['client']['lang'] ?? '') ?: null);
+        // The document title and signature in the PDF's language, as its labels (forum #181); the seller's name stays as above.
+        $c = array_replace($c, array_intersect_key($systemService->getCompany($locale), array_flip(['invoice_title', 'signature'])));
 
         if (isset($invoiceModel->currency)) {
             $currencyCode = $invoiceModel->currency;

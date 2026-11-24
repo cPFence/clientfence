@@ -263,14 +263,12 @@ class Service
         ];
         $results = $this->getSettingsByParams($c);
         // The default language has no versions; a turned-off or unknown locale gets the default.
+        // ClientFence core patch (forum #181): the signature, legal texts and invoice title have versions too (i18n::text()).
         if ($locale !== null && $locale !== \ClientFence\Config::getProperty('i18n.locale', 'en_US') && in_array($locale, \ClientFence\i18n::getLocales(), true)) {
-            $suffix = '_' . strtolower($locale);
-            $fields = ['company_name', 'company_address_1', 'company_address_2', 'company_address_3'];
-            $versions = $this->getSettingsByParams(array_map(fn (string $field): string => $field . $suffix, $fields));
+            $fields = ['company_name', 'company_address_1', 'company_address_2', 'company_address_3', 'company_signature', 'company_note', 'company_privacy_policy', 'company_tos', 'invoice_title'];
+            $results += $this->getSettingsByParams(array_map(fn (string $field): string => \ClientFence\i18n::textKey($field, $locale), $fields));
             foreach ($fields as $field) {
-                if (trim((string) ($versions[$field . $suffix] ?? '')) !== '') {
-                    $results[$field] = $versions[$field . $suffix];
-                }
+                $results[$field] = \ClientFence\i18n::text($results, $field, $locale);
             }
         }
 
@@ -913,11 +911,12 @@ class Service
 
         $staff_service = $this->di['mod_service']('Staff');
         // ClientFence core patch (GitHub #51): the language versions of the company name and address (company_name_de_de) need the same permission.
-        if ((in_array($param, $company) || preg_match('/^company_(name|address_[123])_[a-z]/', $param) === 1) && !$staff_service->hasPermission(null, 'system', 'manage_company_details')) {
+        if ((in_array($param, $company) || preg_match('/^company_(name|address_[123]|signature)_[a-z]/', $param) === 1) && !$staff_service->hasPermission(null, 'system', 'manage_company_details')) {
             return false;
         }
 
-        if (in_array($param, $company_legal) && !$staff_service->hasPermission(null, 'system', 'manage_company_legal')) {
+        // ClientFence core patch (forum #181): and those of the legal texts (company_tos_de_de).
+        if ((in_array($param, $company_legal) || preg_match('/^company_(tos|privacy_policy|note)_[a-z]/', $param) === 1) && !$staff_service->hasPermission(null, 'system', 'manage_company_legal')) {
             return false;
         }
 

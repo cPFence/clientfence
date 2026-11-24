@@ -567,8 +567,9 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
     public static function config(\Pimple\Container $di): array
     {
         $configs = ['clientfence' => $di['mod']('clientfence')->getConfig()];
-        $values = array_diff_key($configs['clientfence'], self::SETTINGS);
-        foreach (self::SETTINGS as $key => $owner) {
+        $homes = self::homes();
+        $values = array_diff_key($configs['clientfence'], $homes);
+        foreach ($homes as $key => $owner) {
             $configs[$owner] ??= $di['mod']($owner)->getConfig();
             if (array_key_exists($key, $configs[$owner])) {
                 $values[$key] = $configs[$owner][$key];
@@ -576,6 +577,21 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
         }
 
         return array_merge(self::DEFAULTS, array_filter($values, static fn ($v): bool => $v !== null && $v !== ''));
+    }
+
+    /**
+     * SETTINGS with the language versions of the store title and subtitle (store_title_de_de, i18n::text()), kept with them.
+     *
+     * @return array<string, string>
+     */
+    public static function homes(): array
+    {
+        $homes = self::SETTINGS;
+        foreach (['store_title', 'store_subtitle'] as $key) {
+            $homes += array_fill_keys(\ClientFence\i18n::textKeys($key), self::SETTINGS[$key]);
+        }
+
+        return $homes;
     }
 
     /**
@@ -587,8 +603,9 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
     public static function saveSettings(\Pimple\Container $di, array $changes): void
     {
         $byOwner = [];
+        $homes = self::homes();
         foreach ($changes as $key => $value) {
-            $byOwner[self::SETTINGS[$key] ?? 'clientfence'][$key] = $value;
+            $byOwner[$homes[$key] ?? 'clientfence'][$key] = $value;
         }
         $extension = $di['mod_service']('extension');
         foreach ($byOwner as $owner => $values) {

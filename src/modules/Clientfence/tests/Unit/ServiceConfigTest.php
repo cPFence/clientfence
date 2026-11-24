@@ -176,3 +176,42 @@ test('a store open to one client group lets in an active or inactive client in i
         ->and(Service::storeOpenTo($di, 4))->toBeTrue()
         ->and(Service::storeOpenTo($di, null))->toBeFalse();
 });
+
+// Forum #181: the store title and subtitle have language versions (store_title_de_de), kept and read next to them.
+test('the store title versions are saved and read with the title, and the store page shows the visitor\'s', function (): void {
+    $saved = [];
+    $extension = Mockery::mock(ClientFence\Mod\Extension\Service::class);
+    $extension->shouldReceive('hasManagePermission')->with('mod_order');
+    $extension->shouldReceive('getConfig')->andReturnUsing(fn (string $ext): array => ['ext' => $ext]);
+    $extension->shouldReceive('setConfig')->andReturnUsing(function (array $data) use (&$saved): bool {
+        $saved[$data['ext']] = $data;
+
+        return true;
+    });
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (): object => $extension);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $api = new ClientFence\Mod\Clientfence\Api\Admin();
+    $api->setDi($di);
+
+    $api->store_update(['store_mode' => 'public', 'store_title' => 'Store', 'store_title_de_de' => ' Shop ', 'store_subtitle_de_de' => 'Alles', 'store_title_ja_jp' => 'Off']);
+    expect($saved)->toHaveKeys(['mod_order'])->not->toHaveKey('mod_clientfence')
+        ->and($saved['mod_order'])->toMatchArray(['store_title' => 'Store', 'store_title_de_de' => 'Shop', 'store_subtitle_de_de' => 'Alles'])
+        ->and($saved['mod_order'])->not->toHaveKey('store_title_ja_jp')
+        ->and(fn () => $api->store_update(['store_mode' => 'public', 'store_title_de_de' => str_repeat('x', 81)]))->toThrow(ClientFence\InformationException::class, 'The store title can have');
+
+    $guestDi = container();
+    $guestDi['mod_config'] = $guestDi->protect(fn (string $name): array => $name === 'order' ? $saved['mod_order'] : []);
+    $guestDi['session'] = new class {
+        public function get(string $key): mixed
+        {
+            return null;
+        }
+    };
+    $guest = new ClientFence\Mod\Clientfence\Api\Guest();
+    $guest->setDi($guestDi);
+    $info = fn (string $locale): array => ClientFence\Translate::with($locale, fn (): array => array_intersect_key($guest->store_info(), ['title' => 1, 'subtitle' => 1]));
+
+    expect($info('de_DE'))->toBe(['title' => 'Shop', 'subtitle' => 'Alles'])
+        ->and($info('fr_FR'))->toBe(['title' => 'Store', 'subtitle' => '']);
+});

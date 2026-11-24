@@ -136,6 +136,8 @@
                         <label class="form-label" for="esc-reply">{{ 'Add a reply'|trans }}</label>
                         <textarea class="form-control" id="esc-reply" name="reply" rows="4" maxlength="10000">{{ rule.reply }}</textarea>
                         <div class="form-hint">{{ 'Posted by the system and emailed to the client like a staff reply. [NAME], [FIRSTNAME] and [EMAIL] are the client\'s. Leave empty for no reply.'|trans }}</div>
+                        {# The reply in other languages: a client gets theirs (forum #181, i18n::text()). #}
+                        {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'reply', label: 'Add a reply'|trans, textarea: true, rows: 4, maxlength: 10000 }], values: rule }) }}
                     </div>
                 </div>
             </div>

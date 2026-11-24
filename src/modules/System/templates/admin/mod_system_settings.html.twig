@@ -250,6 +250,8 @@
                         <div class="card-body cf-sys-sec">
                             <h4 class="card-title mb-3">{{ 'Signature'|trans }}</h4>
                             <textarea class="form-control" name="company_signature" rows="3">{{ params.company_signature|default('') }}</textarea>
+                            {# ClientFence core patch (forum #181): the signature, legal texts and notes in other languages (i18n::text()). #}
+                            {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'company_signature', label: 'Signature'|trans, textarea: true, rows: 3 }], values: params }) }}
                         </div>
                         <div class="card-footer text-end">
                             <button class="btn btn-primary" type="submit"{% if not can_update_params %} disabled aria-disabled="true"{% endif %}>{{ 'Update Settings'|trans }}</button>
@@ -266,14 +268,17 @@
                             <div class="mb-3">
                                 <h4 class="card-title mb-2">{{ 'Company Terms of Service, Legal Regulation'|trans }}</h4>
                                 <textarea class="form-control editor-textarea" name="company_tos" rows="5">{{ params.company_tos|default('') }}</textarea>
+                                {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'company_tos', label: 'Company Terms of Service, Legal Regulation'|trans, textarea: true, rows: 5, editor: true }], values: params }) }}
                             </div>
                             <div class="mb-3">
                                 <h4 class="card-title mb-2">{{ 'Company Privacy Policy'|trans }}</h4>
                                 <textarea class="form-control editor-textarea" name="company_privacy_policy" rows="5">{{ params.company_privacy_policy|default('') }}</textarea>
+                                {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'company_privacy_policy', label: 'Company Privacy Policy'|trans, textarea: true, rows: 5, editor: true }], values: params }) }}
                             </div>
                             <div class="mb-3">
                                 <h4 class="card-title mb-2">{{ 'Notes'|trans }}</h4>
                                 <textarea class="form-control editor-textarea" name="company_note" rows="5">{{ params.company_note|default('') }}</textarea>
+                                {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'company_note', label: 'Notes'|trans, textarea: true, rows: 5, editor: true }], values: params }) }}
                             </div>
                         </div>
                         <div class="card-footer text-end">

@@ -714,6 +714,43 @@ test('getCompany gives the name and address lines of a language, each empty one 
         ->and($pick('xx-bad/locale'))->toBe($plain);
 });
 
+test('getCompany gives the signature, legal texts and invoice title of a language too (forum #181)', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, created_at TEXT, updated_at TEXT)');
+    foreach ([
+        'company_signature' => 'The team', 'company_tos' => 'Terms', 'company_privacy_policy' => 'Privacy', 'company_note' => 'About', 'invoice_title' => 'Tax Invoice',
+        'company_signature_de_de' => 'Das Team', 'company_tos_de_de' => 'AGB', 'company_privacy_policy_de_de' => '', 'invoice_title_de_de' => 'Steuerrechnung',
+    ] as $param => $value) {
+        $db->insert('setting', ['param' => $param, 'value' => $value]);
+    }
+    $di = container();
+    $di['dbal'] = $db;
+    $service = new Service();
+    $service->setDi($di);
+
+    $pick = fn (?string $locale): array => array_intersect_key($service->getCompany($locale), array_flip(['signature', 'tos', 'privacy_policy', 'note', 'invoice_title']));
+
+    expect($pick('de_DE'))->toBe(['signature' => 'Das Team', 'note' => 'About', 'privacy_policy' => 'Privacy', 'tos' => 'AGB', 'invoice_title' => 'Steuerrechnung'])
+        // Staff pages (no language) and a language without versions get the default texts.
+        ->and($pick(null))->toBe(['signature' => 'The team', 'note' => 'About', 'privacy_policy' => 'Privacy', 'tos' => 'Terms', 'invoice_title' => 'Tax Invoice'])
+        ->and($pick('fr_FR'))->toBe($pick(null));
+});
+
+test('updateParams refuses the language versions of the legal texts to staff without the legal texts permission (forum #181)', function (bool $allowed): void {
+    $di = container();
+    $staff = Mockery::mock();
+    $staff->allows('hasPermission')->with(null, 'system', 'manage_company_legal')->andReturn($allowed);
+    $di['mod_service'] = $di->protect(fn (): object => $staff);
+    $di['events_manager'] = Mockery::mock();
+    $di['events_manager']->allows('fire');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $allowed ? $service->expects('setParamValue')->with('company_tos_de_de', 'AGB', true) : $service->shouldNotReceive('setParamValue');
+    $service->setDi($di);
+
+    $allowed ? expect($service->updateParams(['company_tos_de_de' => 'AGB']))->toBeTrue()
+        : expect(fn () => $service->updateParams(['company_tos_de_de' => 'AGB']))->toThrow(ClientFence\InformationException::class, 'You do not have permission');
+})->with(['allowed' => [true], 'refused' => [false]]);
+
 test('updateParams refuses the language versions of the company details to staff without the company permission (GitHub #51)', function (bool $allowed): void {
     $di = container();
     $staff = Mockery::mock();

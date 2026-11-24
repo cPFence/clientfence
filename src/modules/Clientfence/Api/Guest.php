@@ -39,8 +39,9 @@ class Guest extends \ClientFence\Api\AbstractApi
         $config = Service::config($di);
 
         return [
-            'title' => (string) $config['store_title'],
-            'subtitle' => (string) $config['store_subtitle'],
+            // In the page language when it has a version (forum #181, i18n::text()).
+            'title' => (string) \ClientFence\i18n::text($config, 'store_title'),
+            'subtitle' => (string) \ClientFence\i18n::text($config, 'store_subtitle'),
             'cycle' => (string) $config['store_cycle'],
             'preview' => Service::previewActive($di),
             'signup' => Service::registrationOpen($di),

@@ -793,7 +793,8 @@ class Service implements InjectionAwareInterface
         // (Clientfence\Service::SETTINGS, the hosting panels' switches, Google sign-in, ticket files,
         // email import and network status) are kept
         // when the page's main form saves the rest.
-        $kept = array_keys(array_filter(\ClientFence\Mod\Clientfence\Service::SETTINGS, static fn (string $owner): bool => 'mod_' . $owner === $ext));
+        // ClientFence core patch (forum #181): with the language versions of the store title and subtitle (Service::homes()).
+        $kept = array_keys(array_filter(\ClientFence\Mod\Clientfence\Service::homes(), static fn (string $owner): bool => 'mod_' . $owner === $ext));
         if ($ext === 'mod_servicehosting') {
             $kept = [...$kept, ...\ClientFence\Mod\Servicehosting\Panel\Panels::settingKeys()];
         }

@@ -1781,7 +1781,7 @@ CREATE TABLE `support_kb_category_hidden` (`category_id` bigint(20) NOT NULL, `h
 -- Table structure for table `support_escalation_rule` (ClientFence)
 --
 
-CREATE TABLE `support_escalation_rule` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(100) NOT NULL, `active` tinyint(1) NOT NULL DEFAULT 1, `helpdesks` text NOT NULL, `statuses` text NOT NULL, `priorities` text NOT NULL, `minutes` int(10) unsigned NOT NULL, `new_helpdesk_id` bigint(20) DEFAULT NULL, `new_status` varchar(30) NOT NULL DEFAULT '', `new_priority` varchar(10) NOT NULL DEFAULT '', `assign_to` bigint(20) DEFAULT NULL, `notify` text NOT NULL, `reply` text NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `support_escalation_rule` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(100) NOT NULL, `active` tinyint(1) NOT NULL DEFAULT 1, `helpdesks` text NOT NULL, `statuses` text NOT NULL, `priorities` text NOT NULL, `minutes` int(10) unsigned NOT NULL, `new_helpdesk_id` bigint(20) DEFAULT NULL, `new_status` varchar(30) NOT NULL DEFAULT '', `new_priority` varchar(10) NOT NULL DEFAULT '', `assign_to` bigint(20) DEFAULT NULL, `notify` text NOT NULL, `reply` text NOT NULL, `translations` mediumtext DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `support_escalation_applied` (ClientFence)

@@ -60,7 +60,7 @@ final class Banned
     /** @return list<string> the lines of a list, lower case, without blanks and `#` comments */
     public static function entries(mixed $text): array
     {
-        $lines = array_map(static fn (string $l): string => strtolower(trim($l)), preg_split('/\R/', (string) $text) ?: []);
+        $lines = array_map(static fn (string $l): string => strtolower(trim($l)), preg_split('/\R/u', (string) $text) ?: []);
 
         return array_values(array_filter($lines, static fn (string $l): bool => $l !== '' && !str_starts_with($l, '#')));
     }

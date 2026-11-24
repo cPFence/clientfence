@@ -44,7 +44,7 @@ class Service implements \ClientFence\InjectionAwareInterface
     public function saveAllowedOrigins(string $text): void
     {
         $origins = [];
-        foreach (preg_split('/\R/', $text) ?: [] as $line) {
+        foreach (preg_split('/\R/u', $text) ?: [] as $line) {
             $line = trim($line);
             if ($line === '') {
                 continue;

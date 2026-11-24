@@ -270,3 +270,31 @@ test('headerless email requests use the configured locale', function (): void {
     $request->headers->remove('Accept-Language');
     expect(i18n::getActiveLocale($request, true, new CookieQueue()))->toBe('de_DE');
 });
+
+// ClientFence (forum #181): language versions of staff-entered texts that clients see, kept next to the default text.
+test('a text is its version in the reader\'s language when that language is on and the version is filled, else the default', function (?string $locale, ?string $expected): void {
+    $values = ['tos' => 'Terms', 'tos_de_de' => 'AGB', 'tos_fr_fr' => ' ', 'tos_en_us' => 'Not shown', 'tos_ja_jp' => 'Not shown'];
+
+    expect(i18n::text($values, 'tos', $locale))->toBe($expected)
+        ->and(i18n::text([], 'tos', 'de_DE'))->toBeNull();
+})->with([
+    'a German version' => ['de_DE', 'AGB'],
+    'a blank French version' => ['fr_FR', 'Terms'],
+    'the default language has no versions' => ['en_US', 'Terms'],
+    'a language that is not turned on' => ['ja_JP', 'Terms'],
+    'no language: the client has none' => ['', 'Terms'],
+]);
+
+test('without a language a text is in the page language', function (): void {
+    $values = ['store_title' => 'Store', 'store_title_de_de' => 'Shop'];
+
+    expect(ClientFence\Translate::with('de_DE', fn (): mixed => i18n::text($values, 'store_title')))->toBe('Shop')
+        ->and(ClientFence\Translate::with('fr_FR', fn (): mixed => i18n::text($values, 'store_title')))->toBe('Store');
+});
+
+test('a form\'s texts are the default one and the versions it sent for languages that are on, trimmed', function (): void {
+    $data = ['reply' => " Hello\r\nthere ", 'reply_de_de' => ' Hallo ', 'reply_fr_fr' => '', 'reply_ja_jp' => 'Off', 'other' => 'x'];
+
+    expect(i18n::postedTexts($data, 'reply'))->toBe(['reply' => "Hello\nthere", 'reply_de_de' => 'Hallo', 'reply_fr_fr' => ''])
+        ->and(i18n::postedTexts([], 'message'))->toBe(['message' => '']);
+});

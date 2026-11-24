@@ -4878,3 +4878,59 @@ test('a staff order can leave its invoice a draft: not approved, no credit, no e
     $service->approveStaffInvoice(orderServiceCreateInvoiceModel(10), ['draft' => '1', 'send_email' => true, 'use_credit' => true]);
     expect(true)->toBeTrue();
 });
+
+test('a suspension or cancellation reason from the Orders settings is in the client\'s language (forum #181)', function (string $reason, string $locale, string $expected): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (): array => [
+        'batch_suspend_reason' => 'Overdue invoice', 'batch_suspend_reason_de_de' => 'Überfällige Rechnung',
+        'batch_cancel_suspended_reason' => 'Not paid', 'batch_cancel_suspended_reason_de_de' => '',
+        'suspend_reason_list' => "Abuse\r\nSpam\r\nNonpayment", 'suspend_reason_list_de_de' => "Missbrauch\r\n", 'suspend_reason_list_ar_sa' => "إساءة\nبريد مزعج\nعدم الدفع",
+    ]);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->reasonText($reason, $locale))->toBe($expected);
+})->with([
+    'auto suspend reason' => ['Overdue invoice', 'de_DE', 'Überfällige Rechnung'],
+    'blank version' => ['Not paid', 'de_DE', 'Not paid'],
+    'a line of the list' => ['Abuse', 'de_DE', 'Missbrauch'],
+    'a line the version leaves out' => ['Spam', 'de_DE', 'Spam'],
+    'a line saved with a stray space' => ['Abuse ', 'de_DE', 'Missbrauch'],
+    // Split as UTF-8: the byte 0x85 inside "م" is no line break.
+    'an Arabic line' => ['Nonpayment', 'ar_SA', 'عدم الدفع'],
+    'a reason staff typed' => ['Moved to new plan', 'de_DE', 'Moved to new plan'],
+    'the default language' => ['Overdue invoice', 'en_US', 'Overdue invoice'],
+]);
+
+test('a cancellation reason the same as the suspension one gets the cancellation field\'s version (forum #181)', function (): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (): array => [
+        'batch_suspend_reason' => 'Unpaid invoice', 'batch_suspend_reason_de_de' => 'Rechnung überfällig',
+        'batch_cancel_suspended_reason' => 'Unpaid invoice', 'batch_cancel_suspended_reason_de_de' => 'Rechnung blieb offen',
+    ]);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->reasonText('Unpaid invoice', 'de_DE'))->toBe('Rechnung überfällig')
+        ->and($service->reasonText('Unpaid invoice', 'de_DE', true))->toBe('Rechnung blieb offen');
+});
+
+test('the suspension email gives the reason in the client\'s language (forum #181)', function (): void {
+    $order = createEntity(Order::class, ['id' => 1]);
+    $eventMock = Mockery::mock(\ClientFence\Event::class);
+    $eventMock->shouldReceive('getParameters')->andReturn(['id' => 1]);
+    $emailServiceMock = Mockery::mock(ClientFence\Mod\Email\Service::class);
+    $emailServiceMock->shouldReceive('sendTemplate')->once()->with(Mockery::on(fn (array $email): bool => $email['order']['reason'] === 'Überfällige Rechnung'))->andReturn(true);
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getOrderServiceData')->andReturn([]);
+    $serviceMock->shouldReceive('toApiArray')->andReturn(['id' => 1, 'client' => ['id' => 1, 'lang' => 'de_DE'], 'service_type' => 'custom', 'reason' => 'Overdue invoice']);
+
+    $di = container();
+    $di['em']->getRepository(Order::class)->shouldReceive('find')->andReturn($order);
+    $di['mod_config'] = $di->protect(fn (): array => ['batch_suspend_reason' => 'Overdue invoice', 'batch_suspend_reason_de_de' => 'Überfällige Rechnung']);
+    $di['mod_service'] = $di->protect(fn ($name) => $name === 'email' ? $emailServiceMock : $serviceMock);
+    $serviceMock->setDi($di);
+    $eventMock->shouldReceive('getDi')->andReturn($di);
+
+    Service::onAfterAdminOrderSuspend($eventMock);
+});

@@ -32,7 +32,7 @@ test('invoice item attempts patch follows the manual currency rate patch', funct
 test('tld periods patch follows the invoice item attempts patch', function (): void {
     $patches = (new ReflectionMethod(UpdatePatcher::class, 'getPatches'))->invoke(new UpdatePatcher(), 97);
 
-    expect($patches)->toHaveCount(20)
+    expect($patches)->toHaveCount(22)
         ->toHaveKey(98)
         ->and($patches[98][1])->toBe('patch98')
         ->and($patches)->toHaveKey(117)
@@ -54,7 +54,9 @@ test('tld periods patch follows the invoice item attempts patch', function (): v
         ->and($patches[130][1])->toBe('patch130')
         ->and($patches[131][1])->toBe('patch131')
         ->and($patches[132][1])->toBe('patch132')
-        ->and($patches[133][1])->toBe('patch133');
+        ->and($patches[133][1])->toBe('patch133')
+        ->and($patches[134][1])->toBe('patch134')
+        ->and($patches[135][1])->toBe('patch135');
 });
 
 test('paid invoice prefix patch keeps the numbers of installs that left it empty', function (string $series, string|false $paid, ?string $written): void {

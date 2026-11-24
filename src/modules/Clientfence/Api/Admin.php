@@ -995,13 +995,15 @@ class Admin extends \ClientFence\Api\AbstractApi
             throw new InformationException('Choose the client group that can order.');
         }
 
-        $title = trim((string) ($data['store_title'] ?? ''));
-        $subtitle = trim((string) ($data['store_subtitle'] ?? ''));
-        if (mb_strlen($title) > Service::STORE_TITLE_MAX || mb_strlen($subtitle) > Service::STORE_SUBTITLE_MAX) {
-            throw new InformationException('The store title can have :title characters and the subtitle :subtitle.', [':title' => Service::STORE_TITLE_MAX, ':subtitle' => Service::STORE_SUBTITLE_MAX]);
-        }
-        if (preg_match('/[\x00-\x1F\x7F]/u', $title . $subtitle) === 1) {
-            throw new InformationException('The store title and subtitle are one line of plain text each.');
+        // With their language versions (forum #181, i18n::text()), each checked as the default ones.
+        $texts = \ClientFence\i18n::postedTexts($data, 'store_title', 'store_subtitle');
+        foreach ($texts as $key => $text) {
+            if (mb_strlen($text) > (str_starts_with($key, 'store_title') ? Service::STORE_TITLE_MAX : Service::STORE_SUBTITLE_MAX)) {
+                throw new InformationException('The store title can have :title characters and the subtitle :subtitle.', [':title' => Service::STORE_TITLE_MAX, ':subtitle' => Service::STORE_SUBTITLE_MAX]);
+            }
+            if (preg_match('/[\x00-\x1F\x7F]/u', $text) === 1) {
+                throw new InformationException('The store title and subtitle are one line of plain text each.');
+            }
         }
         // The billing cycle the store opens on; empty: monthly, or the first cycle offered.
         $cycle = (string) ($data['store_cycle'] ?? '');
@@ -1012,10 +1014,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         Service::saveSettings($this->getDi(), [
             'store_mode' => $mode,
             'store_testers_group' => $group,
-            'store_title' => $title,
-            'store_subtitle' => $subtitle,
             'store_cycle' => $cycle,
-        ]);
+        ] + $texts);
         $this->getDi()['logger']->info('ClientFence: store set to %s (client group that can order: %s)', $mode, $group === '' ? 'none' : $group);
 
         return true;

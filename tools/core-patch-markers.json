@@ -1156,6 +1156,10 @@
         "done": "ClientFence: the client's account statement (Invoice/Statement.php)"
     },
     {
+        "file": "modules/Email/templates/admin/mod_email_settings.html.twig",
+        "done": "ClientFence core patch (forum #181): the signature's language versions (i18n::text())."
+    },
+    {
         "file": "library/ClientFence/Twig/TwigFactory.php",
         "done": "ClientFence core patch: dates stay whole in right-to-left languages (RtlDateExtension)."
     },
@@ -9870,5 +9874,77 @@
     {
         "file": "modules/Embed/templates/client/mod_embed_domainchecker.html.twig",
         "done": "ClientFence core patch (forum #179): the link colour of the client area, readable in dark mode."
+    },
+    {
+        "file": "library/ClientFence/i18n.php",
+        "done": "ClientFence core patch (forum #181): language versions of staff-entered texts that clients see."
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch (forum #181): the message in the page language when it has a version (i18n::text())."
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch (forum #181): the email signature, or the company one it falls back to, in the email's language."
+    },
+    {
+        "file": "library/ClientFence/Twig/TwigFactory.php",
+        "done": "ClientFence core patch (forum #181): the default language, which has no text versions (mod_system_text_versions.html.twig)."
+    },
+    {
+        "file": "library/ClientFence/UpdatePatcher.php",
+        "done": "ClientFence core patch (forum #181): the language versions of an escalation rule's reply (Support/TicketEscalation.php)."
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch (forum #181): the text in the page language when it has a version (single_de_de, i18n::text())."
+    },
+    {
+        "file": "library/Payment/Adapter/Custom.php",
+        "done": "ClientFence core patch (forum #181): with language versions (mod_invoice_gateway.html.twig)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch (forum #181): with the language versions of the store title and subtitle (Service::homes())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch (forum #181): in the client's language when it has a version (i18n::text())."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_settings.html.twig",
+        "done": "ClientFence core patch (forum #181): the note in other languages; an invoice gets its client's."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch (forum #181): a text clients read (payment instructions) in other languages (i18n::text())."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (forum #181): a reason from the Orders settings in the client's language."
+    },
+    {
+        "file": "modules/Order/Service.php",
+        "done": "ClientFence core patch (forum #181): an order's suspension or cancellation reason in $locale when it is one of the"
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_settings.html.twig",
+        "done": "ClientFence core patch (forum #181): the reasons in other languages, for the client's suspension and cancellation emails (Order Service reasonText())."
+    },
+    {
+        "file": "modules/System/Api/Admin.php",
+        "done": "ClientFence core patch (forum #181): with the message's language versions (message_de_de, i18n::text())."
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (forum #181): the signature, legal texts and invoice title have versions too (i18n::text())."
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch (forum #181): and those of the legal texts (company_tos_de_de)."
+    },
+    {
+        "file": "modules/System/templates/admin/mod_system_settings.html.twig",
+        "done": "ClientFence core patch (forum #181): the signature, legal texts and notes in other languages (i18n::text())."
     }
 ]

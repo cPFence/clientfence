@@ -20,10 +20,10 @@ function ticketEscalationDb(): Connection
         'CREATE TABLE support_ticket (id INTEGER PRIMARY KEY, subject TEXT, status TEXT, priority INTEGER, support_helpdesk_id INTEGER, client_id INTEGER, author_name TEXT, author_email TEXT)',
         'CREATE TABLE support_ticket_message (id INTEGER PRIMARY KEY AUTOINCREMENT, support_ticket_id INTEGER, admin_id INTEGER, client_id INTEGER, content TEXT, created_at TEXT)',
         'CREATE TABLE support_helpdesk (id INTEGER PRIMARY KEY, name TEXT)',
-        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, email TEXT)',
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, email TEXT, lang TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT, system_name TEXT, status TEXT)',
         'CREATE TABLE ' . TicketAssign::TABLE . ' (ticket_id INTEGER PRIMARY KEY, admin_id INTEGER NOT NULL, assigned_by INTEGER, assigned_at TEXT NOT NULL)',
-        'CREATE TABLE ' . TicketEscalation::RULES . ' (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, helpdesks TEXT NOT NULL, statuses TEXT NOT NULL, priorities TEXT NOT NULL, minutes INTEGER NOT NULL, new_helpdesk_id INTEGER, new_status TEXT NOT NULL DEFAULT \'\', new_priority TEXT NOT NULL DEFAULT \'\', assign_to INTEGER, notify TEXT NOT NULL, reply TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)',
+        'CREATE TABLE ' . TicketEscalation::RULES . ' (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, helpdesks TEXT NOT NULL, statuses TEXT NOT NULL, priorities TEXT NOT NULL, minutes INTEGER NOT NULL, new_helpdesk_id INTEGER, new_status TEXT NOT NULL DEFAULT \'\', new_priority TEXT NOT NULL DEFAULT \'\', assign_to INTEGER, notify TEXT NOT NULL, reply TEXT NOT NULL, translations TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)',
         'CREATE TABLE ' . TicketEscalation::APPLIED . ' (rule_id INTEGER NOT NULL, ticket_id INTEGER NOT NULL, reply_at TEXT NOT NULL, applied_at TEXT NOT NULL, PRIMARY KEY (rule_id, ticket_id))',
     ] as $sql) {
         $db->executeStatement($sql);
@@ -263,4 +263,53 @@ test('marks of deleted tickets and rules are swept', function (): void {
     expect(TicketEscalation::rules($bare))->toBe([])
         ->and(TicketEscalation::run($bare))->toBe(0)
         ->and(TicketEscalation::sweep($bare))->toBe(0);
+});
+
+test('a rule\'s reply goes out in the client\'s language when it has a version, else in the default one (forum #181)', function (): void {
+    $mails = $calls = [];
+    $db = ticketEscalationDb();
+    $di = ticketEscalationContainer($db, $mails, $calls);
+    $db->insert('client', ['id' => 6, 'first_name' => 'Jonas', 'last_name' => 'Weber', 'email' => 'jonas@example.com', 'lang' => 'de_DE']);
+    $db->insert('client', ['id' => 7, 'first_name' => 'Jean', 'last_name' => 'Roux', 'email' => 'jean@example.com', 'lang' => 'fr_FR']);
+    $id = TicketEscalation::save($di, ticketEscalationRule(['reply' => 'Hello [FIRSTNAME]', 'reply_de_de' => " Hallo [FIRSTNAME]\r\n", 'reply_fr_fr' => '', 'reply_ja_jp' => 'Off']));
+    expect(TicketEscalation::get($di, $id))->toMatchArray(['reply_de_de' => 'Hallo [FIRSTNAME]'])->not->toHaveKeys(['reply_fr_fr', 'reply_ja_jp']);
+    // A version the form did not send (a language turned off since) is kept.
+    $db->update(TicketEscalation::RULES, ['translations' => json_encode(['reply_de_de' => 'Hallo [FIRSTNAME]', 'reply_fr_fr' => 'Bonjour [FIRSTNAME]'])], ['id' => $id]);
+    TicketEscalation::save($di, ticketEscalationRule(['id' => $id, 'reply' => 'Hello [FIRSTNAME]', 'reply_de_de' => 'Guten Tag [FIRSTNAME]']));
+    $made = strtotime((string) TicketEscalation::get($di, $id)['created_at']);
+    ticketEscalationTicket($db, 20, $made, 30, ['client_id' => 6]);
+    ticketEscalationTicket($db, 21, $made, 30, ['client_id' => 7]);
+    ticketEscalationTicket($db, 22, $made, 30);
+
+    expect(TicketEscalation::get($di, $id))->toMatchArray(['reply' => 'Hello [FIRSTNAME]', 'reply_de_de' => 'Guten Tag [FIRSTNAME]', 'reply_fr_fr' => 'Bonjour [FIRSTNAME]'])
+        ->and(TicketEscalation::run($di, $made + 31 * 60))->toBe(3)
+        ->and(array_values(array_filter($calls, fn (array $call): bool => $call[0] === 'reply')))->toBe([
+            ['reply', 20, 'cron admin', 'Guten Tag Jonas'],
+            ['reply', 21, 'cron admin', 'Bonjour Jean'],
+            ['reply', 22, 'cron admin', 'Hello Alice'],
+        ]);
+});
+
+test('a rule whose reply has only a language version is saved and replies only in that language (forum #181)', function (): void {
+    $mails = $calls = [];
+    $db = ticketEscalationDb();
+    $di = ticketEscalationContainer($db, $mails, $calls);
+    $db->insert('client', ['id' => 6, 'first_name' => 'Jonas', 'last_name' => 'Weber', 'email' => 'jonas@example.com', 'lang' => 'de_DE']);
+    $id = TicketEscalation::save($di, ticketEscalationRule(['reply' => '', 'reply_de_de' => 'Hallo [FIRSTNAME]']));
+    $made = strtotime((string) TicketEscalation::get($di, $id)['created_at']);
+    ticketEscalationTicket($db, 20, $made, 30, ['client_id' => 6]);
+    ticketEscalationTicket($db, 22, $made, 30);
+
+    TicketEscalation::run($di, $made + 31 * 60);
+
+    expect(array_values(array_filter($calls, fn (array $call): bool => $call[0] === 'reply')))->toBe([['reply', 20, 'cron admin', 'Hallo Jonas']]);
+});
+
+test('rules saved before the versions column exists read back without versions', function (): void {
+    $mails = $calls = [];
+    $db = ticketEscalationDb();
+    $db->executeStatement('ALTER TABLE ' . TicketEscalation::RULES . ' DROP COLUMN translations');
+    $db->insert(TicketEscalation::RULES, ['name' => 'Old', 'helpdesks' => '[]', 'statuses' => '[]', 'priorities' => '[]', 'minutes' => 60, 'notify' => '[]', 'reply' => 'Hi', 'created_at' => '2026-01-01 00:00:00', 'updated_at' => '2026-01-01 00:00:00']);
+
+    expect(TicketEscalation::rules(ticketEscalationContainer($db, $mails, $calls))[0])->toMatchArray(['name' => 'Old', 'reply' => 'Hi'])->not->toHaveKey('reply_de_de');
 });

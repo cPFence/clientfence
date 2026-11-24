@@ -6664,3 +6664,34 @@ test('a renewal invoice takes the free credit that does not cover it', function 
     'old debt' => [-5.0, null, false],
     'credit in another currency' => [4.0, 4.0, true],
 ]);
+
+test('the invoice PDF has its title and signature in the PDF\'s language and the seller\'s name in the client\'s (forum #181)', function (): void {
+    $system = Mockery::mock(SystemService::class);
+    $system->expects('getCompany')->with(null)->andReturn(['name' => 'Northstar Hosting Ltd', 'invoice_title' => 'Tax Invoice', 'signature' => 'Thanks']);
+    $system->expects('getCompany')->with('de_DE')->andReturn(['name' => 'Nordstern Hosting', 'invoice_title' => 'Steuerrechnung', 'signature' => 'Danke']);
+    $system->allows('getParamValue')->andReturn('A4');
+    $tax = Mockery::mock(ClientFence\Mod\Invoice\ServiceTax::class);
+    $tax->allows('displayName')->andReturn('');
+    $twig = Mockery::mock(Twig\Environment::class);
+    $twig->allows('setLoader');
+    // The footer the template gets, then stop.
+    $twig->allows('render')->andReturnUsing(fn (string $template, array $vars): never => throw new RuntimeException(json_encode([$vars['footer']['company_name'], $vars['footer']['invoice_title'], $vars['footer']['signature']], JSON_UNESCAPED_UNICODE)));
+    $factory = Mockery::mock(ClientFence\Twig\TwigFactory::class);
+    $factory->allows('createBaseEnvironment')->andReturn($twig);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => $sub === 'Tax' ? $tax : $system);
+    $di['twig_factory'] = $factory;
+    $pdf = Mockery::mock(Dompdf\Dompdf::class)->shouldIgnoreMissing();
+    $pdf->allows('getOptions')->andReturn(new Dompdf\Options());
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->setDi($di);
+    $service->allows('getPdfTemplate')->andReturn('custom-invoice.twig');
+    $service->allows('getPdfCss')->andReturn('');
+    $service->allows('createPdfGenerator')->andReturn($pdf);
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->currency = 'EUR';
+
+    expect(fn () => (new ReflectionMethod(Service::class, 'renderInvoicePdfContent'))->invoke($service, $invoice, ['client' => ['lang' => '']], 'de_DE'))
+        ->toThrow(RuntimeException::class, '["Northstar Hosting Ltd","Steuerrechnung","Danke"]');
+});

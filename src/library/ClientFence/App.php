@@ -507,7 +507,8 @@ class App
                     return new RedirectResponse($redirect, 302);
                 }
 
-                return $this->renderResponse('mod_system_maintenance', ['maintenance_message' => (string) Config::getProperty('maintenance_mode.message', '')], 503);
+                // ClientFence core patch (forum #181): the message in the page language when it has a version (i18n::text()).
+                return $this->renderResponse('mod_system_maintenance', ['maintenance_message' => (string) i18n::text((array) Config::getProperty('maintenance_mode', []), 'message')], 503);
             }
         }
 
