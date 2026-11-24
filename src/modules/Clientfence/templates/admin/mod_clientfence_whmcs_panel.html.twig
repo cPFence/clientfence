@@ -572,9 +572,9 @@
             {% endif %}
 
             <div class="row g-3">
-                {% for group, label in { 'clients': 'Clients and logins', 'catalogue': 'Catalogue', 'services': 'Services', 'billing': 'Billing', 'support': 'Support', 'content': 'Content and history' } %}
+                {% for group, label in { 'clients': 'Clients and logins'|trans, 'catalogue': 'Catalogue'|trans, 'services': 'Services'|trans, 'billing': 'Billing'|trans, 'support': 'Support'|trans, 'content': 'Content and history'|trans } %}
                 <div class="col-12 col-xl-6">
-                    <h4 class="mb-2">{{ label|trans }}</h4>
+                    <h4 class="mb-2">{{ label }}</h4>
                     <div class="table-responsive">
                         <table class="table table-sm table-vcenter mb-0">
                             <tbody>

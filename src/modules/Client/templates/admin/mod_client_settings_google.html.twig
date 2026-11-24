@@ -68,17 +68,17 @@
 			<div class="clientfence-setting-control">
 				<div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
 					{% for value, item in {
-						'both': { label: 'Login & sign-up', hint: 'On the sign-in page, the sign-up page and the checkout. Clients sign in with Google; new visitors can create an account with it.' },
-						'signin': { label: 'Login only', hint: 'On the sign-in page only. Clients sign in with Google; Google never creates an account.' },
-						'signup': { label: 'Sign-up only', hint: 'On the sign-up page and the checkout only. New visitors create an account with Google and choose a password for their next sign-ins; the sign-in page has no Google button.' }
+						'both': { label: 'Login & sign-up'|trans, hint: 'On the sign-in page, the sign-up page and the checkout. Clients sign in with Google; new visitors can create an account with it.'|trans },
+						'signin': { label: 'Login only'|trans, hint: 'On the sign-in page only. Clients sign in with Google; Google never creates an account.'|trans },
+						'signup': { label: 'Sign-up only'|trans, hint: 'On the sign-up page and the checkout only. New visitors create an account with Google and choose a password for their next sign-ins; the sign-in page has no Google button.'|trans }
 					} %}
 						<label class="form-selectgroup-item flex-fill">
 							<input type="radio" name="google_mode" value="{{ value }}" class="form-selectgroup-input"{% if signin.mode == value %} checked{% endif %}>
 							<div class="form-selectgroup-label d-flex align-items-center gap-3 p-3">
 								<div><span class="form-selectgroup-check"></span></div>
 								<div>
-									<div class="fw-bold">{{ item.label|trans }}{% if value == 'both' %} <span class="badge bg-secondary-lt ms-1">{{ 'Default'|trans }}</span>{% endif %}</div>
-									<div class="text-secondary small">{{ item.hint|trans }}</div>
+									<div class="fw-bold">{{ item.label }}{% if value == 'both' %} <span class="badge bg-secondary-lt ms-1">{{ 'Default'|trans }}</span>{% endif %}</div>
+									<div class="text-secondary small">{{ item.hint }}</div>
 								</div>
 							</div>
 						</label>

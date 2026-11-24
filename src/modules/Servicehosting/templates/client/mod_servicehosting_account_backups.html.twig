@@ -23,11 +23,11 @@
                         <strong>{{ backup.startedAt|format_datetime('medium', 'short') }}</strong>
                         {% if backup.size %}<span class="text-secondary small" dir="ltr">{{ size(backup.size) }}</span>{% endif %}
                         {% for part in [
-                            { 'ok': backup.files, 'label': 'Files' },
-                            { 'ok': backup.databases, 'label': 'Databases' },
-                            { 'ok': backup.mailboxes, 'label': 'Email' },
+                            { 'ok': backup.files, 'label': 'Files'|trans },
+                            { 'ok': backup.databases, 'label': 'Databases'|trans },
+                            { 'ok': backup.mailboxes, 'label': 'Email'|trans },
                         ] %}
-                            <span class="badge {{ part.ok ? 'text-bg-success' : 'text-bg-secondary' }}">{{ part.label|trans }}</span>
+                            <span class="badge {{ part.ok ? 'text-bg-success' : 'text-bg-secondary' }}">{{ part.label }}</span>
                         {% endfor %}
                     </div>
                     {% if backups.can_restore and backup.files %}

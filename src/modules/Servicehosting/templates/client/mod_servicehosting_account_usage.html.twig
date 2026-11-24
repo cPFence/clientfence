@@ -42,15 +42,15 @@
         {# Disk and bandwidth #}
         <div class="row g-3 mb-3">
             {% for meter in [
-                { 'label': 'Disk space', 'icon': 'database', 'used': usage.disk_used_mb, 'limit': usage.disk_quota_mb },
-                { 'label': 'Bandwidth this month', 'icon': 'activity', 'used': usage.bandwidth_used_mb, 'limit': usage.bandwidth_limit_mb },
+                { 'label': 'Disk space'|trans, 'icon': 'database', 'used': usage.disk_used_mb, 'limit': usage.disk_quota_mb },
+                { 'label': 'Bandwidth this month'|trans, 'icon': 'activity', 'used': usage.bandwidth_used_mb, 'limit': usage.bandwidth_limit_mb },
             ] %}
                 <div class="col-md-6">
                     <div class="clientfence-hosting-meter card h-100">
                         <div class="card-body">
                             <div class="d-flex align-items-center gap-2 mb-3">
                                 <span class="clientfence-hosting-tile-icon"><svg class="icon icon-sm" aria-hidden="true"><use href="#{{ meter.icon }}"/></svg></span>
-                                <span class="clientfence-hosting-meter-label">{{ meter.label|trans }}</span>
+                                <span class="clientfence-hosting-meter-label">{{ meter.label }}</span>
                                 {% if meter.limit %}
                                     <span class="clientfence-hosting-meter-percent ms-auto">{{ min(100, (meter.used / meter.limit * 100)|round) }}%</span>
                                 {% endif %}
@@ -72,13 +72,13 @@
 
         {# What the plan includes #}
         {% set resources = [
-            { 'key': 'websites', 'label': 'Websites', 'icon': 'world' },
-            { 'key': 'addon_domains', 'label': 'Addon domains', 'icon': 'world-plus' },
-            { 'key': 'subdomains', 'label': 'Subdomains', 'icon': 'sitemap' },
-            { 'key': 'domain_aliases', 'label': 'Aliases', 'icon': 'link' },
-            { 'key': 'mailboxes', 'label': 'Mailboxes', 'icon': 'mail' },
-            { 'key': 'databases', 'label': 'Databases', 'icon': 'database' },
-            { 'key': 'ftp_users', 'label': 'FTP users', 'icon': 'folder' },
+            { 'key': 'websites', 'label': 'Websites'|trans, 'icon': 'world' },
+            { 'key': 'addon_domains', 'label': 'Addon domains'|trans, 'icon': 'world-plus' },
+            { 'key': 'subdomains', 'label': 'Subdomains'|trans, 'icon': 'sitemap' },
+            { 'key': 'domain_aliases', 'label': 'Aliases'|trans, 'icon': 'link' },
+            { 'key': 'mailboxes', 'label': 'Mailboxes'|trans, 'icon': 'mail' },
+            { 'key': 'databases', 'label': 'Databases'|trans, 'icon': 'database' },
+            { 'key': 'ftp_users', 'label': 'FTP users'|trans, 'icon': 'folder' },
         ] %}
         <div class="clientfence-hosting-resources mb-4">
             {% for resource in resources %}
@@ -90,7 +90,7 @@
                             <div class="clientfence-hosting-resource-value">
                                 {{ count.used }}{% if count.limit is not null %}<span class="clientfence-hosting-meter-of"> / {{ count.limit }}</span>{% endif %}
                             </div>
-                            <div class="clientfence-hosting-resource-label">{{ resource.label|trans }}</div>
+                            <div class="clientfence-hosting-resource-label">{{ resource.label }}</div>
                         </div>
                     </div>
                 {% endif %}

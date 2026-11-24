@@ -237,7 +237,7 @@
                 <div class="d-flex flex-column gap-3">
                     {% embed 'partial_admin_form_card.html.twig' with {
                         title: 'GET Parameters'|trans,
-                        subtitle: 'Review GET values captured with the payment callback request.',
+                        subtitle: 'Review GET values captured with the payment callback request.'|trans,
                         card_class: 'mb-0'
                     } %}
                         {% block form_content %}
@@ -262,7 +262,7 @@
 
                     {% embed 'partial_admin_form_card.html.twig' with {
                         title: 'POST Parameters'|trans,
-                        subtitle: 'Review POST values captured with the payment callback request.',
+                        subtitle: 'Review POST values captured with the payment callback request.'|trans,
                         card_class: 'mb-0'
                     } %}
                         {% block form_content %}

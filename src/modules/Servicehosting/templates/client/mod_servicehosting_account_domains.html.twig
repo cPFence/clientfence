@@ -6,17 +6,17 @@
 {% set dns = client.servicehosting_domains({ 'order_id': order_id, 'refresh': refresh ? 1 : 0, 'website': website|default('') }) %}
 
 {% set web_states = {
-    'ok': { 'label': 'Points to your server', 'class': 'text-bg-success' },
-    'cloudflare': { 'label': 'Through Cloudflare', 'class': 'text-bg-info' },
-    'elsewhere': { 'label': 'Points elsewhere', 'class': 'text-bg-warning' },
-    'none': { 'label': 'Not in DNS', 'class': 'text-bg-danger' },
+    'ok': { 'label': 'Points to your server'|trans, 'class': 'text-bg-success' },
+    'cloudflare': { 'label': 'Through Cloudflare'|trans, 'class': 'text-bg-info' },
+    'elsewhere': { 'label': 'Points elsewhere'|trans, 'class': 'text-bg-warning' },
+    'none': { 'label': 'Not in DNS'|trans, 'class': 'text-bg-danger' },
 } %}
 {% set mail_states = {
-    'ok': { 'label': 'Mail comes here', 'class': 'text-bg-success' },
-    'elsewhere': { 'label': 'Mail goes elsewhere', 'class': 'text-bg-warning' },
-    'none': { 'label': 'No MX record', 'class': 'text-bg-warning' },
+    'ok': { 'label': 'Mail comes here'|trans, 'class': 'text-bg-success' },
+    'elsewhere': { 'label': 'Mail goes elsewhere'|trans, 'class': 'text-bg-warning' },
+    'none': { 'label': 'No MX record'|trans, 'class': 'text-bg-warning' },
 } %}
-{% set kinds = { 'primary': 'Primary', 'alias': 'Alias', 'addon': 'Addon domain', 'subdomain': 'Subdomain' } %}
+{% set kinds = { 'primary': 'Primary'|trans, 'alias': 'Alias'|trans, 'addon': 'Addon domain'|trans, 'subdomain': 'Subdomain'|trans } %}
 
 {% if dns.error is defined %}
     <div class="card">
@@ -53,11 +53,11 @@
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <svg class="icon text-secondary" aria-hidden="true"><use href="#world"/></svg>
                     <span class="clientfence-hosting-site-domain"><bdi dir="ltr">{{ item.domain }}</bdi></span>
-                    <span class="badge text-bg-secondary">{{ (kinds[item.kind] ?? item.kind)|trans }}</span>
+                    <span class="badge text-bg-secondary">{{ kinds[item.kind] ?? item.kind }}</span>
                 </div>
                 <dl class="clientfence-hosting-site-stats">
-                    <div><dt>{{ 'Website'|trans }}</dt><dd><span class="badge {{ web.class }}">{{ web.label|trans }}</span></dd></div>
-                    <div><dt>{{ 'Mail'|trans }}</dt><dd><span class="badge {{ mail.class }}">{{ mail.label|trans }}</span></dd></div>
+                    <div><dt>{{ 'Website'|trans }}</dt><dd><span class="badge {{ web.class }}">{{ web.label }}</span></dd></div>
+                    <div><dt>{{ 'Mail'|trans }}</dt><dd><span class="badge {{ mail.class }}">{{ mail.label }}</span></dd></div>
                 </dl>
                 {% if item.web.status == 'cloudflare' %}
                     <p class="clientfence-dns-note">{{ 'Cloudflare hides the server behind it. In Cloudflare, the A record must point to :ip.'|trans({ ':ip': web_ips }) }}</p>
