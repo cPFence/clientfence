@@ -201,8 +201,8 @@ class Client implements InjectionAwareInterface
         // snake oil: check request is from the same domain as FOSSBilling is installed if present
         $check_referer_header = isset($this->apiConfig['require_referrer_header']) && (bool) $this->apiConfig['require_referrer_header'];
         if ($check_referer_header) {
-            // ClientFence core patch: the Referer must be on the request's site (ClientFence\Site).
-            $site = \ClientFence\Site::current($this->di)->url;
+            // ClientFence core patch: the Referer must be on the site the browser is on (ClientFence\Site::ofRequest()).
+            $site = \ClientFence\Site::ofRequest($this->di)->url;
             $url = strtolower($site);
             $referer = $this->di['request']->headers->get('Referer');
             $referer = is_string($referer) ? strtolower($referer) : null;
@@ -307,8 +307,8 @@ class Client implements InjectionAwareInterface
             throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
         }
         $origin = $request->headers->get('Origin');
-        // ClientFence core patch: the Origin must be the request's site (ClientFence\Site).
-        $expectedOrigin = \ClientFence\Site::current($this->di)->origin();
+        // ClientFence core patch: the Origin must be the site the browser is on (ClientFence\Site::ofRequest()).
+        $expectedOrigin = \ClientFence\Site::ofRequest($this->di)->origin();
         if (($origin !== null && strcasecmp($origin, $expectedOrigin) !== 0)
             || $request->headers->get('Sec-Fetch-Site') === 'cross-site') {
             throw new \ClientFence\InformationException('Invalid request origin', null, 403);

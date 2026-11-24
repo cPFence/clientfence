@@ -21,10 +21,12 @@ use ClientFence\Mod\Clientfence\SignInSecurity;
  * names the login.
  *
  * Table client_passkey: one row per passkey (kind, subject_id, credential id and user handle as base64url,
- * the key as PEM, the site it was made on: each site sees only its own, siteWhere()). Rows go with the login (TwoFactor::forgetLogin()). Adding one needs the password, except
- * within OFFER_SECONDS of a sign-in that offered it ("Sign in faster next time"); removing one needs the
- * password; staff remove a login's passkeys where they switch off its app. A passkey counts as the second
- * factor CF-118 requires (TwoFactor::hasSecondFactor()). Adding one to a client login emails that login.
+ * the key as PEM, rp_id: the WebAuthn RP ID (host name) it was made for, NULL for the primary site's). A passkey is
+ * listed, offered and accepted only where the request's RP ID is its own (select()); staff counts and removal, the
+ * data export and the two-factor rule cover them all. Rows go with the login (TwoFactor::forgetLogin()). Adding one
+ * needs the password, except within OFFER_SECONDS of a sign-in that offered it ("Sign in faster next time");
+ * removing one needs the password; staff remove a login's passkeys where they switch off its app. A passkey counts
+ * as the second factor CF-118 requires (TwoFactor::hasSecondFactor()). Adding one to a client login emails that login.
  */
 final class Passkeys
 {
@@ -56,16 +58,16 @@ final class Passkeys
         return strtolower((string) ($parts['scheme'] ?? '')) === 'https' || $host === 'localhost' || str_ends_with($host, '.localhost');
     }
 
-    /** The origin the browser reports for the portal: scheme, host and port of the request's site. */
+    /** The origin the browser reports for the portal: scheme, host and port of the site the browser is on. */
     public static function origin(\Pimple\Container $di): string
     {
-        return \ClientFence\Site::current($di)->origin();
+        return \ClientFence\Site::ofRequest($di)->origin();
     }
 
-    /** The relying party id: the host name of the request's site (a passkey works only there). */
+    /** The relying party id: the host name of the site the browser is on (a passkey works only there). */
     public static function rpId(\Pimple\Container $di): string
     {
-        return \Symfony\Component\HttpFoundation\Request::create(\ClientFence\Site::current($di)->url)->getHost();
+        return \Symfony\Component\HttpFoundation\Request::create(\ClientFence\Site::ofRequest($di)->url)->getHost();
     }
 
     public static function b64(string $bytes): string
@@ -110,11 +112,10 @@ final class Passkeys
             throw new InformationException('Passkey sign-in is not on.');
         }
         $credentialId = self::b64(self::decode($data['id'] ?? null));
-        [$site, $siteParams] = self::siteWhere($di);
         try {
-            $row = $credentialId === '' ? false : $di['em']->getConnection()->fetchAssociative("SELECT * FROM client_passkey WHERE credential_id = ? AND {$site}", [$credentialId, ...$siteParams]);
+            $row = $credentialId === '' ? false : (self::select($di, 'credential_id = ?', [$credentialId])[0] ?? false);
         } catch (\Doctrine\DBAL\Exception $e) {
-            // New files before Finalize update (the site column is missing): the password still signs in.
+            // Another host before Finalize update adds rp_id: the password hint, not a database error.
             self::refuse($di, $e->getMessage());
         }
         if ($row === false || !in_array($row['kind'], $area === 'staff' ? ['staff'] : ['client', 'user'], true)) {
@@ -273,6 +274,8 @@ final class Passkeys
         }
         $name = mb_substr((string) (\ClientFence\Mod\Clientfence\SignInHistory::browser((string) $di['request']->headers->get('User-Agent', '')) ?? __trans('Passkey')), 0, 100);
         $now = date('Y-m-d H:i:s');
+        $rpId = self::rpIdColumn($di);
+        // No rp_id for the primary site's RP ID: an install whose sites all share it writes rows as before.
         $db->insert('client_passkey', [
             'kind' => $kind,
             'subject_id' => $id,
@@ -283,8 +286,7 @@ final class Passkeys
             'name' => $name,
             'user_handle' => (string) $state['handle'],
             'created_at' => $now,
-            'site' => \ClientFence\Site::current($di)->key,
-        ]);
+        ] + ($rpId === null ? [] : ['rp_id' => $rpId]));
         $passkeyId = (int) $db->lastInsertId();
         TwoFactor::log($di, $kind, $id, $clientId, sprintf('added a passkey (%s)', $name));
         if ($kind !== 'staff') {
@@ -316,21 +318,18 @@ final class Passkeys
         if ($name === '') {
             throw new InformationException('Enter a name for the passkey.');
         }
-        $db = $di['em']->getConnection();
-        [$site, $siteParams] = self::siteWhere($di);
-        // An unknown id (or another login's or another site's passkey) is an error, as in remove(), not a silent success.
-        if ($db->fetchOne("SELECT id FROM client_passkey WHERE id = ? AND kind = ? AND subject_id = ? AND {$site}", [$passkeyId, $kind, $id, ...$siteParams]) === false) {
+        // An unknown id (or another login's or another host's passkey) is an error, as in remove(), not a silent success.
+        if (self::select($di, 'id = ? AND kind = ? AND subject_id = ?', [$passkeyId, $kind, $id]) === []) {
             throw new InformationException('Passkey not found.', null, 404);
         }
-        $db->update('client_passkey', ['name' => $name], ['id' => $passkeyId, 'kind' => $kind, 'subject_id' => $id]);
+        $di['em']->getConnection()->update('client_passkey', ['name' => $name], ['id' => $passkeyId, 'kind' => $kind, 'subject_id' => $id]);
     }
 
     /** Removes one of the login's passkeys (`password`); a client login may then have to set up two-factor sign-in again. */
     public static function remove(\Pimple\Container $di, string $kind, int $id, int $clientId, int $passkeyId, array $data, string $ip): void
     {
         TwoFactor::checkPassword($di, $kind, $id, $data['password'] ?? null, $ip);
-        [$site, $siteParams] = self::siteWhere($di);
-        $name = $di['em']->getConnection()->fetchOne("SELECT name FROM client_passkey WHERE id = ? AND kind = ? AND subject_id = ? AND {$site}", [$passkeyId, $kind, $id, ...$siteParams]);
+        $name = self::select($di, 'id = ? AND kind = ? AND subject_id = ?', [$passkeyId, $kind, $id])[0]['name'] ?? false;
         if ($name === false) {
             throw new InformationException('Passkey not found.', null, 404);
         }
@@ -341,7 +340,7 @@ final class Passkeys
         }
     }
 
-    /** Staff remove every passkey of the account owner, or of a user of the account, on every site (lost device; Users tab). */
+    /** Staff remove every passkey of the account owner, or of a user of the account, for every host (lost device; Users tab). */
     public static function staffRemove(\Pimple\Container $di, int $clientId, ?int $userId, int $adminId): void
     {
         $db = $di['em']->getConnection();
@@ -358,7 +357,7 @@ final class Passkeys
         TwoFactor::log($di, $kind, $id, $clientId, 'passkeys removed by staff', $adminId);
     }
 
-    /** A Super Administrator removes a staff member's passkeys on every site (staff page). */
+    /** A Super Administrator removes a staff member's passkeys for every host (staff page). */
     public static function adminRemove(\Pimple\Container $di, int $adminId, int $byAdminId): void
     {
         if ($di['em']->getConnection()->delete('client_passkey', ['kind' => 'staff', 'subject_id' => $adminId]) === 0) {
@@ -367,7 +366,7 @@ final class Passkeys
         TwoFactor::log($di, 'staff', $adminId, 0, 'passkeys removed by staff #' . $byAdminId);
     }
 
-    /** The login's passkeys on this site; staff pages count those of every site (`$allSites`), as staffRemove() removes them all. */
+    /** The login's passkeys for this host; staff pages count those of every host (`$allSites`), as staffRemove() removes them all. */
     public static function count(\Pimple\Container $di, string $kind, int $id, bool $allSites = false): int
     {
         // Off reads no table: the admin client and staff pages count each login's passkeys.
@@ -388,26 +387,46 @@ final class Passkeys
 
     private static function rows(\Pimple\Container $di, string $kind, int $id, bool $allSites = false): array
     {
-        [$site, $siteParams] = $allSites ? ['1 = 1', []] : self::siteWhere($di);
         try {
-            return $di['em']->getConnection()->fetchAllAssociative("SELECT * FROM client_passkey WHERE kind = ? AND subject_id = ? AND {$site} ORDER BY id", [$kind, $id, ...$siteParams]);
+            return $allSites
+                ? $di['em']->getConnection()->fetchAllAssociative('SELECT * FROM client_passkey WHERE kind = ? AND subject_id = ? ORDER BY id', [$kind, $id])
+                : self::select($di, 'kind = ? AND subject_id = ?', [$kind, $id]);
         } catch (\Throwable) {
-            // No table yet (before migration 14) or no site column (before 24): nobody has a passkey.
+            // No table yet (before migration 14), or another host before rp_id (24): nobody has a passkey.
             return [];
         }
     }
 
     /**
-     * The condition for the passkeys of the request's site: a passkey works only on the site (host name) it was made
-     * on, so each site sees only its own (`site` is the ClientFence\Site key, NULL for the primary site).
-     *
-     * @return array{0: string, 1: list<string>}
+     * The rp_id stored with a passkey made on this request: null when the browser is on the primary site's RP ID (a
+     * passkey works on every host name with the RP ID it was made for), else that RP ID.
      */
-    private static function siteWhere(\Pimple\Container $di): array
+    private static function rpIdColumn(\Pimple\Container $di): ?string
     {
-        $key = \ClientFence\Site::current($di)->key;
+        $rpId = self::rpId($di);
 
-        return $key === null ? ['site IS NULL', []] : ['site = ?', [$key]];
+        return $rpId === \Symfony\Component\HttpFoundation\Request::create(\ClientFence\Site::primary()->url)->getHost() ? null : $rpId;
+    }
+
+    /** The passkeys matching `$where` that work on this request's RP ID (rp_id; NULL: the primary site's). */
+    private static function select(\Pimple\Container $di, string $where, array $params): array
+    {
+        $rpId = self::rpIdColumn($di);
+        $db = $di['em']->getConnection();
+        try {
+            return $db->fetchAllAssociative("SELECT * FROM client_passkey WHERE {$where} AND " . ($rpId === null ? 'rp_id IS NULL' : 'rp_id = ?') . ' ORDER BY id', [...$params, ...($rpId === null ? [] : [$rpId])]);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            // New files before Finalize update adds rp_id (24): every passkey is the primary site's, as it was made there.
+            // Any database error: drivers name a missing column differently; another RP ID's passkey still fails checkAuthData().
+            if ($rpId !== null) {
+                throw $e;
+            }
+            // A database that ran step 24's first form keeps another host's passkeys apart by `site`.
+            $columns = array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns('client_passkey'));
+            $old = in_array('site', $columns, true) ? ' AND site IS NULL' : '';
+
+            return $db->fetchAllAssociative("SELECT * FROM client_passkey WHERE {$where}{$old} ORDER BY id", $params);
+        }
     }
 
     private static function newChallenge(\Pimple\Container $di, array $state): string

@@ -26,7 +26,7 @@ final class PasskeysTestWorld
         $world = $this;
         $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
         $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)');
-        $db->executeStatement('CREATE TABLE client_passkey (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, subject_id INTEGER NOT NULL, credential_id TEXT NOT NULL UNIQUE, public_key TEXT NOT NULL, alg INTEGER NOT NULL, sign_count INTEGER NOT NULL DEFAULT 0, name TEXT NOT NULL, user_handle TEXT NOT NULL, created_at TEXT NOT NULL, last_used_at TEXT, site TEXT)');
+        $db->executeStatement('CREATE TABLE client_passkey (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, subject_id INTEGER NOT NULL, credential_id TEXT NOT NULL UNIQUE, public_key TEXT NOT NULL, alg INTEGER NOT NULL, sign_count INTEGER NOT NULL DEFAULT 0, name TEXT NOT NULL, user_handle TEXT NOT NULL, created_at TEXT NOT NULL, last_used_at TEXT, rp_id TEXT)');
         foreach (['client', 'client_user', 'admin'] as $table) {
             $db->executeStatement("CREATE TABLE {$table} (id INTEGER PRIMARY KEY, pass TEXT, email TEXT, first_name TEXT, last_name TEXT, lang TEXT)");
         }
@@ -263,7 +263,7 @@ test('a passkey works only on the site it was made on: another site does not lis
         Passkeys::count($world->di, 'staff', 1),
     ];
 
-    expect([$world->row('cred-portal')['site'], $world->row('cred-shop')['site']])->toBe([null, 'shop/shop'])
+    expect([$world->row('cred-portal')['rp_id'], $world->row('cred-shop')['rp_id']])->toBe([null, 'shop.example.test'])
         ->and($onShop)->toBe([1, [$own['id']], [Passkeys::b64('cred-shop')], 0])
         ->and(Passkeys::count($world->di, 'client', 7, allSites: true))->toBe(2)
         ->and(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-portal')))->toThrow(InformationException::class, 'not set up for this sign-in')
@@ -295,13 +295,56 @@ test('with two-factor sign-in required, a passkey on another site still refuses 
     expect(fn () => TwoFactor::challenge($world->di, 7, null))->toThrow(InformationException::class, 'sign in with your passkey');
 });
 
-test('before Finalize update adds the site column, a passkey sign-in is refused with the password hint, not a database error', function (): void {
+test('before Finalize update adds rp_id, the primary site\'s passkeys still work; another host gets the password hint, not a database error', function (): void {
     $world = new PasskeysTestWorld();
-    passkeyAdd($world, 'client', 7, 'cred-client');
-    $answer = passkeyAnswer($world, 'cred-client');
-    $world->db->executeStatement('ALTER TABLE client_passkey DROP COLUMN site');
+    $world->db->update('mod_clientfence_state', ['value' => json_encode(['passkeys' => 'both', 'twofactor' => 'all'])], ['name' => SignInSecurity::STATE]);
+    $made = passkeyAdd($world, 'client', 7, 'cred-client');
+    $world->db->executeStatement('ALTER TABLE client_passkey DROP COLUMN rp_id');
 
-    expect(fn () => Passkeys::verifySignIn($world->di, 'client', $answer))->toThrow(InformationException::class, 'sign in with your password');
+    // The required two-factor sign-in still refuses the password alone: the passkey signs in instead.
+    expect(fn () => TwoFactor::challenge($world->di, 7, null))->toThrow(InformationException::class, 'sign in with your passkey')
+        ->and(Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-client')))->toBe(['client', 7])
+        ->and(array_column(Passkeys::listFor($world->di, 'client', 7)['passkeys'], 'id'))->toBe([$made['id']])
+        ->and(passkeyAdd($world, 'client', 7, 'cred-second')['id'])->toBeGreaterThan($made['id']);
+
+    $world->di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop/shop');
+    expect(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-client')))->toThrow(InformationException::class, 'sign in with your password')
+        ->and(Passkeys::count($world->di, 'client', 7))->toBe(0);
+});
+
+test('before Finalize update on a database that ran step 24\'s first form, the primary site does not list another host\'s passkey', function (): void {
+    $world = new PasskeysTestWorld();
+    $own = passkeyAdd($world, 'client', 7, 'cred-portal');
+    passkeyAdd($world, 'client', 7, 'cred-shop');
+    $world->db->executeStatement('ALTER TABLE client_passkey DROP COLUMN rp_id');
+    $world->db->executeStatement('ALTER TABLE client_passkey ADD COLUMN site TEXT');
+    $world->db->update('client_passkey', ['site' => 'shop/shop'], ['credential_id' => $world->row('cred-shop')['credential_id']]);
+
+    expect(array_column(Passkeys::listFor($world->di, 'client', 7)['passkeys'], 'id'))->toBe([$own['id']]);
+});
+
+test('a passkey is kept by the RP ID it was made for: two hostnames of one module are two RP IDs; a port of the portal\'s host is the portal\'s', function (): void {
+    $world = new PasskeysTestWorld();
+    $primaryHost = Symfony\Component\HttpFoundation\Request::create(SYSTEM_URL)->getHost();
+    $world->di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop/shop');
+    passkeyAdd($world, 'client', 7, 'cred-shop');
+    unset($world->di['site']);
+    $world->di['site'] = new ClientFence\Site('https://' . $primaryHost . ':8443/', $primaryHost . ':8443', 'shop/port');
+    passkeyAdd($world, 'client', 7, 'cred-port');
+    unset($world->di['site']);
+    // The same module and site key on its second hostname.
+    $world->di['site'] = new ClientFence\Site('https://shop2.example.test/', 'shop2.example.test', 'shop/shop');
+
+    expect([$world->row('cred-shop')['rp_id'], $world->row('cred-port')['rp_id']])->toBe(['shop.example.test', null])
+        ->and(Passkeys::count($world->di, 'client', 7))->toBe(0)
+        ->and(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-shop')))->toThrow(InformationException::class, 'not set up for this sign-in');
+
+    // The portal's own host lists the passkey made on its RP ID behind another port.
+    unset($world->di['site']);
+    expect(array_column(Passkeys::listFor($world->di, 'client', 7)['passkeys'], 'name'))->toHaveCount(1)
+        ->and(Passkeys::count($world->di, 'client', 7, allSites: true))->toBe(2);
+    Passkeys::staffRemove($world->di, 7, null, 1);
+    expect(Passkeys::count($world->di, 'client', 7, allSites: true))->toBe(0);
 });
 
 test('a challenge works once and for five minutes', function (): void {

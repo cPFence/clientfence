@@ -71,6 +71,8 @@ test('the primary site is the portal URL: in the console, on the portal host and
     expect([$primary->url, $primary->host, $primary->key])->toBe([SYSTEM_URL, parse_url(SYSTEM_URL, PHP_URL_HOST), null])
         ->and(Site::current(null))->toEqual($primary)
         ->and(Site::current(container()))->toEqual($primary)
+        ->and(Site::ofRequest(null))->toEqual($primary)
+        ->and(Site::ofRequest(container()))->toEqual($primary)
         ->and(Site::resolve($di, null))->toEqual($primary)
         ->and(Site::resolve($di, Request::create(SYSTEM_URL . 'order')))->toEqual($primary)
         ->and(Site::resolve($di, $malformed))->toEqual($primary)
@@ -106,6 +108,14 @@ test('a switched-on module with a broken manifest is left out; the other modules
 
     expect(Site::resolve($di, Request::create('https://www.example.test/')))->toEqual(Site::primary())
         ->and(Site::resolve($di, Request::create('https://shop.example.test/')))->toEqual(servedShop());
+});
+
+test('a module that fails to load is skipped, even with the unavailable exception: only site() can say a host is unavailable', function (): void {
+    $di = siteDi(['alpha' => siteProvider(fn (): never => throw new LogicException('asked')), 'beta' => siteProvider(fn (): Site => shopSite('beta'))]);
+    $load = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $name): object => $name === 'alpha' ? throw new ClientFence\SiteUnavailableException('cannot load') : $load($name));
+
+    expect(Site::resolve($di, Request::create('https://shop.example.test/'))->key)->toBe('beta/beta');
 });
 
 test('the first module by name that serves the host wins', function (): void {
@@ -189,4 +199,47 @@ test('$di[\'site\'] is worked out once, on the web only, and links are built on 
 
     expect($di['site'])->toEqual(Site::primary())
         ->and($di['url']->link('order'))->toBe(SYSTEM_URL . 'order');
+});
+
+test('the site the portal works for is, for now, the site the browser is on', function (): void {
+    $di = container();
+    $di['site'] = servedShop();
+
+    expect(Site::ofRequest($di))->toBe($di['site'])
+        ->and(Site::current($di))->toBe($di['site']);
+});
+
+test('a module that cannot serve its host now gets that request a 503, never the primary site; the next module is not asked', function (): void {
+    $why = new ClientFence\SiteUnavailableException('the site is switched off');
+    $later = siteProvider(fn (): ?Site => null);
+    $di = siteDi(['alpha' => siteProvider(fn (string $host): ?Site => $host === 'shop.example.test' ? throw $why : null), 'beta' => $later]);
+    $answer = static function (string $url) use ($di): ?Symfony\Component\HttpFoundation\Response {
+        $request = Request::create($url);
+        unset($di['site']);
+        $di['site'] = static fn (): Site => Site::resolve($di, $request);
+
+        return Site::unavailable($di, $request);
+    };
+
+    expect(fn () => Site::resolve($di, Request::create('https://shop.example.test/')))->toThrow(ClientFence\SiteUnavailableException::class, 'the site is switched off')
+        ->and($later->asked)->toBe([])
+        ->and($di['logger']->calls)->toHaveCount(1)
+        ->and($di['logger']->calls[0]['method'])->toBe('warning')
+        ->and($di['logger']->calls[0]['params'][0])->toBe('The alpha module cannot serve the host shop.example.test now: the site is switched off');
+
+    $page = $answer('https://shop.example.test/order');
+    $api = $answer('https://shop.example.test/api/client/profile/get');
+    $viaIndex = $answer('https://shop.example.test/index.php?_url=/api/guest/system/company');
+
+    expect($page?->getStatusCode())->toBe(503)
+        ->and($page?->headers->get('Content-Type'))->toBe('text/html; charset=utf-8')
+        ->and($page?->getContent())->toContain('This site is not available right now.')
+        ->and($page?->getContent())->not->toContain(Site::primary()->host)
+        ->and([$api?->getStatusCode(), json_decode((string) $api?->getContent(), true)])->toBe([503, ['result' => null, 'error' => ['message' => 'This site is not available right now. Please try again later.', 'code' => 503]]])
+        ->and($viaIndex?->getStatusCode())->toBe(503)
+        ->and(json_decode((string) $viaIndex?->getContent(), true)['error']['code'] ?? null)->toBe(503)
+        // The other hosts keep their site: the primary one, and one no module serves.
+        ->and($answer(SYSTEM_URL . 'order'))->toBeNull()
+        ->and($answer('https://www.example.test/'))->toBeNull()
+        ->and($di['site'])->toEqual(Site::primary());
 });

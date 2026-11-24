@@ -333,6 +333,12 @@ function init(): void
     global $di;
     $di = require Path::join(PATH_ROOT, 'di.php');
 
+    // ClientFence core patch: a host whose module cannot serve it now gets a 503 before anything runs on it (ClientFence\Site).
+    $unavailable = ClientFence\Site::unavailable($di, $request);
+    if ($unavailable !== null) {
+        emitResponse($unavailable);
+    }
+
     if (!Environment::isCLI() && !Environment::isTesting()) {
         $di['update_finalization']->ensureCurrentVersionFinalization();
     }

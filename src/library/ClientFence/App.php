@@ -412,8 +412,8 @@ class App
         ];
 
         foreach ($adminApiPrefixes as $adminApiPrefix) {
-            // ClientFence core patch: paths on the request's site (Site).
-            $systemUrl = Site::current($this->di)->url;
+            // ClientFence core patch: paths on the site the browser is on (Site::ofRequest()).
+            $systemUrl = Site::ofRequest($this->di)->url;
             $realAdminApiUrl = str_ends_with($systemUrl, '/') ? substr($systemUrl, 0, -1) . $adminApiPrefix : $systemUrl . $adminApiPrefix;
             $allowedURLs[] = parse_url($realAdminApiUrl, PHP_URL_PATH);
         }
@@ -476,8 +476,8 @@ class App
     protected function checkAdminPrefix(): bool
     {
         $requestPath = $this->getRequestPath();
-        // ClientFence core patch: the admin path on the request's site (Site).
-        $realAdminUrl = rtrim(Site::current($this->di)->url, '/') . ADMIN_PREFIX;
+        // ClientFence core patch: the admin path on the site the browser is on (Site::ofRequest()).
+        $realAdminUrl = rtrim(Site::ofRequest($this->di)->url, '/') . ADMIN_PREFIX;
         $realAdminPath = parse_url($realAdminUrl, PHP_URL_PATH);
 
         if ($this->pathStartsWith($requestPath, $realAdminPath)) {

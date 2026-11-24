@@ -47,7 +47,9 @@ final class Migrations
         21 => 'm21InvoiceCustomFields',
         22 => 'm22Unused',
         23 => 'm23DnsSteps',
-        24 => 'm24PasskeySite',
+        24 => 'm24PasskeyRpId',
+        // Step 24 again, for a database that ran its first form (it is idempotent).
+        25 => 'm24PasskeyRpId',
     ];
 
     public static function latest(): int
@@ -395,13 +397,20 @@ final class Migrations
         ModuleMigrations::apply($di, 'servicednshosting');
     }
 
-    /** 24: client_passkey.site, the site a passkey was made on (ClientFence\Site key; NULL: the primary site). */
-    private static function m24PasskeySite(\Pimple\Container $di): void
+    /** 24: client_passkey.rp_id, the WebAuthn RP ID (host name) a passkey was made for; NULL: the primary site's. */
+    private static function m24PasskeyRpId(\Pimple\Container $di): void
     {
         $db = $di['dbal'];
         $columns = array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns('client_passkey'));
-        if (!in_array('site', $columns, true)) {
-            $db->executeStatement('ALTER TABLE `client_passkey` ADD COLUMN `site` varchar(100) DEFAULT NULL');
+        if (!in_array('rp_id', $columns, true)) {
+            $db->executeStatement('ALTER TABLE `client_passkey` ADD COLUMN `rp_id` varchar(253) DEFAULT NULL');
+        }
+        // A database that ran this step's first form has `site` (a site key, no host name). A passkey made on another
+        // host gets an RP ID no host has (''): never offered again, but it still counts for the two-factor rule until
+        // staff remove it, so the password alone cannot replace it.
+        if (in_array('site', $columns, true)) {
+            $db->executeStatement("UPDATE `client_passkey` SET `rp_id` = '' WHERE `site` IS NOT NULL");
+            $db->executeStatement('ALTER TABLE `client_passkey` DROP COLUMN `site`');
         }
     }
 }

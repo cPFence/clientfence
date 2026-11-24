@@ -9957,11 +9957,11 @@
     },
     {
         "file": "library/ClientFence/App.php",
-        "done": "ClientFence core patch: paths on the request's site (Site)."
+        "done": "ClientFence core patch: paths on the site the browser is on (Site::ofRequest())."
     },
     {
         "file": "library/ClientFence/App.php",
-        "done": "ClientFence core patch: the admin path on the request's site (Site)."
+        "done": "ClientFence core patch: the admin path on the site the browser is on (Site::ofRequest())."
     },
     {
         "file": "library/ClientFence/Tools.php",
@@ -9981,11 +9981,11 @@
     },
     {
         "file": "modules/Api/Controller/Client.php",
-        "done": "ClientFence core patch: the Referer must be on the request's site (ClientFence\\Site)."
+        "done": "ClientFence core patch: the Referer must be on the site the browser is on (ClientFence\\Site::ofRequest())."
     },
     {
         "file": "modules/Api/Controller/Client.php",
-        "done": "ClientFence core patch: the Origin must be the request's site (ClientFence\\Site)."
+        "done": "ClientFence core patch: the Origin must be the site the browser is on (ClientFence\\Site::ofRequest())."
     },
     {
         "file": "modules/Extension/Service.php",
@@ -10025,10 +10025,14 @@
     },
     {
         "file": "install/sql/content.sql",
-        "done": "ClientFence core patch: fresh installs include the passkey site migration."
+        "done": "ClientFence core patch: fresh installs include the passkey RP ID migration."
     },
     {
         "file": "install/sql/structure.sql",
-        "done": "ClientFence core patch: each passkey's site, the ClientFence\\Site key (NULL is the primary site)."
+        "done": "ClientFence core patch: the WebAuthn RP ID (host name) each passkey was made for (NULL is the primary site's)."
+    },
+    {
+        "file": "load.php",
+        "done": "ClientFence core patch: a host whose module cannot serve it now gets a 503 before anything runs on it (ClientFence\\Site)."
     }
 ]

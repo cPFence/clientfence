@@ -164,10 +164,10 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $columns = static fn (string $table): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns($table)));
     $details = ['country', 'asn', 'network', 'browser', 'session_id'];
 
-    // 21 adds the invoice's copy of the custom client fields shown on it; 24 each passkey's site.
-    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
+    // 21 adds the invoice's copy of the custom client fields shown on it; 24 (and 25) the RP ID each passkey was made for.
+    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25])
         ->and($columns('client_order'))->toBe(['id', 'gateway_id'])
-        ->and($columns('client_passkey'))->toBe(['id', 'site'])
+        ->and($columns('client_passkey'))->toBe(['id', 'rp_id'])
         ->and([$columns('pay_gateway'), $columns('client'), $columns('invoice')])->toBe([['id', 'gateway', 'position'], ['id', 'po_number', 'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update'], ['id', 'po_number', 'buyer_custom']])
         ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('activity_admin_history'))->toBe(['id', 'admin_id', 'ip', 'created_at', ...$details])
@@ -180,11 +180,32 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     (new ReflectionMethod(Migrations::class, 'm18GatewayOrderPoNumber'))->invoke(null, $di);
     (new ReflectionMethod(Migrations::class, 'm20OrderPaymentMethod'))->invoke(null, $di);
     (new ReflectionMethod(Migrations::class, 'm21InvoiceCustomFields'))->invoke(null, $di);
-    (new ReflectionMethod(Migrations::class, 'm24PasskeySite'))->invoke(null, $di);
-    expect($columns('client_passkey'))->toBe(['id', 'site'])
+    (new ReflectionMethod(Migrations::class, 'm24PasskeyRpId'))->invoke(null, $di);
+    expect($columns('client_passkey'))->toBe(['id', 'rp_id'])
         ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('invoice'))->toBe(['id', 'po_number', 'buyer_custom'])
         ->and($columns('client_order'))->toBe(['id', 'gateway_id']);
+});
+
+test('a database at level 24 that ran its first form gets the RP ID from step 25, once', function (): void {
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE setting (id INTEGER PRIMARY KEY, param TEXT, value TEXT, public INTEGER, category TEXT, hash TEXT, created_at TEXT, updated_at TEXT)');
+    $db->insert('setting', ['param' => Migrations::SETTING, 'value' => '24', 'public' => 0, 'created_at' => '2026-11-24', 'updated_at' => '2026-11-24']);
+    // A copy that ran the first form of 24: a site key per passkey, NULL on the primary site.
+    $db->executeStatement('CREATE TABLE client_passkey (id INTEGER PRIMARY KEY, name TEXT, site TEXT)');
+    $db->insert('client_passkey', ['id' => 1, 'name' => 'primary']);
+    $db->insert('client_passkey', ['id' => 2, 'name' => 'other host', 'site' => 'shop/shop']);
+    $di = Tests\Helpers\container();
+    $di['dbal'] = $db;
+    $columns = static fn (): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns('client_passkey')));
+    // The steps as apply() runs them, through the level check.
+    $steps = array_map(static fn (string $method): Closure => static fn () => (new ReflectionMethod(Migrations::class, $method))->invoke(null, $di), (new ReflectionClassConstant(Migrations::class, 'LIST'))->getValue());
+
+    expect(Migrations::run($db->getNativeConnection(), $steps))->toBe([25])
+        ->and($columns())->toBe(['id', 'name', 'rp_id'])
+        // The other host's passkey stays (it still counts for two-factor sign-in) with an RP ID no host has.
+        ->and($db->fetchAllAssociative('SELECT * FROM client_passkey'))->toBe([['id' => 1, 'name' => 'primary', 'rp_id' => null], ['id' => 2, 'name' => 'other host', 'rp_id' => '']])
+        ->and(Migrations::run($db->getNativeConnection(), $steps))->toBe([]);
 });
 
 test('migration 19 adds the profile switches once, and removes the opt-outs only a non-WHMCS import wrote by mistake', function (string $system, array $kept): void {

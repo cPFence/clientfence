@@ -4,15 +4,30 @@ declare(strict_types=1);
 
 namespace ClientFence;
 
+use ClientFence\Http\ApiResponseFactory;
+use ClientFence\Http\RequestFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * ClientFence: the site a web request is for. The primary site is the portal URL in config.php (SYSTEM_URL). A
- * switched-on module can serve the portal on more hostnames: its manifest.json declares "sites": true and its
- * Service has site(string $host): ?\ClientFence\Site, which answers for a host it serves and null for any other.
- * $di['site'] is the request's site: the links, redirects, assets and origin checks of the request follow it. The
- * console, and a host no module serves, get the primary site. site() runs while $di['site'] is being worked out, so it
- * must not read it, nor what is built on it ($di['url'], System\Service::getCompany()).
+ * ClientFence: the site the portal works for. The primary site is the portal URL in config.php (SYSTEM_URL). A
+ * switched-on module can serve the portal on more hostnames: its manifest.json declares "sites": true and its Service
+ * has site(string $host): ?\ClientFence\Site, which for the request's host (host[:port], lower case) answers:
+ * - null: not its host (the next module by name is asked; a host no module serves gets the primary site);
+ * - a Site on exactly that host: an http(s) base URL with a trailing slash and no query, `host` as asked, and its own
+ *   identifier of the site as `key` (at most 50 characters); the core keeps it as "<module>/<identifier>", so two
+ *   modules' sites never share a key (the 50 characters keep it short enough to store with a record);
+ * - throws SiteUnavailableException: its host, but it cannot serve it now; that request gets a 503 page
+ *   (unavailable()), never the primary site, so a visitor never sees another site in its place.
+ * Any other exception or answer is logged and the next module is asked. The primary host and the console (cron, the
+ * command line) never ask a module. site() runs while $di['site'] is being worked out, so it must not read it, nor
+ * what is built on it ($di['url'], System\Service::getCompany()).
+ *
+ * $di['site'] is the request's site, worked out once at the start of each web request (load.php). Read it with:
+ * - ofRequest(): the site the browser is on; what must match the browser (origin and Referer checks, passkeys,
+ *   routing paths) uses it;
+ * - current(): the site the portal is working for (links, addresses, assets, gateway return and notice URLs); today
+ *   the request's site; a later core version can let it name another site while work is done for that site's record.
  */
 final readonly class Site
 {
@@ -20,8 +35,6 @@ final readonly class Site
      * @param string      $url  the base URL with a trailing slash: scheme, host[:port] and path, as SYSTEM_URL
      * @param string      $host host[:port] as the request shows it
      * @param string|null $key  null for the primary site, else "<module>/<the module's own identifier of the site>"
-     *                          (a module answers with its identifier, at most 50 characters; the core stores the key,
-     *                          for example with each passkey)
      */
     public function __construct(public string $url, public string $host, public ?string $key = null)
     {
@@ -32,12 +45,44 @@ final readonly class Site
         return new self(SYSTEM_URL, self::hostOf(SYSTEM_URL));
     }
 
-    /** The request's site, or the primary one in a container without it. */
-    public static function current(?\Pimple\Container $di): self
+    /** The request's site (the browser is on it), or the primary one in a container without it. */
+    public static function ofRequest(?\Pimple\Container $di): self
     {
         $site = isset($di['site']) ? $di['site'] : null;
 
         return $site instanceof self ? $site : self::primary();
+    }
+
+    /** The site the portal is working for: today the request's site (ofRequest()). */
+    public static function current(?\Pimple\Container $di): self
+    {
+        return self::ofRequest($di);
+    }
+
+    /**
+     * The 503 answer for a web request whose host a module cannot serve now (SiteUnavailableException), or null. Run
+     * first thing on every web request (load.php), so nothing is worked out on such a host before the answer.
+     */
+    public static function unavailable(\Pimple\Container $di, Request $request): ?Response
+    {
+        try {
+            $site = self::ofRequest($di);
+        } catch (SiteUnavailableException) {
+            // The host is a module's, but it cannot serve it now.
+            $site = null;
+        }
+        if ($site !== null) {
+            return null;
+        }
+        $message = 'This site is not available right now. Please try again later.';
+        // API calls get the API's own error format, as during maintenance.
+        if (preg_match('#^/api(/|$)#', RequestFactory::getRoutePath($request)) === 1) {
+            return (new ApiResponseFactory())->error(new SiteUnavailableException($message, 503));
+        }
+
+        // The update page's style (load.php): no link, name or asset of another site.
+        return new Response('<!doctype html><html><head><meta charset="utf-8"><title>Not available</title></head>'
+            . '<body style="font-family:sans-serif;text-align:center;padding:4rem 1rem;"><h1>Not available</h1><p>' . $message . '</p></body></html>', 503, ['Content-Type' => 'text/html; charset=utf-8']);
     }
 
     /** scheme://host[:port], as the browser's Origin header names the site. */
@@ -46,7 +91,11 @@ final readonly class Site
         return strtolower((string) parse_url($this->url, PHP_URL_SCHEME)) . '://' . $this->host;
     }
 
-    /** The site of `$request` (null: no request, as in the console): the primary one unless a module serves its host. */
+    /**
+     * The site of `$request` (null: no request, as in the console): the primary one unless a module serves its host.
+     *
+     * @throws SiteUnavailableException when the module that serves the host cannot serve it now
+     */
     public static function resolve(\Pimple\Container $di, ?Request $request): self
     {
         $primary = self::primary();
@@ -62,7 +111,15 @@ final readonly class Site
 
         foreach (self::providers($di) as $module) {
             try {
-                $site = $di['mod_service']($module)->site($host);
+                $service = $di['mod_service']($module);
+            } catch (\Throwable $e) {
+                // Only site() may say a host is unavailable: a module that cannot load is skipped, as before.
+                $di['logger']->warning(sprintf('The %s module could not answer for the host %s: %s', $module, $host, $e->getMessage()));
+
+                continue;
+            }
+            try {
+                $site = $service->site($host);
                 if ($site === null) {
                     continue;
                 }
@@ -71,6 +128,10 @@ final readonly class Site
                     return new self($site->url, $site->host, $module . '/' . $site->key);
                 }
                 $problem = 'it answered with a site that is not on that host';
+            } catch (SiteUnavailableException $e) {
+                $di['logger']->warning(sprintf('The %s module cannot serve the host %s now: %s', $module, $host, $e->getMessage()));
+
+                throw $e;
             } catch (\Throwable $e) {
                 $problem = $e->getMessage();
             }
