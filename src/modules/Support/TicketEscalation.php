@@ -349,7 +349,8 @@ final class TicketEscalation
                     'helpdesk' => (string) $ticket['helpdesk'],
                     'status_title' => ['open' => 'Open', 'on_hold' => 'Answered', 'closed' => 'Closed'][(string) $ticket['status']] ?? (string) $ticket['status'],
                     'priority_title' => ucfirst(TicketPriority::level($ticket['priority'])),
-                    'url' => $di['url']->adminLink('support/ticket/' . $ticketId),
+                    // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+                    'url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('support/ticket/' . $ticketId)),
                 ],
             ]);
         } catch (\Throwable $e) {

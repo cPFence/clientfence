@@ -167,7 +167,8 @@ final class TicketFeedback
             $email = [
                 'code' => 'mod_support_ticket_feedback_request',
                 'ticket' => ['id' => (int) $ticket['id'], 'subject' => (string) $ticket['subject']],
-                'feedback_url' => $di['url']->link('support/feedback/' . $token),
+                // On the ticket's site, as the email (ClientFence\Site::forRecord()).
+                'feedback_url' => \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'ticket', $ticketId), static fn (): string => $di['url']->link('support/feedback/' . $token)),
             ];
             if ($ticket['client_id'] !== null) {
                 $email['to_client'] = (int) $ticket['client_id'];

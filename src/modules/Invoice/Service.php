@@ -1403,6 +1403,8 @@ class Service implements InjectionAwareInterface
         }
 
         $this->di['logger']->info("Prepared new invoice {$invoiceId}.");
+        // ClientFence core patch: every new invoice has this event, once its lines are added (ClientFence\Site).
+        $this->di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $model->id], 'isolated' => true]);
 
         if (isset($data['approve']) && $data['approve']) {
             try {
@@ -2309,6 +2311,8 @@ class Service implements InjectionAwareInterface
                     $this->numberCreditNote($new);
                 }
                 $result = (int) $new->id;
+                // ClientFence core patch: every new invoice has this event (ClientFence\Site).
+                $this->di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $new->id], 'isolated' => true]);
 
                 break;
 
@@ -2393,6 +2397,8 @@ class Service implements InjectionAwareInterface
 
         $this->numberCreditNote($new);
         $this->addNote($new, $note);
+        // ClientFence core patch: every new invoice has this event (ClientFence\Site).
+        $this->di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $new->id], 'isolated' => true]);
 
         return (int) $new->id;
     }
@@ -3170,6 +3176,8 @@ class Service implements InjectionAwareInterface
             $proforma->due_at = $order->expires_at;
             $this->di['db']->store($proforma);
         }
+        // ClientFence core patch: every new invoice has this event; a renewal invoice is finished here once (ClientFence\Site).
+        $this->di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $proforma->id], 'isolated' => true]);
     }
 
     /**
@@ -3562,6 +3570,8 @@ class Service implements InjectionAwareInterface
 
         $invoiceItemService = $this->di['mod_service']('Invoice', 'InvoiceItem');
         $invoiceItemService->generateForAddFunds($proforma, $amount);
+        // ClientFence core patch: every new invoice has this event (ClientFence\Site).
+        $this->di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $proforma->id], 'isolated' => true]);
 
         return $proforma;
     }
@@ -3692,6 +3702,12 @@ class Service implements InjectionAwareInterface
     }
 
     protected function renderInvoicePdfContent(\Model_Invoice $invoiceModel, array $invoice, ?string $locale = null): string
+    {
+        // ClientFence core patch: the PDF's website and logo are on the invoice's site (ClientFence\Site::forRecord()).
+        return \ClientFence\Site::within($this->di, \ClientFence\Site::forRecord($this->di, 'invoice', (int) $invoiceModel->id), fn (): string => $this->renderInvoicePdfOnSite($invoiceModel, $invoice, $locale));
+    }
+
+    private function renderInvoicePdfOnSite(\Model_Invoice $invoiceModel, array $invoice, ?string $locale): string
     {
         $systemService = $this->di['mod_service']('system');
         $locale ??= ($invoice['client']['lang'] ?? '') ?: \Locale::getDefault();

@@ -22,7 +22,7 @@ function quotesDb(): Connection
         'CREATE TABLE tax (id INTEGER PRIMARY KEY, name TEXT, taxrate REAL, country TEXT, state TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, hash TEXT, taxname TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0)',
-        'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL UNIQUE, client_id INTEGER, first_name TEXT NOT NULL DEFAULT \'\', last_name TEXT NOT NULL DEFAULT \'\', company TEXT NOT NULL DEFAULT \'\', email TEXT NOT NULL DEFAULT \'\', country TEXT NOT NULL DEFAULT \'\', currency TEXT NOT NULL, subject TEXT NOT NULL, stage TEXT NOT NULL DEFAULT \'draft\', valid_until TEXT, proposal TEXT NOT NULL, customer_notes TEXT NOT NULL, admin_notes TEXT NOT NULL, taxname TEXT NOT NULL DEFAULT \'\', taxrate REAL NOT NULL DEFAULT 0, invoice_id INTEGER, created_by INTEGER, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)',
+        'CREATE TABLE invoice_quote (id INTEGER PRIMARY KEY AUTOINCREMENT, hash TEXT NOT NULL UNIQUE, client_id INTEGER, first_name TEXT NOT NULL DEFAULT \'\', last_name TEXT NOT NULL DEFAULT \'\', company TEXT NOT NULL DEFAULT \'\', email TEXT NOT NULL DEFAULT \'\', country TEXT NOT NULL DEFAULT \'\', currency TEXT NOT NULL, subject TEXT NOT NULL, stage TEXT NOT NULL DEFAULT \'draft\', valid_until TEXT, proposal TEXT NOT NULL, customer_notes TEXT NOT NULL, admin_notes TEXT NOT NULL, taxname TEXT NOT NULL DEFAULT \'\', taxrate REAL NOT NULL DEFAULT 0, invoice_id INTEGER, created_by INTEGER, sent_at TEXT, accepted_at TEXT, declined_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, site TEXT)',
         'CREATE TABLE invoice_quote_item (id INTEGER PRIMARY KEY AUTOINCREMENT, quote_id INTEGER NOT NULL, position INTEGER NOT NULL DEFAULT 0, description TEXT NOT NULL, quantity INTEGER NOT NULL DEFAULT 1, price REAL NOT NULL DEFAULT 0, discount REAL NOT NULL DEFAULT 0, taxed INTEGER NOT NULL DEFAULT 0)',
     ] as $sql) {
         $db->executeStatement($sql);
@@ -42,11 +42,21 @@ function quotesDb(): Connection
  */
 function quotesContainer(Connection $db, float $clientTax = 0.0): array
 {
-    $log = new ArrayObject(['invoices' => [], 'approved' => [], 'welcome' => [], 'emails' => [], 'activity' => []]);
+    $log = new ArrayObject(['invoices' => [], 'approved' => [], 'welcome' => [], 'emails' => [], 'activity' => [], 'events' => []]);
     $di = new Pimple\Container();
     $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
     $em->shouldReceive('getConnection')->andReturn($db);
     $di['em'] = $em;
+    $di['events_manager'] = new class($log) {
+        public function __construct(private ArrayObject $log)
+        {
+        }
+
+        public function fire(array $event): void
+        {
+            $this->log['events'] = [...$this->log['events'], $event];
+        }
+    };
     $di['logger'] = new class {
         public function info(...$args): void
         {
@@ -429,11 +439,13 @@ test('an expired, lost or other-currency quote is not accepted; staff may accept
 
 test('an accepted quote keeps all but its admin notes; declining makes it lost', function (): void {
     $db = quotesDb();
-    [$di] = quotesContainer($db);
+    [$di, $log] = quotesContainer($db);
     $id = Quotes::save($di, quotesForm());
     Quotes::accept($di, $id, 'staff');
 
     Quotes::save($di, quotesForm(['id' => $id, 'subject' => 'Changed', 'admin_notes' => 'Paid by bank transfer.']));
+    // A new quote's event, once: saving it again is no new quote (ClientFence\Site).
+    expect($log['events'])->toBe([['event' => 'onAfterQuoteCreate', 'params' => ['id' => $id], 'isolated' => true]]);
     expect(Quotes::get($di, $id))->toMatchArray(['subject' => 'Security hardening', 'admin_notes' => 'Paid by bank transfer.', 'stage' => 'accepted']);
 
     $other = Quotes::save($di, quotesForm());
@@ -444,7 +456,7 @@ test('an accepted quote keeps all but its admin notes; declining makes it lost',
 
 test('a new recipient gets a new link; other edits keep it', function (): void {
     $db = quotesDb();
-    [$di] = quotesContainer($db);
+    [$di, $log] = quotesContainer($db);
     $db->insert('client', ['id' => 2, 'first_name' => 'Carl', 'email' => 'carl@example.com', 'currency' => 'USD']);
     $id = Quotes::save($di, quotesForm(['stage' => 'delivered']));
     $first = Quotes::get($di, $id)['hash'];
@@ -465,7 +477,8 @@ test('a new recipient gets a new link; other edits keep it', function (): void {
         ->and(Quotes::get($di, $id)['hash'])->toBe($third);
 
     Quotes::save($di, array_merge(quotesForm(['id' => $id, 'stage' => 'delivered']), $prospect, ['email' => 'rob@example.com']));
-    expect(Quotes::get($di, $id)['hash'])->not->toBe($third);
+    expect(Quotes::get($di, $id)['hash'])->not->toBe($third)
+        ->and($log['events'])->toBe([['event' => 'onAfterQuoteCreate', 'params' => ['id' => $id], 'isolated' => true]]);
 });
 
 test('a link finds its quote only by the full hash; the client area lists sent quotes', function (): void {

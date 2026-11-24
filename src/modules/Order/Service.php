@@ -1340,6 +1340,8 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: an order sets an Inactive client Active again (Client/StatusUpdate.php).
         \ClientFence\Mod\Client\StatusUpdate::ordered($this->di, (int) $order->getClientId());
         $this->di['events_manager']->fire(['event' => 'onAfterAdminOrderCreate', 'params' => ['id' => $order->getId()], 'subject' => $this->getProductType($product)]);
+        // ClientFence core patch: every new order has this event (ClientFence\Site).
+        $this->di['events_manager']->fire(['event' => 'onAfterOrderCreate', 'params' => ['id' => (int) $order->getId(), 'client_id' => (int) $order->getClientId()], 'isolated' => true]);
 
         $this->di['logger']->info('Created order #%s', $id);
 

@@ -49,7 +49,8 @@ final class Branding
      */
     public static function get(\Pimple\Container $di): array
     {
-        $key = spl_object_hash($di);
+        // Per site too: the stylesheet's address is on the site of the page or email (ClientFence\Site::within()).
+        $key = spl_object_hash($di) . \ClientFence\Site::current($di)->url;
         if (isset(self::$cache[$key])) {
             return self::$cache[$key];
         }

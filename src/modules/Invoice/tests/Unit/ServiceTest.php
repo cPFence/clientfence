@@ -2446,7 +2446,9 @@ test('prepares invoice with undefined currency', function (): void {
     $serviceMock->setDi($di);
     $result = $serviceMock->prepareInvoice($clientModel, $data);
     expect($result)->toBeInstanceOf(Model_Invoice::class);
-    expect($result->currency)->toBe($defaultCurrencyCode);
+    expect($result->currency)->toBe($defaultCurrencyCode)
+        // ClientFence: every new invoice has its event, once (ClientFence\Site).
+        ->and(array_count_values(array_column($di['events_manager']->events, 'event'))['onAfterNewInvoice'] ?? 0)->toBe(1);
 });
 
 test('sets invoice defaults', function (): void {
@@ -3022,6 +3024,8 @@ test('refunds invoice with negative invoice logic', function (): void {
     $invoiceItemModel->loadBean(new Tests\Helpers\DummyBean());
 
     $eventManagerMock = Mockery::mock('ClientFence\EventManager');
+    // ClientFence: the refund invoice is a new invoice, with its event (ClientFence\Site).
+    $eventManagerMock->shouldReceive('fire')->once()->with(['event' => 'onAfterNewInvoice', 'params' => ['id' => $newId], 'isolated' => true]);
     $eventManagerMock->shouldReceive('fire')
         ->atLeast()->once();
 
@@ -3489,7 +3493,9 @@ test('creditNote copies the paying invoice and adds one negative account credit 
         ->toBe([5, 'USD', 'VAT', '24', 'client@example.com', Model_Invoice::STATUS_REFUNDED, 'CN-', 1])
         ->and([$line->invoice_id, $line->task, $line->price, $line->taxed, $line->status])
         ->toBe([90, Service::CREDIT_NOTE_TASK, -218.56, '1', Model_InvoiceItem::STATUS_EXECUTED])
-        ->and($line->rel_id)->toBe(2);
+        ->and($line->rel_id)->toBe(2)
+        // ClientFence: every new invoice has its event, once (ClientFence\Site).
+        ->and($di['events_manager']->events)->toBe([['event' => 'onAfterNewInvoice', 'params' => ['id' => 90], 'isolated' => true]]);
 });
 
 test('a part refund credit note totals exactly the amount refunded', function (): void {
@@ -4777,6 +4783,7 @@ test('a renewal invoice preselects the service payment method while that gateway
     $service->setDi($di);
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 33;
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $order->gateway_id = 12;
@@ -4784,7 +4791,9 @@ test('a renewal invoice preselects the service payment method while that gateway
 
     (fn () => $this->finishRenewalInvoice($invoice, $order))->call($service);
 
-    expect($invoice->gateway_id)->toBe($expected);
+    expect($invoice->gateway_id)->toBe($expected)
+        // ClientFence: a renewal invoice is finished once, with the new invoice's event (ClientFence\Site).
+        ->and($di['events_manager']->events)->toBe([['event' => 'onAfterNewInvoice', 'params' => ['id' => 33], 'isolated' => true]]);
 })->with([
     'enabled' => [true, 'USD', false, 12],
     'disabled' => [false, 'USD', false, null],
@@ -5276,7 +5285,9 @@ test('generates funds invoice', function (): void {
     $serviceMock->setDi($di);
 
     $result = $serviceMock->generateFundsInvoice($clientModel, $fundsAmount);
-    expect($result)->toBeInstanceOf(Model_Invoice::class);
+    expect($result)->toBeInstanceOf(Model_Invoice::class)
+        // ClientFence: every new invoice has its event, once (ClientFence\Site).
+        ->and($di['events_manager']->events)->toBe([['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $result->id], 'isolated' => true]]);
 });
 
 test('isFundsEnabled defaults to true when the setting was never saved', function (): void {

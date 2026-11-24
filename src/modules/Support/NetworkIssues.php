@@ -279,7 +279,8 @@ final class NetworkIssues
                     'code' => 'mod_support_network_issue',
                     'to_client' => $clientId,
                     'issue' => self::forClients($issue),
-                    'status_url' => (string) $di['url']->link('network-status'),
+                    // On the client's site, as the email (ClientFence\Site::forRecord()).
+                    'status_url' => \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'client', $clientId), static fn (): string => (string) $di['url']->link('network-status')),
                 ]);
                 ++$sent;
             } catch (\Throwable $e) {

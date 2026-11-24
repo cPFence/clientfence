@@ -67,7 +67,8 @@ class Service implements InjectionAwareInterface
     protected function resetEntityManager(): void
     {
         unset($this->di['em']);
-        $this->di['em'] = EntityManagerFactory::create();
+        // ClientFence core patch: with $di (ClientFence\Site::stamp()).
+        $this->di['em'] = EntityManagerFactory::create($this->di);
     }
 
     public function getCartRepository(): CartRepository
@@ -941,6 +942,10 @@ class Service implements InjectionAwareInterface
                 ],
             ]
         );
+        // ClientFence core patch: every new order has this event, each order of the checkout (ClientFence\Site).
+        foreach ($orders as $id) {
+            $this->di['events_manager']->fire(['event' => 'onAfterOrderCreate', 'params' => ['id' => (int) $id, 'client_id' => $this->clientId($client)], 'isolated' => true]);
+        }
 
         $result = [
             'gateway_id' => $gateway_id,
@@ -1479,6 +1484,10 @@ class Service implements InjectionAwareInterface
                 // As checkout: the client's credit lock is held until the orders are committed.
                 [, $invoice, $ids] = \ClientFence\Tools::withLock($this->di, 'fb:credit_payment:client:' . (int) $client->id, fn (): array => $this->di['dbal']->transactional($run));
                 \ClientFence\Mod\Client\StatusUpdate::ordered($this->di, (int) $client->id);
+                // ClientFence core patch: every new order has this event (ClientFence\Site).
+                foreach ($ids as $id) {
+                    $this->di['events_manager']->fire(['event' => 'onAfterOrderCreate', 'params' => ['id' => (int) $id, 'client_id' => (int) $client->id], 'isolated' => true]);
+                }
 
                 return ['order_ids' => $ids, 'invoice_id' => $invoice instanceof \Model_Invoice ? (int) $invoice->id : null];
             }

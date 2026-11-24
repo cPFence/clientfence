@@ -105,6 +105,7 @@ final class Quotes
                     'created_at' => $now,
                 ]);
                 $id = (int) $db->lastInsertId();
+                \ClientFence\Site::stamp($di, 'invoice_quote', $id);
             } else {
                 // ClientFence core patch: the stage is read again under the row lock acceptance takes. An acceptance
                 // that landed after the check above was reopened (lines rewritten, accepted again: a second
@@ -132,6 +133,10 @@ final class Quotes
             $db->rollBack();
 
             throw $e;
+        }
+        // ClientFence: a new quote's event (ClientFence\Site).
+        if ($current === null) {
+            $di['events_manager']->fire(['event' => 'onAfterQuoteCreate', 'params' => ['id' => $id], 'isolated' => true]);
         }
 
         return $id;
@@ -447,7 +452,8 @@ final class Quotes
     /** The link to the quote in the client area (it opens without signing in). */
     public static function link(\Pimple\Container $di, array $quote): string
     {
-        return (string) $di['url']->link('quote/' . $quote['hash']);
+        // On the quote's site (ClientFence\Site::forRecord()): its email, its PDF and the staff page show the same link.
+        return \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'quote', (int) $quote['id']), static fn (): string => (string) $di['url']->link('quote/' . $quote['hash']));
     }
 
     /** The language of the recipient: the client's, else the request's. */
@@ -468,7 +474,8 @@ final class Quotes
             'code' => 'mod_staff_quote_answered',
             'quote' => self::emailVars($quote),
             'accepted' => $accepted,
-            'quote_admin_url' => (string) $di['url']->adminLink('invoice/quote/' . $quote['id']),
+            // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+            'quote_admin_url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => (string) $di['url']->adminLink('invoice/quote/' . $quote['id'])),
         ];
         $createdBy = self::db($di)->fetchOne('SELECT a.id FROM invoice_quote q JOIN admin a ON a.id = q.created_by WHERE q.id = ?', [$quote['id']]);
         if ($createdBy !== false) {

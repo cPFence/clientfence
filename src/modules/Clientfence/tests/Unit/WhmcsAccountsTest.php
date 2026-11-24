@@ -381,6 +381,14 @@ function whmcsRunDi(Connection $target): Pimple\Container
     $crypt = Mockery::mock();
     $crypt->shouldReceive('encrypt')->andReturnUsing(fn (string $t): string => 'enc:' . $t);
     $di['crypt'] = $crypt;
+    $di['events_manager'] = new class {
+        public array $events = [];
+
+        public function fire(array $event): void
+        {
+            $this->events[] = $event;
+        }
+    };
 
     return $di;
 }
@@ -413,5 +421,10 @@ test('a run keeps its warnings in their own table and its state small; a failed 
         ->and($done['error'])->toBeNull()
         ->and($target->fetchOne('SELECT COUNT(*) FROM client_contact'))->toEqual(1)
         ->and(Run::warningCount($target))->toBe($done['warnings'])
-        ->and(implode("\n", Run::warnings($target)))->toContain('Contact #2 of client #1 has no valid email');
+        ->and(implode("\n", Run::warnings($target)))->toContain('Contact #2 of client #1 has no valid email')
+        // The finished run's event names what it made, once (the failed run had none).
+        ->and($di['events_manager']->events)->toBe([['event' => 'onAfterImport', 'params' => [
+            'system' => 'WHMCS', 'client' => array_map('intval', $target->fetchFirstColumn('SELECT id FROM client ORDER BY id')), 'order' => [], 'invoice' => [], 'ticket' => [],
+        ], 'isolated' => true]])
+        ->and($di['events_manager']->events[0]['params']['client'])->toHaveCount(4);
 });

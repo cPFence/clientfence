@@ -72,21 +72,26 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $client_id = $data['client_id'] ?? null;
         $emailService = $this->getService();
-        // ClientFence core patch: the message goes out in the email layout (Email/Layout.php); plain text keeps its lines.
-        $content = (string) ($data['content'] ?? '');
-        if (!\ClientFence\Mod\Email\Layout::isPage($content)) {
-            $content = $emailService->renderHtmlInLayout($content === strip_tags($content) ? nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8', false)) : $content, 'client', ['c' => ['email' => (string) ($data['to'] ?? '')]]);
-        }
+        // ClientFence core patch: an email to a client is built and queued on the client's site (ClientFence\Site::forRecord()).
+        $send = function () use ($data, $client_id, $emailService): bool {
+            // ClientFence core patch: the message goes out in the email layout (Email/Layout.php); plain text keeps its lines.
+            $content = (string) ($data['content'] ?? '');
+            if (!\ClientFence\Mod\Email\Layout::isPage($content)) {
+                $content = $emailService->renderHtmlInLayout($content === strip_tags($content) ? nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8', false)) : $content, 'client', ['c' => ['email' => (string) ($data['to'] ?? '')]]);
+            }
 
-        return $emailService->sendMail(
-            $data['to'] ?? null,
-            $data['from'] ?? null,
-            $data['subject'] ?? null,
-            $content,
-            $data['to_name'] ?? null,
-            $data['from_name'] ?? null,
-            $client_id
-        );
+            return $emailService->sendMail(
+                $data['to'] ?? null,
+                $data['from'] ?? null,
+                $data['subject'] ?? null,
+                $content,
+                $data['to_name'] ?? null,
+                $data['from_name'] ?? null,
+                $client_id
+            );
+        };
+
+        return is_numeric($client_id) && (int) $client_id > 0 ? \ClientFence\Site::within($this->getDi(), \ClientFence\Site::forRecord($this->getDi(), 'client', (int) $client_id), $send) : $send();
     }
 
     /**

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace ClientFence\Doctrine;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Proxy\ProxyFactory;
@@ -22,7 +23,7 @@ use Symfony\Component\Finder\Finder;
 
 class EntityManagerFactory
 {
-    public static function create(): EntityManager
+    public static function create(?\Pimple\Container $di = null): EntityManager
     {
         $finder = new Finder();
         $finder->directories()->in(PATH_MODS . '/*/Entity')->depth('== 0');
@@ -63,7 +64,13 @@ class EntityManagerFactory
 
         $connection = DriverManagerFactory::getSharedConnection();
 
-        return new EntityManager($connection, $config);
+        $em = new EntityManager($connection, $config);
+        // ClientFence core patch: a new client, order, ticket or queued email keeps its site (ClientFence\Site::stamp()); a changed extension makes the site modules be read again.
+        if ($di !== null) {
+            $em->getEventManager()->addEventListener([Events::postPersist, Events::postUpdate, Events::postRemove, Events::postFlush], new SiteStamp($di));
+        }
+
+        return $em;
     }
 
     /**

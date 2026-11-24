@@ -191,7 +191,8 @@ final class CancelRequests
                 'request' => $request,
                 'order' => [
                     'id' => (int) $order->id, 'title' => (string) $order->title, 'expires_at' => $order->expires_at,
-                    'url' => $di['url']->adminLink('order/manage/' . $order->id), 'list_url' => $di['url']->adminLink('order') . '#tab-cancel-requests',
+                    // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+                    'url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('order/manage/' . $order->id)), 'list_url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('order')) . '#tab-cancel-requests',
                 ],
                 'client' => ['name' => $client instanceof \Model_Client ? trim($client->first_name . ' ' . $client->last_name) : ''],
             ]);

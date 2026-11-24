@@ -17,9 +17,9 @@ function clientMoveDb(): Connection
 {
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     foreach ([
-        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, currency TEXT, updated_at TEXT)',
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT, currency TEXT, site TEXT, updated_at TEXT)',
         'CREATE TABLE admin (id INTEGER PRIMARY KEY, name TEXT)',
-        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, title TEXT, status TEXT, currency TEXT, group_id TEXT, group_master INTEGER, service_id INTEGER, service_type TEXT, config TEXT, updated_at TEXT)',
+        'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, title TEXT, status TEXT, currency TEXT, group_id TEXT, group_master INTEGER, service_id INTEGER, service_type TEXT, config TEXT, site TEXT, updated_at TEXT)',
         'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, client_id INTEGER, service_hosting_server_id INTEGER)',
         'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, manager TEXT)',
         'CREATE TABLE service_license (id INTEGER PRIMARY KEY, client_id INTEGER)',
@@ -96,6 +96,22 @@ test('a move gives the service, its add-ons and their service records to the new
         ->toContain('add-ons #71')
         ->toContain('Enhance Link card')
         ->and($di['logger']->lines)->toHaveCount(1);
+});
+
+test('the moved services take the new client\'s site; the client\'s other service keeps its own (ClientFence\\Site)', function (): void {
+    $db = clientMoveDb();
+    $db->update('client', ['site' => 'shop/b'], ['id' => 5]);
+    $db->update('client', ['site' => 'shop/c'], ['id' => 9]);
+    $db->executeStatement("UPDATE client_order SET site = 'shop/b'");
+
+    ClientMove::move(clientMoveContainer($db), 70, 9, 3);
+    $onC = $db->fetchFirstColumn('SELECT site FROM client_order ORDER BY id');
+    // Then to a client of the primary site.
+    $db->insert('client', ['id' => 12, 'first_name' => 'Di', 'last_name' => 'Primary', 'currency' => 'EUR']);
+    ClientMove::move(clientMoveContainer($db), 70, 12, 3);
+
+    expect($onC)->toBe(['shop/c', 'shop/c', 'shop/b'])
+        ->and($db->fetchFirstColumn('SELECT site FROM client_order ORDER BY id'))->toBe([null, null, 'shop/b']);
 });
 
 test('only a hosting account on an Enhance server is pointed to the Enhance Link card', function (): void {

@@ -71,7 +71,8 @@ function massPayWorld(?callable $setup = null): object
 
         public function setInvoiceDefaults(Model_Invoice $invoice): void
         {
-            $this->db->update('invoice', ['serie' => 'INV', 'nr' => (string) $invoice->id, 'hash' => 'hash-' . $invoice->id], ['id' => $invoice->id]);
+            // As RedBean's store(): every column the bean was loaded with is written back.
+            $this->db->update('invoice', ['serie' => 'INV', 'nr' => (string) $invoice->id, 'hash' => 'hash-' . $invoice->id] + $invoice->unbox()->getProperties(), ['id' => $invoice->id]);
             $invoice->hash = 'hash-' . $invoice->id;
         }
 
@@ -196,7 +197,29 @@ test('the grouped invoice lists what each invoice owes now, untaxed, without its
         ->and($world->di['mod_service']('Invoice')->getBalanceDue($group))->toBe(110.0)
         ->and(MassPay::is($world->di, (int) $group->id))->toBeTrue()
         ->and(MassPay::is($world->di, 1))->toBeFalse()
-        ->and((int) MassPay::create($world->di, $world->client, [2, 1])->id)->toBe((int) $group->id);
+        ->and((int) MassPay::create($world->di, $world->client, [2, 1])->id)->toBe((int) $group->id)
+        // ClientFence: the new invoice's event, once; the second click makes none (ClientFence\Site).
+        ->and($world->di['events_manager']->events)->toBe([['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $group->id], 'isolated' => true]]);
+});
+
+test('the grouped invoice keeps the site it was made on, also once its defaults are saved (ClientFence\\Site)', function (): void {
+    $world = massPayWorld(function ($db): void {
+        $db->executeStatement('ALTER TABLE invoice ADD COLUMN site TEXT');
+        $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, site TEXT)');
+    });
+    $di = $world->di;
+    $services = $di['mod_service'];
+    $extension = Mockery::mock();
+    $extension->allows('getCoreAndActiveModules')->andReturn(['shop']);
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => strtolower($module) === 'extension' ? $extension : $services($module, $sub));
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->allows('hasManifest')->andReturn(true);
+    $mod->allows('getManifest')->andReturn(['sites' => true]);
+    $di['mod'] = $di->protect(fn (): object => $mod);
+
+    $group = ClientFence\Site::within($di, new ClientFence\Site('https://b.example.test/', 'b.example.test', 'shop/b'), fn (): Model_Invoice => MassPay::create($di, $world->client, [1, 2]));
+
+    expect($world->db->fetchOne('SELECT site FROM invoice WHERE id = ?', [$group->id]))->toBe('shop/b');
 });
 
 test('paying the grouped invoice pays each invoice once and leaves the balance where it was', function (): void {

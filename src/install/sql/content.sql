@@ -340,7 +340,7 @@ VALUES
 	-- ClientFence core patch: fresh installs include the invoice custom client fields migration.
 	-- ClientFence core patch: fresh installs include the DNS hosting migration.
 	-- ClientFence core patch: fresh installs include the passkey RP ID migration.
-	(33,'clientfence_patch','25',0,NULL,NULL,NOW(),NOW()),
+	(33,'clientfence_patch','26',0,NULL,NULL,NOW(),NOW()),
 	(34,'clientfence_setup','pending',0,NULL,NULL,NOW(),NOW()),
 	(35,'invoice_series_paid','CF',0,NULL,NULL,NOW(),NOW()),
 	(36,'migrations_servicednshosting','1',0,NULL,NULL,NOW(),NOW());

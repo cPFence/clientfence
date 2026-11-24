@@ -26,12 +26,58 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * $di['site'] is the request's site, worked out once at the start of each web request (load.php). Read it with:
  * - ofRequest(): the site the browser is on; what must match the browser (origin and Referer checks, passkeys,
- *   routing paths) uses it;
- * - current(): the site the portal is working for (links, addresses, assets, gateway return and notice URLs); today
- *   the request's site; a later core version can let it name another site while work is done for that site's record.
+ *   routing paths) uses it, and within() never changes it;
+ * - current(): the site the portal is working for (links, addresses, assets, gateway return and notice URLs): the
+ *   request's site, or inside within() the site of the record the work is for.
+ *
+ * The site of a record. The client, client_order, invoice (credit notes too), invoice_quote, support_ticket and
+ * email_queue tables have a `site` column: the stored key of the site the row was made on, NULL for the primary site
+ * (and every row of an install without a site module, which writes none). It is written once, when the row is made
+ * (stamp()): the current site's key, else (on the primary site: cron, the console, staff on the primary site, the API)
+ * the key of the row's client, so a renewal invoice, a credit note, a ticket from email piping or a staff order is on
+ * its client's site; a client has no parent, and the email queue keeps the site its email was built on. The import
+ * (Clientfence\Whmcs) writes none. The core changes a stored site in one place only: staff moving a service to another
+ * client (Order\ClientMove) give the service and its add-ons the new client's site; its invoices, tickets and quotes
+ * stay the old client's, with their sites.
+ * - forRecord($di, $type, $id): the site of a record ('client', 'order', 'invoice', 'quote', 'ticket'): its own key,
+ *   else its client's, through byKey();
+ * - byKey($di, $key): a stored key back to its Site: the module the key names (switched on, "sites": true, able to run)
+ *   answers siteByKey(string $key): ?\ClientFence\Site for its own identifier (the key without "<module>/"), with the
+ *   site of that identifier under the same rules as site() (an http(s) base URL, `host` as in that URL, the same `key`).
+ *   NULL, an unknown or switched-off module, one that cannot run, and any other answer give the primary site (logged
+ *   once per request);
+ * - within($di, $site, $fn): runs $fn with current() as $site (restored after it, also when it throws; nests).
+ * The core builds on a record's site: a client's email (the invoice, order, ticket or quote it is about, else its
+ * client: Email\Service::sendTemplate(); the staff's Send Email to a client; mass mail) with the links made for it
+ * before (confirmation, feedback, network status, affiliate and quote links), the queued row keeping that site, and
+ * the invoice, credit note, quote and statement PDFs. Staff emails and the admin links made for them are on the
+ * primary site, where staff sign in, as is a cron run, also one started through another site's host. Left on the
+ * primary site on purpose: the gateway addresses shown to staff, the IPN addresses of cron charges, the sitemap and
+ * the health and web server checks; on the request's site: OAuth callbacks and the staff bell entries. A queued
+ * email is sent as it was built.
+ *
+ * Events on a new record (params): onAfterNewInvoice (id) for every invoice, credit note and refund invoice made,
+ * once its lines are added (a combined renewal invoice may get more lines after it; onAfterInvoiceCreate is the
+ * Invoice module's own "invoice created" email listener); onAfterQuoteCreate (id); onAfterOrderCreate (id, client_id)
+ * for each order of a checkout, of a staff order and of the API; onAfterImport (system, client, order, invoice,
+ * ticket: lists of the imported ids) when an import finishes. They fire isolated: a listener that throws is logged and
+ * the record is still made (its own nested transaction rolls back to its savepoint). They fire inside the transaction
+ * that makes the record when there is one (a staff order's total preview makes and rolls back its records): keep a
+ * listener's own rows in the same database, and do no outside work there. Write them with $di['dbal'], never through the
+ * shared entity manager: a failed flush closes it, and the caller's own save (checkout's) then fails.
+ *
+ * Which modules serve sites is kept between requests in $di['cache'] (stamp() and forRecord() run for every new record
+ * and client email); it is read again after an extension is activated, deactivated, removed or upgraded (all saved
+ * through Doctrine: Doctrine\SiteStamp), after a core update (it clears the caches), or when the cache expires.
  */
 final readonly class Site
 {
+    /** The record types whose table keeps the site a row was made on (column `site`). */
+    public const array RECORDS = ['client' => 'client', 'order' => 'client_order', 'invoice' => 'invoice', 'quote' => 'invoice_quote', 'ticket' => 'support_ticket'];
+
+    /** The $di['cache'] key of the site modules' list (providers()). */
+    private const string PROVIDERS = 'clientfence_site_providers';
+
     /**
      * @param string      $url  the base URL with a trailing slash: scheme, host[:port] and path, as SYSTEM_URL
      * @param string      $host host[:port] as the request shows it
@@ -54,10 +100,103 @@ final readonly class Site
         return $site instanceof self ? $site : self::primary();
     }
 
-    /** The site the portal is working for: today the request's site (ofRequest()). */
+    /** The site the portal is working for: the record's inside within(), else the request's (ofRequest()). */
     public static function current(?\Pimple\Container $di): self
     {
-        return self::ofRequest($di);
+        $within = isset($di['site_within']) ? $di['site_within'] : null;
+
+        return $within instanceof self ? $within : self::ofRequest($di);
+    }
+
+    /** Runs `$fn` with `$site` as current(), then restores the one before (nested calls each restore their own). */
+    public static function within(\Pimple\Container $di, self $site, callable $fn): mixed
+    {
+        $before = isset($di['site_within']) ? $di['site_within'] : null;
+        $di['site_within'] = $site;
+        try {
+            return $fn();
+        } finally {
+            if ($before === null) {
+                unset($di['site_within']);
+            } else {
+                $di['site_within'] = $before;
+            }
+        }
+    }
+
+    /** The site of a record (a RECORDS type): its own stored key, else its client's; the primary site without one. */
+    public static function forRecord(\Pimple\Container $di, string $type, int $id): self
+    {
+        $table = self::RECORDS[$type] ?? null;
+        // Without a site module no row has a key: nothing is read.
+        if ($table === null || $id < 1 || self::providers($di) === []) {
+            return self::primary();
+        }
+        try {
+            $key = $table === 'client'
+                ? $di['dbal']->fetchOne('SELECT site FROM client WHERE id = ?', [$id])
+                : $di['dbal']->fetchOne("SELECT COALESCE(r.site, c.site) FROM `{$table}` r LEFT JOIN client c ON c.id = r.client_id WHERE r.id = ?", [$id]);
+        } catch (\Throwable $e) {
+            $di['logger']->warning(sprintf('The site of %s #%d could not be read: %s', $type, $id, $e->getMessage()));
+
+            return self::primary();
+        }
+
+        return self::byKey($di, is_string($key) ? $key : null);
+    }
+
+    /** The site of a stored key (null: the primary site); see the class comment. Worked out once per request. */
+    public static function byKey(\Pimple\Container $di, ?string $key): self
+    {
+        if ($key === null) {
+            return self::primary();
+        }
+
+        return RequestCache::remember($di, 'site.key.' . $key, static function () use ($di, $key): self {
+            [$module, $own] = explode('/', $key, 2) + [1 => ''];
+            $problem = in_array($module, self::providers($di), true) ? null : 'its module is not switched on or serves no sites';
+            try {
+                if ($problem === null && ($reason = $di['mod']($module)->cannotRun()) !== null) {
+                    $problem = strtr(...$reason);
+                }
+                if ($problem === null) {
+                    $site = $di['mod_service']($module)->siteByKey($own);
+                    if ($site instanceof self && $site->key === $own && self::serves($site, self::hostOf($site->url))) {
+                        return new self($site->url, $site->host, $key);
+                    }
+                    $problem = 'its module answered with no valid site';
+                }
+            } catch (\Throwable $e) {
+                $problem = $e->getMessage();
+            }
+            $di['logger']->warning(sprintf('The site %s is not available, the primary site is used: %s', $key, $problem));
+
+            return self::primary();
+        });
+    }
+
+    /**
+     * Writes the site of a row just made in `$table` (a RECORDS table or email_queue), as the class comment says.
+     * Nothing is written without a site module. A failure is logged: the row stays on the primary site.
+     */
+    public static function stamp(\Pimple\Container $di, string $table, int $id): void
+    {
+        if ($id < 1 || (!in_array($table, self::RECORDS, true) && $table !== 'email_queue') || self::providers($di) === []) {
+            return;
+        }
+        $key = self::current($di)->key;
+        try {
+            if ($table === 'client' || $table === 'email_queue') {
+                if ($key !== null) {
+                    $di['dbal']->update($table, ['site' => $key], ['id' => $id]);
+                }
+
+                return;
+            }
+            $di['dbal']->executeStatement("UPDATE `{$table}` SET site = COALESCE(?, (SELECT c.site FROM client c WHERE c.id = `{$table}`.client_id)) WHERE id = ?", [$key, $id]);
+        } catch (\Throwable $e) {
+            $di['logger']->warning(sprintf('The site of %s #%d was not saved: %s', $table, $id, $e->getMessage()));
+        }
     }
 
     /**
@@ -155,11 +294,39 @@ final readonly class Site
     /** @return list<string> the switched-on modules (sorted by name) whose manifest declares "sites": true */
     private static function providers(\Pimple\Container $di): array
     {
+        // Every new record and client email asks (stamp(), forRecord()), so the list is kept between requests in
+        // $di['cache'] (one read per request) until an extension changes (forgetProviders()) or a core update clears it.
+        return RequestCache::remember($di, 'site.providers', static fn (): array => isset($di['cache'])
+            ? $di['cache']->get(self::PROVIDERS, static function (\Symfony\Contracts\Cache\ItemInterface $item, bool &$save) use ($di): array {
+                $providers = self::findProviders($di);
+                // A list that could not be read is not kept: the next request reads it again.
+                $save = $providers !== null;
+
+                return $providers ?? [];
+            })
+            : self::findProviders($di) ?? []);
+    }
+
+    /** Called when an extension is activated, deactivated, removed or upgraded (Doctrine\SiteStamp): the list is read again. */
+    public static function forgetProviders(\Pimple\Container $di): void
+    {
+        RequestCache::forget($di, 'site.');
+        if (isset($di['cache'])) {
+            $di['cache']->delete(self::PROVIDERS);
+        }
+    }
+
+    /** @return list<string>|null null when the module list cannot be read */
+    private static function findProviders(\Pimple\Container $di): ?array
+    {
         try {
             $modules = $di['mod_service']('extension')->getCoreAndActiveModules();
+            if (!is_array($modules)) {
+                return null;
+            }
         } catch (\Throwable) {
             // Without the module list the request keeps the primary site, as before.
-            return [];
+            return null;
         }
 
         return array_values(array_filter(

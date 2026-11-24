@@ -38,6 +38,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         'mod_client_clientfence_signin_pin', 'mod_staff_clientfence_signin_pin',
     ];
 
+    /** ClientFence: staff templates sent to a plain address (a help desk's email, the test email to the signed-in staff member). */
+    private const STAFF_TEMPLATES = ['mod_support_helpdesk_ticket_open', 'mod_email_test'];
+
     protected ?\Pimple\Container $di = null;
     protected EmailTemplateRepository $templateRepository;
     protected EmailTemplateGroupRepository $templateGroupRepository;
@@ -150,8 +153,16 @@ class Service implements \ClientFence\InjectionAwareInterface
         if ($this->getVars($template) === []) {
             $this->setVars($template, $previewVars);
         }
+        $render = fn (): array => $this->_parse($template, $vars, $timezone, $locale);
 
-        return $this->_parse($template, $vars, $timezone, $locale);
+        // ClientFence core patch: a staff email (the staff sign-in PIN) on the primary site, as sendTemplate().
+        return self::isStaffTemplate($code) ? \ClientFence\Site::within($this->di, \ClientFence\Site::primary(), $render) : $render();
+    }
+
+    /** ClientFence: a staff template (mod_staff_*, or one sent to a plain address: STAFF_TEMPLATES). */
+    private static function isStaffTemplate(string $code): bool
+    {
+        return str_starts_with($code, 'mod_staff_') || in_array($code, self::STAFF_TEMPLATES, true);
     }
 
     /**
@@ -301,7 +312,35 @@ class Service implements \ClientFence\InjectionAwareInterface
         };
     }
 
+    /**
+     * ClientFence core patch: an email is built on its site (ClientFence\Site): a staff email on the primary site, where
+     * staff sign in; any other on the site of the invoice, order, ticket or quote it is about, else of its client
+     * (Site::forRecord()); one with neither (a plain address) on the request's.
+     * A staff email: to_staff or to_admin, or a staff template sent to a plain address (STAFF_TEMPLATES, mod_staff_*).
+     * The record: `<type>` with an id (the API arrays), `<type>_id`, or the first of a `<type>s` list.
+     */
     public function sendTemplate($data)
+    {
+        $site = null;
+        if (!empty($data['to_staff']) || !empty($data['to_admin']) || (is_array($data) && self::isStaffTemplate((string) ($data['code'] ?? '')))) {
+            $site = \ClientFence\Site::primary();
+        } elseif (is_array($data)) {
+            $field = static fn (mixed $list, int|string $key): mixed => is_array($list) ? ($list[$key] ?? null) : null;
+            foreach (['invoice', 'order', 'ticket', 'quote', 'client'] as $type) {
+                $id = $type === 'client' ? ($data['to_client'] ?? null)
+                    : $field($data[$type] ?? null, 'id') ?? $data[$type . '_id'] ?? $field($field($data[$type . 's'] ?? null, 0), 'id');
+                if (is_numeric($id) && (int) $id > 0) {
+                    $site = \ClientFence\Site::forRecord($this->di, $type, (int) $id);
+
+                    break;
+                }
+            }
+        }
+
+        return $site === null ? $this->sendTemplateOnSite($data) : \ClientFence\Site::within($this->di, $site, fn () => $this->sendTemplateOnSite($data));
+    }
+
+    private function sendTemplateOnSite($data)
     {
         $required = [
             'code' => 'Template code not passed',
@@ -848,7 +887,10 @@ class Service implements \ClientFence\InjectionAwareInterface
      */
     public function renderHtmlInLayout(string $html, string $audience = 'client', array $vars = []): string
     {
-        return $this->renderMessage("{% set email_audience = '" . $audience . "' %}{{ email_body }}", ['email_body' => new \Twig\Markup($html, 'UTF-8')] + $vars);
+        $render = fn (): string => $this->renderMessage("{% set email_audience = '" . $audience . "' %}{{ email_body }}", ['email_body' => new \Twig\Markup($html, 'UTF-8')] + $vars);
+
+        // ClientFence core patch: a staff email on the primary site, where staff sign in (ClientFence\Site).
+        return $audience === 'staff' ? \ClientFence\Site::within($this->di, \ClientFence\Site::primary(), $render) : $render();
     }
 
     /**

@@ -70,12 +70,14 @@ class Service
         try {
             // ClientFence core patch: one cron run at a time. Overlapping runs renewed the same order twice
             // and charged the credit twice; a run that finds another one running stops.
-            return Tools::withLock($this->di, 'fb:cron', fn (): bool => $this->runCronTasks(), 0, function (): bool {
+            // ClientFence core patch: on the primary site, as in the console, also when called through another site's
+            // host (ClientFence\Site); each record's email is built on its own site.
+            return \ClientFence\Site::within($this->di, \ClientFence\Site::primary(), fn (): bool => Tools::withLock($this->di, 'fb:cron', fn (): bool => $this->runCronTasks(), 0, function (): bool {
                 $this->di['logger']->setChannel('cron')->warning('Skipped cron execution because another run is still running.');
                 $this->skipped = true;
 
                 return true;
-            });
+            }));
         } finally {
             if ($hadCronFlag) {
                 $this->di['is_cron'] = $previousCronFlag;

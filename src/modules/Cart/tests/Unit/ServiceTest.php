@@ -709,13 +709,10 @@ test('checkoutCart returns array with expected keys', function (): void {
     $orderIdReflection->setValue($order, 99);
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
-    $serviceMock->shouldReceive('createFromCart')->atLeast()->once()->andReturn([$order, 1, [1]]);
+    $serviceMock->shouldReceive('createFromCart')->atLeast()->once()->andReturn([$order, 1, [99, 100]]);
     $serviceMock->shouldReceive('isClientAbleToUsePromo')->atLeast()->once()->andReturn(true);
     $serviceMock->shouldReceive('rm')->atLeast()->once()->andReturn(true);
     $serviceMock->shouldReceive('isPromoAvailableForClientGroup')->atLeast()->once()->andReturn(true);
-
-    $eventMock = Mockery::mock(\ClientFence\EventManager::class)->shouldIgnoreMissing();
-    $eventMock->shouldReceive('fire')->atLeast()->once();
 
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
@@ -731,7 +728,6 @@ test('checkoutCart returns array with expected keys', function (): void {
     $productService->shouldReceive('findPromoById')->once()->with(1)->andReturn($promo);
 
     $di = container();
-    $di['events_manager'] = $eventMock;
     $di['db'] = $dbMock;
     $di['logger'] = new Tests\Helpers\TestLogger();
     $di['request'] = new Request();
@@ -747,6 +743,11 @@ test('checkoutCart returns array with expected keys', function (): void {
     expect($result)->toHaveKey('invoice_hash');
     expect($result)->toHaveKey('order_id');
     expect($result)->toHaveKey('orders');
+    // ClientFence: the client's checkout event once, and each order's own event (ClientFence\Site).
+    $events = array_column($di['events_manager']->events, 'event');
+    expect(array_count_values($events)['onAfterClientOrderCreate'] ?? 0)->toBe(1)
+        ->and(array_values(array_filter($di['events_manager']->events, static fn (array $e): bool => $e['event'] === 'onAfterOrderCreate')))
+        ->toBe([['event' => 'onAfterOrderCreate', 'params' => ['id' => 99, 'client_id' => 0], 'isolated' => true], ['event' => 'onAfterOrderCreate', 'params' => ['id' => 100, 'client_id' => 0], 'isolated' => true]]);
 });
 
 test('checkoutCart refuses a payment method the checkout does not offer (CF-172)', function (): void {

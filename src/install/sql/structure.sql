@@ -299,6 +299,8 @@ CREATE TABLE `client` (
   `auto_charge` tinyint(1) NOT NULL DEFAULT '1',
   `allow_sso` tinyint(1) NOT NULL DEFAULT '1',
   `status_update` tinyint(1) NOT NULL DEFAULT '1',
+  -- ClientFence core patch: the site the row was made on (ClientFence\Site), NULL: the primary site.
+  `site` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `alternative_id_idx` (`aid`),
@@ -384,6 +386,8 @@ CREATE TABLE `client_order` (
   `updated_at` datetime DEFAULT NULL,
   -- ClientFence core patch: the service's payment method (WHMCS), preselected on its renewal invoices.
   `gateway_id` bigint(20) DEFAULT NULL,
+  -- ClientFence core patch: the site the row was made on (ClientFence\Site), NULL: the primary site.
+  `site` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `client_id_idx` (`client_id`),
   KEY `product_id_idx` (`product_id`),
@@ -652,6 +656,8 @@ CREATE TABLE `invoice` (
   `po_number` varchar(64) DEFAULT NULL,
   -- ClientFence core patch: the custom client fields shown on the invoice, copied when it is made (JSON).
   `buyer_custom` mediumtext DEFAULT NULL,
+  -- ClientFence core patch: the site the row was made on (ClientFence\Site), NULL: the primary site.
+  `site` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `client_id_idx` (`client_id`),
@@ -770,6 +776,8 @@ CREATE TABLE `email_queue` (
   `attachment_mime` varchar(100) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  -- ClientFence core patch: the site the row was made on (ClientFence\Site), NULL: the primary site.
+  `site` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1420,6 +1428,8 @@ CREATE TABLE `support_ticket` (
   `rel_status` varchar(100) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
+  -- ClientFence core patch: the site the row was made on (ClientFence\Site), NULL: the primary site.
+  `site` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `support_helpdesk_id_idx` (`support_helpdesk_id`),
   KEY `client_id_idx` (`client_id`),
@@ -1792,7 +1802,7 @@ CREATE TABLE `support_escalation_applied` (`rule_id` bigint(20) unsigned NOT NUL
 -- Table structure for table `invoice_quote` (ClientFence)
 --
 
-CREATE TABLE `invoice_quote` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `hash` char(40) NOT NULL, `client_id` bigint(20) DEFAULT NULL, `first_name` varchar(100) NOT NULL DEFAULT '', `last_name` varchar(100) NOT NULL DEFAULT '', `company` varchar(100) NOT NULL DEFAULT '', `email` varchar(255) NOT NULL DEFAULT '', `country` varchar(2) NOT NULL DEFAULT '', `currency` char(3) NOT NULL, `subject` varchar(255) NOT NULL, `stage` varchar(20) NOT NULL DEFAULT 'draft', `valid_until` date DEFAULT NULL, `proposal` text NOT NULL, `customer_notes` text NOT NULL, `admin_notes` text NOT NULL, `taxname` varchar(100) NOT NULL DEFAULT '', `taxrate` decimal(5,2) NOT NULL DEFAULT 0.00, `invoice_id` bigint(20) DEFAULT NULL, `created_by` bigint(20) DEFAULT NULL, `sent_at` datetime DEFAULT NULL, `accepted_at` datetime DEFAULT NULL, `declined_at` datetime DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `hash` (`hash`), KEY `client` (`client_id`), KEY `stage` (`stage`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `invoice_quote` (`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT, `hash` char(40) NOT NULL, `client_id` bigint(20) DEFAULT NULL, `first_name` varchar(100) NOT NULL DEFAULT '', `last_name` varchar(100) NOT NULL DEFAULT '', `company` varchar(100) NOT NULL DEFAULT '', `email` varchar(255) NOT NULL DEFAULT '', `country` varchar(2) NOT NULL DEFAULT '', `currency` char(3) NOT NULL, `subject` varchar(255) NOT NULL, `stage` varchar(20) NOT NULL DEFAULT 'draft', `valid_until` date DEFAULT NULL, `proposal` text NOT NULL, `customer_notes` text NOT NULL, `admin_notes` text NOT NULL, `taxname` varchar(100) NOT NULL DEFAULT '', `taxrate` decimal(5,2) NOT NULL DEFAULT 0.00, `invoice_id` bigint(20) DEFAULT NULL, `created_by` bigint(20) DEFAULT NULL, `sent_at` datetime DEFAULT NULL, `accepted_at` datetime DEFAULT NULL, `declined_at` datetime DEFAULT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL, `site` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`), UNIQUE KEY `hash` (`hash`), KEY `client` (`client_id`), KEY `stage` (`stage`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `invoice_quote_item` (ClientFence)

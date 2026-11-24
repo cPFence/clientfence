@@ -380,6 +380,12 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function sendMessage(MassmailerMessage $model, int $client_id, bool $sendNow = false): int|false|null
     {
+        // ClientFence core patch: the message and its unsubscribe link are built and queued on the client's site (ClientFence\Site::forRecord()).
+        return \ClientFence\Site::within($this->di, \ClientFence\Site::forRecord($this->di, 'client', $client_id), fn (): int|false|null => $this->sendMessageOnSite($model, $client_id, $sendNow));
+    }
+
+    private function sendMessageOnSite(MassmailerMessage $model, int $client_id, bool $sendNow): int|false|null
+    {
         // ClientFence core patch: an opted-out client gets no marketing email (also one queued before the opt-out); while
         // clients can opt out themselves, the others get an unsubscribe footer and headers (Client/Privacy.php). A message
         // not marked as marketing (a service notice) goes to everyone, without them.

@@ -50,6 +50,7 @@ final class Migrations
         24 => 'm24PasskeyRpId',
         // Step 24 again, for a database that ran its first form (it is idempotent).
         25 => 'm24PasskeyRpId',
+        26 => 'm26RecordSite',
     ];
 
     public static function latest(): int
@@ -411,6 +412,21 @@ final class Migrations
         if (in_array('site', $columns, true)) {
             $db->executeStatement("UPDATE `client_passkey` SET `rp_id` = '' WHERE `site` IS NOT NULL");
             $db->executeStatement('ALTER TABLE `client_passkey` DROP COLUMN `site`');
+        }
+    }
+
+    /**
+     * 26: the site each client, order, invoice, quote, ticket and queued email was made on (ClientFence\Site::stamp()):
+     * a `site` column, NULL (the primary site) on every row there. Safe to run again.
+     */
+    private static function m26RecordSite(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $schema = $db->createSchemaManager();
+        foreach (['client', 'client_order', 'invoice', 'invoice_quote', 'support_ticket', 'email_queue'] as $table) {
+            if ($schema->tablesExist([$table]) && !in_array('site', array_map(static fn ($c): string => strtolower($c->getName()), $schema->listTableColumns($table)), true)) {
+                $db->executeStatement("ALTER TABLE `{$table}` ADD COLUMN `site` varchar(255) DEFAULT NULL");
+            }
         }
     }
 }

@@ -52,7 +52,14 @@ class Database implements InjectionAwareInterface
             $bean = $modelOrBean;
         }
 
-        return $this->orm->store($bean);
+        // ClientFence core patch: a new invoice keeps the site it was made for (ClientFence\Site::stamp()).
+        $new = !$bean->id;
+        $id = $this->orm->store($bean);
+        if ($new && $this->di !== null) {
+            Site::stamp($this->di, (string) $bean->getMeta('type'), (int) $id);
+        }
+
+        return $id;
     }
 
     public function transaction(callable $callback)

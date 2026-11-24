@@ -35,14 +35,14 @@ class Url implements \ClientFence\InjectionAwareInterface
      */
     public function get(string $uri): string
     {
-        return $this->baseUri . $uri;
+        return $this->base() . $uri;
     }
 
     public function link(?string $uri = null, ?array $params = []): string
     {
         $uri ??= '';
         $uri = trim($uri, '/');
-        $link = $this->baseUri . $uri;
+        $link = $this->base() . $uri;
         if (!empty($params)) {
             $link .= '?' . http_build_query($params);
         }
@@ -57,6 +57,12 @@ class Url implements \ClientFence\InjectionAwareInterface
         $uri = ADMIN_PREFIX . '/' . $uri;
 
         return $this->link($uri, $params);
+    }
+
+    // ClientFence core patch: without a set base, the site of each call (ClientFence\Site::current(): a record's inside within()).
+    private function base(): string
+    {
+        return $this->baseUri ?? ($this->di === null ? '' : Site::current($this->di)->url);
     }
 
     public static function normalizeLinkPath(?string $uri = null): string

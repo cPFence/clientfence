@@ -220,7 +220,8 @@ class Guest extends \ClientFence\Api\AbstractApi
         // A failed flush closes the EntityManager; replace it so the
         // duplicate re-check and fallback login below use a usable one.
         try {
-            $freshEm = EntityManagerFactory::create();
+            // ClientFence core patch: with $di (ClientFence\Site::stamp()).
+            $freshEm = EntityManagerFactory::create($di);
         } catch (\Throwable) {
             return;
         }

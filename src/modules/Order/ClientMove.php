@@ -14,7 +14,8 @@ use Doctrine\DBAL\ParameterType;
 /**
  * ClientFence (CF-183): staff move a service, with its add-ons, to another client, as Blesta.
  *
- * Only the owner changes: the orders, their service records (service_* client_id) and the order's affiliate referral.
+ * Only the owner changes: the orders (with the new client's site, ClientFence\Site), their service records (service_*
+ * client_id) and the order's affiliate referral.
  * Invoices, payments, credit and gateway subscriptions stay with the old client as history, so a service with an
  * unpaid invoice (its own line or a waiting upgrade's) or an active gateway subscription is refused until staff settle
  * it: an unpaid invoice of one client must not suspend the service of another. A saved card is the client's, not the
@@ -65,7 +66,8 @@ final class ClientMove
                 // As checkout, a client without a currency takes its first order's.
                 $db->update('client', ['currency' => $order['currency'], 'updated_at' => $now], ['id' => $clientId]);
             }
-            $db->executeStatement('UPDATE client_order SET client_id = ?, updated_at = ? WHERE id IN (?)', [$clientId, $now, $ids], [ParameterType::INTEGER, ParameterType::STRING, ArrayParameterType::INTEGER]);
+            // The services take the new client's site too (NULL: the primary site): the one place a stored site changes (ClientFence\Site).
+            $db->executeStatement('UPDATE client_order SET client_id = ?, site = (SELECT c.site FROM client c WHERE c.id = ?), updated_at = ? WHERE id IN (?)', [$clientId, $clientId, $now, $ids], [ParameterType::INTEGER, ParameterType::INTEGER, ParameterType::STRING, ArrayParameterType::INTEGER]);
             $hosting = false;
             $enhance = false;
             foreach ($db->fetchAllAssociative('SELECT service_id, service_type FROM client_order WHERE id IN (?) AND service_id IS NOT NULL', $in, $types) as $service) {

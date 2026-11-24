@@ -185,7 +185,8 @@ final class TicketAssign
                     'priority' => TicketPriority::level($ticket['priority']),
                     'priority_title' => ucfirst(TicketPriority::level($ticket['priority'])),
                     'helpdesk' => $helpdesk === false ? '' : (string) $helpdesk,
-                    'url' => $di['url']->adminLink('support/ticket/' . $ticketId),
+                    // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+                    'url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('support/ticket/' . $ticketId)),
                 ],
                 'assigned_by' => $by === false ? '' : (string) $by,
             ]);

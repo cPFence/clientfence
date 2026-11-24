@@ -285,7 +285,8 @@ final class Updates
                     'to_admin' => (int) $id,
                     'release' => ['version' => $release['version'], 'release_date' => $release['release_date'], 'notes' => $release['notes']],
                     'current_version' => Version::CLIENTFENCE,
-                    'update_url' => (string) $di['url']->adminLink('system/update'),
+                    // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+                    'update_url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => (string) $di['url']->adminLink('system/update')),
                     // Not left for the next cron run: staff may install the release before then.
                     'send_now' => true,
                 ]);

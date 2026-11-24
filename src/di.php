@@ -174,7 +174,8 @@ $di['dbal'] = (fn (): Connection => DriverManagerFactory::getSharedConnection())
  *
  * @return EntityManager The Doctrine ORM EntityManager instance.
  */
-$di['em'] = (fn (): EntityManager => EntityManagerFactory::create());
+// ClientFence core patch: with $di, a new client, order, ticket or queued email keeps its site (ClientFence\Site::stamp()).
+$di['em'] = (fn (): EntityManager => EntityManagerFactory::create($di));
 
 /*
  *
@@ -197,9 +198,8 @@ $di['pager'] = function () use ($di) {
  */
 $di['url'] = function () use ($di) {
     $url = new \ClientFence\Url();
+    // ClientFence core patch: links are built on the site of each call (ClientFence\Site::current(), Url::base()).
     $url->setDi($di);
-    // ClientFence core patch: links are built on the request's site (ClientFence\Site).
-    $url->setBaseUri($di['site']->url);
 
     return $url;
 };

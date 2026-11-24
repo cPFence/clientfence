@@ -228,7 +228,8 @@ class Service implements InjectionAwareInterface, \ClientFence\Interfaces\Widget
             ]);
         });
 
-        return $this->di['tools']->url('/client/confirm-email/' . $hash);
+        // ClientFence core patch: on the client's site, as the email it goes in (ClientFence\Site::forRecord()).
+        return \ClientFence\Site::within($this->di, \ClientFence\Site::forRecord($this->di, 'client', (int) $client_id), fn (): string => $this->di['tools']->url('/client/confirm-email/' . $hash));
     }
 
     public static function onAfterClientSignUp(\ClientFence\Event $event): bool

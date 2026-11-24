@@ -29,7 +29,8 @@ final class StatementPdf
 
     public static function render(\Pimple\Container $di, array $statement, string $locale): string
     {
-        return \ClientFence\Translate::with(RtlPdf::labels($locale), static function () use ($di, $statement, $locale): string {
+        // On the client's site (ClientFence\Site::forRecord()).
+        return \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'client', (int) $statement['client']['id']), static fn (): string => \ClientFence\Translate::with(RtlPdf::labels($locale), static function () use ($di, $statement, $locale): string {
             $pdf = RtlPdf::document($di, $locale, __trans('Account statement'));
             // The seller name and address in the statement client's language (GitHub #51).
             $company = $di['mod_service']('system')->getCompany($statement['client']['lang'] ?: null);
@@ -37,7 +38,7 @@ final class StatementPdf
             $pdf->writeHTML(self::html($statement, $company, $money, RtlPdf::isRtl($locale)), true, false, true, false, '');
 
             return $pdf->Output('statement.pdf', 'S');
-        });
+        }));
     }
 
     public static function isRtl(string $locale): bool

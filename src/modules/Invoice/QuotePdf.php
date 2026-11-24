@@ -35,6 +35,12 @@ final class QuotePdf
      */
     public static function render(\Pimple\Container $di, array $quote, string $locale): string
     {
+        // On the quote's site (ClientFence\Site::forRecord()).
+        return \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'quote', (int) $quote['id']), static fn (): string => self::renderOnSite($di, $quote, $locale));
+    }
+
+    private static function renderOnSite(\Pimple\Container $di, array $quote, string $locale): string
+    {
         $previous = \Locale::getDefault();
         (new \ClientFence\Translate())->setLocale(RtlPdf::labels($locale))->setup();
         try {

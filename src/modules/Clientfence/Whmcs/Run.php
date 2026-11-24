@@ -6,7 +6,9 @@ namespace ClientFence\Mod\Clientfence\Whmcs;
 
 use ClientFence\Config;
 use ClientFence\InformationException;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 
 /**
  * ClientFence: runs the WHMCS import (Import.php) in batches and checks the result.
@@ -191,6 +193,13 @@ final class Run
         $state['finished_at'] = date('Y-m-d H:i:s');
         $state['step'] = null;
         self::save($di, $state);
+        // The import's event, with the ids it made of each record type (ClientFence\Site).
+        $ids = static fn (string ...$entities): array => array_map('intval', $db->fetchFirstColumn(
+            'SELECT DISTINCT target_id FROM ' . Map::TABLE . ' WHERE source = ? AND entity IN (?) AND target_id > 0 ORDER BY target_id',
+            [Map::SOURCE, $entities],
+            [ParameterType::STRING, ArrayParameterType::STRING],
+        ));
+        $di['events_manager']->fire(['event' => 'onAfterImport', 'params' => ['system' => $system, 'client' => $ids('client'), 'order' => $ids('service', 'serviceaddon', 'domain'), 'invoice' => $ids('invoice', 'note'), 'ticket' => $ids('ticket')], 'isolated' => true]);
         // New groups, currencies and settings: drop what was cached of them.
         try {
             $di['cache']->clear();

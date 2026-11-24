@@ -1011,6 +1011,8 @@ final class MailImport
                 'to_name' => $message->from['name'],
                 'to_lang' => $lang ?: null,
                 'code' => 'mod_support_mail_rejected',
+                // Built on the site of the ticket it was for, if any (Email\Service::sendTemplate()).
+                'ticket_id' => $result['ticket_id'],
                 'rejected' => [
                     'reason' => $result['status'],
                     'note' => $result['note'],

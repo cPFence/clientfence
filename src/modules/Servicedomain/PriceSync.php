@@ -487,7 +487,8 @@ final class PriceSync
                     'rows' => $rows,
                     'rebase' => $rebase,
                     'fixed' => count(array_intersect(array_column($rows, 'tld_id'), array_map('intval', $fixed))),
-                    'url' => $di['url']->adminLink('servicedomain/registrar/' . $registrarId . '/prices'),
+                    // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+                    'url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('servicedomain/registrar/' . $registrarId . '/prices')),
                 ],
             ]);
         }

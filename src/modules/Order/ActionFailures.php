@@ -377,8 +377,9 @@ final class ActionFailures
                 return;
             }
             $failure = self::toArray($row);
-            $failure['order_url'] = $di['url']->adminLink('order/manage/' . $failure['order_id']);
-            $failure['list_url'] = $di['url']->adminLink('order/failed-actions');
+            // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+            $failure['order_url'] = \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('order/manage/' . $failure['order_id']));
+            $failure['list_url'] = \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('order/failed-actions'));
             $di['mod_service']('email')->sendTemplate([
                 'to_staff' => true,
                 'code' => 'mod_staff_order_action_failed',

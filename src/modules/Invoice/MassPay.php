@@ -113,7 +113,10 @@ final class MassPay
             }
             $now = date('Y-m-d H:i:s');
             $db->insert('invoice', ['client_id' => (int) $client->id, 'status' => \Model_Invoice::STATUS_UNPAID, 'currency' => $client->currency, 'approved' => 1, 'created_at' => $now, 'updated_at' => $now]);
-            $invoice = $di['db']->getExistingModelById('Invoice', (int) $db->lastInsertId(), 'Invoice not found');
+            $newId = (int) $db->lastInsertId();
+            // Before the bean is loaded: saving it again (setInvoiceDefaults()) writes back every column it was loaded with.
+            \ClientFence\Site::stamp($di, 'invoice', $newId);
+            $invoice = $di['db']->getExistingModelById('Invoice', $newId, 'Invoice not found');
             // Number, buyer, due date and tax rate as any invoice; the lines are untaxed, so only a taxed fee adds tax.
             $di['mod_service']('Invoice')->setInvoiceDefaults($invoice);
             foreach ($lines as $id => $line) {
@@ -123,6 +126,7 @@ final class MassPay
                     'quantity' => 1, 'price' => $line['amount'], 'charged' => 1, 'taxed' => 0, 'created_at' => $now, 'updated_at' => $now,
                 ]);
             }
+            $di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $invoice->id], 'isolated' => true]);
 
             return $invoice;
         }));

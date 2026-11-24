@@ -27,7 +27,8 @@ final class Emails
                 'code' => 'mod_staff_affiliate_payout_request',
                 'affiliate' => ['name' => trim($payout['first_name'] . ' ' . $payout['last_name']), 'company' => (string) $payout['company'], 'code' => $payout['code']],
                 'payout' => ['id' => $payoutId, 'amount' => $payout['amount'], 'currency' => $payout['currency'], 'details' => (string) $payout['details']],
-                'url' => $di['url']->adminLink('client/manage/' . $payout['client_id']) . '#tab-clientfence-affiliate',
+                // Staff emails link to the primary site, where staff sign in (ClientFence\Site).
+                'url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => $di['url']->adminLink('client/manage/' . $payout['client_id'])) . '#tab-clientfence-affiliate',
             ];
         });
     }
@@ -72,7 +73,8 @@ final class Emails
                     'code' => 'mod_client_affiliate_report',
                     'report' => self::report($db, (int) $affiliate['id'], $month) + Affiliates::balances($db, (int) $affiliate['id']) + [
                         'currency' => (string) $db->fetchOne('SELECT currency FROM client WHERE id = ?', [$affiliate['client_id']]),
-                        'link' => $di['url']->link('/', ['aff' => $affiliate['code']]),
+                        // On the affiliate's site, as the email (ClientFence\Site::forRecord()).
+                        'link' => \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'client', (int) $affiliate['client_id']), static fn (): string => $di['url']->link('/', ['aff' => $affiliate['code']])),
                     ],
                 ]);
             } catch (\Throwable $e) {
