@@ -4,14 +4,12 @@
   "name": "Hosting product type",
   "description": "ClientFence core module",
   "version": "1.0.0",
-  "service": {
-    "client_pages": [
-      "hosting"
-    ],
-    "store_calls": {
-      "guest": {
-        "free_tlds": "list"
-      }
+  "client_pages": {
+    "hosting": "products"
+  },
+  "store_calls": {
+    "guest": {
+      "free_tlds": "list"
     }
   }
 }

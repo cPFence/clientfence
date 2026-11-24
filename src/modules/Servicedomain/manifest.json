@@ -4,28 +4,26 @@
   "name": "Domain product type",
   "description": "ClientFence core module",
   "version": "1.0.0",
-  "service": {
-    "rate_limits": {
-      "domain_lookup_ip": {
-        "policy": "fixed_window",
-        "limit": 60,
-        "interval": "1 hour"
-      },
-      "domain_lookup_batch_ip": {
-        "policy": "fixed_window",
-        "limit": 180,
-        "interval": "1 hour"
-      }
+  "rate_limits": {
+    "domain_lookup_ip": {
+      "policy": "fixed_window",
+      "limit": 60,
+      "interval": "1 hour"
     },
-    "store_calls": {
-      "guest": {
-        "tlds": "list",
-        "pinned_tlds": "list",
-        "pricing": "closed",
-        "check": "closed",
-        "check_bulk": "closed",
-        "can_be_transferred": "closed"
-      }
+    "domain_lookup_batch_ip": {
+      "policy": "fixed_window",
+      "limit": 180,
+      "interval": "1 hour"
+    }
+  },
+  "store_calls": {
+    "guest": {
+      "tlds": "list",
+      "pinned_tlds": "list",
+      "pricing": "closed",
+      "check": "closed",
+      "check_bulk": "closed",
+      "can_be_transferred": "closed"
     }
   }
 }

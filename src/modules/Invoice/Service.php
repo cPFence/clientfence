@@ -3105,20 +3105,25 @@ class Service implements InjectionAwareInterface
     }
 
     /**
-     * ClientFence core patch: a service module that declares "usage" bills its service's usage on the renewal, through
-     * addUsageLine() (ServiceTypes). A module that fails leaves the renewal without any of it, logged.
+     * ClientFence core patch: every switched-on module that declares "usage" bills the order's usage on the renewal, through
+     * addUsageLine() (ServiceTypes, with the module's contract), in module-name order. A module that fails loses only the
+     * lines it added in that call, logged. A gateway subscription pays a fixed amount, so its orders get no usage.
      */
     private function addUsageLines(\Model_Invoice $invoice, \Model_ClientOrder $order): void
     {
-        if ((\ClientFence\ServiceTypes::declared($this->di, $order->service_type)['usage'] ?? null) !== true) {
+        $modules = \ClientFence\ServiceTypes::usage($this->di);
+        if ($modules === [] || $this->di['mod_service']('Invoice', 'Subscription')->hasGatewaySubscriptionForOrder($order)) {
             return;
         }
-        try {
-            $this->di['mod_service']('service' . $order->service_type)->bill_usage($order, $invoice);
-        } catch (\Throwable $e) {
-            // All or nothing: a line the module added before it failed goes too.
-            $this->di['dbal']->executeStatement("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage'", [(int) $invoice->id, (string) $order->id]);
-            $this->di['logger']->warning("The usage of order #{$order->id} was not added to invoice #{$invoice->id}: {$e->getMessage()}");
+        foreach ($modules as $module) {
+            $last = (int) $this->di['dbal']->fetchOne('SELECT COALESCE(MAX(id), 0) FROM invoice_item WHERE invoice_id = ?', [(int) $invoice->id]);
+            try {
+                $this->di['mod_service']($module)->bill_usage($invoice, $order);
+            } catch (\Throwable $e) {
+                // All or nothing per module: a line it added before it failed goes too.
+                $this->di['dbal']->executeStatement("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage' AND id > ?", [(int) $invoice->id, (string) $order->id, $last]);
+                $this->di['logger']->warning("The usage of order #{$order->id} from module {$module} was not added to invoice #{$invoice->id}: {$e->getMessage()}");
+            }
         }
     }
 

@@ -16,6 +16,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AppClient extends \ClientFence\App
 {
+    /** The core's top-level client pages and the module that registers each (no other module may declare them). */
+    public const CORE_PAGES = [
+        'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',
+        'password-reset' => 'client', 'two-factor' => 'client', 'ticket-file' => 'support',
+        'google-sign-in' => 'client', 'receipt' => 'invoice',
+        // ClientFence: quote links (Invoice/Quotes.php).
+        'quote' => 'invoice',
+        // ClientFence: the client's saved cards (Invoice/SavedCards.php).
+        'payment-methods' => 'invoice',
+        // ClientFence: the Network Status page (Support/NetworkIssues.php).
+        'network-status' => 'support',
+        // ClientFence core patch: privacy (Client/Privacy.php): the data download and unsubscribe links.
+        'my-data' => 'client', 'unsubscribe' => 'client',
+        // ClientFence: the script policy's violation reports (Clientfence/CspReports.php).
+        'csp-report' => 'clientfence',
+        // ClientFence core patch: the client theme's custom CSS stylesheet (Clientfence/CustomCss.php).
+        'custom-css' => 'clientfence',
+        // ClientFence core patch: the client's Affiliates page (Client/Affiliates).
+        'affiliates' => 'client',
+        // ClientFence core patch: the client's ID document page (Client/IdDocuments.php).
+        'identity' => 'client',
+    ];
+
     protected function init(): void
     {
         // Paths without letters can resolve to custom pages, but cannot identify modules.
@@ -28,28 +51,8 @@ class AppClient extends \ClientFence\App
             }
         }
         // ClientFence core patch: top-level client pages, each registered by the module that owns it
-        // (client URLs never name the module); a service module declares its own (ServiceTypes::pageModule()).
-        $pageModule = [
-            'users' => 'client', 'contacts' => 'client', 'profile' => 'client', 'invite' => 'client',
-            'password-reset' => 'client', 'two-factor' => 'client', 'ticket-file' => 'support',
-            'google-sign-in' => 'client', 'receipt' => 'invoice',
-            // ClientFence: quote links (Invoice/Quotes.php).
-            'quote' => 'invoice',
-            // ClientFence: the client's saved cards (Invoice/SavedCards.php).
-            'payment-methods' => 'invoice',
-            // ClientFence: the Network Status page (Support/NetworkIssues.php).
-            'network-status' => 'support',
-            // ClientFence core patch: privacy (Client/Privacy.php): the data download and unsubscribe links.
-            'my-data' => 'client', 'unsubscribe' => 'client',
-            // ClientFence: the script policy's violation reports (Clientfence/CspReports.php).
-            'csp-report' => 'clientfence',
-            // ClientFence core patch: the client theme's custom CSS stylesheet (Clientfence/CustomCss.php).
-            'custom-css' => 'clientfence',
-            // ClientFence core patch: the client's Affiliates page (Client/Affiliates).
-            'affiliates' => 'client',
-            // ClientFence core patch: the client's ID document page (Client/IdDocuments.php).
-            'identity' => 'client',
-        ][$this->mod] ?? \ClientFence\ServiceTypes::pageModule($this->di, (string) $this->mod);
+        // (client URLs never name the module); any other module declares its own (ServiceTypes::pages()).
+        $pageModule = self::CORE_PAGES[$this->mod] ?? \ClientFence\ServiceTypes::pages($this->di)[(string) $this->mod]['module'] ?? null;
         if ($pageModule !== null) {
             $this->di['mod']($pageModule)->registerClientRoutes($this);
         }

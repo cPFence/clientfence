@@ -114,6 +114,39 @@ test('a closed store refuses the bulk domain check and shows no pinned TLDs (CF-
         ->and(Service::storeGate($di, 'guest', 'servicedomain', 'nosuchcall', new stdClass(), []))->toBeNull();
 });
 
+test('a closed store gates the calls any switched-on module declares, whatever the case of their names', function (bool $on): void {
+    $di = container();
+    $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);
+    $di['session'] = new class {
+        public function get(string $key): mixed
+        {
+            return null;
+        }
+    };
+    $di['request'] = Request::create('/order');
+    // A module that is not a product type, as read from its manifest (keys with capitals).
+    $di['request_cache'] = new ArrayObject(['module_manifests' => ['metering' => ['store_calls' => ['Guest' => ['Get_Offers' => 'list', 'Quote' => 'closed']]]]]);
+    $di['mod_service'] = $di->protect(fn (): object => new class($on) {
+        public function __construct(private readonly bool $on)
+        {
+        }
+
+        public function isExtensionActive(string $type, string $id): bool
+        {
+            return $this->on;
+        }
+    });
+
+    expect(Service::storeGate($di, 'guest', 'metering', 'get_offers', new stdClass(), []))->toBe($on ? ['result' => []] : null)
+        ->and(Service::storeGate($di, 'guest', 'Metering', 'GET_OFFERS', new stdClass(), []))->toBe($on ? ['result' => []] : null);
+    if ($on) {
+        expect(fn () => Service::storeGate($di, 'guest', 'metering', 'quote', new stdClass(), []))
+            ->toThrow(ClientFence\InformationException::class, 'The store is not available.');
+    } else {
+        expect(Service::storeGate($di, 'guest', 'metering', 'quote', new stdClass(), []))->toBeNull();
+    }
+})->with(['switched on' => [true], 'switched off' => [false]]);
+
 test('a closed store lists its TLDs on admin pages to signed-in staff only', function (string $path, bool $staff, ?array $answer): void {
     $di = container();
     $di['mod_config'] = $di->protect(fn (string $name): array => $name === 'order' ? ['store_mode' => 'closed'] : []);

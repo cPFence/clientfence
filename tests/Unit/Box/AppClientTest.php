@@ -324,18 +324,34 @@ test('top-level client pages are registered by the module that owns them (Client
     'ticket file' => ['/ticket-file/' . str_repeat('a', 32), 'support'],
     'users' => ['/users', 'client'],
     'two-factor code' => ['/two-factor/code', 'client'],
-    // Declared by the service module in its manifest ("client_pages").
+    // Declared by the module in its manifest ("client_pages").
     'hosting account' => ['/hosting/12', 'servicehosting'],
     'licence check' => ['/licence/verify', 'servicelicense'],
 ]);
 
-test('a page a switched-off service module declares is not registered', function (): void {
-    $app = appClientWithRender(static fn (): string => 'error body');
-    $di = (fn () => $this->di)->call($app);
+test('a page a switched-off module declares is not registered', function (bool $on): void {
+    $app = appClientWithRender(static function (string $fileName): string {
+        if ($fileName === 'error') {
+            return 'error body';
+        }
 
-    expect(ClientFence\ServiceTypes::pageModule($di, 'hosting'))->toBeNull()
-        ->and(ClientFence\ServiceTypes::pageModule($di, 'nosuchpage'))->toBeNull();
-});
+        throw new ClientFence\InformationException('Page not found', null, 404);
+    }, activeExtensions: $on ? ['metering'] : []);
+    $registered = [];
+    $di = (fn () => $this->di)->call($app);
+    // A module that is not a product type, as read from its manifest.
+    $di['request_cache'] = new ArrayObject(['module_manifests' => ['metering' => ['client_pages' => ['meters' => 'products']]]]);
+    $di['mod'] = $di->protect(function (string $name) use (&$registered): object {
+        $registered[] = $name;
+
+        return Mockery::mock(ClientFence\Module::class)->shouldIgnoreMissing();
+    });
+    $app->setUrl('/meters');
+
+    $app->run();
+
+    expect(in_array('metering', $registered, true))->toBe($on);
+})->with(['switched on' => [true], 'switched off' => [false]]);
 
 test('a session that must set up two-factor sign-in opens only its page and sign-out', function (string $url, ?int $clientId, ?string $location): void {
     $app = appClientWithRender(static fn (): string => '');

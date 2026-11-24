@@ -172,7 +172,7 @@ final class Users
     /**
      * Client pages by path (the longest matching prefix wins) => permission; null: any user;
      * 'owner': owner links only. A page not listed is open to any signed-in user (its API calls
-     * are still checked).
+     * are still checked). Modules add their own top-level pages (ServiceTypes::pages()).
      */
     public const PAGES = [
         'support/kb' => null,
@@ -193,7 +193,6 @@ final class Users
         'client/profile' => 'profile',
         'email' => 'emails',
         'emails' => 'emails',
-        'hosting' => 'products',
         'servicedownloadable' => 'products',
         'users' => 'owner',
         // Saved cards and bank debits (Invoice/SavedCards.php): their calls are the owner's.
@@ -447,8 +446,8 @@ final class Users
         } elseif ($context['owner']) {
             $allowed = true;
         } else {
-            // A service module declares its own calls in its manifest (ServiceTypes); the list here wins.
-            $permission = self::CALLS[$mod][$method] ?? (str_starts_with($mod, 'service') ? \ClientFence\ServiceTypes::clientPermission($di, substr($mod, 7), $method) : null);
+            // A module declares its own calls in its manifest (ServiceTypes); the list here wins.
+            $permission = self::CALLS[$mod][$method] ?? \ClientFence\ServiceTypes::clientPermission($di, $mod, $method);
             $allowed = $permission === '*' || array_filter((array) $permission, static fn (string $p): bool => self::allows($context, $p)) !== [];
         }
         if (!$allowed) {
@@ -543,13 +542,15 @@ final class Users
             return null;
         }
         $path = strtolower(trim($url, '/'));
+        // Modules declare their own top-level pages (ServiceTypes); the list here wins.
+        $pages = self::PAGES + array_map(static fn (array $page): ?string => $page['permission'], \ClientFence\ServiceTypes::pages($di));
         $best = null;
-        foreach (self::PAGES as $prefix => $permission) {
+        foreach ($pages as $prefix => $permission) {
             if (($path === $prefix || str_starts_with($path, $prefix . '/')) && ($best === null || strlen($prefix) > strlen($best))) {
                 $best = $prefix;
             }
         }
-        $permission = $best === null ? null : self::PAGES[$best];
+        $permission = $best === null ? null : $pages[$best];
 
         return $permission === null || self::allows($context, $permission) ? null : $permission;
     }

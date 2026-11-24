@@ -135,7 +135,7 @@ class RateLimiter implements InjectionAwareInterface
     protected function getConfig(): array
     {
         $defaults = self::getDefaultConfig();
-        // ClientFence core patch: service modules add their own policies (ServiceTypes::rateLimits()); the core's win.
+        // ClientFence core patch: modules add their own policies (ServiceTypes::rateLimits()); the core's win.
         if ($this->di !== null) {
             $defaults['policies'] += \ClientFence\ServiceTypes::rateLimits($this->di);
         }

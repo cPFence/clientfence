@@ -57,6 +57,47 @@ test('a service module\'s own call declarations keep calls closed to users witho
         ->toThrow(InformationException::class, 'You do not have permission to do this.');
 });
 
+test('a module\'s declared pages and calls gate authorized users while it is switched on', function (bool $on): void {
+    // A module that is not a product type, as read from its manifest; the user has products and invoices.
+    $this->di['request_cache'] = new ArrayObject(['module_manifests' => ['metering' => [
+        'client_pages' => ['meters' => 'emails', 'meter-help' => null, 'Meter-Report' => 'emails'],
+        'client_calls' => ['Report' => 'invoices', 'export' => 'emails'],
+    ]]]);
+    $this->di['mod_service'] = $this->di->protect(fn (): object => new class($on) {
+        public function __construct(private readonly bool $on)
+        {
+        }
+
+        public function isExtensionActive(string $type, string $id): bool
+        {
+            return $this->on;
+        }
+    });
+
+    expect(Users::pageDenied($this->di, '/meters'))->toBe($on ? 'emails' : null)
+        ->and(Users::pageDenied($this->di, '/meters/5'))->toBe($on ? 'emails' : null)
+        ->and(Users::pageDenied($this->di, '/meter-help'))->toBeNull()
+        ->and(Users::pageDenied($this->di, '/meter-report'))->toBe($on ? 'emails' : null)
+        ->and(fn () => Users::checkCall($this->di, $this->client, 'metering', 'export'))
+        ->toThrow(InformationException::class, 'You do not have permission to do this.');
+    if ($on) {
+        expect(Users::checkCall($this->di, $this->client, 'metering', 'report'))->toBeNull();
+    } else {
+        expect(fn () => Users::checkCall($this->di, $this->client, 'metering', 'report'))
+            ->toThrow(InformationException::class, 'You do not have permission to do this.');
+    }
+})->with(['switched on' => [true], 'switched off' => [false]]);
+
+test('the hosting page needs the products permission (declared by the hosting module)', function (): void {
+    $this->db->shouldReceive('fetchAssociative')->with(Mockery::type('string'), [5, ...Model_Client::OPEN, 7])->andReturn([
+        'email' => 'user@example.com', 'first_name' => 'Test', 'last_name' => 'User',
+        'status' => 'active', 'session_version' => 1, 'owner' => 0, 'permissions' => 'invoices',
+    ]);
+
+    expect(Users::pageDenied($this->di, '/hosting/12'))->toBe('products')
+        ->and(Users::PAGES)->not->toHaveKey('hosting');
+});
+
 test('authorized users see the Support PIN but need the profile permission for a new one', function (): void {
     expect(Users::checkCall($this->di, $this->client, 'client', 'support_pin'))->toBeNull()
         ->and(fn () => Users::checkCall($this->di, $this->client, 'client', 'support_pin_new'))

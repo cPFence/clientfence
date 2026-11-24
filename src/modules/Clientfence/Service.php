@@ -168,7 +168,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
                 // its Category list through it (an empty list cleared the category on save).
             ],
             'cart' => ['add_item' => 'closed', 'apply_promo' => 'closed'],
-            // Service modules declare their own (ServiceTypes::storeCall()): domain search, a hosting product's free domains.
+            // Modules declare their own (ServiceTypes::storeCall()): domain search, a hosting product's free domains.
         ],
         // Not order_upgradables: it only fills the "Request Upgrade" ticket of an existing order.
         'client' => [
@@ -506,8 +506,7 @@ class Service implements InjectionAwareInterface, WidgetProviderInterface
     {
         // PHP method names ignore case, so the dispatcher runs "Get_List" as get_list.
         [$mod, $method] = [strtolower($mod), strtolower($method)];
-        $deny = self::STORE_CALLS[$role][$mod][$method]
-            ?? (str_starts_with($mod, 'service') ? \ClientFence\ServiceTypes::storeCall($di, substr($mod, 7), $role, $method) : null);
+        $deny = self::STORE_CALLS[$role][$mod][$method] ?? \ClientFence\ServiceTypes::storeCall($di, $mod, $role, $method);
         if ($deny === null) {
             return null;
         }

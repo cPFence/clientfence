@@ -4175,7 +4175,7 @@ test('a domain renewal is billed at the TLD price, or free while its hosting giv
     'free' => [true, 0.0],
 ]);
 
-test('a renewal bills the usage of a service module that declares "usage", as usage lines of the order; a failing module leaves it out, logged', function (?string $fail): void {
+test('a renewal bills the usage of a module that declares "usage", as usage lines of the order; a failing module leaves it out, logged', function (?string $fail): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('setInvoiceDefaults')->once();
 
@@ -4222,7 +4222,7 @@ test('a renewal bills the usage of a service module that declares "usage", as us
         {
         }
 
-        public function bill_usage(Model_ClientOrder $order, Model_Invoice $invoice): void
+        public function bill_usage(Model_Invoice $invoice, Model_ClientOrder $order): void
         {
             $this->lines[] = $this->invoices->addUsageLine($invoice, $order, 'Usage: 2.5 units', 1.25);
             if ($this->fail !== null) {
@@ -4235,16 +4235,20 @@ test('a renewal bills the usage of a service module that declares "usage", as us
     $di = container();
     $di['db'] = $dbMock;
     $di['logger'] = new Tests\Helpers\TestLogger();
-    $di['request_cache'] = new ArrayObject(['service_type.example' => ['usage' => true]]);
-    // All or nothing: the line added before the failure is removed.
+    // The switched-on modules' hooks, as read from their manifests.
+    $di['request_cache'] = new ArrayObject(['module_hooks' => ['serviceexample' => ['usage' => true]]]);
+    $subscriptions = Mockery::mock(ServiceSubscription::class);
+    $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($orderModel)->andReturn(false);
+    // All or nothing: the line added before the failure is removed (the invoice had no line above 0 before the module).
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $dbal->shouldReceive('executeStatement')->times($fail === null ? 0 : 1)->with("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage'", [77, '21']);
+    $dbal->shouldReceive('executeStatement')->times($fail === null ? 0 : 1)->with("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage' AND id > ?", [77, '21', 0]);
     $dbal->shouldIgnoreMissing();
     $di['dbal'] = $dbal;
-    $di['mod_service'] = $di->protect(fn (string $module_name) => match ($module_name) {
+    $di['mod_service'] = $di->protect(fn (string $module_name, string $sub = '') => match ($module_name . $sub) {
         'Product' => $productService,
         'client' => $clientService,
         'serviceexample' => $module,
+        'InvoiceSubscription' => $subscriptions,
         default => $invoiceItemServiceMock,
     });
 
@@ -4256,12 +4260,71 @@ test('a renewal bills the usage of a service module that declares "usage", as us
         ] : [['title' => 'Usage: 2.5 units', 'price' => 1.25, 'unit' => 'usage', 'rel_id' => 21, 'taxed' => true]])
         ->and($module->lines)->toBe($fail === null ? [1, 2] : [1])
         ->and(array_column($di['logger']->calls, 'method'))->toBe($fail === null ? [] : ['warning'])
-        ->and($fail === null ? '' : $di['logger']->calls[0]['params'][0])->toBe($fail === null ? '' : "The usage of order #21 was not added to invoice #77: {$fail}");
+        ->and($fail === null ? '' : $di['logger']->calls[0]['params'][0])->toBe($fail === null ? '' : "The usage of order #21 from module serviceexample was not added to invoice #77: {$fail}");
 })->with([
     'billed' => [null],
     'module fails' => ['panel down'],
     'module has a PHP error' => ['Division by zero'],
 ]);
+
+test('every switched-on module that declares usage bills it in name order; a failing one loses only its own lines; a subscription-paid order gets none', function (bool $subscription): void {
+    $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $dbal->executeStatement('CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, rel_id TEXT, unit TEXT, title TEXT)');
+    $dbal->insert('invoice_item', ['invoice_id' => 77, 'rel_id' => '21', 'unit' => null, 'title' => 'Renewal']);
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->id = 21;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 77;
+    // Each module adds a usage line of the order (as addUsageLine() does), then fails or adds a second one.
+    $module = static fn (string $id, bool $fail): object => new class($dbal, $id, $fail) {
+        public int $calls = 0;
+
+        public function __construct(private readonly Doctrine\DBAL\Connection $dbal, private readonly string $id, private readonly bool $fail)
+        {
+        }
+
+        public function bill_usage(Model_Invoice $invoice, Model_ClientOrder $order): void
+        {
+            ++$this->calls;
+            $line = ['invoice_id' => (int) $invoice->id, 'rel_id' => (string) $order->id, 'unit' => 'usage'];
+            $this->dbal->insert('invoice_item', $line + ['title' => "{$this->id} 1"]);
+            if ($this->fail) {
+                throw new RuntimeException('Meter offline');
+            }
+            $this->dbal->insert('invoice_item', $line + ['title' => "{$this->id} 2"]);
+        }
+    };
+    $modules = ['alpha' => $module('alpha', false), 'beta' => $module('beta', true), 'gamma' => $module('gamma', false), 'zeta' => $module('zeta', false)];
+    $subscriptions = Mockery::mock(ServiceSubscription::class);
+    $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($order)->andReturn($subscription);
+    // "zeta" is switched off.
+    $extensions = new class {
+        public function isExtensionActive(string $type, string $id): bool
+        {
+            return $id !== 'zeta';
+        }
+    };
+    $di = container();
+    $di['dbal'] = $dbal;
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    // Manifests on disk, not in name order; "other" does not declare usage as true.
+    $di['request_cache'] = new ArrayObject(['module_manifests' => array_fill_keys(['gamma', 'zeta', 'beta', 'alpha'], ['usage' => true]) + ['other' => ['usage' => 'yes']]]);
+    $di['mod_service'] = $di->protect(fn (string $name, string $sub = '') => match ($name) {
+        'Invoice' => $subscriptions,
+        'extension' => $extensions,
+        default => $modules[$name],
+    });
+    $service = new Service();
+    $service->setDi($di);
+
+    (new ReflectionMethod($service, 'addUsageLines'))->invoke($service, $invoice, $order);
+
+    expect($dbal->fetchFirstColumn('SELECT title FROM invoice_item ORDER BY id'))->toBe($subscription ? ['Renewal'] : ['Renewal', 'alpha 1', 'alpha 2', 'gamma 1', 'gamma 2'])
+        ->and(array_map(static fn (object $m): int => $m->calls, $modules))->toBe($subscription ? ['alpha' => 0, 'beta' => 0, 'gamma' => 0, 'zeta' => 0] : ['alpha' => 1, 'beta' => 1, 'gamma' => 1, 'zeta' => 0])
+        ->and(array_map(static fn (array $c): string => $c['params'][0], $di['logger']->calls))->toBe($subscription ? [] : ['The usage of order #21 from module beta was not added to invoice #77: Meter offline']);
+})->with(['billed' => [false], 'paid by a gateway subscription' => [true]]);
 
 // The client's domain page shows what the renewal invoice will bill (WHMCS Recurring Amount), without storing anything.
 test('domainRenewal gives the next renewal of an active domain: 9 years at most, less the recurring promotion', function (string $period, int $years, float $price, float $discount, float $auto, bool $free, float $amount, bool $exemptInclusive = false, float $clientRate = 0.0): void {

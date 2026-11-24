@@ -705,7 +705,7 @@
     },
     {
         "file": "library/ClientFence/AppClient.php",
-        "done": "(client URLs never name the module); a service module declares its own (ServiceTypes::pageModule())."
+        "done": "(client URLs never name the module); any other module declares its own (ServiceTypes::pages())."
     },
     {
         "file": "modules/Servicehosting/Api/Client.php",
@@ -1205,11 +1205,11 @@
     },
     {
         "file": "library/ClientFence/AppClient.php",
-        "done": "// ClientFence: quote links (Invoice/Quotes.php).\n            'quote' => 'invoice',"
+        "done": "// ClientFence: quote links (Invoice/Quotes.php).\n        'quote' => 'invoice',"
     },
     {
         "file": "library/ClientFence/AppClient.php",
-        "done": "// ClientFence: the Network Status page (Support/NetworkIssues.php).\n            'network-status' => 'support',"
+        "done": "// ClientFence: the Network Status page (Support/NetworkIssues.php).\n        'network-status' => 'support',"
     },
     {
         "file": "modules/Support/Controller/Admin.php",
@@ -6641,7 +6641,7 @@
     },
     {
         "file": "library/ClientFence/Security/RateLimiter.php",
-        "done": "ClientFence core patch: service modules add their own policies (ServiceTypes::rateLimits()); the core's win."
+        "done": "ClientFence core patch: modules add their own policies (ServiceTypes::rateLimits()); the core's win."
     },
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig",
@@ -9277,7 +9277,7 @@
     },
     {
         "file": "modules/Invoice/Service.php",
-        "done": "ClientFence core patch: a service module that declares \"usage\" bills its service's usage on the renewal, through"
+        "done": "ClientFence core patch: every switched-on module that declares \"usage\" bills the order's usage on the renewal, through"
     },
     {
         "file": "modules/Invoice/Service.php",
