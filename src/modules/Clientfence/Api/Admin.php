@@ -1150,7 +1150,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         }
         $path = $result['admin_path'];
 
-        return ['admin_url' => $path === null ? null : rtrim(SYSTEM_URL, '/') . $path . '/clientfence/setup#store'];
+        // On the site the staff member is signed in to (ClientFence\Site).
+        return ['admin_url' => $path === null ? null : rtrim(\ClientFence\Site::current($this->getDi())->url, '/') . $path . '/clientfence/setup#store'];
     }
 
     /** The bell in the admin header: this staff member's newest notifications and the unread count. */

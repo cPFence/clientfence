@@ -239,6 +239,27 @@ test('guest identity and cart mutations require POST and a same-origin session n
     ['cart_set_currency', 'GET', 'session-token', rtrim(SYSTEM_URL, '/'), 405],
 ]);
 
+test('on another site of the portal, the origin and Referer checks expect that site', function (): void {
+    $di = createControllerDiWithRequest();
+    $di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop');
+    $di['session'] = Mockery::mock();
+    $di['session']->shouldReceive('get')->with('csrf_token')->andReturn('session-token');
+    $controller = new Client();
+    $controller->setDi($di);
+    (new ReflectionProperty(Client::class, 'apiConfig'))->setValue($controller, ['require_referrer_header' => true]);
+    $check = function (string $origin, string $referer) use ($di, $controller): bool {
+        $di['request'] = Request::create('/', 'POST', [], [], [], ['HTTP_ORIGIN' => $origin, 'HTTP_REFERER' => $referer]);
+        invokeControllerPrivate($controller, 'checkGuestAuthentication', ['guest', 'cart_add_item', ['CSRFToken' => 'session-token']]);
+
+        return invokeControllerPrivate($controller, 'checkHttpReferer');
+    };
+
+    expect($check('https://shop.example.test', 'https://shop.example.test/cart'))->toBeTrue()
+        ->and(fn () => $check(rtrim(SYSTEM_URL, '/'), 'https://shop.example.test/cart'))->toThrow(InformationException::class, 'Invalid request origin')
+        ->and(fn () => $check('https://foreign.example', 'https://shop.example.test/cart'))->toThrow(InformationException::class, 'Invalid request origin')
+        ->and(fn () => $check('https://shop.example.test', SYSTEM_URL . 'cart'))->toThrow(InformationException::class, 'Make sure request origin is https://shop.example.test/');
+});
+
 test('the API IP list applies to API key sign-ins and takes ranges', function (): void {
     $controller = new Client();
     (new ReflectionProperty(Client::class, 'apiConfig'))->setValue($controller, ['allowed_ips' => ['203.0.113.0/24']]);

@@ -201,11 +201,13 @@ class Client implements InjectionAwareInterface
         // snake oil: check request is from the same domain as FOSSBilling is installed if present
         $check_referer_header = isset($this->apiConfig['require_referrer_header']) && (bool) $this->apiConfig['require_referrer_header'];
         if ($check_referer_header) {
-            $url = strtolower(SYSTEM_URL);
+            // ClientFence core patch: the Referer must be on the request's site (ClientFence\Site).
+            $site = \ClientFence\Site::current($this->di)->url;
+            $url = strtolower($site);
             $referer = $this->di['request']->headers->get('Referer');
             $referer = is_string($referer) ? strtolower($referer) : null;
             if (!$referer || !str_starts_with($referer, $url)) {
-                throw new \ClientFence\InformationException('Invalid request. Make sure request origin is :from', [':from' => SYSTEM_URL], 1004);
+                throw new \ClientFence\InformationException('Invalid request. Make sure request origin is :from', [':from' => $site], 1004);
             }
         }
 
@@ -305,7 +307,8 @@ class Client implements InjectionAwareInterface
             throw new \ClientFence\InformationException('CSRF token invalid', null, 403);
         }
         $origin = $request->headers->get('Origin');
-        $expectedOrigin = \Symfony\Component\HttpFoundation\Request::create(SYSTEM_URL)->getSchemeAndHttpHost();
+        // ClientFence core patch: the Origin must be the request's site (ClientFence\Site).
+        $expectedOrigin = \ClientFence\Site::current($this->di)->origin();
         if (($origin !== null && strcasecmp($origin, $expectedOrigin) !== 0)
             || $request->headers->get('Sec-Fetch-Site') === 'cross-site') {
             throw new \ClientFence\InformationException('Invalid request origin', null, 403);

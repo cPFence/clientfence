@@ -93,7 +93,7 @@ class Payment_Adapter_PayU implements ClientFence\InjectionAwareInterface
         $service = $this->di['mod_service']('Invoice');
         $client = $this->di['db']->getExistingModelById('Client', (int) $invoice->client_id, 'Client not found');
         // Back to ipn.php, which records the result and then shows the invoice.
-        $back = SYSTEM_URL . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => (int) $invoice->id, 'invoice_hash' => $invoice->hash, 'redirect' => 1]);
+        $back = ClientFence\Site::current($this->di)->url . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => (int) $invoice->id, 'invoice_hash' => $invoice->hash, 'redirect' => 1]);
         $fields = [
             'key' => $key,
             // Unique per try (PayU refuses a txnid paid before), at most 25 characters; it names the invoice.

@@ -47,6 +47,7 @@ final class Migrations
         21 => 'm21InvoiceCustomFields',
         22 => 'm22Unused',
         23 => 'm23DnsSteps',
+        24 => 'm24PasskeySite',
     ];
 
     public static function latest(): int
@@ -392,5 +393,15 @@ final class Migrations
     private static function m23DnsSteps(\Pimple\Container $di): void
     {
         ModuleMigrations::apply($di, 'servicednshosting');
+    }
+
+    /** 24: client_passkey.site, the site a passkey was made on (ClientFence\Site key; NULL: the primary site). */
+    private static function m24PasskeySite(\Pimple\Container $di): void
+    {
+        $db = $di['dbal'];
+        $columns = array_map(static fn ($c): string => strtolower($c->getName()), $db->createSchemaManager()->listTableColumns('client_passkey'));
+        if (!in_array('site', $columns, true)) {
+            $db->executeStatement('ALTER TABLE `client_passkey` ADD COLUMN `site` varchar(100) DEFAULT NULL');
+        }
     }
 }

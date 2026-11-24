@@ -526,8 +526,8 @@ class Service implements InjectionAwareInterface
             'updated_at' => $model->updated_at,
             // ClientFence core patch: whether the staff member signs in with the authenticator app (Client/TwoFactor.php).
             'twofactor' => \ClientFence\Mod\Client\TwoFactor::isOn($this->di, 'staff', (int) $model->id),
-            // ClientFence core patch: how many passkeys the staff member signs in with (Client/Passkeys.php).
-            'passkeys' => \ClientFence\Mod\Client\Passkeys::count($this->di, 'staff', (int) $model->id),
+            // ClientFence core patch: how many passkeys the staff member signs in with, on every site (Client/Passkeys.php).
+            'passkeys' => \ClientFence\Mod\Client\Passkeys::count($this->di, 'staff', (int) $model->id, allSites: true),
         ];
 
         $data['groups'] = array_map(

@@ -235,7 +235,8 @@ class Service implements InjectionAwareInterface
             $icon_url = $value['icon_url'] ?? null;
             if ($icon_url) {
                 // ClientFence core patch: one slash between the site URL and /modules/... (it was //modules/...).
-                $iconPath = rtrim(SYSTEM_URL, '/') . '/' . ltrim((string) $icon_url, '/');
+                // ClientFence core patch: on the request's site (ClientFence\Site).
+                $iconPath = rtrim(\ClientFence\Site::current($this->di)->url, '/') . '/' . ltrim((string) $icon_url, '/');
             }
             $result[$key]['icon_url'] = $iconPath;
         }

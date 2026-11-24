@@ -65,7 +65,8 @@ class LegacyExtension
             $version = '';
         }
 
-        return SYSTEM_URL . 'modules/' . ucfirst($module) . "/assets/{$asset}?v=" . substr(hash('sha256', \ClientFence\Version::CLIENTFENCE . '/' . $version), 0, 10);
+        // ClientFence core patch: module assets load from the request's site (ClientFence\Site).
+        return \ClientFence\Site::current($this->di)->url . 'modules/' . ucfirst($module) . "/assets/{$asset}?v=" . substr(hash('sha256', \ClientFence\Version::CLIENTFENCE . '/' . $version), 0, 10);
     }
 
     #[AsTwigFilter('period_title', isSafe: ['html'])]

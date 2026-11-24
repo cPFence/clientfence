@@ -202,7 +202,8 @@ final class TwoFactor
      */
     public static function refusePasswordOnly(\Pimple\Container $di, int $clientId, string $kind, int $id): void
     {
-        if (Passkeys::on($di, 'client') && self::inScope($di, $clientId) && Passkeys::count($di, $kind, $id) > 0 && !self::hasSecondFactor($di, $kind, $id)) {
+        // A passkey of any site counts: signing in on another host must not drop the second factor.
+        if (Passkeys::on($di, 'client') && self::inScope($di, $clientId) && Passkeys::count($di, $kind, $id, allSites: true) > 0 && !self::hasSecondFactor($di, $kind, $id)) {
             throw new InformationException('Your account requires two-factor sign-in. Please sign in with your passkey.', null, 403);
         }
     }

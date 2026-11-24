@@ -355,7 +355,8 @@ class Service implements InjectionAwareInterface
             $theme = $this->isTheme(self::$adminThemeCache)
                 ? self::$adminThemeCache
                 : $default;
-            $url = SYSTEM_URL . "themes/{$theme}/";
+            // ClientFence core patch: theme files load from the request's site (ClientFence\Site).
+            $url = \ClientFence\Site::current($this->di)->url . "themes/{$theme}/";
 
             return ['code' => $theme, 'url' => $url];
         }
@@ -372,7 +373,8 @@ class Service implements InjectionAwareInterface
         if (!$this->isTheme($theme)) {
             $theme = $default;
         }
-        $url = SYSTEM_URL . "themes/{$theme}/";
+        // ClientFence core patch: the admin theme loads from the request's site (ClientFence\Site).
+        $url = \ClientFence\Site::current($this->di)->url . "themes/{$theme}/";
 
         return ['code' => $theme, 'url' => $url];
     }
@@ -490,10 +492,12 @@ class Service implements InjectionAwareInterface
             $ext = trim((string) $config['extends'], '/');
             $ext = str_replace('.', '', $ext);
 
-            $config['url'] = SYSTEM_URL . "themes/{$ext}/";
+            // ClientFence core patch: the parent theme loads from the request's site (ClientFence\Site).
+            $config['url'] = \ClientFence\Site::current($this->di)->url . "themes/{$ext}/";
             $paths[] = Path::join($this->getThemesPath(), $ext, 'html');
         } else {
-            $config['url'] = SYSTEM_URL . "themes/{$theme}/";
+            // ClientFence core patch: the theme loads from the request's site (ClientFence\Site).
+            $config['url'] = \ClientFence\Site::current($this->di)->url . "themes/{$theme}/";
         }
 
         // add installed modules paths

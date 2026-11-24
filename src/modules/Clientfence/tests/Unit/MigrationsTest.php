@@ -164,9 +164,10 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     $columns = static fn (string $table): array => array_map(static fn ($c): string => $c->getName(), array_values($db->createSchemaManager()->listTableColumns($table)));
     $details = ['country', 'asn', 'network', 'browser', 'session_id'];
 
-    // 21 adds the invoice's copy of the custom client fields shown on it.
-    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23])
+    // 21 adds the invoice's copy of the custom client fields shown on it; 24 each passkey's site.
+    expect(Migrations::apply($di))->toBe([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
         ->and($columns('client_order'))->toBe(['id', 'gateway_id'])
+        ->and($columns('client_passkey'))->toBe(['id', 'site'])
         ->and([$columns('pay_gateway'), $columns('client'), $columns('invoice')])->toBe([['id', 'gateway', 'position'], ['id', 'po_number', 'overdue_notices', 'separate_invoices', 'auto_charge', 'allow_sso', 'status_update'], ['id', 'po_number', 'buyer_custom']])
         ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('activity_admin_history'))->toBe(['id', 'admin_id', 'ip', 'created_at', ...$details])
@@ -179,7 +180,9 @@ test('migration 12 adds the sign-in details to both login histories, once', func
     (new ReflectionMethod(Migrations::class, 'm18GatewayOrderPoNumber'))->invoke(null, $di);
     (new ReflectionMethod(Migrations::class, 'm20OrderPaymentMethod'))->invoke(null, $di);
     (new ReflectionMethod(Migrations::class, 'm21InvoiceCustomFields'))->invoke(null, $di);
-    expect($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
+    (new ReflectionMethod(Migrations::class, 'm24PasskeySite'))->invoke(null, $di);
+    expect($columns('client_passkey'))->toBe(['id', 'site'])
+        ->and($columns('activity_client_history'))->toBe(['id', 'client_id', 'ip', 'created_at', 'user_id', ...$details])
         ->and($columns('invoice'))->toBe(['id', 'po_number', 'buyer_custom'])
         ->and($columns('client_order'))->toBe(['id', 'gateway_id']);
 });

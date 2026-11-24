@@ -49,7 +49,8 @@ class Tools
     {
         $link = trim((string) $link, '/');
 
-        return SYSTEM_URL . $link;
+        // ClientFence core patch: on the request's site (ClientFence\Site).
+        return Site::current($this->di)->url . $link;
     }
 
     /**

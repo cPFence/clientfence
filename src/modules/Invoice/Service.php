@@ -4217,9 +4217,12 @@ class Service implements InjectionAwareInterface
         }
 
         // ClientFence core patch: a logo on this site is read from its folder, also from cron, which has no DOCUMENT_ROOT.
-        $local = PATH_ROOT . '/' . substr($originalUrl, strlen(SYSTEM_URL));
-        if (str_starts_with($originalUrl, SYSTEM_URL) && $this->filesystem->exists($local)) {
-            $source = $local;
+        // On the portal URL or on the request's site (ClientFence\Site).
+        foreach ([SYSTEM_URL, \ClientFence\Site::current($this->di)->url] as $base) {
+            $local = PATH_ROOT . '/' . substr($originalUrl, strlen($base));
+            if (str_starts_with($originalUrl, $base) && $this->filesystem->exists($local)) {
+                $source = $local;
+            }
         }
         // prevent openbasedir error from preventing pdf creation when debug mode is enabled
         if (@!$this->filesystem->exists($source)) {

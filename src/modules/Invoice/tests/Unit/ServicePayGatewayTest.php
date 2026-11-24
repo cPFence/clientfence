@@ -547,6 +547,22 @@ test('gets payment adapter', function (): void {
     expect($result)->toBeInstanceOf($expected);
 });
 
+test('an invoice\'s payment notice goes to the request\'s site; the gateway address staff see stays on the portal URL', function (): void {
+    $service = new ServicePayGateway();
+    $di = container();
+    $di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop');
+    $service->setDi($di);
+    $gateway = new Model_PayGateway();
+    $gateway->loadBean(new Tests\Helpers\DummyBean());
+    $gateway->id = 3;
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 9;
+
+    expect($service->getCallbackUrl($gateway, $invoice))->toBe('https://shop.example.test/ipn.php?gateway_id=3&invoice_id=9')
+        ->and($service->getCallbackUrl($gateway))->toBe(SYSTEM_URL . 'ipn.php?gateway_id=3');
+});
+
 test('throws exception when payment gateway is not found', function (): void {
     $service = new ServicePayGateway();
     $payGatewayModel = new Model_PayGateway();

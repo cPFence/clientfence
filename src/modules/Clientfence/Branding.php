@@ -71,7 +71,7 @@ final class Branding
             'color' => $color,
             'custom' => $color !== self::DEFAULT_COLOR,
             'login_style' => in_array($style, self::LOGIN_STYLES, true) ? $style : 'dark',
-            'css_url' => $cssOk ? SYSTEM_URL . $css : null,
+            'css_url' => $cssOk ? \ClientFence\Site::current($di)->url . $css : null,
         ];
     }
 
@@ -326,7 +326,7 @@ final class Branding
         }
         self::setAsset($di, $kind, $path);
 
-        return SYSTEM_URL . $path;
+        return \ClientFence\Site::current($di)->url . $path;
     }
 
     public static function restoreAsset(\Pimple\Container $di, string $kind): ?string
@@ -337,7 +337,7 @@ final class Branding
         $path = self::ASSETS[$kind]['default'];
         self::setAsset($di, $kind, $path);
 
-        return $path === '' ? null : SYSTEM_URL . $path;
+        return $path === '' ? null : \ClientFence\Site::current($di)->url . $path;
     }
 
     private static function setAsset(\Pimple\Container $di, string $kind, string $path): void

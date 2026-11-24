@@ -272,21 +272,23 @@ class Service
             }
         }
 
+        // ClientFence core patch: the company's addresses are on the request's site (ClientFence\Site).
+        $site = \ClientFence\Site::current($this->di)->url;
         $logoUrl = $results['company_logo'] ?? null;
         if ($logoUrl !== null && !str_contains((string) $logoUrl, 'http')) {
-            $logoUrl = SYSTEM_URL . $logoUrl;
+            $logoUrl = $site . $logoUrl;
         }
 
         $logoUrlDark = $results['company_logo_dark'] ?? null;
         if ($logoUrlDark !== null && !str_contains((string) $logoUrlDark, 'http')) {
-            $logoUrlDark = SYSTEM_URL . $logoUrlDark;
+            $logoUrlDark = $site . $logoUrlDark;
         }
         $logoUrlDark ??= $logoUrl;
 
         // ClientFence core patch (CF-138): the logo emails show (mail apps that recolor emails dark ignore dark mode CSS), else the logo.
         $logoUrlEmail = (string) ($results['company_logo_email'] ?? '') !== '' ? (string) $results['company_logo_email'] : null;
         if ($logoUrlEmail !== null && !str_contains($logoUrlEmail, 'http')) {
-            $logoUrlEmail = SYSTEM_URL . $logoUrlEmail;
+            $logoUrlEmail = $site . $logoUrlEmail;
         }
         $logoUrlEmail ??= $logoUrl;
         // ClientFence core patch: mail apps that omit SVG use the company name in the email header.
@@ -296,7 +298,7 @@ class Service
 
         $faviconUrl = $results['company_favicon'] ?? null;
         if ($faviconUrl !== null && !str_contains((string) $faviconUrl, 'http')) {
-            $faviconUrl = SYSTEM_URL . $faviconUrl;
+            $faviconUrl = $site . $faviconUrl;
         }
 
         $email = \ClientFence\Mod\Clientfence\Branding::email($this->di);
@@ -304,7 +306,7 @@ class Service
         // Returned raw: output contexts escape on render, so escaping here
         // double-escapes in templates and corrupts stored snapshots.
         return [
-            'www' => SYSTEM_URL,
+            'www' => $site,
             'name' => isset($results['company_name']) ? (string) $results['company_name'] : null,
             'email' => isset($results['company_email']) ? (string) $results['company_email'] : null,
             'tel' => isset($results['company_tel']) ? (string) $results['company_tel'] : null,

@@ -69,6 +69,7 @@ $paths = [
     'library/ClientFence/Http/PaymentReturn.php',
     'library/ClientFence/IpSeats.php',
     'library/ClientFence/SecretConfig.php',
+    'library/ClientFence/Site.php',
     'library/ClientFence/UpdatePatcher/shipped-email-templates.php',
     'library/Server/PackageExistsException.php',
     'clientfence-security-headers.php',

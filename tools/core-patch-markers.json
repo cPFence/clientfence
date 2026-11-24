@@ -6345,7 +6345,7 @@
     },
     {
         "file": "modules/Staff/Service.php",
-        "done": "ClientFence core patch: how many passkeys the staff member signs in with (Client/Passkeys.php)."
+        "done": "ClientFence core patch: how many passkeys the staff member signs in with, on every site (Client/Passkeys.php)."
     },
     {
         "file": "modules/Staff/Service.php",
@@ -9946,5 +9946,89 @@
     {
         "file": "modules/System/templates/admin/mod_system_settings.html.twig",
         "done": "ClientFence core patch (forum #181): the signature, legal texts and notes in other languages (i18n::text())."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: links are built on the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: the site this request is for (ClientFence\\Site); the console gets the primary site."
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: paths on the request's site (Site)."
+    },
+    {
+        "file": "library/ClientFence/App.php",
+        "done": "ClientFence core patch: the admin path on the request's site (Site)."
+    },
+    {
+        "file": "library/ClientFence/Tools.php",
+        "done": "ClientFence core patch: on the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "ClientFence core patch: theme assets load from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "ClientFence core patch: core assets load from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/LegacyExtension.php",
+        "done": "ClientFence core patch: module assets load from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: the Referer must be on the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Api/Controller/Client.php",
+        "done": "ClientFence core patch: the Origin must be the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: on the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "On the portal URL or on the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: an invoice's payment notice goes to the request's site (ClientFence\\Site); the gateway's own address shown to staff stays on the portal URL."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: the payer comes back to the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/System/Service.php",
+        "done": "ClientFence core patch: the company's addresses are on the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: theme files load from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: the admin theme loads from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: the parent theme loads from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "modules/Theme/Service.php",
+        "done": "ClientFence core patch: the theme loads from the request's site (ClientFence\\Site)."
+    },
+    {
+        "file": "install/sql/content.sql",
+        "done": "ClientFence core patch: fresh installs include the passkey site migration."
+    },
+    {
+        "file": "install/sql/structure.sql",
+        "done": "ClientFence core patch: each passkey's site, the ClientFence\\Site key (NULL is the primary site)."
     }
 ]

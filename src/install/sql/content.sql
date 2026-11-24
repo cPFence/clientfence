@@ -339,7 +339,8 @@ VALUES
 	-- ClientFence core patch: fresh installs include the passkeys, ID documents, API request log and low balance alert migrations.
 	-- ClientFence core patch: fresh installs include the invoice custom client fields migration.
 	-- ClientFence core patch: fresh installs include the DNS hosting migration.
-	(33,'clientfence_patch','23',0,NULL,NULL,NOW(),NOW()),
+	-- ClientFence core patch: fresh installs include the passkey site migration.
+	(33,'clientfence_patch','24',0,NULL,NULL,NOW(),NOW()),
 	(34,'clientfence_setup','pending',0,NULL,NULL,NOW(),NOW()),
 	(35,'invoice_series_paid','CF',0,NULL,NULL,NOW(),NOW()),
 	(36,'migrations_servicednshosting','1',0,NULL,NULL,NOW(),NOW());

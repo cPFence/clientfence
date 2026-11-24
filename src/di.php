@@ -198,7 +198,8 @@ $di['pager'] = function () use ($di) {
 $di['url'] = function () use ($di) {
     $url = new \ClientFence\Url();
     $url->setDi($di);
-    $url->setBaseUri(SYSTEM_URL);
+    // ClientFence core patch: links are built on the request's site (ClientFence\Site).
+    $url->setBaseUri($di['site']->url);
 
     return $url;
 };
@@ -234,6 +235,9 @@ $di['mod_service'] = $di->protect(fn ($mod, $sub = '') => $di['mod']($mod)->getS
 $di['mod_config'] = $di->protect(fn ($name) => $di['mod']($name)->getConfig());
 
 $di['cookie_queue'] = fn (): ClientFence\Http\CookieQueue => new ClientFence\Http\CookieQueue();
+
+// ClientFence core patch: the site this request is for (ClientFence\Site); the console gets the primary site.
+$di['site'] = static fn (): ClientFence\Site => ClientFence\Site::resolve($di, Environment::isCLI() ? null : $di['request']);
 
 // ClientFence core patch: values worked out once per request (ClientFence\RequestCache).
 $di['request_cache'] = static fn (): ArrayObject => new ArrayObject();

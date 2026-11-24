@@ -461,7 +461,7 @@ class Payment_Adapter_Mollie implements ClientFence\InjectionAwareInterface
             'amount' => $this->amount($service->getBalanceDue($invoice), (string) $invoice->currency),
             'description' => mb_substr(__trans('Invoice :number', [':number' => $service->toApiArray($invoice)['serie_nr']]), 0, 255),
             'metadata' => ['clientfence' => $purpose, 'invoice_id' => (int) $invoice->id, 'client_id' => (int) $invoice->client_id, 'site' => INSTANCE_ID],
-        ] + (self::reachable(SYSTEM_URL) ? ['webhookUrl' => SYSTEM_URL . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => (int) $invoice->id])] : []);
+        ] + (self::reachable($site = ClientFence\Site::current($this->di)->url) ? ['webhookUrl' => $site . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => (int) $invoice->id])] : []);
     }
 
     /** Whether Mollie can call this address: it refuses a webhook on localhost, .localhost or a private IP (the return then records the payment). */

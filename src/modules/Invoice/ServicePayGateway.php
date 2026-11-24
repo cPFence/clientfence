@@ -682,7 +682,8 @@ class ServicePayGateway implements InjectionAwareInterface
             $p['invoice_id'] = $model->id;
         }
 
-        return SYSTEM_URL . 'ipn.php?' . http_build_query($p);
+        // ClientFence core patch: an invoice's payment notice goes to the request's site (ClientFence\Site); the gateway's own address shown to staff stays on the portal URL.
+        return ($model instanceof \Model_Invoice ? \ClientFence\Site::current($this->di)->url : SYSTEM_URL) . 'ipn.php?' . http_build_query($p);
     }
 
     /**
@@ -727,6 +728,7 @@ class ServicePayGateway implements InjectionAwareInterface
             $p['redirect'] = 1;
         }
 
-        return SYSTEM_URL . 'ipn.php?' . http_build_query($p);
+        // ClientFence core patch: the payer comes back to the request's site (ClientFence\Site).
+        return \ClientFence\Site::current($this->di)->url . 'ipn.php?' . http_build_query($p);
     }
 }

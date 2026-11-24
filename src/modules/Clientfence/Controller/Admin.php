@@ -138,7 +138,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
                 'store_mode' => (string) $store['store_mode'],
                 'store_testers_group' => (string) $store['store_testers_group'],
                 'groups' => $db->fetchAllKeyValue('SELECT id, title FROM client_group ORDER BY title'),
-                'site_url' => rtrim(SYSTEM_URL, '/'),
+                'site_url' => rtrim(\ClientFence\Site::current($di)->url, '/'),
                 'admin_path' => (string) \ClientFence\Config::getProperty('admin_area_prefix', '/admin'),
                 'admin_path_default' => Health::isDefaultAdminPath((string) \ClientFence\Config::getProperty('admin_area_prefix', '/admin')),
                 'products' => (int) $db->fetchOne('SELECT COUNT(*) FROM product WHERE is_addon = 0'),

@@ -205,7 +205,8 @@ class ClientFenceExtension
         $globals = $env->getGlobals();
         $themeCode = $globals['current_theme'] ?? ($globals['theme']['code'] ?? null);
 
-        return SYSTEM_URL . 'themes/' . $themeCode . '/assets/' . $asset;
+        // ClientFence core patch: theme assets load from the request's site (ClientFence\Site).
+        return \ClientFence\Site::current($this->di)->url . 'themes/' . $themeCode . '/assets/' . $asset;
     }
 
     #[AsTwigFilter('public_asset_url', isSafe: ['html'])]
@@ -215,7 +216,8 @@ class ClientFenceExtension
             return '';
         }
 
-        return SYSTEM_URL . 'public/assets/' . ltrim($asset, '/');
+        // ClientFence core patch: core assets load from the request's site (ClientFence\Site).
+        return \ClientFence\Site::current($this->di)->url . 'public/assets/' . ltrim($asset, '/');
     }
 
     #[AsTwigFilter('daysleft')]

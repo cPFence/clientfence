@@ -878,7 +878,7 @@ final class Users
 
         return [
             'owner_twofactor' => TwoFactor::isOn($di, 'client', $clientId),
-            'owner_passkeys' => Passkeys::count($di, 'client', $clientId),
+            'owner_passkeys' => Passkeys::count($di, 'client', $clientId, allSites: true),
             'owner_google' => Google::linkOf($di, 'client', $clientId),
             'owner_own_password' => Google::ownPassword($di, $clientId),
             'users' => self::listFor($di, $clientId),
@@ -1122,7 +1122,7 @@ final class Users
             'last_login_at' => $r['account_login_at'],
             'created_at' => $r['created_at'],
             'twofactor' => TwoFactor::isOn($di, 'user', (int) $r['id']),
-            'passkeys' => Passkeys::count($di, 'user', (int) $r['id']),
+            'passkeys' => Passkeys::count($di, 'user', (int) $r['id'], allSites: true),
             'google' => Google::linkOf($di, 'user', (int) $r['id']) !== null,
         ], $rows);
     }

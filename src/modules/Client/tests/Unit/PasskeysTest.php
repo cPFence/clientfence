@@ -26,7 +26,7 @@ final class PasskeysTestWorld
         $world = $this;
         $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
         $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)');
-        $db->executeStatement('CREATE TABLE client_passkey (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, subject_id INTEGER NOT NULL, credential_id TEXT NOT NULL UNIQUE, public_key TEXT NOT NULL, alg INTEGER NOT NULL, sign_count INTEGER NOT NULL DEFAULT 0, name TEXT NOT NULL, user_handle TEXT NOT NULL, created_at TEXT NOT NULL, last_used_at TEXT)');
+        $db->executeStatement('CREATE TABLE client_passkey (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, subject_id INTEGER NOT NULL, credential_id TEXT NOT NULL UNIQUE, public_key TEXT NOT NULL, alg INTEGER NOT NULL, sign_count INTEGER NOT NULL DEFAULT 0, name TEXT NOT NULL, user_handle TEXT NOT NULL, created_at TEXT NOT NULL, last_used_at TEXT, site TEXT)');
         foreach (['client', 'client_user', 'admin'] as $table) {
             $db->executeStatement("CREATE TABLE {$table} (id INTEGER PRIMARY KEY, pass TEXT, email TEXT, first_name TEXT, last_name TEXT, lang TEXT)");
         }
@@ -138,9 +138,9 @@ function passkeyKeys(): array
 function passkeyCreated(PasskeysTestWorld $world, string $kind, int $id, string $credentialId, string $keyName = 'ec', array $override = []): array
 {
     $options = Passkeys::createOptions($world->di, $kind, $id, ['password' => 'right'], '198.51.100.1');
-    $clientData = json_encode(['type' => 'webauthn.create', 'challenge' => $options['challenge'], 'origin' => Passkeys::origin()], JSON_UNESCAPED_SLASHES);
+    $clientData = json_encode(['type' => 'webauthn.create', 'challenge' => $options['challenge'], 'origin' => Passkeys::origin($world->di)], JSON_UNESCAPED_SLASHES);
     // rpIdHash, flags UP + UV + AT, sign count, AAGUID, the id's length, the id, then the COSE key (not read).
-    $authData = hash('sha256', Passkeys::rpId(), true) . chr(0x45) . pack('N', 0) . str_repeat("\0", 16) . pack('n', strlen($credentialId)) . $credentialId . "\xa5cose";
+    $authData = hash('sha256', Passkeys::rpId($world->di), true) . chr(0x45) . pack('N', 0) . str_repeat("\0", 16) . pack('n', strlen($credentialId)) . $credentialId . "\xa5cose";
     $spki = base64_decode((string) preg_replace('/-----[^-]+-----|\s/', '', openssl_pkey_get_details(passkeyKeys()[$keyName])['key']));
 
     return $override + [
@@ -161,8 +161,8 @@ function passkeyAdd(PasskeysTestWorld $world, string $kind, int $id, string $cre
 function passkeyAnswer(PasskeysTestWorld $world, string $credentialId, array $o = []): array
 {
     $options = Passkeys::signInOptions($world->di, $o['area'] ?? 'client');
-    $clientData = json_encode(['type' => $o['type'] ?? 'webauthn.get', 'challenge' => $o['challenge'] ?? $options['challenge'], 'origin' => $o['origin'] ?? Passkeys::origin()], JSON_UNESCAPED_SLASHES);
-    $authData = ($o['rp'] ?? hash('sha256', Passkeys::rpId(), true)) . chr($o['flags'] ?? 0x05) . pack('N', $o['count'] ?? 0);
+    $clientData = json_encode(['type' => $o['type'] ?? 'webauthn.get', 'challenge' => $o['challenge'] ?? $options['challenge'], 'origin' => $o['origin'] ?? Passkeys::origin($world->di)], JSON_UNESCAPED_SLASHES);
+    $authData = ($o['rp'] ?? hash('sha256', Passkeys::rpId($world->di), true)) . chr($o['flags'] ?? 0x05) . pack('N', $o['count'] ?? 0);
     openssl_sign($authData . hash('sha256', $clientData, true), $signature, passkeyKeys()[$o['key'] ?? 'ec'], OPENSSL_ALGO_SHA256);
 
     return ['id' => $o['id'] ?? Passkeys::b64($credentialId), 'clientDataJSON' => Passkeys::b64($clientData), 'authenticatorData' => Passkeys::b64($authData), 'signature' => Passkeys::b64($signature), 'userHandle' => ''];
@@ -235,6 +235,74 @@ test('a passkey answer that does not fit is refused and changes nothing', functi
     'an unknown passkey' => [['id' => 'bm90LWtub3du'], 'not set up for this sign-in'],
     'a client passkey on the staff sign-in' => [['area' => 'staff'], 'not set up for this sign-in'],
 ]);
+
+test('on another site of the portal, passkeys are made for that site and only its answers sign in', function (): void {
+    $world = new PasskeysTestWorld();
+    $portal = ['origin' => Passkeys::origin($world->di), 'rp' => hash('sha256', Passkeys::rpId($world->di), true)];
+    $world->di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop/shop');
+    passkeyAdd($world, 'client', 7, 'cred-client');
+
+    expect(Passkeys::signInOptions($world->di, 'client')['rpId'])->toBe('shop.example.test')
+        ->and(Passkeys::origin($world->di))->toBe('https://shop.example.test')
+        ->and(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-client', ['origin' => $portal['origin']])))->toThrow(InformationException::class, 'could not be checked')
+        ->and(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-client', ['rp' => $portal['rp']])))->toThrow(InformationException::class, 'could not be checked')
+        ->and(Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-client')))->toBe(['client', 7]);
+});
+
+test('a passkey works only on the site it was made on: another site does not list, exclude, accept or count it', function (): void {
+    $world = new PasskeysTestWorld();
+    $shop = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop/shop');
+    $portal = passkeyAdd($world, 'client', 7, 'cred-portal');
+    passkeyAdd($world, 'staff', 1, 'cred-staff-portal');
+    $world->di['site'] = $shop;
+    $own = passkeyAdd($world, 'client', 7, 'cred-shop');
+    $onShop = [
+        Passkeys::count($world->di, 'client', 7),
+        array_column(Passkeys::listFor($world->di, 'client', 7)['passkeys'], 'id'),
+        array_column(Passkeys::createOptions($world->di, 'client', 7, ['password' => 'right'], '198.51.100.1')['excludeCredentials'], 'id'),
+        Passkeys::count($world->di, 'staff', 1),
+    ];
+
+    expect([$world->row('cred-portal')['site'], $world->row('cred-shop')['site']])->toBe([null, 'shop/shop'])
+        ->and($onShop)->toBe([1, [$own['id']], [Passkeys::b64('cred-shop')], 0])
+        ->and(Passkeys::count($world->di, 'client', 7, allSites: true))->toBe(2)
+        ->and(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-portal')))->toThrow(InformationException::class, 'not set up for this sign-in')
+        ->and(fn () => Passkeys::verifySignIn($world->di, 'staff', passkeyAnswer($world, 'cred-staff-portal', ['area' => 'staff'])))->toThrow(InformationException::class, 'not set up for this sign-in')
+        ->and(fn () => Passkeys::rename($world->di, 'client', 7, $portal['id'], 'Mine'))->toThrow(InformationException::class, 'Passkey not found.')
+        ->and(fn () => Passkeys::remove($world->di, 'client', 7, 7, $portal['id'], ['password' => 'right'], '198.51.100.1'))->toThrow(InformationException::class, 'Passkey not found.')
+        ->and(Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-shop')))->toBe(['client', 7]);
+
+    // And the reverse: the primary site does not see the passkey made on the other one.
+    unset($world->di['site']);
+
+    expect(Passkeys::count($world->di, 'client', 7))->toBe(1)
+        ->and(array_column(Passkeys::listFor($world->di, 'client', 7)['passkeys'], 'id'))->toBe([$portal['id']])
+        ->and(fn () => Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-shop')))->toThrow(InformationException::class, 'not set up for this sign-in')
+        ->and(fn () => Passkeys::rename($world->di, 'client', 7, $own['id'], 'Mine'))->toThrow(InformationException::class, 'Passkey not found.')
+        ->and(Passkeys::verifySignIn($world->di, 'client', passkeyAnswer($world, 'cred-portal')))->toBe(['client', 7])
+        ->and(Passkeys::verifySignIn($world->di, 'staff', passkeyAnswer($world, 'cred-staff-portal', ['area' => 'staff'])))->toBe(['staff', 1])
+        ->and($world->row('cred-shop')['name'])->not->toBe('Mine');
+});
+
+test('with two-factor sign-in required, a passkey on another site still refuses the password alone', function (): void {
+    $world = new PasskeysTestWorld();
+    $world->db->update('mod_clientfence_state', ['value' => json_encode(['passkeys' => 'both', 'twofactor' => 'all'])], ['name' => SignInSecurity::STATE]);
+    passkeyAdd($world, 'client', 7, 'cred-portal');
+
+    // Not on the primary site, nor on another one: there the password would open a session that enrolls a new factor.
+    expect(fn () => TwoFactor::challenge($world->di, 7, null))->toThrow(InformationException::class, 'sign in with your passkey');
+    $world->di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop/shop');
+    expect(fn () => TwoFactor::challenge($world->di, 7, null))->toThrow(InformationException::class, 'sign in with your passkey');
+});
+
+test('before Finalize update adds the site column, a passkey sign-in is refused with the password hint, not a database error', function (): void {
+    $world = new PasskeysTestWorld();
+    passkeyAdd($world, 'client', 7, 'cred-client');
+    $answer = passkeyAnswer($world, 'cred-client');
+    $world->db->executeStatement('ALTER TABLE client_passkey DROP COLUMN site');
+
+    expect(fn () => Passkeys::verifySignIn($world->di, 'client', $answer))->toThrow(InformationException::class, 'sign in with your password');
+});
 
 test('a challenge works once and for five minutes', function (): void {
     $world = new PasskeysTestWorld();
