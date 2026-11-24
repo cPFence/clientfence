@@ -1786,6 +1786,16 @@ class Service implements InjectionAwareInterface
         // ClientFence: checked before anything changes (a wrong date saves nothing).
         $this->refuseOverrideInMeta($data);
         $overrideMeta = array_key_exists(self::META_AUTO_SUSPEND_OVERRIDE, $data) ? $this->autoSuspendOverrideMeta($data) : null;
+        // Compared as updatePeriod() writes it ("1m" stored by an older order is "1M"), so a save that keeps the cycle, or
+        // leaves it out, never counts as a change; an unreadable stored cycle stays as it is.
+        $cycle = function (string $period): string {
+            try {
+                return $period !== '' ? $this->di['period']($period)->getCode() : '';
+            } catch (\ClientFence\Exception) {
+                return $period;
+            }
+        };
+        $oldPeriod = $cycle((string) $this->orderPeriod($order));
         $this->updatePeriod($order, $data['period'] ?? null);
 
         $created_at = $data['created_at'] ?? '';
@@ -1902,16 +1912,31 @@ class Service implements InjectionAwareInterface
 
         // A recalculated price must not keep charging the old gateway subscription (as Order\Upgrades::staffMove()).
         $priceNote = '';
+        // What either change stopped: noted once, after both.
+        $stopped = '';
         $newPrice = round((float) $this->orderPrice($order), 2);
         if ($recalculated !== null && $newPrice !== $oldPrice) {
             $model = $this->di['db']->getExistingModelById('ClientOrder', $orderId);
-            $priceNote = sprintf('Price recalculated by staff: %s to %s %s', number_format($oldPrice, 2, '.', ''), number_format($newPrice, 2, '.', ''), $this->orderCurrency($order))
-                . \ClientFence\Mod\Order\Upgrades::cancelSubscriptions($this->di, $model);
+            $priceNote = sprintf('Price recalculated by staff: %s to %s %s', number_format($oldPrice, 2, '.', ''), number_format($newPrice, 2, '.', ''), $this->orderCurrency($order));
+            $stopped = \ClientFence\Mod\Order\Upgrades::cancelSubscriptions($this->di, $model);
             // A subscription the gateway cannot cancel (PayPal without its API keys) would go on charging the old price.
             if ($this->di['mod_service']('Invoice', 'Subscription')->hasGatewaySubscriptionForOrder($model)) {
                 throw new InformationException('The gateway subscription of this service could not be canceled, so the price was not changed. Cancel it at the gateway first.');
             }
         }
+        // ClientFence core patch: a changed billing cycle stops it too, as Recalculate on Save; a price typed by hand keeps it (as bulk prices).
+        $newPeriod = $cycle((string) $this->orderPeriod($order));
+        if ($newPeriod !== $oldPeriod) {
+            $model = $this->di['db']->getExistingModelById('ClientOrder', $orderId);
+            $stopped .= \ClientFence\Mod\Order\Upgrades::cancelSubscriptions($this->di, $model);
+            if ($this->di['mod_service']('Invoice', 'Subscription')->hasGatewaySubscriptionForOrder($model)) {
+                throw new InformationException('The gateway subscription of this service could not be canceled, so the billing cycle was not changed. Cancel it at the gateway first.');
+            }
+            if ($stopped !== '') {
+                $priceNote .= ($priceNote !== '' ? '; ' : '') . sprintf('Billing cycle changed by staff: %s to %s', $oldPeriod !== '' ? $oldPeriod : 'none', $newPeriod !== '' ? $newPeriod : 'none');
+            }
+        }
+        $priceNote .= $stopped;
 
         $this->updateOrderMeta($order, $data['meta'] ?? null);
         if ($overrideMeta !== null) {

@@ -2298,6 +2298,61 @@ test('Edit Order refuses a recalculated price while a gateway subscription it ca
         ->and($notes)->toBe([]);
 });
 
+test('Edit Order with a changed billing cycle stops the gateway subscription and notes it; a price typed by hand or the same cycle keeps it', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()->andReturn(1);
+    $di['services']['invoice_subscription']->shouldReceive('hasGatewaySubscriptionForOrder')->once()->andReturn(false);
+    $notes = [];
+    $service = upgradesOrderService($di, $notes);
+
+    // The same cycle with a typed price: the subscription stays (cancelForOrder runs once, below).
+    $service->updateOrder(upgradesOrder($di, 1), ['period' => '1M', 'price' => 9]);
+    $service->updateOrder(upgradesOrder($di, 1), ['period' => '1Y']);
+
+    expect($db->fetchOne('SELECT period FROM client_order WHERE id = 1'))->toBe('1Y')
+        ->and($notes)->toBe(['Billing cycle changed by staff: 1M to 1Y (automatic payment by subscription at the old price stopped; client emailed)']);
+});
+
+test('Edit Order keeps the subscription of an order stored with a lower-case cycle ("1m") when the cycle stays', function (): void {
+    $db = upgradesDb();
+    $db->update('client_order', ['period' => '1m'], ['id' => 1]);
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->never();
+    $notes = [];
+
+    upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['period' => '1M', 'title' => 'Renamed']);
+    // A save without a period (the staff API) leaves the stored "1m": no change either.
+    $db->update('client_order', ['period' => '1m'], ['id' => 1]);
+    upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['title' => 'Renamed again']);
+    expect($notes)->toBe([]);
+});
+
+test('Edit Order with Recalculate on Save and a changed cycle notes both, with one stopped subscription and one email', function (): void {
+    $db = upgradesDb();
+    $db->update('client_order', ['price' => 7.5], ['id' => 1]);
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->twice()->andReturn(1, 0);
+    $di['services']['invoice_subscription']->shouldReceive('hasGatewaySubscriptionForOrder')->twice()->andReturn(false);
+    $notes = [];
+
+    upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['recalculate' => 1, 'period' => '1Y']);
+    expect($notes)->toBe(['Price recalculated by staff: 7.50 to 48.00 USD; Billing cycle changed by staff: 1M to 1Y (automatic payment by subscription at the old price stopped; client emailed)'])
+        ->and($di['services']['email']->sent)->toHaveCount(1);
+});
+
+test('Edit Order refuses a changed billing cycle while a gateway subscription it cannot cancel would charge the old one', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldReceive('cancelForOrder')->once()->andReturn(0);
+    $di['services']['invoice_subscription']->shouldReceive('hasGatewaySubscriptionForOrder')->once()->andReturn(true);
+    $notes = [];
+
+    expect(fn () => upgradesOrderService($di, $notes)->updateOrder(upgradesOrder($di, 1), ['period' => '1Y']))->toThrow(InformationException::class, 'so the billing cycle was not changed')
+        ->and($db->fetchOne('SELECT period FROM client_order WHERE id = 1'))->toBe('1M')
+        ->and($notes)->toBe([]);
+});
+
 test('Edit Order saves the service payment method: an enabled gateway that takes its currency, or empty for the client\'s choice', function (): void {
     $db = upgradesDb();
     $db->executeStatement('CREATE TABLE pay_gateway (id INTEGER PRIMARY KEY, enabled INTEGER, accepted_currencies TEXT, allow_single INTEGER DEFAULT 1)');
