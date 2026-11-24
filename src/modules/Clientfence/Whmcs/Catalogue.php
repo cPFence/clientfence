@@ -21,7 +21,8 @@ use Doctrine\DBAL\Connection;
  * price stays as it was.
  *
  * Products: a server module ClientFence has (cPanel, DirectAdmin, Plesk, CWP, Hestia, Enhance)
- * makes a hosting product on the first server of its WHMCS server group, with a hosting plan
+ * makes a hosting product on the first server of its WHMCS server group (no group: WHMCS's default
+ * server of its module, else the first imported one), with a hosting plan
  * named after the WHMCS package; WHMCS's Licensing makes a licence product; any other module a
  * custom product (a warning names the module). Product custom fields become the product's order
  * form (fields named whmcs_field_<id>, which the services step fills).
@@ -337,9 +338,13 @@ final class Catalogue
 
             return ['custom', []];
         }
-        $serverId = $this->groupServer((int) ($row['servergroup'] ?? 0), $manager, $title);
+        $groupId = (int) ($row['servergroup'] ?? 0);
+        // WHMCS provisions a product without a server group on its module's default server (CF-260).
+        $serverId = $groupId > 0 ? $this->groupServer($groupId, $manager, $title) : $this->defaultServer($module, $manager, $title);
         if ($serverId === null) {
-            $this->warn(sprintf('Product "%s" (%s) has no imported server in its WHMCS server group: it is a custom product; make it a hosting product once its server is set up.', $title, $module));
+            $this->warn(sprintf($groupId > 0
+                ? 'Product "%s" (%s) has no imported server in its WHMCS server group: it is a custom product; make it a hosting product once its server is set up.'
+                : 'Product "%s" (%s) has no WHMCS server group and no imported server of its module: it is a custom product; make it a hosting product once its server is set up.', $title, $module));
 
             return ['custom', []];
         }
@@ -389,6 +394,36 @@ final class Catalogue
         }
         if (count($servers) > 1) {
             $this->warn(sprintf('Product "%s": its WHMCS server group has %d servers; ClientFence places new accounts on the first one.', $title, count($servers)));
+        }
+
+        return $servers[0] ?? null;
+    }
+
+    /**
+     * The server of a product without a WHMCS server group: WHMCS's default server of its module
+     * (tblservers.active = 1, not disabled: the one starred in its server list), else the first
+     * imported server with the manager, or null.
+     */
+    private function defaultServer(string $module, string $manager, string $title): ?int
+    {
+        if (!$this->source->hasTable('tblservers')) {
+            return null;
+        }
+        $servers = [];
+        foreach ($this->source->rows('SELECT * FROM tblservers ORDER BY id') as $server) {
+            $serverId = $this->map->get('server', (int) $server['id']);
+            if ($serverId === null || $this->db->fetchOne('SELECT manager FROM service_hosting_server WHERE id = ?', [$serverId]) !== $manager) {
+                continue;
+            }
+            if (strtolower(trim((string) ($server['type'] ?? ''))) === $module && (int) ($server['active'] ?? 0) === 1 && (int) ($server['disabled'] ?? 0) === 0) {
+                return $serverId;
+            }
+            // Servers disabled in WHMCS go after the enabled ones: new accounts go to a server that takes them.
+            $servers[(int) ($server['disabled'] ?? 0) === 0 ? 0 : 1][] = $serverId;
+        }
+        $servers = array_merge($servers[0] ?? [], $servers[1] ?? []);
+        if (count($servers) > 1) {
+            $this->warn(sprintf('Product "%s" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its %d servers.', $title, count($servers)));
         }
 
         return $servers[0] ?? null;

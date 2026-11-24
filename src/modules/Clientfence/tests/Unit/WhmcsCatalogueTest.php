@@ -345,6 +345,44 @@ test('without the WHMCS key a server keeps no password; a second run imports not
         ->and($second->warnings())->toBe([]);
 });
 
+test('a product without a WHMCS server group is hosting on its module\'s default server, else the first one (CF-260)', function (): void {
+    $source = whmcsCatalogueSource();
+    $server = static fn (int $id, string $name, string $type, int $active, int $disabled = 0) => $source->insert('tblservers', ['id' => $id, 'name' => $name, 'ipaddress' => '203.0.113.' . $id, 'type' => $type, 'username' => 'u', 'password' => '', 'accesshash' => 'token', 'secure' => 'on', 'port' => '', 'active' => $active, 'disabled' => $disabled]);
+    // Enhance: the default (active = 1) is the second one; a disabled "default" is passed over.
+    $server(10, 'enh1', 'enhance', 0);
+    $server(11, 'enh2', 'enhance', 1);
+    $server(12, 'enh-old', 'enhance', 1, 1);
+    // Plesk: two servers, none the default; the first is disabled in WHMCS, so the enabled one is taken.
+    $server(20, 'plesk2', 'plesk', 0, 1);
+    $server(21, 'plesk1', 'plesk', 0);
+    // cPanel: the default is cp2, but a product in a server group stays on its group's server.
+    $source->update('tblservers', ['active' => 0], ['id' => 1]);
+    $server(30, 'cp2', 'cpanel', 1);
+    $product = static fn (int $id, string $name, string $module) => $source->insert('tblproducts', ['id' => $id, 'type' => 'hostingaccount', 'gid' => 1, 'name' => $name, 'paytype' => 'free', 'servertype' => $module, 'servergroup' => 0, 'configoption1' => $name . '_pkg']);
+    $product(10, 'Enhance plan', 'enhance');
+    $product(11, 'Plesk plan', 'plesk');
+    $product(12, 'DA plan', 'directadmin');
+    $product(13, 'cPanel no group', 'cpanel');
+
+    $target = whmcsCatalogueTarget();
+    $catalogue = whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+    $serverOf = static fn (string $title): ?int => json_decode((string) whmcsProductByTitle($target, $title)['config'], true)['server_id'] ?? null;
+    $imported = static fn (string $name): int => (int) $target->fetchOne('SELECT id FROM service_hosting_server WHERE name = ?', [$name]);
+
+    expect(whmcsProductByTitle($target, 'Enhance plan')['type'])->toBe('hosting')
+        ->and($serverOf('Enhance plan'))->toBe($imported('enh2'))
+        ->and(whmcsProductByTitle($target, 'Plesk plan')['type'])->toBe('hosting')
+        ->and($serverOf('Plesk plan'))->toBe($imported('plesk1'))
+        ->and($serverOf('cPanel no group'))->toBe($imported('cp2'))
+        ->and($serverOf('Starter'))->toBe($imported('cp1'))
+        ->and(whmcsProductByTitle($target, 'DA plan')['type'])->toBe('custom');
+
+    $warnings = implode("\n", $catalogue->warnings());
+    expect($warnings)->toContain('Product "Plesk plan" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its 2 servers.')
+        ->toContain('Product "DA plan" (directadmin) has no WHMCS server group and no imported server of its module: it is a custom product')
+        ->not->toContain('Product "Enhance plan" has no WHMCS server group');
+});
+
 test('WHMCS custom field types map to order form fields', function (): void {
     expect(Catalogue::fieldType(['fieldtype' => 'tickbox', 'fieldname' => 'Agree']))->toBe(['checkbox', '{"Agree":"on"}'])
         ->and(Catalogue::fieldType(['fieldtype' => 'dropdown', 'fieldoptions' => 'One, Two']))->toBe(['select', '{"One":"One","Two":"Two"}'])
