@@ -383,8 +383,13 @@ test('without a site module no record gets a site: nothing is read or written, a
         Site::stamp($di, $table, 5);
     }
     $link = Site::within($di, Site::forRecord($di, 'invoice', 5), fn (): string => $di['url']->link('invoice/abc'));
+    $di['site'] = $request = siteB();
+    $on = Site::on($di, 'order', 6, fn (): array => [Site::current($di), $database->store(siteBean('invoice', 7))]);
+    unset($di['site']);
 
     expect($database->store(siteBean('invoice', 7)))->toBe(5)
+        ->and($on)->toBe([$request, 5])
+        ->and([Site::active($di), Site::storedKey($di, 'order', 6)])->toBe([false, null])
         ->and(Site::forRecord($di, 'client', 7))->toEqual(Site::primary())
         ->and(Site::byKey($di, null))->toEqual(Site::primary())
         ->and($link)->toBe(SYSTEM_URL . 'invoice/abc')
@@ -584,6 +589,45 @@ test('within() names the site links are built for, only for the call: restored a
         ->and(Site::current($di))->toEqual(siteB())
         ->and($di['url']->link('a'))->toBe('https://b.example.test/a')
         ->and(isset($di['site_within']))->toBeFalse();
+});
+
+test('on() works on the site of a record, also from cron, and what is made inside takes that record\'s stored key, also while its module is switched off; restored after it and nested', function (): void {
+    $di = recordSiteDi();
+    $db = $di['dbal'];
+    $database = siteDatabase($di);
+    $site = static fn (int $id): mixed => $db->fetchOne('SELECT site FROM invoice WHERE id = ?', [$id]);
+    // Client #7 is on B; order #6 on C, #8 has no site of its own, #9 on a site whose module is switched off.
+    $db->insert('client', ['id' => 7, 'site' => 'shop/b']);
+    $db->insert('client_order', ['id' => 6, 'client_id' => 7, 'site' => 'shop/c']);
+    $db->insert('client_order', ['id' => 8, 'client_id' => 7]);
+    $db->insert('client_order', ['id' => 9, 'client_id' => 7, 'site' => 'gone/c']);
+    $make = static fn (): array => [Site::current($di)->key, Site::ofRequest($di)->key, $di['url']->link('a'), (int) $database->store(siteBean('invoice', 7))];
+
+    // Cron: the primary site.
+    $cron = Site::on($di, 'order', 6, $make);
+    // A request on B, with on() and within() nested in on().
+    $di['site'] = siteB();
+    $nested = Site::on($di, 'order', 9, fn (): array => [$make(), Site::on($di, 'order', 8, $make), Site::within($di, siteC(), $make), $make()]);
+    $failed = fn () => Site::on($di, 'order', 6, fn (): never => throw new RuntimeException('failed'));
+
+    expect($cron)->toBe(['shop/c', null, 'https://c.example.test/a', 1])
+        ->and($site(1))->toBe('shop/c')
+        // The switched-off module's site is the primary one, but its key is kept.
+        ->and($nested[0])->toBe([null, 'shop/b', SYSTEM_URL . 'a', 2])
+        ->and($site(2))->toBe('gone/c')
+        // An order with no site of its own: its client's.
+        ->and($nested[1])->toBe(['shop/b', 'shop/b', 'https://b.example.test/a', 3])
+        ->and($site(3))->toBe('shop/b')
+        // within() names another site: the current-site rule.
+        ->and($nested[2])->toBe(['shop/c', 'shop/b', 'https://c.example.test/a', 4])
+        ->and($site(4))->toBe('shop/c')
+        ->and($nested[3][3])->toBe(5)
+        ->and($site(5))->toBe('gone/c')
+        ->and($failed)->toThrow(RuntimeException::class, 'failed')
+        ->and(Site::current($di))->toEqual(siteB())
+        ->and(isset($di['site_within']) || isset($di['site_on']))->toBeFalse()
+        ->and($make()[3])->toBe(6)
+        ->and($site(6))->toBe('shop/b');
 });
 
 /**

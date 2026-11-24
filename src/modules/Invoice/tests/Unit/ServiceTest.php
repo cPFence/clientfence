@@ -4763,6 +4763,43 @@ test('renews services with different payment methods on separate invoices, as WH
         ->and($alone)->toBe([2]);
 });
 
+// ClientFence: each renewal invoice is on its orders' site (ClientFence\Site::on()).
+test('renews services of different sites on separate invoices; an order with no site of its own renews with its client\'s', function (): void {
+    $orderService = Mockery::mock(OrderService::class);
+    $due = date('Y-m-d', strtotime('+5 days'));
+    // Client #7 is on site B; order #2 was made before the site module was switched on.
+    $orderService->shouldReceive('getSoonExpiringActiveOrders')->with([])->andReturn([
+        ['id' => 1, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 10:00:00', 'site' => 'shop/b'],
+        ['id' => 2, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 11:00:00', 'site' => null],
+        ['id' => 3, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 12:00:00', 'site' => 'shop/c'],
+        ['id' => 4, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 13:00:00', 'site' => 'shop/c'],
+    ]);
+    $extension = Mockery::mock();
+    $extension->allows('getCoreAndActiveModules')->andReturn(['shop']);
+    $di = container();
+    $di['mod_service'] = $di->protect(fn (string $module): object => $module === 'extension' ? $extension : $orderService);
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->allows('hasManifest')->andReturn(true);
+    $mod->allows('getManifest')->andReturn(['sites' => true]);
+    $di['mod'] = $di->protect(fn (): object => $mod);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->with('SELECT separate_invoices FROM client WHERE id = ?', [7])->andReturn(0);
+    $dbal->shouldReceive('fetchOne')->once()->with(Mockery::pattern('/FROM `client_order` r LEFT JOIN client c/'), [2])->andReturn('shop/b');
+    $di['dbal'] = $dbal;
+    $together = [];
+    $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $service->shouldReceive('renewTogether')->andReturnUsing(function (array $ids) use (&$together): array {
+        $together[] = $ids;
+
+        return [];
+    });
+    $service->shouldReceive('generateForOrder')->never();
+    $service->setDi($di);
+
+    expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
+        ->and($together)->toBe([[1, 2], [3, 4]]);
+});
+
 test('a renewal invoice preselects the service payment method while that gateway is enabled, takes its currency and one-time payments, and no gateway subscription pays it', function (bool $enabled, string $currency, bool $subscribed, ?int $expected, bool $single = true): void {
     $di = container();
     $gateway = new Model_PayGateway();

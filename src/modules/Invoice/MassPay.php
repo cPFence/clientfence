@@ -17,6 +17,8 @@ declare(strict_types=1);
  *   and each invoice is paid from credit without its own fee line, as credit always pays (Service::applyCredit());
  * - an invoice paid, cancelled or changed after grouping gets at most what it still owes, and the rest stays account
  *   credit (settle()); starting to pay a grouped invoice whose invoices changed is refused (check()).
+ * One payment is for one site: the invoices grouped are all on one site (Pay all: the site the client is on), and the
+ * grouped invoice is on it too (ClientFence\Site).
  * An unpaid grouped invoice sets no credit aside (an Add funds invoice), gets no reminders or saved-card charge and is not
  * on the statement; the invoices keep their own. Refund and Reverse payment treat it as Add funds: refused once its credit
  * has paid the invoices.
@@ -69,9 +71,9 @@ final class MassPay
     }
 
     /**
-     * The grouped invoice of the client's invoices $ids, or of every one that can be grouped ($all): the client's own
-     * unpaid issued invoices in their account currency, not Add funds, without a payment clearing, at least two. A second
-     * click gets the unpaid grouped invoice already made for the same invoices and amounts.
+     * The grouped invoice of the client's invoices $ids, or of every one that can be grouped on the site the client is on
+     * ($all): the client's own unpaid issued invoices in their account currency, not Add funds, without a payment clearing,
+     * at least two. A second click gets the unpaid grouped invoice already made for the same invoices and amounts.
      */
     public static function create(\Pimple\Container $di, \Model_Client $client, array $ids, bool $all = false): \Model_Invoice
     {
@@ -81,9 +83,15 @@ final class MassPay
         }
         $lines = [];
         foreach (array_unique(array_map('intval', $ids)) as $id) {
-            $row = $db->fetchAssociative('SELECT id, serie, nr, status, approved, currency FROM invoice WHERE id = ? AND client_id = ?', [$id, (int) $client->id]);
+            $row = $db->fetchAssociative('SELECT id, serie, nr, status, approved, currency, COALESCE(site, (SELECT c.site FROM client c WHERE c.id = invoice.client_id)) AS site FROM invoice WHERE id = ? AND client_id = ?', [$id, (int) $client->id]);
             if ($row === false) {
                 throw new InformationException('Invoice was not found');
+            }
+            // Pay all pays the invoices of the site the client is on; the others stay for their own site. Compared as
+            // resolved sites: a stored key whose module is off resolves to the primary site, where its client now is.
+            $site = \ClientFence\Site::byKey($di, $row['site'])->key;
+            if ($all && $site !== \ClientFence\Site::current($di)->key) {
+                continue;
             }
             $groupable = $row['status'] === \Model_Invoice::STATUS_UNPAID && (int) $row['approved'] === 1
                 && (string) $client->currency !== '' && strtoupper((string) $row['currency']) === strtoupper((string) $client->currency)
@@ -92,7 +100,7 @@ final class MassPay
             // What it owes now: part payments and applied credit taken off, without its own gateway fee.
             $due = $groupable ? GatewayFees::base($di, $di['db']->getExistingModelById('Invoice', $id, 'Invoice not found')) : 0.0;
             if ($due > 0) {
-                $lines[$id] = ['amount' => $due, 'number' => Statement::number($db, $row)];
+                $lines[$id] = ['amount' => $due, 'number' => Statement::number($db, $row), 'site' => $site];
             } elseif (!$all) {
                 throw new InformationException('Invoice :number cannot be paid together with other invoices.', [':number' => Statement::number($db, $row)]);
             }
@@ -100,10 +108,14 @@ final class MassPay
         if (count($lines) < 2) {
             throw new InformationException('Choose at least two unpaid invoices to pay together.');
         }
+        // One payment is for one site: its invoice is on the site of the invoices it pays (ClientFence\Site::on()).
+        if (count(array_unique(array_map(static fn (array $line): string => (string) $line['site'], $lines))) > 1) {
+            throw new InformationException('These invoices are from different sites: pay the invoices of one site together.');
+        }
         ksort($lines);
         $amounts = array_map(static fn (array $line): float => $line['amount'], $lines);
 
-        return Tools::withLock($di, 'cf:mass-pay:client:' . (int) $client->id, static fn (): \Model_Invoice => $db->transactional(static function () use ($di, $db, $client, $lines, $amounts): \Model_Invoice {
+        return Tools::withLock($di, 'cf:mass-pay:client:' . (int) $client->id, static fn (): \Model_Invoice => \ClientFence\Site::on($di, 'invoice', (int) array_key_first($lines), static fn (): \Model_Invoice => $db->transactional(static function () use ($di, $db, $client, $lines, $amounts): \Model_Invoice {
             foreach ($db->fetchFirstColumn("SELECT m.id FROM invoice m WHERE m.client_id = ? AND m.status = 'unpaid' AND " . self::sql('m.id') . ' ORDER BY m.id DESC', [(int) $client->id]) as $groupId) {
                 $existing = self::lines($di, (int) $groupId);
                 ksort($existing);
@@ -129,7 +141,23 @@ final class MassPay
             $di['events_manager']->fire(['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $invoice->id], 'isolated' => true]);
 
             return $invoice;
-        }));
+        })));
+    }
+
+    /**
+     * Whether Pay all has at least two unpaid invoices on the site the client is on (create()'s site rule), so the invoice
+     * list offers it. Without a site module it is not asked: the list offers it from two unpaid invoices, as before.
+     */
+    public static function payAllHere(\Pimple\Container $di, int $clientId): bool
+    {
+        if (!\ClientFence\Site::active($di)) {
+            return true;
+        }
+        $here = \ClientFence\Site::current($di)->key;
+        $keys = $di['dbal']->fetchFirstColumn("SELECT COALESCE(i.site, c.site) FROM invoice i LEFT JOIN client c ON c.id = i.client_id WHERE i.client_id = ? AND i.status = 'unpaid' AND i.approved = 1
+             AND NOT EXISTS (SELECT 1 FROM invoice_item d WHERE d.invoice_id = i.id AND d.type = 'deposit')", [$clientId]);
+
+        return count(array_filter($keys, static fn (?string $key): bool => \ClientFence\Site::byKey($di, $key)->key === $here)) > 1;
     }
 
     /** Refuses to start paying a grouped invoice whose invoices were paid or changed since: the client chooses them again. */

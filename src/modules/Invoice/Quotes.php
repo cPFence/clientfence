@@ -326,7 +326,8 @@ final class Quotes
             }
 
             $invoiceService = $di['mod_service']('invoice');
-            $invoice = $invoiceService->prepareInvoice($client, [
+            // On the quote's site (ClientFence\Site::on()).
+            $invoice = \ClientFence\Site::on($di, 'quote', $id, static fn (): \Model_Invoice => $invoiceService->prepareInvoice($client, [
                 'text_1' => __trans('Quote #:id: :subject', [':id' => $id, ':subject' => $quote['subject']]),
                 'items' => array_map(static fn (array $item): array => [
                     'title' => $item['description'],
@@ -335,7 +336,7 @@ final class Quotes
                     'taxed' => $item['taxed'],
                     'type' => \Model_InvoiceItem::TYPE_CUSTOM,
                 ], $quote['items']),
-            ]);
+            ]));
             $invoice->taxname = $quote['taxname'];
             $invoice->taxrate = $quote['taxrate'];
             $di['db']->store($invoice);

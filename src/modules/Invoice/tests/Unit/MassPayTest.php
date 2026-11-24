@@ -23,7 +23,8 @@ function massPayWorld(?callable $setup = null): object
     $world->paid = [];
     $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     foreach ([
-        'CREATE TABLE invoice (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, serie TEXT, nr TEXT, hash TEXT, status TEXT, approved INTEGER, currency TEXT, gateway_id INTEGER, taxrate REAL DEFAULT 0, tax_adjust REAL DEFAULT 0, base_income REAL, notes TEXT, created_at TEXT, updated_at TEXT)',
+        'CREATE TABLE invoice (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, serie TEXT, nr TEXT, hash TEXT, status TEXT, approved INTEGER, currency TEXT, gateway_id INTEGER, taxrate REAL DEFAULT 0, tax_adjust REAL DEFAULT 0, base_income REAL, notes TEXT, created_at TEXT, updated_at TEXT, site TEXT)',
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, site TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, type TEXT, task TEXT, status TEXT, title TEXT, price REAL, quantity INTEGER, charged INTEGER DEFAULT 0, taxed INTEGER DEFAULT 0, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE invoice_credit (id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id INTEGER, client_id INTEGER, amount REAL, created_at TEXT)',
         'CREATE TABLE client_balance (id INTEGER PRIMARY KEY AUTOINCREMENT, client_id INTEGER, amount REAL, description TEXT)',
@@ -202,24 +203,76 @@ test('the grouped invoice lists what each invoice owes now, untaxed, without its
         ->and($world->di['events_manager']->events)->toBe([['event' => 'onAfterNewInvoice', 'params' => ['id' => (int) $group->id], 'isolated' => true]]);
 });
 
-test('the grouped invoice keeps the site it was made on, also once its defaults are saved (ClientFence\\Site)', function (): void {
+test('the grouped invoice is on the site of the invoices it pays, also once its defaults are saved; invoices of two sites are not paid together, and Pay all pays those of the site the client is on (ClientFence\\Site)', function (): void {
+    // Client #7 is on site B: invoice #1 has no site of its own (its client's), #2 is on B.
     $world = massPayWorld(function ($db): void {
-        $db->executeStatement('ALTER TABLE invoice ADD COLUMN site TEXT');
-        $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, site TEXT)');
+        $db->insert('client', ['id' => 7, 'site' => 'shop/b']);
+        $db->update('invoice', ['site' => 'shop/b'], ['id' => 2]);
     });
     $di = $world->di;
     $services = $di['mod_service'];
     $extension = Mockery::mock();
     $extension->allows('getCoreAndActiveModules')->andReturn(['shop']);
-    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => strtolower($module) === 'extension' ? $extension : $services($module, $sub));
+    // The site module answers for its sites b and c; shop/gone is a site it no longer serves.
+    $shop = new class {
+        public function siteByKey(string $key): ?ClientFence\Site
+        {
+            return in_array($key, ['b', 'c'], true) ? new ClientFence\Site('https://' . $key . '.example.test/', $key . '.example.test', $key) : null;
+        }
+    };
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => match (strtolower($module)) {
+        'extension' => $extension,
+        'shop' => $shop,
+        default => $services($module, $sub),
+    });
     $mod = Mockery::mock(ClientFence\Module::class);
     $mod->allows('hasManifest')->andReturn(true);
     $mod->allows('getManifest')->andReturn(['sites' => true]);
+    $mod->allows('cannotRun')->andReturn(null);
     $di['mod'] = $di->protect(fn (): object => $mod);
+    $onC = static fn (callable $fn): mixed => ClientFence\Site::within($di, new ClientFence\Site('https://c.example.test/', 'c.example.test', 'shop/c'), $fn);
+    $onB = static fn (callable $fn): mixed => ClientFence\Site::within($di, new ClientFence\Site('https://b.example.test/', 'b.example.test', 'shop/b'), $fn);
 
-    $group = ClientFence\Site::within($di, new ClientFence\Site('https://b.example.test/', 'b.example.test', 'shop/b'), fn (): Model_Invoice => MassPay::create($di, $world->client, [1, 2]));
+    // Paid from a request on site C.
+    $group = $onC(fn (): Model_Invoice => MassPay::create($di, $world->client, [1, 2]));
+    // #2 moves to C, and #9 is on C too.
+    $world->db->update('invoice', ['site' => 'shop/c'], ['id' => 2]);
+    $world->db->insert('invoice', ['id' => 9, 'client_id' => 7, 'serie' => 'INV', 'nr' => '9', 'status' => 'unpaid', 'approved' => 1, 'currency' => 'USD', 'site' => 'shop/c']);
+    $world->db->insert('invoice_item', ['invoice_id' => 9, 'type' => 'custom', 'title' => 'Hosting', 'price' => 20, 'quantity' => 1]);
+    // The list offers Pay all on C (#2, #9), not on B (#1; the grouped invoice is not counted) nor on the primary site.
+    $offered = [$onC(fn (): bool => MassPay::payAllHere($di, 7)), $onB(fn (): bool => MassPay::payAllHere($di, 7)), MassPay::payAllHere($di, 7)];
+    $payAllOnC = $onC(fn (): Model_Invoice => MassPay::create($di, $world->client, [], true));
 
-    expect($world->db->fetchOne('SELECT site FROM invoice WHERE id = ?', [$group->id]))->toBe('shop/b');
+    expect($world->db->fetchOne('SELECT site FROM invoice WHERE id = ?', [$group->id]))->toBe('shop/b')
+        ->and($offered)->toBe([true, false, false])
+        ->and(fn () => $onC(fn (): Model_Invoice => MassPay::create($di, $world->client, [1, 2])))->toThrow(ClientFence\InformationException::class, 'These invoices are from different sites: pay the invoices of one site together.')
+        // Pay all on C: #2 and #9; #1 stays unpaid for B.
+        ->and(MassPay::lines($di, (int) $payAllOnC->id))->toBe([2 => 50.0, 9 => 20.0])
+        ->and($world->db->fetchOne('SELECT site FROM invoice WHERE id = ?', [$payAllOnC->id]))->toBe('shop/c')
+        // Pay all on B: only #1 is left there.
+        ->and(fn () => $onB(fn (): Model_Invoice => MassPay::create($di, $world->client, [], true)))->toThrow(ClientFence\InformationException::class, 'Choose at least two unpaid invoices to pay together.');
+
+    // A site its module no longer serves resolves to the primary site, where its clients now are: Pay all there pays them.
+    foreach ([20 => 30, 21 => 40] as $id => $price) {
+        $world->db->insert('invoice', ['id' => $id, 'client_id' => 7, 'serie' => 'INV', 'nr' => (string) $id, 'status' => 'unpaid', 'approved' => 1, 'currency' => 'USD', 'site' => 'shop/gone']);
+        $world->db->insert('invoice_item', ['invoice_id' => $id, 'type' => 'custom', 'title' => 'Hosting', 'price' => $price, 'quantity' => 1]);
+    }
+    expect(MassPay::lines($di, (int) MassPay::create($di, $world->client, [], true)->id))->toBe([20 => 30.0, 21 => 40.0]);
+
+    // Picked by hand, an invoice with no site and one of the site no longer served are both on the primary site.
+    $world->db->insert('client', ['id' => 8, 'site' => null]);
+    $world->db->update('invoice', ['client_id' => 8, 'site' => null], ['id' => 20]);
+    $world->db->update('invoice', ['client_id' => 8], ['id' => 21]);
+    $world->client->id = 8;
+    expect(MassPay::lines($di, (int) MassPay::create($di, $world->client, [20, 21])->id))->toBe([20 => 30.0, 21 => 40.0]);
+});
+
+test('without a site module the invoice list offers Pay all as before, and nothing is read for it (ClientFence\\Site)', function (): void {
+    $world = massPayWorld();
+    // Any query fails.
+    $world->di['dbal'] = Mockery::mock(Doctrine\DBAL\Connection::class);
+
+    expect(MassPay::payAllHere($world->di, 7))->toBeTrue();
 });
 
 test('paying the grouped invoice pays each invoice once and leaves the balance where it was', function (): void {

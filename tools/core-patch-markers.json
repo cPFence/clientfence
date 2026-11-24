@@ -10282,5 +10282,21 @@
     {
         "file": "modules/Invoice/Controller/Client.php",
         "done": "ClientFence core patch: a recurring-only gateway chosen at checkout for an invoice that cannot be a subscription: its page offers the methods that can pay it."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: a refund invoice is on the site of the invoice it refunds (ClientFence\\Site::on())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: an order's invoice is on the order's site (ClientFence\\Site::on())."
+    },
+    {
+        "file": "modules/Invoice/Service.php",
+        "done": "ClientFence core patch: services of different sites renew on separate invoices, each on its own site (ClientFence\\Site::on())."
+    },
+    {
+        "file": "themes/palisade/html/mod_invoice_index.html.twig",
+        "done": "ClientFence core patch: Pay all pays the invoices of the site the client is on (Invoice/MassPay.php payAllHere())."
     }
 ]

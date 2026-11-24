@@ -407,7 +407,8 @@ final class Upgrades
     {
         $client = $di['db']->getExistingModelById('Client', (int) $order->client_id, 'Client not found');
 
-        return $di['mod_service']('invoice')->prepareInvoice($client, [
+        // On the order's site (ClientFence\Site::on()).
+        return \ClientFence\Site::on($di, 'order', (int) $order->id, static fn (): \Model_Invoice => $di['mod_service']('invoice')->prepareInvoice($client, [
             'items' => [[
                 'type' => \Model_InvoiceItem::TYPE_HOOK_CALL,
                 'task' => self::EVENT,
@@ -418,7 +419,7 @@ final class Upgrades
                 'taxed' => (bool) $di['mod_service']('client')->isClientTaxable($client),
             ]],
             'approve' => true,
-        ]);
+        ]));
     }
 
     /** A downgrade's credit with the tax an invoice line of that amount carries (rounded per line, as InvoiceItem). */

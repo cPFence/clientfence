@@ -1876,7 +1876,8 @@ class Service implements InjectionAwareInterface
                 throw new InformationException('Refunds are handled by hand (Invoice settings), so this refund cannot be recorded.');
             }
             if ($refunded <= 0 && ($amount === null || round($amount, 2) === round($this->getTotalWithTax($invoice), 2))) {
-                $result = $this->refundInvoiceLocked($invoice, $note);
+                // ClientFence core patch: a refund invoice is on the site of the invoice it refunds (ClientFence\Site::on()).
+                $result = \ClientFence\Site::on($this->di, 'invoice', (int) $invoice->id, fn (): ?int => $this->refundInvoiceLocked($invoice, $note));
                 if ($toCredit && $result !== null) {
                     $this->refundToCredit($invoice, round($this->getTotalWithTax($invoice), 2), $result);
                 }
@@ -2358,6 +2359,12 @@ class Service implements InjectionAwareInterface
      * counted: the money stays as account credit.
      */
     public function creditNote(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId = null, ?float $total = null): int
+    {
+        // On the site of the invoice it is for (ClientFence\Site::on()).
+        return \ClientFence\Site::on($this->di, 'invoice', $sourceId, fn (): int => $this->creditNoteOnSite($sourceId, $title, $net, $taxed, $note, $orderId, $total));
+    }
+
+    private function creditNoteOnSite(int $sourceId, string $title, float $net, bool $taxed, string $note, ?int $orderId, ?float $total): int
     {
         $source = $this->di['db']->getExistingModelById('Invoice', $sourceId, 'Invoice not found');
         $new = $this->di['db']->dispense('Invoice');
@@ -3031,6 +3038,12 @@ class Service implements InjectionAwareInterface
 
     protected function generateForOrderLocked(\Model_ClientOrder $order, $due_days = null, ?\Model_Invoice $into = null, bool $finish = true)
     {
+        // ClientFence core patch: an order's invoice is on the order's site (ClientFence\Site::on()).
+        return \ClientFence\Site::on($this->di, 'order', (int) $order->id, fn () => $this->generateForOrderOnSite($order, $due_days, $into, $finish));
+    }
+
+    private function generateForOrderOnSite(\Model_ClientOrder $order, $due_days, ?\Model_Invoice $into, bool $finish)
+    {
         // check if we do have invoice prepared already
         if ($order->unpaid_invoice_id !== null) {
             $p = $this->di['db']->load('Invoice', $order->unpaid_invoice_id);
@@ -3214,9 +3227,12 @@ class Service implements InjectionAwareInterface
         }
         if ($invoice instanceof \Model_Invoice && $first instanceof \Model_ClientOrder) {
             try {
-                $this->finishRenewalInvoice($invoice, $first);
-                $this->applyPartCreditToRenewal($invoice);
-                $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+                // On the orders' site, as one order's renewal (generateForOrderLocked()).
+                \ClientFence\Site::on($this->di, 'order', (int) $first->id, function () use ($invoice, $first): void {
+                    $this->finishRenewalInvoice($invoice, $first);
+                    $this->applyPartCreditToRenewal($invoice);
+                    $this->approveInvoice($invoice, ['id' => $invoice->id, 'use_credits' => true]);
+                });
             } catch (\Exception $e) {
                 $this->di['logger']->warning($e->getMessage());
             }
@@ -3279,7 +3295,10 @@ class Service implements InjectionAwareInterface
             // the invoice gets (renewalGatewayId()), so one that is left out renews with the client's choice.
             $model = empty($order['gateway_id']) ? null : $this->di['db']->load('ClientOrder', (int) $order['id']);
             $gatewayId = $model instanceof \Model_ClientOrder ? $this->renewalGatewayId($model) : null;
-            $groups[($order['client_id'] ?? '') . '|' . ($order['currency'] ?? '') . '|' . substr((string) ($order['expires_at'] ?? ''), 0, 10) . '|' . $gatewayId][] = (int) $order['id'];
+            // ClientFence core patch: services of different sites renew on separate invoices, each on its own site (ClientFence\Site::on()).
+            // An order made before a site module was switched on has no site of its own: its client's.
+            $site = $order['site'] ?? \ClientFence\Site::storedKey($this->di, 'order', (int) $order['id']);
+            $groups[($order['client_id'] ?? '') . '|' . ($order['currency'] ?? '') . '|' . substr((string) ($order['expires_at'] ?? ''), 0, 10) . '|' . $gatewayId . '|' . $site][] = (int) $order['id'];
         }
         $single = [];
         foreach ($groups as $key => $ids) {

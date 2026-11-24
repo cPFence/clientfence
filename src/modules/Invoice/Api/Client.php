@@ -92,6 +92,12 @@ class Client extends \ClientFence\Api\AbstractApi
         return MassPay::create($this->getDi(), $this->getIdentity(), (array) ($data['ids'] ?? []), !empty($data['all']))->hash;
     }
 
+    /** ClientFence: whether the invoice list offers Pay all on the site the client is on (Invoice/MassPay.php). */
+    public function mass_pay_here(): bool
+    {
+        return MassPay::payAllHere($this->getDi(), (int) $this->getIdentity()->id);
+    }
+
     /**
      * Generates new invoice for selected order. If unpaid invoice for selected order
      * already exists, new invoice will not be generated, and old invoice hash

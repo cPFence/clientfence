@@ -360,6 +360,77 @@ test('accepting makes the invoice with the discounted lines and emails it after'
         ->and($log['invoices'])->toHaveCount(1);
 });
 
+test('an accepted quote\'s invoice is on the quote\'s site, also when staff accept it on the primary site (ClientFence\\Site)', function (): void {
+    $db = quotesDb();
+    $db->executeStatement('ALTER TABLE client ADD COLUMN site TEXT');
+    [$di, $log] = quotesContainer($db);
+    $id = Quotes::save($di, quotesForm());
+    $db->update('invoice_quote', ['site' => 'shop/b'], ['id' => $id]);
+    $di['dbal'] = $db;
+    // The site module "shop" serves site B.
+    $services = $di['mod_service'];
+    $invoices = new class($services('invoice'), $di) {
+        public array $sites = [];
+
+        public function __construct(private readonly object $invoices, private readonly Pimple\Container $di)
+        {
+        }
+
+        public function prepareInvoice(Model_Client $client, array $data): Model_Invoice
+        {
+            $this->sites[] = ClientFence\Site::current($this->di)->key;
+
+            return $this->invoices->prepareInvoice($client, $data);
+        }
+
+        public function approveInvoice(Model_Invoice $invoice, array $data): bool
+        {
+            return $this->invoices->approveInvoice($invoice, $data);
+        }
+    };
+    $shop = new class {
+        public function siteByKey(string $key): ?ClientFence\Site
+        {
+            return $key === 'b' ? new ClientFence\Site('https://b.example.test/', 'b.example.test', 'b') : null;
+        }
+
+        public function getCoreAndActiveModules(): array
+        {
+            return ['shop'];
+        }
+    };
+    $di['mod_service'] = $di->protect(fn (string $mod, string $sub = ''): object => match (strtolower($mod)) {
+        'extension', 'shop' => $shop,
+        'invoice' => $invoices,
+        default => $services($mod, $sub),
+    });
+    $di['mod'] = $di->protect(fn (string $mod): object => new class {
+        public function getConfig(): array
+        {
+            return ['default_country' => 'EG'];
+        }
+
+        public function hasManifest(): bool
+        {
+            return true;
+        }
+
+        public function getManifest(): array
+        {
+            return ['sites' => true];
+        }
+
+        public function cannotRun(): ?array
+        {
+            return null;
+        }
+    });
+
+    expect(Quotes::accept($di, $id, 'staff'))->toBe(50)
+        ->and($invoices->sites)->toBe(['shop/b'])
+        ->and(ClientFence\Site::current($di)->key)->toBeNull();
+});
+
 test('accepting a quote preserves its saved tax after the current rule changes', function (): void {
     $db = quotesDb();
     [$di] = quotesContainer($db, 20.0);

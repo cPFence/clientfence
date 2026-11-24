@@ -33,9 +33,15 @@ use Symfony\Component\HttpFoundation\Response;
  * The site of a record. The client, client_order, invoice (credit notes too), invoice_quote, support_ticket and
  * email_queue tables have a `site` column: the stored key of the site the row was made on, NULL for the primary site
  * (and every row of an install without a site module, which writes none). It is written once, when the row is made
- * (stamp()): the current site's key, else (on the primary site: cron, the console, staff on the primary site, the API)
- * the key of the row's client, so a renewal invoice, a credit note, a ticket from email piping or a staff order is on
- * its client's site; a client has no parent, and the email queue keeps the site its email was built on. The import
+ * (stamp()): inside on() the stored key of the record it is made for, else the current site's key, else (on the primary
+ * site: cron, the console, staff on the primary site, the API) the key of the row's client, so a ticket from email
+ * piping or a staff order is on its client's site; a client has no parent, and the email queue keeps the site its email
+ * was built on. An invoice made for a record is on that record's site (on()): an order's invoice (each renewal, from
+ * cron, staff Renew, the client's Renew Now or a gateway subscription payment; staff issuing a new order's invoice; an
+ * upgrade or option change) on the order's, and renewals put together on one invoice only with orders of the same site;
+ * a refund invoice or credit note (a part refund, a downgrade's credit) on the invoice it is for; an accepted quote's
+ * invoice on the quote's; a Mass Pay invoice on the site of the invoices it pays, which must all be on one site. Other
+ * invoices (checkout, Add funds, staff's free-form invoice) are on the current site, else the client's. The import
  * (Clientfence\Whmcs) writes none. The core changes a stored site in one place only: staff moving a service to another
  * client (Order\ClientMove) give the service and its add-ons the new client's site; its invoices, tickets and quotes
  * stay the old client's, with their sites.
@@ -46,7 +52,9 @@ use Symfony\Component\HttpFoundation\Response;
  *   site of that identifier under the same rules as site() (an http(s) base URL, `host` as in that URL, the same `key`).
  *   NULL, an unknown or switched-off module, one that cannot run, and any other answer give the primary site (logged
  *   once per request);
- * - within($di, $site, $fn): runs $fn with current() as $site (restored after it, also when it throws; nests).
+ * - within($di, $site, $fn): runs $fn with current() as $site (restored after it, also when it throws; nests);
+ * - on($di, $type, $id, $fn): within() the site of a record, and what is made inside it takes that record's stored key,
+ *   read in SQL, not through byKey(): a switched-off module's key is kept, never replaced by the primary site.
  * The core builds on a record's site: a client's email (the invoice, order, ticket or quote it is about, else its
  * client: Email\Service::sendTemplate(); the staff's Send Email to a client; mass mail) with the links made for it
  * before (confirmation, feedback, network status, affiliate and quote links), the queued row keeping that site, and
@@ -127,10 +135,44 @@ final readonly class Site
     /** The site of a record (a RECORDS type): its own stored key, else its client's; the primary site without one. */
     public static function forRecord(\Pimple\Container $di, string $type, int $id): self
     {
+        return self::byKey($di, self::storedKey($di, $type, $id));
+    }
+
+    /**
+     * Runs `$fn` for a record (a RECORDS type): inside it current() is the record's site (forRecord()), and a record made
+     * there takes this record's stored key (stamp()), also while that key's module is switched off. Restored after it,
+     * also when it throws; nests. Without a site module it only runs `$fn`.
+     */
+    public static function on(\Pimple\Container $di, string $type, int $id, callable $fn): mixed
+    {
+        if (self::providers($di) === []) {
+            return $fn();
+        }
+        $key = self::storedKey($di, $type, $id);
+        $site = self::byKey($di, $key);
+        $before = isset($di['site_on']) ? $di['site_on'] : null;
+        $di['site_on'] = [$site, $key];
+        try {
+            return self::within($di, $site, $fn);
+        } finally {
+            if ($before === null) {
+                unset($di['site_on']);
+            } else {
+                $di['site_on'] = $before;
+            }
+        }
+    }
+
+    /**
+     * The stored key of a record (a RECORDS type): its own, else its client's; null for the primary site. Nothing is read
+     * without a site module.
+     */
+    public static function storedKey(\Pimple\Container $di, string $type, int $id): ?string
+    {
         $table = self::RECORDS[$type] ?? null;
         // Without a site module no row has a key: nothing is read.
         if ($table === null || $id < 1 || self::providers($di) === []) {
-            return self::primary();
+            return null;
         }
         try {
             $key = $table === 'client'
@@ -139,10 +181,16 @@ final readonly class Site
         } catch (\Throwable $e) {
             $di['logger']->warning(sprintf('The site of %s #%d could not be read: %s', $type, $id, $e->getMessage()));
 
-            return self::primary();
+            return null;
         }
 
-        return self::byKey($di, is_string($key) ? $key : null);
+        return is_string($key) ? $key : null;
+    }
+
+    /** Whether a site module is switched on: without one every record is on the primary site. */
+    public static function active(\Pimple\Container $di): bool
+    {
+        return self::providers($di) !== [];
     }
 
     /** The site of a stored key (null: the primary site); see the class comment. Worked out once per request. */
@@ -192,6 +240,11 @@ final readonly class Site
                 }
 
                 return;
+            }
+            // Inside on() (and not a within() nested in it): the stored key of the record this row is made for.
+            $on = isset($di['site_on']) ? $di['site_on'] : null;
+            if (is_array($on) && $on[0] === self::current($di)) {
+                $key = $on[1];
             }
             $di['dbal']->executeStatement("UPDATE `{$table}` SET site = COALESCE(?, (SELECT c.site FROM client c WHERE c.id = `{$table}`.client_id)) WHERE id = ?", [$key, $id]);
         } catch (\Throwable $e) {

@@ -88,7 +88,10 @@
                             {% if unpaid_invoices.total > 1 %}
                                 <div class="d-flex flex-wrap gap-2 mb-3">
                                     <button type="submit" class="btn btn-sm btn-success" value="selected">{{ 'Pay selected'|trans }}</button>
-                                    <button type="submit" class="btn btn-sm btn-outline-success" value="all">{{ 'Pay all'|trans }}</button>
+                                    {# ClientFence core patch: Pay all pays the invoices of the site the client is on (Invoice/MassPay.php payAllHere()). #}
+                                    {% if client.invoice_mass_pay_here %}
+                                        <button type="submit" class="btn btn-sm btn-outline-success" value="all">{{ 'Pay all'|trans }}</button>
+                                    {% endif %}
                                 </div>
                             {% endif %}
                             <table class="table table-bordered table-hover table-stack">
