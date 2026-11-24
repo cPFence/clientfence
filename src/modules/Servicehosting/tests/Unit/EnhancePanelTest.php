@@ -124,9 +124,48 @@ test('find fails when the stored subscription has no non-deleted website', funct
     ], $requests);
 
     expect(fn () => $panel->forAccount('B', 7)->find('b@example.test', 'site.example'))
-        ->toThrow(Server_Exception::class, 'The panel subscription 7 of site.example was not found.')
+        ->toThrow(Server_Exception::class, 'The panel subscription 7 of site.example has no website.')
         ->and($requests)->not->toContain('GET /api/orgs/M/websites');
 });
+
+// Forum #182: a client who deleted the last website on the panel still signs in, changes the password and sees the usage.
+test('sign-in, password change and usage of a stored subscription need no website', function (array $websites, ?string $suspendedBy = null): void {
+    $requests = [];
+    $panel = enhancePanelFake([
+        '/api/orgs/B/subscriptions/7' => ['id' => 7, 'subscriberId' => 'B', 'vendorId' => 'M', 'status' => 'active', 'suspendedBy' => $suspendedBy, 'resources' => [['name' => 'diskspace', 'usage' => 3_000_000, 'total' => 1_000_000_000]]],
+        '/api/orgs/B/subscriptions/7/bandwidth' => new MockResponse('5000000'),
+        '/api/orgs/B/websites' => $websites,
+        '/api/orgs/B/members' => [['id' => 'm1', 'email' => 'b@example.test', 'roles' => ['Owner'], 'loginId' => 'L1']],
+        '/api/orgs/B/members/m1/sso' => new MockResponse('https://panel.test/sso/x'),
+    ], $requests);
+    $panel = $panel->forAccount('B', 7);
+
+    $panel->changePassword('b@example.test', 'site.example', 'b@example.test', 'Secret-pass-1');
+
+    expect($panel->signInUrl('b@example.test', 'site.example', 'b@example.test'))->toBe('https://panel.test/sso/x')
+        ->and($requests)->toContain('PUT /api/v2/logins/L1/password')
+        ->and($panel->usage('b@example.test', 'site.example'))->toMatchArray(['disk_used_mb' => 3, 'disk_quota_mb' => 1000, 'bandwidth_used_mb' => 5, 'suspended' => $suspendedBy !== null, 'websites' => []]);
+})->with([
+    'no website' => [[]],
+    'only a deleted website' => [[['id' => 'W', 'status' => 'deleted', 'subscriptionId' => 7, 'domain' => ['domain' => 'site.example']]]],
+    // Enhance marks a suspended subscription in suspendedBy; its status stays active.
+    'no website, the subscription suspended' => [[], 'M'],
+]);
+
+test('sign-in, password change and usage refuse a stored subscription of another organization', function (string $method, array $args): void {
+    $requests = [];
+    $panel = enhancePanelFake([
+        '/api/orgs/B/subscriptions/7' => ['id' => 7, 'subscriberId' => 'Other', 'vendorId' => 'M', 'status' => 'active'],
+        '/api/orgs/B/members' => [['id' => 'm1', 'email' => 'b@example.test', 'roles' => ['Owner'], 'loginId' => 'L1']],
+    ], $requests);
+
+    expect(fn () => $panel->forAccount('B', 7)->{$method}(...$args))->toThrow(Server_Exception::class, 'belongs to another organization or vendor')
+        ->and($requests)->toBe(['GET /api/orgs/B/subscriptions/7']);
+})->with([
+    'sign-in' => ['signInUrl', ['b@example.test', 'site.example', 'b@example.test']],
+    'password' => ['changePassword', ['b@example.test', 'site.example', 'b@example.test', 'Secret-pass-1']],
+    'usage' => ['usage', ['b@example.test', 'site.example']],
+]);
 
 test('stored subscription resolution refuses another owner or a missing subscription', function (array|MockResponse $subscription, string $reason): void {
     $requests = [];

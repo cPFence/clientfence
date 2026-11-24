@@ -163,7 +163,7 @@ final class Panel
                 $first ??= $found;
             }
 
-            return $first ?? throw new \Server_Exception('The panel subscription :id: of :domain: was not found.', [':id:' => $this->subscriptionId, ':domain:' => $domain]);
+            return $first ?? throw new \Server_Exception('The panel subscription :id: of :domain: has no website.', [':id:' => $this->subscriptionId, ':domain:' => $domain]);
         }
 
         foreach ($this->customerOrgs($clientEmail) as $org) {
@@ -296,6 +296,20 @@ final class Panel
         if ($loginEmail !== '' && $this->accountMember((string) $this->orgId, $loginEmail, $loginEmail) === null) {
             throw new \Server_Exception('No :panel: login for :email: was found.', [':panel:' => Api::PANEL, ':email:' => $loginEmail]);
         }
+    }
+
+    /**
+     * The account's customer organization: with a stored subscription no website is needed, so a client who
+     * deleted the last one can still sign in and change the password (forum #182).
+     */
+    private function orgId(string $clientEmail, string $domain, string $loginEmail): string
+    {
+        if ($this->subscriptionId === null) {
+            return (string) $this->find($clientEmail, $domain, $loginEmail)['org']['id'];
+        }
+        $this->resolveSubscription();
+
+        return (string) $this->orgId;
     }
 
     /** @return ($allowMissing is true ? array|null : array) */
@@ -468,8 +482,7 @@ final class Panel
         if (!self::passwordAccepted($password)) {
             throw new \Server_Exception(self::PASSWORD_RULE);
         }
-        ['org' => $org] = $this->find($clientEmail, $domain, $loginEmail);
-        $member = $this->accountMember((string) $org['id'], $loginEmail, $clientEmail);
+        $member = $this->accountMember($this->orgId($clientEmail, $domain, $loginEmail), $loginEmail, $clientEmail);
         if ($member === null || empty($member['loginId'])) {
             throw new \Server_Exception('No :panel: login for :email: was found.', [':panel:' => Api::PANEL, ':email:' => $loginEmail]);
         }
@@ -481,10 +494,10 @@ final class Panel
      */
     public function signInUrl(string $clientEmail, string $domain, string $loginEmail): string
     {
-        ['org' => $org] = $this->find($clientEmail, $domain, $loginEmail);
-        $member = $this->accountMember((string) $org['id'], $loginEmail, $clientEmail)
+        $orgId = $this->orgId($clientEmail, $domain, $loginEmail);
+        $member = $this->accountMember($orgId, $loginEmail, $clientEmail)
             ?? throw new \Server_Exception('No :panel: login for :email: was found.', [':panel:' => Api::PANEL, ':email:' => $loginEmail]);
-        $url = $this->api->get("/orgs/{$org['id']}/members/{$member['id']}/sso");
+        $url = $this->api->get("/orgs/{$orgId}/members/{$member['id']}/sso");
         if (!is_string($url) || !str_starts_with($url, 'http')) {
             throw new \Server_Exception('The :panel: server did not give a sign-in link. Please try again later.', [':panel:' => Api::PANEL]);
         }
@@ -540,14 +553,22 @@ final class Panel
      */
     public function usage(string $clientEmail, string $domain, string $loginEmail = ''): array
     {
-        ['org' => $org, 'website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
-        $orgId = (string) $org['id'];
-        $subscriptionId = self::subscriptionOf($website) ?? throw new \Server_Exception('The website :domain: has no subscription on the :panel: server.', [':domain:' => $domain, ':panel:' => Api::PANEL]);
-        $subscription = $this->api->get("/orgs/{$orgId}/subscriptions/{$subscriptionId}");
+        if ($this->subscriptionId !== null) {
+            // A stored subscription needs no website: the client may have deleted the last one (forum #182).
+            $subscription = $this->resolveSubscription();
+            $orgId = (string) $this->orgId;
+            $subscriptionId = $this->subscriptionId;
+        } else {
+            ['org' => $org, 'website' => $website] = $this->find($clientEmail, $domain, $loginEmail);
+            $orgId = (string) $org['id'];
+            $subscriptionId = self::subscriptionOf($website) ?? throw new \Server_Exception('The website :domain: has no subscription on the :panel: server.', [':domain:' => $domain, ':panel:' => Api::PANEL]);
+            $subscription = $this->api->get("/orgs/{$orgId}/subscriptions/{$subscriptionId}");
+        }
         $resources = self::resources(is_array($subscription) ? ($subscription['resources'] ?? []) : []);
         // Enhance leaves the subscription's transfer usage at 0: its own panel reads this month's bytes here (GitHub #44).
         $bandwidth = $this->api->find("/orgs/{$orgId}/subscriptions/{$subscriptionId}/bandwidth");
 
+        $websites = $this->websitesOf($orgId, $subscriptionId, $domain);
         $counts = [];
         foreach (self::COUNTS as $name => $key) {
             if (isset($resources[$name])) {
@@ -557,13 +578,13 @@ final class Panel
 
         return [
             'plan_name' => (string) ($subscription['planName'] ?? ''),
-            'suspended' => ($subscription['status'] ?? '') === 'suspended' || self::suspended($website),
+            'suspended' => ($subscription['status'] ?? '') === 'suspended' || !empty($subscription['suspendedBy']) || ($websites[0]['suspended'] ?? false),
             'disk_used_mb' => self::mb($resources['diskspace']['usage'] ?? 0) ?? 0,
             'disk_quota_mb' => self::mb($resources['diskspace']['total'] ?? null),
             'bandwidth_used_mb' => self::mb(is_numeric($bandwidth) ? $bandwidth : ($resources['transfer']['usage'] ?? 0)) ?? 0,
             'bandwidth_limit_mb' => self::mb($resources['transfer']['total'] ?? null),
             'counts' => $counts,
-            'websites' => $this->websitesOf($orgId, $subscriptionId, $domain),
+            'websites' => $websites,
         ];
     }
 
