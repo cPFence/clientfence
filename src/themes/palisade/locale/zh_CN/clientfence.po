@@ -32505,3 +32505,47 @@ msgstr "子域名"
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Through Cloudflare"
 msgstr "通过 Cloudflare"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "The :mod module cannot run"
+msgstr "模块 :mod 无法运行"
+
+#: src/library/ClientFence/Module.php
+msgid "The :mod module is written for module API level :level, which this ClientFence does not run (levels :min to :max)."
+msgstr "模块 :mod 是为 module API 级别 :level 编写的，此 ClientFence 不支持该级别（支持级别 :min 至 :max）。"
+
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs PHP :php or later; this PHP is :version."
+msgstr "模块 :mod 需要 PHP :php 或更高版本；当前 PHP 为 :version。"
+
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs the PHP extension :extension, which this PHP (:sapi) does not load."
+msgstr "模块 :mod 需要 PHP 扩展 :extension，但当前 PHP（:sapi）未加载该扩展。"
+
+#: src/library/ClientFence/Module.php
+msgid "The manifest.json of the :mod module cannot be read."
+msgstr "无法读取模块 :mod 的 manifest.json。"
+
+#: src/library/ClientFence/ServiceTypes.php
+msgid "The manifest.json of the :mod module is not valid: :key has names that differ only in letter case."
+msgstr "模块 :mod 的 manifest.json 无效：:key 中有名称仅大小写不同。"
+
+#: src/library/ClientFence/ServiceTypes.php
+msgid "The manifest.json of the :mod module is not valid: :key has the wrong type."
+msgstr "模块 :mod 的 manifest.json 无效：:key 的类型错误。"
+
+# To translate (tools/locales.py starter).
+#: src/di.php
+msgid "Server manager :manager was not found."
+msgstr "未找到服务器管理器 :manager。"
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs ClientFence :min or later; this site has :version."
+msgstr "模块 :mod 需要 ClientFence :min 或更高版本；当前站点为 :version。"
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs :product :min or later; this site has :version."
+msgstr "模块 :mod 需要 :product :min 或更高版本；当前站点为 :version。"

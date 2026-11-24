@@ -376,7 +376,13 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $registrarsArr = [];
         foreach ($registrars as $registrar) {
-            $registrarsArr[] = $this->getService()->registrarToApiArray($registrar);
+            try {
+                $registrarsArr[] = $this->getService()->registrarToApiArray($registrar);
+            } catch (\ClientFence\Exception $e) {
+                // ClientFence core patch: a registrar whose adapter is missing (its module cannot run here) is listed as
+                // unavailable, so staff can still delete it.
+                $registrarsArr[] = ['id' => $registrar->id, 'title' => $registrar->name, 'test_mode' => $registrar->test_mode, 'unavailable' => $e->getMessage()];
+            }
         }
 
         $pager['list'] = $registrarsArr;

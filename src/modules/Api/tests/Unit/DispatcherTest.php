@@ -27,6 +27,11 @@ function createApiDispatcherDi(bool $extensionActive = true, bool $moduleHasServ
             return $this->extensionService;
         }
 
+        public function cannotRun(): ?array
+        {
+            return null;
+        }
+
         public function hasService(): bool
         {
             return true;
@@ -36,6 +41,11 @@ function createApiDispatcherDi(bool $extensionActive = true, bool $moduleHasServ
     $module = new readonly class($moduleHasService) {
         public function __construct(private bool $moduleHasService)
         {
+        }
+
+        public function cannotRun(): ?array
+        {
+            return null;
         }
 
         public function hasService(): bool

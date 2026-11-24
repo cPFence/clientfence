@@ -66,7 +66,8 @@ foreach ($modules as $module) {
     $commandsPath = Path::join(PATH_ROOT, 'modules', $cap, 'Commands');
 
     // Skip if Commands directory doesn't exist
-    if (!$filesystem->exists($commandsPath)) {
+    // ClientFence core patch: and a module that cannot run on this PHP (Module::cannotRun()): its commands are its code.
+    if (!$filesystem->exists($commandsPath) || $di['mod']($module)->cannotRun() !== null) {
         continue;
     }
 

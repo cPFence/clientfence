@@ -350,6 +350,7 @@ test('getAdminNavigation drops a group left without entries and keeps one anothe
     foreach (['support' => $support, 'news' => $newsNav] as $name => $controller) {
         $mods[$name] = Mockery::mock(ClientFence\Module::class);
         $mods[$name]->shouldReceive('getAdminController')->andReturn($controller);
+        $mods[$name]->shouldReceive('cannotRun')->andReturn(null);
     }
     $mods['extension'] = Mockery::mock(ClientFence\Module::class);
     $mods['extension']->shouldReceive('getCoreModules')->andReturn(['support', 'news']);
@@ -438,6 +439,7 @@ test('activate activates an extension', function (): void {
     $modMock->shouldReceive('install')
         ->atLeast()
         ->once();
+    $modMock->shouldReceive('cannotRun')->andReturn(null);
 
     $em = extensionBuildEm();
     $em->shouldReceive('flush')->atLeast()->once();
@@ -570,6 +572,7 @@ test('uninstall uninstalls an extension', function (): void {
         ->once()
         ->andReturn([]);
 
+    $modMock->shouldReceive('cannotRun')->andReturn(null);
     $modMock->shouldReceive('uninstall')
         ->atLeast()
         ->once()
@@ -1010,6 +1013,7 @@ test('hasManagePermission denies access when module does not declare manage_sett
         ->atLeast()
         ->once()
         ->andReturn([]);
+    $modMock->shouldReceive('cannotRun')->andReturn(null);
 
     $extensionRepository = Mockery::mock(ExtensionRepository::class);
     $extensionRepository->shouldReceive('existsActiveByTypeAndName')
@@ -1057,6 +1061,7 @@ test('hasManagePermission allows access when module declares manage_settings and
         ->atLeast()
         ->once()
         ->andReturn([]);
+    $modMock->shouldReceive('cannotRun')->andReturn(null);
 
     $extensionRepository = Mockery::mock(ExtensionRepository::class);
     $extensionRepository->shouldReceive('existsActiveByTypeAndName')
@@ -1222,6 +1227,7 @@ function extensionVersionedModule(array $manifest, ?object $service = null): Moc
     $mod->shouldReceive('install')->andReturn(true);
     $mod->shouldReceive('hasAdminController')->andReturn(false);
     $mod->shouldReceive('hasSettingsPage')->andReturn(false);
+    $mod->shouldReceive('cannotRun')->andReturn(null);
     $mod->shouldReceive('hasService')->andReturn($service !== null);
     if ($service !== null) {
         $mod->shouldReceive('getService')->andReturn($service);

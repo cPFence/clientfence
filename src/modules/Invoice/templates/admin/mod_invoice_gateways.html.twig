@@ -109,6 +109,8 @@
                                         <a class="cf-tile-link" href='{{ "invoice/gateway/#{gateway.id}"|url }}'>
                                             <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#credit-card" /></svg></span>
                                             <span>{{ gateway.title }}</span>
+                                            {# ClientFence core patch: why a gateway is unavailable (its adapter is missing). #}
+                                            {% if gateway.unavailable is defined %}<small class="d-block text-danger">{{ gateway.unavailable }}</small>{% endif %}
                                         </a>
                                     </td>
                                     <td><span class="bf-chip">{{ gateway.code }}</span></td>

@@ -258,6 +258,7 @@ final class Health
     {
         return [
             self::core(...),
+            self::modules(...),
             self::security(...),
             self::integrity(...),
             self::services(...),
@@ -300,6 +301,17 @@ final class Health
         // ClientFence has no update server: new versions come as ClientFence releases.
         $version = \ClientFence\Version::CLIENTFENCE;
         yield self::check('core', 'fb_update', self::msg('ClientFence version'), 'ok', self::msg('ClientFence :version. New versions come as ClientFence releases.'), params: [':version' => $version]);
+    }
+
+    // ---- Switched-on modules this PHP cannot run (the cron's and the web's can differ): their code is left out everywhere.
+    private static function modules(\Pimple\Container $di): iterable
+    {
+        foreach ($di['mod_service']('extension')->getExtensionRepository()->findInstalledNamesByType(\ClientFence\Mod\Extension\Entity\Extension::TYPE_MOD) as $name) {
+            $reason = $di['mod']($name)->cannotRun();
+            if ($reason !== null) {
+                yield self::check('core', 'mod_runs_' . $name, self::msg('The :mod module cannot run'), 'bad', $reason[0], 'extension', $reason[1]);
+            }
+        }
     }
 
     // ---- Security hardening.

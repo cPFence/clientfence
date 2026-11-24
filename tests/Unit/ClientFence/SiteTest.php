@@ -43,6 +43,7 @@ function siteDi(array $providers, array $others = []): Pimple\Container
         $mod = Mockery::mock(ClientFence\Module::class);
         $mod->shouldReceive('hasManifest')->andReturn(true);
         $mod->shouldReceive('getManifest')->andReturn(['id' => $name] + (isset($providers[$name]) ? ['sites' => true] : []));
+        $mod->shouldReceive('cannotRun')->andReturn(null);
 
         return $mod;
     });
@@ -101,6 +102,7 @@ test('a switched-on module with a broken manifest is left out; the other modules
         }
         $broken = Mockery::mock(ClientFence\Module::class);
         $broken->shouldReceive('hasManifest')->andReturn(true);
+        $broken->shouldReceive('cannotRun')->andReturn(null);
         $broken->shouldReceive('getManifest')->andThrow(new ClientFence\InformationException('Invalid manifest file for the :mod module', [':mod' => $name]));
 
         return $broken;

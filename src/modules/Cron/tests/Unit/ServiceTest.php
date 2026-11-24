@@ -225,3 +225,47 @@ test('session cleanup removes expired sessions even without a creation timestamp
         $connection->close();
     }
 });
+
+test('a throwing module at the cron start, the listener connect or the cron end does not stop the run but fails it', function (): void {
+    $updateFinalization = Mockery::mock();
+    $updateFinalization->shouldReceive('isRequired')->once()->andReturnFalse();
+    // A module that throws, for example while a server it calls is down.
+    $eventsManager = Mockery::mock('ClientFence\EventManager');
+    $fired = [];
+    $eventsManager->shouldReceive('fire')->twice()->andReturnUsing(function (array $data) use (&$fired): never {
+        $fired[] = $data;
+
+        throw new RuntimeException('module down');
+    });
+    $systemService = Mockery::mock(ClientFence\Mod\System\Service::class);
+    $systemService->shouldReceive('setParamValue')->once()->with('last_cron_exec', Mockery::type('string'), true);
+    $db = Mockery::mock('ClientFence\Database');
+    $db->shouldReceive('exec')->once()->andReturn(0);
+    $api = new CronServiceApiDouble();
+    $api->throwOn = 'hook_batch_connect';
+    $di = container();
+    $di['api_system'] = $api;
+    $di['db'] = $db;
+    $di['events_manager'] = $eventsManager;
+    $di['logger'] = $logger = new Tests\Helpers\TestLogger();
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $systemService);
+    $di['update_finalization'] = $updateFinalization;
+    $service = new Service();
+    $service->setDi($di);
+
+    ob_start();
+    $result = $service->runCrons();
+    ob_end_clean();
+
+    $warnings = array_column(array_filter($logger->calls, fn (array $call): bool => $call['method'] === 'warning'), 'params');
+    // The run goes on to every task, and its result still reports the failed steps.
+    expect($result)->toBeFalse()
+        ->and($fired)->toBe([['event' => 'onBeforeAdminCronRun', 'isolated' => true], ['event' => 'onAfterAdminCronRun', 'isolated' => true]])
+        ->and($api->methods)->toContain('invoice_batch_pay_with_credits', 'invoice_batch_generate', 'email_batch_sendmail')
+        ->and(array_map(fn (array $params): string => $params[0], $warnings))->toBe([
+            'Cron step hook_batch_connect failed: RuntimeException: Failed to run hook_batch_connect',
+            'Cron step onBeforeAdminCronRun failed: RuntimeException: module down',
+            'Cron step onAfterAdminCronRun failed: RuntimeException: module down',
+            'Finished executing cron jobs, but the following tasks failed: hook_batch_connect, onBeforeAdminCronRun, onAfterAdminCronRun.',
+        ]);
+});

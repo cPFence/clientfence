@@ -40,6 +40,8 @@
         </div>
     </div>
     <div class="card-body d-flex flex-column gap-3 border-top">
+        {# ClientFence core patch: why the gateway is unavailable (its adapter is missing). #}
+        {% if gateway.unavailable is defined %}<div class="alert alert-danger">{{ gateway.unavailable }}</div>{% endif %}
         {% if gateway.description %}
             <div class="alert alert-info mb-0">
                 {{ gateway.description|raw }}
@@ -74,7 +76,9 @@
                 {% endblock %}
             {% endembed %}
 
-            {# ClientFence core patch: the gateway fee, as HostBill's Gateway Fees (GatewayFees.php, config "fee"). #}
+            {# ClientFence core patch: the gateway fee, as HostBill's Gateway Fees (GatewayFees.php, config "fee"); not for a gateway
+               whose adapter is missing: saving its settings would need the adapter (Invoice ServicePayGateway::toUnavailableApiArray()). #}
+            {% if gateway.unavailable is not defined %}
             {% set fee = gateway.config.fee|default({}) %}
             {% embed 'partial_admin_form_card.html.twig' with {
                 title: 'Payment fee'|trans,
@@ -123,6 +127,7 @@
                     </div>
                 {% endblock %}
             {% endembed %}
+            {% endif %}
 
             {% if gateway.form %}
             {% embed 'partial_admin_form_card.html.twig' with {

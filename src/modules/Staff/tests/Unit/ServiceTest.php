@@ -1934,6 +1934,38 @@ test('updateGroup allows super administrator to update permissions', function ()
     expect($adminGroupModel->getPermissions())->toBe(['support' => ['access' => true]]);
 });
 
+test('updateGroup: for a module that cannot run here, ticked access keeps its other grants, unticked revokes it', function (array $sent, array $saved): void {
+    $adminGroupModel = new AdminGroup();
+    staffSetEntityId($adminGroupModel, 2);
+    $adminGroupModel->setPermissions(['support' => ['access' => true], 'broken' => ['access' => true, 'manage' => true], 'news' => ['access' => true]]);
+    $groupMemberRepository = Mockery::mock(AdminGroupMemberRepository::class);
+    $groupMemberRepository->shouldReceive('adminBelongsToSystemGroup')->andReturn(true);
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $di = container();
+    $di['em'] = staffEntityManager(Mockery::mock(AdminGroupRepository::class), $groupMemberRepository);
+    $di['logger'] = new Tests\Helpers\TestLogger();
+    $di['loggedin_admin'] = staffRegularAdmin();
+    $di['mod'] = $di->protect(fn (string $name): object => new class($name) {
+        public function __construct(private readonly string $name)
+        {
+        }
+
+        public function cannotRun(): ?array
+        {
+            return $this->name === 'broken' ? ['The :mod module cannot run', []] : null;
+        }
+    });
+    $serviceMock->setDi($di);
+
+    // The form shows only "Module access" for broken (its other permissions come from its code); news is unticked.
+    $serviceMock->updateGroup($adminGroupModel, ['permissions' => ['_submitted' => '1', 'support' => ['access' => '1'], ...$sent]]);
+
+    expect($adminGroupModel->getPermissions())->toBe(['support' => ['access' => '1'], ...$saved]);
+})->with([
+    'access ticked' => [['broken' => ['access' => '1']], ['broken' => ['access' => '1', 'manage' => true]]],
+    'access unticked' => [[], []],
+]);
+
 test('updateGroup rejects permission changes from non-super administrator', function (): void {
     $adminGroupModel = new AdminGroup();
     staffSetEntityId($adminGroupModel, 2);

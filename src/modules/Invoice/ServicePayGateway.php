@@ -228,6 +228,23 @@ class ServicePayGateway implements InjectionAwareInterface
     }
 
     /**
+     * ClientFence core patch: a gateway whose adapter cannot load (its module cannot run here) for staff, with nothing the
+     * adapter tells (no settings, secrets or description) and `unavailable` with why, so they can still turn it off
+     * (gateway_update() without config loads no adapter) or delete it.
+     */
+    public function toUnavailableApiArray(\Model_PayGateway $model, string $reason): array
+    {
+        return [
+            'id' => $model->id, 'code' => $model->gateway, 'title' => $model->name, 'enabled' => $model->enabled, 'test_mode' => $model->test_mode,
+            // Shown as they are, so saving the form keeps them.
+            'allow_single' => $model->allow_single, 'allow_recurrent' => $model->allow_recurrent, 'supports_one_time_payments' => true, 'supports_subscriptions' => true,
+            'accepted_currencies' => $this->getAcceptedCurrencies($model), 'config' => [], 'secret_fields' => [], 'form' => [], 'description' => '',
+            'callback' => $this->getCallbackUrl($model), 'unavailable' => $reason,
+            'unpaid_invoices' => (int) $this->di['em']->getConnection()->fetchOne('SELECT COUNT(*) FROM invoice WHERE gateway_id = ? AND status = ?', [$model->id, \Model_Invoice::STATUS_UNPAID]),
+        ];
+    }
+
+    /**
      * Config field names for this gateway's adapter whose stored values must
      * be hidden in the API and admin UI: the adapter's own declared secrets
      * plus any form field marked `'secret' => true`.
@@ -470,32 +487,38 @@ class ServicePayGateway implements InjectionAwareInterface
         $gateways = $this->di['db']->find('PayGateway', 'enabled = 1 ORDER BY position, id');
         $result = [];
         foreach ($gateways as $gtw) {
-            // ClientFence core patch: with a currency, only the gateways that take it; with single, only those that take one-time
-            // payments (a service's Payment Method on Edit Order).
-            if ((!empty($data['currency']) && !$this->acceptsCurrency($gtw, (string) $data['currency'])) || (!empty($data['single']) && !$this->canPerformSinglePayment($gtw))) {
-                continue;
-            }
-            if ($format == 'pairs') {
-                $result[$gtw->id] = $gtw->name;
-            } else {
-                $gateway = $this->toApiArray($gtw);
-                $adapter = $this->getPaymentAdapter($gtw);
-                $config = $adapter->getConfig();
-
-                if (!empty($config['logo'])) {
-                    $gateway['logo'] = $config['logo'];
-                    $gateway['logo']['logo'] = $this->resolveGatewayLogo($config['logo']);
-                } else {
-                    // Templates read gtw.logo.logo/height/width unconditionally,
-                    // so always provide the key even when the adapter ships no logo.
-                    $gateway['logo'] = [
-                        'logo' => $this->resolveGatewayLogo([]),
-                        'height' => '50px',
-                        'width' => '50px',
-                    ];
+            // ClientFence core patch: a gateway whose adapter is missing (its module cannot run here) is not offered, so the
+            // others still are.
+            try {
+                // ClientFence core patch: with a currency, only the gateways that take it; with single, only those that take one-time
+                // payments (a service's Payment Method on Edit Order).
+                if ((!empty($data['currency']) && !$this->acceptsCurrency($gtw, (string) $data['currency'])) || (!empty($data['single']) && !$this->canPerformSinglePayment($gtw))) {
+                    continue;
                 }
+                if ($format == 'pairs') {
+                    $result[$gtw->id] = $gtw->name;
+                } else {
+                    $gateway = $this->toApiArray($gtw);
+                    $adapter = $this->getPaymentAdapter($gtw);
+                    $config = $adapter->getConfig();
 
-                $result[] = $gateway;
+                    if (!empty($config['logo'])) {
+                        $gateway['logo'] = $config['logo'];
+                        $gateway['logo']['logo'] = $this->resolveGatewayLogo($config['logo']);
+                    } else {
+                        // Templates read gtw.logo.logo/height/width unconditionally,
+                        // so always provide the key even when the adapter ships no logo.
+                        $gateway['logo'] = [
+                            'logo' => $this->resolveGatewayLogo([]),
+                            'height' => '50px',
+                            'width' => '50px',
+                        ];
+                    }
+
+                    $result[] = $gateway;
+                }
+            } catch (\ClientFence\Exception $e) {
+                $this->di['logger']->warning(sprintf('Payment gateway %s is unavailable: %s', $gtw->name, $e->getMessage()));
             }
         }
 

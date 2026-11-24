@@ -35476,3 +35476,47 @@ msgstr "子域名"
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
 msgid "Through Cloudflare"
 msgstr "透過 Cloudflare"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Health.php
+msgid "The :mod module cannot run"
+msgstr "模組 :mod 無法執行"
+
+#: src/library/ClientFence/Module.php
+msgid "The :mod module is written for module API level :level, which this ClientFence does not run (levels :min to :max)."
+msgstr "模組 :mod 是為 module API 級別 :level 所編寫，此 ClientFence 不支援該級別（支援級別 :min 至 :max）。"
+
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs PHP :php or later; this PHP is :version."
+msgstr "模組 :mod 需要 PHP :php 或更新版本；目前的 PHP 為 :version。"
+
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs the PHP extension :extension, which this PHP (:sapi) does not load."
+msgstr "模組 :mod 需要 PHP 擴充功能 :extension，但目前的 PHP（:sapi）未載入該擴充功能。"
+
+#: src/library/ClientFence/Module.php
+msgid "The manifest.json of the :mod module cannot be read."
+msgstr "無法讀取模組 :mod 的 manifest.json。"
+
+#: src/library/ClientFence/ServiceTypes.php
+msgid "The manifest.json of the :mod module is not valid: :key has names that differ only in letter case."
+msgstr "模組 :mod 的 manifest.json 無效：:key 中有名稱僅大小寫不同。"
+
+#: src/library/ClientFence/ServiceTypes.php
+msgid "The manifest.json of the :mod module is not valid: :key has the wrong type."
+msgstr "模組 :mod 的 manifest.json 無效：:key 的類型錯誤。"
+
+# To translate (tools/locales.py starter).
+#: src/di.php
+msgid "Server manager :manager was not found."
+msgstr "找不到伺服器管理器 :manager。"
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs ClientFence :min or later; this site has :version."
+msgstr "模組 :mod 需要 ClientFence :min 或更新版本；目前的網站為 :version。"
+
+# To translate (tools/locales.py starter).
+#: src/library/ClientFence/Module.php
+msgid "The :mod module needs :product :min or later; this site has :version."
+msgstr "模組 :mod 需要 :product :min 或更新版本；目前的網站為 :version。"

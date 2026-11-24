@@ -87,6 +87,10 @@ final class Dispatcher implements InjectionAwareInterface
             }
         }
 
+        // ClientFence core patch: class_exists() loads the module's code; a module that cannot run here answers why (Module::cannotRun()).
+        if (($reason = $this->getDi()['mod']($mod)->cannotRun()) !== null) {
+            throw new \ClientFence\InformationException(...$reason);
+        }
         $apiClass = '\ClientFence\Mod\\' . ucfirst($mod) . '\Api\\' . ucfirst($role);
         if (!class_exists($apiClass)) {
             throw new Exception(':type API call :method does not exist in module :module', [':type' => ucfirst($role), ':method' => $methodName, ':module' => $mod], 740);

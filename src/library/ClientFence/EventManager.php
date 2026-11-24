@@ -51,7 +51,15 @@ class EventManager implements \ClientFence\InjectionAwareInterface
         $this->_connectDatabaseHooks($disp, $eventName);
         $this->_connectDatabaseHooks($disp, self::GLOBAL_LISTENER_NAME, $eventName); // Also connect global listeners (onEveryEvent) to the fired event
 
-        $disp->notify($e);
+        // ClientFence core patch: an "isolated" fire (the cron's start and end) logs a throwing listener and runs the next
+        // ones; elsewhere a listener throws to refuse the action (Antispam), so the exception goes on.
+        $disp->notify($e, empty($data['isolated']) ? null : fn (\Throwable $error, mixed $listener) => $this->di['logger']->setChannel('event')->warning(sprintf(
+            'Listener %s of %s failed: %s: %s',
+            is_array($listener) ? implode('::', $listener) : get_debug_type($listener),
+            $event,
+            $error::class,
+            $error->getMessage(),
+        )));
 
         return $e->getReturnValue();
     }
@@ -92,7 +100,36 @@ class EventManager implements \ClientFence\InjectionAwareInterface
                 }
             } catch (\Exception $e) {
                 error_log($e->getMessage());
+                // ClientFence core patch: a switched-on module that cannot run here (Module::cannotRun()) is not skipped: its
+                // listener throws the reason, so a veto still refuses and a hook call is not taken as done. Not its
+                // listener of every event (onEveryEvent): that one would refuse every action, staff sign-in included. Nor
+                // when it is the module being deactivated or uninstalled (removing()): it must never block its own removal.
+                if ($dispatchEventName === null && $this->di['mod']($mod)->cannotRun() !== null) {
+                    $di = $this->di;
+                    $disp->connect($dispatchEvent, static function (\ClientFence\Event $event) use ($di, $mod, $e): void {
+                        if (!self::removing($di, $event, (string) $mod)) {
+                            throw $e;
+                        }
+                    });
+                }
             }
         }
+    }
+
+    /** ClientFence: whether `$event` deactivates or uninstalls module `$mod` (before deactivation it names the extension row). */
+    private static function removing(\Pimple\Container $di, \ClientFence\Event $event, string $mod): bool
+    {
+        $name = $event->getName();
+        if (!in_array($name, ['onBeforeAdminDeactivateExtension', 'onAfterAdminDeactivateExtension', 'onBeforeAdminUninstallExtension', 'onAfterAdminUninstallExtension'], true)) {
+            return false;
+        }
+        // Read only for these four (Extension\Api\Admin fires them with an array); other events may pass an object.
+        $params = $event->getParameters();
+        $id = $params['id'] ?? null;
+        if ($name === 'onBeforeAdminDeactivateExtension') {
+            return is_numeric($id) && strcasecmp((string) $di['em']->getRepository(\ClientFence\Mod\Extension\Entity\Extension::class)->find((int) $id)?->getName(), $mod) === 0;
+        }
+
+        return ($params['type'] ?? null) === 'mod' && is_string($id) && strcasecmp($id, $mod) === 0;
     }
 }

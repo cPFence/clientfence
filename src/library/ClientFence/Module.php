@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace ClientFence;
 
+use ClientFence\Mod\Clientfence\Health;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
@@ -123,10 +124,87 @@ class Module implements InjectionAwareInterface
         return $this->filesystem->exists($path);
     }
 
+    /**
+     * ClientFence core patch: why this module's code cannot run on this PHP, as [message, params] in English (null: it
+     * can; Health::msg() marks the texts for translation). An encoded file run without its loader ends the whole PHP
+     * process, cron included, and the web and cron PHP can differ. Such a module stays switched on but is broken: its
+     * files are never loaded (getService() and the controllers throw the reason, so what needs it fails), and the few
+     * places that include its files directly skip it. Only manifest.json is read: "module_api" (absent: 1) must be a
+     * level from Version::MODULE_API_MIN to MODULE_API, and "requires" may name "extensions" (extension_loaded() names,
+     * for example "ionCube Loader" or "sodium") and a minimum "php" version; either key present but malformed, an
+     * unreadable manifest, or an unmet version minimum (unmetMinimum()) also means it cannot run. Core modules
+     * and a module whose folder is gone are not checked here.
+     *
+     * @return array{0: string, 1: array<string, string>}|null
+     */
+    public function cannotRun(): ?array
+    {
+        // A module whose folder is gone is not this check's: it fails as before, with no service class.
+        if ($this->isCore() || !$this->filesystem->exists($this->getModulePath())) {
+            return null;
+        }
+
+        return RequestCache::remember($this->di, 'module.cannot_run.' . $this->module, function (): ?array {
+            $params = [':mod' => $this->module];
+
+            try {
+                $manifest = $this->getManifest();
+            } catch (\Throwable) {
+                return [Health::msg('The manifest.json of the :mod module cannot be read.'), $params];
+            }
+            // A present but malformed key cannot say what the module needs, so it does not run (ServiceTypes::invalid()).
+            $problem = ServiceTypes::invalid($this->module, array_intersect_key($manifest, ['module_api' => 0, 'requires' => 0]));
+            if ($problem !== null) {
+                return $problem;
+            }
+            $level = $manifest['module_api'] ?? 1;
+            if ($level < Version::MODULE_API_MIN || $level > Version::MODULE_API) {
+                return [Health::msg('The :mod module is written for module API level :level, which this ClientFence does not run (levels :min to :max).'), $params + [':level' => (string) $level, ':min' => (string) Version::MODULE_API_MIN, ':max' => (string) Version::MODULE_API]];
+            }
+            foreach ($manifest['requires']['extensions'] ?? [] as $extension) {
+                if (!extension_loaded($extension)) {
+                    return [Health::msg('The :mod module needs the PHP extension :extension, which this PHP (:sapi) does not load.'), $params + [':extension' => $extension, ':sapi' => PHP_SAPI]];
+                }
+            }
+            $php = $manifest['requires']['php'] ?? null;
+            if ($php !== null && version_compare(PHP_VERSION, $php, '<')) {
+                return [Health::msg('The :mod module needs PHP :php or later; this PHP is :version.'), $params + [':php' => $php, ':version' => PHP_VERSION]];
+            }
+            // Files of a release for a newer core (its upgrade is refused until then) do not run either.
+            if (($unmet = self::unmetMinimum($manifest)) !== null) {
+                return [Health::msg('The :mod module needs :product :min or later; this site has :version.'), $params + array_combine([':product', ':min', ':version'], $unmet)];
+            }
+
+            return null;
+        });
+    }
+
+    /**
+     * ClientFence core patch: the first version minimum of `$manifest` this site does not meet, as [product, minimum, this
+     * site's version], or null. The one check for activation, upgrade (Extension\Service) and cannotRun(): the FOSSBilling
+     * base and the ClientFence release (Version::VERSION is a placeholder that refused every module with a minimum).
+     *
+     * @return array{0: string, 1: string, 2: string}|null
+     */
+    public static function unmetMinimum(array $manifest): ?array
+    {
+        foreach (['FOSSBilling' => ['minimum_fossbilling_version', Version::FOSSBILLING], 'ClientFence' => ['minimum_clientfence_version', Version::CLIENTFENCE]] as $product => [$key, $have]) {
+            if (!empty($manifest[$key]) && version_compare($have, (string) $manifest[$key], '<')) {
+                return [$product, (string) $manifest[$key], $have];
+            }
+        }
+
+        return null;
+    }
+
     public function getService(string $sub = ''): object
     {
         if (!$this->hasService($sub)) {
             throw new Exception('Module :mod does not have a service class. Make sure Service.php exists and is valid.', [':mod' => $this->module], 5898);
+        }
+        // ClientFence core patch: a module that cannot run here (cannotRun()) is never loaded: what needs it gets the reason.
+        if (($reason = $this->cannotRun()) !== null) {
+            throw new InformationException(...$reason);
         }
 
         $class = self::SERVICE_CLASS_PREFIX . ucfirst($this->module) . '\\Service' . ucfirst($sub);
@@ -296,6 +374,10 @@ class Module implements InjectionAwareInterface
 
     private function createControllerInstance(string $suffix): object
     {
+        // ClientFence core patch: as in getService(), a module that cannot run here is never loaded.
+        if (($reason = $this->cannotRun()) !== null) {
+            throw new InformationException(...$reason);
+        }
         $class = self::SERVICE_CLASS_PREFIX . ucfirst($this->module) . $suffix;
         $instance = new $class();
 

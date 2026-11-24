@@ -176,6 +176,8 @@
                                                 <span class="cf-avatar cf-avatar-sm" aria-hidden="true">{{ registrar.title|first|upper }}</span>
                                                 <a class="fw-semibold" href='{{ "servicedomain/registrar/#{registrar.id}"|url }}'>{{ registrar.title }}</a>
                                             </span>
+                                            {# ClientFence core patch: why a registrar is unavailable (its adapter is missing). #}
+                                            {% if registrar.unavailable is defined %}<small class="d-block text-danger">{{ registrar.unavailable }}</small>{% endif %}
                                         </td>
                                         <td>
                                             <a class="btn btn-icon" href="{{ 'servicedomain/registrar_copy'|api_url(query: { 'id': registrar.id }) }}" title="{{ 'Copy'|trans }}" {{ fb_api_link({redirect: 'servicedomain#tab-registrars'|url}) }}>

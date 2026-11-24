@@ -5508,10 +5508,6 @@
         "done": "ClientFence core patch: the moved invoices take the replacement's fee instead of this gateway's (GatewayFees.php)."
     },
     {
-        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
-        "done": "ClientFence core patch: the gateway fee, as HostBill's Gateway Fees (GatewayFees.php, config \"fee\")."
-    },
-    {
         "file": "modules/Invoice/ServiceSubscription.php",
         "done": "ClientFence core patch: the gateway fee is part of each payment, not a line of its own period (GatewayFees.php)."
     },
@@ -10034,5 +10030,141 @@
     {
         "file": "load.php",
         "done": "ClientFence core patch: a host whose module cannot serve it now gets a 503 before anything runs on it (ClientFence\\Site)."
+    },
+    {
+        "file": "library/ClientFence/Version.php",
+        "done": "ClientFence core patch: the level of the module hooks this core offers"
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch: why this module's code cannot run on this PHP"
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch: as in getService(), a module that cannot run here is never loaded."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: the new files are checked as at activation; a refused upgrade keeps the old version."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: refuses a module at activation and upgrade (upgradeModule())"
+    },
+    {
+        "file": "library/ClientFence/EventManager.php",
+        "done": "ClientFence core patch: an \"isolated\" fire (the cron's start and end) logs a throwing listener and runs the next"
+    },
+    {
+        "file": "library/ClientFence/EventDispatcher.php",
+        "done": "ClientFence core patch: given, a listener that throws is"
+    },
+    {
+        "file": "modules/Hook/Service.php",
+        "done": "ClientFence core patch: a module this PHP cannot run is not loaded; its listeners stay for a PHP that can (Module::cannotRun())."
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch: a module that cannot run here (cannotRun()) is never loaded: what needs it gets the reason."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: whether module `$name`'s code may run on this PHP (Module::cannotRun())."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: not from a module that cannot run here (runs()): its gateway then reports itself unavailable."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: class_exists() would load the code of a module that cannot run here (runs()); it then"
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: the menu of a module that cannot run here is left out (its pages show the reason)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: a module that cannot run here cannot run its own cleanup either: its files still go,"
+    },
+    {
+        "file": "modules/Cron/Service.php",
+        "done": "ClientFence core patch: these load every switched-on module's code; one that throws must not stop the invoices,"
+    },
+    {
+        "file": "modules/Cron/Service.php",
+        "done": "ClientFence core patch: runs cron step `$name`; what it throws is logged as a warning, the step joins `$failed` and"
+    },
+    {
+        "file": "library/ClientFence/EventManager.php",
+        "done": "ClientFence core patch: a switched-on module that cannot run here (Module::cannotRun()) is not skipped: its"
+    },
+    {
+        "file": "modules/Hook/Service.php",
+        "done": "ClientFence core patch: not loaded when it cannot run here; its listener rows stay (Module::cannotRun())."
+    },
+    {
+        "file": "console.php",
+        "done": "ClientFence core patch: and a module that cannot run on this PHP (Module::cannotRun()): its commands are its code."
+    },
+    {
+        "file": "library/ClientFence/Api/Dispatcher.php",
+        "done": "ClientFence core patch: class_exists() loads the module's code; a module that cannot run here answers why (Module::cannotRun())."
+    },
+    {
+        "file": "di.php",
+        "done": "ClientFence core patch: a missing manager (its module cannot run here) is an exception the callers catch, not an Error."
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: a gateway whose adapter is missing (its module cannot run here) is listed as"
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch: a registrar whose adapter is missing (its module cannot run here) is listed as"
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: a gateway whose adapter is missing (its module cannot run here) is not offered, so the"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateways.html.twig",
+        "done": "ClientFence core patch: why a gateway is unavailable (its adapter is missing)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig",
+        "done": "ClientFence core patch: why a registrar is unavailable (its adapter is missing)."
+    },
+    {
+        "file": "modules/Extension/Service.php",
+        "done": "ClientFence core patch: and its new listeners, as activation connects them"
+    },
+    {
+        "file": "library/ClientFence/EventManager.php",
+        "done": "when it is the module being deactivated or uninstalled (removing()): it must never block its own removal."
+    },
+    {
+        "file": "library/ClientFence/Module.php",
+        "done": "ClientFence core patch: the first version minimum of `$manifest` this site does not meet"
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: for a module that cannot run on this PHP (Module::cannotRun()) the form shows only \"Module"
+    },
+    {
+        "file": "modules/Invoice/Api/Admin.php",
+        "done": "ClientFence core patch: as in gateway_get_list(), so its Edit page can still turn it off."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: a gateway whose adapter cannot load (its module cannot run here) for staff"
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch: why the gateway is unavailable (its adapter is missing)."
+    },
+    {
+        "file": "modules/Invoice/templates/admin/mod_invoice_gateway.html.twig",
+        "done": "ClientFence core patch: the gateway fee, as HostBill's Gateway Fees (GatewayFees.php, config \"fee\"); not for a gateway"
     }
 ]

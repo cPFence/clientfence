@@ -798,7 +798,15 @@ class Service implements InjectionAwareInterface
             }
 
             unset($data['permissions']['_submitted']);
-            $model->setPermissions($data['permissions']);
+            // ClientFence core patch: for a module that cannot run on this PHP (Module::cannotRun()) the form shows only "Module
+            // access": ticked, its other stored grants are kept; unticked (absent), it is revoked as before.
+            $permissions = $data['permissions'];
+            foreach ($model->getPermissions() as $module => $stored) {
+                if (is_array($permissions[$module] ?? null) && is_array($stored) && $this->di['mod']((string) $module)->cannotRun() !== null) {
+                    $permissions[$module] += $stored;
+                }
+            }
+            $model->setPermissions($permissions);
         }
 
         $this->di['em']->persist($model);

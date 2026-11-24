@@ -147,6 +147,7 @@ test('batch connects', function (): void {
     $activityServiceMock = Mockery::mock(ClientFence\Mod\Activity\Service::class);
 
     $boxModMock = Mockery::mock(ClientFence\Module::class);
+    $boxModMock->shouldReceive('cannotRun')->andReturn(null);
     /** @var Mockery\Expectation $expectation1 */
     $expectation1 = $boxModMock->shouldReceive('hasService');
     $expectation1->atLeast()->once();

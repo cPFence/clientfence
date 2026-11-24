@@ -866,7 +866,13 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         foreach ($pager['list'] as $key => $item) {
             $gateway = $this->getDi()['db']->getExistingModelById('PayGateway', $item['id'], 'Gateway not found');
-            $pager['list'][$key] = $gatewayService->toApiArray($gateway, false, $this->getIdentity());
+            try {
+                $pager['list'][$key] = $gatewayService->toApiArray($gateway, false, $this->getIdentity());
+            } catch (\ClientFence\Exception $e) {
+                // ClientFence core patch: a gateway whose adapter is missing (its module cannot run here) is listed as
+                // unavailable, so staff can still turn it off or delete it.
+                $pager['list'][$key] = $gatewayService->toUnavailableApiArray($gateway, $e->getMessage());
+            }
         }
 
         return $pager;
@@ -934,7 +940,12 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $gatewayService = $this->getDi()['mod_service']('Invoice', 'PayGateway');
 
-        return $gatewayService->toApiArray($model, true, $this->getIdentity());
+        try {
+            return $gatewayService->toApiArray($model, true, $this->getIdentity());
+        } catch (\ClientFence\Exception $e) {
+            // ClientFence core patch: as in gateway_get_list(), so its Edit page can still turn it off.
+            return $gatewayService->toUnavailableApiArray($model, $e->getMessage());
+        }
     }
 
     /**

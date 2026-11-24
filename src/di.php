@@ -669,6 +669,10 @@ $di['server_manager'] = $di->protect(function ($manager, $config) use ($di) {
             require_once $file;
         }
     }
+    // ClientFence core patch: a missing manager (its module cannot run here) is an exception the callers catch, not an Error.
+    if (!class_exists($class)) {
+        throw new ClientFence\Exception('Server manager :manager was not found.', [':manager' => $managerName]);
+    }
 
     $s = new $class($config);
     $s->setLog($di['logger']);

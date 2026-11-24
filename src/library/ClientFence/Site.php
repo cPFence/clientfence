@@ -19,7 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
  *   modules' sites never share a key (the 50 characters keep it short enough to store with a record);
  * - throws SiteUnavailableException: its host, but it cannot serve it now; that request gets a 503 page
  *   (unavailable()), never the primary site, so a visitor never sees another site in its place.
- * Any other exception or answer is logged and the next module is asked. The primary host and the console (cron, the
+ * Any other exception or answer is logged and the next module is asked. While a switched-on site module cannot run on
+ * this PHP (Module::cannotRun()), every host but the primary one gets the 503. The primary host and the console (cron, the
  * command line) never ask a module. site() runs while $di['site'] is being worked out, so it must not read it, nor
  * what is built on it ($di['url'], System\Service::getCompany()).
  *
@@ -109,7 +110,17 @@ final readonly class Site
             return $primary;
         }
 
-        foreach (self::providers($di) as $module) {
+        // A site module that cannot run here cannot say which hosts are its own: no host but the primary one gets a site
+        // that may be another's.
+        $providers = self::providers($di);
+        foreach ($providers as $module) {
+            if (($reason = $di['mod']($module)->cannotRun()) !== null) {
+                $di['logger']->warning(sprintf('The %s module cannot answer for the host %s: %s', $module, $host, strtr(...$reason)));
+
+                throw new SiteUnavailableException(strtr(...$reason));
+            }
+        }
+        foreach ($providers as $module) {
             try {
                 $service = $di['mod_service']($module);
             } catch (\Throwable $e) {

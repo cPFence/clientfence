@@ -165,7 +165,8 @@ class Service implements InjectionAwareInterface
                     }
 
                     $mod = $this->di['mod']($m);
-                    if ($mod->hasService()) {
+                    // ClientFence core patch: not loaded when it cannot run here; its listener rows stay (Module::cannotRun()).
+                    if ($mod->hasService() && $mod->cannotRun() === null) {
                         $class = $mod->getService();
                         $reflector = new \ReflectionClass($class);
                         foreach ($reflector->getMethods() as $method) {
@@ -265,6 +266,10 @@ class Service implements InjectionAwareInterface
                 if (!$mod->hasService()) {
                     $this->di['em']->getConnection()->executeStatement($rm_sql, ['id' => $listener['id']]);
 
+                    continue;
+                }
+                // ClientFence core patch: a module this PHP cannot run is not loaded; its listeners stay for a PHP that can (Module::cannotRun()).
+                if ($mod->cannotRun() !== null) {
                     continue;
                 }
 

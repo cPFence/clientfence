@@ -97,8 +97,11 @@ class Service
         $this->di['logger']->setChannel('cron')->info('Started executing cron jobs.');
 
         // @core tasks
-        $this->_exec($api, 'hook_batch_connect');
-        $this->di['events_manager']->fire(['event' => 'onBeforeAdminCronRun']);
+        // ClientFence core patch: these load every switched-on module's code; one that throws must not stop the invoices,
+        // but fails the run (isolated()).
+        $failedTasks = [];
+        $this->isolated($failedTasks, 'hook_batch_connect', fn () => $this->_exec($api, 'hook_batch_connect'));
+        $this->isolated($failedTasks, 'onBeforeAdminCronRun', fn () => $this->di['events_manager']->fire(['event' => 'onBeforeAdminCronRun', 'isolated' => true]));
 
         $this->_exec($api, 'invoice_batch_pay_with_credits');
         $this->_exec($api, 'invoice_batch_activate_paid');
@@ -114,7 +117,6 @@ class Service
             'cart_batch_expire',
             'email_batch_sendmail',
         ];
-        $failedTasks = [];
         foreach ($isolatedTasks as $method) {
             try {
                 $this->_exec($api, $method);
@@ -138,7 +140,7 @@ class Service
         $count = $this->clearOldSessions() ?? 0;
         $this->di['logger']->setChannel('cron')->info("Cleared {$count} outdated sessions from the database.");
 
-        $this->di['events_manager']->fire(['event' => 'onAfterAdminCronRun']);
+        $this->isolated($failedTasks, 'onAfterAdminCronRun', fn () => $this->di['events_manager']->fire(['event' => 'onAfterAdminCronRun', 'isolated' => true]));
 
         if ($failedTasks !== []) {
             $this->di['logger']->setChannel('cron')->warning('Finished executing cron jobs, but the following tasks failed: ' . implode(', ', $failedTasks) . '.');
@@ -149,6 +151,22 @@ class Service
         $this->di['logger']->setChannel('cron')->info('Finished executing cron jobs.');
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: runs cron step `$name`; what it throws is logged as a warning, the step joins `$failed` and
+     * the run goes on.
+     *
+     * @param list<string> $failed
+     */
+    private function isolated(array &$failed, string $name, callable $step): void
+    {
+        try {
+            $step();
+        } catch (\Throwable $exception) {
+            $failed[] = $name;
+            $this->di['logger']->setChannel('cron')->warning(sprintf('Cron step %s failed: %s: %s', $name, $exception::class, $exception->getMessage()));
+        }
     }
 
     /**

@@ -18,6 +18,15 @@ final class Version
     public const string CLIENTFENCE = '1.0.62';
     // ClientFence core patch: the FOSSBilling release ClientFence is based on; extension manifests' minimum_fossbilling_version is checked against it (VERSION is a placeholder).
     public const string FOSSBILLING = '0.8.8';
+    /**
+     * ClientFence core patch: the level of the module hooks this core offers (the manifest root keys, the "service"
+     * object, sites, bill_usage() and the other module methods the core calls). A module's manifest.json names the level
+     * it was written for in "module_api" (absent: 1); the core runs it only at a level from MODULE_API_MIN to MODULE_API
+     * (Module::cannotRun()). An incompatible change to a hook raises MODULE_API; a new hook beside the old ones does not.
+     * MODULE_API_MIN rises only when the core stops serving the older level.
+     */
+    public const int MODULE_API = 1;
+    public const int MODULE_API_MIN = 1;
     public const int PATCH = 0;
     public const int MINOR = 1;
     public const int MAJOR = 2;

@@ -95,6 +95,16 @@ class Service implements InjectionAwareInterface
         return $this->getExtensionRepository()->existsActiveByTypeAndName($type, $id);
     }
 
+    /**
+     * ClientFence core patch: whether module `$name`'s code may run on this PHP (Module::cannotRun()). A switched-on module
+     * that cannot stays active (what needs it fails with the reason); only code that includes its files without
+     * Module::getService() skips it.
+     */
+    private function runs(string $name): bool
+    {
+        return $this->di['mod']($name)->cannotRun() === null;
+    }
+
     public static function onBeforeAdminCronRun(\ClientFence\Event $event): bool
     {
         $di = $event->getDi();
@@ -297,7 +307,8 @@ class Service implements InjectionAwareInterface
                 continue;
             }
             $m = $this->di['mod']($mod);
-            $obj = $m->getAdminController();
+            // ClientFence core patch: the menu of a module that cannot run here is left out (its pages show the reason).
+            $obj = $m->cannotRun() === null ? $m->getAdminController() : null;
 
             if (!is_null($obj) && method_exists($obj, 'fetchNavigation')) {
                 $n = $obj->fetchNavigation();
@@ -422,17 +433,23 @@ class Service implements InjectionAwareInterface
         if ($mod->isCore()) {
             return false;
         }
-        $to = (string) ($mod->getManifest()['version'] ?? '');
+        $manifest = $mod->getManifest();
+        $to = (string) ($manifest['version'] ?? '');
         $from = (string) $model->getVersion();
         if ($to === '' || version_compare($to, $from, '<=')) {
             return false;
         }
+        // ClientFence core patch: the new files are checked as at activation; a refused upgrade keeps the old version.
+        $this->checkModule($mod, (string) $model->getName(), $manifest);
 
         if ($mod->hasService() && method_exists($service = $mod->getService(), 'upgrade')) {
             $service->upgrade($from);
         }
         // ClientFence core patch: then the module's new database steps (ModuleMigrations); a failed one leaves the old version, so it is tried again.
         \ClientFence\Mod\Clientfence\ModuleMigrations::apply($this->di, $model->getName());
+        // ClientFence core patch: and its new listeners, as activation connects them (Hook\Service::onAfterAdminActivateExtension()),
+        // on this PHP that just passed checkModule(): a cron PHP that cannot run the module skips it in batchConnect().
+        $this->di['mod_service']('hook')->batchConnect($model->getName());
         $model->setVersion($to);
         $this->di['em']->flush();
         $this->di['logger']->info('Upgraded extension "%s" from %s to %s', $model->getName(), $from, $to);
@@ -450,7 +467,8 @@ class Service implements InjectionAwareInterface
     public function getModuleAdapterFiles(string $dir): array
     {
         $files = [];
-        foreach ($this->getExtensionRepository()->findInstalledNamesByType(Extension::TYPE_MOD) as $mod) {
+        // ClientFence core patch: not from a module that cannot run here (runs()): its gateway then reports itself unavailable.
+        foreach (array_filter($this->getExtensionRepository()->findInstalledNamesByType(Extension::TYPE_MOD), $this->runs(...)) as $mod) {
             foreach (glob(Path::join(PATH_MODS, ucfirst($mod), $dir, '*.php')) ?: [] as $file) {
                 $files[Path::getFilenameWithoutExtension($file)] ??= $file;
             }
@@ -575,13 +593,19 @@ class Service implements InjectionAwareInterface
         if ($type === \ClientFence\ExtensionManager::TYPE_MOD) {
             $mod = $this->di['mod']($id);
 
-            try {
-                $mod->uninstall();
-            } catch (\Exception $e) {
-                throw new \ClientFence\Exception('An exception was thrown by the :name module: :err', [':name' => $id, ':err' => $e->getMessage()]);
+            // ClientFence core patch: a module that cannot run here cannot run its own cleanup either: its files still go,
+            // its tables (and their recorded database steps) stay.
+            if ($mod->cannotRun() === null) {
+                try {
+                    $mod->uninstall();
+                } catch (\Exception $e) {
+                    throw new \ClientFence\Exception('An exception was thrown by the :name module: :err', [':name' => $id, ':err' => $e->getMessage()]);
+                }
+                // ClientFence core patch: its tables are gone, so a new install runs its database steps again (ModuleMigrations).
+                \ClientFence\Mod\Clientfence\ModuleMigrations::forget($this->di, $id);
+            } else {
+                $this->di['logger']->warning('Uninstalled the %s module without its own cleanup: it cannot run on this PHP.', $id);
             }
-            // ClientFence core patch: its tables are gone, so a new install runs its database steps again (ModuleMigrations).
-            \ClientFence\Mod\Clientfence\ModuleMigrations::forget($this->di, $id);
         }
 
         // Finally remove the extension files from disk if they exist
@@ -687,12 +711,7 @@ class Service implements InjectionAwareInterface
         }
 
         $info = $mod->getManifest();
-        // ClientFence core patch: a manifest's minimum versions are checked against the FOSSBilling base and the ClientFence release (VERSION is a placeholder that refused every module with a minimum).
-        foreach (['FOSSBilling' => ['minimum_fossbilling_version', \ClientFence\Version::FOSSBILLING], 'ClientFence' => ['minimum_clientfence_version', \ClientFence\Version::CLIENTFENCE]] as $product => [$key, $have]) {
-            if (!empty($info[$key]) && version_compare($have, (string) $info[$key], '<')) {
-                throw new \ClientFence\InformationException('Module cannot be installed. It requires :product :min or later; this site has :v.', [':product' => $product, ':min' => $info[$key], ':v' => $have]);
-            }
-        }
+        $this->checkModule($mod, (string) $ext->getName(), $info);
 
         // Allow install module even if no installer exists
         // as it can be simple module
@@ -711,6 +730,24 @@ class Service implements InjectionAwareInterface
         $this->di['em']->flush();
 
         return true;
+    }
+
+    /**
+     * ClientFence core patch: refuses a module at activation and upgrade (upgradeModule()) when its manifest's minimum
+     * versions are not met, its known keys have the wrong type (ServiceTypes::invalid()), or its module API level or
+     * requirements are not met on this PHP (Module::cannotRun()).
+     *
+     * @throws \ClientFence\InformationException
+     */
+    private function checkModule(\ClientFence\Module $mod, string $name, array $info): void
+    {
+        // ClientFence core patch: a manifest's minimum versions are checked against the FOSSBilling base and the ClientFence release (VERSION is a placeholder that refused every module with a minimum).
+        if (($unmet = \ClientFence\Module::unmetMinimum($info)) !== null) {
+            throw new \ClientFence\InformationException('Module cannot be installed. It requires :product :min or later; this site has :v.', array_combine([':product', ':min', ':v'], $unmet));
+        }
+        if (($problem = \ClientFence\ServiceTypes::invalid($name, $info) ?? $mod->cannotRun()) !== null) {
+            throw new \ClientFence\InformationException(...$problem);
+        }
     }
 
     public function activateExistingExtension(array $data): array
@@ -949,7 +986,9 @@ class Service implements InjectionAwareInterface
     public function getSpecificModulePermissions(string $module): array
     {
         $class = 'ClientFence\Mod\\' . ucfirst($module) . '\Service';
-        if (class_exists($class) && method_exists($class, 'getModulePermissions')) {
+        // ClientFence core patch: class_exists() would load the code of a module that cannot run here (runs()); it then
+        // declares no permission, so its settings stay refused (hasManagePermission()).
+        if ($this->runs($module) && class_exists($class) && method_exists($class, 'getModulePermissions')) {
             $moduleService = new $class();
             if (method_exists($moduleService, 'setDi')) {
                 $moduleService->setDi($this->di);

@@ -48,6 +48,10 @@ namespace ClientFence;
  *
  * Switched-off modules: their root hooks and their "changeable" do not count. Lifecycle, entity, single_unit, order_config
  * and icon keep working, so the existing orders of a switched-off module still suspend, cancel and show.
+ *
+ * Any module also declares "module_api" (the hook level it was written for) and "requires" (PHP extensions and version):
+ * a module that cannot run on this PHP stays switched on but its code is never loaded (Module::cannotRun()). invalid() checks the known keys'
+ * types when a module is switched on or upgraded.
  */
 final class ServiceTypes
 {
@@ -61,8 +65,8 @@ final class ServiceTypes
         if (!is_array($declared)) {
             return [];
         }
-        // A switched-off module could not apply a product change.
-        if (array_key_exists('changeable', $declared) && !self::switchedOn($di, $module)) {
+        // A switched-off module, or one that cannot run on this PHP (Module::cannotRun()), could not apply a product change.
+        if (array_key_exists('changeable', $declared) && (!self::switchedOn($di, $module) || $di['mod']($module)->cannotRun() !== null)) {
             unset($declared['changeable']);
         }
 
@@ -80,7 +84,15 @@ final class ServiceTypes
         // In the module's own namespace, so that typeOfEntity() finds the type back from the class.
         $namespace = 'ClientFence\\Mod\\Service' . $type . '\\';
 
-        return is_string($class) && stripos($class, $namespace) === 0 && class_exists($class) ? $class : null;
+        if (!is_string($class) || stripos($class, $namespace) !== 0) {
+            return null;
+        }
+        // class_exists() loads the module's code: a module that cannot run on this PHP fails with the reason instead.
+        if (($reason = $di['mod']('service' . $type)->cannotRun()) !== null) {
+            throw new InformationException(...$reason);
+        }
+
+        return class_exists($class) ? $class : null;
     }
 
     /** The product type whose declared entity `$service` is (a Doctrine proxy counts as its entity), or null. */
@@ -198,6 +210,63 @@ final class ServiceTypes
     public static function usage(\Pimple\Container $di): array
     {
         return array_keys(array_filter(self::hooks($di), static fn (array $hooks): bool => ($hooks['usage'] ?? null) === true));
+    }
+
+    /**
+     * The first problem of module `$module`'s manifest, as [message, params] in English, or null. One check for activation
+     * and upgrade (Extension\Service): a known key of the wrong type, or two keys that differ only in letter case in a
+     * map matched case-blind. Unknown keys pass (later hooks). At runtime the readers above still ignore a bad value.
+     *
+     * @return array{0: string, 1: array<string, string>}|null
+     */
+    public static function invalid(string $module, array $manifest): ?array
+    {
+        $any = static fn (): bool => true;
+        $list = static fn (mixed $v): bool => is_array($v) && array_is_list($v) && array_filter($v, 'is_string') === $v;
+        // A JSON object: string keys (an empty one decodes as []), each value valid.
+        $map = static fn (callable $valid): \Closure => static fn (mixed $v): bool => is_array($v)
+            && array_filter(array_keys($v), 'is_string') === array_keys($v) && array_filter($v, $valid) === $v;
+        $rules = [
+            'module_api' => 'is_int',
+            'requires' => $map($any),
+            'requires.extensions' => $list,
+            // A plain version: version_compare() would read ">=8.4" as older than any release.
+            'requires.php' => static fn (mixed $v): bool => is_string($v) && preg_match('/^\d+(\.\d+){0,2}$/', $v) === 1,
+            'sites' => 'is_bool',
+            'migrations' => 'is_string',
+            'client_calls' => $map(static fn (mixed $p): bool => is_string($p) || $list($p)),
+            'rate_limits' => $map(self::validPolicy(...)),
+            'client_pages' => $map(static fn (mixed $p): bool => $p === null || is_string($p)),
+            'store_calls' => $map($map('is_string')),
+            'usage' => 'is_bool',
+            'service' => $map($any),
+            'service.lifecycle' => 'is_string',
+            'service.entity' => 'is_string',
+            'service.single_unit' => 'is_bool',
+            'service.order_config' => 'is_bool',
+            'service.changeable' => 'is_bool',
+            'service.icon' => 'is_string',
+        ];
+        foreach ($rules as $path => $valid) {
+            [$key, $sub] = explode('.', $path) + [1 => null];
+            // Rules run in order, so a parent read here is a map or absent.
+            $value = $sub === null ? $manifest : $manifest[$key] ?? [];
+            if (array_key_exists($sub ?? $key, $value) && !$valid($value[$sub ?? $key])) {
+                return [\ClientFence\Mod\Clientfence\Health::msg('The manifest.json of the :mod module is not valid: :key has the wrong type.'), [':mod' => $module, ':key' => $path]];
+            }
+        }
+        // The gates lower-case these names (lower()), so "Guest" and "guest" would replace each other.
+        $maps = ['client_calls' => $manifest['client_calls'] ?? [], 'client_pages' => $manifest['client_pages'] ?? [], 'store_calls' => $manifest['store_calls'] ?? []];
+        foreach ($maps['store_calls'] as $role => $calls) {
+            $maps['store_calls.' . $role] = $calls;
+        }
+        foreach ($maps as $path => $names) {
+            if (count(array_change_key_case($names)) !== count($names)) {
+                return [\ClientFence\Mod\Clientfence\Health::msg('The manifest.json of the :mod module is not valid: :key has names that differ only in letter case.'), [':mod' => $module, ':key' => $path]];
+            }
+        }
+
+        return null;
     }
 
     /** @return array<string, array<string, mixed>> the root hooks of the switched-on modules that declare any, by module id */

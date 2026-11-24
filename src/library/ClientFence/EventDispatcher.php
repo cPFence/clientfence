@@ -31,13 +31,23 @@ class EventDispatcher
      * Notifies all listeners of a given event.
      *
      * @param \ClientFence\Event $event A \ClientFence\Event instance
+     * @param (callable(\Throwable, mixed): void)|null $onError ClientFence core patch: given, a listener that throws is
+     *                                                           reported to it and the next listeners still run;
+     *                                                           without it the exception stops the action (a listener's refusal)
      *
      * @return \ClientFence\Event The \ClientFence\Event instance
      */
-    public function notify(\ClientFence\Event $event)
+    public function notify(\ClientFence\Event $event, ?callable $onError = null)
     {
         foreach ($this->getListeners($event->getName()) as $listener) {
-            call_user_func($listener, $event);
+            try {
+                call_user_func($listener, $event);
+            } catch (\Throwable $error) {
+                if ($onError === null) {
+                    throw $error;
+                }
+                $onError($error, $listener);
+            }
         }
 
         return $event;
