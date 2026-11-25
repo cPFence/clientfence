@@ -91,7 +91,7 @@ final class Csv
         $csv->insertOne(['']);
         $csv->insertOne([__trans('Section'), __trans('Check'), __trans('Result'), __trans('Detail'), __trans('Fix')]);
         foreach ($plan['preflight'] ?? [] as $check) {
-            $csv->insertOne([__trans('Server check'), __trans((string) $check['check']), $check['ok'] ? __trans('Pass') : __trans('Fail'), (string) $check['detail'], (string) $check['fix']]);
+            $csv->insertOne([__trans('Server check'), (string) $check['check'], $check['ok'] ? __trans('Pass') : __trans('Fail'), (string) $check['detail'], (string) $check['fix']]);
         }
     }
 

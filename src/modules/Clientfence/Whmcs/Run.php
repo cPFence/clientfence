@@ -185,10 +185,11 @@ final class Run
                         $runner->discard();
                     }
                     $state = $before;
-                    $state['error'] = sprintf('%s: %s', $label, mb_substr($e->getMessage(), 0, 500));
+                    // The message is translated when thrown (InformationException): the step name is too.
+                    $state['error'] = sprintf('%s: %s', __trans($label), mb_substr($e->getMessage(), 0, 500));
                     self::save($di, $state);
 
-                    throw new InformationException('The import stopped at ":step": :error', [':step' => $label, ':error' => mb_substr($e->getMessage(), 0, 500)]);
+                    throw new InformationException('The import stopped at ":step": :error', [':step' => __trans($label), ':error' => mb_substr($e->getMessage(), 0, 500)]);
                 }
                 if ($seconds > 0 && microtime(true) - $started >= $seconds) {
                     return $state;

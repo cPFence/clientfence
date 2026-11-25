@@ -101,11 +101,11 @@ final class Inventory
         $major = $source->major();
         $supported = $major >= Source::SUPPORTED_MAJOR;
         if ($major === 0) {
-            $warnings[] = 'The WHMCS version is unknown.';
+            $warnings[] = self::msg('The WHMCS version is unknown.');
         } elseif ($major < Source::OLDEST_MAJOR) {
-            $warnings[] = 'WHMCS ' . $source->version() . ' is too old to import: update it to 8 or later first.';
+            $warnings[] = self::msg('WHMCS :version is too old to import: update it to 8 or later first.');
         } elseif (!$supported) {
-            $warnings[] = 'WHMCS ' . $source->version() . ' imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first.';
+            $warnings[] = self::msg('WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first.');
         }
 
         return [
@@ -321,5 +321,11 @@ final class Inventory
         }
 
         return false;
+    }
+
+    /** Marks a warning for tools/locales.py extract: the plan saves it in English, translated when read (Import::shown()). */
+    private static function msg(string $text): string
+    {
+        return $text;
     }
 }

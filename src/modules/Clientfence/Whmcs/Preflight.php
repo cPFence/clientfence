@@ -23,21 +23,16 @@ final class Preflight
     /** The database's largest statement the import needs (bytes; licence log batches, emails). */
     public const PACKET = 16 * 1024 * 1024;
 
-    /** How to fix WHMCS text kept as UTF-8 bytes in latin1 (QA r4 W-09: a plain CONVERT TO CHARACTER SET keeps it garbled). */
-    private const CONVERT = 'In a copy of the WHMCS database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy.';
-
-    /** How to repair UTF-8 text stored twice encoded in a UTF-8 table (back to its bytes through latin1, only those rows). */
-    private const REPAIR = 'In a copy of the WHMCS database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X\'C383C2\', CAST(col AS BINARY)) > 0 OR LOCATE(X\'C382C2\', CAST(col AS BINARY)) > 0; then import from the copy.';
-
     /** Free disk space kept on top of the ticket files to copy (bytes). */
     public const DISK_MARGIN = 200 * 1024 * 1024;
 
     /**
      * Each check: what it is, whether it passes, what was found and how to fix it. Free disk space
      * is judged only for a run that has not started ($starting): a started run has already used
-     * some of it for the files it copied.
+     * some of it for the files it copied. The texts are in English with their values in params, translated when
+     * read (localize()): the plan saves them.
      *
-     * @return list<array{check: string, ok: bool, detail: string, fix: string}>
+     * @return list<array{check: string, ok: bool, detail: string, fix: string, params: array<string, mixed>}>
      */
     public static function checks(\Pimple\Container $di, ?Source $source = null, bool $starting = true): array
     {
@@ -45,14 +40,14 @@ final class Preflight
         $checks = [self::memory((string) ini_get('memory_limit'), PHP_SAPI === 'cli')];
 
         $checks[] = function_exists('gzopen')
-            ? self::pass('PHP zlib extension', 'Installed (the add-on module archive is gzipped).')
-            : self::fail('PHP zlib extension', 'Missing: the add-on module archive cannot be written.', 'Install or enable PHP\'s zlib extension.');
+            ? self::pass(self::msg('PHP zlib extension'), self::msg('Installed (the add-on module archive is gzipped).'))
+            : self::fail(self::msg('PHP zlib extension'), self::msg('Missing: the add-on module archive cannot be written.'), self::msg('Install or enable PHP\'s zlib extension.'));
 
         $packet = self::packet($di);
         if ($packet !== null) {
             $checks[] = $packet >= self::PACKET
-                ? self::pass('Database max_allowed_packet', self::size($packet) . '.')
-                : self::fail('Database max_allowed_packet', self::size($packet) . ': some of the import\'s statements are larger.', 'Raise max_allowed_packet to ' . self::size(self::PACKET) . ' or more in the database server\'s settings.');
+                ? self::pass(self::msg('Database max_allowed_packet'), ':size.', [':size' => self::size($packet)])
+                : self::fail(self::msg('Database max_allowed_packet'), self::msg(':size: some of the import\'s statements are larger.'), self::msg('Raise max_allowed_packet to :needed or more in the database server\'s settings.'), [':size' => self::size($packet), ':needed' => self::size(self::PACKET)]);
         }
 
         // A Blesta import reads the attachments its read copied (Run::work()); none were copied when the folder is missing.
@@ -62,26 +57,45 @@ final class Preflight
         $attachmentBytes = 0;
         if ($attachments !== '') {
             if (!is_dir($attachments) || !is_readable($attachments)) {
-                $checks[] = self::fail('WHMCS attachments folder', $attachments . ' cannot be read by ' . self::user() . '.', 'Correct the folder, or let ' . self::user() . ' read it.');
+                $checks[] = self::fail(self::msg(':system attachments folder'), self::msg(':dir cannot be read by :user.'), self::msg('Correct the folder, or let :user read it.'), [':dir' => $attachments, ':user' => self::user()]);
             } else {
                 $attachmentBytes = self::folderSize($attachments);
-                $checks[] = self::pass('WHMCS attachments folder', $attachments . ' (' . self::size($attachmentBytes) . ').');
+                $checks[] = self::pass(self::msg(':system attachments folder'), ':dir (:size).', [':dir' => $attachments, ':size' => self::size($attachmentBytes)]);
             }
         } elseif (!$blesta && $source !== null && self::namesAttachments($source)) {
-            $checks[] = self::fail('WHMCS attachments folder', 'Not entered, and WHMCS tickets have attachments: their messages would come over without the files.', 'Enter WHMCS\'s attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose.');
+            $checks[] = self::fail(self::msg(':system attachments folder'), self::msg('Not entered, and :system tickets have attachments: their messages would come over without the files.'), self::msg('Enter :system\'s attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose.'));
         }
 
         if ($source !== null) {
             array_push($checks, ...self::data($source, $starting));
         }
 
-        $checks[] = self::folder('Ticket files folder', \ClientFence\Mod\Support\TicketFiles::dir(), $starting ? $attachmentBytes : null);
-        $checks[] = self::folder('Backups folder (add-on module archive)', \ClientFence\Mod\Clientfence\Backups::localDir(), $starting ? 0 : null);
+        $checks[] = self::folder(self::msg('Ticket files folder'), \ClientFence\Mod\Support\TicketFiles::dir(), $starting ? $attachmentBytes : null);
+        $checks[] = self::folder(self::msg('Backups folder (add-on module archive)'), \ClientFence\Mod\Clientfence\Backups::localDir(), $starting ? 0 : null);
 
-        // The checks are worded for WHMCS; a snapshot import's data came from the other system.
+        // :system names the system the data came from (a snapshot import's is not WHMCS).
         $system = Import::system($settings);
 
-        return $system === 'WHMCS' ? $checks : array_map(static fn (array $c): array => ['check' => str_replace('WHMCS', $system, $c['check']), 'detail' => str_replace('WHMCS', $system, $c['detail']), 'fix' => str_replace('WHMCS', $system, $c['fix'])] + $c, $checks);
+        return array_map(static fn (array $c): array => ['params' => $c['params'] + [':system' => $system]] + $c, $checks);
+    }
+
+    /**
+     * Checks in the reader's language (a saved plan was made in its maker's): a list value is translated item by
+     * item. Checks saved before their texts had params are English already.
+     *
+     * @param list<array<string, mixed>> $checks
+     *
+     * @return list<array<string, mixed>>
+     */
+    public static function localize(array $checks): array
+    {
+        return array_map(static function (array $check): array {
+            $params = array_map(static fn ($value): string => is_array($value) ? implode(', ', array_map(static fn ($item): string => __trans((string) $item), $value)) : (string) $value, $check['params'] ?? []);
+            // __trans('') would answer the catalogue's header.
+            $text = static fn (string $key): string => (string) ($check[$key] ?? '') === '' ? '' : __trans((string) $check[$key], $params);
+
+            return ['check' => $text('check'), 'detail' => $text('detail'), 'fix' => $text('fix')] + $check;
+        }, $checks);
     }
 
     /**
@@ -102,8 +116,8 @@ final class Preflight
                 }
             }
             $checks[] = $bad === []
-                ? self::pass('WHMCS currency codes', 'Every currency has a three-letter code.')
-                : self::fail('WHMCS currency codes', 'Not a three-letter code: ' . implode(', ', $bad) . '.', 'In WHMCS (System Settings > Currencies), give each its ISO code (for example CAD), then plan again.');
+                ? self::pass(self::msg(':system currency codes'), self::msg('Every currency has a three-letter code.'))
+                : self::fail(self::msg(':system currency codes'), self::msg('Not a three-letter code: :codes.'), self::msg('In :system (System Settings > Currencies), give each its ISO code (for example CAD), then plan again.'), [':codes' => implode(', ', $bad)]);
         }
         try {
             $latin = $source->connection()->fetchFirstColumn(
@@ -113,9 +127,13 @@ final class Preflight
             $latin = null; // not MySQL or MariaDB (tests)
         }
         if ($latin !== null) {
-            $checks[] = $latin === []
-                ? self::pass('WHMCS table encoding', 'Every table is UTF-8.')
-                : self::fail('WHMCS table encoding', 'Not UTF-8: ' . implode(', ', array_slice($latin, 0, 10)) . (count($latin) > 10 ? sprintf(' and %d more', count($latin) - 10) : '') . '. Text in them may come over garbled.', self::CONVERT);
+            // QA r4 W-09: a plain CONVERT TO CHARACTER SET keeps UTF-8 kept in latin1 garbled; through a binary type keeps the bytes.
+            $convert = self::msg('In a copy of the :system database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy.');
+            $checks[] = match (true) {
+                $latin === [] => self::pass(self::msg(':system table encoding'), self::msg('Every table is UTF-8.')),
+                count($latin) <= 10 => self::fail(self::msg(':system table encoding'), self::msg('Not UTF-8: :tables. Text in them may come over garbled.'), $convert, [':tables' => implode(', ', $latin)]),
+                default => self::fail(self::msg(':system table encoding'), self::msg('Not UTF-8: :tables and :more more. Text in them may come over garbled.'), $convert, [':tables' => implode(', ', array_slice($latin, 0, 10)), ':more' => count($latin) - 10]),
+            };
         }
         // UTF-8 stored through a latin1 connection or table reads as "JosÃ©" even in a UTF-8 table (a plain CONVERT TO
         // CHARACTER SET keeps it so): the UTF-8 of Ã or Â before a second-half Latin-1 character. Judged on the client
@@ -132,9 +150,10 @@ final class Preflight
         }
         if (is_array($counts)) {
             [$doubled, $accented] = [(int) $counts['doubled'], (int) $counts['accented']];
+            // The repair takes the doubled rows back to their bytes through latin1, only those rows.
             $checks[] = $doubled > 0 && $doubled * 2 >= $accented
-                ? self::fail('WHMCS text encoding', sprintf('%d of %d client names with accents are double-encoded (such as "JosÃ©" for "José").', $doubled, $accented), self::REPAIR)
-                : self::pass('WHMCS text encoding', $doubled === 0 ? 'No double-encoded client names.' : sprintf('%d client names look double-encoded (such as "JosÃ©"); they come over as WHMCS shows them.', $doubled));
+                ? self::fail(self::msg(':system text encoding'), self::msg(':doubled of :accented client names with accents are double-encoded (such as "JosÃ©" for "José").'), self::msg('In a copy of the :system database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X\'C383C2\', CAST(col AS BINARY)) > 0 OR LOCATE(X\'C382C2\', CAST(col AS BINARY)) > 0; then import from the copy.'), [':doubled' => $doubled, ':accented' => $accented])
+                : self::pass(self::msg(':system text encoding'), $doubled === 0 ? self::msg('No double-encoded client names.') : self::msg(':doubled client names look double-encoded (such as "JosÃ©"); they come over as :system shows them.'), [':doubled' => $doubled]);
         }
 
         return $checks;
@@ -143,7 +162,7 @@ final class Preflight
     /** Throws, naming each failed check and its fix, unless every check passes. */
     public static function assert(\Pimple\Container $di, ?Source $source = null, bool $starting = true): void
     {
-        $failed = array_filter(self::checks($di, $source, $starting), static fn (array $check): bool => !$check['ok']);
+        $failed = array_filter(self::localize(self::checks($di, $source, $starting)), static fn (array $check): bool => !$check['ok']);
         if ($failed === []) {
             return;
         }
@@ -173,27 +192,27 @@ final class Preflight
     /**
      * The memory limit check of a php.ini memory_limit, for the console or the website.
      *
-     * @return array{check: string, ok: bool, detail: string, fix: string}
+     * @return array{check: string, ok: bool, detail: string, fix: string, params: array<string, mixed>}
      */
     public static function memory(string $memoryLimit, bool $console): array
     {
         $limit = self::bytes($memoryLimit);
-        $where = $console ? 'the console\'s PHP' : 'the website\'s PHP';
+        $where = [$console ? self::msg('the console\'s PHP') : self::msg('the website\'s PHP')];
         if ($limit === null || $limit >= self::MEMORY) {
-            return self::pass('PHP memory limit', ($limit === null ? 'Unlimited' : self::size($limit)) . ' (' . $where . ').');
+            return self::pass(self::msg('PHP memory limit'), ':size (:where).', [':size' => $limit === null ? [self::msg('Unlimited')] : self::size($limit), ':where' => $where]);
         }
         $fix = $console
-            ? 'Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M.'
-            : 'Raise memory_limit to 256M or more in this site\'s PHP settings (php.ini or the hosting panel), then reload this page.';
+            ? self::msg('Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M.')
+            : self::msg('Raise memory_limit to 256M or more in this site\'s PHP settings (php.ini or the hosting panel), then reload this page.');
 
-        return self::fail('PHP memory limit', self::size($limit) . ' (' . $where . '); the import needs ' . self::size(self::MEMORY) . '.', $fix);
+        return self::fail(self::msg('PHP memory limit'), self::msg(':size (:where); the import needs :needed.'), $fix, [':size' => self::size($limit), ':where' => $where, ':needed' => self::size(self::MEMORY)]);
     }
 
     /**
      * A folder the import writes: it exists and can be written, or can be made; with room for
      * $bytes and the margin (null: free space is not judged).
      *
-     * @return array{check: string, ok: bool, detail: string, fix: string}
+     * @return array{check: string, ok: bool, detail: string, fix: string, params: array<string, mixed>}
      */
     private static function folder(string $label, string $dir, ?int $bytes): array
     {
@@ -202,14 +221,14 @@ final class Preflight
             $existing = dirname($existing);
         }
         if (!is_writable($existing)) {
-            return self::fail($label, $dir . ' cannot be ' . ($existing === $dir ? 'written' : 'made') . ' by ' . self::user() . '.', 'Make the folder and let ' . self::user() . ' write it.');
+            return self::fail($label, $existing === $dir ? self::msg(':dir cannot be written by :user.') : self::msg(':dir cannot be made by :user.'), self::msg('Make the folder and let :user write it.'), [':dir' => $dir, ':user' => self::user()]);
         }
         $free = @disk_free_space($existing);
         if ($bytes !== null && $free !== false && $free < $bytes + self::DISK_MARGIN) {
-            return self::fail($label, $dir . ': ' . self::size((int) $free) . ' free, ' . self::size($bytes + self::DISK_MARGIN) . ' needed.', 'Free disk space first.');
+            return self::fail($label, self::msg(':dir: :free free, :needed needed.'), self::msg('Free disk space first.'), [':dir' => $dir, ':free' => self::size((int) $free), ':needed' => self::size($bytes + self::DISK_MARGIN)]);
         }
 
-        return self::pass($label, $dir . ($free !== false ? ' (' . self::size((int) $free) . ' free).' : '.'));
+        return $free !== false ? self::pass($label, self::msg(':dir (:free free).'), [':dir' => $dir, ':free' => self::size((int) $free)]) : self::pass($label, ':dir.', [':dir' => $dir]);
     }
 
     /** The target database's max_allowed_packet (MySQL and MariaDB; null elsewhere). */
@@ -252,11 +271,12 @@ final class Preflight
         return $bytes;
     }
 
-    private static function user(): string
+    /** @return string|list<string> the PHP user's name, or a text that stands for it (a list: translated when read) */
+    private static function user(): string|array
     {
         $user = function_exists('posix_getpwuid') && function_exists('posix_geteuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? '') : '';
 
-        return $user !== '' ? 'the user ' . $user : 'the PHP user';
+        return $user !== '' ? $user : [self::msg('the PHP user')];
     }
 
     private static function size(int $bytes): string
@@ -264,15 +284,21 @@ final class Preflight
         return $bytes >= 1024 * 1024 * 1024 ? round($bytes / 1073741824, 1) . ' GB' : round($bytes / 1048576) . ' MB';
     }
 
-    /** @return array{check: string, ok: bool, detail: string, fix: string} */
-    private static function pass(string $check, string $detail): array
+    /** @return array{check: string, ok: bool, detail: string, fix: string, params: array<string, mixed>} */
+    private static function pass(string $check, string $detail, array $params = []): array
     {
-        return ['check' => $check, 'ok' => true, 'detail' => $detail, 'fix' => ''];
+        return ['check' => $check, 'ok' => true, 'detail' => $detail, 'fix' => '', 'params' => $params];
     }
 
-    /** @return array{check: string, ok: bool, detail: string, fix: string} */
-    private static function fail(string $check, string $detail, string $fix): array
+    /** @return array{check: string, ok: bool, detail: string, fix: string, params: array<string, mixed>} */
+    private static function fail(string $check, string $detail, string $fix, array $params = []): array
     {
-        return ['check' => $check, 'ok' => false, 'detail' => $detail, 'fix' => $fix];
+        return ['check' => $check, 'ok' => false, 'detail' => $detail, 'fix' => $fix, 'params' => $params];
+    }
+
+    /** Marks a text for tools/locales.py extract; it is translated when read (localize()). */
+    private static function msg(string $text): string
+    {
+        return $text;
     }
 }

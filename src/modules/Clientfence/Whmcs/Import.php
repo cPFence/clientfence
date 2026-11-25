@@ -101,7 +101,7 @@ final class Import
             $archive = ['name' => $name, 'dir' => dirname($path), 'bytes' => (int) filesize($path)];
         }
 
-        return ['settings' => $settings, 'plan' => self::state($di, self::PLAN), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di), 'clientexec' => \ClientFence\Mod\Clientfence\Clientexec\Snapshot::state($di), 'fossbilling' => \ClientFence\Mod\Clientfence\Fossbilling\Snapshot::state($di), 'paymenter' => \ClientFence\Mod\Clientfence\Paymenter\Snapshot::state($di)];
+        return ['settings' => $settings, 'plan' => ($plan = self::state($di, self::PLAN)) === null ? null : self::shown($plan), 'target' => self::target($di), 'run' => $run, 'archive' => $archive, 'warnings' => Run::warnings($di['em']->getConnection(), 500), 'upmind' => \ClientFence\Mod\Clientfence\Upmind\Snapshot::state($di), 'blesta' => \ClientFence\Mod\Clientfence\Blesta\Snapshot::state($di), 'clientexec' => \ClientFence\Mod\Clientfence\Clientexec\Snapshot::state($di), 'fossbilling' => \ClientFence\Mod\Clientfence\Fossbilling\Snapshot::state($di), 'paymenter' => \ClientFence\Mod\Clientfence\Paymenter\Snapshot::state($di)];
     }
 
     /**
@@ -457,6 +457,24 @@ final class Import
         }
         $plan['made_at'] = date('Y-m-d H:i:s');
         self::saveState($di, self::PLAN, $plan);
+
+        return self::shown($plan);
+    }
+
+    /**
+     * A saved plan in the reader's language: its server checks and warnings are saved in English with their
+     * values (Preflight::localize(); a warning's :version is the plan's).
+     *
+     * @param array<string, mixed> $plan
+     *
+     * @return array<string, mixed>
+     */
+    public static function shown(array $plan): array
+    {
+        if (isset($plan['preflight'])) {
+            $plan['preflight'] = Preflight::localize($plan['preflight']);
+        }
+        $plan['warnings'] = array_map(static fn ($warning): string => __trans((string) $warning, [':version' => (string) ($plan['version'] ?? '')]), $plan['warnings'] ?? []);
 
         return $plan;
     }

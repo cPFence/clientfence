@@ -126,7 +126,7 @@ final class Archive
     private function append(int $after, int $next, string $lines): void
     {
         if ($this->path === '') {
-            throw new \RuntimeException('No archive file was given.');
+            throw new \ClientFence\InformationException('No archive file was given.');
         }
         $dir = dirname($this->path);
         \ClientFence\Mod\Clientfence\Backups::localFolder();
@@ -134,7 +134,7 @@ final class Archive
         clearstatcache(true, $this->path);
         if (!is_file($this->path)) {
             if (@touch($this->path) === false) {
-                throw new \RuntimeException('The archive file could not be made in ' . $dir . '.');
+                throw new \ClientFence\InformationException('The archive file could not be made in :dir.', [':dir' => $dir]);
             }
             @chmod($this->path, 0600);
         } elseif (filesize($this->path) !== $expected) {
@@ -144,12 +144,12 @@ final class Archive
         $member = gzencode($lines, 9);
         $handle = @fopen($this->path, 'ab');
         if ($handle === false) {
-            throw new \RuntimeException('The archive file ' . basename($this->path) . ' could not be written.');
+            throw new \ClientFence\InformationException('The archive file :file could not be written.', [':file' => basename($this->path)]);
         }
         $written = fwrite($handle, $member);
         $closed = fclose($handle);
         if ($written !== strlen($member) || !$closed) {
-            throw new \RuntimeException('The archive file ' . basename($this->path) . ' could not be written (is the disk full?).');
+            throw new \ClientFence\InformationException('The archive file :file could not be written (is the disk full?).', [':file' => basename($this->path)]);
         }
         clearstatcache(true, $this->path);
         $this->map->put('archive', (string) $next, (int) filesize($this->path));
@@ -162,14 +162,14 @@ final class Archive
             return 0;
         }
 
-        return $this->map->get('archive', (string) $after) ?? throw new \RuntimeException('The archive file\'s size at this point was not recorded; start the import again on a fresh install.');
+        return $this->map->get('archive', (string) $after) ?? throw new \ClientFence\InformationException('The archive file\'s size at this point was not recorded; start the import again on a fresh install.');
     }
 
     private function cut(int $size): void
     {
         $handle = @fopen($this->path, 'r+b');
         if ($handle === false || !ftruncate($handle, $size)) {
-            throw new \RuntimeException('The archive file ' . basename($this->path) . ' could not be cut back after a stop.');
+            throw new \ClientFence\InformationException('The archive file :file could not be cut back after a stop.', [':file' => basename($this->path)]);
         }
         fclose($handle);
     }

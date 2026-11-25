@@ -287,7 +287,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $system = Import::system(Import::settings($this->di));
 
         $this->sendCsv(Csv::name('plan', $system), static function ($out) use ($plan, $system): void {
-            Csv::plan($plan, $system, $out);
+            Csv::plan(Import::shown($plan), $system, $out);
         });
     }
 

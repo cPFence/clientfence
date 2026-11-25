@@ -28,6 +28,12 @@ function whmcsPreflightDi(string $root, string $attachments = ''): Pimple\Contai
     return $di;
 }
 
+/** Preflight::checks() as staff read them (its texts are saved in English with their values). */
+function whmcsPreflightChecks(Pimple\Container $di, ?Source $source = null, bool $starting = true): array
+{
+    return Preflight::localize(Preflight::checks($di, $source, $starting));
+}
+
 function whmcsPreflightRoot(): string
 {
     $dir = sys_get_temp_dir() . '/cf-whmcs-preflight-' . bin2hex(random_bytes(4));
@@ -53,14 +59,20 @@ test('php.ini sizes are read as bytes', function (): void {
 });
 
 test('a low memory limit fails its check, naming the fix for the console or the website', function (): void {
-    $console = Preflight::memory('128M', true);
-    $web = Preflight::memory('128M', false);
+    [$console, $web] = Preflight::localize([Preflight::memory('128M', true), Preflight::memory('128M', false)]);
     expect($console['ok'])->toBeFalse()
         ->and($console['detail'])->toContain('128 MB')->toContain('the console\'s PHP')
         ->and($console['fix'])->toContain('php -d memory_limit=512M')
         ->and($web['fix'])->toContain('this site\'s PHP settings')
         ->and(Preflight::memory('256M', true)['ok'])->toBeTrue()
         ->and(Preflight::memory('-1', false)['ok'])->toBeTrue();
+});
+
+// A plan is saved in English with its values and read in the reader's language (__trans() is a stub in tests).
+test('a check is saved in English with its values, and filled in when read', function (): void {
+    $check = Preflight::memory('-1', false);
+    expect($check)->toMatchArray(['check' => 'PHP memory limit', 'detail' => ':size (:where).', 'params' => [':size' => ['Unlimited'], ':where' => ['the website\'s PHP']]])
+        ->and(Preflight::localize([$check])[0])->toMatchArray(['check' => 'PHP memory limit', 'detail' => 'Unlimited (the website\'s PHP).', 'fix' => '']);
 });
 
 test('a failed check stops the import before it starts; passing ones let it start', function (): void {
@@ -70,7 +82,7 @@ test('a failed check stops the import before it starts; passing ones let it star
     expect(fn () => Preflight::assert($di))->toThrow(InformationException::class, 'The import did not start');
 
     // (this process's memory limit is the test runner's: only the folder checks are judged here)
-    $checks = array_filter(Preflight::checks(whmcsPreflightDi($root, $root . '/attachments')), static fn (array $c): bool => $c['check'] !== 'PHP memory limit');
+    $checks = array_filter(whmcsPreflightChecks(whmcsPreflightDi($root, $root . '/attachments')), static fn (array $c): bool => $c['check'] !== 'PHP memory limit');
     expect(array_column($checks, 'ok'))->each->toBeTrue();
 });
 
@@ -81,7 +93,7 @@ test('folders it cannot write, or an attachments folder it cannot read, stop it'
     $root = whmcsPreflightRoot();
     mkdir($root . '/backups', 0500);
     $di = whmcsPreflightDi($root, $root . '/no-such-folder');
-    $checks = array_column(Preflight::checks($di), null, 'check');
+    $checks = array_column(whmcsPreflightChecks($di), null, 'check');
     expect($checks['Ticket files folder']['ok'])->toBeTrue()
         ->and($checks['Backups folder (add-on module archive)']['ok'])->toBeFalse()
         ->and($checks['Backups folder (add-on module archive)']['detail'])->toContain('cannot be written')
@@ -94,13 +106,13 @@ test('WHMCS tickets with attachments need the attachments folder, or an empty on
     $whmcs->executeStatement("CREATE TABLE tbltickets (id INTEGER PRIMARY KEY, attachment TEXT DEFAULT '')");
     $whmcs->insert('tbltickets', ['id' => 1, 'attachment' => '123456_file.png']);
 
-    $checks = array_column(Preflight::checks(whmcsPreflightDi($root), new Source($whmcs)), null, 'check');
+    $checks = array_column(whmcsPreflightChecks(whmcsPreflightDi($root), new Source($whmcs)), null, 'check');
     expect($checks['WHMCS attachments folder']['ok'])->toBeFalse()
         ->and($checks['WHMCS attachments folder']['fix'])->toContain('An empty folder imports the messages without their files');
 
     mkdir($root . '/attachments');
     file_put_contents($root . '/attachments/123456_file.png', str_repeat('x', 2048));
-    $checks = array_column(Preflight::checks(whmcsPreflightDi($root, $root . '/attachments'), new Source($whmcs)), null, 'check');
+    $checks = array_column(whmcsPreflightChecks(whmcsPreflightDi($root, $root . '/attachments'), new Source($whmcs)), null, 'check');
     expect($checks['WHMCS attachments folder']['ok'])->toBeTrue()
         ->and($checks['Ticket files folder']['ok'])->toBeTrue();
 });
@@ -117,7 +129,7 @@ test('free disk space is judged before a run starts, not while it goes on', func
     expect($starting['ok'])->toBeFalse()
         ->and($starting['detail'])->toContain('needed')
         ->and($going['ok'])->toBeTrue()
-        ->and(array_column(array_filter(Preflight::checks($di, null, false), static fn (array $c): bool => $c['check'] !== 'PHP memory limit'), 'ok'))->each->toBeTrue();
+        ->and(array_column(array_filter(whmcsPreflightChecks($di, null, false), static fn (array $c): bool => $c['check'] !== 'PHP memory limit'), 'ok'))->each->toBeTrue();
 });
 
 // ClientFence (QA r4 W-04): a currency without a three-letter code stops the import (its invoices' pages failed).
@@ -127,11 +139,11 @@ test('a WHMCS currency without a three-letter code stops it', function (): void 
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     $db->executeStatement('CREATE TABLE tblcurrencies (id INTEGER PRIMARY KEY, code TEXT)');
     $db->insert('tblcurrencies', ['id' => 1, 'code' => 'usd']);
-    $checks = array_column(Preflight::checks(whmcsPreflightDi($root, $root . '/attachments'), new Source($db)), null, 'check');
+    $checks = array_column(whmcsPreflightChecks(whmcsPreflightDi($root, $root . '/attachments'), new Source($db)), null, 'check');
     expect($checks['WHMCS currency codes']['ok'])->toBeTrue();
 
     $db->insert('tblcurrencies', ['id' => 2, 'code' => 'CA$']);
-    $checks = array_column(Preflight::checks(whmcsPreflightDi($root, $root . '/attachments'), new Source($db)), null, 'check');
+    $checks = array_column(whmcsPreflightChecks(whmcsPreflightDi($root, $root . '/attachments'), new Source($db)), null, 'check');
     expect($checks['WHMCS currency codes'])->toMatchArray(['ok' => false, 'detail' => 'Not a three-letter code: #2 "CA$".'])
         ->and($checks)->not->toHaveKey('WHMCS table encoding')->not->toHaveKey('WHMCS text encoding');
 });
@@ -145,12 +157,12 @@ test('a Blesta import checks the attachments its read copied, not the folder set
     $snapshot->insert('tbltickets', ['id' => 1, 'attachment' => '7_shot.png']);
 
     // Blesta on this server: no folder entered, and none needed.
-    expect(array_column(Preflight::checks($di, new Source($snapshot)), null, 'check'))->not->toHaveKey('Blesta attachments folder');
+    expect(array_column(whmcsPreflightChecks($di, new Source($snapshot)), null, 'check'))->not->toHaveKey('Blesta attachments folder');
 
     $copies = ClientFence\Mod\Clientfence\Blesta\Snapshot::files();
     mkdir($copies, 0700, true);
     file_put_contents($copies . '/7_shot.png', 'PNG');
-    $checks = array_column(Preflight::checks($di, new Source($snapshot)), null, 'check');
+    $checks = array_column(whmcsPreflightChecks($di, new Source($snapshot)), null, 'check');
     expect($checks['Blesta attachments folder']['ok'])->toBeTrue()
         ->and($checks['Blesta attachments folder']['detail'])->toContain($copies)
         // Named for the system read, not for WHMCS.

@@ -554,7 +554,7 @@
                 <h4 class="mb-2">{{ 'This server'|trans }}</h4>
                 <p class="text-secondary small">{{ 'What the import needs, checked when the plan was made by the PHP that made it (the memory row names it: the website and the console each have their own). The import checks again when it starts, and does not start while a check fails.'|trans }}</p>
                 {% for check in plan.preflight|filter(c => not c.ok) %}
-                    <div class="alert alert-danger"><strong>{{ check.check|trans }}:</strong> {{ check.detail }} {{ check.fix }}</div>
+                    <div class="alert alert-danger"><strong>{{ check.check }}:</strong> {{ check.detail }} {{ check.fix }}</div>
                 {% endfor %}
                 <div class="table-responsive mb-4">
                     <table class="table table-sm table-vcenter mb-0">
@@ -562,7 +562,7 @@
                             {% for check in plan.preflight %}
                                 <tr>
                                     <td class="w-1"><span class="badge {{ check.ok ? 'bg-success-lt' : 'bg-danger-lt' }}">{{ check.ok ? 'OK'|trans : 'Fix'|trans }}</span></td>
-                                    <td class="text-nowrap">{{ check.check|trans }}</td>
+                                    <td class="text-nowrap">{{ check.check }}</td>
                                     <td class="text-secondary small text-break">{{ check.detail }}</td>
                                 </tr>
                             {% endfor %}
@@ -828,7 +828,8 @@
             taxes: 'Tax rules'|trans, bundles: 'Bundles (not imported)'|trans, licencebans: 'Licence bans'|trans,
             balances: 'Client credit balances'|trans, agreements: 'PayPal Auto-Pay billing agreements'|trans,
             affiliates: 'Affiliates'|trans, affiliatebalances: 'Affiliates whose available balance matches'|trans, affiliatereferrals: 'Affiliate referrals'|trans,
-            feedback: 'Ticket feedback'|trans, networkissues: 'Network issues'|trans, emails: 'Email log'|trans
+            feedback: 'Ticket feedback'|trans, networkissues: 'Network issues'|trans, emails: 'Email log'|trans,
+            archive: 'Add-on module archive'|trans
         } %}
         {% if not plan %}
             <p class="text-secondary mb-0">{{ 'Make the plan first.'|trans }}</p>

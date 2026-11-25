@@ -118,8 +118,8 @@ test('old WHMCS versions are warned about or refused', function (string $version
         ->and($plan['warnings'])->toBe($warning === '' ? [] : [$warning]);
 })->with([
     '8.x' => ['8.13.1-release.1', true, ''],
-    '7.x best effort' => ['7.10.2-release.1', false, 'WHMCS 7.10.2-release.1 imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first.'],
-    '6.x too old' => ['6.3.2-release.1', false, 'WHMCS 6.3.2-release.1 is too old to import: update it to 8 or later first.'],
+    '7.x best effort' => ['7.10.2-release.1', false, 'WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first.'],
+    '6.x too old' => ['6.3.2-release.1', false, 'WHMCS :version is too old to import: update it to 8 or later first.'],
 ]);
 
 test('a database without WHMCS tables is not WHMCS', function (): void {

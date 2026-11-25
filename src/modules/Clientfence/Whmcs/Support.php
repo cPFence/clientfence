@@ -676,12 +676,12 @@ final class Support
             } else {
                 $folder = $this->files . '/' . $clientId;
                 if (!is_dir($folder) && !mkdir($folder, 0700, true) && !is_dir($folder)) {
-                    throw new \RuntimeException('The ticket files folder cannot be written.');
+                    throw new \ClientFence\InformationException('The ticket files folder cannot be written.');
                 }
                 if (file_put_contents($folder . '/' . $token, $content) !== strlen($content)) {
                     @unlink($folder . '/' . $token);
 
-                    throw new \RuntimeException('A ticket file could not be written.');
+                    throw new \ClientFence\InformationException('A ticket file could not be written.');
                 }
                 $this->written[] = $folder . '/' . $token;
                 chmod($folder . '/' . $token, 0600);
