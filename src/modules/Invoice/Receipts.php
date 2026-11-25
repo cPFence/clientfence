@@ -260,10 +260,13 @@ class Receipts
                 throw new \ClientFence\Exception('No help desk for payment receipts.');
             }
             $ticketId = $support->ticketCreateForClient($client, $helpdesk, [
-                'subject' => 'Payment receipt: invoice #' . $number,
+                'subject' => __trans('Payment receipt: invoice #:number', [':number' => $number]),
                 'support_helpdesk_id' => $helpdesk->getId(),
-                'content' => "I paid invoice #{$number} ({$amount}) by {$gateway->name}. The receipt is attached.\n\n"
-                    . "Receipt: [{$name}]({$link})",
+                'content' => __trans('I paid invoice #:number (:amount) by :gateway. The receipt is attached.', [
+                    ':number' => $number,
+                    ':amount' => $amount,
+                    ':gateway' => $gateway->name,
+                ]) . "\n\n" . __trans('Receipt') . ": [{$name}]({$link})",
             ]);
         } catch (\Throwable $e) {
             @unlink($dir . '/' . $id . '.bin');

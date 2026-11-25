@@ -38,6 +38,8 @@ if (!defined('DEBUG')) {
 if (!function_exists('__trans')) {
     function __trans(string $msgid, ?array $values = null): string
     {
+        $msgid = $GLOBALS['testTranslations'][$msgid] ?? $msgid;
+
         return $values ? strtr($msgid, $values) : $msgid;
     }
 }

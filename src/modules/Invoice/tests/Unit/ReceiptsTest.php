@@ -85,7 +85,7 @@ test('a receipt for a method that takes none is refused before anything is store
     }
 });
 
-test('a sent receipt sets the invoice to the transfer method, so the saved-card cron skips it', function (): void {
+test('a sent receipt opens a translated ticket and sets the invoice to the transfer method', function (): void {
     $dir = sys_get_temp_dir() . '/cf-receipts-' . bin2hex(random_bytes(4));
     putenv('CLIENTFENCE_RECEIPT_DIR=' . $dir);
     $png = sys_get_temp_dir() . '/cf-receipt-' . bin2hex(random_bytes(4)) . '.png';
@@ -123,12 +123,8 @@ test('a sent receipt sets the invoice to the transfer method, so the saved-card 
             return $this;
         }
     };
-    $di['url'] = new class {
-        public function link(string $path): string
-        {
-            return 'https://example.com/' . $path;
-        }
-    };
+    $di['url'] = Mockery::mock();
+    $di['url']->allows('link')->andReturn('https://example.com/receipt/test');
     $di['mod_config'] = $di->protect(fn (string $mod): array => []);
     $helpdesk = Mockery::mock();
     $helpdesk->allows('getId')->andReturn(1);
@@ -136,15 +132,25 @@ test('a sent receipt sets the invoice to the transfer method, so the saved-card 
     $helpdesks->allows('findOneBy')->andReturn($helpdesk);
     $support = Mockery::mock();
     $support->allows('getHelpdeskRepository')->andReturn($helpdesks);
-    $support->allows('ticketCreateForClient')->andReturn(55);
+    $support->allows('ticketCreateForClient')->with($client, $helpdesk, [
+        'subject' => 'Translated payment receipt for #INV-30',
+        'support_helpdesk_id' => 1,
+        'content' => "Translated payment of 100.00 USD by Bank transfer for invoice #INV-30.\n\nTranslated receipt: [receipt.png](https://example.com/receipt/test)",
+    ])->andReturn(55);
     $invoices = Mockery::mock();
     $invoices->allows('toApiArray')->andReturn(['serie_nr' => 'INV-30', 'total' => 100]);
     $invoices->allows('isInvoiceTypeDeposit')->andReturn(false);
     $di['mod_service'] = $di->protect(fn (string $mod) => strtolower($mod) === 'support' ? $support : $invoices);
 
     try {
+        $GLOBALS['testTranslations'] = [
+            'Payment receipt: invoice #:number' => 'Translated payment receipt for #:number',
+            'I paid invoice #:number (:amount) by :gateway. The receipt is attached.' => 'Translated payment of :amount by :gateway for invoice #:number.',
+            'Receipt' => 'Translated receipt',
+        ];
         $ticket = Receipts::send($di, $client, $invoice, $gateway, new Symfony\Component\HttpFoundation\File\UploadedFile($png, 'receipt.png', 'image/png', null, true));
     } finally {
+        unset($GLOBALS['testTranslations']);
         putenv('CLIENTFENCE_RECEIPT_DIR');
         array_map('unlink', glob($dir . '/7/*') ?: []);
         @rmdir($dir . '/7');
