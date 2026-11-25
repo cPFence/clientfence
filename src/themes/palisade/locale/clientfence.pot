@@ -178,6 +178,10 @@ msgstr ""
 msgid "%title% suspended"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_group.html.twig
 msgid "(This is a root group)"
 msgstr ""
@@ -1902,6 +1906,10 @@ msgstr ""
 msgid "Account not found."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr ""
+
 #: src/modules/Invoice/StatementPdf.php src/themes/palisade/html/mod_invoice_statement.html.twig
 msgid "Account opening"
 msgstr ""
@@ -3542,12 +3550,20 @@ msgstr ""
 msgid "Already a client?"
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
 msgid "Already at this price"
 msgstr ""
 
 #: src/themes/palisade/html/mod_page_signup.html.twig
 msgid "Already have an account?"
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -3666,6 +3682,10 @@ msgstr ""
 msgid "An amount to pay is invoiced, and the change is made as soon as the invoice is paid. A credit goes to your account balance and is used for your next invoices."
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr ""
+
 #: src/modules/Servicehosting/Api/Client.php
 msgid "An email account can forward to at most 20 addresses."
 msgstr ""
@@ -3772,6 +3792,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Service.php
 msgid "Another hosting order is already linked to this subscription."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
 msgstr ""
 
 #: src/library/ClientFence/Tools.php src/modules/Invoice/Service.php src/modules/Order/Upgrades.php
@@ -4274,7 +4298,7 @@ msgstr ""
 msgid "Auto-suspend off"
 msgstr ""
 
-#: src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig …
 msgid "Automatic"
 msgstr ""
 
@@ -5830,6 +5854,10 @@ msgstr ""
 msgid "Choose a reply"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr ""
+
 #: src/modules/Clientfence/Branding.php
 msgid "Choose a sign-in page style."
 msgstr ""
@@ -5898,6 +5926,10 @@ msgstr ""
 msgid "Choose an image to upload."
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr ""
+
 #: src/modules/Support/TicketEscalation.php
 msgid "Choose at least one action."
 msgstr ""
@@ -5914,7 +5946,7 @@ msgstr ""
 msgid "Choose at least one country staff may sign in from."
 msgstr ""
 
-#: src/modules/Order/BulkPrices.php
+#: src/modules/Order/BulkPrices.php src/modules/Order/ProductMove.php
 msgid "Choose at least one order status."
 msgstr ""
 
@@ -5924,6 +5956,10 @@ msgstr ""
 
 #: src/modules/Invoice/MassPay.php
 msgid "Choose at least two unpaid invoices to pay together."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -6076,6 +6112,10 @@ msgstr ""
 
 #: src/modules/Support/NetworkIssues.php
 msgid "Choose the priority."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
 msgstr ""
 
 #: src/modules/Invoice/Receipts.php src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -6576,6 +6616,10 @@ msgstr ""
 
 #: src/modules/System/Service.php
 msgid "ClientFence has detected that cron hasn't been run in an abnormal time period. Please ensure the cronjob is configured to be run every 5 minutes."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update_finalize.html.twig
@@ -8342,8 +8386,16 @@ msgstr ""
 msgid "Custom port. Use blank to use default. Used to connect to the API"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr ""
+
 #: src/modules/Servicecustom/manifest.json
 msgid "Custom product type"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -9294,7 +9346,7 @@ msgstr ""
 msgid "Does not renew"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Product/Service.php src/modules/Servicedomain/templates/email/mod_servicedomain_activated.html.twig …
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig src/modules/Product/Service.php …
 msgid "Domain"
 msgstr ""
 
@@ -11534,11 +11586,11 @@ msgstr ""
 msgid "Failed actions"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_move_services.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Failed renew"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_move_services.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Failed setup"
 msgstr ""
 
@@ -12002,6 +12054,10 @@ msgstr ""
 msgid "For renewal or any change to this domain, open a support ticket."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr ""
+
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "For software sold with WHMCS: answer its checks at /modules/servers/licensing/verify.php in the WHMCS format."
 msgstr ""
@@ -12272,6 +12328,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Spaceship.php
 msgid "From Spaceship: API Manager > New API key."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Connectreseller.php
@@ -13194,11 +13254,15 @@ msgstr ""
 msgid "Hosting network"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "Hosting panels"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
 msgid "Hosting plan"
 msgstr ""
 
@@ -13216,6 +13280,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/Api/Admin.php
 msgid "Hosting plan name was not passed"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
@@ -13264,6 +13332,18 @@ msgstr ""
 
 #: src/modules/Servicehosting/manifest.json
 msgid "Hosting product type"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
 msgstr ""
 
 #: src/modules/Servicehosting/Api/Admin.php
@@ -13722,12 +13802,20 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr ""
+
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Import an existing account from the server (do not create it)"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_mail_log.html.twig
 msgid "Import anyway"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_helpdesk_mail.html.twig
@@ -14570,6 +14658,10 @@ msgstr ""
 msgid "It becomes a new ticket or a reply as if no rule refused it."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr ""
+
 #: src/themes/palisade/html/mod_support_feedback.html.twig
 msgid "It helps us improve our support."
 msgstr ""
@@ -15230,6 +15322,10 @@ msgstr ""
 msgid "Licence key or API key"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr ""
+
 #: src/modules/System/templates/admin/mod_system_settings.html.twig
 msgid "Licences"
 msgstr ""
@@ -15340,6 +15436,10 @@ msgstr ""
 
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Lines"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_google_link.html.twig
@@ -16878,6 +16978,10 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr ""
+
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Move :card down"
 msgstr ""
@@ -16906,6 +17010,14 @@ msgstr ""
 msgid "Move here"
 msgstr ""
 
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
 msgid "Move this account onto a different hosting plan available on the current server."
 msgstr ""
@@ -16926,8 +17038,16 @@ msgstr ""
 msgid "Move up"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr ""
+
 #: src/themes/palisade/html/mod_servicelicense_head.html.twig
 msgid "Moved servers? Clear the saved IPs and domains."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
 msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_list.html.twig
@@ -17530,7 +17650,7 @@ msgstr ""
 msgid "Next invoice number must be a positive whole number no greater than :max."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Next page"
 msgstr ""
 
@@ -17624,6 +17744,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_no_access.html.twig
 msgid "No access"
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
 msgstr ""
 
 #: src/modules/Order/Service.php
@@ -17760,6 +17884,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_servicehosting_manage.html.twig
 msgid "No domain is registered with us for this service."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
@@ -17962,6 +18090,10 @@ msgstr ""
 msgid "No price list yet."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr ""
+
 #: src/themes/palisade/html/mod_order_index.html.twig
 msgid "No products are available yet."
 msgstr ""
@@ -18058,11 +18190,19 @@ msgstr ""
 msgid "No secret saved yet."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr ""
+
 #: src/modules/Order/BulkPrices.php
 msgid "No service gets a new price."
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_move_services.html.twig
 msgid "No service matches."
 msgstr ""
 
@@ -18196,6 +18336,14 @@ msgstr ""
 
 #: src/modules/Security/templates/admin/mod_security_index.html.twig
 msgid "Not Run"
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
 msgstr ""
 
 #: src/modules/Antispam/Networks.php
@@ -19362,6 +19510,14 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr ""
+
 #: src/modules/Clientfence/Notifications.php
 msgid "Order #:id waits for review: :title"
 msgstr ""
@@ -19550,7 +19706,7 @@ msgstr ""
 msgid "Order now"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_move_services.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Order status"
 msgstr ""
 
@@ -19612,6 +19768,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Webhosting4u.php
 msgid "Organisation or company name"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
 msgstr ""
 
 #: src/library/Server/Manager/Enhance.php src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
@@ -20974,7 +21134,7 @@ msgstr ""
 msgid "Pending invitations"
 msgstr ""
 
-#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
+#: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_move_services.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Pending setup"
 msgstr ""
 
@@ -21547,6 +21707,10 @@ msgid "Preview the rendered email subject line."
 msgstr ""
 
 #: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr ""
+
+#: src/modules/Order/Api/Admin.php
 msgid "Preview the update first"
 msgstr ""
 
@@ -21770,7 +21934,7 @@ msgstr ""
 msgid "Processing Payment..."
 msgstr ""
 
-#: src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_new_form.html.twig src/modules/Invoice/templates/pdf/default-invoice.twig …
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_new_form.html.twig …
 msgid "Product"
 msgstr ""
 
@@ -21778,7 +21942,7 @@ msgstr ""
 msgid "Product / service"
 msgstr ""
 
-#: src/modules/Order/Service.php src/modules/Product/Service.php
+#: src/modules/Order/Service.php src/modules/Order/Upgrades.php src/modules/Product/Service.php
 msgid "Product :id is out of stock."
 msgstr ""
 
@@ -21916,6 +22080,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Setup.php src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "Products and services"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/client/mod_client_profile.html.twig src/modules/Email/templates/layout/footer.html.twig …
@@ -24250,6 +24418,10 @@ msgstr ""
 msgid "Save the mailbox settings first."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "Save the quote, then send it: the client gets the PDF and a link to accept it."
 msgstr ""
@@ -25122,6 +25294,14 @@ msgstr ""
 msgid "Servers (IP addresses)"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "Servers:"
 msgstr ""
@@ -25418,6 +25598,10 @@ msgstr ""
 msgid "Setup:"
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr ""
+
 #: src/modules/Client/templates/client/mod_client_affiliates_page.html.twig
 msgid "Share it anywhere. Orders placed within :days days of a visit through your link count for you."
 msgstr ""
@@ -25608,6 +25792,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Show the changed files"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
@@ -26260,6 +26448,10 @@ msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_settings_escalation.html.twig
 msgid "Statuses"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Csv.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -27902,6 +28094,10 @@ msgstr ""
 msgid "The client secret is not valid."
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr ""
+
 #: src/modules/Cart/Service.php
 msgid "The client's profile has no :fields. A domain is registered in the client's name, so add them to the profile first."
 msgstr ""
@@ -28315,7 +28511,11 @@ msgstr ""
 msgid "The import has started: :name can no longer be read again."
 msgstr ""
 
-#: src/modules/Clientfence/Whmcs/Run.php
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/Whmcs/Run.php
 msgid "The import is already running (another tab or the console). Wait for it to finish."
 msgstr ""
 
@@ -28839,6 +29039,14 @@ msgstr ""
 msgid "The product's current price for the service's billing period (plus its configurable options as sold)"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr ""
+
 #: src/modules/Cart/Api/Guest.php
 msgid "The promo code has expired or does not exist"
 msgstr ""
@@ -28975,8 +29183,16 @@ msgstr ""
 msgid "The senders of tickets %list% go on the blocked senders list of the email import (Support settings), so their emails no longer open tickets, and the tickets are deleted. This cannot be undone."
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig
 msgid "The server has no plans."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
 msgstr ""
 
 #: src/modules/Order/ClientMove.php
@@ -29359,6 +29575,10 @@ msgstr ""
 msgid "These cannot sign up, order, or be set by a client on their profile. Staff can still use them for a client. The client is not told which detail matched. Empty lists check nothing."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr ""
+
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr ""
@@ -29433,6 +29653,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/widgets/mod_client_contacts_pane.html.twig src/modules/Client/templates/client/mod_client_contacts_page.html.twig
 msgid "This account has no contacts yet."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_usage.html.twig
@@ -30087,6 +30311,10 @@ msgstr ""
 msgid "This service cannot be cancelled at the end of its period. Choose Immediate, or open a ticket."
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr ""
+
 #: src/modules/Servicecustom/templates/admin/mod_servicecustom_manage.html.twig
 msgid "This service does not currently expose any editable configuration values."
 msgstr ""
@@ -30113,6 +30341,10 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "This service is billed in another currency. Please contact us."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
 msgstr ""
 
 #: src/modules/Order/Upgrades.php
@@ -30581,6 +30813,10 @@ msgstr ""
 
 #: src/modules/Order/Upgrades.php
 msgid "To move to a plan with fewer servers, first remove the IP addresses it cannot hold."
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_domains.html.twig
@@ -33075,6 +33311,10 @@ msgstr ""
 msgid "What are you looking for?"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_ticket_secrets.html.twig src/themes/palisade/html/partials/ticket_secret_fields.html.twig
 msgid "What is it?"
 msgstr ""
@@ -33297,6 +33537,10 @@ msgstr ""
 
 #: src/themes/palisade/html/mod_invoice_quote.html.twig src/themes/palisade/html/mod_invoice_quotes.html.twig
 msgid "Withdrawn"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Product/templates/admin/mod_product_promos.html.twig

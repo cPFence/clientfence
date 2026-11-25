@@ -33251,3 +33251,248 @@ msgstr "Nie udało się anulować subskrypcji bramki tej usługi, więc cykl roz
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr "Te faktury pochodzą z różnych witryn: opłać razem faktury jednej witryny."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr "Pasujących usług: %total%. Ta strona pokazuje %count% z nich: %movable% można przenieść. Nic jeszcze się nie zmieniło."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr "Konto na serwerze"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr "To już usługa hostingowa."
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
+msgstr "Już powiązana ze swoim kontem."
+
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr "Automatyczna promocja nowego produktu zmieniłaby cenę odnowienia tej usługi."
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
+msgstr "Trwa inne przeniesienie lub powiązanie tego konta. Spróbuj ponownie za chwilę."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr "Wybierz serwer z listy dla produktu :product."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr "Wybierz inny produkt niestandardowy lub produkt hostingowy z serwerem i planem hostingowym, do którego zostaną przeniesione usługi. Aby powiązać usługi produktu hostingowego z ich kontami, wybierz ten produkt w obu polach."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
+msgstr "Wybierz od 1 do :max usług do przeniesienia."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
+msgstr "Wybierz produkt, z którego zostaną przeniesione usługi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
+msgstr "ClientFence nie ma menedżera serwera dla modułu :module."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr "Produkt niestandardowy"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
+msgstr "Produkty niestandardowe"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Dla usług, które trafiły pod produkt niestandardowy. Po przeniesieniu do produktu hostingowego każda usługa zostaje powiązana ze swoim istniejącym kontem na serwerze produktu, znalezionym po domenie; na serwerze nic nie jest tworzone. Zamówienie zachowuje cenę, okres rozliczeniowy, termin płatności, faktury i status."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
+msgstr "Z produktu"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr "Hosting na :server, plan :plan"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
+msgstr "Plan hostingowy produktu :product"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr "Produkty hostingowe"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr "Produkty hostingowe pojawiają się po ustawieniu ich serwera i planu hostingowego. Aby powiązać usługi produktu hostingowego z ich kontami, wybierz ten sam produkt."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
+msgstr "Produkty hostingowe z usługami niepowiązanymi z ich kontem"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr "Importuj :product jako"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
+msgstr "Importuj jako"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr "Nie ma modułu serwera w :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr "Produkt licencyjny"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
+msgstr "Powiąż usługi: %count%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr "Przenieś usługi: %count%"
+
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr "Przenieś usługi"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr "Przenieś usługi do innego produktu"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr "Przeniesiono"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
+msgstr "Przeniesienia bez konta na serwerze"
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
+msgstr "Na serwerze nie znaleziono konta tego klienta z tą domeną."
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
+msgstr "Dla tej usługi nie zapisano domeny."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr "Żaden produkt nie ma usług do przeniesienia ani powiązania."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr "Brak serwera jego modułu w jego grupie serwerów."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr "Brak serwera jego modułu."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr "To nie jest usługa niestandardowa lub nie ma jeszcze usługi."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
+msgstr "To nie jest usługa hostingowa."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr "Zamówienie nr :id (:domain) jest też stroną tego konta: dwie usługi nie mogą współdzielić jednego konta."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr "Zamówienie nr :id jest już usługą hostingową dla tej domeny."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
+msgstr "Organizacja %org%, subskrypcja %id%"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr "Najpierw wyświetl podgląd usług"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
+msgstr "Produkty zapisane."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr "Zapisz produkty"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr "Serwery z :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr "Serwery w ClientFence"
+
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr "Kilka usług tego produktu ma tę domenę."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
+msgstr "Pokaż produkty"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
+msgstr "Pozostaje produktem licencyjnym."
+
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr "Adres e-mail klienta nie jest potwierdzony."
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr "Import się rozpoczął: tego, czym stają się produkty, nie można już zmienić."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr "Produkty zmieniły się od wyświetlenia listy: pokaż produkty ponownie."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr "Nie udało się odczytać produktów."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr "Serwer nie podał loginu tego konta."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
+msgstr "Menedżer serwera tego serwera nie potrafi wyszukiwać kont: powiąż te usługi ręcznie."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr "Te wybory są za długie, aby je zapisać: użyj krótszych nazw planów lub zostaw więcej produktów na Automatycznie."
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
+msgstr "To konto jest już powiązane z usługą hostingową nr :id."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr "Ta usługa zmieniła się podczas przenoszenia. Wyświetl podgląd ponownie."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
+msgstr "Ta usługa nie jest już w produkcie :product."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
+msgstr "Do produktu"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr "Czym staje się każdy produkt. Automatycznie zachowuje pokazany wynik. Produkt zmieniony na hostingowy importuje swoje usługi jako konta hostingowe na tym serwerze, zachowując ich domenę i nazwę użytkownika: na serwerze nic nie jest tworzone. Jego plan to plan hostingowy o wpisanej nazwie, a w przeciwnym razie nowy plan tego pakietu; zostaw puste, aby użyć pokazanego pakietu. Plan wpisany obok Automatycznie obowiązuje, gdy import zmienia produkt na hostingowy."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
+msgstr "Bez wyboru"

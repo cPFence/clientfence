@@ -35547,3 +35547,248 @@ msgstr "無法取消此服務的付款網關訂閱，因此收費週期未有更
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr "這些賬單來自不同網站：請將同一網站的賬單一併支付。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr "共有 %total% 項服務相符。本頁列出其中 %count% 項：%movable% 項可以轉移。目前尚未更改任何內容。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr "伺服器上的帳戶"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr "已經是寄存服務。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
+msgstr "已連結到其帳戶。"
+
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr "自動升級到新產品會改變此服務的續期價格。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
+msgstr "此帳戶的另一項轉移或連結正在執行。請稍後再試。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr "請從清單中為 :product 選擇一部伺服器。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr "請選擇另一個自訂產品，或選擇設有伺服器和寄存計劃的寄存產品，作為服務的轉移目標。若要將寄存產品的服務連結到其帳戶，請在兩處都選擇該產品。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
+msgstr "請選擇 1 至 :max 項要轉移的服務。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
+msgstr "請選擇要從中轉移服務的產品。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
+msgstr "ClientFence 沒有適用於模組 :module 的伺服器管理程式。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr "自訂產品"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
+msgstr "自訂產品"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "適用於歸在自訂產品下的服務。轉移到寄存產品後，每項服務會透過域名連結到產品伺服器上既有的帳戶；不會在伺服器上建立任何內容。訂單會保留其價格、計費週期、到期日、發票和狀態。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
+msgstr "來源產品"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr "寄存於 :server，計劃 :plan"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
+msgstr ":product 的寄存計劃"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr "寄存產品"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr "設定好伺服器和寄存計劃後，寄存產品才會列出。若要將寄存產品的服務連結到其帳戶，請選擇同一個產品。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
+msgstr "有服務尚未連結到其帳戶的寄存產品"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr "將 :product 匯入為"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
+msgstr "匯入為"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr "它在 :source 中沒有伺服器模組。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr "授權產品"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
+msgstr "連結 %count% 項服務"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr "轉移 %count% 項服務"
+
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr "轉移服務"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr "將服務轉移到另一個產品"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr "已轉移"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
+msgstr "無伺服器帳戶的轉移"
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
+msgstr "在伺服器上找不到此客戶使用該域名的帳戶。"
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
+msgstr "此服務沒有記錄域名。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr "沒有產品有可轉移或可連結的服務。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr "其伺服器群組中沒有該模組的伺服器。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr "沒有該模組的伺服器。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr "不是自訂服務，或尚無服務。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
+msgstr "不是寄存服務。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr "訂單 #:id（:domain）也是此帳戶的網站：兩項服務不能共用一個帳戶。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr "訂單 #:id 已經是此域名的寄存服務。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
+msgstr "機構 %org%，訂閱 %id%"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr "請先預覽服務"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
+msgstr "產品已儲存。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr "儲存產品"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr "來自 :source 的伺服器"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr "ClientFence 中的伺服器"
+
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr "此產品有多項服務使用該域名。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
+msgstr "顯示產品"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
+msgstr "仍為授權產品。"
+
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr "客戶的電郵地址尚未確認。"
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr "匯入已開始：產品將變成什麼已無法再更改。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr "清單顯示後產品已更改：請重新顯示產品。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr "無法讀取產品。"
+
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr "伺服器未提供此帳戶的登入名稱。"
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
+msgstr "此伺服器的伺服器管理程式無法查詢帳戶：請手動連結這些服務。"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr "這些選擇過長，無法儲存：請使用較短的計劃名稱，或將更多產品保留為自動。"
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
+msgstr "此帳戶已連結到寄存服務 #:id。"
+
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr "此服務在轉移過程中發生了變化。請重新預覽。"
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
+msgstr "此服務已不在 :product 之下。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
+msgstr "目標產品"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr "每個產品將變成什麼。「自動」會保留所示結果。改為寄存的產品會將其服務以寄存帳戶匯入到該伺服器，並保留域名和用戶名稱：不會在伺服器上建立任何內容。其計劃是名稱與你輸入相同的寄存計劃，否則是該套件的新計劃；留空則使用所示的套件。在「自動」旁輸入的計劃會在匯入將產品變為寄存時生效。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
+msgstr "無選擇"

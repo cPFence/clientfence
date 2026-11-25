@@ -35555,3 +35555,248 @@ msgstr "Selle teenuse makselüüsi püsimakset ei õnnestunud tühistada, seega 
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr "Need arved on erinevatelt saitidelt: tasuge ühe saidi arved koos."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr "%total% teenust vastab. See leht loetleb neist %count%: %movable% saab teisaldada. Midagi pole veel muudetud."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr "Konto serveris"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr "On juba veebimajutuse teenus."
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
+msgstr "On juba oma kontoga seotud."
+
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr "Uue toote automaatne ülendamine muudaks selle teenuse pikendamishinda."
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
+msgstr "Selle konto muu teisaldamine või sidumine on pooleli. Proovige hetke pärast uuesti."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr "Valige loendist :product jaoks server."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr "Valige teine kohandatud toode või veebimajutuse toode, millel on server ja majutuspakett, kuhu teenused teisaldada. Veebimajutuse toote teenuste sidumiseks nende kontodega valige see toode mõlemas väljas."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
+msgstr "Valige teisaldamiseks 1 kuni :max teenust."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
+msgstr "Valige toode, millest teenused teisaldada."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
+msgstr "ClientFence'il pole mooduli :module jaoks serverihaldurit."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr "Kohandatud toode"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
+msgstr "Kohandatud tooted"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Teenustele, mis tulid sisse kohandatud toote all. Veebimajutuse tootesse teisaldatuna seotakse iga teenus oma olemasoleva kontoga toote serveris, mis leitakse domeeni järgi. Serveris ei looda midagi. Tellimus säilitab oma hinna, arveldusperioodi, maksetähtaja, arved ja oleku."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
+msgstr "Tootest"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr "Majutus serveris :server, pakett :plan"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
+msgstr "Toote :product majutuspakett"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr "Veebimajutuse tooted"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr "Veebimajutuse tooted kuvatakse, kui nende server ja majutuspakett on määratud. Veebimajutuse toote teenuste sidumiseks nende kontodega valige sama toode."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
+msgstr "Veebimajutuse tooted, mille teenused pole oma kontoga seotud"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr "Impordi :product kui"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
+msgstr "Impordi kui"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr "Sellel pole süsteemis :source serverimoodulit."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr "Litsentsitoode"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
+msgstr "Seo %count% teenust"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr "Teisalda %count% teenust"
+
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr "Teisalda teenuseid"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr "Teisalda teenuseid teise tootesse"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr "Teisaldatud"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
+msgstr "Teisaldused ilma serverikontota"
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
+msgstr "Serverist ei leitud selle kliendi kontot selle domeeniga."
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
+msgstr "Selle teenuse jaoks ei salvestatud domeeni."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr "Ühelgi tootel pole teisaldatavaid ega seotavaid teenuseid."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr "Selle mooduli serverit pole selle servergrupis."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr "Selle mooduli serverit pole."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr "Pole kohandatud teenus või sellel pole veel teenust."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
+msgstr "Pole veebimajutuse teenus."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr "Tellimus #:id (:domain) on samuti selle konto veebisait: kaks teenust ei saa jagada ühte kontot."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr "Tellimus #:id on juba veebimajutuse teenus selle domeeni jaoks."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
+msgstr "Organisatsioon %org%, püsimakse %id%"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr "Vaadake kõigepealt teenuste eelvaadet"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
+msgstr "Tooted salvestatud."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr "Salvesta tooted"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr "Serverid süsteemist :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr "Serverid ClientFence'is"
+
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr "Mitmel selle toote teenusel on see domeen."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
+msgstr "Näita tooteid"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
+msgstr "Jääb litsentsitooteks."
+
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr "Kliendi e-posti aadress pole kinnitatud."
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr "Import on alanud: seda, milleks tooted muutuvad, ei saa enam muuta."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr "Tooted on muutunud pärast loendi kuvamist: näidake tooteid uuesti."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr "Tooteid ei õnnestunud lugeda."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr "Server ei andnud selle konto kasutajatunnust."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
+msgstr "Selle serveri serverihaldur ei oska kontosid otsida: siduge need teenused käsitsi."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr "Need valikud on salvestamiseks liiga pikad: kasutage lühemaid pakettide nimesid või jätke rohkem tooteid valikule Automaatne."
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
+msgstr "See konto on juba seotud veebimajutuse teenusega #:id."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr "See teenus muutus teisaldamise ajal. Vaadake eelvaadet uuesti."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
+msgstr "See teenus ei ole enam tootes :product."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
+msgstr "Tootesse"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr "Milleks iga toode muutub. Automaatne säilitab kuvatud tulemuse. Veebimajutuseks tehtud toode impordib oma teenused veebimajutuse kontodena sellesse serverisse, säilitades domeeni ja kasutajanime: serveris ei looda midagi. Selle pakett on teie sisestatud nimega majutuspakett, muidu selle paketi uus pakett. Kuvatud paketi jaoks jätke tühjaks. Valiku Automaatne kõrvale sisestatud pakett kehtib, kui import teeb tootest veebimajutuse toote."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
+msgstr "Ilma valikuta"

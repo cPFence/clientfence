@@ -33176,3 +33176,248 @@ msgstr "Η συνδρομή πύλης αυτής της υπηρεσίας δε
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr "Αυτά τα τιμολόγια προέρχονται από διαφορετικούς ιστότοπους: πληρώστε μαζί τα τιμολόγια ενός ιστότοπου."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr "Ταιριάζουν %total% υπηρεσίες. Αυτή η σελίδα εμφανίζει %count% από αυτές: %movable% μπορούν να μεταφερθούν. Τίποτα δεν έχει αλλάξει ακόμη."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr "Λογαριασμός στον διακομιστή"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr "Είναι ήδη υπηρεσία hosting."
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
+msgstr "Είναι ήδη συνδεδεμένη με τον λογαριασμό της."
+
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr "Μια αυτόματη προαγωγή στο νέο προϊόν θα άλλαζε την τιμή ανανέωσης αυτής της υπηρεσίας."
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
+msgstr "Μια άλλη μεταφορά ή σύνδεση αυτού του λογαριασμού βρίσκεται σε εξέλιξη. Δοκιμάστε ξανά σε λίγο."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr "Επιλέξτε έναν διακομιστή από τη λίστα για το :product."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr "Επιλέξτε άλλο προσαρμοσμένο προϊόν ή προϊόν hosting με διακομιστή και πακέτο φιλοξενίας, στο οποίο θα μεταφερθούν οι υπηρεσίες. Για να συνδέσετε τις υπηρεσίες ενός προϊόντος hosting με τους λογαριασμούς τους, επιλέξτε αυτό το προϊόν και στα δύο πεδία."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
+msgstr "Επιλέξτε από 1 έως :max υπηρεσίες για μεταφορά."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
+msgstr "Επιλέξτε το προϊόν από το οποίο θα μεταφερθούν οι υπηρεσίες."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
+msgstr "Το ClientFence δεν έχει διαχειριστή διακομιστή για την ενότητα :module."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr "Προσαρμοσμένο προϊόν"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
+msgstr "Προσαρμοσμένα προϊόντα"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Για υπηρεσίες που ήρθαν κάτω από προσαρμοσμένο προϊόν. Όταν μεταφερθούν σε προϊόν hosting, κάθε υπηρεσία συνδέεται με τον υπάρχοντα λογαριασμό της στον διακομιστή του προϊόντος, που βρίσκεται από το όνομα χώρου· δεν δημιουργείται τίποτα στον διακομιστή. Η παραγγελία διατηρεί την τιμή, την περίοδο χρέωσης, την ημερομηνία λήξης, τα τιμολόγια και την κατάστασή της."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
+msgstr "Από προϊόν"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr "Hosting στο :server, πακέτο :plan"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
+msgstr "Πακέτο φιλοξενίας του :product"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr "Προϊόντα hosting"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr "Τα προϊόντα hosting εμφανίζονται όταν οριστούν ο διακομιστής και το πακέτο φιλοξενίας τους. Για να συνδέσετε τις υπηρεσίες ενός προϊόντος hosting με τους λογαριασμούς τους, επιλέξτε το ίδιο προϊόν."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
+msgstr "Προϊόντα hosting με υπηρεσίες που δεν είναι συνδεδεμένες με τον λογαριασμό τους"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr "Εισαγωγή του :product ως"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
+msgstr "Εισαγωγή ως"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr "Δεν έχει ενότητα διακομιστή στο :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr "Προϊόν άδειας χρήσης"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
+msgstr "Σύνδεση %count% υπηρεσιών"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr "Μεταφορά %count% υπηρεσιών"
+
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr "Μεταφορά υπηρεσιών"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr "Μεταφορά υπηρεσιών σε άλλο προϊόν"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr "Μεταφέρθηκε"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
+msgstr "Μεταφορές χωρίς λογαριασμό στον διακομιστή"
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
+msgstr "Δεν βρέθηκε στον διακομιστή λογαριασμός αυτού του πελάτη με αυτό το όνομα χώρου."
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
+msgstr "Δεν καταγράφηκε όνομα χώρου για αυτήν την υπηρεσία."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr "Κανένα προϊόν δεν έχει υπηρεσίες για μεταφορά ή σύνδεση."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr "Δεν υπάρχει διακομιστής της ενότητάς του στην ομάδα διακομιστών του."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr "Δεν υπάρχει διακομιστής της ενότητάς του."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr "Δεν είναι προσαρμοσμένη υπηρεσία ή δεν έχει ακόμη υπηρεσία."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
+msgstr "Δεν είναι υπηρεσία hosting."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr "Η παραγγελία #:id (:domain) είναι επίσης ιστότοπος αυτού του λογαριασμού: δύο υπηρεσίες δεν μπορούν να μοιράζονται έναν λογαριασμό."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr "Η παραγγελία #:id είναι ήδη υπηρεσία hosting για αυτό το όνομα χώρου."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
+msgstr "Οργανισμός %org%, συνδρομή %id%"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr "Δείτε πρώτα την προεπισκόπηση των υπηρεσιών"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
+msgstr "Τα προϊόντα αποθηκεύτηκαν."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr "Αποθήκευση των προϊόντων"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr "Διακομιστές από το :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr "Διακομιστές στο ClientFence"
+
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr "Πολλές υπηρεσίες αυτού του προϊόντος έχουν αυτό το όνομα χώρου."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
+msgstr "Εμφάνιση των προϊόντων"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
+msgstr "Παραμένει προϊόν άδειας χρήσης."
+
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr "Η διεύθυνση email του πελάτη δεν έχει επιβεβαιωθεί."
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr "Η εισαγωγή ξεκίνησε: το τι γίνονται τα προϊόντα δεν μπορεί πλέον να αλλάξει."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr "Τα προϊόντα άλλαξαν από τότε που εμφανίστηκε η λίστα: εμφανίστε ξανά τα προϊόντα."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr "Τα προϊόντα δεν μπόρεσαν να διαβαστούν."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr "Ο διακομιστής δεν έδωσε το όνομα σύνδεσης αυτού του λογαριασμού."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
+msgstr "Ο διαχειριστής διακομιστή αυτού του διακομιστή δεν μπορεί να αναζητήσει λογαριασμούς: συνδέστε αυτές τις υπηρεσίες χειροκίνητα."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr "Αυτές οι επιλογές είναι πολύ μεγάλες για αποθήκευση: χρησιμοποιήστε μικρότερα ονόματα πακέτων ή αφήστε περισσότερα προϊόντα σε Αυτόματο."
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
+msgstr "Αυτός ο λογαριασμός είναι ήδη συνδεδεμένος με την υπηρεσία hosting #:id."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr "Αυτή η υπηρεσία άλλαξε κατά τη μεταφορά. Δείτε ξανά την προεπισκόπηση."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
+msgstr "Αυτή η υπηρεσία δεν ανήκει πλέον στο :product."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
+msgstr "Σε προϊόν"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr "Το τι γίνεται κάθε προϊόν. Το Αυτόματο κρατά το αποτέλεσμα που εμφανίζεται. Ένα προϊόν που γίνεται hosting εισάγει τις υπηρεσίες του ως λογαριασμούς hosting σε αυτόν τον διακομιστή, κρατώντας το όνομα χώρου και το όνομα χρήστη: δεν δημιουργείται τίποτα στον διακομιστή. Το πακέτο του είναι το πακέτο φιλοξενίας με το όνομα που θα πληκτρολογήσετε, αλλιώς ένα νέο πακέτο αυτού του συνόλου· αφήστε το κενό για το σύνολο που εμφανίζεται. Ένα πακέτο που πληκτρολογείται δίπλα στο Αυτόματο ισχύει όταν η εισαγωγή κάνει το προϊόν hosting."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
+msgstr "Χωρίς επιλογή"

@@ -30902,3 +30902,248 @@ msgstr "ยกเลิกการสมัครสมาชิกของเ
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr "ใบแจ้งหนี้เหล่านี้มาจากไซต์ที่ต่างกัน โปรดชำระใบแจ้งหนี้ของไซต์เดียวกันพร้อมกัน"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr "มีบริการที่ตรงกัน %total% รายการ หน้านี้แสดง %count% รายการ: ย้ายได้ %movable% รายการ ยังไม่มีอะไรเปลี่ยนแปลง"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr "บัญชีบนเซิร์ฟเวอร์"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr "เป็นบริการโฮสติ้งอยู่แล้ว"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
+msgstr "เชื่อมกับบัญชีของบริการแล้ว"
+
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr "การเลื่อนระดับอัตโนมัติไปยังสินค้าใหม่จะเปลี่ยนราคาต่ออายุของบริการนี้"
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
+msgstr "กำลังย้ายหรือเชื่อมบัญชีนี้อยู่ ลองอีกครั้งในอีกสักครู่"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr "เลือกเซิร์ฟเวอร์จากรายการสำหรับ :product"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr "เลือกสินค้าแบบกำหนดเองอื่น หรือสินค้าโฮสติ้งที่มีเซิร์ฟเวอร์และแพ็กเกจโฮสติ้ง เพื่อย้ายบริการไป หากต้องการเชื่อมบริการของสินค้าโฮสติ้งกับบัญชีของบริการ ให้เลือกสินค้านั้นในทั้งสองช่อง"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
+msgstr "เลือกบริการที่จะย้ายตั้งแต่ 1 ถึง :max รายการ"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
+msgstr "เลือกสินค้าที่จะย้ายบริการออกมา"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
+msgstr "ClientFence ไม่มีตัวจัดการเซิร์ฟเวอร์สำหรับโมดูล :module"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr "สินค้าแบบกำหนดเอง"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
+msgstr "สินค้าแบบกำหนดเอง"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "สำหรับบริการที่เข้ามาภายใต้สินค้าแบบกำหนดเอง เมื่อย้ายไปยังสินค้าโฮสติ้ง แต่ละบริการจะถูกเชื่อมกับบัญชีเดิมบนเซิร์ฟเวอร์ของสินค้า โดยค้นหาจากโดเมน และจะไม่มีการสร้างอะไรบนเซิร์ฟเวอร์ คำสั่งซื้อยังคงมีราคา รอบการเรียกเก็บเงิน วันครบกำหนด ใบแจ้งหนี้ และสถานะเดิม"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
+msgstr "จากสินค้า"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr "โฮสติ้งบน :server แพ็กเกจ :plan"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
+msgstr "แพ็กเกจโฮสติ้งของ :product"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr "สินค้าโฮสติ้ง"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr "สินค้าโฮสติ้งจะแสดงเมื่อตั้งค่าเซิร์ฟเวอร์และแพ็กเกจโฮสติ้งแล้ว หากต้องการเชื่อมบริการของสินค้าโฮสติ้งกับบัญชีของบริการ ให้เลือกสินค้าเดียวกัน"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
+msgstr "สินค้าโฮสติ้งที่มีบริการยังไม่ได้เชื่อมกับบัญชี"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr "นำเข้า :product เป็น"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
+msgstr "นำเข้าเป็น"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr "ไม่มีโมดูลเซิร์ฟเวอร์ใน :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr "สินค้าใบอนุญาต"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
+msgstr "เชื่อม %count% บริการ"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr "ย้าย %count% บริการ"
+
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr "ย้ายบริการ"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr "ย้ายบริการไปยังสินค้าอื่น"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr "ย้ายแล้ว"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
+msgstr "การย้ายโดยไม่มีบัญชีบนเซิร์ฟเวอร์"
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
+msgstr "ไม่พบบัญชีของลูกค้ารายนี้ที่ใช้โดเมนนี้บนเซิร์ฟเวอร์"
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
+msgstr "ไม่ได้บันทึกโดเมนสำหรับบริการนี้"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr "ไม่มีสินค้าที่มีบริการให้ย้ายหรือเชื่อม"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr "ไม่มีเซิร์ฟเวอร์ของโมดูลนี้ในกลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr "ไม่มีเซิร์ฟเวอร์ของโมดูลนี้"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr "ไม่ใช่บริการแบบกำหนดเอง หรือยังไม่มีบริการ"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
+msgstr "ไม่ใช่บริการโฮสติ้ง"
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr "คำสั่งซื้อ #:id (:domain) เป็นเว็บไซต์ของบัญชีนี้ด้วย: สองบริการใช้บัญชีเดียวกันไม่ได้"
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr "คำสั่งซื้อ #:id เป็นบริการโฮสติ้งของโดเมนนี้อยู่แล้ว"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
+msgstr "องค์กร %org% การสมัครสมาชิก %id%"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr "ดูตัวอย่างบริการก่อน"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
+msgstr "บันทึกสินค้าแล้ว"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr "บันทึกสินค้า"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr "เซิร์ฟเวอร์จาก :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr "เซิร์ฟเวอร์ใน ClientFence"
+
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr "หลายบริการของสินค้านี้ใช้โดเมนนี้"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
+msgstr "แสดงสินค้า"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
+msgstr "ยังคงเป็นสินค้าใบอนุญาต"
+
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr "ยังไม่ได้ยืนยันอีเมลของลูกค้า"
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr "การนำเข้าเริ่มแล้ว: ไม่สามารถเปลี่ยนสิ่งที่สินค้าจะเป็นได้อีก"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr "สินค้ามีการเปลี่ยนแปลงตั้งแต่แสดงรายการ: โปรดแสดงสินค้าอีกครั้ง"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr "อ่านสินค้าไม่ได้"
+
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr "เซิร์ฟเวอร์ไม่ส่งชื่อล็อกอินของบัญชีนี้มา"
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
+msgstr "ตัวจัดการเซิร์ฟเวอร์ของเซิร์ฟเวอร์นี้ค้นหาบัญชีไม่ได้: โปรดเชื่อมบริการเหล่านี้ด้วยตนเอง"
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr "ตัวเลือกเหล่านี้ยาวเกินกว่าจะบันทึกได้: ใช้ชื่อแพ็กเกจที่สั้นลง หรือปล่อยให้สินค้าอื่นเป็นอัตโนมัติมากขึ้น"
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
+msgstr "บัญชีนี้เชื่อมกับบริการโฮสติ้ง #:id อยู่แล้ว"
+
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr "บริการนี้มีการเปลี่ยนแปลงระหว่างที่ย้าย โปรดดูตัวอย่างอีกครั้ง"
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
+msgstr "บริการนี้ไม่ได้อยู่ใน :product อีกต่อไป"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
+msgstr "ไปยังสินค้า"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr "สิ่งที่สินค้าแต่ละรายการจะเป็น อัตโนมัติจะคงผลลัพธ์ที่แสดงไว้ สินค้าที่เปลี่ยนเป็นโฮสติ้งจะนำเข้าบริการเป็นบัญชีโฮสติ้งบนเซิร์ฟเวอร์นั้น โดยคงโดเมนและชื่อผู้ใช้ไว้ และจะไม่มีการสร้างอะไรบนเซิร์ฟเวอร์ แพ็กเกจของสินค้าคือแพ็กเกจโฮสติ้งที่ใช้ชื่อที่คุณกรอก หากไม่มีจะเป็นแพ็กเกจใหม่ของชุดนั้น เว้นว่างไว้เพื่อใช้ชุดที่แสดง แพ็กเกจที่กรอกไว้ข้างอัตโนมัติจะใช้เมื่อการนำเข้าเปลี่ยนสินค้าเป็นโฮสติ้ง"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
+msgstr "ไม่เลือก"

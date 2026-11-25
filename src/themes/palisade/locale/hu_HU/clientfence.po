@@ -33077,3 +33077,248 @@ msgstr "A szolgáltatás átjáró-előfizetését nem sikerült lemondani, ezé
 #: src/modules/Invoice/MassPay.php
 msgid "These invoices are from different sites: pay the invoices of one site together."
 msgstr "Ezek a számlák különböző webhelyekhez tartoznak: egy webhely számláit fizesse ki együtt."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet."
+msgstr "%total% szolgáltatás egyezik. Ez az oldal ezek közül %count% darabot listáz: %movable% áthelyezhető. Még semmi nem változott."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account on the server"
+msgstr "Fiók a szerveren"
+
+#: src/modules/Order/ProductMove.php
+msgid "Already a hosting service."
+msgstr "Már tárhelyszolgáltatás."
+
+#: src/modules/Order/ProductMove.php
+msgid "Already linked to its account."
+msgstr "Már össze van kapcsolva a fiókjával."
+
+#: src/modules/Order/ProductMove.php
+msgid "An automatic promotion of the new product would change the renewal price of this service."
+msgstr "Az új termékre való automatikus áttérés megváltoztatná a szolgáltatás megújítási árát."
+
+#: src/modules/Order/ProductMove.php
+msgid "Another move or link of this account is running. Try again in a moment."
+msgstr "A fiók másik áthelyezése vagy összekapcsolása folyamatban van. Próbálja újra egy pillanat múlva."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "Choose a server from the list for :product."
+msgstr "Válasszon szervert a listából a(z) :product termékhez."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both."
+msgstr "Válasszon másik egyedi terméket, vagy olyan tárhelytermék, amelynek van szervere és tárhelycsomagja, ahová a szolgáltatások kerülnek. Egy tárhelytermék szolgáltatásainak a fiókjaikkal való összekapcsolásához mindkét mezőben ezt a terméket válassza."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose between 1 and :max services to move."
+msgstr "Válasszon 1 és :max közötti számú szolgáltatást az áthelyezéshez."
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product to move the services from."
+msgstr "Válassza ki a terméket, amelyből a szolgáltatásokat áthelyezi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "ClientFence has no server manager for its module :module."
+msgstr "A ClientFence-nek nincs szerverkezelője a(z) :module modulhoz."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Custom product"
+msgstr "Egyedi termék"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Custom products"
+msgstr "Egyedi termékek"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Egyedi termék alatt érkezett szolgáltatásokhoz. Tárhelytermékbe áthelyezve minden szolgáltatás össze lesz kapcsolva a termék szerverén meglévő fiókjával, amelyet a domain alapján talál meg a rendszer; a szerveren nem jön létre semmi. A megrendelés megtartja árát, számlázási időszakát, esedékességi dátumát, számláit és állapotát."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "From product"
+msgstr "Termékből"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting on :server, plan :plan"
+msgstr "Tárhely a(z) :server szerveren, csomag: :plan"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Hosting plan of :product"
+msgstr "A(z) :product tárhelycsomagja"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products"
+msgstr "Tárhelytermékek"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product."
+msgstr "A tárhelytermékek akkor jelennek meg, ha a szerverük és a tárhelycsomagjuk be van állítva. Egy tárhelytermék szolgáltatásainak a fiókjaikkal való összekapcsolásához ugyanazt a terméket válassza."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Hosting products with services not linked to their account"
+msgstr "Tárhelytermékek, amelyek szolgáltatásai nincsenek a fiókjukkal összekapcsolva"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import :product as"
+msgstr ":product importálása mint"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Import as"
+msgstr "Importálás mint"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "It has no server module in :source."
+msgstr "Nincs szervermodulja ebben: :source."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Licence product"
+msgstr "Licenctermék"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Link %count% services"
+msgstr "%count% szolgáltatás összekapcsolása"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move %count% services"
+msgstr "%count% szolgáltatás áthelyezése"
+
+#: src/modules/Order/Controller/Admin.php src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services"
+msgstr "Szolgáltatások áthelyezése"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Move services to another product"
+msgstr "Szolgáltatások áthelyezése másik termékbe"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moved"
+msgstr "Áthelyezve"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a server account"
+msgstr "Áthelyezések szerverfiók nélkül"
+
+#: src/modules/Order/ProductMove.php
+msgid "No account of this client with this domain was found on the server."
+msgstr "A szerveren nem található ennek az ügyfélnek ezzel a domainnel rendelkező fiókja."
+
+#: src/modules/Order/ProductMove.php
+msgid "No domain was recorded for this service."
+msgstr "Ehhez a szolgáltatáshoz nincs rögzítve domain."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "No product has services to move or link."
+msgstr "Egyetlen terméknek sincs áthelyezhető vagy összekapcsolható szolgáltatása."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module in its server group."
+msgstr "Nincs a moduljához tartozó szerver a szervercsoportjában."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "No server of its module."
+msgstr "Nincs a moduljához tartozó szerver."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a custom service, or it has no service yet."
+msgstr "Nem egyedi szolgáltatás, vagy még nincs szolgáltatása."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not a hosting service."
+msgstr "Nem tárhelyszolgáltatás."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id (:domain) is a website of this account too: two services cannot share one account."
+msgstr "A(z) #:id megrendelés (:domain) ennek a fióknak is weboldala: két szolgáltatás nem osztozhat egy fiókon."
+
+#: src/modules/Order/ProductMove.php
+msgid "Order #:id is already a hosting service for this domain."
+msgstr "A(z) #:id megrendelés már tárhelyszolgáltatás ehhez a domainhez."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Organization %org%, subscription %id%"
+msgstr "Szervezet: %org%, előfizetés: %id%"
+
+#: src/modules/Order/Api/Admin.php
+msgid "Preview the services first"
+msgstr "Előbb nézze meg a szolgáltatások előnézetét"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Products saved."
+msgstr "Termékek mentve."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Save the products"
+msgstr "Termékek mentése"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers from :source"
+msgstr "Szerverek innen: :source"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Servers in ClientFence"
+msgstr "Szerverek a ClientFence-ben"
+
+#: src/modules/Order/ProductMove.php
+msgid "Several services of this product have this domain."
+msgstr "Ennek a terméknek több szolgáltatása is ezt a domaint használja."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Show the products"
+msgstr "Termékek megjelenítése"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Stays a licence product."
+msgstr "Licenctermék marad."
+
+#: src/modules/Order/ProductMove.php
+msgid "The client's email address is not confirmed."
+msgstr "Az ügyfél e-mail-címe nincs megerősítve."
+
+#: src/modules/Clientfence/Whmcs/Import.php src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The import has started: what the products become can no longer change."
+msgstr "Az importálás elindult: azt, hogy mivé válnak a termékek, már nem lehet módosítani."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "The products changed since the list was shown: show the products again."
+msgstr "A termékek megváltoztak a lista megjelenítése óta: jelenítse meg újra a termékeket."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "The products could not be read."
+msgstr "A termékeket nem sikerült beolvasni."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server did not give the login of this account."
+msgstr "A szerver nem adta meg ennek a fióknak a bejelentkezési nevét."
+
+#: src/modules/Order/ProductMove.php
+msgid "The server manager of this server cannot look accounts up: link these services by hand."
+msgstr "Ennek a szervernek a szerverkezelője nem tud fiókokat keresni: kapcsolja össze ezeket a szolgáltatásokat kézzel."
+
+#: src/modules/Clientfence/Whmcs/Import.php
+msgid "These choices are too long to save: use shorter plan names, or leave more products on Automatic."
+msgstr "Ezek a választások túl hosszúak a mentéshez: használjon rövidebb csomagneveket, vagy hagyjon több terméket Automatikus beállításon."
+
+#: src/modules/Order/ProductMove.php
+msgid "This account is already linked to hosting service #:id."
+msgstr "Ez a fiók már össze van kapcsolva a(z) #:id tárhelyszolgáltatással."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service changed while it was being moved. Preview it again."
+msgstr "Ez a szolgáltatás megváltozott az áthelyezés közben. Nézze meg újra az előnézetet."
+
+#: src/modules/Order/ProductMove.php
+msgid "This service is no longer on :product."
+msgstr "Ez a szolgáltatás már nincs a(z) :product terméken."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "To product"
+msgstr "Termékbe"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting."
+msgstr "Mivé válik az egyes termék. Az Automatikus megtartja a mutatott eredményt. A tárhellyé tett termék a szolgáltatásait tárhelyfiókként importálja az adott szerverre, megtartva a domainjüket és a felhasználónevüket: a szerveren nem jön létre semmi. A csomagja a megadott nevű tárhelycsomag, ennek hiányában az adott csomag egy új tárhelycsomagja; hagyja üresen a mutatott csomaghoz. Az Automatikus mellett megadott csomag akkor érvényes, ha az importálás a terméket tárhellyé teszi."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Without a choice"
+msgstr "Választás nélkül"
