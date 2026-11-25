@@ -669,6 +669,135 @@
                     </table>
                 </div>
             </div>
+
+            {# What each product becomes (Whmcs/Import.php products(), saveProducts(); applied in Catalogue::productKind()).
+               Read from the source only when staff ask: the page itself never connects to it. #}
+            <h4 class="mt-4 mb-2">{{ 'Products'|trans }}</h4>
+            {% if run %}
+                <p class="text-secondary small mb-0">{{ 'The import has started: what the products become can no longer change.'|trans }}</p>
+            {% else %}
+            <div id="wi-products">
+                <p class="text-secondary small">{{ 'What each product becomes. Automatic keeps the result shown. A product made hosting imports its services as hosting accounts on that server, keeping their domain and username: nothing is created on the server. Its plan is the hosting plan with the name you enter, else a new plan of that package; leave it empty for the package shown. A plan entered next to Automatic applies when the import makes the product hosting.'|trans }}</p>
+                <button type="button" class="btn btn-outline-primary" data-wi-products-show>{{ 'Show the products'|trans }}</button>
+                <form class="d-none" method="post" action="{{ 'clientfence/whmcs_import_products_save'|api_url }}" {{ fb_api_form({ message: 'Products saved.'|trans, reload: true }) }}>
+                    <datalist id="wi-plans"></datalist>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-vcenter mb-0">
+                            <thead><tr><th>{{ 'Product'|trans }}</th><th class="text-end">{{ 'Services'|trans }}</th><th>{{ 'Without a choice'|trans }}</th><th>{{ 'Import as'|trans }}</th><th>{{ 'Hosting plan'|trans }}</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button class="btn btn-primary" type="submit">{{ 'Save the products'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+            <script nonce="{{ csp_nonce }}">
+                (() => {
+                    const box = document.getElementById('wi-products');
+                    const text = {
+                        hosting: {{ 'Hosting on :server, plan :plan'|trans|json_encode|raw }},
+                        license: {{ 'Licence product'|trans|json_encode|raw }},
+                        custom: {{ 'Custom product'|trans|json_encode|raw }},
+                        reasons: {
+                            module: {{ 'ClientFence has no server manager for its module :module.'|trans|json_encode|raw }},
+                            none: {{ 'It has no server module in :source.'|trans({ ':source': source })|json_encode|raw }},
+                            group: {{ 'No server of its module in its server group.'|trans|json_encode|raw }},
+                            server: {{ 'No server of its module.'|trans|json_encode|raw }},
+                        },
+                        stays: {{ 'Stays a licence product.'|trans|json_encode|raw }},
+                        automatic: {{ 'Automatic'|trans|json_encode|raw }},
+                        imported: {{ 'Servers from :source'|trans({ ':source': source })|json_encode|raw }},
+                        ours: {{ 'Servers in ClientFence'|trans|json_encode|raw }},
+                        importAs: {{ 'Import :product as'|trans|json_encode|raw }},
+                        planOf: {{ 'Hosting plan of :product'|trans|json_encode|raw }},
+                        none: {{ 'None'|trans|json_encode|raw }},
+                        failed: {{ 'The products could not be read.'|trans|json_encode|raw }},
+                    };
+                    const cell = (value, className = '') => {
+                        const td = document.createElement('td');
+                        td.className = className;
+                        td.textContent = value;
+                        return td;
+                    };
+                    const option = (value, label, chosen) => {
+                        const o = new Option(label, value);
+                        o.selected = value === chosen;
+                        return o;
+                    };
+                    box.querySelector('[data-wi-products-show]').addEventListener('click', (event) => {
+                        const button = event.currentTarget;
+                        button.disabled = true;
+                        ClientFence.api.admin.get('clientfence/whmcs_import_products', {}, (list) => {
+                            if (list.error) {
+                                ClientFence.message(list.error, 'error');
+                                button.disabled = false;
+                                return;
+                            }
+                            const form = box.querySelector('form');
+                            form.querySelector('#wi-plans').replaceChildren(...list.plans.map((name) => new Option('', name)));
+                            const body = form.querySelector('tbody');
+                            body.replaceChildren();
+                            list.products.forEach((p) => {
+                                const tr = document.createElement('tr');
+                                const today = p.kind === 'hosting' ? text.hosting.replace(':server', () => p.server).replace(':plan', () => p.plan)
+                                    : (p.kind === 'license' ? text.license : [text.custom, (text.reasons[p.reason] || '').replace(':module', () => p.module)].filter(Boolean).join(' · '));
+                                tr.append(cell(p.name), cell(p.services, 'text-end'), cell(today, 'small'));
+                                if (p.kind === 'license') {
+                                    const td = cell(text.stays, 'text-secondary small');
+                                    td.colSpan = 2;
+                                    tr.append(td);
+                                } else {
+                                    const select = document.createElement('select');
+                                    select.className = 'form-select form-select-sm';
+                                    select.name = `products[${p.id}][server]`;
+                                    select.setAttribute('aria-label', text.importAs.replace(':product', () => p.name));
+                                    select.append(option('', text.automatic, p.choice.server), option('custom', text.custom, p.choice.server));
+                                    [[text.imported, list.servers, 's'], [text.ours, list.clientfence_servers, 'c']].forEach(([label, servers, prefix]) => {
+                                        if (!servers.length) return;
+                                        const group = document.createElement('optgroup');
+                                        group.label = label;
+                                        servers.forEach((s) => group.append(option(prefix + s.id, `${s.name} (${s.manager})`, p.choice.server)));
+                                        select.append(group);
+                                    });
+                                    const plan = document.createElement('input');
+                                    plan.className = 'form-control form-control-sm';
+                                    plan.name = `products[${p.id}][plan]`;
+                                    plan.value = p.choice.plan;
+                                    plan.placeholder = p.plan;
+                                    plan.maxLength = 255;
+                                    plan.setAttribute('list', 'wi-plans');
+                                    plan.setAttribute('aria-label', text.planOf.replace(':product', () => p.name));
+                                    // The product the list showed (Import::choose() refuses a row the source now gives another).
+                                    const check = document.createElement('input');
+                                    check.type = 'hidden';
+                                    check.name = `products[${p.id}][check]`;
+                                    check.value = p.check;
+                                    const td = document.createElement('td');
+                                    td.append(select, check);
+                                    const tdPlan = document.createElement('td');
+                                    tdPlan.append(plan);
+                                    tr.append(td, tdPlan);
+                                }
+                                body.append(tr);
+                            });
+                            if (!list.products.length) {
+                                const td = cell(text.none, 'text-secondary');
+                                td.colSpan = 5;
+                                const tr = document.createElement('tr');
+                                tr.append(td);
+                                body.append(tr);
+                            }
+                            form.classList.remove('d-none');
+                            button.classList.add('d-none');
+                        }, (e) => {
+                            ClientFence.message((e && e.message) || text.failed, 'error');
+                            button.disabled = false;
+                        }, false);
+                    });
+                })();
+            </script>
+            {% endif %}
         {% endif %}
     </div>
 </div>

@@ -277,6 +277,25 @@ test('FOSSBilling is read a page at a time into WHMCS\'s tables, and what cannot
         ->and($plan['modules'])->toBe([]);
 });
 
+test('reading FOSSBilling again drops the product choices made on the last read (CF-183)', function (): void {
+    [$di, $source] = fossbillingDi();
+    Snapshot::fetch($di, [], 0.0, false, $source);
+    $db = $di['em']->getConnection();
+    $db->insert('mod_clientfence_state', ['name' => Import::PRODUCTS, 'value' => '{"101":{"name":"x","server":"custom","plan":""}}']);
+    // A finished read that is only looked at keeps them.
+    Snapshot::fetch($di, [], 0.0, false, $source);
+    expect($db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [Import::PRODUCTS]))->toBe(1);
+
+    // Read again while a run uses them (a restart that raced the start): they are kept.
+    $db->insert('mod_clientfence_state', ['name' => Run::STATE, 'value' => '{"steps":{}}']);
+    Snapshot::fetch($di, [], 0.0, true, $source);
+    expect($db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [Import::PRODUCTS]))->toBe(1);
+
+    $db->delete('mod_clientfence_state', ['name' => Run::STATE]);
+    Snapshot::fetch($di, [], 0.0, true, $source);
+    expect($db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [Import::PRODUCTS]))->toBeFalse();
+});
+
 test('the import reads FOSSBilling only once a read has finished, and reading needs the saved details', function (): void {
     [$di, $source] = fossbillingDi();
     expect(fn () => Import::fetchFossbilling($di, 1.0))->toThrow(ClientFence\InformationException::class, 'Save the FOSSBilling database details first.')

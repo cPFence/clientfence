@@ -323,6 +323,11 @@ final class Services
         if ($sld === '' && $status !== 'canceled') {
             $this->warn(sprintf('%s is a hosting account without a domain: enter its domain on the order before its server is switched on.', $name));
         }
+        // Servicehosting's renewal refuses an account without a username (never created on the server).
+        $username = self::cut($row['username'] ?? '', 255);
+        if ($username === '' && in_array($status, ['active', 'suspended'], true)) {
+            $this->warn(sprintf('%s is a hosting account without a username: link it to its account on the server before it renews, or the renewal fails.', $name));
+        }
         if (!$this->map->has('skipped', 'notice:hostingpasswords')) {
             $this->map->put('skipped', 'notice:hostingpasswords', 0);
             $this->warn('Hosting account passwords were not imported: ClientFence does not store them. Clients and staff set a new one from the hosting account page when needed.');
@@ -334,7 +339,7 @@ final class Services
             'sld' => $sld === '' ? null : $sld,
             'tld' => $tld === '' ? null : $tld,
             'ip' => self::cut($ip, 45) ?: null,
-            'username' => self::cut($row['username'] ?? '', 255) ?: null,
+            'username' => $username ?: null,
             'pass' => self::PASSWORD_PLACEHOLDER,
             'reseller' => !empty($productConfig['reseller']) ? 1 : 0,
             'created_at' => $this->now, 'updated_at' => $this->now,

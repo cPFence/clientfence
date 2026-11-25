@@ -198,6 +198,10 @@ abstract class Snapshot
             // sorted: the pages come in a fixed order (Upmind\Snapshot::fetch() restarts an older unfinished read).
             $state = ['started_at' => date('Y-m-d H:i:s'), 'finished_at' => null, 'sorted' => true, 'step' => array_key_first(static::STEPS), 'offset' => 0, 'steps' => []];
             $di['em']->getConnection()->delete(Run::WARNINGS, ['source' => Map::SOURCE, 'step' => static::STEP]);
+            // A new read numbers the products again: choices made on the old one go, unless a run started meanwhile and uses them.
+            if (Run::state($di) === null) {
+                $di['em']->getConnection()->delete('mod_clientfence_state', ['name' => Import::PRODUCTS]);
+            }
             foreach (static::STEPS as $step => $label) {
                 $state['steps'][$step] = ['label' => $label, 'done' => 0, 'finished' => false];
             }

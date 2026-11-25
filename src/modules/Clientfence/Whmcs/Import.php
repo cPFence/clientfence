@@ -27,6 +27,12 @@ final class Import
 {
     public const SETTINGS = 'whmcs_import';
     public const PLAN = 'whmcs_import_plan';
+    /**
+     * Staff's product choices (saveProducts()): {source: sourceKey() of the source they were made on, choices:
+     * source product id => {name (its check), server, plan}}; a run applies them (Catalogue::productKind()) only
+     * on the source its start recorded (choicesFor()).
+     */
+    public const PRODUCTS = 'whmcs_import_products';
 
     public const DEFAULTS = [
         'host' => 'localhost',
@@ -456,6 +462,177 @@ final class Import
     }
 
     /**
+     * The plan's Products list, read from the source each time (Catalogue::preview(); kept out of the stored
+     * plan, which a few hundred products would overflow): each product with staff's choice (server ''
+     * is automatic), the servers it may go to (those the import brings, those already in ClientFence) and
+     * this install's hosting plan names. Once the import has started the list is not read (locked): the
+     * choices stay as they were. A source that cannot be read gives its error instead.
+     *
+     * @return array<string, mixed>
+     */
+    public static function products(\Pimple\Container $di): array
+    {
+        if (Run::state($di) !== null) {
+            return ['locked' => true, 'error' => null, 'products' => [], 'servers' => [], 'clientfence_servers' => [], 'plans' => []];
+        }
+        $settings = self::settings($di);
+        try {
+            $preview = self::preview($di, $settings);
+        } catch (\Throwable $e) {
+            return ['locked' => false, 'error' => $e->getMessage(), 'products' => [], 'servers' => [], 'clientfence_servers' => [], 'plans' => []];
+        }
+
+        return self::productList($di, $preview, self::sourceKey($settings));
+    }
+
+    /**
+     * The saved choices if they were made on the source $key names (sourceKey()), else none: choices made on
+     * another source name other products.
+     *
+     * @return array<array-key, array<string, string>>
+     */
+    public static function choicesFor(\Pimple\Container $di, ?string $key): array
+    {
+        $row = self::state($di, self::PRODUCTS) ?? [];
+
+        return $key !== null && ($row['source'] ?? null) === $key && is_array($row['choices'] ?? null) ? $row['choices'] : [];
+    }
+
+    /**
+     * What names the source of the settings: the system and its database (sameSource()). A snapshot read
+     * again drops the choices made on the old one instead (Snapshot::read()).
+     *
+     * @param array<string, int|string> $settings
+     */
+    public static function sourceKey(array $settings): string
+    {
+        return hash('sha256', (string) json_encode(self::sourceFields($settings)));
+    }
+
+    /**
+     * products() for a Catalogue::preview().
+     *
+     * @param array{products: list<array<string, mixed>>, servers: list<array{id: int, name: string, manager: string}>} $preview
+     * @param string $source the source's sourceKey()
+     *
+     * @return array<string, mixed>
+     */
+    public static function productList(\Pimple\Container $di, array $preview, string $source): array
+    {
+        $choices = self::choicesFor($di, $source);
+        $db = $di['em']->getConnection();
+        $products = [];
+        foreach ($preview['products'] as $product) {
+            $choice = $choices[(string) $product['id']] ?? null;
+            $match = is_array($choice) && ($choice['name'] ?? null) === Catalogue::nameCheck((string) $product['name']);
+            $products[] = $product + ['check' => Catalogue::nameCheck((string) $product['name']), 'choice' => ['server' => $match ? (string) ($choice['server'] ?? '') : '', 'plan' => $match ? (string) ($choice['plan'] ?? '') : '']];
+        }
+
+        return [
+            'locked' => false,
+            'error' => null,
+            'products' => $products,
+            'servers' => $preview['servers'],
+            'clientfence_servers' => $db->fetchAllAssociative('SELECT id, name, manager FROM service_hosting_server ORDER BY name, id'),
+            'plans' => $db->fetchFirstColumn('SELECT DISTINCT name FROM service_hosting_hp ORDER BY name'),
+        ];
+    }
+
+    /**
+     * Saves staff's product choices from the Products list: products[<id>][server] is '' (automatic: what the
+     * list shows), "custom", "s<id>" (a server the import brings) or "c<id>" (one already in ClientFence), and
+     * products[<id>][plan] the hosting plan (an existing plan's name, else a new plan of that package; empty:
+     * the product's package), with an automatic server too. Licence products stay as they are. Only before
+     * the import starts.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @return int the products with a choice
+     */
+    public static function saveProducts(\Pimple\Container $di, array $data): int
+    {
+        // The run's lock: a save cannot land between a run's start and its products step.
+        $db = $di['em']->getConnection();
+        if (!Run::lock($db)) {
+            throw new InformationException('The import is already running (another tab or the console). Wait for it to finish.');
+        }
+        try {
+            if (Run::state($di) !== null) {
+                throw new InformationException('The import has started: what the products become can no longer change.');
+            }
+            // The settings read once: the choices name the source they were checked against.
+            $settings = self::settings($di);
+            $choices = self::choose($di, self::preview($di, $settings), $data);
+            self::saveState($di, self::PRODUCTS, ['source' => self::sourceKey($settings), 'choices' => $choices]);
+        } finally {
+            Run::unlock($db);
+        }
+
+        return count($choices);
+    }
+
+    /**
+     * The choices saveProducts() stores for a Catalogue::preview(): only products not left as they are,
+     * each with its name's check (Catalogue::nameCheck()), and small enough for the state row.
+     *
+     * @param array{products: list<array<string, mixed>>, servers: list<array{id: int, name: string, manager: string}>} $preview
+     * @param array<string, mixed>                                                                                     $data
+     *
+     * @return array<string, array{name: string, server: string, plan: string}>
+     */
+    public static function choose(\Pimple\Container $di, array $preview, array $data): array
+    {
+        $servers = ['s' => array_map('intval', array_column($preview['servers'], 'id')), 'c' => array_map('intval', $di['em']->getConnection()->fetchFirstColumn('SELECT id FROM service_hosting_server'))];
+        $posted = is_array($data['products'] ?? null) ? $data['products'] : [];
+        $choices = [];
+        foreach ($preview['products'] as $product) {
+            $row = $posted[$product['id']] ?? null;
+            if (!is_array($row) || $product['kind'] === 'license') {
+                continue;
+            }
+            $server = is_string($row['server'] ?? null) ? trim($row['server']) : '';
+            // As typed (or picked from the list): plan names may start or end with spaces.
+            $plan = $server === 'custom' || !is_string($row['plan'] ?? null) || trim($row['plan']) === '' ? '' : $row['plan'];
+            if (mb_strlen($plan) > 255 || preg_match('/[\x00-\x1f]/', $plan) === 1) {
+                throw new InformationException(':what is not valid.', [':what' => 'Hosting plan']);
+            }
+            if ($server === '' && $plan === '') {
+                continue;
+            }
+            // The form names the product it showed: a source read again since then may have given the id to another.
+            if (($row['check'] ?? null) !== Catalogue::nameCheck((string) $product['name'])) {
+                throw new InformationException('The products changed since the list was shown: show the products again.');
+            }
+            if ($server !== '' && $server !== 'custom' && (preg_match('/^([sc])(\d+)$/', $server, $m) !== 1 || !in_array((int) $m[2], $servers[$m[1]], true))) {
+                throw new InformationException('Choose a server from the list for :product.', [':product' => $product['name']]);
+            }
+            $choices[(string) $product['id']] = ['name' => Catalogue::nameCheck((string) $product['name']), 'server' => $server, 'plan' => $plan];
+        }
+        // The state row is a TEXT column (64 KB).
+        if (strlen((string) json_encode($choices, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) > 65535) {
+            throw new InformationException('These choices are too long to save: use shorter plan names, or leave more products on Automatic.');
+        }
+
+        return $choices;
+    }
+
+    /**
+     * The source's products and servers (Catalogue::preview()), read only.
+     *
+     * @param array<string, int|string> $settings
+     * @return array{products: list<array<string, mixed>>, servers: list<array{id: int, name: string, manager: string}>}
+     */
+    private static function preview(\Pimple\Container $di, array $settings): array
+    {
+        $source = Source::open($di, $settings);
+        try {
+            return Catalogue::preview($source);
+        } finally {
+            $source->close();
+        }
+    }
+
+    /**
      * Whether this install can take an import: it must be fresh (no clients, orders, invoices or
      * tickets), because WHMCS's ids and invoice numbers are kept.
      *
@@ -553,6 +730,43 @@ final class Import
         if (self::system($old) !== self::system($new)) {
             $di['em']->getConnection()->executeStatement('DELETE FROM mod_clientfence_state WHERE name = ?', [self::PLAN]);
         }
+        self::forgetChoices($di, $old, $new);
+    }
+
+    /**
+     * Drops the product choices when the settings move to another source before the import starts: they name
+     * that source's products (a snapshot read again drops them too: Snapshot::read()). A started run keeps
+     * them: its connection may be fixed and the run go on, and the choices can no longer be made again.
+     *
+     * @param array<string, int|string> $old
+     * @param array<string, int|string> $new
+     */
+    public static function forgetChoices(\Pimple\Container $di, array $old, array $new): void
+    {
+        if (!self::sameSource($old, $new) && Run::state($di) === null) {
+            $di['em']->getConnection()->executeStatement('DELETE FROM mod_clientfence_state WHERE name = ?', [self::PRODUCTS]);
+        }
+    }
+
+    /**
+     * Whether two import settings read the same source: the system and its database.
+     *
+     * @param array<string, int|string> $old
+     * @param array<string, int|string> $new
+     */
+    public static function sameSource(array $old, array $new): bool
+    {
+        return self::sourceFields($old) === self::sourceFields($new);
+    }
+
+    /**
+     * @param array<string, int|string> $settings
+     *
+     * @return list<int|string>
+     */
+    private static function sourceFields(array $settings): array
+    {
+        return [self::system($settings), strtolower(trim((string) $settings['host'])), (int) $settings['port'], (string) $settings['database']];
     }
 
     private static function saveState(\Pimple\Container $di, string $name, array $value): void

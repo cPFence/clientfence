@@ -91,7 +91,10 @@ final class Run
             // Memory, folders, disk space and the like, before anything is written (Preflight.php).
             // Free space only before a run starts: a started run has used some for its files.
             Preflight::assert($di, $source, $state === null);
-            $state ??= self::start($source, $settings['paypal_agreements'] === 1);
+            if ($state === null) {
+                $state = self::start($source, $settings['paypal_agreements'] === 1);
+                $state['products_source'] = Import::sourceKey($settings);
+            }
             $state = self::work($di, $db, $source, $state, $seconds, $batch);
         } finally {
             $source?->close();
@@ -122,6 +125,8 @@ final class Run
         $attachments = $settings['blesta'] === 1 ? \ClientFence\Mod\Clientfence\Blesta\Snapshot::files() : $settings['attachments_dir'];
         // The steps word their warnings for WHMCS; a snapshot import's data came from the other system.
         $system = Import::system($settings);
+        // Staff's product choices, if made on the source this run started on (Import::choicesFor()).
+        $choices = Import::choicesFor($di, $state['products_source'] ?? null);
         $keepDays = static function () use ($di): int {
             try {
                 $setting = trim((string) ($di['mod_config']('support')['ticket_files_days'] ?? ''));
@@ -141,7 +146,7 @@ final class Run
             while (empty($state['steps'][$step]['finished'])) {
                 $map = new Map($db);
                 $now = date('Y-m-d H:i:s');
-                $catalogue = new Catalogue($source, $db, $map, $cipher, $seal, $secretFields, $registrars, $now);
+                $catalogue = new Catalogue($source, $db, $map, $cipher, $seal, $secretFields, $registrars, $now, $choices);
                 $runner = match (true) {
                     isset(Accounts::STEPS[$step]) => new Accounts($source, $db, $map, $cipher, $encrypt, $config, $now),
                     isset(Services::STEPS[$step]) => new Services($source, $db, $map, $catalogue, $now),
@@ -475,7 +480,8 @@ final class Run
         $di['cache']->delete('config_' . $ext);
     }
 
-    private static function lock(Connection $db): bool
+    /** The import's lock (one run, or a product choice save, at a time); true on other databases (tests). */
+    public static function lock(Connection $db): bool
     {
         if (!$db->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform) {
             return true;
@@ -484,7 +490,7 @@ final class Run
         return (int) $db->fetchOne("SELECT GET_LOCK('clientfence_whmcs_import', 0)") === 1;
     }
 
-    private static function unlock(Connection $db): void
+    public static function unlock(Connection $db): void
     {
         if ($db->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform) {
             $db->fetchOne("SELECT RELEASE_LOCK('clientfence_whmcs_import')");

@@ -24,7 +24,9 @@ use Doctrine\DBAL\Connection;
  * makes a hosting product on the first server of its WHMCS server group (no group: WHMCS's default
  * server of its module, else the first imported one), with a hosting plan
  * named after the WHMCS package; WHMCS's Licensing makes a licence product; any other module a
- * custom product (a warning names the module). Product custom fields become the product's order
+ * custom product (a warning names the module). Staff may choose otherwise for each product on the
+ * plan's Products list (Import::saveProducts()): a custom product, or hosting on a server the import
+ * brings or one already in ClientFence, with a plan. Product custom fields become the product's order
  * form (fields named whmcs_field_<id>, which the services step fills).
  *
  * Configurable options: each WHMCS option group becomes an option group on the same products, its
@@ -97,6 +99,7 @@ final class Catalogue
      * @param \Closure(string): string             $seal         stores a server secret encrypted
      * @param \Closure(string): list<string>       $secretFields a server manager's secret fields
      * @param list<string>                         $registrars   this install's registrar adapters
+     * @param array<array-key, array<string, string>> $choices staff's product choices (Import::PRODUCTS): id => {name (nameCheck()), server, plan}
      */
     public function __construct(
         private readonly Source $source,
@@ -107,6 +110,7 @@ final class Catalogue
         private readonly \Closure $secretFields,
         private readonly array $registrars,
         private readonly string $now,
+        private readonly array $choices = [],
     ) {
     }
 
@@ -253,7 +257,7 @@ final class Catalogue
         if ($this->map->has('product', $id)) {
             return 0;
         }
-        $title = self::cut($row['name'] ?? '', 255) ?: 'Product ' . $id;
+        $title = self::title($row);
         $module = strtolower(trim((string) ($row['servertype'] ?? '')));
         [$type, $config] = $this->productKind($row, $title, $module);
         // The product's affiliate commission (Client/Affiliates/Commissions::rule()); WHMCS's '' is the default.
@@ -330,27 +334,59 @@ final class Catalogue
             // Its software checks at WHMCS's address: those checks get WHMCS-style answers (Servicelicense/WhmcsCheck.php).
             return ['license', ['plugin' => 'Simple', 'validate_ip' => true, 'validate_host' => true, 'validate_path' => false, 'validate_version' => false, 'whmcs_check' => true]];
         }
-        $manager = self::SERVER_MANAGERS[$module] ?? null;
-        if ($manager === null) {
-            if ($module !== '' && $module !== 'none' && $module !== 'autorelease') {
-                $this->warn(sprintf('Product "%s" uses the WHMCS module "%s": it is a custom product; set up its provisioning by hand.', $title, $module));
+        // Staff's choice on the plan's Products list (Import::saveProducts()); the name check guards against a source read again with other ids.
+        $choice = $this->choices[(string) $row['id']] ?? null;
+        $choice = is_array($choice) && ($choice['name'] ?? null) === self::nameCheck($title) ? $choice : null;
+        $package = (string) ($choice['plan'] ?? '');
+        // A plan name staff typed is an existing plan when one has it.
+        // Exactly that name: MySQL's collation compares without case, so the match is made here.
+        $existing = $package === '' ? [] : array_keys(array_filter($this->db->fetchAllKeyValue('SELECT id, name FROM service_hosting_hp WHERE name = ? ORDER BY id', [$package]), static fn ($name): bool => $name === $package));
+        $planId = $existing === [] ? null : (int) $existing[0];
+        if (($choice['server'] ?? '') === 'custom') {
+            return ['custom', []];
+        }
+        if (($choice['server'] ?? '') !== '') {
+            $serverId = $this->chosenServer((string) $choice['server']);
+            if ($serverId === null) {
+                $this->warn(sprintf('Product "%s": the server chosen for it was not found: it is a custom product; make it a hosting product once its server is set up.', $title));
+
+                return ['custom', []];
             }
+            $manager = (string) $this->db->fetchOne('SELECT manager FROM service_hosting_server WHERE id = ?', [$serverId]);
+        } else {
+            $manager = self::SERVER_MANAGERS[$module] ?? null;
+            if ($manager === null) {
+                if ($module !== '' && $module !== 'none' && $module !== 'autorelease') {
+                    $this->warn(sprintf('Product "%s" uses the WHMCS module "%s": it is a custom product; set up its provisioning by hand.', $title, $module));
+                }
 
-            return ['custom', []];
-        }
-        $groupId = (int) ($row['servergroup'] ?? 0);
-        // WHMCS provisions a product without a server group on its module's default server (CF-260).
-        $serverId = $groupId > 0 ? $this->groupServer($groupId, $manager, $title) : $this->defaultServer($module, $manager, $title);
-        if ($serverId === null) {
-            $this->warn(sprintf($groupId > 0
-                ? 'Product "%s" (%s) has no imported server in its WHMCS server group: it is a custom product; make it a hosting product once its server is set up.'
-                : 'Product "%s" (%s) has no WHMCS server group and no imported server of its module: it is a custom product; make it a hosting product once its server is set up.', $title, $module));
+                return ['custom', []];
+            }
+            $groupId = (int) ($row['servergroup'] ?? 0);
+            // Only servers the servers step imported with this manager (one added or changed in the source since is passed over).
+            $imported = array_filter(self::serverRows($this->source), function (array $server) use ($manager): bool {
+                $id = $this->map->get('server', (int) $server['id']);
 
-            return ['custom', []];
+                return $id !== null && $this->db->fetchOne('SELECT manager FROM service_hosting_server WHERE id = ?', [$id]) === $manager;
+            });
+            $servers = array_map(fn (int $id): int => (int) $this->map->get('server', $id), self::pickServers($imported, self::groupRows($this->source), $groupId, $module, $manager));
+            if (count($servers) > 1) {
+                $this->warn($groupId > 0
+                    ? sprintf('Product "%s": its WHMCS server group has %d servers; ClientFence places new accounts on the first one.', $title, count($servers))
+                    : sprintf('Product "%s" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its %d servers.', $title, count($servers)));
+            }
+            $serverId = $servers[0] ?? null;
+            if ($serverId === null) {
+                $this->warn(sprintf($groupId > 0
+                    ? 'Product "%s" (%s) has no imported server in its WHMCS server group: it is a custom product; make it a hosting product once its server is set up.'
+                    : 'Product "%s" (%s) has no WHMCS server group and no imported server of its module: it is a custom product; make it a hosting product once its server is set up.', $title, $module));
+
+                return ['custom', []];
+            }
         }
-        $package = trim((string) ($row['configoption1'] ?? '')) ?: $title;
+        $package = $package !== '' ? $package : (trim((string) ($row['configoption1'] ?? '')) ?: $title);
         $planKey = $manager . '|' . $package;
-        $planId = $this->map->get('hostingplan', $planKey);
+        $planId ??= $this->map->get('hostingplan', $planKey);
         if ($planId === null) {
             // WHM's manager names a plan's package "<server username>_<plan>" unless the plan names
             // the package exactly; WHMCS stores the exact name, so the plan uses it as it is.
@@ -379,54 +415,134 @@ final class Catalogue
         return ['hosting', $config];
     }
 
-    /** The first imported server of a WHMCS server group (with the manager), or null. */
-    private function groupServer(int $groupId, string $manager, string $title): ?int
+    /**
+     * The WHMCS servers (ids) a product's new accounts go to, the one used first: those of its server
+     * group with the manager, or without a group WHMCS's default server of its module (tblservers.active
+     * = 1, not disabled: the one starred in its server list), else every server with the manager, the
+     * ones disabled in WHMCS last (new accounts go to a server that takes them). The products step
+     * passes the servers it imported, the plan's preview every server with a manager.
+     *
+     * @param array<int, array<string, mixed>> $servers tblservers rows by id, in id order
+     * @param array<int, list<int>>            $groups  server ids of each server group, in id order
+     *
+     * @return list<int>
+     */
+    private static function pickServers(array $servers, array $groups, int $groupId, string $module, string $manager): array
     {
-        if ($groupId <= 0 || !$this->source->hasTable('tblservergroupsrel')) {
-            return null;
-        }
-        $servers = [];
-        foreach ($this->source->rows('SELECT serverid FROM tblservergroupsrel WHERE groupid = ? ORDER BY serverid', [$groupId]) as $rel) {
-            $serverId = $this->map->get('server', (int) $rel['serverid']);
-            if ($serverId !== null && $this->db->fetchOne('SELECT manager FROM service_hosting_server WHERE id = ?', [$serverId]) === $manager) {
-                $servers[] = $serverId;
+        $rows = $groupId > 0 ? array_filter(array_map(static fn (int $id): ?array => $servers[$id] ?? null, $groups[$groupId] ?? [])) : $servers;
+        $picked = [];
+        foreach ($rows as $server) {
+            $type = strtolower(trim((string) ($server['type'] ?? '')));
+            if ((self::SERVER_MANAGERS[$type] ?? null) !== $manager) {
+                continue;
             }
-        }
-        if (count($servers) > 1) {
-            $this->warn(sprintf('Product "%s": its WHMCS server group has %d servers; ClientFence places new accounts on the first one.', $title, count($servers)));
+            if ($groupId > 0) {
+                $picked[0][] = (int) $server['id'];
+
+                continue;
+            }
+            if ($type === $module && (int) ($server['active'] ?? 0) === 1 && (int) ($server['disabled'] ?? 0) === 0) {
+                return [(int) $server['id']];
+            }
+            $picked[(int) ($server['disabled'] ?? 0) === 0 ? 0 : 1][] = (int) $server['id'];
         }
 
-        return $servers[0] ?? null;
+        return array_merge($picked[0] ?? [], $picked[1] ?? []);
+    }
+
+    /** @return array<int, array<string, mixed>> tblservers rows by id, in id order */
+    private static function serverRows(Source $source): array
+    {
+        $rows = $source->hasTable('tblservers') ? $source->rows('SELECT * FROM tblservers ORDER BY id') : [];
+
+        return array_combine(array_map(static fn (array $r): int => (int) $r['id'], $rows), $rows);
+    }
+
+    /** @return array<int, list<int>> server ids of each WHMCS server group, in id order */
+    private static function groupRows(Source $source): array
+    {
+        $groups = [];
+        foreach ($source->hasTable('tblservergroupsrel') ? $source->rows('SELECT groupid, serverid FROM tblservergroupsrel ORDER BY serverid') : [] as $rel) {
+            $groups[(int) $rel['groupid']][] = (int) $rel['serverid'];
+        }
+
+        return $groups;
+    }
+
+    /** A server chosen on the Products list: "s<id>" one the import brings (by its source id), "c<id>" one already in ClientFence. */
+    private function chosenServer(string $choice): ?int
+    {
+        if (preg_match('/^([sc])(\d+)$/', $choice, $m) !== 1) {
+            return null;
+        }
+        if ($m[1] === 's') {
+            return $this->map->get('server', (int) $m[2]);
+        }
+        $id = $this->db->fetchOne('SELECT id FROM service_hosting_server WHERE id = ?', [(int) $m[2]]);
+
+        return $id === false ? null : (int) $id;
     }
 
     /**
-     * The server of a product without a WHMCS server group: WHMCS's default server of its module
-     * (tblservers.active = 1, not disabled: the one starred in its server list), else the first
-     * imported server with the manager, or null.
+     * The plan's Products list (Import::products()): each product with its services and what the import
+     * makes of it without a choice (productKind()): kind hosting (server and plan), license or custom
+     * (reason: module, none, group or server); and the servers the import brings, which staff may choose.
+     *
+     * @return array{products: list<array<string, mixed>>, servers: list<array{id: int, name: string, manager: string}>}
      */
-    private function defaultServer(string $module, string $manager, string $title): ?int
+    public static function preview(Source $source): array
     {
-        if (!$this->source->hasTable('tblservers')) {
-            return null;
-        }
+        $rows = self::serverRows($source);
+        $groups = self::groupRows($source);
         $servers = [];
-        foreach ($this->source->rows('SELECT * FROM tblservers ORDER BY id') as $server) {
-            $serverId = $this->map->get('server', (int) $server['id']);
-            if ($serverId === null || $this->db->fetchOne('SELECT manager FROM service_hosting_server WHERE id = ?', [$serverId]) !== $manager) {
-                continue;
+        foreach ($rows as $server) {
+            $manager = self::SERVER_MANAGERS[strtolower(trim((string) ($server['type'] ?? '')))] ?? null;
+            if ($manager !== null) {
+                $servers[] = ['id' => (int) $server['id'], 'name' => self::cut($server['name'] ?? '', 100) ?: 'Server ' . $server['id'], 'manager' => $manager];
             }
-            if (strtolower(trim((string) ($server['type'] ?? ''))) === $module && (int) ($server['active'] ?? 0) === 1 && (int) ($server['disabled'] ?? 0) === 0) {
-                return $serverId;
-            }
-            // Servers disabled in WHMCS go after the enabled ones: new accounts go to a server that takes them.
-            $servers[(int) ($server['disabled'] ?? 0) === 0 ? 0 : 1][] = $serverId;
         }
-        $servers = array_merge($servers[0] ?? [], $servers[1] ?? []);
-        if (count($servers) > 1) {
-            $this->warn(sprintf('Product "%s" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its %d servers.', $title, count($servers)));
+        $names = array_column($servers, 'name', 'id');
+        $counts = $source->hasTable('tblhosting') ? array_column($source->rows('SELECT packageid, COUNT(*) AS n FROM tblhosting GROUP BY packageid'), 'n', 'packageid') : [];
+        $products = [];
+        foreach ($source->hasTable('tblproducts') ? $source->rows('SELECT * FROM tblproducts ORDER BY id') : [] as $row) {
+            $title = self::title($row);
+            $module = strtolower(trim((string) ($row['servertype'] ?? '')));
+            $manager = self::SERVER_MANAGERS[$module] ?? null;
+            $groupId = (int) ($row['servergroup'] ?? 0);
+            $first = $manager === null || $module === 'licensing' ? null : (self::pickServers($rows, $groups, $groupId, $module, $manager)[0] ?? null);
+            $products[] = [
+                'id' => (int) $row['id'],
+                'name' => $title,
+                'services' => (int) ($counts[$row['id']] ?? 0),
+                'module' => $module,
+                'kind' => $module === 'licensing' ? 'license' : ($first !== null ? 'hosting' : 'custom'),
+                'server' => $first === null ? null : $names[$first],
+                'plan' => trim((string) ($row['configoption1'] ?? '')) ?: $title,
+                'reason' => match (true) {
+                    $module === 'licensing', $first !== null => '',
+                    $manager === null => in_array($module, ['', 'none', 'autorelease'], true) ? 'none' : 'module',
+                    default => $groupId > 0 ? 'group' : 'server',
+                },
+            ];
         }
 
-        return $servers[0] ?? null;
+        return ['products' => $products, 'servers' => $servers];
+    }
+
+    /** What a choice keeps of its product's name (Import::PRODUCTS): short, so hundreds of choices fit the state row. */
+    public static function nameCheck(string $title): string
+    {
+        return hash('crc32b', $title);
+    }
+
+    /**
+     * A product's ClientFence title (product()).
+     *
+     * @param array<string, mixed> $row
+     */
+    public static function title(array $row): string
+    {
+        return self::cut($row['name'] ?? '', 255) ?: 'Product ' . (int) $row['id'];
     }
 
     private function groupHidden(int $groupId): bool

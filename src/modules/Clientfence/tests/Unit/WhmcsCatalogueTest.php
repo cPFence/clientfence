@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use ClientFence\Mod\Clientfence\Whmcs\Catalogue;
 use ClientFence\Mod\Clientfence\Whmcs\Cipher;
+use ClientFence\Mod\Clientfence\Whmcs\Import;
 use ClientFence\Mod\Clientfence\Whmcs\Map;
 use ClientFence\Mod\Clientfence\Whmcs\Money;
 use ClientFence\Mod\Clientfence\Whmcs\Services;
@@ -150,8 +151,8 @@ function whmcsCatalogueTarget(): Connection
     return $db;
 }
 
-/** Runs every catalogue step to the end in batches of $batch, as Run::work does. */
-function whmcsCatalogueAll(Connection $source, Connection $target, ?Cipher $cipher, int $batch = 2): Catalogue
+/** Runs every catalogue step to the end in batches of $batch, as Run::work does, with staff's product $choices. */
+function whmcsCatalogueAll(Connection $source, Connection $target, ?Cipher $cipher, int $batch = 2, array $choices = []): Catalogue
 {
     $catalogue = new Catalogue(
         new Source($source),
@@ -162,6 +163,7 @@ function whmcsCatalogueAll(Connection $source, Connection $target, ?Cipher $ciph
         static fn (string $manager): array => $manager === 'Whm' ? ['username', 'password', 'accesshash'] : ['password', 'accesshash'],
         ['Custom', 'Resellerclub', 'Dynadot'],
         '2026-10-19 00:00:00',
+        $choices,
     );
     foreach (array_keys(Catalogue::STEPS) as $step) {
         $after = 0;
@@ -521,6 +523,254 @@ function whmcsOrderOf(Connection $db, string $entity, int $whmcsId): array
 
     return $orderId === null ? [] : ($db->fetchAssociative('SELECT * FROM client_order WHERE id = ?', [$orderId]) ?: []);
 }
+
+test('a product staff make hosting imports on that server and plan, and its services as hosting accounts (CF-183)', function (): void {
+    $source = whmcsServicesSource();
+    // As a snapshot writes them: no server module, so the import alone makes custom products.
+    $source->insert('tblproducts', ['id' => 20, 'type' => 'other', 'gid' => 1, 'name' => 'Cloud plan', 'paytype' => 'free']);
+    $source->insert('tblproducts', ['id' => 21, 'type' => 'other', 'gid' => 1, 'name' => 'Consulting', 'paytype' => 'free']);
+    $source->insert('tblhosting', ['id' => 20, 'userid' => 1, 'packageid' => 20, 'regdate' => '2025-06-01', 'domain' => 'site.com', 'amount' => 5, 'billingcycle' => 'Monthly', 'nextduedate' => '2026-12-01', 'domainstatus' => 'Active']);
+    $source->insert('tblhosting', ['id' => 21, 'userid' => 1, 'packageid' => 21, 'regdate' => '2025-06-01', 'amount' => 50, 'billingcycle' => 'Monthly', 'nextduedate' => '2026-12-01', 'domainstatus' => 'Active']);
+    $target = whmcsServicesTarget();
+    // A server and plan set up in ClientFence before the import.
+    $target->insert('service_hosting_server', ['name' => 'live1', 'ip' => '198.51.100.7', 'manager' => 'Enhance', 'active' => 1]);
+    $live = (int) $target->lastInsertId();
+    $target->insert('service_hosting_hp', ['name' => 'Gold', 'config' => '{}']);
+    $gold = (int) $target->lastInsertId();
+
+    $catalogue = whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY), choices: ['20' => ['name' => Catalogue::nameCheck('Cloud plan'), 'server' => 'c' . $live, 'plan' => 'Gold']]);
+    $warnings = implode("\n", [...$catalogue->warnings(), ...whmcsServicesAll($source, $target)->warnings()]);
+    $cloud = whmcsProductByTitle($target, 'Cloud plan');
+    $order = whmcsOrderOf($target, 'service', 20);
+
+    expect($cloud['type'])->toBe('hosting')
+        ->and(json_decode((string) $cloud['config'], true))->toMatchArray(['server_id' => $live, 'hosting_plan_id' => $gold])
+        ->and((int) $target->fetchOne("SELECT COUNT(*) FROM service_hosting_hp WHERE name = 'Gold'"))->toBe(1)
+        ->and($order)->toMatchArray(['service_type' => 'hosting', 'title' => 'Cloud plan for site.com', 'status' => 'active'])
+        // Linked as WHMCS hosting is, never provisioned: no username, so a warning names it.
+        ->and($target->fetchAssociative('SELECT * FROM service_hosting WHERE id = ?', [$order['service_id']]))->toMatchArray([
+            'service_hosting_server_id' => $live, 'service_hosting_hp_id' => $gold, 'sld' => 'site', 'tld' => '.com', 'ip' => '198.51.100.7', 'username' => null,
+        ])
+        ->and($warnings)->toContain('Service #20 (site.com) is a hosting account without a username')
+        // A product without a choice stays as the import makes it.
+        ->and(whmcsProductByTitle($target, 'Consulting')['type'])->toBe('custom')
+        ->and(whmcsOrderOf($target, 'service', 21)['service_type'])->toBe('custom');
+});
+
+test('a WHMCS product with a server group keeps its automatic result unless staff change it (CF-183)', function (): void {
+    $choices = [
+        '1' => ['name' => Catalogue::nameCheck('Starter'), 'server' => 'custom', 'plan' => ''],
+        // Its name no longer matches (the source was read again): the choice is passed over.
+        '3' => ['name' => Catalogue::nameCheck('Another product'), 'server' => 's1', 'plan' => 'x'],
+        // A chosen server the import brings, with a new plan of that package.
+        '4' => ['name' => Catalogue::nameCheck('Starter'), 'server' => 's1', 'plan' => 'free_pkg'],
+    ];
+    $auto = whmcsCatalogueTarget();
+    whmcsCatalogueAll(whmcsCatalogueSource(), $auto, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+    $chosen = whmcsCatalogueTarget();
+    whmcsCatalogueAll(whmcsCatalogueSource(), $chosen, Cipher::withKey(WHMCS_CATALOGUE_KEY), choices: $choices);
+    $types = static fn (Connection $db): array => $db->fetchFirstColumn("SELECT type FROM product WHERE title IN ('Starter', 'Setup service') AND is_addon = 0 ORDER BY id");
+    $cp1 = (int) $chosen->fetchOne("SELECT id FROM service_hosting_server WHERE name = 'cp1'");
+
+    expect($types($auto))->toBe(['hosting', 'custom', 'custom'])
+        ->and($types($chosen))->toBe(['custom', 'custom', 'hosting'])
+        ->and(json_decode((string) $chosen->fetchOne('SELECT config FROM product WHERE title = ? AND type = ?', ['Starter', 'hosting']), true))->toMatchArray([
+            'server_id' => $cp1, 'hosting_plan_id' => (int) $chosen->fetchOne("SELECT id FROM service_hosting_hp WHERE name = 'free_pkg'"),
+        ])
+        ->and(json_decode((string) $chosen->fetchOne("SELECT config FROM service_hosting_hp WHERE name = 'free_pkg'"), true))->toBe(['package' => 'free_pkg']);
+});
+
+test('the plan lists each product with its services and what it becomes without a choice (CF-183)', function (): void {
+    $source = whmcsServicesSource();
+    $source->insert('tblproducts', ['id' => 20, 'type' => 'other', 'gid' => 1, 'name' => 'Cloud plan', 'paytype' => 'free']);
+    $source->insert('tblproducts', ['id' => 21, 'type' => 'hostingaccount', 'gid' => 1, 'name' => 'DA plan', 'paytype' => 'free', 'servertype' => 'directadmin', 'servergroup' => 1]);
+    $preview = Catalogue::preview(new Source($source));
+    $products = array_column($preview['products'], null, 'id');
+
+    expect($preview['servers'])->toBe([['id' => 1, 'name' => 'cp1', 'manager' => 'Whm']])
+        ->and($products[1])->toMatchArray(['name' => 'Starter', 'services' => 4, 'kind' => 'hosting', 'server' => 'cp1', 'plan' => 'starter_pkg', 'reason' => ''])
+        ->and($products[2])->toMatchArray(['kind' => 'license', 'services' => 1])
+        ->and($products[3])->toMatchArray(['kind' => 'custom', 'reason' => 'module', 'module' => 'mymodule', 'services' => 3])
+        ->and($products[20])->toMatchArray(['kind' => 'custom', 'reason' => 'none', 'services' => 0, 'plan' => 'Cloud plan'])
+        ->and($products[21])->toMatchArray(['kind' => 'custom', 'reason' => 'group']);
+});
+
+test('a plan entered next to Automatic is the plan of the product the import makes hosting (CF-183)', function (): void {
+    $target = whmcsCatalogueTarget();
+    whmcsCatalogueAll(whmcsCatalogueSource(), $target, Cipher::withKey(WHMCS_CATALOGUE_KEY), choices: ['1' => ['name' => Catalogue::nameCheck('Starter'), 'server' => '', 'plan' => 'big_pkg']]);
+    $config = json_decode((string) $target->fetchOne("SELECT config FROM product WHERE title = 'Starter' AND type = 'hosting'"), true);
+
+    expect($config)->toMatchArray([
+        'server_id' => (int) $target->fetchOne("SELECT id FROM service_hosting_server WHERE name = 'cp1'"),
+        'hosting_plan_id' => (int) $target->fetchOne("SELECT id FROM service_hosting_hp WHERE name = 'big_pkg'"),
+    ])->and($target->fetchFirstColumn('SELECT name FROM service_hosting_hp'))->toBe(['big_pkg']);
+});
+
+/** A DI with the state table and a ClientFence server (7, live1) and plan (Gold), and a product preview. */
+function whmcsChoicesDi(): array
+{
+    $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT, updated_at TEXT)');
+    $db->executeStatement('CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, name TEXT, manager TEXT)');
+    $db->executeStatement('CREATE TABLE service_hosting_hp (id INTEGER PRIMARY KEY, name TEXT)');
+    $db->insert('service_hosting_server', ['id' => 7, 'name' => 'live1', 'manager' => 'Enhance']);
+    $db->insert('service_hosting_hp', ['id' => 1, 'name' => 'Gold']);
+    $di = new Pimple\Container();
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $di['em'] = $em;
+    $preview = ['products' => [['id' => 20, 'name' => 'Cloud plan', 'kind' => 'custom'], ['id' => 21, 'name' => 'Consulting', 'kind' => 'custom'], ['id' => 22, 'name' => 'Starter', 'kind' => 'hosting'], ['id' => 23, 'name' => 'App licence', 'kind' => 'license']], 'servers' => [['id' => 1, 'name' => 'cp1', 'manager' => 'Whm']]];
+
+    return [$di, $db, $preview];
+}
+
+test('staff choices are listed with the products, and only servers from the list are taken (CF-183)', function (): void {
+    [$di, $db, $preview] = whmcsChoicesDi();
+    $check = Catalogue::nameCheck(...);
+    $here = Import::sourceKey(Import::DEFAULTS);
+    $db->insert('mod_clientfence_state', ['name' => Import::PRODUCTS, 'value' => json_encode(['source' => $here, 'choices' => ['20' => ['name' => Catalogue::nameCheck('Cloud plan'), 'server' => 'c7', 'plan' => 'Gold'], '21' => ['name' => Catalogue::nameCheck('Renamed'), 'server' => 'custom', 'plan' => '']]])]);
+
+    // Choices made on another database (an open tab, or a save racing a settings change) are not used.
+    $other = Import::sourceKey(['database' => 'other'] + Import::DEFAULTS);
+    expect(Import::choicesFor($di, $other))->toBe([])
+        ->and(Import::choicesFor($di, null))->toBe([])
+        ->and(array_column(Import::productList($di, $preview, $other)['products'], 'choice')[0])->toBe(['server' => '', 'plan' => ''])
+        ->and(array_keys(Import::choicesFor($di, $here)))->toBe([20, 21]);
+
+    $list = Import::productList($di, $preview, $here);
+    expect(array_column($list['products'], 'choice'))->toBe([['server' => 'c7', 'plan' => 'Gold'], ['server' => '', 'plan' => ''], ['server' => '', 'plan' => ''], ['server' => '', 'plan' => '']])
+        ->and($list['clientfence_servers'])->toBe([['id' => 7, 'name' => 'live1', 'manager' => 'Enhance']])
+        ->and($list['plans'])->toBe(['Gold'])
+        // Only what staff changed is kept; a plan next to Automatic is a change; a licence product stays.
+        ->and(Import::choose($di, $preview, ['products' => [20 => ['server' => 'c7', 'plan' => 'Gold', 'check' => $check('Cloud plan')], 21 => ['server' => '', 'plan' => ''], 22 => ['server' => '', 'plan' => 'big_pkg', 'check' => $check('Starter')], 23 => ['server' => 'custom']]]))->toBe([
+            '20' => ['name' => Catalogue::nameCheck('Cloud plan'), 'server' => 'c7', 'plan' => 'Gold'],
+            '22' => ['name' => Catalogue::nameCheck('Starter'), 'server' => '', 'plan' => 'big_pkg'],
+        ])
+        ->and(fn () => Import::choose($di, $preview, ['products' => [20 => ['server' => 'c8', 'check' => $check('Cloud plan')]]]))->toThrow(ClientFence\InformationException::class, 'Cloud plan')
+        ->and(fn () => Import::choose($di, $preview, ['products' => [21 => ['server' => 's2', 'check' => $check('Consulting')]]]))->toThrow(ClientFence\InformationException::class, 'Consulting')
+        // The form showed another product under that id (the source was read again since): refused.
+        ->and(fn () => Import::choose($di, $preview, ['products' => [20 => ['server' => 'custom', 'check' => $check('Old product')]]]))->toThrow(ClientFence\InformationException::class, 'The products changed since the list was shown')
+        ->and(fn () => Import::choose($di, $preview, ['products' => [20 => ['server' => 'custom']]]))->toThrow(ClientFence\InformationException::class, 'The products changed since the list was shown')
+        ->and($list['products'][0]['check'])->toBe($check('Cloud plan'))
+        // A plan name is kept as typed: " Gold" is another plan than "Gold".
+        ->and(Import::choose($di, $preview, ['products' => [20 => ['server' => 'c7', 'plan' => ' Gold', 'check' => $check('Cloud plan')], 21 => ['server' => '', 'plan' => '   ', 'check' => $check('Consulting')]]]))->toBe([
+            '20' => ['name' => $check('Cloud plan'), 'server' => 'c7', 'plan' => ' Gold'],
+        ]);
+
+    // Once the import has started the source is not read again, and nothing changes.
+    $db->insert('mod_clientfence_state', ['name' => ClientFence\Mod\Clientfence\Whmcs\Run::STATE, 'value' => '{"steps":{}}']);
+    expect(Import::products($di)['locked'])->toBeTrue()
+        ->and(fn () => Import::saveProducts($di, ['products' => [20 => ['server' => 'custom']]]))->toThrow(ClientFence\InformationException::class, 'The import has started');
+});
+
+test('a source with hundreds of products keeps a small plan, and choices too long for the state row are refused (CF-183)', function (): void {
+    $source = whmcsServicesSource();
+    $long = str_repeat('Hosting product with a long name ', 7);
+    for ($id = 100; $id < 1100; ++$id) {
+        $source->insert('tblproducts', ['id' => $id, 'type' => 'hostingaccount', 'gid' => 1, 'name' => $long . $id, 'paytype' => 'free', 'servertype' => 'cpanel', 'servergroup' => 1, 'configoption1' => $long . $id]);
+    }
+    // The state row is a TEXT column (64 KB): the plan must fit whatever the catalogue.
+    expect(strlen((string) json_encode(ClientFence\Mod\Clientfence\Whmcs\Inventory::plan(new Source($source)), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)))->toBeLessThan(65535);
+
+    [$di, , ] = whmcsChoicesDi();
+    $preview = ['products' => array_map(static fn (int $id): array => ['id' => $id, 'name' => 'P' . $id, 'kind' => 'custom'], range(1, 1000)), 'servers' => []];
+    $custom = array_map(static fn (int $id): array => ['server' => 'custom', 'check' => Catalogue::nameCheck('P' . $id)], array_combine(range(1, 1000), range(1, 1000)));
+    $plans = array_map(static fn (array $row): array => ['server' => 'c7', 'plan' => str_repeat('p', 255)] + $row, $custom);
+    expect(strlen((string) json_encode(Import::choose($di, $preview, ['products' => $custom]))))->toBeLessThan(65535)
+        ->and(fn () => Import::choose($di, $preview, ['products' => $plans]))->toThrow(ClientFence\InformationException::class, 'too long to save');
+});
+
+test('a save waits for the import lock: none while a run holds it (CF-183)', function (): void {
+    $db = Mockery::mock(Connection::class);
+    $db->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $db->shouldReceive('fetchOne')->with("SELECT GET_LOCK('clientfence_whmcs_import', 0)")->andReturn(0);
+    $di = new Pimple\Container();
+    $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $em->shouldReceive('getConnection')->andReturn($db);
+    $di['em'] = $em;
+
+    expect(fn () => Import::saveProducts($di, ['products' => []]))->toThrow(ClientFence\InformationException::class, 'The import is already running');
+});
+
+test('product choices are kept only for the same source (CF-183)', function (): void {
+    $whmcs = ['host' => 'db1.example.test', 'port' => 3306, 'database' => 'whmcs'] + Import::DEFAULTS;
+
+    expect(Import::sameSource($whmcs, ['password' => 'new'] + $whmcs))->toBeTrue()
+        ->and(Import::sameSource($whmcs, ['database' => 'whmcs_old'] + $whmcs))->toBeFalse()
+        ->and(Import::sameSource($whmcs, ['host' => 'db2.example.test'] + $whmcs))->toBeFalse()
+        ->and(Import::sameSource($whmcs, ['port' => 3307] + $whmcs))->toBeFalse()
+        ->and(Import::sameSource($whmcs, ['fossbilling' => 1] + $whmcs))->toBeFalse();
+
+    [$di, $db] = whmcsChoicesDi();
+    $db->insert('mod_clientfence_state', ['name' => Import::PRODUCTS, 'value' => '{}']);
+    $kept = static fn (): bool => $db->fetchOne('SELECT 1 FROM mod_clientfence_state WHERE name = ?', [Import::PRODUCTS]) !== false;
+    // A started run whose connection staff fix keeps them: they cannot be made again.
+    $db->insert('mod_clientfence_state', ['name' => ClientFence\Mod\Clientfence\Whmcs\Run::STATE, 'value' => '{"steps":{}}']);
+    Import::forgetChoices($di, $whmcs, ['host' => 'db2.example.test'] + $whmcs);
+    expect($kept())->toBeTrue();
+    // Before the import starts, another source drops them; the same one keeps them.
+    $db->delete('mod_clientfence_state', ['name' => ClientFence\Mod\Clientfence\Whmcs\Run::STATE]);
+    Import::forgetChoices($di, $whmcs, ['password' => 'new'] + $whmcs);
+    expect($kept())->toBeTrue();
+    Import::forgetChoices($di, $whmcs, ['host' => 'db2.example.test'] + $whmcs);
+    expect($kept())->toBeFalse();
+});
+
+test('a resumed import passes over a server added in the source after the servers step (CF-183)', function (): void {
+    $source = whmcsCatalogueSource();
+    $source->insert('tblservers', ['id' => 10, 'name' => 'enh1', 'ipaddress' => '203.0.113.10', 'type' => 'enhance', 'username' => 'u', 'password' => '', 'accesshash' => 'token', 'secure' => 'on', 'port' => '', 'active' => 0]);
+    $source->insert('tblproducts', ['id' => 10, 'type' => 'hostingaccount', 'gid' => 1, 'name' => 'Enhance plan', 'paytype' => 'free', 'servertype' => 'enhance', 'servergroup' => 0, 'configoption1' => 'enh_pkg']);
+    $target = whmcsCatalogueTarget();
+    $catalogue = new Catalogue(new Source($source), $target, new Map($target), null, static fn (string $v): string => $v, static fn (string $m): array => [], ['Custom'], '2026-10-19 00:00:00');
+    foreach (['categories', 'servers'] as $step) {
+        $catalogue->batch($step, 0, 100);
+    }
+    // Made WHMCS's default after the servers step ran: never imported.
+    $source->insert('tblservers', ['id' => 11, 'name' => 'enh2', 'ipaddress' => '203.0.113.11', 'type' => 'enhance', 'username' => 'u', 'password' => '', 'accesshash' => 'token', 'secure' => 'on', 'port' => '', 'active' => 1]);
+    $catalogue->batch('products', 0, 100);
+    $product = whmcsProductByTitle($target, 'Enhance plan');
+
+    expect($product['type'])->toBe('hosting')
+        ->and(json_decode((string) $product['config'], true)['server_id'])->toBe((int) $target->fetchOne("SELECT id FROM service_hosting_server WHERE name = 'enh1'"));
+});
+
+test('a plan name staff enter picks the plan of exactly that name, whatever the collation (CF-183)', function (): void {
+    $target = whmcsCatalogueTarget();
+    // As MySQL's collation: = compares without case.
+    $target->executeStatement('DROP TABLE service_hosting_hp');
+    $target->executeStatement('CREATE TABLE service_hosting_hp (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT COLLATE NOCASE, config TEXT, created_at TEXT, updated_at TEXT)');
+    $target->insert('service_hosting_hp', ['name' => 'gold', 'config' => '{}']);
+    $target->insert('service_hosting_hp', ['name' => 'Gold', 'config' => '{}']);
+    whmcsCatalogueAll(whmcsCatalogueSource(), $target, Cipher::withKey(WHMCS_CATALOGUE_KEY), choices: ['4' => ['name' => Catalogue::nameCheck('Starter'), 'server' => 's1', 'plan' => 'Gold']]);
+    $config = json_decode((string) $target->fetchOne("SELECT config FROM product WHERE title = 'Starter' AND type = 'hosting' AND id = (SELECT MAX(id) FROM product WHERE title = 'Starter')"), true);
+
+    expect($config['hosting_plan_id'])->toBe((int) $target->fetchOne("SELECT id FROM service_hosting_hp WHERE name = 'Gold' COLLATE BINARY"));
+});
+
+test('an imported server whose source module changed since is not a product\'s automatic server (CF-183)', function (): void {
+    $source = whmcsCatalogueSource();
+    $source->insert('tblproducts', ['id' => 10, 'type' => 'hostingaccount', 'gid' => 1, 'name' => 'Plesk plan', 'paytype' => 'free', 'servertype' => 'plesk', 'servergroup' => 0, 'configoption1' => 'plesk_pkg']);
+    $target = whmcsCatalogueTarget();
+    $catalogue = new Catalogue(new Source($source), $target, new Map($target), null, static fn (string $v): string => $v, static fn (string $m): array => [], ['Custom'], '2026-10-19 00:00:00');
+    foreach (['categories', 'servers'] as $step) {
+        $catalogue->batch($step, 0, 100);
+    }
+    // cp1 was imported as a WHM server, then made a Plesk server in WHMCS.
+    $source->update('tblservers', ['type' => 'plesk'], ['id' => 1]);
+    $catalogue->batch('products', 0, 100);
+
+    expect(whmcsProductByTitle($target, 'Plesk plan')['type'])->toBe('custom');
+});
+
+test('a plan name chosen with spaces picks that plan, not the one without them (CF-183)', function (): void {
+    $target = whmcsCatalogueTarget();
+    $target->insert('service_hosting_hp', ['name' => 'Gold', 'config' => '{}']);
+    $target->insert('service_hosting_hp', ['name' => ' Gold', 'config' => '{}']);
+    whmcsCatalogueAll(whmcsCatalogueSource(), $target, Cipher::withKey(WHMCS_CATALOGUE_KEY), choices: ['4' => ['name' => Catalogue::nameCheck('Starter'), 'server' => 's1', 'plan' => ' Gold']]);
+    $config = json_decode((string) $target->fetchOne("SELECT config FROM product WHERE id = (SELECT MAX(id) FROM product WHERE title = 'Starter')"), true);
+
+    expect($config['hosting_plan_id'])->toBe((int) $target->fetchOne("SELECT id FROM service_hosting_hp WHERE name = ' Gold'"));
+});
 
 test('services become orders with their hosting account, licence or custom service', function (): void {
     $source = whmcsServicesSource();

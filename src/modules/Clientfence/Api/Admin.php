@@ -734,6 +734,31 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
+     * The plan's Products list (Whmcs/Import.php products()): each product with its services, what the
+     * import makes of it and staff's choice; the servers and hosting plans it may go to.
+     */
+    public function whmcs_import_products(): array
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+
+        return WhmcsImport::products($this->getDi());
+    }
+
+    /**
+     * Saves what each product becomes: products[<id>][server] ('' automatic, custom, s<id> a server the
+     * import brings, c<id> one in ClientFence) and products[<id>][plan] (a hosting plan name). Before the
+     * import starts only.
+     */
+    public function whmcs_import_products_save($data): bool
+    {
+        $this->requireSuperAdmin('Only Super Administrators can import from WHMCS.');
+        $count = WhmcsImport::saveProducts($this->getDi(), (array) $data);
+        $this->getDi()['logger']->info('ClientFence: import product choices saved (%d products changed)', $count);
+
+        return true;
+    }
+
+    /**
      * Imports from WHMCS for a few seconds (Whmcs/Run.php) and answers the run: the steps with
      * their counts, the warnings and whether it finished. The tab calls it until it finishes.
      */
