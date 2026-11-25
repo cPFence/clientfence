@@ -45,7 +45,8 @@ async function build() {
       themePath: __dirname,
       purge: {
         area: 'admin',
-        additionalStandardSafelist: [/^flag-country-/, /^clr-/],
+        // ClientFence core patch: CKEditor adds its classes at run time, so the editor height rule was purged.
+        additionalStandardSafelist: [/^flag-country-/, /^clr-/, /^ck(-|$)/],
       },
     });
 

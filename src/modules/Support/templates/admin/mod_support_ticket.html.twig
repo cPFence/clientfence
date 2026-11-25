@@ -139,6 +139,54 @@
                     {% endblock %}
                 {% endembed %}
 
+                {# ClientFence core patch: the client's products and services under the summary, as WHMCS (active first, the first 10; each opens in a new tab). #}
+                {% if ticket.client_id and has_permission('order', 'view') %}
+                {% set client_orders = admin.order_get_list({ 'per_page': 10, 'page': 1, 'client_id': ticket.client_id, 'active_first': 1 }) %}
+                {% if client_orders.list is not empty %}
+                {% embed 'partial_admin_related_section.html.twig' with {
+                    title: 'Products & Services'|trans,
+                    card_class: 'mb-0'
+                } %}
+                    {% block section_action %}
+                        {% if client_orders.total > client_orders.list|length and has_permission('client', 'view') %}
+                        <a href="{{ ('client/manage/' ~ ticket.client_id)|url }}#tab-orders" target="_blank" rel="noopener">{{ 'View all'|trans }} (<bdi>{{ client_orders.total }}</bdi>)</a>
+                        {% endif %}
+                    {% endblock %}
+                    {% block section_content %}
+                        {% import 'macro_functions.html.twig' as mf %}
+                        <div class="table-responsive" data-ticket-services>
+                            <table class="table card-table table-vcenter table-striped text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="w-1">#</th>
+                                        <th>{{ 'Product/Service'|trans }}</th>
+                                        <th>{{ 'Amount'|trans }}</th>
+                                        <th>{{ 'Billing Cycle'|trans }}</th>
+                                        <th>{{ 'Signup Date'|trans }}</th>
+                                        <th>{{ 'Next Due Date'|trans }}</th>
+                                        <th>{{ 'Status'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in client_orders.list %}
+                                    <tr>
+                                        <td><bdi>{{ order.id }}</bdi></td>
+                                        <td dir="auto"><a href='{{ "order/manage/#{order.id}"|url }}' target="_blank" rel="noopener">{{ order.title }}</a></td>
+                                        <td>{{ order.total|format_currency(order.currency ?? default_currency) }}</td>
+                                        <td>{{ order.period ? order.period|period_title : '-' }}</td>
+                                        <td>{{ order.created_at ? order.created_at|format_date : '-' }}</td>
+                                        <td>{{ order.expires_at ? order.expires_at|format_date : '-' }}</td>
+                                        <td>{{ mf.status_badge(order.status, 'order') }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+                {% endif %}
+                {% endif %}
+
                 {# ClientFence core patch: the client's feedback after the ticket closed (Support/TicketFeedback.php). #}
                 {% if ticket.feedback|default(null) %}
                 <div class="card mb-3" id="ticket-feedback">
@@ -188,7 +236,12 @@
                                         <span class="cf-avatar" aria-hidden="true">{{ (who|first|first ~ (who|length > 1 ? who|last|first : ''))|upper }}</span>
                                         <div class="d-flex flex-column">
                                             <div class="d-flex flex-wrap align-items-center gap-2">
+                                                {# ClientFence core patch: a reply by the client or one of its users links to the client. #}
+                                                {% if role == 'client' and message.client_id|default(0) and has_permission('client', 'view') %}
+                                                <a class="fw-semibold" href='{{ "client/manage/#{message.client_id}"|url }}'>{{ message.author.name|default('') }}</a>
+                                                {% else %}
                                                 <span class="fw-semibold">{{ message.author.name|default('') }}</span>
+                                                {% endif %}
                                                 {% if role == 'admin' %}
                                                 <span class="badge text-bg-primary">{{ 'Staff'|trans }}</span>
                                                 {% elseif message.author.clientfence_user|default(false) %}
@@ -216,7 +269,8 @@
                                             {{ 'Edited'|trans }}
                                         </a>
                                         {% endif %}
-                                        {% if role == 'admin' and has_permission('support', 'manage_tickets') %}
+                                        {# ClientFence core patch: staff edit any reply, a client's too (WHMCS), e.g. to remove data the client should not have posted. #}
+                                        {% if has_permission('support', 'manage_tickets') %}
                                         <a href="#" title="{{ 'Edit'|trans }}" data-bs-toggle="modal" data-bs-target="#editMessage{{ message.id }}">
                                             <svg class="icon">
                                                 <use href="#edit" />
@@ -228,15 +282,16 @@
                                 </div>
                                 <div class="card-body">
                                     {# ClientFence core patch: each message reads in its own direction in a right-to-left admin. #}
+                                    {# ClientFence core patch: a ticket message keeps its line breaks (ticket_to_html). #}
                                     <article class="markdown-body bg-transparent text-reset" dir="auto">
-                                        {{ (message.content ?? '')|markdown_to_html }}
+                                        {{ (message.content ?? '')|ticket_to_html }}
                                     </article>
                                     {# ClientFence core patch: ticket attachments (the message's files, Support/TicketFiles.php). #}
                                     {{ include('mod_support_ticket_message_files.html.twig', { ticket: ticket, message: message }) }}
                                 </div>
                             </div>
 
-                            {% if message.author.role|default('') == 'admin' and has_permission('support', 'manage_tickets') %}
+                            {% if has_permission('support', 'manage_tickets') %}
                             <div class="modal modal-blur fade" id="editMessage{{ message.id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen-md-down">
                                     <form class="modal-content" method="post" action="{{ 'support/ticket_message_update'|api_url }}" {{ fb_api_form({reload: true}) }}>
@@ -420,7 +475,8 @@
                             {% for note in ticket.notes|default([]) %}
                                 <tr>
                                     <td class="w-1"><a href='{{ "staff/manage/#{note.admin_id}"|url }}'>{{ note.author.name }}</a></td>
-                                    <td>{{ note.note }}</td>
+                                    {# ClientFence core patch: a note keeps its line breaks. #}
+                                    <td>{{ note.note|nl2br }}</td>
                                     <td class="w-1">
                                         {% if has_permission('support', 'manage_tickets') %}
                                         <a class="btn btn-icon" href="{{ 'support/note_delete'|api_url(query: { 'id': note.id }) }}"

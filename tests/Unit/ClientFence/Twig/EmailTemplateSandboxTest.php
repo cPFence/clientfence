@@ -29,11 +29,12 @@ function emailSandboxEnvironment(?Closure $trans = null, bool $markdown = false)
         $di['mod_service'] = $di->protect(fn (string $module) => $theme);
         $twig->addExtension(new Twig\Extra\Markdown\MarkdownExtension());
         $twig->addRuntimeLoader(new Twig\RuntimeLoader\FactoryRuntimeLoader([Twig\Extra\Markdown\MarkdownRuntime::class => fn () => new Twig\Extra\Markdown\MarkdownRuntime(new ClientFence\Twig\Markdown\ClientFenceMarkdown($di, false))]));
+        $twig->addFilter(new TwigFilter('ticket_to_html', [new ClientFence\Twig\Extension\ClientFenceExtension($di), 'ticketToHtml'], ['is_safe' => ['html']]));
     }
     foreach (array_diff([
         'format_currency', 'format_date', 'format_datetime', 'format_number', 'format_time', 'currency_name',
-        'currency_symbol', 'country_name', 'url', 'daysleft', 'trans', 'trans_html', 'period_title', 'markdown_to_html',
-    ], $markdown ? ['markdown_to_html'] : []) as $filter) {
+        'currency_symbol', 'country_name', 'url', 'daysleft', 'trans', 'trans_html', 'period_title', 'markdown_to_html', 'ticket_to_html',
+    ], $markdown ? ['markdown_to_html', 'ticket_to_html'] : []) as $filter) {
         $twig->addFilter(new TwigFilter($filter, $filter === 'trans' && $trans ? $trans : static fn (mixed $value, mixed ...$options): mixed => $value, ['is_variadic' => true]));
     }
     $twig->addFunction(new TwigFunction('country_names', static fn (): array => []));
@@ -121,6 +122,36 @@ test('ticket emails with a staff message show it as formatted text, with its HTM
     'staff reply' => ['mod_support_ticket_staff_reply.html.twig', [['content' => 'The question'], ['content' => "A **bold part**\n\n<script>alert(1)</script>"]]],
     'staff opened' => ['mod_support_ticket_staff_open.html.twig', [['content' => "A **bold part**\n\n<script>alert(1)</script>"]]],
 ]);
+
+test('ticket emails with a staff message keep its line breaks', function (string $file, array $messages): void {
+    $html = emailSandboxEnvironment(null, true)->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/Support/templates/email/' . $file), $file)
+        ->render(['ticket' => ['messages' => $messages]]);
+
+    expect($html)->toContain("Disk Quota: 20 GB<br />\nBandwidth: Unlimited");
+})->with([
+    'staff reply' => ['mod_support_ticket_staff_reply.html.twig', [['content' => 'The question'], ['content' => "Disk Quota: 20 GB\nBandwidth: Unlimited"]]],
+    'staff opened' => ['mod_support_ticket_staff_open.html.twig', [['content' => "Disk Quota: 20 GB\nBandwidth: Unlimited"]]],
+]);
+
+test('the staff email about a client\'s reply shows that reply, with its line breaks and its HTML escaped', function (): void {
+    $file = dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig';
+    $html = emailSandboxEnvironment(null, true)->createTemplate((string) file_get_contents($file), 'staff_reply')
+        ->render(['ticket' => ['messages' => [['content' => 'Earlier answer'], ['content' => "Line one\nLine two <script>alert(1)</script>"]]]]);
+
+    expect($html)->toContain("Line one<br />\nLine two &lt;script&gt;")->not->toContain('Earlier answer')->not->toContain('<script>alert');
+});
+
+test('the staff email about a client\'s reply quotes the client\'s newest message even when staff answered since', function (): void {
+    $file = dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig';
+    $html = emailSandboxEnvironment(null, true)->createTemplate((string) file_get_contents($file), 'staff_reply_race')
+        ->render(['ticket' => ['messages' => [
+            ['content' => 'First question', 'author' => ['role' => 'client']],
+            ['content' => 'The client reply', 'author' => ['role' => 'client']],
+            ['content' => 'A staff answer', 'author' => ['role' => 'admin']],
+        ]]]);
+
+    expect($html)->toContain('The client reply')->not->toContain('A staff answer')->not->toContain('First question');
+});
 
 test('staff assigned and escalated emails translate the status and priority', function (string $file): void {
     $twig = emailSandboxEnvironment(static fn (mixed $value, mixed ...$options): string => '[' . $value . ']');

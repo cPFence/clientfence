@@ -515,6 +515,7 @@ test('onAfterClientReplyTicket limits client details in the email notification',
     $emailServiceMock->shouldReceive('sendTemplate')->once()
         ->with([
             'to_staff' => true,
+            'to_staff_permission' => ['support', 'view'],
             'code' => 'mod_staff_ticket_reply',
             'ticket' => [
                 'subject' => 'Example ticket',
@@ -572,6 +573,7 @@ test('onAfterClientReplyTicket still sends when its client no longer exists', fu
     $emailServiceMock->shouldReceive('sendTemplate')->once()
         ->with([
             'to_staff' => true,
+            'to_staff_permission' => ['support', 'view'],
             'code' => 'mod_staff_ticket_reply',
             'ticket' => [
                 'subject' => 'Example ticket',
@@ -747,7 +749,7 @@ test('onAfterClientOpenTicket sends guest email notification', function (): void
 
     $emailServiceMock = Mockery::mock(ClientFence\Mod\Email\Service::class);
     $emailServiceMock->shouldReceive('sendTemplate')->atLeast()->once()
-        ->with(Mockery::on(fn ($email): bool => $email['code'] === 'mod_staff_ticket_open'));
+        ->with(Mockery::on(fn ($email): bool => $email['code'] === 'mod_staff_ticket_open' && $email['to_staff_permission'] === ['support', 'view']));
 
     $eventMock->shouldReceive('getparameters')->atLeast()->once()
         ->andReturn(['id' => random_int(1, 100)]);
@@ -1040,6 +1042,7 @@ test('onAfterClientOpenTicket sends mod_staff_ticket_open email', function (): v
 
     $emailConfig = [
         'to_staff' => true,
+        'to_staff_permission' => ['support', 'view'],
         'code' => 'mod_staff_ticket_open',
         'ticket' => [
             'priority' => 100,

@@ -503,7 +503,8 @@ test('support admin ticket renders admin and client messages, including an edite
     expect($html)->toBeString();
     expect($html)->toContain('editMessage2');
     expect($html)->toContain('editMessage3');
-    expect($html)->not->toContain('editMessage1');
+    // A client's reply is edited by staff too (WHMCS).
+    expect($html)->toContain('editMessage1');
     expect($html)->toContain('messageHistory3');
     expect($html)->not->toContain('messageHistory2');
     expect($html)->not->toContain('messageHistory1');

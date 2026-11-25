@@ -50,14 +50,15 @@ class UrlAwarePermissiveContainer extends \Pimple\Container
     {
         if ($offset === 'url') {
             return new class {
+                // The path itself, so a test can check where a link goes.
                 public function link(string $path, ?array $query = null): string
                 {
-                    return '';
+                    return $path;
                 }
 
                 public function adminLink(string $path, ?array $query = null): string
                 {
-                    return '';
+                    return $path;
                 }
             };
         }
@@ -309,9 +310,10 @@ final class StrictTemplateRenderer
                     return ($this->hasPermission)($module, $permission);
                 }
 
-                public function __call(string $name, array $arguments): PermissiveStub
+                // Every other service method as the stub answers it (formatCurrency gives a string).
+                public function __call(string $name, array $arguments): mixed
                 {
-                    return new PermissiveStub();
+                    return (new PermissiveStub())->{$name}(...$arguments);
                 }
             };
         }
@@ -332,7 +334,14 @@ final class StrictTemplateRenderer
                 }
 
                 if ($class === ClientFenceExtension::class) {
-                    return new ClientFenceExtension($this->di);
+                    // The ticket Markdown is stubbed like markdown_to_html above: the stub container has no theme settings.
+                    return new class($this->di) extends ClientFenceExtension {
+                        #[\Override]
+                        public function ticketToHtml(?string $text): string
+                        {
+                            return (string) $text;
+                        }
+                    };
                 }
 
                 if ($class === LegacyExtension::class) {

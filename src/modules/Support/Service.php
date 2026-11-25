@@ -1138,10 +1138,7 @@ class Service implements \ClientFence\InjectionAwareInterface
 
     public function ticketMessageUpdate(SupportTicketMessage $model, string $content, \Model_Admin $identity): bool
     {
-        if ($model->getAdminId() === null) {
-            throw new InformationException('Only admin replies can be edited');
-        }
-
+        // ClientFence core patch: staff edit any reply, a client's too (WHMCS), e.g. to remove data the client should not have posted.
         $previousContent = (string) $model->getContent();
         if ($previousContent === $content) {
             return true;
@@ -1168,7 +1165,8 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         // Always render with the admin theme's Markdown defaults: this is admin-only functionality,
         // and ADMIN_AREA isn't set to true for api/admin/... requests the way it is for admin page loads.
-        $markdown = new ClientFenceMarkdown($this->di, isAdmin: true);
+        // ClientFence core patch: an earlier version keeps its line breaks, as the message (ticket_to_html).
+        $markdown = new ClientFenceMarkdown($this->di, isAdmin: true, hardBreaks: true);
 
         $result = [];
         foreach ($this->getSupportTicketMessageHistoryRepository()->findByMessageId((int) $message->getId()) as $history) {

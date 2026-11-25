@@ -37,7 +37,8 @@ final class EmailPolicy
             'country_name',
             // ClientFenceExtension
             // ClientFence core patch: trans_html, for a translated sentence with a link or bold part.
-            'url', 'daysleft', 'trans', 'trans_html',
+            // ClientFence core patch: ticket_to_html, a ticket message with its line breaks.
+            'url', 'daysleft', 'trans', 'trans_html', 'ticket_to_html',
             // LegacyExtension
             'period_title',
             // MarkdownExtension

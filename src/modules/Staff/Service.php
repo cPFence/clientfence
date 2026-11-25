@@ -335,6 +335,8 @@ class Service implements InjectionAwareInterface
 
             $email = [];
             $email['to_staff'] = true;
+            // ClientFence core patch: the email carries the message, so only staff who may read tickets get it.
+            $email['to_staff_permission'] = ['support', 'view'];
             $email['code'] = 'mod_staff_ticket_open';
             $email['ticket'] = $ticket;
             $emailService->sendTemplate($email);
@@ -355,6 +357,8 @@ class Service implements InjectionAwareInterface
 
             $email = [];
             $email['to_staff'] = true;
+            // ClientFence core patch: the email carries the reply, so only staff who may read tickets get it.
+            $email['to_staff_permission'] = ['support', 'view'];
             $email['code'] = 'mod_staff_ticket_reply';
             $email['ticket'] = $ticket;
 

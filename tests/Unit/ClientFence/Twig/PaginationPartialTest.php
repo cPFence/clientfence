@@ -111,7 +111,7 @@ test('admin pagination partial appends the hash to every paginator link', functi
         emailMode: false,
     );
 
-    expect($html)->toContain('href="#tab-emails"');
+    expect($html)->toContain('href="client/manage/7#tab-emails"');
 });
 
 test('admin pagination partial emits no hash fragment when none is passed', function (): void {

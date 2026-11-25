@@ -16,6 +16,7 @@ use DiceBear\Avatar;
 use DiceBear\Style;
 use ClientFence\Environment as AppEnvironment;
 use ClientFence\Twig\Enum\AppArea;
+use ClientFence\Twig\Markdown\ClientFenceMarkdown;
 use Symfony\Component\Filesystem\Path;
 use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
@@ -27,6 +28,7 @@ class ClientFenceExtension
     private array $cacheBusters = [];
     private ?Style $avatarStyle = null;
     private array $avatarDataUris = [];
+    private ?ClientFenceMarkdown $ticketMarkdown = null;
 
     public function __construct(private ?\Pimple\Container $di)
     {
@@ -462,6 +464,16 @@ class ClientFenceExtension
         $escape = static fn (mixed $value): string => htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
         return strtr($escape(_gettext($text)), array_map($escape, $values) + $html);
+    }
+
+    /**
+     * ClientFence core patch: a ticket message as Markdown where every single line break shows, as WHMCS
+     * keeps the lines of a reply (markdown_to_html joins them into one paragraph).
+     */
+    #[AsTwigFilter('ticket_to_html', isSafe: ['html'])]
+    public function ticketToHtml(?string $text): string
+    {
+        return ($this->ticketMarkdown ??= new ClientFenceMarkdown($this->di, hardBreaks: true))->convert((string) $text);
     }
 
     #[AsTwigFilter('truncate')]

@@ -10342,5 +10342,77 @@
     {
         "file": "library/ClientFence/Security/RateLimiter.php",
         "done": "ClientFence core patch: failed staff sign-in emails, at most 20 an hour from all addresses together (Clientfence/SignInSecurity.php)."
+    },
+    {
+        "file": "library/ClientFence/Twig/Markdown/ClientFenceMarkdown.php",
+        "done": "ClientFence core patch: every single line break shows as a line break (ticket messages, as in WHMCS)."
+    },
+    {
+        "file": "library/ClientFence/Twig/Extension/ClientFenceExtension.php",
+        "done": "ClientFence core patch: a ticket message as Markdown where every single line break shows, as WHMCS"
+    },
+    {
+        "file": "library/ClientFence/Twig/EmailPolicy.php",
+        "done": "ClientFence core patch: ticket_to_html, a ticket message with its line breaks."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: an earlier version keeps its line breaks, as the message (ticket_to_html)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a ticket message keeps its line breaks (ticket_to_html)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a reply by the client or one of its users links to the client."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a note keeps its line breaks."
+    },
+    {
+        "file": "modules/Support/templates/client/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a ticket message keeps its line breaks (ticket_to_html)."
+    },
+    {
+        "file": "themes/palisade/html/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: a ticket message keeps its line breaks (ticket_to_html)."
+    },
+    {
+        "file": "modules/Support/templates/email/mod_support_ticket_staff_reply.html.twig",
+        "done": "ClientFence core patch: the message keeps its line breaks (ticket_to_html), as on the ticket page."
+    },
+    {
+        "file": "modules/Support/templates/email/mod_support_ticket_staff_open.html.twig",
+        "done": "ClientFence core patch: the message keeps its line breaks (ticket_to_html), as on the ticket page."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: the client's products and services under the summary, as WHMCS (active first, the first 10; each opens in a new tab)."
+    },
+    {
+        "file": "modules/Support/Service.php",
+        "done": "ClientFence core patch: staff edit any reply, a client's too (WHMCS), e.g. to remove data the client should not have posted."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
+        "done": "ClientFence core patch: staff edit any reply, a client's too (WHMCS), e.g. to remove data the client should not have posted."
+    },
+    {
+        "file": "modules/Staff/templates/email/mod_staff_ticket_reply.html.twig",
+        "done": "ClientFence core patch: the client's reply itself, as WHMCS's ticket response notification (the client's newest message, even if staff answered in between)."
+    },
+    {
+        "file": "themes/admin_default/esbuild.mts",
+        "done": "ClientFence core patch: CKEditor adds its classes at run time, so the editor height rule was purged."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: the email carries the message, so only staff who may read tickets get it."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: the email carries the reply, so only staff who may read tickets get it."
     }
 ]

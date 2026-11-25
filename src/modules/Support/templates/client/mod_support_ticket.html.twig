@@ -115,8 +115,9 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
+                                        {# ClientFence core patch: a ticket message keeps its line breaks (ticket_to_html). #}
                                         <article class="markdown-body bg-transparent text-reset" id="message-{{ message.id }}">
-                                            {{ (message.content ?? '')|markdown_to_html }}
+                                            {{ (message.content ?? '')|ticket_to_html }}
                                         </article>
                                     </div>
                                 </div>

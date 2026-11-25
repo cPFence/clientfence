@@ -101,8 +101,9 @@
                     {% endif %}
                 </div>
                 <div class="card-body">
+                    {# ClientFence core patch: a ticket message keeps its line breaks (ticket_to_html). #}
                     <article class="markdown-body bg-transparent text-reset" id="message-{{ message.id }}">
-                        {{ (message.content ?? '')|markdown_to_html }}
+                        {{ (message.content ?? '')|ticket_to_html }}
                     </article>
                     {% include 'partials/ticket_files.html.twig' %}
                     {# Rate a staff reply, 1 to 5 stars, once, as WHMCS (Support/TicketFeedback.php). #}

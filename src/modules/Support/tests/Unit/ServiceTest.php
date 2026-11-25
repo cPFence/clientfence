@@ -2003,9 +2003,10 @@ test('ticket message update', function (): void {
     expect($capturedHistory->getAdminId())->toBe(7);
 });
 
-test('ticket message update rejects editing a client-authored message', function (): void {
+test('ticket message update edits a client-authored message and keeps its earlier text in the history', function (): void {
     $service = new Service();
     $emMock = Mockery::mock(EntityManagerInterface::class)->shouldIgnoreMissing();
+    $emMock->shouldReceive('persist')->once()->with(Mockery::on(fn ($h): bool => $h instanceof ClientFence\Mod\Support\Entity\SupportTicketMessageHistory && $h->getContent() === 'Client wrote this'));
     supportWireKbRepositories($emMock);
 
     $di = container();
@@ -2022,8 +2023,9 @@ test('ticket message update rejects editing a client-authored message', function
     $admin->loadBean(new Tests\Helpers\DummyBean());
     $admin->id = 7;
 
-    $service->ticketMessageUpdate($message, 'Tampered content', $admin);
-})->throws(ClientFence\InformationException::class);
+    expect($service->ticketMessageUpdate($message, 'Client wrote [removed]', $admin))->toBeTrue()
+        ->and($message->getContent())->toBe('Client wrote [removed]');
+});
 
 test('ticket message update skips creating history when content is unchanged', function (): void {
     $service = new Service();

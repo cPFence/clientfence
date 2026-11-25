@@ -67,7 +67,7 @@ SPDX-License-Identifier: Apache-2.0
 
             <ul class="list-group mb-0">
                 {% for record in zone.records %}
-                    <li class="list-group-item px-0 text-break">
+                    <li class="list-group-item text-break">
                         <div class="d-flex flex-wrap gap-2 align-items-center">
                             <strong><bdi dir="ltr">{{ record.name ?: '@' }}</bdi></strong>
                             <span class="badge text-bg-secondary">{{ record.type }}</span>
@@ -92,7 +92,7 @@ SPDX-License-Identifier: Apache-2.0
                         {% endif %}
                     </li>
                 {% else %}
-                    <li class="list-group-item px-0">{{ 'No DNS records found.'|trans }}</li>
+                    <li class="list-group-item">{{ 'No DNS records found.'|trans }}</li>
                 {% endfor %}
             </ul>
         {% endif %}

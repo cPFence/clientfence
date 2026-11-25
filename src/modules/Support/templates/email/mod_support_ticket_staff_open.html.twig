@@ -1,5 +1,6 @@
 {# ClientFence core patch: the message only; the email layout (Email Settings > Email Layout) adds the page, header and footer (CF-234). #}
 {# ClientFence core patch: the message as formatted text (Markdown), as on the ticket page. #}
+{# ClientFence core patch: the message keeps its line breaks (ticket_to_html), as on the ticket page. #}
 {% block subject %}[{{ guest.system_company.name }}] [Ticket #{{ ticket.id|default('') }}] {{ ticket.subject|default('') }}{% endblock %}
 {% block content %}
 {% set is_guest_ticket = ticket.author.role|default('') == 'guest' %}
@@ -11,7 +12,7 @@
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'A new ticket from our team'|trans }}</h1>
 		<p style="margin:0 0 16px;">{{ 'Dear %name%,'|trans({'%name%': ticket.author.name|default('')}) }}</p>
 		<p style="margin:0 0 16px;">{{ 'Our support team has opened a ticket for you. Their message is below.'|trans }}</p>
-		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f3f6f8; border-left:3px solid #14a39a; border-radius:8px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">{{ ticket.messages|default([])[0].content|default('')|markdown_to_html }}</div>
+		<div style="margin:0 0 24px; padding:16px 20px; background-color:#f3f6f8; border-left:3px solid #14a39a; border-radius:8px; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">{{ ticket.messages|default([])[0].content|default('')|ticket_to_html }}</div>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e4eaee; border-radius:12px;">
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">

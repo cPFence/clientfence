@@ -27,14 +27,18 @@ class ClientFenceMarkdown implements MarkdownInterface
      *                           when converting outside of an admin page render (e.g. from an API
      *                           endpoint), where the ADMIN_AREA constant doesn't reflect the caller's
      *                           area. Leave null to fall back to that runtime check.
+     * @param bool      $hardBreaks  ClientFence core patch: every single line break shows as a line break (ticket messages, as in WHMCS).
      */
-    public function __construct(\Pimple\Container $di, ?bool $isAdmin = null)
+    public function __construct(\Pimple\Container $di, ?bool $isAdmin = null, bool $hardBreaks = false)
     {
         $config = [
             'html_input' => 'escape',
             'allow_unsafe_links' => false,
             'max_nesting_level' => 50,
         ];
+        if ($hardBreaks) {
+            $config['renderer'] = ['soft_break' => "<br />\n"];
+        }
 
         $defaultAttributes = $di['mod_service']('theme')->getDefaultMarkdownAttributes($isAdmin) ?? [];
         if (!empty($defaultAttributes)) {
