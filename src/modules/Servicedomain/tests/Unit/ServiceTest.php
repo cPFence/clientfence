@@ -1241,6 +1241,24 @@ test('gets transfer code', function (): void {
     expect($result)->toBe($epp);
 });
 
+test('throws when the registrar returns an empty transfer code', function (): void {
+    $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');
+    $registrarAdapterMock->shouldReceive('getEpp')
+        ->once()
+        ->andReturn('');
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('_getD')
+        ->once()
+        ->andReturn([new Registrar_Domain(), $registrarAdapterMock]);
+
+    $serviceDomainModel = new Model_ServiceDomain();
+    $serviceDomainModel->loadBean(new Tests\Helpers\DummyBean());
+
+    expect(fn () => $serviceMock->getTransferCode($serviceDomainModel))
+        ->toThrow(Registrar_Exception::class, 'The transfer code could not be retrieved automatically. Please contact support to receive it.');
+});
+
 test('locks domain', function (): void {
     $service = new Service();
     $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');

@@ -758,7 +758,13 @@ class Service implements \ClientFence\InjectionAwareInterface
             return '';
         }
 
-        return $adapter->getEpp($domain);
+        $code = $adapter->getEpp($domain);
+        // ClientFence core patch: show the same support message when a registrar returns no transfer code.
+        if ($code === '') {
+            throw new \Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
+        }
+
+        return $code;
     }
 
     public function lock(\Model_ServiceDomain $model): bool
