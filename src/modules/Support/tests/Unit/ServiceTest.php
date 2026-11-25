@@ -2071,12 +2071,18 @@ test('gets message history', function (): void {
         ->andReturn([$history]);
     supportWireKbRepositories($emMock, supportTicketMessageHistoryRepo: $historyRepo);
 
+    $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbalMock->shouldReceive('fetchAssociative')
+        ->atLeast()->once()
+        ->andReturn(['id' => 7, 'name' => 'Admin Name', 'email' => 'admin@example.com']);
+
     $di = container();
     $di['em'] = $emMock;
+    $di['dbal'] = $dbalMock;
     $service->setDi($di);
 
     $result = $service->getMessageHistory($message);
-    expect($result)->toBe([[...$history->toApiArray(), 'content_html' => "<p><strong>Original</strong> content</p>\n"]]);
+    expect($result)->toBe([[...$history->toApiArray(), 'content_html' => "<p><strong>Original</strong> content</p>\n", 'admin_name' => 'Admin Name']]);
 });
 
 dataset('ticketReplyProvider', function () {

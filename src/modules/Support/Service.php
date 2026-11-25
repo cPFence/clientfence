@@ -1172,6 +1172,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         foreach ($this->getSupportTicketMessageHistoryRepository()->findByMessageId((int) $message->getId()) as $history) {
             $data = $history->toApiArray();
             $data['content_html'] = $markdown->convert((string) $data['content']);
+            // ClientFence core patch: the staff member who made the edit, shown in the edit history.
+            $adminId = $history->getAdminId();
+            $data['admin_name'] = $adminId !== null ? ($this->fetchAdminSummary($adminId)['name'] ?? null) : null;
             $result[] = $data;
         }
 
