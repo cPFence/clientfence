@@ -1627,9 +1627,10 @@ document.querySelectorAll('[data-bf-client-files] input[type="file"]').forEach((
 // ---- Domain Management (Servicedomain/PriceSync.php). The TLD list's Active switch saves at once;
 // the TLDs and prices page gets the registrar's price list in slices, shows the preview and applies
 // the ticked rows after a confirm step.
-function apiCall(endpoint, data) {
+function apiCall(endpoint, data, timeoutMs = 30000) {
+  const { api } = window.ClientFence;
   return new Promise((resolve) => {
-    window.ClientFence.api.admin.post(endpoint, data, (result) => resolve({ result }), (error) => resolve({ error: String(error?.message || '') }), false);
+    api.makeRequest('POST', new URL(endpoint, `${api.admin.baseURL}/`).toString(), data, (result) => resolve({ result }), (error) => resolve({ error: String(error?.message || '') }), false, timeoutMs);
   });
 }
 function notifyError(message) {
@@ -1730,7 +1731,8 @@ if (prices) {
     prices.querySelectorAll('[data-cf-prices-fetch]').forEach((b) => { b.disabled = true; });
     let first = true;
     for (;;) {
-      const { result, error } = await apiCall('servicedomain/price_sync_fetch', { id, refresh: first && refresh ? 1 : 0 });
+      // 90 s: one slice of a slow registrar's price list can pass the default 30 s (registrar requests stop at 80 s).
+      const { result, error } = await apiCall('servicedomain/price_sync_fetch', { id, refresh: first && refresh ? 1 : 0 }, 90000);
       first = false;
       if (error !== undefined) { notifyError(error); break; }
       part('status').textContent = say(t.fetching, { done: result.priced });

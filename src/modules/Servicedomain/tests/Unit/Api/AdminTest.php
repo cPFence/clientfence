@@ -792,6 +792,59 @@ test('throws exception when updating registrar without id', function (): void {
         ->toThrow(ClientFence\InformationException::class);
 });
 
+test('tests the registrar connection and returns elapsed seconds', function (?string $tld, string $checked): void {
+    $adminApi = apiEndpoint(new Admin());
+    $registrar = new Model_TldRegistrar();
+    $registrar->loadBean(new Tests\Helpers\DummyBean());
+    $registrar->id = 1;
+    $adminApi->getDi()['db']->shouldReceive('getExistingModelById')->once()
+        ->with('TldRegistrar', 1, 'Registrar not found')->andReturn($registrar);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->once()->with(Mockery::type('string'), [1])->andReturn($tld ?? false);
+    $adminApi->getDi()['dbal'] = $dbal;
+
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('isDomainAvailable')->once()
+        ->with(Mockery::on(static fn (Registrar_Domain $domain): bool => preg_match('/^cf-test-[a-f0-9]{32}' . preg_quote($checked, '/') . '\z/', $domain->getName()) === 1))
+        ->andReturnUsing(static function (): bool {
+            usleep(100_000);
+
+            return false;
+        });
+
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('registrarGetRegistrarAdapter')->once()->with($registrar)->andReturn($adapter);
+    $adminApi->setService($service);
+
+    $result = $adminApi->registrar_test_connection(['id' => 1]);
+
+    expect($result['ok'])->toBeTrue()
+        ->and($result['seconds'])->toBeFloat()->toBeGreaterThanOrEqual(0.1)->toBe(round($result['seconds'], 1));
+})->with([
+    'a TLD of the registrar' => ['.co.uk', '.co.uk'],
+    'no TLD yet' => [null, '.com'],
+]);
+
+test('passes through a registrar connection error', function (): void {
+    $adminApi = apiEndpoint(new Admin());
+    $registrar = new Model_TldRegistrar();
+    $registrar->loadBean(new Tests\Helpers\DummyBean());
+    $adminApi->getDi()['db']->shouldReceive('getExistingModelById')->once()->andReturn($registrar);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->andReturn(false);
+    $adminApi->getDi()['dbal'] = $dbal;
+
+    $adapter = Mockery::mock(Registrar_Adapter_Custom::class);
+    $adapter->shouldReceive('isDomainAvailable')->once()->andThrow(new Registrar_Exception('Invalid credentials'));
+
+    $service = Mockery::mock(Service::class);
+    $service->shouldReceive('registrarGetRegistrarAdapter')->once()->with($registrar)->andReturn($adapter);
+    $adminApi->setService($service);
+
+    expect(fn () => $adminApi->registrar_test_connection(['id' => 1]))
+        ->toThrow(Registrar_Exception::class, 'Invalid credentials');
+});
+
 test('gets service', function (): void {
     $adminApi = apiEndpoint(new Admin());
     $api = apiEndpoint(new Admin());

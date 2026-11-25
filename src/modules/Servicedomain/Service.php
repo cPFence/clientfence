@@ -1872,6 +1872,8 @@ class Service implements \ClientFence\InjectionAwareInterface
         return [
             'id' => $model->id,
             'title' => $model->name,
+            // ClientFence core patch: the adapter name, so the page can hide the connection test for Custom and Email.
+            'registrar' => $model->registrar,
             'label' => $c['label'],
             'config' => $config,
             'secret_fields' => $secretFields,

@@ -46,7 +46,7 @@
     </div>
 </div>
 <div>
-    <form method="post" action="{{ 'servicedomain/registrar_update'|api_url }}" {{ fb_api_form({message: 'Registrar Updated'|trans}) }}>
+    <form method="post" action="{{ 'servicedomain/registrar_update'|api_url }}" id="registrar-update" {{ fb_api_form({message: 'Registrar Updated'|trans}) }}>
         {% embed 'partial_admin_form_card.html.twig' with {
             title: 'Details'|trans,
             card_class: 'mb-0'
@@ -85,6 +85,10 @@
             {% endblock %}
 
             {% block form_actions %}
+                {# ClientFence core patch: saves, then checks the registrar answers with these settings (like the hosting server page). #}
+                {% if registrar.registrar not in ['Custom', 'Email'] %}
+                <button class="btn btn-outline-primary" id="registrar-test" type="button" data-cf-connected="{{ 'Connected in :seconds s'|trans }}">{{ 'Update and Test Connection'|trans }}</button>
+                {% endif %}
                 <button class="btn btn-primary" type="submit">{{ 'Update'|trans }}</button>
             {% endblock %}
         {% endembed %}
@@ -94,6 +98,34 @@
 
 {% block js %}
 <script nonce="{{ csp_nonce }}">
+    (function () {
+        const form = document.getElementById('registrar-update');
+        const button = document.getElementById('registrar-test');
+
+        if (!form || !button) {
+            return;
+        }
+
+        const fail = function (error) {
+            button.disabled = false;
+            ClientFence.ui.notify(error.message, 'error');
+        };
+
+        button.addEventListener('click', function () {
+            if (!form.reportValidity()) {
+                return;
+            }
+            button.disabled = true;
+            // Save first: the test reads the saved settings. A slow registrar may take up to 80 s.
+            ClientFence.api.makeRequest('POST', ClientFence.tools.getBaseURL(form.getAttribute('action')), ClientFence.tools.serializeFormDataToJSON(new FormData(form)), function () {
+                ClientFence.api.makeRequest('POST', ClientFence.tools.getBaseURL(form.getAttribute('action').replace('registrar_update', 'registrar_test_connection')), { id: form.elements.namedItem('id').value }, function (result) {
+                    button.disabled = false;
+                    ClientFence.ui.notify(button.dataset.cfConnected.replace(':seconds', result.seconds), 'success');
+                }, fail, true, 90000);
+            }, fail);
+        });
+    })();
+
     (function () {
         const testModeYes = document.getElementById('radioTestModeYes');
         const testModeNo = document.getElementById('radioTestModeNo');

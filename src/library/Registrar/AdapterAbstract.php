@@ -281,7 +281,8 @@ abstract class Registrar_AdapterAbstract
      */
     public function getHttpClient(): Symfony\Contracts\HttpClient\HttpClientInterface
     {
-        return Symfony\Component\HttpClient\HttpClient::create(['bindto' => BIND_TO]);
+        // ClientFence core patch: a slow registrar request must finish within the admin page's wait.
+        return Symfony\Component\HttpClient\HttpClient::create(['bindto' => BIND_TO, 'max_duration' => 80]);
     }
 
     /**

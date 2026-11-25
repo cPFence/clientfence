@@ -508,6 +508,24 @@ class Admin extends \ClientFence\Api\AbstractApi
         return $this->getService()->registrarUpdate($model, $data);
     }
 
+    /** ClientFence core patch: tests a registrar's saved settings with one availability check of a name nobody owns. */
+    #[RequiredParams(['id' => 'Registrar ID is missing'])]
+    public function registrar_test_connection($data): array
+    {
+        $this->checkPermissions('servicedomain', 'manage_registrars');
+
+        $registrar = $this->getDi()['db']->getExistingModelById('TldRegistrar', $data['id'], 'Registrar not found');
+        $adapter = $this->getService()->registrarGetRegistrarAdapter($registrar);
+        // A TLD this registrar sells: some (Nominet) answer only for their own TLDs.
+        $tld = $this->getDi()['dbal']->fetchOne('SELECT tld FROM tld WHERE tld_registrar_id = ? ORDER BY active DESC, id LIMIT 1', [$registrar->id]) ?: '.com';
+        $domain = (new \Registrar_Domain())->setSld('cf-test-' . bin2hex(random_bytes(16)))->setTld($tld);
+
+        $start = hrtime(true);
+        $adapter->isDomainAvailable($domain);
+
+        return ['ok' => true, 'seconds' => round((hrtime(true) - $start) / 1e9, 1)];
+    }
+
     /**
      * ClientFence core patch: a registrar's TLD price settings and price list state (PriceSync.php).
      */

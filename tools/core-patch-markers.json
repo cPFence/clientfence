@@ -5348,6 +5348,18 @@
         "done": "ClientFence core patch: a registrar's TLD price settings and price list state (PriceSync.php)."
     },
     {
+        "file": "library/Registrar/AdapterAbstract.php",
+        "done": "ClientFence core patch: a slow registrar request must finish within the admin page's wait."
+    },
+    {
+        "file": "modules/Servicedomain/Api/Admin.php",
+        "done": "ClientFence core patch: tests a registrar's saved settings with one availability check of a name nobody owns."
+    },
+    {
+        "file": "modules/Servicedomain/Service.php",
+        "done": "ClientFence core patch: the adapter name, so the page can hide the connection test for Custom and Email."
+    },
+    {
         "file": "modules/Servicedomain/Controller/Admin.php",
         "done": "ClientFence core patch: a registrar's TLDs and prices page (PriceSync.php)."
     },
@@ -7154,6 +7166,10 @@
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig",
         "done": "ClientFence core patch: the registrar reads first: its name, adapter and test mode, with its TLDs and prices; the form follows (CF-135 redesign)."
+    },
+    {
+        "file": "modules/Servicedomain/templates/admin/mod_servicedomain_registrar.html.twig",
+        "done": "ClientFence core patch: saves, then checks the registrar answers with these settings (like the hosting server page)."
     },
     {
         "file": "modules/Servicedomain/templates/admin/mod_servicedomain_tld.html.twig",
