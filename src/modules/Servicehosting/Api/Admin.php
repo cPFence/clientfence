@@ -254,8 +254,14 @@ class Admin extends \ClientFence\Api\AbstractApi
 
         $model = $this->getDi()['db']->getExistingModelById('ServiceHostingServer', $data['id'], 'Server not found');
         $service = $this->getService();
+        $result = $service->toHostingServerApiArray($model, true, $this->getIdentity());
 
-        return $service->toHostingServerApiArray($model, true, $this->getIdentity());
+        // ClientFence core patch: the edit form shows the saved login, unless the panel marks it secret.
+        if (!in_array('username', $result['secret_fields'], true)) {
+            $result['username'] = $model->username;
+        }
+
+        return $result;
     }
 
     /**

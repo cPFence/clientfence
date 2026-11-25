@@ -329,7 +329,7 @@ test('testServerGet', function (): void {
     $serviceMock
     ->shouldReceive('toHostingServerApiArray')
     ->atLeast()->once()
-    ->andReturn([]);
+    ->andReturn(['secret_fields' => ['username']]);
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock
@@ -344,6 +344,32 @@ test('testServerGet', function (): void {
 
     $result = $api->server_get($data);
     expect($result)->toBeArray();
+});
+
+test('server_get includes the saved login unless the panel marks it secret', function (): void {
+    $api = apiEndpoint(new Admin());
+    $data = ['id' => 1];
+    $username = '3f1c2a9e-0000-4000-8000-000000000001';
+    $model = new Model_ServiceHostingServer();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->username = $username;
+
+    $serviceMock = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class);
+    $serviceMock->shouldReceive('toHostingServerApiArray')->twice()->andReturn(
+        ['secret_fields' => ['accesshash'], 'accesshash' => null],
+        ['secret_fields' => ['username']],
+    );
+
+    $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->shouldReceive('getExistingModelById')->twice()->andReturn($model);
+
+    $di = container();
+    $di['db'] = $dbMock;
+    $api->setDi($di);
+    $api->setService($serviceMock);
+
+    expect($api->server_get($data)['username'])->toBe($username);
+    expect($api->server_get($data))->not->toHaveKey('username');
 });
 
 test('testServerDelete', function (): void {
