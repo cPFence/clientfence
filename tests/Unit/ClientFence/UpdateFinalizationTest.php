@@ -59,6 +59,7 @@ function finalizationWithStubPatcher(UpdatePatcher $stubPatcher): UpdateFinaliza
         }
     };
     $finalization->stubPatcher = $stubPatcher;
+    $finalization->setDi(Tests\Helpers\container());
 
     return $finalization;
 }
@@ -118,6 +119,35 @@ test('completes a finalized state with no pending patches and restores maintenan
         ClientFence\Config::setConfig($original, false);
     }
 });
+
+test('lists built-in email templates when completing a finalized update', function (bool $fails): void {
+    $original = ClientFence\Config::getConfig();
+    try {
+        seedFinalizedState($this->updateFinalizationFilesystem, $this->updateFinalizationStatePath);
+        $finalization = finalizationWithStubPatcher(stubUpdatePatcherWithPendingPatches(0));
+        $di = $finalization->getDi();
+        $generate = $di['mod_service']('email')->shouldReceive('templateBatchGenerate')->once();
+        if ($fails) {
+            $generate->andThrow(new RuntimeException('template sync failed'));
+        } else {
+            $generate->andReturn(true);
+        }
+
+        $finalization->completeFinalization();
+
+        $persisted = json_decode($this->updateFinalizationFilesystem->readFile($this->updateFinalizationStatePath), true, 512, JSON_THROW_ON_ERROR);
+        expect($persisted['status'])->toBe('complete')
+            ->and($di['logger']->calls)->toBe($fails ? [
+                ['method' => 'setChannel', 'params' => ['update']],
+                ['method' => 'warning', 'params' => ['New built-in email templates were not listed: template sync failed', []]],
+            ] : []);
+    } finally {
+        ClientFence\Config::setConfig($original, false);
+    }
+})->with([
+    'templates listed' => [false],
+    'template listing fails' => [true],
+]);
 
 test('leaves a finalized state alone when the patch level cannot be read', function (): void {
     seedFinalizedState($this->updateFinalizationFilesystem, $this->updateFinalizationStatePath);

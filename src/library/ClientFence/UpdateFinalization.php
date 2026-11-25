@@ -240,6 +240,14 @@ class UpdateFinalization implements InjectionAwareInterface
         // it stays enabled.
         $this->restoreMaintenanceMode($state);
         $this->writeCompleteState($state);
+
+        // ClientFence core patch: this request runs the new code, so built-in templates of a module new in this release are listed too.
+        try {
+            $this->di['mod_service']('email')->templateBatchGenerate();
+        } catch (\Throwable $e) {
+            $this->di['logger']->setChannel('update')->warning('New built-in email templates were not listed: ' . $e->getMessage());
+        }
+
         $this->clearCache();
     }
 
