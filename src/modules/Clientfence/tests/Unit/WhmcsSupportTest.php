@@ -45,7 +45,7 @@ function whmcsSupportSource(): Connection
     $db->executeStatement("INSERT INTO tblconfiguration VALUES ('Version', '9.0.4-release.1'), ('CloseInactiveTickets', '72'), ('TicketRatingEnabled', 'on')");
     $db->executeStatement("INSERT INTO tblticketspamfilters VALUES (1, 'sender', 'spam@bad.test')");
     // Staff: 1 is already staff here (same email), 2 a support operator, 3 a sales operator without a usable hash.
-    $db->insert('tbladmins', ['id' => 1, 'roleid' => 1, 'username' => 'owner', 'passwordhash' => password_hash('x', PASSWORD_BCRYPT), 'firstname' => 'Olive', 'lastname' => 'Owner', 'email' => 'Owner@Host.test']);
+    $db->insert('tbladmins', ['id' => 1, 'roleid' => 1, 'username' => 'owner', 'passwordhash' => password_hash('x', PASSWORD_BCRYPT), 'firstname' => 'Olive', 'lastname' => 'Owner', 'email' => 'Owner@Host.test', 'signature' => 'Olive at Host']);
     $db->insert('tbladmins', ['id' => 2, 'roleid' => 3, 'username' => 'sam', 'passwordhash' => '$2y$10$abcdefghijklmnopqrstuuS6Qe2cS6x1kQnqtkpHgV5Q5V7r6m9n2', 'authmodule' => 'totp', 'firstname' => 'Sam', 'lastname' => 'Support', 'email' => 'sam@host.test', 'signature' => 'Sam from support', 'created_at' => '2025-01-02 03:04:05']);
     $db->insert('tbladmins', ['id' => 3, 'roleid' => 2, 'username' => 'sally', 'passwordhash' => 'not-a-hash', 'firstname' => 'Sally', 'lastname' => 'Sales', 'email' => 'sally@host.test']);
     // Departments: 1 takes over the fresh install's help desk 1; 2 is hidden, with an IMAP mailbox; 3 reads POP3.
@@ -220,7 +220,7 @@ test('staff come over switched off, matched by email, by role, and replies keep 
     $map = new Map($target);
 
     expect($map->get('staff', 1))->toBe(1)
-        ->and($target->fetchOne('SELECT status FROM admin WHERE id = 1'))->toBe('active');
+        ->and($target->fetchAssociative('SELECT status, signature FROM admin WHERE id = 1'))->toBe(['status' => 'active', 'signature' => 'Olive at Host']);
     $sam = $target->fetchAssociative('SELECT * FROM admin WHERE id = ?', [$map->get('staff', 2)]);
     expect($sam)->toMatchArray(['email' => 'sam@host.test', 'name' => 'Sam Support', 'status' => 'inactive', 'signature' => 'Sam from support', 'created_at' => '2025-01-02 03:04:05'])
         ->and($sam['pass'])->toBe('$2y$10$abcdefghijklmnopqrstuuS6Qe2cS6x1kQnqtkpHgV5Q5V7r6m9n2')

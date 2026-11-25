@@ -235,6 +235,11 @@ final class Support
         $existing = $email === '' ? false : $this->db->fetchOne('SELECT id FROM admin WHERE LOWER(email) = ?', [strtolower($email)]);
         if ($existing !== false) {
             $this->map->put('staff', $id, (int) $existing);
+            // The WHMCS signature fills an empty one, so replies of matched staff keep it.
+            $signature = self::cut($row['signature'] ?? '', 255);
+            if ($signature !== '') {
+                $this->db->executeStatement("UPDATE admin SET signature = ? WHERE id = ? AND COALESCE(signature, '') = ''", [$signature, (int) $existing]);
+            }
             $this->staffByName = null;
 
             return 1;
