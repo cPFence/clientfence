@@ -10,15 +10,15 @@
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Invoice number'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">#{{ invoice.serie_nr|default('') }}</td></tr>
-					{% if invoice.po_number|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'PO number'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ invoice.po_number }}</td></tr>{% endif %}
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Amount paid'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ invoice.total|default(0)|format_currency(invoice.currency|default(default_currency)) }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Date paid'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ invoice.paid_at|default('')|format_date }}</td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Invoice date'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ invoice.created_at|default('')|format_date }}</td></tr>
+					<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Invoice number'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top; font-weight:bold;">#{{ invoice.serie_nr|default('') }}</td></tr>
+					{% if invoice.po_number|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'PO number'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ invoice.po_number }}</td></tr>{% endif %}
+					<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Amount paid'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top; font-weight:bold;">{{ invoice.total|default(0)|format_currency(invoice.currency|default(default_currency)) }}</td></tr>
+					<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Date paid'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ invoice.paid_at|default('')|format_date }}</td></tr>
+					<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Invoice date'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ invoice.created_at|default('')|format_date }}</td></tr>
 					{% for order in invoice.orders|default([]) %}
 					<tr><td colspan="2" style="padding:8px 0 0; border-top:1px solid #e4eaee;"></td></tr>
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Order'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">#{{ order.id }}{% if order.product_name %} &middot; {{ order.product_name }}{% endif %}</td></tr>
-					{% if order.expires_at %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Renewal date'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ order.expires_at|format_date }}</td></tr>{% endif %}
+					<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Order'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">#{{ order.id }}{% if order.product_name %} &middot; {{ order.product_name }}{% endif %}</td></tr>
+					{% if order.expires_at %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Renewal date'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ order.expires_at|format_date }}</td></tr>{% endif %}
 					{% endfor %}
 				</table>
 			</td></tr>

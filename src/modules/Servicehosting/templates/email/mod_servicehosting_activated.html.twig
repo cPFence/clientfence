@@ -13,10 +13,10 @@
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Service'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ order.title|default('') }}</td></tr>
-					{% if order.activated_at|default(false) %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Activated'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ order.activated_at|default('')|format_date }}</td></tr>{% endif %}
-					{% if order.expires_at|default(false) %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Next due date'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ order.expires_at|default('')|format_date }}</td></tr>{% endif %}
-					{% if order.period|default(false) %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Billing'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ order.total|default(0)|format_currency(order.currency|default(default_currency)) }} {{ order.period|default('')|period_title }}</td></tr>{% endif %}
+					<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Service'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top; font-weight:bold;">{{ order.title|default('') }}</td></tr>
+					{% if order.activated_at|default(false) %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Activated'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ order.activated_at|default('')|format_date }}</td></tr>{% endif %}
+					{% if order.expires_at|default(false) %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Next due date'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ order.expires_at|default('')|format_date }}</td></tr>{% endif %}
+					{% if order.period|default(false) %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Billing'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ order.total|default(0)|format_currency(order.currency|default(default_currency)) }} {{ order.period|default('')|period_title }}</td></tr>{% endif %}
 				</table>
 			</td></tr>
 		</table>
@@ -26,10 +26,10 @@
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					{% if service.hosting_plan.name|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Hosting plan'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.hosting_plan.name|default('') }}</td></tr>{% endif %}
-					{% if service.domain|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Domain'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.domain|default('') }}</td></tr>{% endif %}
-					{% if service.username|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Username'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top; font-weight:bold;">{{ service.username|default('') }}</td></tr>{% endif %}
-					{% if service.server.ip|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'IP address'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.ip|default('') }}</td></tr>{% endif %}
+					{% if service.hosting_plan.name|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Hosting plan'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.hosting_plan.name|default('') }}</td></tr>{% endif %}
+					{% if service.domain|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Domain'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.domain|default('') }}</td></tr>{% endif %}
+					{% if service.username|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Username'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top; font-weight:bold;">{{ service.username|default('') }}</td></tr>{% endif %}
+					{% if service.server.ip|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'IP address'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.ip|default('') }}</td></tr>{% endif %}
 				</table>
 			</td></tr>
 		</table>
@@ -40,8 +40,8 @@
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					{% if service.server.cpanel_url|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Control panel'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;"><a href="{{ service.server.cpanel_url }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">{{ service.server.cpanel_url }}</a></td></tr>{% endif %}
-					{% if service.username|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Username'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.username|default('') }}</td></tr>{% endif %}
+					{% if service.server.cpanel_url|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Control panel'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;"><a href="{{ service.server.cpanel_url }}" target="_blank" style="color:{{ guest.system_company.brand_link|default('#2563eb') }};">{{ service.server.cpanel_url }}</a></td></tr>{% endif %}
+					{% if service.username|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Username'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.username|default('') }}</td></tr>{% endif %}
 				</table>
 			</td></tr>
 		</table>
@@ -53,12 +53,12 @@
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">
 				<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#334155;">
-					{% if service.server.name|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Server'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.name|default('') }}</td></tr>{% endif %}
-					{% if service.server.ip|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Server IP'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.ip|default('') }}</td></tr>{% endif %}
-					{% if service.server.ns1|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Nameserver 1'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.ns1|default('') }}</td></tr>{% endif %}
-					{% if service.server.ns2|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Nameserver 2'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.ns2|default('') }}</td></tr>{% endif %}
-					{% if service.server.ns3|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Nameserver 3'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.ns3|default('') }}</td></tr>{% endif %}
-					{% if service.server.ns4|default('') %}<tr><td style="padding:4px 12px 4px 0; color:#64748b; vertical-align:top;">{{ 'Nameserver 4'|trans }}</td><td align="right" style="padding:4px 0; vertical-align:top;">{{ service.server.ns4|default('') }}</td></tr>{% endif %}
+					{% if service.server.name|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Server'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.name|default('') }}</td></tr>{% endif %}
+					{% if service.server.ip|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Server IP'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.ip|default('') }}</td></tr>{% endif %}
+					{% if service.server.ns1|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Nameserver 1'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.ns1|default('') }}</td></tr>{% endif %}
+					{% if service.server.ns2|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Nameserver 2'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.ns2|default('') }}</td></tr>{% endif %}
+					{% if service.server.ns3|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Nameserver 3'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.ns3|default('') }}</td></tr>{% endif %}
+					{% if service.server.ns4|default('') %}<tr><td style="padding:4px 6px; color:#64748b; vertical-align:top;">{{ 'Nameserver 4'|trans }}</td><td align="right" style="padding:4px 6px; vertical-align:top;">{{ service.server.ns4|default('') }}</td></tr>{% endif %}
 				</table>
 			</td></tr>
 		</table>
