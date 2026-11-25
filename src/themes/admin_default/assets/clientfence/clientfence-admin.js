@@ -1627,7 +1627,7 @@ document.querySelectorAll('[data-bf-client-files] input[type="file"]').forEach((
 // ---- Domain Management (Servicedomain/PriceSync.php). The TLD list's Active switch saves at once;
 // the TLDs and prices page gets the registrar's price list in slices, shows the preview and applies
 // the ticked rows after a confirm step.
-function apiCall(endpoint, data, timeoutMs = 30000) {
+function apiCall(endpoint, data, timeoutMs = 130000) {
   const { api } = window.ClientFence;
   return new Promise((resolve) => {
     api.makeRequest('POST', new URL(endpoint, `${api.admin.baseURL}/`).toString(), data, (result) => resolve({ result }), (error) => resolve({ error: String(error?.message || '') }), false, timeoutMs);

@@ -249,11 +249,12 @@ const API = {
    * @param {function} [successHandler] The function to call if the request is successful.
    * @param {function} [errorHandler] The function to call if the request is unsuccessful.
    * @param {boolean} [enableLoader=true] Enable or disable the usage of the page loader (css/loader.css).
-   * @param {number} [timeoutMs=30000] Timeout duration in milliseconds.
+   * @param {number} [timeoutMs=130000] Timeout duration in milliseconds.
    * @param {string|null} [timeoutMessage=null] Message to show when the request times out.
    * @documentation https://clientfence.com/docs/
    */
-  makeRequest: function (method, url, params, successHandler, errorHandler, enableLoader = true, timeoutMs = 30000, timeoutMessage = null) {
+  // ClientFence core patch: 130 s, above the slowest panel or registrar wait (120 s), so a slow action is not shown as failed.
+  makeRequest: function (method, url, params, successHandler, errorHandler, enableLoader = true, timeoutMs = 130000, timeoutMessage = null) {
     let loader = enableLoader ? this._createLoader() : null;
 
     const controller = new AbortController();
@@ -557,7 +558,7 @@ const API = {
                 ClientFence.ui.notify(error.message, 'error');
               },
               true,
-              apiData.timeoutMs ?? 30000,
+              apiData.timeoutMs ?? 130000,
               apiData.timeoutMessage ?? null
             );
           };
