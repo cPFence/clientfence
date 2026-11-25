@@ -250,7 +250,8 @@ class Service implements InjectionAwareInterface
             'icon_url' => $model->getIconUrl(),
 
             // stock control
-            'allow_quantity_select' => $model->isAllowQuantitySelect(),
+            // ClientFence core patch: no quantity field for a product type of one unit per order (ServiceTypes).
+            'allow_quantity_select' => $model->isAllowQuantitySelect() && !\ClientFence\ServiceTypes::singleUnit($this->di, $model->getType()),
 
             // Exposed publicly so the order form can be fetched during guest checkout.
             'form_id' => $model->getFormId(),

@@ -303,6 +303,22 @@ test('to api array', function (): void {
     expect($result)->toBeArray();
 });
 
+test('a product type of one unit per order offers no quantity selection', function (): void {
+    $serviceMock = Mockery::mock(Service::class)->makePartial();
+    $serviceMock->shouldReceive('getStartingFromPrice');
+    $serviceMock->shouldReceive('toProductPaymentApiArray')->andReturn(['type' => 'free']);
+    $paymentRepo = Mockery::mock(ProductPaymentRepository::class);
+    $paymentRepo->shouldReceive('find')->andReturn(new ProductPayment());
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories(null, $paymentRepo);
+    $serviceMock->setDi($di);
+
+    $model = productTestCreateProductEntity(1)->setProductPaymentId(2)->setConfig('{}')->setAllowQuantitySelect(true);
+
+    expect($serviceMock->toApiArray($model->setType('dnshosting'))['allow_quantity_select'])->toBeFalse()
+        ->and($serviceMock->toApiArray($model->setType('custom'))['allow_quantity_select'])->toBeTrue();
+});
+
 test('get types', function (): void {
     $service = new Service();
     $modArray = [

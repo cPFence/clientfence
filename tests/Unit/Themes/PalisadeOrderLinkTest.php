@@ -37,7 +37,7 @@ final class PalisadeOrderLinkGuestStub
  * @param array<string, mixed> $config the product's public config
  * @param array<string, mixed>|null $client the signed-in client's API answers (null: a guest)
  */
-function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = [], ?array $cart = null, ?array $client = null): string
+function renderPalisadeOrderLink(string $template, array $query, string $type = 'custom', array $config = [], ?array $cart = null, ?array $client = null, bool $quantity = false): string
 {
     $loader = new ChainLoader([
         new ArrayLoader([
@@ -68,7 +68,7 @@ function renderPalisadeOrderLink(string $template, array $query, string $type = 
         'settings' => [],
         'product' => [
             'id' => 7, 'type' => $type, 'title' => 'Trial', 'slug' => 'trial', 'description' => '', 'form_id' => 0,
-            'allow_quantity_select' => false, 'addons' => [], 'config' => $config,
+            'allow_quantity_select' => $quantity, 'addons' => [], 'config' => $config,
             'pricing' => ['type' => 'recurrent', 'recurrent' => ['1M' => ['enabled' => true, 'price' => 0, 'setup' => 0], '1Y' => ['enabled' => true, 'price' => 0, 'setup' => 0]]],
         ],
         'guest' => new PalisadeOrderLinkGuestStub([
@@ -182,6 +182,10 @@ test('a hosting plan is ordered on the checkout with its domain section; a domai
     expect(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'domain'))->toContain('data-redirect="/cart"')->not->toContain('data-bf-checkout-data')
         ->and($other)->not->toContain('data-cf-hosting-domain')
         ->and(palisadeOrderLinkData($other)['product']['freeDomain'])->toBeNull();
+});
+
+test('a product configured on the order page with quantity selection opens for clients, whose product data has no stock fields', function (): void {
+    expect(renderPalisadeOrderLink('mod_order_product.html.twig', [], 'domain', quantity: true))->toContain('id="config-next"');
 });
 
 test('the summary has a line for the domain renewal, free under the plan\'s free domain renewals (CF-165)', function (): void {

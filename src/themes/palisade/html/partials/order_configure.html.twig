@@ -26,7 +26,8 @@
         {% if product.allow_quantity_select %}
             <div class="bf-configure-row">
                 <label class="bf-label" for="bf-configure-qty">{{ 'Quantity'|trans }}</label>
-                <input class="form-control bf-configure-qty" id="bf-configure-qty" type="number" name="quantity" value="1" min="1"{% if product.stock_control %} max="{{ product.quantity_in_stock }}"{% endif %}>
+                {# ClientFence core patch: no stock limit here, as a client's product data has no stock fields; the cart checks the stock. #}
+                <input class="form-control bf-configure-qty" id="bf-configure-qty" type="number" name="quantity" value="1" min="1">
             </div>
         {% endif %}
         {# ClientFence core patch: configurable options (Product/Options.php). #}
