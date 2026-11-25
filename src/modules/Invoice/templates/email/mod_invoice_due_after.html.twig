@@ -5,7 +5,7 @@
 {% set email_preheader %}{{ 'Invoice #%number% is past due. Please pay it to keep your services running.'|trans({'%number%': invoice.serie_nr|default('')}) }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Payment overdue'|trans }}</h1>
 		<p style="margin:0 0 16px;">{{ 'Dear %first_name% %last_name%,'|trans({'%first_name%': c.first_name|default(''), '%last_name%': c.last_name|default('')}) }}</p>
-		<p style="margin:0 0 16px;">{{ 'Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services.'|trans_html({'%days_passed%': days_passed|default('')}, {'%number%': '<strong>#' ~ (invoice.serie_nr|default(''))|e ~ '</strong>'}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'Our records show that invoice %number% is now %days_passed% days past due. Please arrange payment as soon as possible to avoid any interruption to your services.'|trans_html({'%days_passed%': days_passed|default('')}, {'%number%': '<strong dir="ltr">#' ~ (invoice.serie_nr|default(''))|e ~ '</strong>'}) }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e4eaee; border-radius:12px;">
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">

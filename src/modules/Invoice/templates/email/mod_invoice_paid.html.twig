@@ -5,7 +5,7 @@
 {% set email_preheader %}{{ 'Thank you for your payment of %total%.'|trans({'%total%': invoice.total|default(0)|format_currency(invoice.currency|default(default_currency))}) }}{% endset %}
 		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Payment received'|trans }}</h1>
 		<p style="margin:0 0 16px;">{{ 'Dear %first_name% %last_name%,'|trans({'%first_name%': c.first_name|default(''), '%last_name%': c.last_name|default('')}) }}</p>
-		<p style="margin:0 0 16px;">{{ 'Thank you! We have received your payment for invoice %number%. This email is your receipt.'|trans_html({}, {'%number%': '<strong>#' ~ (invoice.serie_nr|default(''))|e ~ '</strong>'}) }}</p>
+		<p style="margin:0 0 16px;">{{ 'Thank you! We have received your payment for invoice %number%. This email is your receipt.'|trans_html({}, {'%number%': '<strong dir="ltr">#' ~ (invoice.serie_nr|default(''))|e ~ '</strong>'}) }}</p>
 		<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px; background-color:#f8fafc; border:1px solid #e4eaee; border-radius:12px;">
 			<tr><td height="4" style="height:4px; font-size:0; line-height:0; background-color:#14a39a; background-image:linear-gradient(90deg, #14a39a 0%, {{ guest.system_company.brand_color|default('#2563eb') }} 100%); border-radius:12px 12px 0 0;"></td></tr>
 			<tr><td style="padding:16px 20px;">
