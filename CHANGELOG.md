@@ -1,5 +1,48 @@
 # Changelog
 
+## 1.0.63 (2026-11-25)
+
+### Added
+
+- **DNS hosting product:** a built-in product type that creates the client's zone at Cloudflare, PowerDNS, Hetzner DNS, ClouDNS, DigitalOcean or deSEC, with a records page, the nameservers to use and DNSSEC where the provider offers it ([#73](https://github.com/cPFence/clientfence/issues/73)).
+- **More hosting panels:** Dashmox, NovaPanel, CyberPanel and OpenPanel ([#72](https://github.com/cPFence/clientfence/issues/72)).
+- **SVG logos**, and a Restore default button on each brand image ([#65](https://github.com/cPFence/clientfence/issues/65)).
+- **Products and services on the ticket page:** the client's services at the top of an admin ticket, as in WHMCS (amount, billing cycle, signup date, next due date, status); each opens in a new tab.
+- **Edit a client's reply** on a ticket, as in WHMCS, for example to remove a password the client posted. The edit history keeps the old text.
+- The staff "New reply from client" email shows the client's reply.
+- **Language versions of the texts clients see:** invoice notes, company signature and legal texts, the email signature, store title, maintenance message, bank transfer instructions, suspension and cancellation reasons, and escalation replies.
+- **Import Products step:** before an import from Upmind, Blesta, Clientexec, Paymenter or FOSSBilling, choose for each source product whether it stays custom or becomes a hosting product on a chosen server and plan.
+- **Orders > Move services:** move the services of one product to another product in bulk.
+- **Failed staff sign-in email:** the Super Administrators get an email at once when a staff sign-in fails, as WHMCS.
+- The domain checker, contact and sign-in embeds take the client area's look: brand colours, font, buttons and fields, in light and dark mode.
+- **Registrars:** Update and Test Connection on the registrar settings page, showing how long the registrar took or its error.
+
+### Changed
+
+- Admin and client forms wait up to 130 seconds for a slow panel or registrar before showing a time-out (was 30).
+- Product and add-on descriptions keep their formatting (paragraphs, headings, bold, links) on the store card and at checkout, and their translations get the same editor.
+- Domain actions a registrar does not support are disabled with the reason, and clients no longer see the registrar's name in errors ([#79](https://github.com/cPFence/clientfence/issues/79)).
+- Changing an order's billing cycle in Edit Order stops its gateway subscription, as Recalculate on Save does.
+- Email templates a release adds are listed under Email Templates right after the update.
+- Staff ticket emails go only to staff who may view tickets.
+- Security updates: Symfony 7.4.23 and Twig 3.31.1.
+
+### Fixed
+
+- Ticket replies and notes keep their line breaks, on the ticket pages and in the ticket emails.
+- The client's name on a ticket reply links to the client's account.
+- The admin reply editor is tall again.
+- Gateways that take only recurring payments were hidden on the order and cart pages; an invoice that cannot become a subscription now opens the invoice page instead of an error ([#83](https://github.com/cPFence/clientfence/issues/83)).
+- A registrar's price list fetch no longer stops after 30 seconds on a slow registrar such as Openprovider.
+- Login to Control Panel (Enhance) works after the client deletes their website in Enhance.
+- WHMCS import: products without a server group import as hosting when a server of their module was imported, and existing staff get their WHMCS signature.
+- Saving settings no longer leaves config.old.php in the web root ([#80](https://github.com/cPFence/clientfence/issues/80)).
+- Registrar and payment gateway settings forms mark required fields before saving.
+- In Arabic emails, summary labels no longer touch their values.
+- A failed activation or renewal no longer writes a double full stop in the order history.
+- Domain name placeholders are no longer cut off in right-to-left languages.
+- Opening and saving a description or article no longer drops text that looks like a tag, such as <domain>.
+
 ## 1.0.62 (2026-11-22)
 
 ### Added
