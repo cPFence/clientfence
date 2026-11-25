@@ -673,6 +673,7 @@ test('onAfterClientCloseTicket sends email notification', function (): void {
     $emailServiceMock->shouldReceive('sendTemplate')->atLeast()->once()
         ->with([
             'to_staff' => true,
+            'to_staff_permission' => ['support', 'view'],
             'code' => 'mod_staff_ticket_close',
             'ticket' => [
                 'priority' => 100,

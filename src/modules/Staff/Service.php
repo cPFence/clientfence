@@ -380,6 +380,8 @@ class Service implements InjectionAwareInterface
             $ticket = self::getTicketEmailVars($di, $ticketModel);
             $email = [];
             $email['to_staff'] = true;
+            // ClientFence core patch: the email carries the ticket subject, so only staff who may read tickets get it.
+            $email['to_staff_permission'] = ['support', 'view'];
             $email['code'] = 'mod_staff_ticket_close';
             $email['ticket'] = $ticket;
 
