@@ -8,7 +8,7 @@
 - **More hosting panels:** Dashmox, NovaPanel, CyberPanel and OpenPanel ([#72](https://github.com/cPFence/clientfence/issues/72)).
 - **SVG logos**, and a Restore default button on each brand image ([#65](https://github.com/cPFence/clientfence/issues/65)).
 - **Products and services on the ticket page:** the client's services at the top of an admin ticket, as in WHMCS (amount, billing cycle, signup date, next due date, status); each opens in a new tab.
-- **Edit a client's reply** on a ticket, as in WHMCS, for example to remove a password the client posted. The edit history keeps the old text.
+- **Edit a client's reply** on a ticket, as in WHMCS, for example to remove a password the client posted. The edit history keeps the old text and who made each edit.
 - The staff "New reply from client" email shows the client's reply.
 - **Language versions of the texts clients see:** invoice notes, company signature and legal texts, the email signature, store title, maintenance message, bank transfer instructions, suspension and cancellation reasons, and escalation replies.
 - **Import Products step:** before an import from Upmind, Blesta, Clientexec, Paymenter or FOSSBilling, choose for each source product whether it stays custom or becomes a hosting product on a chosen server and plan.
@@ -21,7 +21,7 @@
 
 - Admin and client forms wait up to 130 seconds for a slow panel or registrar before showing a time-out (was 30).
 - Product and add-on descriptions keep their formatting (paragraphs, headings, bold, links) on the store card and at checkout, and their translations get the same editor.
-- Domain actions a registrar does not support are disabled with the reason, and clients no longer see the registrar's name in errors ([#79](https://github.com/cPFence/clientfence/issues/79)).
+- Domain actions a registrar does not support are disabled with the reason, and clients no longer see the registrar's name in errors; an empty transfer code from a registrar now tells the client to contact support ([#79](https://github.com/cPFence/clientfence/issues/79)).
 - Changing an order's billing cycle in Edit Order stops its gateway subscription, as Recalculate on Save does.
 - Email templates a release adds are listed under Email Templates right after the update.
 - Staff ticket emails go only to staff who may view tickets.
@@ -38,7 +38,11 @@
 - WHMCS import: products without a server group import as hosting when a server of their module was imported, and existing staff get their WHMCS signature.
 - Saving settings no longer leaves config.old.php in the web root ([#80](https://github.com/cPFence/clientfence/issues/80)).
 - Registrar and payment gateway settings forms mark required fields before saving.
-- In Arabic emails, summary labels no longer touch their values.
+- With Quantity Selection on, the order page of a domain or DNS hosting product no longer fails for clients and guests.
+- In Arabic emails, summary labels no longer touch their values, and the invoice number in the email body keeps its # in front.
+- Network issue emails give the status, priority and built-in labels such as All services in each client's language.
+- The hosting server edit form shows a saved login the panel does not keep hidden, such as Enhance's Organization ID, so a change saves without typing it again.
+- The support ticket a payment receipt upload opens is in the language the client is using.
 - A failed activation or renewal no longer writes a double full stop in the order history.
 - Domain name placeholders are no longer cut off in right-to-left languages.
 - Opening and saving a description or article no longer drops text that looks like a tag, such as <domain>.
