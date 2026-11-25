@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 use ClientFence\InformationException;
 use ClientFence\Mod\Support\NetworkIssues;
+use ClientFence\Translate;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 
@@ -15,6 +16,7 @@ function networkDb(): Connection
 {
     $db = DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
     foreach ([
+        'CREATE TABLE client (id INTEGER PRIMARY KEY, lang TEXT)',
         'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, name TEXT)',
         'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, service_hosting_server_id INTEGER)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, service_type TEXT, service_id INTEGER, status TEXT)',
@@ -26,6 +28,7 @@ function networkDb(): Connection
     $db->insert('service_hosting_server', ['id' => 2, 'name' => 'Cluster B']);
     // Client 1: hosting on server 1. Client 2: hosting on server 2 (suspended). Client 3: a domain only.
     // Client 4: hosting on server 1, cancelled. Client 5: nothing.
+    $db->executeStatement("INSERT INTO client (id, lang) VALUES (1, 'en_US'), (2, 'en_US'), (3, 'ar_SA')");
     $db->insert('service_hosting', ['id' => 10, 'service_hosting_server_id' => 1]);
     $db->insert('service_hosting', ['id' => 11, 'service_hosting_server_id' => 2]);
     $db->insert('service_hosting', ['id' => 12, 'service_hosting_server_id' => 1]);
@@ -72,6 +75,11 @@ function networkContainer(Connection $db, array $config = ['network_status' => '
         'email' => new class($log) {
             public function __construct(private ArrayObject $log)
             {
+            }
+
+            public function recipientLocale(string $lang): string
+            {
+                return $lang;
             }
 
             public function sendTemplate(array $email): bool
@@ -181,6 +189,22 @@ test('emailing reaches the affected clients, counts the sent ones and keeps goin
         ->and($log['emails'][0]['issue'])->not->toHaveKeys(['created_by', 'emailed_at', 'emailed_count'])
         ->and($issue['emailed_count'])->toBe(2)
         ->and($issue['emailed_at'])->not->toBeNull();
+});
+
+test('network issue emails build the issue in each recipient\'s language', function (): void {
+    $db = networkDb();
+    $db->insert('service_hosting', ['id' => 13, 'service_hosting_server_id' => 1]);
+    $db->update('client_order', ['service_type' => 'hosting', 'service_id' => 13], ['id' => 3]);
+    $connection = Mockery::mock($db)->makePartial();
+    // The test bootstrap stubs __trans(), so expose the conversion locale as the server name.
+    $connection->shouldReceive('fetchOne')->with('SELECT name FROM service_hosting_server WHERE id = ?', [1])
+        ->andReturnUsing(static fn (): string => Locale::getDefault());
+    [$di, $log] = networkContainer($connection);
+
+    Translate::with('de_DE', static fn (): array => NetworkIssues::save($di, networkForm(['email' => '1'])));
+
+    $issues = array_column($log['emails'], 'issue', 'to_client');
+    expect(array_map(static fn (array $issue): string => $issue['server_name'], $issues))->toBe([1 => 'en_US', 3 => 'ar_SA']);
 });
 
 test('the banner shows a client the open issues and the scheduled work that affect it', function (): void {

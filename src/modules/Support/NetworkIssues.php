@@ -96,12 +96,18 @@ final class NetworkIssues
     /** @return array<string, mixed> */
     public static function get(\Pimple\Container $di, int $id): array
     {
+        return self::toArray($di, self::row($di, $id));
+    }
+
+    /** @return array<string, mixed> */
+    private static function row(\Pimple\Container $di, int $id): array
+    {
         $row = self::db($di)->fetchAssociative('SELECT * FROM ' . self::TABLE . ' WHERE id = ?', [$id]);
         if ($row === false) {
             throw new InformationException('Network issue not found', [], 404);
         }
 
-        return self::toArray($di, $row);
+        return $row;
     }
 
     /**
@@ -270,15 +276,20 @@ final class NetworkIssues
      */
     public static function emailAffected(\Pimple\Container $di, int $id): int
     {
-        $issue = self::get($di, $id);
+        $row = self::row($di, $id);
+        $issue = self::toArray($di, $row);
         $email = $di['mod_service']('email');
         $sent = 0;
+        $issues = [];
         foreach (self::affectedClients($di, $issue) as $clientId) {
             try {
+                $locale = $email->recipientLocale(self::db($di)->fetchOne('SELECT lang FROM client WHERE id = ?', [$clientId]));
+                // ClientFence core patch: build issue titles in the client's email language.
+                $issues[$locale] ??= \ClientFence\Translate::with($locale, static fn (): array => self::forClients(self::toArray($di, $row)));
                 $email->sendTemplate([
                     'code' => 'mod_support_network_issue',
                     'to_client' => $clientId,
-                    'issue' => self::forClients($issue),
+                    'issue' => $issues[$locale],
                     // On the client's site, as the email (ClientFence\Site::forRecord()).
                     'status_url' => \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'client', $clientId), static fn (): string => (string) $di['url']->link('network-status')),
                 ]);
