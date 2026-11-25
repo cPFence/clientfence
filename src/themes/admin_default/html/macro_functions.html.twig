@@ -1,18 +1,17 @@
+{# ClientFence core patch: prints only "true" or "false" (callers compare it), and a boolean true counts as required. #}
 {% macro compute_field_required(element, context) %}
-    {% set result = false %}
-    {% if element[1].required_when is defined and element[1].required_when is iterable %}
-        {% set result = true %}
-        {% for cond_key, cond_value in element[1].required_when %}
-            {% if attribute(context, cond_key) is null or attribute(context, cond_key) != cond_value %}
-                {% set result = false %}
-            {% endif %}
-        {% endfor %}
-    {% elseif element[1].required is defined %}
-        {% set result = element[1].required != 'false' %}
-    {% else %}
-        {% set result = false %}
-    {% endif %}
-    {{ result ? 'true' : 'false' }}
+    {%- set result = false -%}
+    {%- if element[1].required_when is defined and element[1].required_when is iterable -%}
+        {%- set result = true -%}
+        {%- for cond_key, cond_value in element[1].required_when -%}
+            {%- if attribute(context, cond_key) is null or attribute(context, cond_key) != cond_value -%}
+                {%- set result = false -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- elseif element[1].required is defined -%}
+        {%- set result = element[1].required and element[1].required is not same as('false') -%}
+    {%- endif -%}
+    {{- result ? 'true' : 'false' -}}
 {% endmacro %}
 
 {% macro build_form(elements, values, context, secretFields) %}
