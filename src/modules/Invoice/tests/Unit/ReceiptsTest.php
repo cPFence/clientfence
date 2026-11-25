@@ -133,23 +133,26 @@ test('a sent receipt opens a translated ticket and sets the invoice to the trans
     $support = Mockery::mock();
     $support->allows('getHelpdeskRepository')->andReturn($helpdesks);
     $support->allows('ticketCreateForClient')->with($client, $helpdesk, [
-        'subject' => 'Translated payment receipt for #INV-30',
+        'subject' => "Translated payment receipt for \u{2066}#INV-30\u{2069}",
         'support_helpdesk_id' => 1,
-        'content' => "Translated payment of 100.00 USD by Bank transfer for invoice #INV-30.\n\nTranslated receipt: [receipt.png](https://example.com/receipt/test)",
+        'content' => "Translated payment of 100.00 USD by Bank transfer for invoice \u{2066}#INV-30\u{2069}.\n\nTranslated receipt: [receipt.png](https://example.com/receipt/test)",
     ])->andReturn(55);
     $invoices = Mockery::mock();
     $invoices->allows('toApiArray')->andReturn(['serie_nr' => 'INV-30', 'total' => 100]);
     $invoices->allows('isInvoiceTypeDeposit')->andReturn(false);
     $di['mod_service'] = $di->protect(fn (string $mod) => strtolower($mod) === 'support' ? $support : $invoices);
 
+    $previousLocale = \Locale::getDefault();
     try {
         $GLOBALS['testTranslations'] = [
-            'Payment receipt: invoice #:number' => 'Translated payment receipt for #:number',
-            'I paid invoice #:number (:amount) by :gateway. The receipt is attached.' => 'Translated payment of :amount by :gateway for invoice #:number.',
+            'Payment receipt: invoice :number' => 'Translated payment receipt for :number',
+            'I paid invoice :number (:amount) by :gateway. The receipt is attached.' => 'Translated payment of :amount by :gateway for invoice :number.',
             'Receipt' => 'Translated receipt',
         ];
+        \Locale::setDefault('ar_SA');
         $ticket = Receipts::send($di, $client, $invoice, $gateway, new Symfony\Component\HttpFoundation\File\UploadedFile($png, 'receipt.png', 'image/png', null, true));
     } finally {
+        \Locale::setDefault($previousLocale);
         unset($GLOBALS['testTranslations']);
         putenv('CLIENTFENCE_RECEIPT_DIR');
         array_map('unlink', glob($dir . '/7/*') ?: []);

@@ -250,6 +250,11 @@ class Receipts
         try {
             $invoiceArray = $di['mod_service']('Invoice')->toApiArray($invoice);
             $number = (string) ($invoiceArray['serie_nr'] ?? $invoice->id);
+            $ref = '#' . $number;
+            // Keep the # before the invoice number in right-to-left text.
+            if (\ClientFence\Twig\Extension\RtlDateExtension::isRtl(\Locale::getDefault())) {
+                $ref = "\u{2066}" . $ref . "\u{2069}";
+            }
             $amount = number_format((float) $invoiceArray['total'], 2) . ' ' . $invoice->currency;
             $link = $di['url']->link('receipt/' . $id);
             $support = $di['mod_service']('support');
@@ -260,10 +265,10 @@ class Receipts
                 throw new \ClientFence\Exception('No help desk for payment receipts.');
             }
             $ticketId = $support->ticketCreateForClient($client, $helpdesk, [
-                'subject' => __trans('Payment receipt: invoice #:number', [':number' => $number]),
+                'subject' => __trans('Payment receipt: invoice :number', [':number' => $ref]),
                 'support_helpdesk_id' => $helpdesk->getId(),
-                'content' => __trans('I paid invoice #:number (:amount) by :gateway. The receipt is attached.', [
-                    ':number' => $number,
+                'content' => __trans('I paid invoice :number (:amount) by :gateway. The receipt is attached.', [
+                    ':number' => $ref,
                     ':amount' => $amount,
                     ':gateway' => $gateway->name,
                 ]) . "\n\n" . __trans('Receipt') . ": [{$name}]({$link})",
