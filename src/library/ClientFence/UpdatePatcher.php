@@ -206,6 +206,13 @@ class UpdatePatcher implements InjectionAwareInterface
 
             // ClientFence core patch: then ClientFence's own migrations (Mod\Clientfence\Migrations).
             \ClientFence\Mod\Clientfence\Migrations::apply($this->di);
+            // ClientFence core patch: built-in email templates a release adds are listed in Email templates at once.
+            try {
+                $this->di['mod_service']('email')->templateBatchGenerate();
+            } catch (\Throwable $e) {
+                // Listing them never stops an update: they are added on their first send anyway.
+                $this->di['logger']->setChannel('update')->warning('New built-in email templates were not listed: ' . $e->getMessage());
+            }
         } finally {
             flock($lock, LOCK_UN);
             fclose($lock);

@@ -139,7 +139,18 @@ if [[ -n $FROM ]]; then
     $pdo = $di["pdo"];
     $pending = ClientFence\Mod\Clientfence\Migrations::pending($pdo);
     echo "ClientFence ", ClientFence\Version::CLIENTFENCE, ", database updates pending: ", $pending, "\n";
-    exit($pending === 0 ? 0 : 1);'
+    // Every built-in email template of a switched-on module is listed after the update.
+    $listed = $pdo->query("SELECT action_code FROM email_template")->fetchAll(PDO::FETCH_COLUMN);
+    $missing = [];
+    foreach (glob("modules/*/templates/email/*.html.twig") as $file) {
+        $module = strtolower(basename(dirname($file, 3)));
+        $code = basename($file, ".html.twig");
+        if (!in_array($code, $listed, true) && $di["mod_service"]("extension")->isExtensionActive("mod", $module)) {
+            $missing[] = $code;
+        }
+    }
+    echo "email templates not listed: ", $missing === [] ? "none" : implode(", ", $missing), "\n";
+    exit($pending === 0 && $missing === [] ? 0 : 1);'
   echo "== checks after the update"
   python3 -I "$ROOT/tools/install-test/smoke.py" "$site" "$admin_email" "$admin_password" "$api_token" b
 fi
