@@ -193,6 +193,7 @@ $paths = [
     'modules/Order/templates/admin/mod_order_failed_notice.html.twig',
     'modules/Order/BulkPrices.php',
     'modules/Staff/templates/email/mod_staff_clientfence_update.html.twig',
+    'modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig',
     'modules/Order/templates/admin/mod_order_bulk_prices.html.twig',
     'modules/Order/ProductMove.php',
     'modules/Order/templates/admin/mod_order_move_services.html.twig',

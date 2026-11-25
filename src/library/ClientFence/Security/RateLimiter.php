@@ -54,6 +54,8 @@ class RateLimiter implements InjectionAwareInterface
                 'client_password_reset_confirm_ip' => ['policy' => 'fixed_window', 'limit' => 20, 'interval' => '60 seconds'],
                 'client_password_reset_confirm_post_ip' => ['policy' => 'fixed_window', 'limit' => 20, 'interval' => '60 seconds'],
                 'client_email_confirm_ip' => ['policy' => 'fixed_window', 'limit' => 20, 'interval' => '60 seconds'],
+                // ClientFence core patch: failed staff sign-in emails, at most 20 an hour from all addresses together (Clientfence/SignInSecurity.php).
+                'staff_signin_alert' => ['policy' => 'fixed_window', 'limit' => 20, 'interval' => '1 hour'],
                 'staff_password_reset_ip' => ['policy' => 'fixed_window', 'limit' => 5, 'interval' => '1 hour'],
                 'staff_password_reset_email' => ['policy' => 'fixed_window', 'limit' => 3, 'interval' => '1 hour'],
                 'staff_password_reset_confirm_ip' => ['policy' => 'fixed_window', 'limit' => 20, 'interval' => '60 seconds'],

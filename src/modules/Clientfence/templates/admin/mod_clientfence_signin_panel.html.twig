@@ -2,7 +2,7 @@
    PIN at sign-in for staff, clients or both (every sign-in or only from a new place), two-factor sign-in required
    of all clients or chosen client groups (Client/TwoFactor.php checkRequired()), passkeys (Client/Passkeys.php), the sign-in history
    (SignInHistory.php), staff sign-in from listed IP addresses only and staff password
-   reset (both stored in the Staff settings), and staff sign-in from chosen countries only. Super Administrators only.
+   reset (both stored in the Staff settings), the failed staff sign-in email, and staff sign-in from chosen countries only. Super Administrators only.
    `signin` is clientfence/signin_security_get. Turning the staff PIN on answers {confirm, email}:
    clientfenceSigninSaved (clientfence-admin.js) shows the PIN field and the form is saved again. #}
 {% set countries_names = signin.all_countries %}
@@ -17,6 +17,7 @@
             { 'label': 'Sign-in history'|trans, 'on': signin.history },
             { 'label': 'Staff sign-in from these IP addresses only'|trans, 'on': signin.ips_on },
             { 'label': 'Staff password reset'|trans, 'on': signin.staff_reset },
+            { 'label': 'Failed staff sign-in email'|trans, 'on': signin.failed_alert },
             { 'label': 'Staff sign-in from chosen countries only'|trans, 'on': signin.countries_on },
         ] %}
             <div><dt>{{ fact.label }}</dt><dd><span class="bf-chip{{ fact.on ? ' bf-tone-ok' }}">{{ fact.value ?? (fact.on ? 'On'|trans : 'Off'|trans) }}</span></dd></div>
@@ -145,6 +146,22 @@
             <label class="form-check form-switch mb-0">
                 <input class="form-check-input" type="checkbox" name="staff_reset" value="1"{% if signin.staff_reset %} checked{% endif %}>
                 <span class="form-check-label">{{ 'Allow staff to reset a forgotten password by email'|trans }}</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Failed staff sign-in email'|trans }}</h3>
+                <p class="card-subtitle">{{ 'A wrong password or unknown email address at the staff sign-in, or a wrong authenticator code or email PIN after the right password, emails every Super Administrator at once: date and time, the email address typed, IP address and hostname. At most 20 of these emails an hour.'|trans }}</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="failed_alert" value="0">
+            <label class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" name="failed_alert" value="1"{% if signin.failed_alert %} checked{% endif %}>
+                <span class="form-check-label">{{ 'Email the Super Administrators when a staff sign-in fails'|trans }}</span>
             </label>
         </div>
     </div>

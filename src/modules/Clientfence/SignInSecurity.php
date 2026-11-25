@@ -46,6 +46,10 @@ use Symfony\Component\Intl\Countries;
  * - Passkeys (passkeys: off, clients, staff, both; Client/Passkeys.php): sign-in with a passkey instead of the
  *   password and the second step. Saving them on needs an https:// portal URL (localhost passes, as in browsers).
  *
+ * - Failed staff sign-in alert (failed_alert, on unless saved off): a wrong password or unknown email, or a wrong
+ *   authenticator code or email PIN after the right password, emails every active Super Administrator at once
+ *   (failedSignIn(), as WHMCS "Admin Failed Login Attempt"), at most ALERT_POLICY's limit of emails an hour in all.
+ *
  * Locked out: `php console.php clientfence:signin-security-off` turns the features off.
  * Settings are kept in mod_clientfence_state (STATE), except the staff IP rule and password reset.
  */
@@ -64,6 +68,11 @@ final class SignInSecurity
     public const TRUST_DAYS = 30;
     public const COOKIES = ['staff' => 'clientfence_trust_staff', 'client' => 'clientfence_trust_client'];
     private const TEMPLATES = ['staff' => 'mod_staff_clientfence_signin_pin', 'client' => 'mod_client_clientfence_signin_pin'];
+    public const ALERT_TEMPLATE = 'mod_staff_clientfence_signin_failed';
+    public const ALERT_POLICY = 'staff_signin_alert';
+
+    /** Tests replace the reverse DNS lookup of failedSignIn() (null: gethostbyaddr()). */
+    public static ?\Closure $reverseDns = null;
 
     /**
      * The client a sign-up created in this request (core patch in Client/Api/Guest.php create()):
@@ -72,7 +81,7 @@ final class SignInSecurity
      */
     public static ?int $newClientId = null;
 
-    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool, pin_when: string, history: bool, twofactor: string, twofactor_groups: list<int>, passkeys: string} */
+    /** @return array{pin: string, countries_on: bool, countries: list<string>, ips_on: bool, ips: list<string>, staff_reset: bool, pin_when: string, history: bool, twofactor: string, twofactor_groups: list<int>, passkeys: string, failed_alert: bool} */
     public static function settings(\Pimple\Container $di): array
     {
         $saved = self::state($di) ?? [];
@@ -83,7 +92,8 @@ final class SignInSecurity
 
         return ['pin' => $pin, 'countries_on' => !empty($saved['countries_on']) && $countries !== [], 'countries' => $countries, 'ips_on' => !empty($staff['check_ip']) && $ips !== [], 'ips' => $ips, 'staff_reset' => (string) ($staff['public']['reset_pw'] ?? '1') !== '0', 'pin_when' => ($saved['pin_when'] ?? null) === 'new' ? 'new' : 'every', 'history' => !empty($saved['history']),
             'twofactor' => in_array($saved['twofactor'] ?? null, self::TWOFACTOR_MODES, true) ? (string) $saved['twofactor'] : 'off', 'twofactor_groups' => array_values(array_map(intval(...), (array) ($saved['twofactor_groups'] ?? []))),
-            'passkeys' => in_array($saved['passkeys'] ?? null, \ClientFence\Mod\Client\Passkeys::MODES, true) ? (string) $saved['passkeys'] : 'off'];
+            'passkeys' => in_array($saved['passkeys'] ?? null, \ClientFence\Mod\Client\Passkeys::MODES, true) ? (string) $saved['passkeys'] : 'off',
+            'failed_alert' => !array_key_exists('failed_alert', $saved) || !empty($saved['failed_alert'])];
     }
 
     /** Whether sign-ins of an area ('staff' or 'client') ask for an email PIN. */
@@ -125,6 +135,7 @@ final class SignInSecurity
             throw new InformationException('Choose when to ask for the email PIN.');
         }
         $history = array_key_exists('history', $data) ? !empty($data['history']) : $old['history'];
+        $failedAlert = array_key_exists('failed_alert', $data) ? !empty($data['failed_alert']) : $old['failed_alert'];
         $twofactor = (string) ($data['twofactor'] ?? $old['twofactor']);
         if (!in_array($twofactor, self::TWOFACTOR_MODES, true)) {
             throw new InformationException('Choose which clients must use two-factor sign-in.');
@@ -224,8 +235,8 @@ final class SignInSecurity
             }
             $extension->setConfig(array_merge($staffConfig, $changes));
         }
-        self::saveState($di, ['pin' => $pin, 'pin_when' => $pinWhen, 'countries_on' => $countriesOn, 'countries' => $countries, 'history' => $history, 'twofactor' => $twofactor, 'twofactor_groups' => $twofactorGroups, 'passkeys' => $passkeys]);
-        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s (%s), sign-in history %s, clients two-factor %s, passkeys %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $pinWhen, $history ? 'on' : 'off', $twofactor === 'groups' ? 'groups ' . implode(',', $twofactorGroups) : $twofactor, $passkeys, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
+        self::saveState($di, ['pin' => $pin, 'pin_when' => $pinWhen, 'countries_on' => $countriesOn, 'countries' => $countries, 'history' => $history, 'twofactor' => $twofactor, 'twofactor_groups' => $twofactorGroups, 'passkeys' => $passkeys, 'failed_alert' => $failedAlert]);
+        $di['logger']->info('Sign-in security saved by staff #%s: email PIN %s (%s), sign-in history %s, failed sign-in alert %s, clients two-factor %s, passkeys %s, staff countries %s, staff IPs %s, staff password reset %s', $admin['id'], $pin, $pinWhen, $history ? 'on' : 'off', $failedAlert ? 'on' : 'off', $twofactor === 'groups' ? 'groups ' . implode(',', $twofactorGroups) : $twofactor, $passkeys, $countriesOn ? implode(',', $countries) : 'off', $ipsOn ? implode(',', $ips) : 'off', array_key_exists('staff_reset', $data) ? (empty($data['staff_reset']) ? 'off' : 'on') : 'unchanged');
 
         return ['saved' => true];
     }
@@ -256,7 +267,7 @@ final class SignInSecurity
             $extension = $di['mod_service']('extension');
             $extension->setConfig(array_merge($extension->getConfig('mod_antispam'), ['ext' => 'mod_antispam', 'captcha_enabled' => '0']));
         }
-        self::saveState($di, ['pin' => $settings['pin'], 'pin_when' => $settings['pin_when'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries'], 'history' => $settings['history'], 'twofactor' => $settings['twofactor'], 'twofactor_groups' => $settings['twofactor_groups'], 'passkeys' => $settings['passkeys']]);
+        self::saveState($di, ['pin' => $settings['pin'], 'pin_when' => $settings['pin_when'], 'countries_on' => $settings['countries_on'], 'countries' => $settings['countries'], 'history' => $settings['history'], 'twofactor' => $settings['twofactor'], 'twofactor_groups' => $settings['twofactor_groups'], 'passkeys' => $settings['passkeys'], 'failed_alert' => $settings['failed_alert']]);
 
         return self::settings($di);
     }
@@ -438,6 +449,9 @@ final class SignInSecurity
         $code = is_scalar($pin) ? preg_replace('/\D/', '', \ClientFence\Tools::latinDigits((string) $pin)) : '';
         if (strlen((string) $code) !== 6 || !hash_equals((string) $pending['hash'], self::hashPin((string) $code))) {
             $di['rate_limiter']->consume('profile_password_change_account', $limitKey);
+            if ($pending['kind'] === 'staff') {
+                self::failedSignIn($di, 'pin', '', $ip, (int) $pending['id']);
+            }
             $pending['tries'] = (int) $pending['tries'] + 1;
             if ($pending['tries'] >= self::MAX_TRIES) {
                 $session->delete(self::PENDING);
@@ -540,25 +554,81 @@ final class SignInSecurity
         // In the client's language (not the sign-in page's); staff get the default language (no $lang).
         $emails = $di['mod_service']('email');
         [$subject, $content] = $emails->renderTemplate(self::TEMPLATES[$area], $vars, $preview, $timezone !== '' ? $timezone : null, $emails->recipientLocale($lang !== '' ? $lang : null));
-        $settings = $di['mod']('email')->getConfig();
-        $system = $di['mod_service']('system');
-        $from = (string) ($settings['from_email'] ?? '') ?: (string) $system->getParamValue('company_email');
-        $company = (string) ($system->getParamValue('company_name') ?? '') ?: 'ClientFence';
         try {
-            if ($from === '') {
-                throw new \RuntimeException('no sender address in the Email settings');
-            }
-            $mail = new \ClientFence\Mail(['email' => $from, 'name' => (string) ($settings['from_name'] ?? '') ?: $company], ['email' => $email, 'name' => $name], $subject, $content, $settings['mailer'] ?? 'sendmail', $settings['custom_dsn'] ?? null);
-            if (!\ClientFence\Environment::isProduction()) {
-                $di['logger']->setChannel('email')->info('Skip email sending. Application ENV: ' . \ClientFence\Environment::getCurrentEnvironment());
-
-                return;
-            }
-            $mail->send($settings);
+            self::mailNow($di, $email, $name, $subject, $content);
         } catch (\Throwable $e) {
             $di['logger']->setChannel('email')->error('The sign-in PIN could not be sent: ' . $e->getMessage());
 
             throw new InformationException('The sign-in PIN could not be emailed. Please try again later or contact us.', null, 503);
+        }
+    }
+
+    /** Sends an email at once through the Email settings' mailer (not the queue, not the email log); throws on failure. */
+    private static function mailNow(\Pimple\Container $di, string $email, string $name, string $subject, string $content): void
+    {
+        $settings = $di['mod']('email')->getConfig();
+        $system = $di['mod_service']('system');
+        $from = (string) ($settings['from_email'] ?? '') ?: (string) $system->getParamValue('company_email');
+        $company = (string) ($system->getParamValue('company_name') ?? '') ?: 'ClientFence';
+        if ($from === '') {
+            throw new \RuntimeException('no sender address in the Email settings');
+        }
+        $mail = new \ClientFence\Mail(['email' => $from, 'name' => (string) ($settings['from_name'] ?? '') ?: $company], ['email' => $email, 'name' => $name], $subject, $content, $settings['mailer'] ?? 'sendmail', $settings['custom_dsn'] ?? null);
+        if (!\ClientFence\Environment::isProduction()) {
+            $di['logger']->setChannel('email')->info('Skip email sending. Application ENV: ' . \ClientFence\Environment::getCurrentEnvironment());
+
+            return;
+        }
+        $mail->send($settings);
+    }
+
+    /**
+     * A failed staff sign-in ($what: password, code or pin) emails every active Super Administrator at once, as
+     * WHMCS "Admin Failed Login Attempt". $email: the address typed (password); $staffId: the staff member whose
+     * password was right (code, pin). Never throws: the sign-in's own result and message stay as they are.
+     */
+    public static function failedSignIn(\Pimple\Container $di, string $what, string $email, string $ip, ?int $staffId = null): void
+    {
+        try {
+            if (!self::settings($di)['failed_alert']) {
+                return;
+            }
+            $db = $di['em']->getConnection();
+            $admins = $db->fetchAllAssociative("SELECT a.email, a.name, a.timezone FROM admin a JOIN admin_group_member m ON m.admin_id = a.id JOIN admin_group g ON g.id = m.admin_group_id WHERE g.system_name = ? AND a.status = 'active' AND (a.system_name IS NULL OR a.system_name <> 'cron')", [\ClientFence\Mod\Staff\Entity\AdminGroup::SYSTEM_SUPER_ADMIN]);
+            if ($admins === []) {
+                return;
+            }
+            // The cap counts emails, not failures: one token per recipient, all or none.
+            if ($di['rate_limiter']->consume(self::ALERT_POLICY, 'all', count($admins))->isLimited()) {
+                $di['logger']->setChannel('email')->warning('Failed staff sign-in from %s not emailed: the hourly limit of these emails is reached', $ip);
+
+                return;
+            }
+            $login = $staffId === null ? null : ($db->fetchAssociative('SELECT name, email FROM admin WHERE id = ?', [$staffId]) ?: null);
+            // shortcut: gethostbyaddr() has no timeout of its own, so a slow resolver delays only this failed sign-in's response; upgrade to an async or timed lookup if that bites.
+            $host = filter_var($ip, FILTER_VALIDATE_IP) === false ? false : (self::$reverseDns !== null ? (self::$reverseDns)($ip) : @gethostbyaddr($ip));
+            $vars = [
+                'failed' => $what,
+                'attempted_at' => date('Y-m-d H:i:s'),
+                'username' => mb_substr($login === null ? $email : (string) $login['email'], 0, 100),
+                'ip' => $ip,
+                'hostname' => is_string($host) && $host !== '' && $host !== $ip ? $host : $ip,
+                'login' => $login === null ? null : ['name' => (string) $login['name'], 'email' => (string) $login['email']],
+                'admin_url' => \ClientFence\Site::within($di, \ClientFence\Site::primary(), static fn (): string => (string) $di['url']->adminLink('')),
+            ];
+            $preview = ['failed' => 'password', 'attempted_at' => '2026-01-15 09:30:00', 'username' => 'someone@example.com', 'ip' => '203.0.113.7', 'hostname' => 'host.example.net', 'login' => null, 'admin_url' => 'https://example.com/admin', 'name' => 'Example Name', 'c' => ['email' => 'staff@example.com']];
+            $emails = $di['mod_service']('email');
+            foreach ($admins as $admin) {
+                try {
+                    // `c.email` fills the footer's sign-in link, as in the other sign-in emails; staff get the default language.
+                    [$subject, $content] = $emails->renderTemplate(self::ALERT_TEMPLATE, $vars + ['name' => (string) $admin['name'], 'c' => ['email' => (string) $admin['email']]], $preview, ((string) $admin['timezone']) ?: null, $emails->recipientLocale(null));
+                    self::mailNow($di, (string) $admin['email'], (string) $admin['name'], $subject, $content);
+                } catch (\Throwable $e) {
+                    $di['logger']->setChannel('email')->error('The failed staff sign-in email could not be sent: ' . $e->getMessage());
+                }
+            }
+        } catch (\Throwable $e) {
+            $di['logger']->setChannel('email')->error('The failed staff sign-in email could not be sent: ' . $e->getMessage());
         }
     }
 

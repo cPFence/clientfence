@@ -10310,5 +10310,13 @@
     {
         "file": "themes/palisade/html/mod_invoice_index.html.twig",
         "done": "ClientFence core patch: Pay all pays the invoices of the site the client is on (Invoice/MassPay.php payAllHere())."
+    },
+    {
+        "file": "modules/Staff/Service.php",
+        "done": "ClientFence core patch: the failed staff sign-in email to the Super Administrators, sent at once (Clientfence/SignInSecurity.php)."
+    },
+    {
+        "file": "library/ClientFence/Security/RateLimiter.php",
+        "done": "ClientFence core patch: failed staff sign-in emails, at most 20 an hour from all addresses together (Clientfence/SignInSecurity.php)."
     }
 ]

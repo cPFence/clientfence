@@ -134,3 +134,20 @@ test('the check catches a disallowed filter', function (): void {
     expect(fn () => emailSandboxEnvironment()->createTemplate("{{ 'on_hold'|replace({'_': ' '})|capitalize }}", 'bad')->render([]))
         ->toThrow(Twig\Sandbox\SecurityError::class);
 });
+
+test('the failed staff sign-in email shows what failed, the address typed, the IP address and the hostname', function (array $vars, array $shown): void {
+    $twig = emailSandboxEnvironment(static fn (mixed $value, array $options = []): string => strtr((string) $value, $options[0] ?? []));
+    $html = $twig->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig'), 'failed')
+        ->render($vars + ['attempted_at' => '2026-11-25 08:00:00', 'username' => '<b>x</b>@example.test', 'ip' => '203.0.113.9', 'admin_url' => 'https://billing.example.test/admin/']);
+
+    expect($html)->toContain('2026-11-25 08:00:00')->toContain('&lt;b&gt;x&lt;/b&gt;@example.test')->not->toContain('<b>x</b>')
+        ->toContain('href="https://billing.example.test/admin/"');
+    foreach ($shown as $text) {
+        expect($html)->toContain($text);
+    }
+})->with([
+    'a wrong password, with a reverse name' => [['failed' => 'password', 'hostname' => 'host.example.net'], ['a wrong password or an unknown email address', 'Hostname</td><td style="padding:0 8px 4px;">host.example.net<']],
+    'a wrong password, no reverse name' => [['failed' => 'password', 'hostname' => '203.0.113.9'], ['Hostname</td><td style="padding:0 8px 4px;">203.0.113.9<']],
+    'a wrong code' => [['failed' => 'code', 'hostname' => 'h', 'login' => ['name' => 'Second Admin', 'email' => 'second@example.test']], ['The password of Second Admin (second@example.test) was right, but the authenticator code was wrong.']],
+    'a wrong PIN' => [['failed' => 'pin', 'hostname' => 'h', 'login' => ['name' => 'Second Admin', 'email' => 'second@example.test']], ['The password of Second Admin (second@example.test) was right, but the email PIN was wrong.']],
+]);

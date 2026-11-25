@@ -8,7 +8,8 @@ declare(strict_types=1);
  * SQLite database with fake services. APP_ENV is "test", so PINs are rendered but not sent. Also the
  * sign-in history (Mod\Clientfence\SignInHistory) and the PIN only from a new place: the networks come
  * from the bundled GeoIP ASN database (8.8.8.8 and 1.1.1.1, two networks), the countries from the fake.
- * Also two-factor sign-in required of clients (Mod\Client\TwoFactor::checkRequired()).
+ * Also two-factor sign-in required of clients (Mod\Client\TwoFactor::checkRequired()), and the failed staff
+ * sign-in email (SignInSecurity::failedSignIn(): admins 1 and 2 are active Super Administrators).
  */
 
 use ClientFence\InformationException;
@@ -26,6 +27,10 @@ final class SignInSecurityTestWorld
     public array $cookies = [];
     public array $queued = [];
     public array $sent = [];
+    public array $alerts = [];
+    public array $logs = [];
+    public array $consumed = [];
+    public string $fromEmail = 'billing@example.test';
     // Documentation addresses stand in for public ones here; 192.168.1.5 is private (the bundled
     // database gives it a country all the same).
     public array $countries = ['198.51.100.1' => 'DE', '203.0.113.9' => 'US', '192.0.2.5' => 'EG', '192.168.1.5' => 'AU', '8.8.8.8' => 'US', '1.1.1.1' => 'US'];
@@ -41,13 +46,18 @@ final class SignInSecurityTestWorld
         $world = $this;
         $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
         $db->executeStatement('CREATE TABLE mod_clientfence_state (name TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)');
-        $db->executeStatement('CREATE TABLE admin (id INTEGER PRIMARY KEY, pass TEXT)');
+        $db->executeStatement('CREATE TABLE admin (id INTEGER PRIMARY KEY, pass TEXT, email TEXT, name TEXT, status TEXT, system_name TEXT, timezone TEXT)');
+        $db->executeStatement('CREATE TABLE admin_group (id INTEGER PRIMARY KEY, system_name TEXT)');
+        $db->executeStatement('CREATE TABLE admin_group_member (admin_id INTEGER, admin_group_id INTEGER)');
         $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, pass TEXT)');
         $db->executeStatement('CREATE TABLE client_user (id INTEGER PRIMARY KEY, pass TEXT, email TEXT, first_name TEXT, last_name TEXT)');
         $db->executeStatement('CREATE TABLE activity_client_history (id INTEGER PRIMARY KEY, client_id INTEGER, ip TEXT, created_at TEXT, user_id INTEGER, country TEXT, asn INTEGER, network TEXT, browser TEXT, session_id TEXT)');
         $db->executeStatement('CREATE TABLE activity_admin_history (id INTEGER PRIMARY KEY, admin_id INTEGER, ip TEXT, created_at TEXT, country TEXT, asn INTEGER, network TEXT, browser TEXT, session_id TEXT)');
         $db->executeStatement('CREATE TABLE session (id TEXT PRIMARY KEY, modified_at INTEGER, created_at INTEGER, content TEXT, fingerprint TEXT)');
-        $db->executeStatement("INSERT INTO admin VALUES (1, 'hash-admin')");
+        $db->executeStatement("INSERT INTO admin (id, pass, email, name, status) VALUES (1, 'hash-admin', 'owner@example.test', 'Owner', 'active'), (2, 'hash-second', 'second@example.test', 'Second Admin', 'active'), (3, 'hash-support', 'support@example.test', 'Support', 'active'), (4, 'hash-former', 'former@example.test', 'Former', 'inactive')");
+        $db->executeStatement("INSERT INTO admin (id, email, name, status, system_name) VALUES (5, 'cron@example.test', 'Cron', 'active', 'cron')");
+        $db->executeStatement("INSERT INTO admin_group VALUES (1, 'super_admin'), (2, 'support_staff')");
+        $db->executeStatement('INSERT INTO admin_group_member VALUES (1, 1), (2, 1), (3, 2), (4, 1), (5, 1)');
         $db->executeStatement("INSERT INTO client VALUES (7, 'hash-client')");
         $this->db = $db;
         $em = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
@@ -89,8 +99,11 @@ final class SignInSecurityTestWorld
             {
             }
 
-            public function consume(string $policy, string $subject): void
+            public function consume(string $policy, string $subject, int $tokens = 1): object
             {
+                $this->world->consumed[] = $policy;
+
+                return $this->getStatus($policy, $subject);
             }
 
             public function getStatus(string $policy, string $subject): object
@@ -126,7 +139,7 @@ final class SignInSecurityTestWorld
 
             public function getConfig(): array
             {
-                return $this->name === 'staff' ? $this->world->staffConfig : ['from_email' => 'billing@example.test', 'mailer' => 'sendmail'];
+                return $this->name === 'staff' ? $this->world->staffConfig : ['from_email' => $this->world->fromEmail, 'mailer' => 'sendmail'];
             }
         });
         $extension = new class($world) {
@@ -153,6 +166,11 @@ final class SignInSecurityTestWorld
 
             public function renderTemplate(string $code, array $vars, array $preview = [], ?string $timezone = null, ?string $locale = null): array
             {
+                if ($code === SignInSecurity::ALERT_TEMPLATE) {
+                    $this->world->alerts[] = $vars;
+
+                    return ['Failed staff sign-in attempt', '<p>' . $vars['ip'] . '</p>'];
+                }
                 $this->world->pins[] = ['code' => $code, 'locale' => $locale] + $vars;
 
                 return ['Your PIN', '<p>' . $vars['pin'] . '</p>'];
@@ -193,12 +211,27 @@ final class SignInSecurityTestWorld
                 $this->world->queued[$name] = $value;
             }
         };
-        $di['logger'] = new class {
+        $di['logger'] = new class($world) {
+            public function __construct(private readonly SignInSecurityTestWorld $world)
+            {
+            }
+
             public function __call(string $name, array $arguments): mixed
             {
+                if ($name !== 'setChannel') {
+                    $this->world->logs[] = [$name, (string) ($arguments[0] ?? '')];
+                }
+
                 return $this;
             }
         };
+        $di['url'] = new class {
+            public function adminLink(string $uri): string
+            {
+                return 'https://billing.example.test/admin/' . $uri;
+            }
+        };
+        SignInSecurity::$reverseDns = static fn (string $ip): string|false => $ip === '203.0.113.9' ? 'host.example.net' : false;
     }
 
     public function save(array $data, string $ip = '198.51.100.1'): array
@@ -215,7 +248,7 @@ final class SignInSecurityTestWorld
 test('everything is off by default and nobody is asked for a PIN', function (): void {
     $world = new SignInSecurityTestWorld();
 
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off'])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'off', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true])
         ->and(SignInSecurity::pinOn($world->di, 'staff'))->toBeFalse()
         ->and(SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'c@example.test'], [], '192.0.2.5'))->toBeFalse()
         ->and($world->pins)->toBe([]);
@@ -512,10 +545,10 @@ test('the console command turns sign-in security off', function (): void {
     $world = new SignInSecurityTestWorld();
     $world->save(['pin' => 'clients', 'countries_on' => '1', 'countries' => ['DE'], 'ips_on' => 1, 'ips' => ['198.51.100.1']]);
 
-    expect(SignInSecurity::turnOff($world->di, false, false, true, false, false))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off'])
+    expect(SignInSecurity::turnOff($world->di, false, false, true, false, false))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true])
         ->and($world->staffConfig['check_ip'])->toBe(0)
         ->and($world->staffConfig['allowed_ips'])->toBe('198.51.100.1')
-        ->and(SignInSecurity::turnOff($world->di, false, true, false, false, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off'])
+        ->and(SignInSecurity::turnOff($world->di, false, true, false, false, false))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => ['198.51.100.1'], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true])
         ->and(SignInSecurity::turnOff($world->di, true, false, false, false, false)['pin'])->toBe('off');
 });
 
@@ -535,20 +568,20 @@ test('the setup wizard sets the staff side only and saves nothing until the PIN 
     $wizard = ['captcha_provider' => 'none', 'admin_path' => '', 'staff_pin' => 1, 'countries_on' => 1, 'countries' => ['DE']];
 
     expect(Setup::saveSecurity($world->di, $wizard, $admin, '198.51.100.1'))->toBe(['admin_path' => null, 'confirm' => true, 'email' => 'o••••@example.test'])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off']);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => [], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true]);
 
     expect(Setup::saveSecurity($world->di, $wizard + ['confirm_pin' => $world->lastPin()], $admin, '198.51.100.1'))->toBe(['admin_path' => null])
-        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off']);
+        ->and(SignInSecurity::settings($world->di))->toBe(['pin' => 'both', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true]);
 
     // No country fields (no GeoIP database): the country rule stays; the client PIN always does.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'staff_pin' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off'])
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => true, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true])
         ->and(fn () => Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 1, 'countries' => ['US']], $admin, '198.51.100.1'))
         ->toThrow(InformationException::class, 'would lock you out');
 
     // Switched off, the rule keeps its list for next time.
     Setup::saveSecurity($world->di, ['captcha_provider' => 'none', 'countries_on' => 0], $admin, '198.51.100.1');
-    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off']);
+    expect(SignInSecurity::settings($world->di))->toBe(['pin' => 'clients', 'countries_on' => false, 'countries' => ['DE'], 'ips_on' => false, 'ips' => [], 'staff_reset' => true, 'pin_when' => 'every', 'history' => false, 'twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true]);
 });
 
 test('a client\'s PIN email is in the client\'s language, also when resent; the staff PIN in the default', function (): void {
@@ -569,6 +602,7 @@ test('a client\'s PIN email is in the client\'s language, also when resent; the 
 afterEach(function (): void {
     // A test that stops between record() and started() must not hand its row to the next one.
     (new ReflectionProperty(SignInHistory::class, 'row'))->setValue(null, null);
+    SignInSecurity::$reverseDns = null;
 });
 
 test('"When to ask" and the sign-in history are saved, checked and kept by saves that leave them out', function (): void {
@@ -768,7 +802,7 @@ function twofactorRequiredWorld(): SignInSecurityTestWorld
 test('two-factor sign-in for clients is off, all clients or chosen groups that exist, and kept by saves without it', function (): void {
     $world = twofactorRequiredWorld();
 
-    expect(SignInSecurity::settings($world->di))->toMatchArray(['twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off'])
+    expect(SignInSecurity::settings($world->di))->toMatchArray(['twofactor' => 'off', 'twofactor_groups' => [], 'passkeys' => 'off', 'failed_alert' => true])
         ->and(fn () => $world->save(['twofactor' => 'some']))->toThrow(InformationException::class, 'Choose which clients')
         ->and(fn () => $world->save(['twofactor' => 'groups', 'twofactor_groups' => ['']]))->toThrow(InformationException::class, 'at least one client group')
         ->and(fn () => $world->save(['twofactor' => 'groups', 'twofactor_groups' => ['', '3']]))->toThrow(InformationException::class, 'Client group not found')
@@ -876,3 +910,149 @@ test('the sign-in security calls refuse staff who are not Super Administrators w
 
     expect(fn () => $api->{$method}([]))->toThrow(InformationException::class, 'Only Super Administrators can change security settings.');
 })->with(['signin_security_get', 'signin_security_save']);
+
+// ----- the failed staff sign-in email -------------------------------------------------------------
+
+/** The staff password sign-in (Staff\Service::login()) of the world, with every password wrong. */
+function failedLoginService(SignInSecurityTestWorld $world): ClientFence\Mod\Staff\Service
+{
+    $world->di['em']->shouldReceive('getRepository')->andReturnUsing(fn (string $class) => Mockery::mock($class === ClientFence\Mod\Staff\Entity\AdminGroup::class ? ClientFence\Mod\Staff\Repository\AdminGroupRepository::class : ClientFence\Mod\Staff\Repository\AdminGroupMemberRepository::class));
+    $world->di['events_manager'] = new class {
+        public function fire(array $event): bool
+        {
+            return true;
+        }
+    };
+    $world->di['db'] = new class {
+        public function findOne(string $type, string $sql, array $values): ?Model_Admin
+        {
+            return null;
+        }
+    };
+    $world->di['auth'] = new class {
+        public function authorizeUser(?object $user, string $password): ?object
+        {
+            return null;
+        }
+    };
+    $service = new ClientFence\Mod\Staff\Service();
+    $service->setDi($world->di);
+
+    return $service;
+}
+
+test('a wrong password or an unknown email emails each active Super Administrator, and the sign-in error stays the same', function (string $email): void {
+    $world = new SignInSecurityTestWorld();
+    $error = null;
+    try {
+        failedLoginService($world)->login($email, 'wrong', '203.0.113.9');
+    } catch (InformationException $e) {
+        $error = $e;
+    }
+
+    expect($error?->getMessage())->toBe('Check your login details')
+        ->and($error?->getCode())->toBe(403)
+        ->and(array_map(fn (array $alert): string => $alert['c']['email'], $world->alerts))->toBe(['owner@example.test', 'second@example.test'])
+        ->and($world->alerts[1])->toMatchArray(['failed' => 'password', 'username' => $email, 'ip' => '203.0.113.9', 'hostname' => 'host.example.net', 'login' => null, 'name' => 'Second Admin', 'admin_url' => 'https://billing.example.test/admin/'])
+        ->and($world->consumed)->toBe([SignInSecurity::ALERT_POLICY]);
+})->with(['a staff email' => ['second@example.test'], 'an unknown email' => ['nobody@example.test']]);
+
+test('a wrong authenticator code or email PIN after the right password names the staff member', function (string $what): void {
+    $world = new SignInSecurityTestWorld();
+    if ($what === 'code') {
+        $world->di['crypt'] = new class {
+            public function decrypt(string $value): string
+            {
+                return $value;
+            }
+        };
+        $world->db->executeStatement('CREATE TABLE client_twofactor (id INTEGER PRIMARY KEY, kind TEXT, subject_id INTEGER, secret TEXT, backup_hash TEXT, last_step INTEGER)');
+        $world->db->insert('client_twofactor', ['id' => 1, 'kind' => 'staff', 'subject_id' => 2, 'secret' => 'JBSWY3DPEHPK3PXP', 'backup_hash' => null, 'last_step' => 0]);
+        TwoFactor::challengeStaff($world->di, 2);
+        $wrong = TwoFactor::code(TwoFactor::base32Decode('JBSWY3DPEHPK3PXP'), intdiv(time(), 30)) === '000000' ? '111111' : '000000';
+        $check = fn () => TwoFactor::verifyStaff($world->di, $wrong, '192.0.2.5');
+    } else {
+        SignInSecurity::challenge($world->di, 'staff', ['kind' => 'staff', 'id' => 2, 'email' => 'second@example.test', 'name' => 'Second Admin'], [], '192.0.2.5', true);
+        $wrong = $world->lastPin() === '000000' ? '111111' : '000000';
+        $check = fn () => SignInSecurity::verify($world->di, 'staff', $wrong, false, '192.0.2.5');
+    }
+
+    expect($check)->toThrow(InformationException::class, 'not correct')
+        ->and($world->alerts)->toHaveCount(2)
+        ->and($world->alerts[0])->toMatchArray(['failed' => $what, 'username' => 'second@example.test', 'ip' => '192.0.2.5', 'hostname' => '192.0.2.5', 'login' => ['name' => 'Second Admin', 'email' => 'second@example.test']]);
+})->with(['authenticator code' => ['code'], 'email PIN' => ['pin']]);
+
+test('a wrong email PIN of a client sends no staff email', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->save(['pin' => 'clients']);
+    SignInSecurity::challenge($world->di, 'client', ['kind' => 'client', 'id' => 7, 'email' => 'client@example.test'], [], '192.0.2.5');
+
+    expect(fn () => SignInSecurity::verify($world->di, 'client', $world->lastPin() === '000000' ? '111111' : '000000', false, '192.0.2.5'))->toThrow(InformationException::class, 'not correct')
+        ->and($world->alerts)->toBe([]);
+});
+
+test('the hostname is the reverse name of the address, else the address', function (string|false $reverse, string $shown): void {
+    $world = new SignInSecurityTestWorld();
+    SignInSecurity::$reverseDns = static fn (string $ip): string|false => $reverse;
+
+    SignInSecurity::failedSignIn($world->di, 'password', 'someone@example.test', '198.51.100.1');
+
+    expect($world->alerts[0]['hostname'])->toBe($shown);
+})->with([
+    'a reverse name' => ['mail.example.net', 'mail.example.net'],
+    'no reverse name' => [false, '198.51.100.1'],
+    'the address itself' => ['198.51.100.1', '198.51.100.1'],
+]);
+
+test('switched off, a failed staff sign-in sends nothing and looks nothing up', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $looked = false;
+    SignInSecurity::$reverseDns = static function (string $ip) use (&$looked): string {
+        $looked = true;
+
+        return 'host.example.net';
+    };
+
+    expect(SignInSecurity::settings($world->di)['failed_alert'])->toBeTrue()
+        ->and($world->save(['failed_alert' => '0']))->toBe(['saved' => true])
+        ->and(SignInSecurity::settings($world->di)['failed_alert'])->toBeFalse();
+    // Saves that leave it out keep it (Quick setup), and so does the console command.
+    $world->save(['pin' => 'off']);
+    SignInSecurity::turnOff($world->di, true, true, true, true, true);
+    SignInSecurity::failedSignIn($world->di, 'password', 'someone@example.test', '203.0.113.9');
+
+    expect(SignInSecurity::settings($world->di)['failed_alert'])->toBeFalse()
+        ->and($world->alerts)->toBe([])
+        ->and($world->consumed)->toBe([])
+        ->and($looked)->toBeFalse();
+});
+
+test('at most 20 failed staff sign-in emails an hour from all addresses, counted per recipient, then one log line each', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->di['rate_limit_cache'] = new Symfony\Component\Cache\Adapter\ArrayAdapter();
+    $limiter = new class extends ClientFence\Security\RateLimiter {
+        protected function getConfig(): array
+        {
+            return self::getDefaultConfig();
+        }
+    };
+    $limiter->setDi($world->di);
+    $world->di['rate_limiter'] = $limiter;
+
+    // Two Super Administrators: 10 failures make 20 emails, the 11th none.
+    for ($i = 1; $i <= 11; ++$i) {
+        SignInSecurity::failedSignIn($world->di, 'password', 'someone@example.test', '198.51.100.' . $i);
+    }
+
+    expect($world->alerts)->toHaveCount(20)
+        ->and(end($world->alerts)['ip'])->toBe('198.51.100.10')
+        ->and(array_values(array_filter($world->logs, fn (array $log): bool => str_contains($log[1], 'hourly limit'))))->toBe([['warning', 'Failed staff sign-in from %s not emailed: the hourly limit of these emails is reached']]);
+});
+
+test('a failed staff sign-in email that cannot be sent leaves the sign-in result as it was', function (): void {
+    $world = new SignInSecurityTestWorld();
+    $world->fromEmail = '';
+
+    expect(fn () => failedLoginService($world)->login('owner@example.test', 'wrong', '203.0.113.9'))->toThrow(InformationException::class, 'Check your login details')
+        ->and(array_column($world->logs, 1))->toContain('The failed staff sign-in email could not be sent: no sender address in the Email settings');
+});

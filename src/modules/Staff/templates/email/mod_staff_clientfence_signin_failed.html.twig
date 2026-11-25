@@ -1,0 +1,28 @@
+{# ClientFence: a failed staff sign-in, to every Super Administrator at once (Clientfence/SignInSecurity.php failedSignIn()). The email layout adds the page, header and footer. #}
+{% block subject %}[{{ guest.system_company.name }}] {{ 'Failed staff sign-in attempt'|trans }}{% endblock %}
+{% block content %}
+{% set email_title %}{{ 'Failed staff sign-in attempt'|trans }}{% endset %}
+{% set email_audience = 'staff' %}
+		<h1 style="margin:0 0 16px; font-size:24px; line-height:32px; font-weight:bold; color:#0c2738;">{{ 'Failed staff sign-in attempt'|trans }}</h1>
+		<p style="margin:0 0 16px;">{{ 'Hello %name%,'|trans({'%name%': name|default('')}) }}</p>
+{% if failed|default('') == 'code' %}
+		<p style="margin:0 0 16px;">{{ 'The password of %name% (%email%) was right, but the authenticator code was wrong.'|trans({'%name%': login.name|default(''), '%email%': login.email|default('')}) }}</p>
+{% elseif failed|default('') == 'pin' %}
+		<p style="margin:0 0 16px;">{{ 'The password of %name% (%email%) was right, but the email PIN was wrong.'|trans({'%name%': login.name|default(''), '%email%': login.email|default('')}) }}</p>
+{% else %}
+		<p style="margin:0 0 16px;">{{ 'Someone tried to sign in to the staff panel with a wrong password or an unknown email address.'|trans }}</p>
+{% endif %}
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px; font-size:14px; line-height:22px;">
+			<tr><td style="padding:0 8px 4px; color:#64748b;">{{ 'Date/Time'|trans }}</td><td style="padding:0 8px 4px;">{{ attempted_at|default('') ? attempted_at|format_datetime : '' }}</td></tr>
+			<tr><td style="padding:0 8px 4px; color:#64748b;">{{ 'Username'|trans }}</td><td style="padding:0 8px 4px;">{{ username|default('') }}</td></tr>
+			<tr><td style="padding:0 8px 4px; color:#64748b;">{{ 'IP address'|trans }}</td><td style="padding:0 8px 4px;">{{ ip|default('') }}</td></tr>
+			<tr><td style="padding:0 8px 4px; color:#64748b;">{{ 'Hostname'|trans }}</td><td style="padding:0 8px 4px;">{{ hostname|default('') }}</td></tr>
+		</table>
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+			<tr><td bgcolor="{{ guest.system_company.brand_color|default('#2563eb') }}" style="border-radius:999px; background-color:{{ guest.system_company.brand_color|default('#2563eb') }}; mso-padding-alt:13px 30px;">
+				<a href="{{ admin_url|default('') }}" target="_blank" style="display:inline-block; padding:13px 30px; border-radius:999px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; color:{{ guest.system_company.brand_text|default('#ffffff') }}; text-decoration:none;">{{ 'Open the staff panel'|trans }}</a>
+			</td></tr>
+		</table>
+		<p style="margin:0 0 16px; padding:12px 16px; background-color:#fdf1d8; border:1px solid #f3d9a4; border-radius:10px; font-size:14px; line-height:22px; color:#7a4a05;">{{ 'If this was not one of your staff, check the staff accounts and consider limiting staff sign-in to chosen IP addresses or countries (Security > Settings > Sign-in).'|trans }}</p>
+		<p style="margin:0 0 0;">{{ guest.system_email.signature }}</p>
+{% endblock %}

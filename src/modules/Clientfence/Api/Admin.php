@@ -531,7 +531,7 @@ class Admin extends \ClientFence\Api\AbstractApi
     }
 
     /**
-     * Saves sign-in security: `pin` (off, staff, clients, both), `pin_when` (every, new), `history`, `countries_on` and `countries`
+     * Saves sign-in security: `pin` (off, staff, clients, both), `pin_when` (every, new), `history`, `failed_alert`, `countries_on` and `countries`
      * (ISO codes) for staff sign-in. Turning the staff PIN on answers {confirm: true, email} and
      * sends a PIN to this admin; the same save with `confirm_pin` finishes it.
      */

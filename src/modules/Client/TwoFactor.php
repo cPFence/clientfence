@@ -348,6 +348,9 @@ final class TwoFactor
             }
             if (!$accepted) {
                 $di['rate_limiter']->consume('profile_password_change_account', $limitKey);
+                if ($pending['kind'] === 'staff') {
+                    \ClientFence\Mod\Clientfence\SignInSecurity::failedSignIn($di, 'code', '', $ip, (int) $pending['id']);
+                }
                 $pending['tries'] = (int) $pending['tries'] + 1;
                 if ($pending['tries'] >= self::MAX_TRIES) {
                     $session->delete($key);

@@ -113,6 +113,8 @@ class Service implements InjectionAwareInterface
         $model = $this->authorizeAdmin($email, $password);
         if (!$model instanceof \Model_Admin) {
             $this->di['events_manager']->fire(['event' => 'onEventAdminLoginFailed', 'params' => $event_params]);
+            // ClientFence core patch: the failed staff sign-in email to the Super Administrators, sent at once (Clientfence/SignInSecurity.php).
+            \ClientFence\Mod\Clientfence\SignInSecurity::failedSignIn($this->di, 'password', (string) $email, (string) $ip);
 
             throw new \ClientFence\InformationException('Check your login details', null, 403);
         }
