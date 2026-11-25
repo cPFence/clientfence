@@ -153,6 +153,17 @@ test('the staff email about a client\'s reply quotes the client\'s newest messag
     expect($html)->toContain('The client reply')->not->toContain('A staff answer')->not->toContain('First question');
 });
 
+test('the staff email about a guest\'s reply quotes the guest\'s newest message even when staff answered since', function (): void {
+    $file = dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/mod_staff_ticket_reply.html.twig';
+    $html = emailSandboxEnvironment(null, true)->createTemplate((string) file_get_contents($file), 'staff_reply_guest')
+        ->render(['ticket' => ['messages' => [
+            ['content' => 'The guest reply', 'author' => ['role' => 'guest']],
+            ['content' => 'A staff answer', 'author' => ['role' => 'admin']],
+        ]]]);
+
+    expect($html)->toContain('The guest reply')->not->toContain('A staff answer');
+});
+
 test('staff assigned and escalated emails translate the status and priority', function (string $file): void {
     $twig = emailSandboxEnvironment(static fn (mixed $value, mixed ...$options): string => '[' . $value . ']');
     $html = $twig->createTemplate((string) file_get_contents(dirname(__DIR__, 4) . '/src/modules/Staff/templates/email/' . $file), $file)
