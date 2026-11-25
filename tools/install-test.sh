@@ -42,7 +42,7 @@ cleanup() {
 trap cleanup EXIT
 
 if [[ -z $ARCHIVE ]]; then
-  "$ROOT/tools/build-release.sh" --out "$work/build" >/dev/null
+  "$ROOT/tools/build-release.sh" --out "$work/build" --test-build >/dev/null
   ARCHIVE=$(ls "$work"/build/clientfence-*.zip)
 fi
 [[ -f $ARCHIVE ]] || { echo "no archive: $ARCHIVE" >&2; exit 2; }
