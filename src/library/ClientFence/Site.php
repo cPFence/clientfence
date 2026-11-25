@@ -86,6 +86,8 @@ final readonly class Site
     /** The $di['cache'] key of the site modules' list (providers()). */
     private const string PROVIDERS = 'clientfence_site_providers';
 
+    private const string KEY = '/^[a-z0-9_-]{1,50}\z/';
+
     /**
      * @param string      $url  the base URL with a trailing slash: scheme, host[:port] and path, as SYSTEM_URL
      * @param string      $host host[:port] as the request shows it
@@ -404,7 +406,7 @@ final readonly class Site
 
         return is_array($parts) && in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)
             && !isset($parts['query']) && !isset($parts['fragment'])
-            && str_ends_with($site->url, '/') && $site->host === $host && $site->key !== null && $site->key !== '' && mb_strlen($site->key) <= 50
+            && str_ends_with($site->url, '/') && $site->host === $host && $site->key !== null && preg_match(self::KEY, $site->key) === 1
             // The exact authority, as a browser reads it: no user info, backslash or default port in front of the host.
             && str_starts_with(strtolower($site->url), strtolower($parts['scheme']) . '://' . $host . '/');
     }

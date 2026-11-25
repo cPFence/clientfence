@@ -131,7 +131,7 @@ class Module implements InjectionAwareInterface
      * files are never loaded (getService() and the controllers throw the reason, so what needs it fails), and the few
      * places that include its files directly skip it. Only manifest.json is read: "module_api" (absent: 1) must be a
      * level from Version::MODULE_API_MIN to MODULE_API, and "requires" may name "extensions" (extension_loaded() names,
-     * for example "ionCube Loader" or "sodium") and a minimum "php" version; either key present but malformed, an
+     * for example "intl" or "sodium") and a minimum "php" version; either key present but malformed, an
      * unreadable manifest, or an unmet version minimum (unmetMinimum()) also means it cannot run. Core modules
      * and a module whose folder is gone are not checked here.
      *

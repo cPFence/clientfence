@@ -149,6 +149,10 @@ test('a module that fails or answers with a site that is not on the host is skip
     'a backslash before the host' => [fn (): Site => new Site('https://other.example.test\\@shop.example.test/', 'shop.example.test', 'x'), 'it answered with a site that is not on that host'],
     'user info before the host' => [fn (): Site => new Site('https://other.example.test@shop.example.test/', 'shop.example.test', 'x'), 'it answered with a site that is not on that host'],
     'a key over 50 characters' => [fn (): Site => shopSite(str_repeat('k', 51)), 'it answered with a site that is not on that host'],
+    'a key with an upper-case letter' => [fn (): Site => shopSite('Shop'), 'it answered with a site that is not on that host'],
+    'a key with a slash' => [fn (): Site => shopSite('a/b'), 'it answered with a site that is not on that host'],
+    'a key with a space' => [fn (): Site => shopSite('my shop'), 'it answered with a site that is not on that host'],
+    'a key ending in a line break' => [fn (): Site => shopSite("shop\n"), 'it answered with a site that is not on that host'],
 ]);
 
 test('the origin is the lower-case scheme and the host, without the default port, for any host name', function (): void {
