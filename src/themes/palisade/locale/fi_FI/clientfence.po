@@ -33757,3 +33757,248 @@ msgstr "Miksi kukin tuote muuttuu. Automaattinen säilyttää näytetyn tuloksen
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Without a choice"
 msgstr "Ilman valintaa"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir (:free free)."
+msgstr ":dir (:free vapaana)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be made by :user."
+msgstr "Käyttäjä :user ei voi luoda kansiota :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be read by :user."
+msgstr "Käyttäjä :user ei voi lukea kansiota :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be written by :user."
+msgstr "Käyttäjä :user ei voi kirjoittaa kansioon :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir: :free free, :needed needed."
+msgstr ":dir: :free vapaana, :needed tarvitaan."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled client names look double-encoded (such as \"JosÃ©\"); they come over as :system shows them."
+msgstr ":doubled asiakkaan nimeä näyttää olevan koodattu kahdesti (kuten \"JosÃ©\"). Nimet tuodaan siinä muodossa, jossa :system ne näyttää."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled of :accented client names with accents are double-encoded (such as \"JosÃ©\" for \"José\")."
+msgstr "Aksenttimerkkejä sisältävistä :accented asiakkaan nimestä :doubled on koodattu kahdesti (esimerkiksi \"JosÃ©\" nimen \"José\" sijaan)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size (:where); the import needs :needed."
+msgstr ":size (:where). Tuonti tarvitsee :needed."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size: some of the import's statements are larger."
+msgstr ":size: osa tuonnin lauseista ylittää tämän koon."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system attachments folder"
+msgstr "Järjestelmän :system liitekansio"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system currency codes"
+msgstr "Järjestelmän :system valuuttakoodit"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system table encoding"
+msgstr "Järjestelmän :system taulujen merkistökoodaus"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system text encoding"
+msgstr "Järjestelmän :system tekstin merkistökoodaus"
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "A ticket file could not be written."
+msgstr "Tukipyynnön tiedoston kirjoittaminen epäonnistui."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A wrong password or unknown email address at the staff sign-in, or a wrong authenticator code or email PIN after the right password, emails every Super Administrator at once: date and time, the email address typed, IP address and hostname. At most 20 of these emails an hour."
+msgstr "Jos henkilöstön kirjautumisessa annetaan väärä salasana tai tuntematon sähköpostiosoite tai oikean salasanan jälkeen väärä todennussovelluksen koodi tai sähköpostin PIN-koodi, kaikki pääylläpitäjät saavat heti sähköpostin. Viesti sisältää päivämäärän ja kellonajan, annetun sähköpostiosoitteen, IP-osoitteen ja isäntänimen. Viestejä lähetetään enintään 20 tunnissa."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Add-on module archive"
+msgstr "Lisämoduulien arkisto"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Backups folder (add-on module archive)"
+msgstr "Varmuuskopiokansio (lisämoduulien arkisto)"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Correct the folder, or let :user read it."
+msgstr "Korjatkaa kansion polku tai antakaa käyttäjälle :user lukuoikeus."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Database max_allowed_packet"
+msgstr "Tietokannan max_allowed_packet-asetus"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Email the Super Administrators when a staff sign-in fails"
+msgstr "Lähetä pääylläpitäjille sähköpostia henkilöstön kirjautumisen epäonnistuessa"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Enter :system's attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose."
+msgstr "Antakaa järjestelmän :system liitekansio (komentorivi: --attachments). Jos kansio on tyhjä, vain viestit tuodaan."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every currency has a three-letter code."
+msgstr "Jokaisella valuutalla on kolmikirjaiminen koodi."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every table is UTF-8."
+msgstr "Kaikki taulut käyttävät UTF-8-koodausta."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Failed staff sign-in attempt"
+msgstr "Epäonnistunut henkilöstön kirjautumisyritys"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Failed staff sign-in email"
+msgstr "Sähköposti henkilöstön epäonnistuneesta kirjautumisesta"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Free disk space first."
+msgstr "Vapauttakaa ensin levytilaa."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "If this was not one of your staff, check the staff accounts and consider limiting staff sign-in to chosen IP addresses or countries (Security > Settings > Sign-in)."
+msgstr "Jos yrittäjä ei ollut henkilöstönne jäsen, tarkistakaa henkilöstön tilit ja harkitkaa kirjautumisen rajoittamista valittuihin IP-osoitteisiin tai maihin (Tietoturva > Asetukset > Kirjautuminen)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In :system (System Settings > Currencies), give each its ISO code (for example CAD), then plan again."
+msgstr "Antakaa kullekin valuutalle ISO-koodi (esimerkiksi CAD) järjestelmässä :system (Järjestelmäasetukset > Valuutat) ja suunnitelkaa tuonti uudelleen."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy."
+msgstr "Muuttakaa järjestelmän :system tietokannan kopiossa ongelmallisten taulujen kukin tekstisarake ensin binääriseen tyyppiin (VARBINARY tai BLOB) ja sitten utf8mb4-tekstiksi. Tavut säilyvät ja ne luetaan UTF-8-muodossa. Pelkkä CONVERT TO CHARACTER SET jättää tekstin virheelliseksi. Tuokaa tiedot sitten kopiosta."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; then import from the copy."
+msgstr "Korjatkaa järjestelmän :system tietokannan kopiosta kunkin sarakkeen osalta vain ongelmalliset rivit: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; Tuokaa tiedot sitten kopiosta."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Install or enable PHP's zlib extension."
+msgstr "Asentakaa tai ottakaa käyttöön PHP zlib -laajennus."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Installed (the add-on module archive is gzipped)."
+msgstr "Asennettu (lisämoduulien arkisto on pakattu gzip-muotoon)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Make the folder and let :user write it."
+msgstr "Luokaa kansio ja antakaa käyttäjälle :user kirjoitusoikeus."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Missing: the add-on module archive cannot be written."
+msgstr "Laajennus puuttuu. Lisämoduulien arkistoa ei voi kirjoittaa."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "No archive file was given."
+msgstr "Arkistotiedostoa ei annettu."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "No double-encoded client names."
+msgstr "Asiakkaiden nimissä ei ole kaksinkertaista koodausta."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables and :more more. Text in them may come over garbled."
+msgstr "Taulut, joissa ei ole UTF-8-koodausta: :tables ja :more muuta. Niiden teksti voi näkyä virheellisenä tuonnin jälkeen."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables. Text in them may come over garbled."
+msgstr "Taulut, joissa ei ole UTF-8-koodausta: :tables. Niiden teksti voi näkyä virheellisenä tuonnin jälkeen."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not a three-letter code: :codes."
+msgstr "Muut kuin kolmikirjaimiset koodit: :codes."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not entered, and :system tickets have attachments: their messages would come over without the files."
+msgstr "Kansiota ei ole annettu, ja järjestelmän :system tukipyynnöissä on liitteitä. Viestit tuotaisiin ilman tiedostoja."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Open the staff panel"
+msgstr "Avaa henkilökunnan paneeli"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "PHP zlib extension"
+msgstr "PHP zlib -laajennus"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise max_allowed_packet to :needed or more in the database server's settings."
+msgstr "Nostakaa max_allowed_packet vähintään arvoon :needed tietokantapalvelimen asetuksissa."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M."
+msgstr "Nostakaa memory_limit vähintään arvoon 256M komentorivin käyttämässä php.ini-tiedostossa (php --ini näyttää tiedoston) tai käynnistäkää komentoriviohjelma komennolla php -d memory_limit=512M."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in this site's PHP settings (php.ini or the hosting panel), then reload this page."
+msgstr "Nostakaa memory_limit vähintään arvoon 256M sivuston PHP-asetuksissa (php.ini tai palveluntarjoajan hallintapaneeli) ja ladatkaa sivu uudelleen."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Someone tried to sign in to the staff panel with a wrong password or an unknown email address."
+msgstr "Joku yritti kirjautua henkilökunnan paneeliin väärällä salasanalla tai tuntemattomalla sähköpostiosoitteella."
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "The WHMCS version is unknown."
+msgstr "WHMCS-versiota ei tiedetä."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be cut back after a stop."
+msgstr "Arkistotiedostoa :file ei voitu lyhentää aiempaan kokoon pysäytyksen jälkeen."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written (is the disk full?)."
+msgstr "Arkistotiedostoa :file ei voitu kirjoittaa. Onko levy täynnä?"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written."
+msgstr "Arkistotiedostoa :file ei voitu kirjoittaa."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file could not be made in :dir."
+msgstr "Arkistotiedostoa ei voitu luoda kansioon :dir."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file's size at this point was not recorded; start the import again on a fresh install."
+msgstr "Arkiston tiedostokokoa ei tallennettu tässä vaiheessa. Aloittakaa tuonti uudelleen uudessa asennuksessa."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the authenticator code was wrong."
+msgstr "Käyttäjän %name% (%email%) salasana oli oikein, mutta todennussovelluksen koodi oli väärä."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the email PIN was wrong."
+msgstr "Käyttäjän %name% (%email%) salasana oli oikein, mutta sähköpostin PIN-koodi oli väärä."
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "The ticket files folder cannot be written."
+msgstr "Tukipyyntöjen tiedostokansioon ei voi kirjoittaa."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Ticket files folder"
+msgstr "Tukipyyntöjen tiedostokansio"
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first."
+msgstr "Tiedot kohteesta WHMCS :version tuodaan mahdollisuuksien mukaan. Tarkistakaa tulos huolellisesti tai päivittäkää ensin WHMCS versioon 8 tai uudempaan."
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version is too old to import: update it to 8 or later first."
+msgstr "WHMCS :version on liian vanha tuontiin. Päivittäkää ensin versioon 8 tai uudempaan."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the PHP user"
+msgstr "PHP-käyttäjä"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the console's PHP"
+msgstr "komentorivin PHP"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the website's PHP"
+msgstr "sivuston PHP"

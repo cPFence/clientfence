@@ -33322,3 +33322,248 @@ msgstr "Mivé válik az egyes termék. Az Automatikus megtartja a mutatott eredm
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Without a choice"
 msgstr "Választás nélkül"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir (:free free)."
+msgstr ":dir (:free szabad)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be made by :user."
+msgstr "A(z) :user felhasználó nem tudja létrehozni ezt a mappát: :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be read by :user."
+msgstr "A(z) :user felhasználó nem tudja olvasni ezt a mappát: :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be written by :user."
+msgstr "A(z) :user felhasználó nem tud írni ebbe a mappába: :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir: :free free, :needed needed."
+msgstr ":dir: :free szabad, :needed szükséges."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled client names look double-encoded (such as \"JosÃ©\"); they come over as :system shows them."
+msgstr ":doubled ügyfélnév kétszer kódoltnak tűnik (például \"JosÃ©\"). Úgy kerülnek át, ahogy a(z) :system megjeleníti őket."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled of :accented client names with accents are double-encoded (such as \"JosÃ©\" for \"José\")."
+msgstr "Az ékezetes :accented ügyfélnévből :doubled kétszer van kódolva (például \"JosÃ©\" a \"José\" helyett)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size (:where); the import needs :needed."
+msgstr ":size (:where). Az importáláshoz :needed szükséges."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size: some of the import's statements are larger."
+msgstr ":size: néhány importálási utasítás ennél nagyobb."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system attachments folder"
+msgstr "A(z) :system mellékleteinek mappája"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system currency codes"
+msgstr "Pénznemkódok a(z) :system rendszerben"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system table encoding"
+msgstr "Táblák kódolása a(z) :system rendszerben"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system text encoding"
+msgstr "Szövegkódolás a(z) :system rendszerben"
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "A ticket file could not be written."
+msgstr "Nem sikerült írni egy jegy fájlját."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A wrong password or unknown email address at the staff sign-in, or a wrong authenticator code or email PIN after the right password, emails every Super Administrator at once: date and time, the email address typed, IP address and hostname. At most 20 of these emails an hour."
+msgstr "Ha a személyzet bejelentkezésekor hibás jelszót vagy ismeretlen e-mail-címet adnak meg, illetve helyes jelszó után hibás hitelesítő alkalmazáskódot vagy hibás e-mailes PIN-kódot írnak be, minden főadminisztrátor azonnal e-mailt kap. Az üzenet tartalmazza a dátumot, az időpontot, a beírt e-mail-címet, az IP-címet és a gépnevet. Óránként legfeljebb 20 ilyen e-mail küldhető."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Add-on module archive"
+msgstr "Kiegészítő modulok archívuma"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Backups folder (add-on module archive)"
+msgstr "Biztonsági mentések mappája (kiegészítő modulok archívuma)"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Correct the folder, or let :user read it."
+msgstr "Javítsa a mappa útvonalát, vagy adjon olvasási jogot a(z) :user felhasználónak."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Database max_allowed_packet"
+msgstr "Adatbázis-beállítás: max_allowed_packet"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Email the Super Administrators when a staff sign-in fails"
+msgstr "E-mail küldése a főadminisztrátoroknak a személyzet sikertelen bejelentkezésekor"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Enter :system's attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose."
+msgstr "Adja meg a(z) :system mellékleteinek mappáját (konzol: --attachments). Üres mappa esetén csak az üzenetek kerülnek át."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every currency has a three-letter code."
+msgstr "Minden pénznem kódja hárombetűs."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every table is UTF-8."
+msgstr "Minden tábla UTF-8 kódolású."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Failed staff sign-in attempt"
+msgstr "A személyzet sikertelen bejelentkezési kísérlete"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Failed staff sign-in email"
+msgstr "E-mail a személyzet sikertelen bejelentkezéséről"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Free disk space first."
+msgstr "Először szabadítson fel lemezterületet."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "If this was not one of your staff, check the staff accounts and consider limiting staff sign-in to chosen IP addresses or countries (Security > Settings > Sign-in)."
+msgstr "Ha a kísérletet nem az Ön munkatársa tette, ellenőrizze a személyzet fiókjait, és fontolja meg a bejelentkezés korlátozását meghatározott IP-címekre vagy országokra (Biztonság > Beállítások > Bejelentkezés)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In :system (System Settings > Currencies), give each its ISO code (for example CAD), then plan again."
+msgstr "A(z) :system rendszerben (Rendszerbeállítások > Pénznemek) adja meg az egyes pénznemek ISO-kódját (például CAD), majd tervezze meg újra az importálást."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy."
+msgstr "A(z) :system adatbázisának másolatában állítsa át az érintett táblák minden szöveges oszlopát bináris típusra (VARBINARY vagy BLOB), majd utf8mb4 szövegre. Így a bájtok megmaradnak, és UTF-8 kódolásként olvashatók. A CONVERT TO CHARACTER SET önmagában hibásan hagyja a szöveget. Ezután a másolatból importáljon."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; then import from the copy."
+msgstr "A(z) :system adatbázisának másolatában oszloponként csak az érintett sorokat javítsa: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; Ezután a másolatból importáljon."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Install or enable PHP's zlib extension."
+msgstr "Telepítse vagy engedélyezze a PHP zlib bővítményét."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Installed (the add-on module archive is gzipped)."
+msgstr "Telepítve (a kiegészítő modulok archívuma gzip formátumban tömörített)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Make the folder and let :user write it."
+msgstr "Hozza létre a mappát, és adjon írási jogot a(z) :user felhasználónak."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Missing: the add-on module archive cannot be written."
+msgstr "A bővítmény hiányzik. A kiegészítő modulok archívuma nem írható."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "No archive file was given."
+msgstr "Nincs megadva archívumfájl."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "No double-encoded client names."
+msgstr "Nincsenek kétszer kódolt ügyfélnevek."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables and :more more. Text in them may come over garbled."
+msgstr "Nem UTF-8 kódolású táblák: :tables és további :more. A szövegük hibásan jelenhet meg az importálás után."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables. Text in them may come over garbled."
+msgstr "Nem UTF-8 kódolású táblák: :tables. A szövegük hibásan jelenhet meg az importálás után."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not a three-letter code: :codes."
+msgstr "Nem hárombetűs kódok: :codes."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not entered, and :system tickets have attachments: their messages would come over without the files."
+msgstr "Nincs megadva a mappa, és a(z) :system jegyeihez fájlok vannak csatolva. Az üzenetek fájlok nélkül kerülnének át."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Open the staff panel"
+msgstr "Munkatársi felület megnyitása"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "PHP zlib extension"
+msgstr "PHP zlib bővítmény"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise max_allowed_packet to :needed or more in the database server's settings."
+msgstr "Emelje a max_allowed_packet értékét legalább :needed méretre az adatbázis-kiszolgáló beállításaiban."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M."
+msgstr "A konzol által használt php.ini fájlban emelje a memory_limit értékét legalább 256M méretre (a php --ini megmutatja a fájlt), vagy indítsa a konzolt a php -d memory_limit=512M paranccsal."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in this site's PHP settings (php.ini or the hosting panel), then reload this page."
+msgstr "Emelje a memory_limit értékét legalább 256M méretre a webhely PHP-beállításaiban (php.ini vagy a tárhely kezelőfelülete), majd töltse újra ezt az oldalt."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Someone tried to sign in to the staff panel with a wrong password or an unknown email address."
+msgstr "Valaki hibás jelszóval vagy ismeretlen e-mail-címmel próbált bejelentkezni a munkatársi felületre."
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "The WHMCS version is unknown."
+msgstr "A WHMCS verziója ismeretlen."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be cut back after a stop."
+msgstr "A leállítás után nem sikerült visszaállítani a(z) :file archívumfájl előző méretét."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written (is the disk full?)."
+msgstr "A(z) :file archívumfájl írása nem sikerült. Megtelt a lemez?"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written."
+msgstr "A(z) :file archívumfájl írása nem sikerült."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file could not be made in :dir."
+msgstr "Nem sikerült létrehozni az archívumfájlt itt: :dir."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file's size at this point was not recorded; start the import again on a fresh install."
+msgstr "Az archívumfájl ekkori méretét nem rögzítette a rendszer. Kezdje újra az importálást egy friss telepítésen."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the authenticator code was wrong."
+msgstr "%name% (%email%) jelszava helyes volt, de a hitelesítő alkalmazás kódja hibás volt."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the email PIN was wrong."
+msgstr "%name% (%email%) jelszava helyes volt, de az e-mailes PIN-kód hibás volt."
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "The ticket files folder cannot be written."
+msgstr "A jegyfájlok mappája nem írható."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Ticket files folder"
+msgstr "Jegyfájlok mappája"
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first."
+msgstr "A WHMCS :version adatai a lehetőségek szerint kerülnek át. Gondosan ellenőrizze az eredményt, vagy előbb frissítse a WHMCS rendszert a 8-as vagy újabb verzióra."
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version is too old to import: update it to 8 or later first."
+msgstr "A WHMCS :version túl régi az importáláshoz. Előbb frissítse a 8-as vagy újabb verzióra."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the PHP user"
+msgstr "a PHP felhasználója"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the console's PHP"
+msgstr "a konzol PHP-környezete"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the website's PHP"
+msgstr "a webhely PHP-környezete"

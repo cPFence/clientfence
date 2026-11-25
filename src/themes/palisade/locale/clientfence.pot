@@ -598,6 +598,26 @@ msgstr ""
 msgid ":days days, :hours hours, :minutes minutes"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir (:free free)."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be made by :user."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be read by :user."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be written by :user."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir: :free free, :needed needed."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Centralnicreseller.php
 msgid ":domain can only be renewed one year at a time."
 msgstr ""
@@ -652,6 +672,14 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Connectreseller.php src/library/Registrar/Adapter/Dynadot.php …
 msgid ":domain_registrar is not fully configured. Please configure the :missing"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled client names look double-encoded (such as \"JosÃ©\"); they come over as :system shows them."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled of :accented client names with accents are double-encoded (such as \"JosÃ©\" for \"José\")."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
@@ -974,8 +1002,16 @@ msgstr ""
 msgid ":site is not a website address such as https://example.com."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size (:where); the import needs :needed."
+msgstr ""
+
 #: src/modules/Clientfence/Health.php
 msgid ":size GB free (:percent%)."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size: some of the import's statements are larger."
 msgstr ""
 
 #: src/themes/palisade/html/mod_support_ticket.html.twig
@@ -988,6 +1024,22 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
 msgid ":state business number"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system attachments folder"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system currency codes"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system table encoding"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system text encoding"
 msgstr ""
 
 #: src/modules/Support/TicketLimit.php
@@ -1542,12 +1594,20 @@ msgstr ""
 msgid "A three-letter currency code, such as EUR or EGP. Empty: EUR."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "A ticket file could not be written."
+msgstr ""
+
 #: src/modules/Servicedomain/Service.php
 msgid "A transfer code (EPP/auth code) is required to transfer :domain"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Resellerclub.php
 msgid "A valid contact company number is mandatory for registering an .AU domain name"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A wrong password or unknown email address at the staff sign-in, or a wrong authenticator code or email PIN after the right password, emails every Super Administrator at once: date and time, the email address typed, IP address and hostname. At most 20 of these emails an hour."
 msgstr ""
 
 #: src/modules/Product/Options.php
@@ -2396,6 +2456,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Csv.php
 msgid "Add-on module"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Add-on module archive"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -4488,6 +4552,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_backups.html.twig
 msgid "Backups are unavailable right now."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Backups folder (add-on module archive)"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -7618,6 +7686,10 @@ msgstr ""
 msgid "Corporation registered in Canada"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Correct the folder, or let :user read it."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_transaction.html.twig
 msgid "Correct the linked invoice and stored payment amount for this transaction."
 msgstr ""
@@ -8654,6 +8726,10 @@ msgstr ""
 msgid "Database copy to :service"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Database max_allowed_packet"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Database name"
 msgstr ""
@@ -8730,7 +8806,7 @@ msgstr ""
 msgid "Date was not passed"
 msgstr ""
 
-#: src/themes/admin_default/html/mod_index_dashboard.html.twig
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig src/themes/admin_default/html/mod_index_dashboard.html.twig
 msgid "Date/Time"
 msgstr ""
 
@@ -10274,6 +10350,10 @@ msgstr ""
 msgid "Email the %count% clients their new price"
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Email the Super Administrators when a staff sign-in fails"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
 msgid "Email the affected clients when saving"
 msgstr ""
@@ -10576,6 +10656,10 @@ msgstr ""
 
 #: src/modules/Servicedomain/Service.php
 msgid "Enter :field for the default contact, or turn on Use the client's details."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Enter :system's attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
@@ -11282,6 +11366,10 @@ msgstr ""
 msgid "Every commission, reversal, bonus, manual entry and payout. The balances are their sums."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every currency has a three-letter code."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Every day"
 msgstr ""
@@ -11324,6 +11412,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Every suspended service"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every table is UTF-8."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -11592,6 +11684,14 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_bulk_prices.html.twig src/modules/Order/templates/admin/mod_order_move_services.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Failed setup"
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Failed staff sign-in attempt"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Failed staff sign-in email"
 msgstr ""
 
 #: src/library/Server/Manager/Hestia.php
@@ -12264,6 +12364,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Free disk space"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Free disk space first."
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php src/library/Payment/Adapter/GoCardless.php src/library/Payment/Adapter/Mollie.php …
@@ -13366,7 +13470,7 @@ msgstr ""
 msgid "Hosting usernames are changed by our staff. Please open a support ticket."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig …
 msgid "Hostname"
 msgstr ""
 
@@ -13546,7 +13650,7 @@ msgstr ""
 msgid "IP Lookup"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig src/themes/palisade/html/partials/ip_seats.html.twig
+#: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_settings_panel.html.twig src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig …
 msgid "IP address"
 msgstr ""
 
@@ -13692,6 +13796,10 @@ msgstr ""
 
 #: src/modules/Support/templates/client/mod_support_kb_article.html.twig
 msgid "If this article did not answer your question, our support team can help."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "If this was not one of your staff, check the staff accounts and consider limiting staff sign-in to chosen IP addresses or countries (Security > Settings > Sign-in)."
 msgstr ""
 
 #: src/modules/Client/templates/email/mod_client_twofactor_switched_on.html.twig
@@ -13894,6 +14002,10 @@ msgstr ""
 msgid "In :source"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In :system (System Settings > Currencies), give each its ISO code (for example CAD), then plan again."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "In Google Auth Platform, set up the consent screen with Audience External."
 msgstr ""
@@ -13912,6 +14024,14 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "In Upmind, open Settings > API Tokens > Create API Token. Allow it to view clients, products, contracts, invoices, payments, tickets and taxes, and add this server's IP address to its IP whitelist."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; then import from the copy."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
@@ -14060,6 +14180,14 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "Install latest preview build?"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Install or enable PHP's zlib extension."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Installed (the add-on module archive is gzipped)."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -15954,6 +16082,10 @@ msgstr ""
 msgid "Make the changes at the registrar first. Marking them done stores the requested values on this domain and replies to the client on the ticket."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Make the folder and let :user write it."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Make the plan"
 msgstr ""
@@ -16792,6 +16924,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Health.php
 msgid "Missing: countries of IP addresses are unknown."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Missing: the add-on module archive cannot be written."
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig
@@ -17770,6 +17906,10 @@ msgstr ""
 msgid "No announcements yet."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "No archive file was given."
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_kb_category.html.twig src/modules/Support/templates/client/mod_support_kb_category.html.twig
 msgid "No articles in this category yet."
 msgstr ""
@@ -17892,6 +18032,10 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_new.html.twig
 msgid "No domains in this order."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "No double-encoded client names."
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_ticket.html.twig
@@ -18338,6 +18482,14 @@ msgstr ""
 msgid "Not Run"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables and :more more. Text in them may come over garbled."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables. Text in them may come over garbled."
+msgstr ""
+
 #: src/modules/Order/ProductMove.php
 msgid "Not a custom service, or it has no service yet."
 msgstr ""
@@ -18348,6 +18500,10 @@ msgstr ""
 
 #: src/modules/Antispam/Networks.php
 msgid "Not a network number: :asn. Use numbers such as AS24940."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not a three-letter code: :codes."
 msgstr ""
 
 #: src/modules/Clientfence/SecuritySettings.php
@@ -18392,6 +18548,10 @@ msgstr ""
 
 #: src/modules/Clientfence/Backups.php
 msgid "Not enough free disk space to keep the backup on this server."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not entered, and :system tickets have attachments: their messages would come over without the files."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Csv.php src/modules/Support/templates/admin/mod_support_mail_log.html.twig
@@ -19318,6 +19478,10 @@ msgstr ""
 msgid "Open the quote"
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Open the staff panel"
+msgstr ""
+
 #: src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig src/modules/Staff/templates/email/mod_staff_ticket_escalated.html.twig
 msgid "Open the ticket"
 msgstr ""
@@ -20002,7 +20166,7 @@ msgstr ""
 msgid "PHP mail on this server. Works when the server is set up to send mail."
 msgstr ""
 
-#: src/modules/Clientfence/Health.php
+#: src/modules/Clientfence/Health.php src/modules/Clientfence/Whmcs/Preflight.php
 msgid "PHP memory limit"
 msgstr ""
 
@@ -20012,6 +20176,10 @@ msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
 msgid "PHP version not supported:"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "PHP zlib extension"
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_signin_pin.html.twig src/modules/Staff/templates/admin/mod_staff_login_pin.html.twig
@@ -22428,6 +22596,18 @@ msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_options.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig src/modules/Product/templates/admin/mod_product_option_group.html.twig
 msgid "Radio buttons"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise max_allowed_packet to :needed or more in the database server's settings."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in this site's PHP settings (php.ini or the hosting panel), then reload this page."
 msgstr ""
 
 #: src/modules/Support/TicketFeedback.php
@@ -26126,6 +26306,10 @@ msgstr ""
 msgid "Some server managers may ignore this option due to limitations or requirements imposed by the control panel."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Someone tried to sign in to the staff panel with a wrong password or an unknown email address."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
 msgid "Something to sell"
 msgstr ""
@@ -27806,6 +27990,10 @@ msgstr ""
 msgid "The VAT number a client in an EU country saves is checked with the EU VIES service, and a wrong number is refused. When VIES does not answer, the number is saved and checked again the next day."
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "The WHMCS version is unknown."
+msgstr ""
+
 #: src/modules/Invoice/Accounting/QuickBooks.php src/modules/Invoice/Accounting/Sync.php
 msgid "The account and tax choices could not be read. Reload the page and try again."
 msgstr ""
@@ -27880,6 +28068,26 @@ msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
 msgid "The answer follows the order: Active while it is active, Suspended or Expired once suspended or canceled. IP addresses follow the rules on this page; the domain and folder are checked only when the software sends them."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be cut back after a stop."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written (is the disk full?)."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file could not be made in :dir."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file's size at this point was not recorded; start the import again on a fresh install."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Import.php
@@ -28907,6 +29115,14 @@ msgstr ""
 msgid "The password is not correct."
 msgstr ""
 
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the authenticator code was wrong."
+msgstr ""
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the email PIN was wrong."
+msgstr ""
+
 #: src/modules/Client/templates/email/mod_client_password_reset_information.html.twig
 msgid "The password of your account was changed."
 msgstr ""
@@ -29329,6 +29545,10 @@ msgstr ""
 
 #: src/modules/Client/IdDocuments.php
 msgid "The text for clients can have up to 5000 characters."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "The ticket files folder cannot be written."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -30651,6 +30871,10 @@ msgstr ""
 msgid "Ticket feedback"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Ticket files folder"
+msgstr ""
+
 #: src/modules/Support/Api/Guest.php
 msgid "Ticket hash required"
 msgstr ""
@@ -31731,7 +31955,7 @@ msgstr ""
 msgid "Unknown uppercase option ':case:'. API generator only accepts 'lower', 'upper', or 'mixed'."
 msgstr ""
 
-#: src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_hp.html.twig …
+#: src/modules/Clientfence/Whmcs/Preflight.php src/modules/Invoice/templates/admin/mod_invoice_settings.html.twig src/modules/Product/templates/admin/mod_product_promo.html.twig …
 msgid "Unlimited"
 msgstr ""
 
@@ -32925,6 +33149,14 @@ msgstr ""
 
 #: src/library/Server/Manager/Whm.php
 msgid "WHM (cPanel)"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first."
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version is too old to import: update it to 8 or later first."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
@@ -35275,6 +35507,14 @@ msgstr ""
 msgid "that must include a"
 msgstr ""
 
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the PHP user"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the console's PHP"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_panels.html.twig
 msgid "the global webmail domain set in Enhance (Settings, Platform, Webmail) opens with the address filled in, and the client types the mailbox password. Enhance’s global webmail cannot sign in with one click. Without a global webmail domain in Enhance, the button works as when off."
 msgstr ""
@@ -35285,6 +35525,10 @@ msgstr ""
 
 #: src/library/Registrar/Exception.php
 msgid "the registrar"
+msgstr ""
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the website's PHP"
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig src/modules/Order/templates/admin/mod_order_new.html.twig src/themes/palisade/html/mod_cart_index.html.twig

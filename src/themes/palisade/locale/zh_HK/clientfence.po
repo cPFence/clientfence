@@ -35792,3 +35792,248 @@ msgstr "每個產品將變成什麼。「自動」會保留所示結果。改為
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Without a choice"
 msgstr "無選擇"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir (:free free)."
+msgstr ":dir（剩餘 :free）。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be made by :user."
+msgstr ":user 無法建立 :dir。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be read by :user."
+msgstr ":user 無法讀取 :dir。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be written by :user."
+msgstr ":user 無法寫入 :dir。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir: :free free, :needed needed."
+msgstr ":dir：剩餘 :free，需要 :needed。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled client names look double-encoded (such as \"JosÃ©\"); they come over as :system shows them."
+msgstr "有 :doubled 個客戶姓名疑似經過二次編碼（例如 \"JosÃ©\"），將依 :system 顯示的內容原樣匯入。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled of :accented client names with accents are double-encoded (such as \"JosÃ©\" for \"José\")."
+msgstr "在 :accented 個含重音字元的客戶姓名中，有 :doubled 個經過二次編碼（例如 \"José\" 顯示為 \"JosÃ©\"）。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size (:where); the import needs :needed."
+msgstr ":size（:where）。匯入需要 :needed。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size: some of the import's statements are larger."
+msgstr ":size：部分匯入語句超過此大小。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system attachments folder"
+msgstr ":system 的附件資料夾"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system currency codes"
+msgstr ":system 的貨幣代碼"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system table encoding"
+msgstr ":system 的表編碼"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system text encoding"
+msgstr ":system 的文字編碼"
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "A ticket file could not be written."
+msgstr "無法寫入工單檔案。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A wrong password or unknown email address at the staff sign-in, or a wrong authenticator code or email PIN after the right password, emails every Super Administrator at once: date and time, the email address typed, IP address and hostname. At most 20 of these emails an hour."
+msgstr "職員登入時輸入錯誤的密碼或未知的電郵地址，或密碼正確但驗證器應用程式的代碼或電郵 PIN 碼錯誤，都會立即向所有超級管理員發送電郵，列出日期和時間、輸入的電郵地址、IP 地址和主機名稱。每小時最多發送 20 封。"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Add-on module archive"
+msgstr "附加模塊封存檔"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Backups folder (add-on module archive)"
+msgstr "備份資料夾（附加模塊封存檔）"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Correct the folder, or let :user read it."
+msgstr "請更正資料夾路徑，或為 :user 授予讀取權限。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Database max_allowed_packet"
+msgstr "資料庫 max_allowed_packet"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Email the Super Administrators when a staff sign-in fails"
+msgstr "職員登入失敗時向超級管理員發送電郵"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Enter :system's attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose."
+msgstr "請輸入 :system 的附件資料夾（主控台：--attachments）。如果資料夾為空，則只匯入訊息。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every currency has a three-letter code."
+msgstr "所有貨幣均有三字母代碼。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every table is UTF-8."
+msgstr "所有表都使用 UTF-8。"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Failed staff sign-in attempt"
+msgstr "職員登入嘗試失敗"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Failed staff sign-in email"
+msgstr "職員登入失敗電郵"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Free disk space first."
+msgstr "請先釋放磁碟空間。"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "If this was not one of your staff, check the staff accounts and consider limiting staff sign-in to chosen IP addresses or countries (Security > Settings > Sign-in)."
+msgstr "如果此次嘗試並非您的職員所為，請檢查職員帳戶，並考慮將職員登入限制在指定的 IP 地址或國家/地區（安全 > 設定 > 登入）。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In :system (System Settings > Currencies), give each its ISO code (for example CAD), then plan again."
+msgstr "請在 :system（系統設定 > 貨幣）中為每種貨幣指定 ISO 代碼（例如 CAD），然後重新規劃匯入。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy."
+msgstr "請在 :system 資料庫的副本中，將受影響表的每個文字欄改為二進制類型（VARBINARY 或 BLOB），再改為 utf8mb4 文字。這樣可以保留原始位元組，並按 UTF-8 讀取。僅執行 CONVERT TO CHARACTER SET 會保留亂碼。然後從副本匯入。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; then import from the copy."
+msgstr "請在 :system 資料庫的副本中逐欄修復受影響的行：UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; 然後從副本匯入。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Install or enable PHP's zlib extension."
+msgstr "請安裝或啟用 PHP 的 zlib 擴充功能。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Installed (the add-on module archive is gzipped)."
+msgstr "已安裝（附加模塊封存檔採用 gzip 壓縮）。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Make the folder and let :user write it."
+msgstr "請建立資料夾，並為 :user 授予寫入權限。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Missing: the add-on module archive cannot be written."
+msgstr "缺少擴充功能，無法寫入附加模塊封存檔。"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "No archive file was given."
+msgstr "未指定封存檔。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "No double-encoded client names."
+msgstr "沒有經過二次編碼的客戶姓名。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables and :more more. Text in them may come over garbled."
+msgstr "以下表未使用 UTF-8：:tables，另有 :more 個表。其中的文字匯入後可能出現亂碼。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables. Text in them may come over garbled."
+msgstr "以下表未使用 UTF-8：:tables。其中的文字匯入後可能出現亂碼。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not a three-letter code: :codes."
+msgstr "以下代碼不是三個字母：:codes。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not entered, and :system tickets have attachments: their messages would come over without the files."
+msgstr "未指定附件資料夾，但 :system 的工單包含附件。匯入時將只有訊息，沒有附件。"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Open the staff panel"
+msgstr "打開職員控制台"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "PHP zlib extension"
+msgstr "PHP zlib 擴充功能"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise max_allowed_packet to :needed or more in the database server's settings."
+msgstr "請在資料庫服務器設定中將 max_allowed_packet 提高到至少 :needed。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M."
+msgstr "請在主控台使用的 php.ini 中將 memory_limit 提高到至少 256M（用 php --ini 查看檔案），或使用 php -d memory_limit=512M 執行主控台。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in this site's PHP settings (php.ini or the hosting panel), then reload this page."
+msgstr "請在此網站的 PHP 設定（php.ini 或主機控制台）中將 memory_limit 提高到至少 256M，然後重新載入此頁面。"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Someone tried to sign in to the staff panel with a wrong password or an unknown email address."
+msgstr "有人使用錯誤的密碼或未知的電郵地址嘗試登入職員控制台。"
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "The WHMCS version is unknown."
+msgstr "未知的 WHMCS 版本。"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be cut back after a stop."
+msgstr "停止後無法將封存檔 :file 截斷到之前的大小。"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written (is the disk full?)."
+msgstr "無法寫入封存檔 :file。磁碟是否已滿？"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written."
+msgstr "無法寫入封存檔 :file。"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file could not be made in :dir."
+msgstr "無法在 :dir 中建立封存檔。"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file's size at this point was not recorded; start the import again on a fresh install."
+msgstr "未記錄此時的封存檔大小。請在全新安裝的環境中重新開始匯入。"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the authenticator code was wrong."
+msgstr "%name%（%email%）的密碼正確，但驗證器應用程式的代碼錯誤。"
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the email PIN was wrong."
+msgstr "%name%（%email%）的密碼正確，但電郵 PIN 碼錯誤。"
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "The ticket files folder cannot be written."
+msgstr "無法寫入工單資料夾。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Ticket files folder"
+msgstr "工單資料夾"
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first."
+msgstr "系統會盡可能匯入 WHMCS :version 的資料。請仔細檢查結果，或先將 WHMCS 升級到 8 或更高版本。"
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version is too old to import: update it to 8 or later first."
+msgstr "WHMCS :version 版本過舊，無法匯入。請先升級到 8 或更高版本。"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the PHP user"
+msgstr "PHP 用戶"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the console's PHP"
+msgstr "主控台的 PHP"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the website's PHP"
+msgstr "網站的 PHP"

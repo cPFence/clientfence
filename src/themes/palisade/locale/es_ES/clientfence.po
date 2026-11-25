@@ -32617,3 +32617,248 @@ msgstr "En qué se convierte cada producto. Automático mantiene el resultado mo
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Without a choice"
 msgstr "Sin elección"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir (:free free)."
+msgstr ":dir (:free libres)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be made by :user."
+msgstr ":user no puede crear :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be read by :user."
+msgstr ":user no puede leer :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir cannot be written by :user."
+msgstr ":user no puede escribir en :dir."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":dir: :free free, :needed needed."
+msgstr ":dir: :free libres, se necesitan :needed."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled client names look double-encoded (such as \"JosÃ©\"); they come over as :system shows them."
+msgstr ":doubled nombres de clientes parecen tener doble codificación (como \"JosÃ©\"). Se importarán tal como aparecen en :system."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":doubled of :accented client names with accents are double-encoded (such as \"JosÃ©\" for \"José\")."
+msgstr ":doubled de :accented nombres de clientes con tildes tienen doble codificación (por ejemplo, \"JosÃ©\" en vez de \"José\")."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size (:where); the import needs :needed."
+msgstr ":size (:where). La importación necesita :needed."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":size: some of the import's statements are larger."
+msgstr ":size: algunas consultas de la importación superan este tamaño."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system attachments folder"
+msgstr "Carpeta de adjuntos de :system"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system currency codes"
+msgstr "Códigos de moneda de :system"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system table encoding"
+msgstr "Codificación de tablas de :system"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid ":system text encoding"
+msgstr "Codificación de texto de :system"
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "A ticket file could not be written."
+msgstr "No se ha podido escribir un archivo de un ticket."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "A wrong password or unknown email address at the staff sign-in, or a wrong authenticator code or email PIN after the right password, emails every Super Administrator at once: date and time, the email address typed, IP address and hostname. At most 20 of these emails an hour."
+msgstr "Si durante el inicio de sesión del personal se introduce una contraseña incorrecta o un correo electrónico desconocido, o si tras una contraseña correcta se introduce un código de autenticación o un PIN por correo incorrecto, se envía de inmediato a todos los superadministradores un correo con la fecha y la hora, el correo introducido, la dirección IP y el nombre de host. Máximo 20 correos por hora."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
+msgid "Add-on module archive"
+msgstr "Archivo de módulos adicionales"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Backups folder (add-on module archive)"
+msgstr "Carpeta de copias de seguridad (archivo de módulos adicionales)"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Correct the folder, or let :user read it."
+msgstr "Corrija la ruta de la carpeta o conceda permiso de lectura a :user."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Database max_allowed_packet"
+msgstr "Ajuste de la base de datos max_allowed_packet"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Email the Super Administrators when a staff sign-in fails"
+msgstr "Avisar por correo a los superadministradores si falla el inicio de sesión del personal"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Enter :system's attachments folder (console: --attachments). An empty folder imports the messages without their files, on purpose."
+msgstr "Indique la carpeta de adjuntos de :system (consola: --attachments). Si está vacía, se importarán solo los mensajes."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every currency has a three-letter code."
+msgstr "Todas las monedas tienen un código de tres letras."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Every table is UTF-8."
+msgstr "Todas las tablas usan UTF-8."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Failed staff sign-in attempt"
+msgstr "Intento fallido de inicio de sesión del personal"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
+msgid "Failed staff sign-in email"
+msgstr "Correo por fallo en el inicio de sesión del personal"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Free disk space first."
+msgstr "Libere primero espacio en disco."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "If this was not one of your staff, check the staff accounts and consider limiting staff sign-in to chosen IP addresses or countries (Security > Settings > Sign-in)."
+msgstr "Si el intento no procede de su personal, revise sus cuentas y valore limitar el inicio de sesión del personal a determinadas direcciones IP o países (Seguridad > Ajustes > Inicio de sesión)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In :system (System Settings > Currencies), give each its ISO code (for example CAD), then plan again."
+msgstr "En :system (Ajustes del sistema > Divisas), asigne a cada moneda su código ISO (por ejemplo, CAD) y vuelva a planificar la importación."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, change each text column of the affected tables to a binary type (VARBINARY or BLOB) and then to utf8mb4 text, which keeps the bytes and reads them as UTF-8 (a plain CONVERT TO CHARACTER SET keeps the text garbled); then import from the copy."
+msgstr "En una copia de la base de datos de :system, cambie cada columna de texto de las tablas afectadas a un tipo binario (VARBINARY o BLOB) y luego a texto utf8mb4. Así se conservan los bytes y se leen como UTF-8. Un simple CONVERT TO CHARACTER SET deja el texto dañado. Importe desde la copia."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "In a copy of the :system database, repair only the affected rows, for each column: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; then import from the copy."
+msgstr "En una copia de la base de datos de :system, repare solo las filas afectadas en cada columna: UPDATE tblclients SET col = CONVERT(CAST(CONVERT(col USING latin1) AS BINARY) USING utf8mb4) WHERE LOCATE(X'C383C2', CAST(col AS BINARY)) > 0 OR LOCATE(X'C382C2', CAST(col AS BINARY)) > 0; Importe después desde la copia."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Install or enable PHP's zlib extension."
+msgstr "Instale o active la extensión zlib de PHP."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Installed (the add-on module archive is gzipped)."
+msgstr "Instalada (el archivo de módulos adicionales está comprimido con gzip)."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Make the folder and let :user write it."
+msgstr "Cree la carpeta y conceda permiso de escritura a :user."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Missing: the add-on module archive cannot be written."
+msgstr "Falta la extensión. No se puede escribir el archivo de módulos adicionales."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "No archive file was given."
+msgstr "No se ha indicado ningún archivo comprimido."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "No double-encoded client names."
+msgstr "No hay nombres de clientes con doble codificación."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables and :more more. Text in them may come over garbled."
+msgstr "Sin UTF-8: :tables y :more más. Su texto puede quedar dañado al importarlo."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not UTF-8: :tables. Text in them may come over garbled."
+msgstr "Sin UTF-8: :tables. Su texto puede quedar dañado al importarlo."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not a three-letter code: :codes."
+msgstr "Códigos que no tienen tres letras: :codes."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Not entered, and :system tickets have attachments: their messages would come over without the files."
+msgstr "No se ha indicado la carpeta y hay tickets con adjuntos en :system. Sus mensajes se importarían sin los archivos."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Open the staff panel"
+msgstr "Abrir el panel del personal"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "PHP zlib extension"
+msgstr "Extensión zlib de PHP"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise max_allowed_packet to :needed or more in the database server's settings."
+msgstr "Aumente max_allowed_packet a :needed o más en los ajustes del servidor de bases de datos."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in the php.ini the console uses (php --ini names it), or run the console with php -d memory_limit=512M."
+msgstr "Aumente memory_limit a 256M o más en el php.ini de la consola (php --ini muestra cuál es), o ejecute la consola con php -d memory_limit=512M."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Raise memory_limit to 256M or more in this site's PHP settings (php.ini or the hosting panel), then reload this page."
+msgstr "Aumente memory_limit a 256M o más en los ajustes de PHP de este sitio (php.ini o panel de alojamiento) y recargue esta página."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "Someone tried to sign in to the staff panel with a wrong password or an unknown email address."
+msgstr "Alguien ha intentado iniciar sesión en el panel del personal con una contraseña incorrecta o un correo electrónico desconocido."
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "The WHMCS version is unknown."
+msgstr "Se desconoce la versión de WHMCS."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be cut back after a stop."
+msgstr "No se ha podido devolver el archivo :file a su tamaño anterior tras una interrupción."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written (is the disk full?)."
+msgstr "No se ha podido escribir el archivo :file. ¿Está lleno el disco?"
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file :file could not be written."
+msgstr "No se ha podido escribir el archivo :file."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file could not be made in :dir."
+msgstr "No se ha podido crear el archivo en :dir."
+
+#: src/modules/Clientfence/Whmcs/Archive.php
+msgid "The archive file's size at this point was not recorded; start the import again on a fresh install."
+msgstr "No se registró el tamaño del archivo en este punto. Vuelva a iniciar la importación en una instalación nueva."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the authenticator code was wrong."
+msgstr "La contraseña de %name% (%email%) era correcta, pero el código de autenticación no."
+
+#: src/modules/Staff/templates/email/mod_staff_clientfence_signin_failed.html.twig
+msgid "The password of %name% (%email%) was right, but the email PIN was wrong."
+msgstr "La contraseña de %name% (%email%) era correcta, pero el PIN por correo no."
+
+#: src/modules/Clientfence/Whmcs/Support.php
+msgid "The ticket files folder cannot be written."
+msgstr "No se puede escribir en la carpeta de archivos de tickets."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "Ticket files folder"
+msgstr "Carpeta de archivos de tickets"
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version imports on a best effort basis: check the result carefully, or update WHMCS to 8 or later first."
+msgstr "Los datos de WHMCS :version se importan en la medida de lo posible. Revise el resultado con cuidado o actualice primero WHMCS a la versión 8 o posterior."
+
+#: src/modules/Clientfence/Whmcs/Inventory.php
+msgid "WHMCS :version is too old to import: update it to 8 or later first."
+msgstr "WHMCS :version es demasiado antiguo para importar sus datos. Actualice primero a la versión 8 o posterior."
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the PHP user"
+msgstr "el usuario de PHP"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the console's PHP"
+msgstr "PHP de la consola"
+
+#: src/modules/Clientfence/Whmcs/Preflight.php
+msgid "the website's PHP"
+msgstr "PHP del sitio web"
