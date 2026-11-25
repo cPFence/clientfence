@@ -194,6 +194,8 @@ $paths = [
     'modules/Order/BulkPrices.php',
     'modules/Staff/templates/email/mod_staff_clientfence_update.html.twig',
     'modules/Order/templates/admin/mod_order_bulk_prices.html.twig',
+    'modules/Order/ProductMove.php',
+    'modules/Order/templates/admin/mod_order_move_services.html.twig',
     'modules/Order/templates/email/mod_order_price_changed.html.twig',
     'modules/Order/templates/email/mod_order_ip_request.html.twig',
     'modules/Servicelicense/templates/email/mod_servicelicense_usage_missing.html.twig',

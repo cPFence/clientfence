@@ -1,0 +1,137 @@
+{% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
+{# ClientFence: Orders > Move services (Order/ProductMove.php). The form is sent by GET with `preview` (the controller
+   lists a page of the services, or `error`); moving posts the movable order ids, and clientfence-admin.js writes each
+   service's result into its row. `filters` is the query. #}
+
+{% set active_menu = 'order' %}
+{% set options = admin.order_move_services_options %}
+{% set can_manage = admin.system_is_allowed({ 'mod': 'order', 'f': 'manage' }) %}
+{% set sent = filters.preview|default('') ? true : false %}
+{% set chosen_statuses = sent ? filters.statuses|default([]) : options.default_statuses %}
+{% set status_names = {
+    'active': 'Active'|trans,
+    'suspended': 'Suspended'|trans,
+    'pending_setup': 'Pending setup'|trans,
+    'failed_setup': 'Failed setup'|trans,
+    'failed_renew': 'Failed renew'|trans,
+} %}
+
+{% block meta_title %}{{ 'Move services'|trans }}{% endblock %}
+
+{% block content %}
+<form method="get" action="{{ 'order/move-services'|url }}" class="card mb-3">
+    <input type="hidden" name="preview" value="1">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">{{ 'Move services to another product'|trans }}</h3>
+            <p class="card-subtitle">{{ "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."|trans }}</p>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label" for="move-from">{{ 'From product'|trans }}</label>
+                <select class="form-select" id="move-from" name="from_product_id" required>
+                    <option value="">{{ '-- Select --'|trans }}</option>
+                    {% for type, label in { 'custom': 'Custom products'|trans, 'hosting': 'Hosting products with services not linked to their account'|trans } %}
+                        {% set group = options.sources|filter(p => p.type == type) %}
+                        {% if group is not empty %}
+                            <optgroup label="{{ label }}">
+                                {% for product in group %}
+                                    <option value="{{ product.id }}"{% if product.id ~ '' == filters.from_product_id|default('') %} selected{% endif %}>{{ product.title }} ({{ product.orders }})</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                {% if options.sources is empty %}<div class="form-hint">{{ 'No product has services to move or link.'|trans }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="move-to">{{ 'To product'|trans }}</label>
+                <select class="form-select" id="move-to" name="to_product_id" required>
+                    <option value="">{{ '-- Select --'|trans }}</option>
+                    {% for type, label in { 'hosting': 'Hosting products'|trans, 'custom': 'Custom products'|trans } %}
+                        <optgroup label="{{ label }}">
+                            {% for product in options.targets|filter(p => p.type == type) %}
+                                <option value="{{ product.id }}"{% if product.id ~ '' == filters.to_product_id|default('') %} selected{% endif %}>{{ product.title }}{% if product.server %} ({{ product.server }}){% endif %}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+                <div class="form-hint">{{ 'Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product.'|trans }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-label">{{ 'Order status'|trans }}</div>
+                {% for status in options.statuses %}
+                    <label class="form-check mb-1">
+                        <input class="form-check-input" type="checkbox" name="statuses[]" value="{{ status }}"{% if status in chosen_statuses %} checked{% endif %}>
+                        <span class="form-check-label">{{ status_names[status]|default(status) }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-end">
+        <button class="btn btn-primary" type="submit">{{ 'Preview'|trans }}</button>
+    </div>
+</form>
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">{{ error|trans }}</div>
+{% endif %}
+
+{% if preview %}
+    {% set movable = preview.rows|filter(r => r.reason is null) %}
+    <div class="card" data-cf-move-services data-moved-text="{{ 'Moved'|trans }}">
+        <div class="card-header">
+            <div>
+                <h3 class="card-title">{{ 'Preview'|trans }}</h3>
+                <p class="card-subtitle">{{ '%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet.'|trans({ '%total%': preview.total, '%count%': preview.rows|length, '%movable%': preview.movable }) }}</p>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter">
+                <thead>
+                    <tr>
+                        <th>{{ 'Order'|trans }}</th>
+                        <th>{{ 'Client'|trans }}</th>
+                        <th>{{ 'Status'|trans }}</th>
+                        <th>{{ 'Domain'|trans }}</th>
+                        <th>{{ 'Account on the server'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in preview.rows %}
+                    <tr class="{{ row.reason is null ? 'cf-row-change' : 'text-secondary' }}">
+                        <td><a href="{{ 'order/manage'|url }}/{{ row.id }}" dir="auto"><bdi>#{{ row.id }}</bdi> {{ row.title }}</a></td>
+                        <td><a href="{{ 'client/manage'|url }}/{{ row.client_id }}" dir="auto">{{ row.client }}</a></td>
+                        <td class="text-nowrap"><span class="bf-chip">{{ status_names[row.status]|default(row.status) }}</span></td>
+                        <td dir="ltr">{{ row.domain|default('-') }}</td>
+                        <td class="small" data-cf-move-result="{{ row.id }}">
+                            {% if row.reason is not null %}{{ row.reason }}
+                            {% elseif row.link %}{{ 'Organization %org%, subscription %id%'|trans({ '%org%': row.link.org, '%id%': row.link.subscription }) }}
+                            {% else %}{{ 'Moves without a server account'|trans }}{% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="text-muted">{{ 'No service matches.'|trans }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            {% if preview.next %}
+                <a class="btn" href="{{ 'order/move-services'|url(filters|merge({ 'after': preview.next })) }}">{{ 'Next page'|trans }}</a>
+            {% else %}<span></span>{% endif %}
+            {% if can_manage and movable is not empty %}
+                <form method="post" action="{{ 'order/move_services'|api_url }}" {{ fb_api_form({ callback: 'clientfenceServicesMoved' }) }}>
+                    <input type="hidden" name="from_product_id" value="{{ filters.from_product_id }}">
+                    <input type="hidden" name="to_product_id" value="{{ filters.to_product_id }}">
+                    {% for row in movable %}<input type="hidden" name="order_ids[]" value="{{ row.id }}">{% endfor %}
+                    <button class="btn btn-primary" type="submit">{% if filters.from_product_id == filters.to_product_id %}{{ 'Link %count% services'|trans({ '%count%': movable|length }) }}{% else %}{{ 'Move %count% services'|trans({ '%count%': movable|length }) }}{% endif %}</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

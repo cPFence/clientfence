@@ -991,6 +991,44 @@ class Admin extends \ClientFence\Api\AbstractApi
         );
     }
 
+    /**
+     * ClientFence core patch: what Orders > Move services offers (Order\ProductMove): the custom products with services,
+     * the products they can move to and the statuses.
+     */
+    public function move_services_options($data): array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\ProductMove::options($this->getDi());
+    }
+
+    /**
+     * ClientFence: a page of the services a move would take, each with the account it links to or why it cannot move.
+     * Nothing is changed.
+     *
+     * @optional int $from_product_id - the custom product (required)
+     * @optional int $to_product_id - a hosting or custom product (required)
+     * @optional array $statuses - order statuses (required)
+     * @optional int $after - list the orders after this order ID
+     */
+    public function move_services_preview($data): array
+    {
+        $this->checkPermissions('order', 'view');
+
+        return \ClientFence\Mod\Order\ProductMove::preview($this->getDi(), $data);
+    }
+
+    /**
+     * ClientFence: moves the previewed services (`order_ids`), each checked again; one result per service.
+     */
+    #[RequiredParams(['order_ids' => 'Preview the services first'])]
+    public function move_services($data): array
+    {
+        $this->checkPermissions('order', 'manage');
+
+        return \ClientFence\Mod\Order\ProductMove::move($this->getDi(), $data);
+    }
+
     /** The rule's scope, with the permission it needs. */
     private function upgradeScope(array $data, bool $write): string
     {

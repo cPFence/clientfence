@@ -1354,6 +1354,20 @@ if (bulkPrices) {
   };
 }
 
+// Move services (Order/ProductMove.php): each service's result goes into its row; the move button goes.
+const moveServices = document.querySelector('[data-cf-move-services]');
+if (moveServices) {
+  window.clientfenceServicesMoved = (result) => {
+    for (const row of result?.results ?? []) {
+      const cell = moveServices.querySelector(`[data-cf-move-result="${Number(row.id)}"]`);
+      if (!cell) continue;
+      cell.textContent = row.moved ? moveServices.dataset.movedText : String(row.note ?? '');
+      cell.closest('tr')?.classList.toggle('text-danger', !row.moved);
+    }
+    moveServices.querySelector('form')?.remove();
+  };
+}
+
 // Sign-in security tab (mod_clientfence_signin_panel, fb_api_form callback): turning the staff PIN on
 // answers {confirm, email}: show the PIN field for a second save. Otherwise the settings are saved.
 window.clientfenceSigninSaved = (result) => {

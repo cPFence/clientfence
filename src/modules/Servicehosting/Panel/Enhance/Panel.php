@@ -142,8 +142,8 @@ final class Panel
 
     /**
      * The customer organization and website of an account: in an organization of the client email, else
-     * (the billing email changed) found by domain in an organization of the client email or the account's
-     * login.
+     * (the billing email changed) found by domain in an organization the client email or the account's login owns.
+     * Never by membership alone: a member of another customer's organization must not get its subscription.
      *
      * @return array{org: array, website: array}
      */
@@ -660,14 +660,14 @@ final class Panel
     }
 
     /**
-     * Whether one of the emails owns the organization or is a member of it.
+     * Whether one of the emails owns the organization (its owner email, or a member with the Owner role).
      *
      * @param list<string> $emails
      */
     private function ownedBy(array $org, array $emails): bool
     {
         foreach (array_filter($emails) as $email) {
-            if (strcasecmp((string) ($org['ownerEmail'] ?? ''), $email) === 0 || $this->member((string) $org['id'], $email) !== null) {
+            if (strcasecmp((string) ($org['ownerEmail'] ?? ''), $email) === 0 || in_array(self::OWNER, $this->member((string) $org['id'], $email)['roles'] ?? [], true)) {
                 return true;
             }
         }

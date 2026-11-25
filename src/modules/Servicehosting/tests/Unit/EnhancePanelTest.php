@@ -254,6 +254,51 @@ test('find accepts a website by domain in the organization of the account\'s log
         ->and(Panel::subscriptionOf($found['website']))->toBe(7);
 });
 
+/**
+ * A panel with customer organization A (owner owner@, members member@ and boss@ with the Owner role) holding
+ * site.example on subscription 7.
+ */
+function enhanceOwnedSite(array &$requests): Panel
+{
+    $site = ['id' => 'W', 'orgId' => 'A', 'status' => 'active', 'subscriptionId' => 7, 'domain' => ['domain' => 'site.example']];
+
+    return enhancePanelFake([
+        '/api/orgs/M/customers' => [['id' => 'A', 'status' => 'active', 'ownerEmail' => 'owner@example.test']],
+        '/api/orgs/M/websites' => [$site],
+        '/api/orgs/A/websites' => [$site],
+        '/api/orgs/A' => ['id' => 'A', 'ownerEmail' => 'owner@example.test'],
+        '/api/orgs/A/websites/W' => $site,
+        '/api/orgs/A/members' => [['email' => 'member@example.test', 'roles' => ['SuperAdmin']], ['email' => 'boss@example.test', 'roles' => ['Owner']]],
+    ], $requests);
+}
+
+// ClientFence (owner decision 2026-11-25): an account is found only in an organization its client email or its own
+// login owns; a member of another customer's organization never gets that customer's website (and subscription).
+test('every lookup refuses a website of an organization the client email or login is only a member of', function (string $call, string $clientEmail, string $login): void {
+    $requests = [];
+    $panel = enhanceOwnedSite($requests);
+
+    expect(fn () => $panel->{$call}($clientEmail, 'site.example', $login))->toThrow(Server_Exception::class, 'No website for site.example');
+})->with([
+    'find, member client email' => ['find', 'member@example.test', 'member@example.test'],
+    'find, member login' => ['find', 'new@example.test', 'member@example.test'],
+    'sync' => ['sync', 'member@example.test', 'member@example.test'],
+    'sites' => ['sites', 'new@example.test', 'member@example.test'],
+    'server' => ['server', 'member@example.test', 'member@example.test'],
+]);
+
+test('a lookup finds the website of an organization the client email or the account\'s own login owns', function (string $clientEmail, string $login): void {
+    $requests = [];
+    $found = enhanceOwnedSite($requests)->find($clientEmail, 'site.example', $login);
+
+    expect($found['org']['id'])->toBe('A')
+        ->and(Panel::subscriptionOf($found['website']))->toBe(7);
+})->with([
+    'the client email owns it' => ['owner@example.test', 'owner@example.test'],
+    'its own login owns it (billing email changed)' => ['new@example.test', 'owner@example.test'],
+    'its own login has the Owner role' => ['new@example.test', 'boss@example.test'],
+]);
+
 // ClientFence: Enhance leaves the subscription's transfer usage at 0; the month's bandwidth comes from its own call (GitHub #44).
 test('usage reads this month\'s bandwidth from the subscription bandwidth call', function (MockResponse $bandwidth, int $used): void {
     $requests = [];

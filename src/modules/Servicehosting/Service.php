@@ -191,7 +191,7 @@ class Service implements InjectionAwareInterface
      *
      * @todo
      */
-    public function action_create(\Model_ClientOrder $order): \Model_ServiceHosting
+    public function action_create(\Model_ClientOrder $order, bool $newAccount = false): \Model_ServiceHosting
     {
         $orderService = $this->di['mod_service']('order');
         $c = $orderService->getConfig($order);
@@ -199,7 +199,11 @@ class Service implements InjectionAwareInterface
 
         $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $c['server_id'], 'Server from order configuration was not found');
 
-        $this->assertServerTakesAccounts($server);
+        // ClientFence core patch: an account that is already set up (import) is not a new account on the server; an
+        // uncancel ($newAccount) creates one whatever the order says.
+        if ($newAccount || empty($c['import'])) {
+            $this->assertServerTakesAccounts($server);
+        }
 
         $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $c['hosting_plan_id'], 'Hosting plan from order configuration was not found');
 
@@ -420,7 +424,7 @@ class Service implements InjectionAwareInterface
      */
     public function action_uncancel(\Model_ClientOrder $order): bool
     {
-        $this->action_create($order);
+        $this->action_create($order, true);
         $orderService = $this->di['mod_service']('order');
         $model = $orderService->getOrderService($order);
 

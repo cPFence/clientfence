@@ -1500,6 +1500,27 @@ final class Upgrades
     }
 
     /**
+     * Why staffMove() would refuse to move the order to $productId (product, options, stock), or null: Orders > Move
+     * services previews with it, so its preview and the move agree.
+     */
+    public static function staffMoveRefusal(\Pimple\Container $di, \Model_ClientOrder $order, int $productId): ?string
+    {
+        if (!isset(self::moveTargets($di, $order)[$productId])) {
+            return __trans('The service can move only to another recurring product of the same type (hosting: on the same server, and reseller or not as now).');
+        }
+        $period = (string) $order->period;
+        if (self::optionsFor($di, $productId, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once') === null) {
+            return __trans('The options of this service do not fit the new product. Change them first.');
+        }
+        $stock = self::db($di)->fetchAssociative('SELECT stock_control, quantity_in_stock FROM product WHERE id = ?', [$productId]);
+        if ($stock !== false && (int) $stock['stock_control'] === 1 && (int) $stock['quantity_in_stock'] < max(1, (int) ($order->quantity ?? 1))) {
+            return __trans('Product :id is out of stock.', [':id' => $productId]);
+        }
+
+        return null;
+    }
+
+    /**
      * ClientFence: staff move a service to another product, as WHMCS (Products/Services tab: a new Product/Service,
      * "Auto Recalculate on Save", then the Change Package module command). No invoice is made. Its options stay where
      * the new product has them. With $reprice the recurring price is the new product's for the service's cycle (with

@@ -236,6 +236,10 @@
         "done": "ClientFence core patch: a disabled or full server takes no new accounts (cancelled ones do not count; an unset flag is active)."
     },
     {
+        "file": "modules/Servicehosting/Service.php",
+        "done": "ClientFence core patch: an account that is already set up (import) is not a new account on the server; an"
+    },
+    {
         "file": "modules/Client/templates/admin/mod_client_manage.html.twig",
         "done": "ClientFence core patch: the WHMCS-style summary cards (billing, services, notes, files)."
     },
@@ -1270,6 +1274,14 @@
     {
         "file": "modules/Order/Api/Admin.php",
         "done": "public function bulk_price_apply($data): array"
+    },
+    {
+        "file": "modules/Order/Api/Admin.php",
+        "done": "ClientFence core patch: what Orders > Move services offers (Order\\ProductMove)"
+    },
+    {
+        "file": "modules/Order/Controller/Admin.php",
+        "done": "ClientFence core patch: move services to another product, linking existing hosting accounts (ProductMove)."
     },
     {
         "file": "library/ClientFence/UpdatePatcher.php",

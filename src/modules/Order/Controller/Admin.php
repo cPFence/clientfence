@@ -59,6 +59,14 @@ class Admin implements \ClientFence\InjectionAwareInterface
                     'uri' => $this->di['url']->adminLink('order/bulk-prices'),
                     'class' => '',
                 ],
+                // ClientFence core patch: move services to another product, linking existing hosting accounts (ProductMove).
+                [
+                    'location' => 'order',
+                    'index' => 400,
+                    'label' => __trans('Move services'),
+                    'uri' => $this->di['url']->adminLink('order/move-services'),
+                    'class' => '',
+                ],
             ],
         ];
     }
@@ -72,6 +80,7 @@ class Admin implements \ClientFence\InjectionAwareInterface
         $app->get('/order/failed-actions', 'get_failed_actions', [], static::class);
         // ClientFence: bulk price update, with its preview (BulkPrices.php).
         $app->get('/order/bulk-prices', 'get_bulk_prices', [], static::class);
+        $app->get('/order/move-services', 'get_move_services', [], static::class);
         // ClientFence core patch: Add New Order is one page for a client's products and domains (WHMCS).
         $app->get('/order/new', 'get_new', [], static::class);
     }
@@ -94,6 +103,26 @@ class Admin implements \ClientFence\InjectionAwareInterface
         }
 
         return $app->render('mod_order_bulk_prices', $set);
+    }
+
+    /**
+     * ClientFence: Orders > Move services; with `preview` in the query, also a page of the services the move takes (or
+     * why the choice is refused).
+     */
+    public function get_move_services(\ClientFence\App $app): string
+    {
+        $this->di['is_admin_logged'];
+        $query = $this->di['request']->query->all();
+        $set = ['filters' => $query, 'preview' => null, 'error' => null];
+        if (!empty($query['preview'])) {
+            try {
+                $set['preview'] = $this->di['api_admin']->order_move_services_preview($query);
+            } catch (\ClientFence\InformationException $e) {
+                $set['error'] = $e->getMessage();
+            }
+        }
+
+        return $app->render('mod_order_move_services', $set);
     }
 
     public function get_index(\ClientFence\App $app): string
