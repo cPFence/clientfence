@@ -35,12 +35,14 @@ class Registrar_Adapter_Internetbs extends Registrar_AdapterAbstract implements 
                 'apikey' => ['password', [
                     'label' => __trans('Internetbs API Key'),
                     'description' => __trans('Internetbs API Key'),
+                    'required' => true,
                     'secret' => true,
                 ],
                 ],
                 'password' => ['password', [
                     'label' => __trans('Internetbs API Password'),
                     'description' => __trans('Internetbs API Password'),
+                    'required' => true,
                     'secret' => true,
                 ],
                 ],

@@ -41,10 +41,10 @@ class Payment_Adapter_PayU implements ClientFence\InjectionAwareInterface
             'supports_subscriptions' => false,
             'description' => __trans('Payments in Indian rupees (INR) on PayU India\'s payment page: cards, UPI, net banking and wallets. [How to set up PayU](https://clientfence.com/docs/clients-and-billing/payu/)'),
             'form' => [
-                'merchant_key' => ['text', ['label' => __trans('Live merchant key:'), 'description' => __trans('PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt.')]],
-                'merchant_salt' => ['password', ['label' => __trans('Live merchant salt:'), 'secret' => true]],
-                'test_merchant_key' => ['text', ['label' => __trans('Test merchant key:')]],
-                'test_merchant_salt' => ['password', ['label' => __trans('Test merchant salt:'), 'secret' => true]],
+                'merchant_key' => ['text', ['label' => __trans('Live merchant key:'), 'description' => __trans('PayU dashboard: Developers, Key and Salt. Test mode uses the test key and salt.'), 'required_when' => ['enabled' => true, 'test_mode' => false]]],
+                'merchant_salt' => ['password', ['label' => __trans('Live merchant salt:'), 'secret' => true, 'required_when' => ['enabled' => true, 'test_mode' => false]]],
+                'test_merchant_key' => ['text', ['label' => __trans('Test merchant key:'), 'required_when' => ['enabled' => true, 'test_mode' => true]]],
+                'test_merchant_salt' => ['password', ['label' => __trans('Test merchant salt:'), 'secret' => true, 'required_when' => ['enabled' => true, 'test_mode' => true]]],
             ],
         ];
     }

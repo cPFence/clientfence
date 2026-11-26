@@ -48,11 +48,11 @@ class Payment_Adapter_CCAvenue implements ClientFence\InjectionAwareInterface
             'supports_subscriptions' => false,
             'description' => __trans('Payments on CCAvenue\'s billing page. CCAvenue charges in the invoice\'s currency: turn on the currencies of your invoices in your CCAvenue account. Payments are checked with CCAvenue\'s API, so register this server\'s IP address with CCAvenue for API access. [How to set up CCAvenue](https://clientfence.com/docs/clients-and-billing/ccavenue/)'),
             'form' => [
-                'merchant_id' => ['text', ['label' => __trans('Merchant ID:'), 'description' => __trans('CCAvenue M.A.R.S: Settings, API Keys.')]],
-                'access_code' => ['text', ['label' => __trans('Live access code:')]],
-                'working_key' => ['password', ['label' => __trans('Live working key:'), 'secret' => true]],
-                'test_access_code' => ['text', ['label' => __trans('Test access code:')]],
-                'test_working_key' => ['password', ['label' => __trans('Test working key:'), 'secret' => true]],
+                'merchant_id' => ['text', ['label' => __trans('Merchant ID:'), 'description' => __trans('CCAvenue M.A.R.S: Settings, API Keys.'), 'required_when' => ['enabled' => true]]],
+                'access_code' => ['text', ['label' => __trans('Live access code:'), 'required_when' => ['enabled' => true, 'test_mode' => false]]],
+                'working_key' => ['password', ['label' => __trans('Live working key:'), 'secret' => true, 'required_when' => ['enabled' => true, 'test_mode' => false]]],
+                'test_access_code' => ['text', ['label' => __trans('Test access code:'), 'required_when' => ['enabled' => true, 'test_mode' => true]]],
+                'test_working_key' => ['password', ['label' => __trans('Test working key:'), 'secret' => true, 'required_when' => ['enabled' => true, 'test_mode' => true]]],
             ],
         ];
     }
