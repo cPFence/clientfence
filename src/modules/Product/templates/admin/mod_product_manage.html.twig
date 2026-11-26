@@ -294,7 +294,8 @@
 
         <div class="tab-pane fade" id="tab-config" role="tabpanel" aria-labelledby="config-tab">
             {% set service_partial = 'mod_service' ~ product.type ~ '_config.html.twig' %}
-            {% if source(service_partial, ignore_missing: true) is not empty %}
+            {# ClientFence core patch: a switched-off type module's config section is left out (its API refuses, so the page failed). #}
+            {% if source(service_partial, ignore_missing: true) is not empty and guest.extension_is_on({ 'mod': 'service' ~ product.type }) %}
                 <div class="p-3">
                     {{ include(service_partial, { 'product': product }) }}
                 </div>

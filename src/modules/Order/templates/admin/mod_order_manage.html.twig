@@ -23,6 +23,8 @@
 {% set active_menu = 'order' %}
 
 {% set service_partial = 'mod_service' ~ order.service_type ~ '_manage.html.twig' %}
+{# ClientFence core patch: a switched-off type module's sections and commands are left out (its API refuses, so the page failed). #}
+{% set service_on = guest.extension_is_on({ 'mod': 'service' ~ order.service_type }) %}
 {% set addons = order.group_master == 1 ? admin.order_addons({ 'id': order.id }) : [] %}
 {# ClientFence core patch: Add Add-on for this service (Order/AddonOrders.php). #}
 {% set addon_offers = order.status == 'active' ? admin.order_addon_offers({ 'id': order.id }) : [] %}
@@ -36,7 +38,7 @@
 {# ClientFence core patch: the products staff can move the service to (Order/Upgrades.php moveTargets()). #}
 {% set move_targets = order.status != 'canceled' ? admin.order_move_targets({ 'id': order.id }) : [] %}
 {# ClientFence core patch: the service (Service Management tab) and the product type's Module Commands (mod_service<type>_commands.html.twig). #}
-{% set order_service = admin.system_template_exists({ 'file': service_partial }) ? admin.order_service({ 'id': order.id }) : null %}
+{% set order_service = service_on and admin.system_template_exists({ 'file': service_partial }) ? admin.order_service({ 'id': order.id }) : null %}
 {% set commands_partial = 'mod_service' ~ order.service_type ~ '_commands.html.twig' %}
 {% set command_service = order_service is not null and admin.system_template_exists({ 'file': commands_partial }) ? order_service : null %}
 
@@ -868,7 +870,7 @@
         <div class="tab-pane fade" id="tab-service" role="tabpanel">
             {# ClientFence core patch: the admin templates hold the section, as for its tab (a module's admin-only one showed an empty tab);
                the custom type's old form stays out as before: its Update rewrote stored lists as text. #}
-            {% if admin.system_template_exists({ 'file': service_partial }) and order.service_type != 'custom' %}
+            {% if service_on and admin.system_template_exists({ 'file': service_partial }) and order.service_type != 'custom' %}
                 {% set service = order_service %}
                 {% if service is not null %}
                     {{ include(service_partial, { 'order': order, 'service': service }) }}

@@ -139,7 +139,8 @@
             {# Service management #}
             {% set service = null %}
             {{ render_widgets('client.order.manage.service.before', { 'order': order, 'service': service }) }}
-            {% if order.status == 'active' and guest.system_template_exists({ 'file': service_partial }) %}
+            {# ClientFence core patch: a switched-off type module's section is left out (its API refuses, so the page failed). #}
+            {% if order.status == 'active' and guest.system_template_exists({ 'file': service_partial }) and guest.extension_is_on({ 'mod': 'service' ~ order.service_type }) %}
                 {% set service = client.order_service({ 'id': order.id }) %}
                 {% if service %}
                     {{ include(service_partial, { 'order': order, 'service': service }) }}

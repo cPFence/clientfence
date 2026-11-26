@@ -18,7 +18,8 @@
 {% endblock %}
 
 {% set service_partial = "mod_service" ~ order.service_type ~ "_manage.html.twig" %}
-{% set has_partial = order.status == 'active' and guest.system_template_exists({ 'file': service_partial }) %}
+{# ClientFence core patch: a switched-off type module's card and header parts are left out (its API refuses, so the page failed). #}
+{% set has_partial = order.status == 'active' and guest.system_template_exists({ 'file': service_partial }) and guest.extension_is_on({ 'mod': 'service' ~ order.service_type }) %}
 {% set service = has_partial ? client.order_service({ 'id': order.id }) : null %}
 {% set head_partial = "mod_service" ~ order.service_type ~ "_head.html.twig" %}
 {% set has_head = service and guest.system_template_exists({ 'file': head_partial }) %}

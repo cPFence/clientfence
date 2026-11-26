@@ -68,7 +68,21 @@ test('product settings only load forms when staff can view them', function (bool
 
     $html = $twig->render('mod_product_manage.html.twig', [
         'product' => new PermissiveStub(['type' => 'custom', 'form_id' => 3]),
-        'guest' => new PermissiveStub(['extension_is_on' => $enabled, 'system_template_exists' => false]),
+        // `$enabled` switches the form builder; the product type's module stays on.
+        'guest' => new class($enabled) {
+            public function __construct(private readonly bool $enabled)
+            {
+            }
+
+            public function __call(string $name, array $arguments): mixed
+            {
+                return match ($name) {
+                    'extension_is_on' => $arguments[0]['mod'] === 'formbuilder' ? $this->enabled : true,
+                    'system_template_exists' => false,
+                    default => new PermissiveStub(),
+                };
+            }
+        },
         'admin' => $admin,
     ]);
 

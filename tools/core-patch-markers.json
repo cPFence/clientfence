@@ -10502,5 +10502,21 @@
     {
         "file": "modules/Product/templates/client/mod_product_options_form.html.twig",
         "done": "ClientFence core patch: `skip_codes` leaves out the options with these keys, which a product type's own order form shows."
+    },
+    {
+        "file": "modules/Product/templates/admin/mod_product_manage.html.twig",
+        "done": "ClientFence core patch: a switched-off type module's config section is left out (its API refuses, so the page failed)."
+    },
+    {
+        "file": "modules/Order/templates/admin/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: a switched-off type module's sections and commands are left out (its API refuses, so the page failed)."
+    },
+    {
+        "file": "modules/Order/templates/client/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: a switched-off type module's section is left out (its API refuses, so the page failed)."
+    },
+    {
+        "file": "themes/palisade/html/mod_order_manage.html.twig",
+        "done": "ClientFence core patch: a switched-off type module's card and header parts are left out (its API refuses, so the page failed)."
     }
 ]
