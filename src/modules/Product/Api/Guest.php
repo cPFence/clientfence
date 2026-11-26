@@ -27,6 +27,8 @@ class Guest extends \ClientFence\Api\AbstractApi
     public function get_list($data)
     {
         $data['status'] = 'enabled';
+        // ClientFence core patch: switching off a module leaves its products' status as saved.
+        $data['exclude_types'] = \ClientFence\ServiceTypes::switchedOff($this->getDi());
         $data['show_hidden'] = false;
 
         return $this->pricedService()->getPaginatedProducts($data);
@@ -43,6 +45,8 @@ class Guest extends \ClientFence\Api\AbstractApi
         $data['active_only'] = true;
         // ClientFence core patch: only what the store shows, as get_list (enabled, not hidden).
         $data['status'] = 'enabled';
+        // ClientFence core patch: the store pairs follow the store list's service module availability.
+        $data['exclude_types'] = \ClientFence\ServiceTypes::switchedOff($this->getDi());
         $data['show_hidden'] = false;
         $service = $this->getService();
 

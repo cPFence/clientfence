@@ -967,6 +967,7 @@ test('createFromCart with promo entity uses product promo service', function (fl
         'client' => $clientService,
         'Product' => $productService,
         'order', 'Order' => $orderService,
+        'extension' => extensionServiceWithoutClientfence(),
         default => null,
     });
 
@@ -1146,6 +1147,7 @@ test('createFromCart normalizes legacy invoice id before setting it on the order
         $serviceName === 'Product' => $productService,
         $serviceName === 'order' || $serviceName === 'Order' => $orderService,
         $serviceName === 'Invoice' => $invoiceService,
+        $serviceName === 'extension' => extensionServiceWithoutClientfence(),
         default => null,
     });
 
@@ -1252,6 +1254,7 @@ test('createFromCart leaves a held order\'s invoice a draft, sets nothing up and
         $serviceName === 'Product' => $productService,
         $serviceName === 'order' || $serviceName === 'Order' => $orderService,
         $serviceName === 'Invoice' => $invoiceService,
+        $serviceName === 'extension' => extensionServiceWithoutClientfence(),
         default => null,
     });
 
@@ -1313,6 +1316,7 @@ test('createFromCart links the setup fee invoice line to its order', function ()
         'Product' => $productService,
         'order', 'Order' => $orderService,
         'Invoice' => $invoiceService,
+        'extension' => extensionServiceWithoutClientfence(),
     });
     $service->setDi($di);
 
@@ -1357,6 +1361,7 @@ test('createFromCart refuses a DNS zone taken since it was added, or ordered twi
         'client' => $clientService,
         'Product' => $productService,
         'servicednshosting' => $dnsService,
+        'extension' => extensionServiceWithoutClientfence(),
         default => $orderService,
     });
     $service->setDi($di);
@@ -1467,6 +1472,7 @@ test('createFromCart compensates promo usage on transaction failure', function (
         'client' => $clientService,
         'Product' => $productService,
         'order', 'Order' => $orderService,
+        'extension' => extensionServiceWithoutClientfence(),
         default => null,
     });
 
@@ -1568,6 +1574,7 @@ test('createFromCart does not roll back order creation when synchronous activati
         'client' => $clientService,
         'Product' => $productService,
         'order', 'Order' => $orderService,
+        'extension' => extensionServiceWithoutClientfence(),
         default => null,
     });
 

@@ -130,6 +130,19 @@ function moduleHooksContainer(array $manifests, array $on): Pimple\Container
     return $di;
 }
 
+test('only switched-off extension service modules are listed as switched-off product types', function (string $type): void {
+    $di = moduleHooksContainer([
+        'serviceexample' => [],
+        'servicemetering' => [],
+        'servicehosting' => [],
+    ], ['servicemetering']);
+
+    expect(ServiceTypes::switchedOff($di))->toBe(['example'])
+        ->and(ServiceTypes::isSwitchedOff($di, $type))->toBeTrue();
+})->with([
+    'mixed-case product type' => ['ExAmPlE'],
+]);
+
 test('any switched-on module declares its hooks at the manifest root; a switched-off one does not count', function (): void {
     $policy = ['policy' => 'fixed_window', 'limit' => 5, 'interval' => '1 minute'];
     $hooks = static fn (string $id): array => [

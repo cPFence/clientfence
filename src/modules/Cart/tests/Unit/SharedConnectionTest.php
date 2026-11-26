@@ -181,6 +181,7 @@ test('free hosting checkout provisions once through the legacy service', functio
         'currency' => $currencyService,
         'client' => $clientService,
         'servicehosting' => $hostingService,
+        'extension' => Tests\Helpers\extensionServiceWithoutClientfence(),
         default => throw new RuntimeException('Unexpected module ' . $name),
     });
     // Order\Service also resolves the module before calling action_create.

@@ -4849,7 +4849,7 @@
     },
     {
         "file": "modules/Cart/Service.php",
-        "done": "ClientFence core patch: staff may order a disabled product, as with order/create (staffOrder())."
+        "done": "ClientFence core patch: a client's saved cart may predate a product or service module switch-off."
     },
     {
         "file": "modules/Product/Service.php",
@@ -10462,5 +10462,37 @@
     {
         "file": "modules/Cart/Service.php",
         "done": "ClientFence core patch: reject overlapping DNS hosting zones before checkout."
+    },
+    {
+        "file": "modules/Product/Repository/ProductRepository.php",
+        "done": "ClientFence core patch: guest pairs use a separate query from the store list."
+    },
+    {
+        "file": "modules/Product/Repository/ProductRepository.php",
+        "done": "ClientFence core patch: exclude switched-off types before paginating the store list."
+    },
+    {
+        "file": "modules/Product/Api/Guest.php",
+        "done": "ClientFence core patch: switching off a module leaves its products' status as saved."
+    },
+    {
+        "file": "modules/Product/Api/Guest.php",
+        "done": "ClientFence core patch: the store pairs follow the store list's service module availability."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: selected add-ons bypass the active product finders."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: cart adds by ID require the product's service module to be on."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: direct store links also require the product's service module to be on."
+    },
+    {
+        "file": "modules/Product/Service.php",
+        "done": "ClientFence core patch: the staff category page counts products from this serializer."
     }
 ]

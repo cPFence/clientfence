@@ -1170,8 +1170,9 @@ class Service implements InjectionAwareInterface
                         $item['addon_for'] = (int) $addonFor->id;
                     }
 
-                    // ClientFence core patch: staff may order a disabled product, as with order/create (staffOrder()).
-                    if ($product->getStatus() !== 'enabled' && $staff === null) {
+                    // ClientFence core patch: a client's saved cart may predate a product or service module switch-off.
+                    if ($staff === null && ($product->getStatus() !== 'enabled'
+                        || \ClientFence\ServiceTypes::isSwitchedOff($this->di, $product->getType()))) {
                         throw new \ClientFence\InformationException('Unable to complete order. One or more of the selected products are invalid.');
                     }
 

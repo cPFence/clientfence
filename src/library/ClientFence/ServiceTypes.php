@@ -190,6 +190,20 @@ final class ServiceTypes
         )));
     }
 
+    /** @return list<string> the product types whose service module is switched off */
+    public static function switchedOff(\Pimple\Container $di): array
+    {
+        return RequestCache::remember($di, 'service_type_switched_off', static fn (): array => array_values(array_filter(
+            self::types($di),
+            static fn (string $type): bool => !self::switchedOn($di, 'service' . $type),
+        )));
+    }
+
+    public static function isSwitchedOff(\Pimple\Container $di, ?string $type): bool
+    {
+        return in_array(strtolower((string) $type), self::switchedOff($di), true);
+    }
+
     /** What a closed store answers to `$role`'s call `$method` of module `$module`, or null when the module does not gate it. */
     public static function storeCall(\Pimple\Container $di, string $module, string $role, string $method): ?string
     {

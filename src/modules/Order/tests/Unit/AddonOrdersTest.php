@@ -11,11 +11,16 @@ use ClientFence\Mod\Order\AddonOrders;
 use ClientFence\Mod\Product\Entity\Product;
 
 use function Tests\Helpers\container;
+use function Tests\Helpers\moduleService;
 
 /** A service on product 1 with add-on 2 (monthly), 3 (yearly only) and 4 (one time). */
 function addonOrdersDi(bool $parentIsAddon = false): Pimple\Container
 {
-    $product = fn (int $id, bool $addon = false): Product => Mockery::mock(Product::class, ['getId' => $id, 'isAddon' => $addon]);
+    $product = fn (int $id, bool $addon = false): Product => Mockery::mock(Product::class, [
+        'getId' => $id,
+        'isAddon' => $addon,
+        'getType' => $id === 4 ? 'example' : 'custom',
+    ]);
     [$monthly, $yearly, $once] = [$product(2, true), $product(3, true), $product(4, true)];
     $products = Mockery::mock(ClientFence\Mod\Product\Service::class);
     $products->shouldReceive('findProductById')->with(1)->andReturn($product(1, $parentIsAddon));
@@ -33,7 +38,7 @@ function addonOrdersDi(bool $parentIsAddon = false): Pimple\Container
     $db->shouldReceive('fetchAssociative')->andReturn(false); // no plan change: periods count from the due date
     $di = container();
     $di['em'] = Mockery::mock(['getConnection' => $db]);
-    $di['mod_service'] = $di->protect(fn (string $name) => strtolower($name) === 'currency' ? $currencies : $products);
+    $di['mod_service'] = $di->protect(moduleService(['currency' => $currencies, 'product' => $products]));
 
     return $di;
 }
@@ -61,6 +66,13 @@ test('a service offers its add-ons priced for its cycle or once, and only while 
         ->and(AddonOrders::products(addonOrdersDi(true), addonOrdersService()))->toBe([])
         ->and(fn () => AddonOrders::offered(addonOrdersDi(), addonOrdersService(), 3))
         ->toThrow(ClientFence\InformationException::class, 'This add-on cannot be ordered for this service.');
+});
+
+test('a service excludes an add-on with a switched-off service module', function (): void {
+    $di = addonOrdersDi();
+    $di['request_cache'] = new ArrayObject(['module_manifests' => ['serviceexample' => [], 'servicecustom' => []]]);
+
+    expect(array_keys(AddonOrders::products($di, addonOrdersService())))->toBe([2]);
 });
 
 test('the first invoice charges the days left to the service due date', function (): void {

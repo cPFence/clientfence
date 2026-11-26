@@ -69,6 +69,12 @@ class ProductRepository extends EntityRepository
                 ->setParameter('type', $data['type']);
         }
 
+        // ClientFence core patch: guest pairs use a separate query from the store list.
+        if (!empty($data['exclude_types'])) {
+            $qb->andWhere('(p.type IS NULL OR p.type NOT IN (:exclude_types))')
+                ->setParameter('exclude_types', $data['exclude_types']);
+        }
+
         // ClientFence core patch: the same status and hidden filters as the product list (the store's pairs listed disabled and hidden products).
         if (!empty($data['status'])) {
             $qb->andWhere('p.status = :status')
@@ -101,6 +107,12 @@ class ProductRepository extends EntityRepository
         if (!empty($data['type'])) {
             $qb->andWhere('p.type = :type')
                 ->setParameter('type', $data['type']);
+        }
+
+        // ClientFence core patch: exclude switched-off types before paginating the store list.
+        if (!empty($data['exclude_types'])) {
+            $qb->andWhere('(p.type IS NULL OR p.type NOT IN (:exclude_types))')
+                ->setParameter('exclude_types', $data['exclude_types']);
         }
 
         if (!empty($data['status'])) {

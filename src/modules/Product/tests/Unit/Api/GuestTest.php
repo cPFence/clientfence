@@ -79,11 +79,12 @@ test('throws exception when product not found', function (): void {
 
 test('gets paginated product list', function (): void {
     $api = apiEndpoint(new Guest());
+    $api->getDi()['request_cache'] = new ArrayObject(['module_manifests' => []]);
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('inCurrency')->andReturnSelf();
     $serviceMock->shouldReceive('getPaginatedProducts')
         ->once()
-        ->with(['status' => 'enabled', 'show_hidden' => false])
+        ->with(['status' => 'enabled', 'exclude_types' => [], 'show_hidden' => false])
         ->andReturn(['list' => []]);
 
     $api->setService($serviceMock);

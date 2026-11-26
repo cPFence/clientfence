@@ -401,7 +401,9 @@ class Service implements InjectionAwareInterface
             }
 
             $addon = $this->getAddonById((int) $addonId);
-            if (!$addon instanceof Product || $addon->getStatus() !== 'enabled' || !in_array((int) $addonId, $validAddons)) {
+            // ClientFence core patch: selected add-ons bypass the active product finders.
+            if (!$addon instanceof Product || $addon->getStatus() !== 'enabled' || !in_array((int) $addonId, $validAddons)
+                || \ClientFence\ServiceTypes::isSwitchedOff($this->di, $addon->getType())) {
                 throw new \ClientFence\InformationException('One or more of your selected add-ons are invalid for the associated product.');
             }
 
@@ -874,9 +876,14 @@ class Service implements InjectionAwareInterface
 
     public function toProductCategoryApiArray(ProductCategory $model, $deep = true, $identity = null): array
     {
+        $isStaff = $identity instanceof Admin || $identity instanceof \Model_Admin;
         $min_price = 0;
         $products = [];
         $pr = $this->getCategoryProducts($model);
+        // ClientFence core patch: the staff category page counts products from this serializer.
+        if (!$isStaff) {
+            $pr = array_filter($pr, fn (Product $product): bool => !\ClientFence\ServiceTypes::isSwitchedOff($this->di, $product->getType()));
+        }
 
         $type = null; // identified by first product in category
         foreach ($pr as $p) {
@@ -907,7 +914,7 @@ class Service implements InjectionAwareInterface
         ];
 
         // ClientFence core patch: clients and guests read the category's texts in the page language (Product/Translations.php).
-        return $identity instanceof Admin || $identity instanceof \Model_Admin ? $result : Translations::overlay($this->di, 'category', $result);
+        return $isStaff ? $result : Translations::overlay($this->di, 'category', $result);
     }
 
     /**
@@ -915,7 +922,10 @@ class Service implements InjectionAwareInterface
      */
     public function findOneActiveById($id): ?Product
     {
-        return $this->getProductRepository()->findActiveById((int) $id);
+        // ClientFence core patch: cart adds by ID require the product's service module to be on.
+        $product = $this->getProductRepository()->findActiveById((int) $id);
+
+        return $product !== null && \ClientFence\ServiceTypes::isSwitchedOff($this->di, $product->getType()) ? null : $product;
     }
 
     /**
@@ -923,7 +933,10 @@ class Service implements InjectionAwareInterface
      */
     public function findOneActiveBySlug($slug): ?Product
     {
-        return $this->getProductRepository()->findActiveBySlug((string) $slug);
+        // ClientFence core patch: direct store links also require the product's service module to be on.
+        $product = $this->getProductRepository()->findActiveBySlug((string) $slug);
+
+        return $product !== null && \ClientFence\ServiceTypes::isSwitchedOff($this->di, $product->getType()) ? null : $product;
     }
 
     public function getPaginatedProductCategories(array $data, $identity = null): array

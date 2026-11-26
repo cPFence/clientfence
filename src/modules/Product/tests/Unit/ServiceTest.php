@@ -536,6 +536,7 @@ test('validate selected addons rejects quantity for addons without quantity sele
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getAddonById')->once()->with(20)->andReturn($addon);
+    $serviceMock->setDi(container());
 
     expect(fn () => $serviceMock->validateSelectedAddonsForProduct($parentProduct, [
         20 => ['selected' => true, 'quantity' => 3],
@@ -548,6 +549,7 @@ test('validate selected addons allows quantity for addons with quantity selectio
 
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getAddonById')->once()->with(20)->andReturn($addon);
+    $serviceMock->setDi(container());
 
     expect(fn () => $serviceMock->validateSelectedAddonsForProduct($parentProduct, [
         20 => ['selected' => true, 'quantity' => 3],
@@ -2515,6 +2517,26 @@ test('to product category api array', function (): void {
     expect($result)->toBeArray();
 });
 
+test('category products with a switched-off service module are visible only to staff', function (?object $identity, array $expected): void {
+    $category = productTestCreateProductCategoryEntity(1);
+    $unavailable = productTestCreateProductEntity(1)->setType('example');
+    $available = productTestCreateProductEntity(2)->setType(Service::CUSTOM);
+    $repo = Mockery::mock(ProductRepository::class);
+    $repo->shouldReceive('findEnabledVisibleByCategoryId')->once()->with(1)->andReturn([$unavailable, $available]);
+
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories($repo);
+    $di['request_cache'] = new ArrayObject(['module_manifests' => ['serviceexample' => [], 'servicecustom' => []]]);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('toApiArray')->andReturnUsing(fn (Product $product): array => ['id' => $product->getId()]);
+    $service->setDi($di);
+
+    expect(array_column($service->toProductCategoryApiArray($category, true, $identity)['products'], 'id'))->toBe($expected);
+})->with([
+    'a guest' => [null, [2]],
+    'staff' => [fn (): object => createEntity(ClientFence\Mod\Staff\Entity\Admin::class), [1, 2]],
+]);
+
 test('to product category api array starting from value not zero', function (): void {
     $service = new Service();
     $model = productTestCreateProductCategoryEntity(1);
@@ -2568,6 +2590,20 @@ test('find one active by id', function (): void {
     $service->setDi($di);
     $result = $service->findOneActiveById(1);
     expect($result)->toBeInstanceOf(Product::class);
+});
+
+test('find one active by id excludes a product with a switched-off service module', function (): void {
+    $product = productTestCreateProductEntity(1)->setType('example');
+    $repo = Mockery::mock(ProductRepository::class);
+    $repo->shouldReceive('findActiveById')->once()->with(1)->andReturn($product);
+
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories($repo);
+    $di['request_cache'] = new ArrayObject(['module_manifests' => ['serviceexample' => []]]);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->findOneActiveById(1))->toBeNull();
 });
 
 test('find one active by slug', function (): void {

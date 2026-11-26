@@ -38,6 +38,9 @@ final class AddonOrders
         }
         $offered = [];
         foreach ($products->getProductAddons($parent) as $addon) {
+            if (\ClientFence\ServiceTypes::isSwitchedOff($di, $addon->getType())) {
+                continue;
+            }
             if (!$products->isRecurrentProductPricing($addon) || $products->isProductPeriodEnabled($addon, (string) $order->period)) {
                 $offered[(int) $addon->getId()] = $addon;
             }
