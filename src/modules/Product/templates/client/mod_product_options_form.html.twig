@@ -9,10 +9,14 @@
    `options_list` gives the options (Order\Upgrades::options(): its product may be off sale). #}
 {% set product_options = options_list is defined ? options_list : guest.product_options({ 'product_id': product_id }) %}
 {% set selected = selected|default({}) %}
-{% if product_options %}
+{# ClientFence core patch: `skip_codes` leaves out the options with these keys, which a product type's own order form shows. #}
+{% set skip_codes = skip_codes|default([]) %}
+{# Strict string match: Twig's `in` is loose, so '01' would also skip an option coded '1'. #}
+{% set shown_options = product_options|filter(o => skip_codes|filter(c => (c ~ '') is same as(o.code ~ ''))|length == 0) %}
+{% if shown_options %}
 <div class="cf-product-options" data-cf-options data-currency="{{ currency.code|default('') }}" data-rate="{{ currency.conversion_rate|default(1) }}" data-setup-text="{{ 'setup fee'|trans }}" data-each-text="{{ 'each'|trans }}" data-per-text="{{ per|default('') }}"{% if no_setup|default(false) %} data-no-setup{% endif %}>
     <script nonce="{{ csp_nonce }}" type="application/json" data-cf-options-data>{{ product_options|json_encode|raw }}</script>
-    {% for option in product_options %}
+    {% for option in shown_options %}
         {% set fid = 'cf-option-' ~ option.id %}
         {% set current = selected[option.id] ?? null %}
         {% set kept = current is not null and current not in option.values|map(v => v.id) ? (lines|default([])|filter(l => l.option_id == option.id)|first) : null %}
