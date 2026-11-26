@@ -70,11 +70,12 @@ test('a prorata product is priced to its prorata day and keeps its full price fo
     [$service, $cart, $items] = prorataCart([1 => [1, ['period' => '1M'], 20.0]]);
     $term = Proration::prorata('1M', 1, 25, date('Y-m-d H:i:s'));
     $line = $service->cartProductToApiArray($items[1], $cart, array_values($items));
+    $later = Proration::prorata('1M', 1, 25, date('Y-m-d H:i:s'))['due'];
 
     expect($line['price'])->toBe(20.0 * $term['factor'])
         ->and($line['total'])->toBe(20.0 * $term['factor'])
         ->and($line['recurring_price'])->toBe(20.0)
-        ->and($line['addon_due'])->toBe($term['due'])
+        ->and($line['addon_due'])->toBeGreaterThanOrEqual($term['due'])->toBeLessThanOrEqual($later)
         ->and(substr((string) $line['addon_due'], 8, 2))->toBe('01')
         ->and($line['prorata_day'])->toBe(1);
 });
@@ -101,9 +102,10 @@ test('an add-on ordered with a prorata product follows its day; a one-time add-o
     ]);
     $term = Proration::prorata('1M', 1, 25, date('Y-m-d H:i:s'));
     $addon = $service->cartProductToApiArray($items[2], $cart, array_values($items));
+    $later = Proration::prorata('1M', 1, 25, date('Y-m-d H:i:s'))['due'];
 
     expect($addon['price'])->toBe(6.0 * $term['factor'])
-        ->and($addon['addon_due'])->toBe($term['due'])
+        ->and($addon['addon_due'])->toBeGreaterThanOrEqual($term['due'])->toBeLessThanOrEqual($later)
         ->and($addon['prorata_day'])->toBe(1)
         ->and($service->cartProductToApiArray($items[3], $cart, array_values($items))['price'])->toBe(9.0)
         ->and($service->cartProductToApiArray($items[4], $cart, array_values($items))['addon_due'])->toBeNull();
