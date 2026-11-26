@@ -631,6 +631,36 @@ test('uninstall uninstalls an extension', function (): void {
     expect($result)->toBeTrue();
 });
 
+test('uninstall refuses an inactive service module while orders of its type exist', function (): void {
+    $modMock = Mockery::mock(ClientFence\Module::class);
+    $modMock->shouldReceive('getCoreModules')->andReturn([]);
+    $modMock->shouldReceive('cannotRun')->andReturn(null);
+    $modMock->shouldReceive('uninstall')->never();
+
+    $staffService = Mockery::mock(ClientFence\Mod\Staff\Service::class);
+    $staffService->shouldReceive('checkPermissionsAndThrowException')->once();
+
+    $extensionRepository = Mockery::mock(ExtensionRepository::class);
+    $extensionRepository->shouldReceive('existsActiveByTypeAndName')->with('mod', 'Serviceapikey')->andReturn(false);
+
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchOne')->once()
+        ->with('SELECT 1 FROM client_order WHERE service_type = ? LIMIT 1', ['apikey'])
+        ->andReturn(1);
+
+    $di = container();
+    $di['em'] = extensionBuildEm($extensionRepository);
+    $di['mod'] = $di->protect(fn (): Mockery\MockInterface => $modMock);
+    $di['mod_service'] = $di->protect(fn (): Mockery\MockInterface => $staffService);
+    $di['dbal'] = $dbal;
+
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn (): bool => $service->uninstall('mod', 'Serviceapikey'))
+        ->toThrow(ClientFence\InformationException::class, 'Orders of this product type still exist. Delete them before uninstalling the module.');
+});
+
 test('getExtensionPath rejects unsafe extension IDs', function (string $type, string $id): void {
     $service = new Service();
 

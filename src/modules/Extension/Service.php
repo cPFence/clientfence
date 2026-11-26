@@ -586,6 +586,14 @@ class Service implements InjectionAwareInterface
             throw new \ClientFence\InformationException('Cannot uninstall an active module. Please deactivate it first.');
         }
 
+        // ClientFence core patch: reinstalling a service module can reuse IDs that existing orders still reference.
+        $module = strtolower($id);
+        if ($type === \ClientFence\ExtensionManager::TYPE_MOD
+            && str_starts_with($module, 'service')
+            && $this->di['dbal']->fetchOne('SELECT 1 FROM client_order WHERE service_type = ? LIMIT 1', [substr($module, 7)]) !== false) {
+            throw new \ClientFence\InformationException('Orders of this product type still exist. Delete them before uninstalling the module.');
+        }
+
         // Determine the path based on extension type
         $path = $this->getExtensionPath($type, $id);
 
