@@ -18,6 +18,7 @@ SPDX-License-Identifier: Apache-2.0
 {% if nameservers %}
     <div class="bf-configure-row">
         <span class="bf-label">{{ 'Nameservers'|trans }}</span>
-        <ul class="mb-0 text-break">{% for server in nameservers %}<li><bdi dir="ltr">{{ server }}</bdi></li>{% endfor %}</ul>
+        <ul class="list-unstyled mb-0 text-break font-monospace">{% for server in nameservers %}<li><bdi dir="ltr">{{ server }}</bdi></li>{% endfor %}</ul>
+        <div class="bf-hint">{{ 'After the order, set these nameservers at your domain registrar.'|trans }}</div>
     </div>
 {% endif %}

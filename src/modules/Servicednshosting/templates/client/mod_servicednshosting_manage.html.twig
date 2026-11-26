@@ -8,121 +8,329 @@ See the LICENSE file for the full license text.
 
 SPDX-License-Identifier: Apache-2.0
 #}
-{% macro fields(record, prefix) %}
-    <div class="col-12">
-        <label class="form-label" for="{{ prefix }}-value">{{ 'Value'|trans }}</label>
-        <input class="form-control" id="{{ prefix }}-value" name="record_value" dir="ltr" value="{{ record.value|default('') }}" spellcheck="false">
-    </div>
-    <div class="col-sm-6">
-        <label class="form-label" for="{{ prefix }}-ttl">{{ 'TTL (seconds)'|trans }}</label>
-        <input class="form-control" id="{{ prefix }}-ttl" name="record_ttl" type="number" min="0" max="2147483647" dir="ltr" value="{{ record.ttl ?? 3600 }}" required>
-    </div>
-    {% if not record.type|default('') or record.type == 'MX' %}
-        <div class="col-sm-6">
-            <label class="form-label" for="{{ prefix }}-priority">{{ 'MX priority'|trans }}</label>
-            <input class="form-control" id="{{ prefix }}-priority" name="record_priority" type="number" min="0" max="65535" dir="ltr" value="{{ record.priority|default(0) }}">
-        </div>
-    {% endif %}
-{% endmacro %}
-
+{# The DNS zone of the service page, as WHMCS DNS Management: the zone and its nameservers with copy buttons, the
+   records as a table (one card per record on a phone) with Add, Edit and Delete in dialogs, and DNSSEC in its own
+   card. Records the client cannot change (NS, SOA, the apex DS) read as quieter rows without buttons. #}
 {% if order.status == 'active' %}
 {% set zone = client.servicednshosting_zone({order_id: order.id}) %}
 {% set can_manage_dns = not clientfence_user or clientfence_user.owner or 'manageproducts' in clientfence_user.permissions %}
+{% if zone.error|default('') %}
 <div class="card mb-4">
-    <div class="card-header"><h2 class="h4 mb-0">{{ 'DNS records'|trans }}</h2></div>
     <div class="card-body">
-        {% if zone.error|default('') %}
-            <div class="alert alert-warning mb-0" role="alert">{{ zone.error }}</div>
-        {% else %}
-            <p class="fw-semibold text-break"><bdi dir="ltr">{{ zone.domain_name }}</bdi></p>
-            {% if zone.nameservers %}
-                <h3 class="h6">{{ 'Nameservers'|trans }}</h3>
-                <p class="text-secondary">{{ 'Set these nameservers at your domain registrar.'|trans }}</p>
-                <ul class="text-break">
-                    {% for server in zone.nameservers %}<li><bdi dir="ltr">{{ server }}</bdi></li>{% endfor %}
-                </ul>
-            {% endif %}
+        <div class="cf-dom-head mb-0">
+            <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#alert-triangle"/></svg></span>
+            <div role="alert">
+                <h2 class="h6 mb-1">{{ 'The DNS zone could not be loaded.'|trans }}</h2>
+                <p class="small text-secondary mb-2">{{ zone.error }}</p>
+                <a class="btn btn-outline-primary btn-sm" href="{{ ('order/service/manage/' ~ order.id)|url }}">{{ 'Try again'|trans }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+{% set has_priority = zone.records|filter(r => r.priority is not null)|length > 0 %}
+{% set columns = 4 + (has_priority ? 1 : 0) + (can_manage_dns ? 1 : 0) %}
+<section class="card mb-4" aria-labelledby="cf-dns-zone-title">
+    <div class="card-body cf-dns-zone">
+        <div class="cf-dom-head mb-0">
+            <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#world"/></svg></span>
+            <div>
+                <h2 class="h6 mb-1 d-flex flex-wrap align-items-center gap-2" id="cf-dns-zone-title">
+                    <bdi dir="ltr" class="text-break">{{ zone.domain_name }}</bdi>
+                    <span class="bf-chip bf-chip-ok cf-dns-chip">{{ 'Active'|trans }}</span>
+                </h2>
+                <span class="small text-secondary">{{ 'Set these nameservers at your domain registrar.'|trans }}</span>
+            </div>
+        </div>
+    </div>
+    {% if zone.nameservers %}
+        <dl class="bf-facts border-top">
+            {% for server in zone.nameservers %}
+                <div class="bf-fact"><dt>{{ 'Nameserver :number'|trans({':number': loop.index}) }}</dt><dd><bdi dir="ltr" class="font-monospace">{{ server }}</bdi> <button class="bf-copy" type="button" data-bf-copy="{{ server|trim('.', 'right') }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button></dd></div>
+            {% endfor %}
+        </dl>
+    {% endif %}
+</section>
 
+<section class="card mb-4 cf-dns" aria-labelledby="cf-dns-records-title">
+    <div class="card-header cf-dns-head">
+        <h2 id="cf-dns-records-title">{{ 'DNS records'|trans }} <span class="bf-chip bf-chip-muted cf-dns-chip">{{ zone.records|length }}</span></h2>
+        <div class="cf-dns-tools">
+            {% if zone.records|length > 8 %}
+                <input class="form-control form-control-sm cf-dns-search" type="search" id="cf-dns-search" placeholder="{{ 'Search records'|trans }}" aria-label="{{ 'Search records'|trans }}" autocomplete="off">
+            {% endif %}
             {% if can_manage_dns %}
-                <details class="border rounded p-3 mb-3">
-                    <summary class="fw-semibold">{{ 'Add DNS record'|trans }}</summary>
-                    <form class="row g-3 mt-1" action="{{ 'servicednshosting/add'|api_url }}" {{ fb_api_form({reload: true}) }}>
-                        <input type="hidden" name="order_id" value="{{ order.id }}">
-                        <div class="col-sm-6">
-                            <label class="form-label" for="dns-record-name">{{ 'Name'|trans }}</label>
-                            <input class="form-control" id="dns-record-name" name="record_name" dir="ltr" placeholder="www" spellcheck="false">
-                            <div class="form-text">{{ 'Use @ for the zone apex.'|trans }}</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="form-label" for="dns-record-type">{{ 'Type'|trans }}</label>
-                            <select class="form-select" id="dns-record-type" name="record_type" required>
-                                {% for type in zone.types %}<option value="{{ type }}">{{ type }}</option>{% endfor %}
-                            </select>
-                        </div>
-                        {{ _self.fields({}, 'dns-add') }}
-                        <div class="col-12"><button class="btn btn-primary" type="submit">{{ 'Add record'|trans }}</button></div>
-                    </form>
-                </details>
+                <button class="btn btn-primary btn-sm icon-link" type="button" data-cf-dns-add><svg class="icon icon-sm" aria-hidden="true"><use href="#plus"/></svg>{{ 'Add record'|trans }}</button>
             {% endif %}
+        </div>
+    </div>
+    <div class="table-responsive">
+    <table class="table align-middle mb-0 table-stack cf-dns-table">
+        <thead>
+            <tr>
+                <th scope="col">{{ 'Name'|trans }}</th>
+                <th scope="col">{{ 'Type'|trans }}</th>
+                <th scope="col">{{ 'Value'|trans }}</th>
+                <th scope="col">{{ 'TTL'|trans }}</th>
+                {% if has_priority %}<th scope="col">{{ 'Priority'|trans }}</th>{% endif %}
+                {% if can_manage_dns %}<th scope="col"><span class="visually-hidden">{{ 'Actions'|trans }}</span></th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in zone.records %}
+                {% set editable = record.type in zone.types and (record.type != 'DS' or record.name != '') %}
+                {# A record may be named 0, which ?: would show as @. #}
+                {% set host = record.name|length ? record.name : '@' %}
+                {% set long = record.value|length > 60 %}
+                <tr{% if not editable %} class="cf-dns-ro"{% endif %}>
+                    {# A long name (selector1._domainkey) may break after a dot. #}
+                    <td class="cf-dns-name"><bdi dir="ltr">{{ host|e|replace({'.': '.<wbr>'})|raw }}</bdi></td>
+                    <td class="cf-dns-type"><span class="cf-dns-badge">{{ record.type }}</span></td>
+                    <td class="cf-dns-val"><code dir="ltr" class="cf-dns-value{% if long %} is-clamped{% endif %}" id="cf-dns-value-{{ loop.index }}">{{ record.value }}</code>
+                        {%- if long %}<button class="btn btn-link btn-sm p-0 cf-dns-more" type="button" aria-expanded="false" aria-controls="cf-dns-value-{{ loop.index }}" data-show="{{ 'Show all'|trans }}" data-hide="{{ 'Show less'|trans }}">{{ 'Show all'|trans }}</button>{% endif -%}
+                    </td>
+                    <td class="cf-dns-ttl"><bdi>{{ record.ttl }}</bdi></td>
+                    {% if has_priority %}<td class="cf-dns-prio">{% if record.priority is not null %}<bdi>{{ record.priority }}</bdi>{% endif %}</td>{% endif %}
+                    {% if can_manage_dns %}
+                        <td class="cf-dns-actions">
+                            {%- if editable -%}
+                                <button class="btn btn-sm btn-outline-secondary" type="button" title="{{ 'Edit'|trans }}" data-cf-dns-edit="{{ {id: record.id, name: host, type: record.type, value: record.value, ttl: record.ttl, priority: record.priority}|json_encode }}" aria-label="{{ 'Edit the :type record :name'|trans({':type': record.type, ':name': host}) }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#pencil"/></svg></button>
+                                <button class="btn btn-sm btn-outline-danger" type="button" title="{{ 'Delete'|trans }}" data-cf-dns-delete="{{ record.id }}" data-summary="{{ host }} {{ record.type }} {{ record.priority is not null ? record.priority ~ ' ' }}{{ record.value }}" aria-label="{{ 'Delete the :type record :name'|trans({':type': record.type, ':name': host}) }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#trash"/></svg></button>
+                            {%- else -%}
+                                <span class="cf-dns-lock" title="{{ 'Read only'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#lock"/></svg><span class="visually-hidden">{{ 'Read only'|trans }}</span></span>
+                            {%- endif -%}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr><td colspan="{{ columns }}" class="empty-state">{{ 'No DNS records found.'|trans }}</td></tr>
+            {% endfor %}
+            {% if zone.records|length > 8 %}
+                <tr hidden data-cf-dns-nomatch><td colspan="{{ columns }}" class="empty-state">{{ 'No records match your search.'|trans }}</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+    </div>
+</section>
 
-            <ul class="list-group mb-0">
-                {% for record in zone.records %}
-                    <li class="list-group-item text-break">
-                        <div class="d-flex flex-wrap gap-2 align-items-center">
-                            <strong><bdi dir="ltr">{{ record.name ?: '@' }}</bdi></strong>
-                            <span class="badge text-bg-secondary">{{ record.type }}</span>
-                            <span class="small text-secondary">{{ 'TTL'|trans }} <bdi>{{ record.ttl }}</bdi></span>
+{% if can_manage_dns %}
+{# One dialog adds and edits: an edit keeps the record's name and type (the API keeps them), so both are locked. #}
+<div class="modal fade" id="cf-dns-record-modal" tabindex="-1" aria-labelledby="cf-dns-record-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" action="{{ 'servicednshosting/add'|api_url }}" data-add="{{ 'servicednshosting/add'|api_url }}" data-update="{{ 'servicednshosting/update'|api_url }}" {{ fb_api_form({message: 'DNS record saved.'|trans, reload: true}) }}>
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="cf-dns-record-title" data-add="{{ 'Add DNS record'|trans }}" data-edit="{{ 'Edit DNS record'|trans }}">{{ 'Add DNS record'|trans }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <input type="hidden" name="record_id" value="" disabled>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <label class="form-label" for="cf-dns-type">{{ 'Type'|trans }}</label>
+                        <select class="form-select" id="cf-dns-type" name="record_type" required>
+                            {% set hints = {
+                                A: ['The IPv4 address this name points to.'|trans, '203.0.113.10'],
+                                AAAA: ['The IPv6 address this name points to.'|trans, '2001:db8::10'],
+                                CNAME: ['The host name this name is an alias of.'|trans, 'target.example.net'],
+                                MX: ['The host name of the mail server. A lower priority number is tried first.'|trans, 'mail.example.net'],
+                                TXT: ['Text such as a site verification code, an SPF policy or a DKIM key.'|trans, 'v=spf1 mx -all'],
+                                SPF: ['An SPF policy that starts with v=spf1.'|trans, 'v=spf1 mx -all'],
+                                DS: ['For a delegated subdomain: key tag, algorithm, digest type and digest.'|trans, '12345 13 2 abcdef0123…'],
+                            } %}
+                            {% for type in zone.types %}<option value="{{ type }}" data-hint="{{ hints[type][0]|default('') }}" data-placeholder="{{ hints[type][1]|default('') }}">{{ type }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-8">
+                        <label class="form-label" for="cf-dns-name">{{ 'Name'|trans }}</label>
+                        <div class="input-group" dir="ltr">
+                            <input class="form-control" id="cf-dns-name" name="record_name" placeholder="www" spellcheck="false" autocomplete="off" aria-describedby="cf-dns-name-hint">
+                            <span class="input-group-text cf-dns-suffix">.{{ zone.domain_name }}</span>
                         </div>
-                        <div><bdi dir="ltr">{% if record.priority is not null %}{{ record.priority }} {% endif %}{{ record.value }}</bdi></div>
-                        {% if can_manage_dns and record.type in zone.types and (record.type != 'DS' or record.name != '') %}
-                            <details class="mt-2">
-                                <summary>{{ 'Edit or delete record'|trans }}</summary>
-                                <form class="row g-3 mt-1 mb-2" action="{{ 'servicednshosting/update'|api_url }}" {{ fb_api_form({reload: true}) }}>
-                                    <input type="hidden" name="order_id" value="{{ order.id }}">
-                                    <input type="hidden" name="record_id" value="{{ record.id }}">
-                                    {{ _self.fields(record, 'dns-edit-' ~ loop.index) }}
-                                    <div class="col-12"><button type="submit" class="btn btn-primary btn-sm">{{ 'Save record'|trans }}</button></div>
-                                </form>
-                                <form action="{{ 'servicednshosting/del'|api_url }}" {{ fb_api_form({reload: true}) }}>
-                                    <input type="hidden" name="order_id" value="{{ order.id }}">
-                                    <input type="hidden" name="record_id" value="{{ record.id }}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">{{ 'Delete record'|trans }}</button>
-                                </form>
-                            </details>
-                        {% endif %}
-                    </li>
-                {% else %}
-                    <li class="list-group-item">{{ 'No DNS records found.'|trans }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+                        <div class="form-text" id="cf-dns-name-hint">{{ 'Use @ for the zone apex.'|trans }}</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="cf-dns-value">{{ 'Value'|trans }}</label>
+                        <input class="form-control font-monospace" id="cf-dns-value" name="record_value" dir="ltr" spellcheck="false" autocomplete="off" aria-describedby="cf-dns-value-hint">
+                        <div class="form-text" id="cf-dns-value-hint"></div>
+                    </div>
+                    <div class="col-sm-6" data-cf-dns-priority>
+                        <label class="form-label" for="cf-dns-priority">{{ 'Priority'|trans }}</label>
+                        <input class="form-control" id="cf-dns-priority" name="record_priority" type="number" min="0" max="65535" dir="ltr" value="10">
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="cf-dns-ttl">{{ 'TTL (seconds)'|trans }}</label>
+                        <input class="form-control" id="cf-dns-ttl" name="record_ttl" type="number" min="0" max="2147483647" dir="ltr" value="3600" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                <button type="submit" class="btn btn-primary">{{ 'Save record'|trans }}</button>
+            </div>
+        </form>
     </div>
 </div>
 
-{% if not zone.error|default('') %}
-    {% set dnssec = client.servicednshosting_dnssec({order_id: order.id}) %}
-    {% if dnssec.supported|default(false) or dnssec.error|default('') %}
-        <div class="card mb-4">
-            <div class="card-header"><h2 class="h4 mb-0">{{ 'DNSSEC'|trans }}</h2></div>
-            <div class="card-body">
+<div class="modal fade" id="cf-dns-delete-modal" tabindex="-1" aria-labelledby="cf-dns-delete-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" action="{{ 'servicednshosting/del'|api_url }}" {{ fb_api_form({message: 'DNS record deleted.'|trans, reload: true}) }}>
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="cf-dns-delete-title">{{ 'Delete this DNS record?'|trans }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ 'The record is removed from the zone. This cannot be undone.'|trans }}</p>
+                <code class="cf-dns-summary" dir="ltr" data-cf-dns-summary></code>
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <input type="hidden" name="record_id" value="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                <button type="submit" class="btn btn-danger">{{ 'Delete record'|trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% set dnssec = client.servicednshosting_dnssec({order_id: order.id}) %}
+{% if dnssec.supported|default(false) or dnssec.error|default('') %}
+<section class="card mb-4" aria-labelledby="cf-dnssec-title">
+    <div class="card-body">
+        <div class="cf-dom-head{% if not dnssec.ds|default([]) and not (can_manage_dns and dnssec.can_toggle|default(false)) %} mb-0{% endif %}">
+            <span class="clientfence-hosting-tile-icon" aria-hidden="true"><svg class="icon icon-sm"><use href="#shield-check"/></svg></span>
+            <div>
+                <h2 class="h6 mb-1 d-flex flex-wrap align-items-center gap-2" id="cf-dnssec-title">{{ 'DNSSEC'|trans }}
+                    {% if not dnssec.error|default('') %}<span class="bf-chip {{ dnssec.enabled ? 'bf-chip-ok' : 'bf-chip-muted' }} cf-dns-chip">{{ dnssec.enabled ? 'Enabled'|trans : 'Disabled'|trans }}</span>{% endif %}
+                </h2>
                 {% if dnssec.error|default('') %}
-                    <div class="alert alert-warning mb-0" role="alert">{{ dnssec.error }}</div>
+                    <p class="small text-secondary mb-0" role="alert">{{ dnssec.error }}</p>
                 {% else %}
-                    <p>{{ dnssec.enabled ? 'DNSSEC is enabled.'|trans : 'DNSSEC is disabled.'|trans }}</p>
-                    {% if dnssec.ds %}
-                        <p>{{ 'Publish these DS records at your domain registrar.'|trans }}</p>
-                        <ul class="text-break">{% for ds in dnssec.ds %}<li><bdi dir="ltr">{{ ds }}</bdi></li>{% endfor %}</ul>
-                    {% endif %}
-                    {% if can_manage_dns and dnssec.can_toggle %}
-                        {% if dnssec.enabled %}<p>{{ 'Remove the DS records at your domain registrar before you disable DNSSEC, or the domain stops resolving.'|trans }}</p>{% endif %}
-                        <form action="{{ (dnssec.enabled ? 'servicednshosting/dnssec_disable' : 'servicednshosting/dnssec_enable')|api_url }}" {{ fb_api_form({reload: true}) }}>
-                            <input type="hidden" name="order_id" value="{{ order.id }}">
-                            <button type="submit" class="btn btn-outline-primary">{{ dnssec.enabled ? 'Disable DNSSEC'|trans : 'Enable DNSSEC'|trans }}</button>
-                        </form>
-                    {% endif %}
+                    <span class="small text-secondary">{{ dnssec.enabled ? 'DNSSEC is enabled.'|trans : 'DNSSEC is disabled.'|trans }} {{ 'DNSSEC signs the zone so resolvers can check that its answers are genuine.'|trans }}</span>
                 {% endif %}
             </div>
         </div>
-    {% endif %}
+        {% if not dnssec.error|default('') %}
+            {% if dnssec.ds %}
+                <p class="small fw-semibold mb-2">{{ 'Publish these DS records at your domain registrar.'|trans }}</p>
+                <ul class="list-unstyled cf-dns-ds">
+                    {% for ds in dnssec.ds %}<li><code dir="ltr">{{ ds }}</code><button class="bf-copy" type="button" data-bf-copy="{{ ds }}" aria-label="{{ 'Copy'|trans }}"><svg class="icon icon-sm" aria-hidden="true"><use href="#copy"/></svg></button></li>{% endfor %}
+                </ul>
+            {% endif %}
+            {% if can_manage_dns and dnssec.can_toggle %}
+                {% if dnssec.enabled %}
+                    <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#cf-dnssec-modal">{{ 'Disable DNSSEC'|trans }}</button>
+                {% else %}
+                    <form action="{{ 'servicednshosting/dnssec_enable'|api_url }}" {{ fb_api_form({reload: true}) }}>
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <button type="submit" class="btn btn-primary">{{ 'Enable DNSSEC'|trans }}</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% if can_manage_dns and dnssec.can_toggle|default(false) and dnssec.enabled|default(false) %}
+<div class="modal fade" id="cf-dnssec-modal" tabindex="-1" aria-labelledby="cf-dnssec-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" action="{{ 'servicednshosting/dnssec_disable'|api_url }}" {{ fb_api_form({reload: true}) }}>
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="cf-dnssec-modal-title">{{ 'Disable DNSSEC?'|trans }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+            </div>
+            <div class="modal-body">{{ 'Remove the DS records at your domain registrar before you disable DNSSEC, or the domain stops resolving.'|trans }}</div>
+            <div class="modal-footer">
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                <button type="submit" class="btn btn-danger">{{ 'Disable DNSSEC'|trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+<script nonce="{{ csp_nonce }}">
+    document.addEventListener('DOMContentLoaded', () => {
+        // A long value (a DKIM key) shows two lines until opened; Show all only where it does not fit in them.
+        const fit = () => document.querySelectorAll('.cf-dns-more').forEach((button) => {
+            const value = document.getElementById(button.getAttribute('aria-controls'));
+            if (value.classList.contains('is-clamped') && value.offsetParent) button.hidden = value.scrollHeight <= value.clientHeight + 1;
+        });
+        fit();
+        window.addEventListener('resize', fit);
+        document.querySelectorAll('.cf-dns-more').forEach((button) => button.addEventListener('click', () => {
+            const open = document.getElementById(button.getAttribute('aria-controls')).classList.toggle('is-clamped') === false;
+            button.setAttribute('aria-expanded', String(open));
+            button.textContent = open ? button.dataset.hide : button.dataset.show;
+        }));
+
+        const search = document.getElementById('cf-dns-search');
+        search?.addEventListener('input', () => {
+            const term = search.value.trim().toLowerCase();
+            let shown = 0;
+            document.querySelectorAll('.cf-dns-table tbody tr:not([data-cf-dns-nomatch])').forEach((row) => {
+                const text = [...row.querySelectorAll('.cf-dns-name, .cf-dns-badge, .cf-dns-value')].map((cell) => cell.textContent).join(' ');
+                row.hidden = term !== '' && !text.toLowerCase().includes(term);
+                shown += row.hidden ? 0 : 1;
+            });
+            document.querySelector('[data-cf-dns-nomatch]').hidden = shown > 0;
+            fit();
+        });
+
+        const modal = document.getElementById('cf-dns-record-modal');
+        if (!modal) return;
+        const form = modal.querySelector('form');
+        const title = document.getElementById('cf-dns-record-title');
+        const type = form.elements.record_type, name = form.elements.record_name, value = form.elements.record_value;
+        const priority = form.elements.record_priority, ttl = form.elements.record_ttl, id = form.elements.record_id;
+        const hint = document.getElementById('cf-dns-value-hint');
+        const showType = () => {
+            const option = type.selectedOptions[0];
+            hint.textContent = option?.dataset.hint || '';
+            value.placeholder = option?.dataset.placeholder || '';
+            // Only MX takes a priority; a hidden field is not sent.
+            const mx = type.value === 'MX';
+            modal.querySelector('[data-cf-dns-priority]').hidden = !mx;
+            priority.disabled = !mx;
+        };
+        type.addEventListener('change', showType);
+
+        const show = (dialog, opener) => {
+            dialog.addEventListener('hidden.bs.modal', () => opener.focus(), { once: true });
+            bootstrap.Modal.getOrCreateInstance(dialog).show();
+        };
+        const open = (record, opener) => {
+            form.reset();
+            const edit = record !== null;
+            form.action = edit ? form.dataset.update : form.dataset.add;
+            title.textContent = edit ? title.dataset.edit : title.dataset.add;
+            id.disabled = !edit;
+            id.value = edit ? record.id : '';
+            type.disabled = edit;
+            name.disabled = edit;
+            if (edit) {
+                type.value = record.type;
+                name.value = record.name;
+                value.value = record.value;
+                ttl.value = record.ttl;
+                priority.value = record.priority ?? 0;
+            }
+            showType();
+            show(modal, opener);
+        };
+        modal.addEventListener('shown.bs.modal', () => (type.disabled ? value : type).focus());
+        document.querySelector('[data-cf-dns-add]')?.addEventListener('click', (event) => open(null, event.currentTarget));
+        document.querySelectorAll('[data-cf-dns-edit]').forEach((button) => button.addEventListener('click', () => open(JSON.parse(button.dataset.cfDnsEdit), button)));
+
+        const remove = document.getElementById('cf-dns-delete-modal');
+        document.querySelectorAll('[data-cf-dns-delete]').forEach((button) => button.addEventListener('click', () => {
+            remove.querySelector('form').elements.record_id.value = button.dataset.cfDnsDelete;
+            remove.querySelector('[data-cf-dns-summary]').textContent = button.dataset.summary;
+            show(remove, button);
+        }));
+    });
+</script>
 {% endif %}
 {% endif %}

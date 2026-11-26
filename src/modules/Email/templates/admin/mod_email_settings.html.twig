@@ -464,11 +464,14 @@
                                     <small class="form-hint">{{ 'Send a hidden copy of every outgoing email to this address, e.g. an accounts or billing mailbox. Comma-separate multiple addresses. Leave blank to disable.'|trans }}</small>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label" for="email-signature">{{ 'Email Signature'|trans }}</label>
-                                    <textarea class="form-control" id="email-signature" name="signature" rows="4" placeholder="{{ company.signature }}">{{ params.signature|default('') }}</textarea>
-                                    <small class="form-hint">{{ 'Used by email templates. Safe HTML is allowed. Leave blank to use the company signature.'|trans }}</small>
                                     {# ClientFence core patch (forum #181): the signature's language versions (i18n::text()). #}
-                                    {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'signature', label: 'Email Signature'|trans, textarea: true, rows: 4 }], values: params }) }}
+                                    {% embed 'mod_system_text_versions.html.twig' with { fields: [{ key: 'signature', label: 'Email Signature'|trans, textarea: true, rows: 4 }], values: params } %}
+                                        {% block cf_label %}<label class="form-label mb-0" for="email-signature">{{ 'Email Signature'|trans }}</label>{% endblock %}
+                                        {% block cf_field %}
+                                            <textarea class="form-control" id="email-signature" dir="auto" name="signature" rows="4" placeholder="{{ company.signature }}">{{ params.signature|default('') }}</textarea>
+                                            <small class="form-hint">{{ 'Used by email templates. Safe HTML is allowed. Leave blank to use the company signature.'|trans }}</small>
+                                        {% endblock %}
+                                    {% endembed %}
                                 </div>
                             </div>
                         </div>

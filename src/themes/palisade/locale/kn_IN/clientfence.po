@@ -10346,7 +10346,7 @@ msgstr "ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಬದಲ
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_order_form.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_order_form.html.twig
 msgid "Enter your domain name to transfer"
-msgstr "ವರ್ಗಾಯಿಸಲು ನಿಮ್ಮ ಡೊಮೇನ್ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"
+msgstr "ವರ್ಗಾಯಿಸಬೇಕಾದ ಡೊಮೇನ್"
 
 #: src/modules/Page/templates/client/mod_page_login.html.twig src/modules/Page/templates/client/mod_page_password-reset.html.twig src/modules/Staff/templates/admin/mod_staff_login.html.twig …
 msgid "Enter your email address"
@@ -36082,3 +36082,152 @@ msgstr "ನಾನು ಇನ್‌ವಾಯ್ಸ್ :number (:amount) ಅನ್�
 #: src/modules/Invoice/Receipts.php
 msgid "Payment receipt: invoice :number"
 msgstr "ಪಾವತಿ ರಸೀದಿ: ಇನ್‌ವಾಯ್ಸ್ :number"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_order_form.html.twig
+msgid "After the order, set these nameservers at your domain registrar."
+msgstr "ಆರ್ಡರ್ ಮಾಡಿದ ನಂತರ ಈ ನೇಮ್‌ಸರ್ವರ್‌ಗಳನ್ನು ನಿಮ್ಮ ಡೊಮೇನ್ ರಿಜಿಸ್ಟ್ರಾರ್‌ನಲ್ಲಿ ಹೊಂದಿಸಿ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "An SPF policy that starts with v=spf1."
+msgstr "v=spf1 ನಿಂದ ಆರಂಭವಾಗುವ SPF ನೀತಿ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNS record deleted."
+msgstr "DNS ದಾಖಲೆಯನ್ನು ಅಳಿಸಲಾಗಿದೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNS record saved."
+msgstr "DNS ದಾಖಲೆಯನ್ನು ಉಳಿಸಲಾಗಿದೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC signs the zone so resolvers can check that its answers are genuine."
+msgstr "DNSSEC ವಲಯಕ್ಕೆ ಸಹಿ ಮಾಡುತ್ತದೆ. ಇದರಿಂದ ರಿಸಾಲ್ವರ್‌ಗಳು ಅದರ ಉತ್ತರಗಳು ಅಧಿಕೃತವೇ ಎಂದು ಪರಿಶೀಲಿಸಬಹುದು."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Delete the :type record :name"
+msgstr ":name ಹೆಸರಿನ :type ದಾಖಲೆಯನ್ನು ಅಳಿಸಿ"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Delete this DNS record?"
+msgstr "ಈ DNS ದಾಖಲೆಯನ್ನು ಅಳಿಸುವುದೇ?"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Disable DNSSEC?"
+msgstr "DNSSEC ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುವುದೇ?"
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "Drag an image onto its box or use Upload. PNG, JPEG, GIF and WebP images are scaled down and saved as PNG."
+msgstr "ಚಿತ್ರವನ್ನು ಅದಕ್ಕೆ ಮೀಸಲಾದ ಪೆಟ್ಟಿಗೆಗೆ ಎಳೆಯಿರಿ ಅಥವಾ “ಅಪ್‌ಲೋಡ್ ಮಾಡಿ” ಆಯ್ಕೆ ಬಳಸಿ. PNG, JPEG, GIF ಮತ್ತು WebP ಚಿತ್ರಗಳ ಗಾತ್ರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ PNG ಆಗಿ ಉಳಿಸಲಾಗುತ್ತದೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Edit DNS record"
+msgstr "DNS ದಾಖಲೆಯನ್ನು ಸಂಪಾದಿಸಿ"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Edit the :type record :name"
+msgstr ":name ಹೆಸರಿನ :type ದಾಖಲೆಯನ್ನು ಸಂಪಾದಿಸಿ"
+
+#: src/modules/Servicednshosting/Service.php
+msgid "Enter a valid IP address for the :type record."
+msgstr ":type ದಾಖಲೆಗಾಗಿ ಮಾನ್ಯವಾದ IP ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "For a delegated subdomain: key tag, algorithm, digest type and digest."
+msgstr "ಅಧಿಕಾರ ನಿಯೋಜಿಸಿದ ಉಪಡೊಮೇನ್‌ಗಾಗಿ ಕೀ ಟ್ಯಾಗ್, ಅಲ್ಗಾರಿದಮ್, ಡೈಜೆಸ್ಟ್ ಪ್ರಕಾರ ಮತ್ತು ಡೈಜೆಸ್ಟ್ ಅನ್ನು ನಮೂದಿಸಿ."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "Hosting account"
+msgstr "ಹೋಸ್ಟಿಂಗ್ ಖಾತೆ"
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Nameserver :number"
+msgstr "ನೇಮ್‌ಸರ್ವರ್ :number"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "No records match your search."
+msgstr "ನಿಮ್ಮ ಹುಡುಕಾಟಕ್ಕೆ ಯಾವುದೇ ದಾಖಲೆ ಹೊಂದಿಕೆಯಾಗಲಿಲ್ಲ."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "PNG, JPEG, GIF or WebP, up to 2 MB."
+msgstr "PNG, JPEG, GIF ಅಥವಾ WebP, ಗರಿಷ್ಠ 2 MB."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "PNG, JPEG, GIF, WebP or SVG, up to 2 MB."
+msgstr "PNG, JPEG, GIF, WebP ಅಥವಾ SVG, ಗರಿಷ್ಠ 2 MB."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "Restoring…"
+msgstr "ಮರುಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ…"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Search records"
+msgstr "ದಾಖಲೆಗಳನ್ನು ಹುಡುಕಿ"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Show all"
+msgstr "ಎಲ್ಲವನ್ನೂ ತೋರಿಸಿ"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Show less"
+msgstr "ಕಡಿಮೆ ತೋರಿಸಿ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "Sync with the control panel?"
+msgstr "ಕಂಟ್ರೋಲ್ ಪ್ಯಾನೆಲ್‌ನೊಂದಿಗೆ ಸಿಂಕ್ ಮಾಡುವುದೇ?"
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Text such as a site verification code, an SPF policy or a DKIM key."
+msgstr "ಸೈಟ್ ಪರಿಶೀಲನಾ ಕೋಡ್, SPF ನೀತಿ ಅಥವಾ DKIM ಕೀಯಂತಹ ಪಠ್ಯ."
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "The DNS records show here while the order is active or suspended."
+msgstr "ಆರ್ಡರ್ ಸಕ್ರಿಯವಾಗಿರುವಾಗ ಅಥವಾ ಅಮಾನತಿನಲ್ಲಿರುವಾಗ DNS ದಾಖಲೆಗಳು ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತವೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The DNS zone could not be loaded."
+msgstr "DNS ವಲಯವನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The IPv4 address this name points to."
+msgstr "ಈ ಹೆಸರು ಸೂಚಿಸುವ IPv4 ವಿಳಾಸ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The IPv6 address this name points to."
+msgstr "ಈ ಹೆಸರು ಸೂಚಿಸುವ IPv6 ವಿಳಾಸ."
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "The client manages these records in the client area."
+msgstr "ಕ್ಲೈಂಟ್ ಈ ದಾಖಲೆಗಳನ್ನು ಕ್ಲೈಂಟ್ ಪ್ರದೇಶದಲ್ಲಿ ನಿರ್ವಹಿಸುತ್ತಾರೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The host name of the mail server. A lower priority number is tried first."
+msgstr "ಮೇಲ್ ಸರ್ವರ್‌ನ ಹೋಸ್ಟ್ ಹೆಸರು. ಕಡಿಮೆ ಆದ್ಯತಾ ಸಂಖ್ಯೆ ಇರುವ ಸರ್ವರ್ ಅನ್ನು ಮೊದಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತದೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The host name this name is an alias of."
+msgstr "ಈ ಹೆಸರು ಯಾವ ಹೋಸ್ಟ್ ಹೆಸರಿನ ಪರ್ಯಾಯ ಹೆಸರಾಗಿದೆಯೋ ಆ ಹೋಸ್ಟ್ ಹೆಸರು."
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "The provider that hosts the zones of this product, and its API access. Existing zones on the same provider use these settings too."
+msgstr "ಈ ಉತ್ಪನ್ನದ ವಲಯಗಳನ್ನು ಹೋಸ್ಟ್ ಮಾಡುವ ಸೇವಾದಾತರು ಮತ್ತು ಅವರ API ಪ್ರವೇಶ. ಅದೇ ಸೇವಾದಾತರಲ್ಲಿರುವ ವಲಯಗಳಿಗೂ ಈ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅನ್ವಯಿಸುತ್ತವೆ."
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The record is removed from the zone. This cannot be undone."
+msgstr "ದಾಖಲೆಯನ್ನು ವಲಯದಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "The username and IP address saved for this account are updated where the control panel shows different ones."
+msgstr "ಕಂಟ್ರೋಲ್ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಬೇರೆ ಮೌಲ್ಯಗಳು ಕಂಡರೆ, ಈ ಖಾತೆಗೆ ಉಳಿಸಿದ ಬಳಕೆದಾರರ ಹೆಸರು ಮತ್ತು IP ವಿಳಾಸವನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತದೆ."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "Upload a PNG, JPEG, GIF, WebP or SVG image."
+msgstr "PNG, JPEG, GIF, WebP ಅಥವಾ SVG ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ."
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "Your staff role cannot view DNS records."
+msgstr "ನಿಮ್ಮ ಸಿಬ್ಬಂದಿ ಪಾತ್ರವು DNS ದಾಖಲೆಗಳನ್ನು ವೀಕ್ಷಿಸಲು ಅನುಮತಿಸುವುದಿಲ್ಲ."
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "“:image” goes back to the default image."
+msgstr "“:image” ಗಾಗಿ ಡೀಫಾಲ್ಟ್ ಚಿತ್ರವನ್ನು ಮರುಸ್ಥಾಪಿಸಲಾಗುತ್ತದೆ."

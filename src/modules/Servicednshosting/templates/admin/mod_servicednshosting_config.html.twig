@@ -8,58 +8,96 @@ See the LICENSE file for the full license text.
 
 SPDX-License-Identifier: Apache-2.0
 #}
+{# The DNS hosting product settings, laid out as the hosting product's: the provider and only the fields it uses
+   (the others hide and are disabled, so their browser checks never block a save; the API keeps only the chosen
+   provider's settings anyway), then the nameservers. #}
 {% set dns = product.config.dns|default({}) %}
 {% set providers = { cloudflare: 'Cloudflare'|trans, powerdns: 'PowerDNS'|trans, hetzner: 'Hetzner DNS'|trans, cloudns: 'ClouDNS'|trans, digitalocean: 'DigitalOcean'|trans, desec: 'deSEC'|trans } %}
-{% embed 'partial_admin_related_section.html.twig' with { title: 'DNS hosting'|trans, card_class: 'mb-0' } %}
-    {% block section_content %}
-        {% set can_save = has_permission('product', 'manage_products') %}
-        <form action="{{ 'product/update_config'|api_url }}" {{ fb_api_form({message: 'DNS settings saved.'|trans, reload: true}) }}>
-            <input type="hidden" name="id" value="{{ product.id }}">
-            <fieldset class="row g-3"{% if not can_save %} disabled{% endif %}>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-provider">{{ 'DNS provider'|trans }}</label>
-                    <select class="form-select" id="dns-provider" name="config[dns][provider]" required>
-                        <option value="">{{ 'Choose a DNS provider'|trans }}</option>
-                        {% for key, label in providers %}
-                            <option value="{{ key }}"{% if dns.provider|default('') == key %} selected{% endif %}>{{ label }}</option>
-                        {% endfor %}
-                    </select>
+{% set current = dns.provider|default('') %}
+{% set can_save = has_permission('product', 'manage_products') %}
+{% macro shown_for(keys, current) %} data-dns-for="{{ keys|join(' ') }}"{% if current not in keys %} hidden disabled{% endif %}{% endmacro %}
+<div class="card-body">
+    <form action="{{ 'product/update_config'|api_url }}" id="cf-dns-config" {{ fb_api_form({message: 'DNS settings saved.'|trans, reload: true}) }}>
+        <input type="hidden" name="id" value="{{ product.id }}">
+        <fieldset{% if not can_save %} disabled{% endif %}>
+            <div class="mb-5">
+                <div class="mb-3 cf-section-head border-0 pt-0">
+                    <h3 class="card-title mb-1">{{ 'DNS provider'|trans }}</h3>
+                    <p class="text-secondary mb-0">{{ 'The provider that hosts the zones of this product, and its API access. Existing zones on the same provider use these settings too.'|trans }}</p>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-token">{{ 'API token or key'|trans }}</label>
-                    <input class="form-control" id="dns-token" type="password" name="config[dns][token]" dir="ltr" autocomplete="new-password"
-                        placeholder="{{ dns.token|default('') ? 'Saved. Leave empty to keep it.'|trans : '' }}">
-                    <div class="form-hint">{{ 'Used by all providers except ClouDNS. For a Cloudflare global API key, enter the email address and key separated by a colon.'|trans }}</div>
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <label class="form-label required" for="dns-provider">{{ 'DNS provider'|trans }}</label>
+                        <select class="form-select" id="dns-provider" name="config[dns][provider]" required>
+                            <option value="">{{ 'Choose a DNS provider'|trans }}</option>
+                            {% for key, label in providers %}
+                                <option value="{{ key }}"{% if current == key %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <fieldset class="col-lg-6"{{ _self.shown_for(['cloudflare', 'powerdns', 'hetzner', 'digitalocean', 'desec'], current) }}>
+                        <label class="form-label" for="dns-token">{{ 'API token or key'|trans }}</label>
+                        <input class="form-control" id="dns-token" type="password" name="config[dns][token]" dir="ltr" autocomplete="new-password"
+                            placeholder="{{ dns.token|default('') ? 'Saved. Leave empty to keep it.'|trans : '' }}">
+                        <div class="form-hint">{{ 'Used by all providers except ClouDNS. For a Cloudflare global API key, enter the email address and key separated by a colon.'|trans }}</div>
+                    </fieldset>
+                    <fieldset class="col-lg-6"{{ _self.shown_for(['cloudflare'], current) }}>
+                        <label class="form-label" for="dns-account">{{ 'Cloudflare account ID'|trans }}</label>
+                        <input class="form-control font-monospace" id="dns-account" name="config[dns][account_id]" value="{{ dns.account_id|default('') }}" dir="ltr" spellcheck="false">
+                    </fieldset>
+                    <fieldset class="col-lg-6"{{ _self.shown_for(['powerdns'], current) }}>
+                        <label class="form-label" for="dns-url">{{ 'PowerDNS API address'|trans }}</label>
+                        <input class="form-control" id="dns-url" type="url" name="config[dns][api_url]" value="{{ dns.api_url|default('') }}" dir="ltr" placeholder="https://dns.example.com:8081">
+                    </fieldset>
+                    <fieldset class="col-lg-6"{{ _self.shown_for(['powerdns'], current) }}>
+                        <label class="form-label" for="dns-soa">{{ 'PowerDNS SOA email address'|trans }}</label>
+                        <input class="form-control" id="dns-soa" type="email" name="config[dns][soa_email]" value="{{ dns.soa_email|default('') }}" dir="ltr">
+                    </fieldset>
+                    <fieldset class="col-lg-6"{{ _self.shown_for(['cloudns'], current) }}>
+                        <label class="form-label" for="dns-auth-id">{{ 'ClouDNS authentication ID'|trans }}</label>
+                        <input class="form-control" id="dns-auth-id" type="password" name="config[dns][auth_id]" dir="ltr" inputmode="numeric" autocomplete="new-password"
+                            placeholder="{{ dns.auth_id|default('') ? 'Saved. Leave empty to keep it.'|trans : '' }}">
+                    </fieldset>
+                    <fieldset class="col-lg-6"{{ _self.shown_for(['cloudns'], current) }}>
+                        <label class="form-label" for="dns-auth-password">{{ 'ClouDNS authentication password'|trans }}</label>
+                        <input class="form-control" id="dns-auth-password" type="password" name="config[dns][password]" dir="ltr" autocomplete="new-password"
+                            placeholder="{{ dns.password|default('') ? 'Saved. Leave empty to keep it.'|trans : '' }}">
+                    </fieldset>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-account">{{ 'Cloudflare account ID'|trans }}</label>
-                    <input class="form-control" id="dns-account" name="config[dns][account_id]" value="{{ dns.account_id|default('') }}" dir="ltr">
+            </div>
+
+            <div class="mb-4">
+                <div class="mb-3 cf-section-head">
+                    <h3 class="card-title mb-1">{{ 'Nameservers'|trans }}</h3>
+                    <p class="text-secondary mb-0">{{ 'One nameserver per line. Required for PowerDNS. Other providers can supply them automatically.'|trans }}</p>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-url">{{ 'PowerDNS API address'|trans }}</label>
-                    <input class="form-control" id="dns-url" type="url" name="config[dns][api_url]" value="{{ dns.api_url|default('') }}" dir="ltr">
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <label class="form-label" for="dns-nameservers">{{ 'Nameservers'|trans }}</label>
+                        <textarea class="form-control font-monospace" id="dns-nameservers" name="config[dns][nameservers]" rows="4" dir="ltr" spellcheck="false" placeholder="ns1.example.com&#10;ns2.example.com">{{ dns.nameservers|default([])|join("\n") }}</textarea>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-soa">{{ 'PowerDNS SOA email address'|trans }}</label>
-                    <input class="form-control" id="dns-soa" type="email" name="config[dns][soa_email]" value="{{ dns.soa_email|default('') }}" dir="ltr">
+            </div>
+
+            {% if can_save %}
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary" type="submit">{{ 'Save DNS settings'|trans }}</button>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-auth-id">{{ 'ClouDNS authentication ID'|trans }}</label>
-                    <input class="form-control" id="dns-auth-id" type="password" name="config[dns][auth_id]" dir="ltr" inputmode="numeric" autocomplete="new-password"
-                        placeholder="{{ dns.auth_id|default('') ? 'Saved. Leave empty to keep it.'|trans : '' }}">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-auth-password">{{ 'ClouDNS authentication password'|trans }}</label>
-                    <input class="form-control" id="dns-auth-password" type="password" name="config[dns][password]" dir="ltr" autocomplete="new-password"
-                        placeholder="{{ dns.password|default('') ? 'Saved. Leave empty to keep it.'|trans : '' }}">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="dns-nameservers">{{ 'Nameservers'|trans }}</label>
-                    <textarea class="form-control" id="dns-nameservers" name="config[dns][nameservers]" rows="3" dir="ltr">{{ dns.nameservers|default([])|join("\n") }}</textarea>
-                    <div class="form-hint">{{ 'One nameserver per line. Required for PowerDNS. Other providers can supply them automatically.'|trans }}</div>
-                </div>
-                {% if can_save %}<div class="col-12"><button class="btn btn-primary" type="submit">{{ 'Save DNS settings'|trans }}</button></div>{% endif %}
-            </fieldset>
-        </form>
-    {% endblock %}
-{% endembed %}
+            {% endif %}
+        </fieldset>
+    </form>
+</div>
+<script nonce="{{ csp_nonce }}">
+    (() => {
+        const form = document.getElementById('cf-dns-config');
+        const provider = document.getElementById('dns-provider'), saved = provider.value;
+        const secrets = [...form.querySelectorAll('input[type="password"]')].map((input) => [input, input.placeholder]);
+        provider.addEventListener('change', () => {
+            form.querySelectorAll('[data-dns-for]').forEach((field) => {
+                field.hidden = field.disabled = !field.dataset.dnsFor.split(' ').includes(provider.value);
+            });
+            // A saved secret is kept only for the same provider (prepareProductConfig).
+            secrets.forEach(([input, hint]) => { input.placeholder = provider.value === saved ? hint : ''; });
+        });
+    })();
+</script>

@@ -1,33 +1,52 @@
-{# Logo, dark logo, email logo and square icon upload zones (Clientfence Api setup_brand_asset, Branding.php; the
-   script is clientfence-setup.js): the setup wizard's branding step and System → Settings. Each upload
-   saves its setting at once. `urls`: the current image of each kind, or null. #}
+{# Logo, dark logo, email logo and square icon upload zones (Clientfence Api setup_brand_asset and
+   setup_brand_asset_restore, Branding.php; the script is clientfence-setup.js): the setup wizard's branding step
+   and System → Settings. Each upload or restore saves its setting at once. `urls`: the current image of each kind,
+   or null. An image is the default when its stored setting is empty or the shipped file (Branding::ASSETS); the
+   stored settings come from the including page: `params` on System → Settings, `setup.company` in the wizard. #}
 {% set brand_assets = constant('ClientFence\\Mod\\Clientfence\\Branding::ASSETS') %}
-<div class="cf-drops">
+{% set stored = params|default(setup.company|default({})) %}
+<div class="cf-drops"
+     data-text-saved="{{ 'Saved'|trans }}"
+     data-text-uploading="{{ 'Uploading…'|trans }}"
+     data-text-restoring="{{ 'Restoring…'|trans }}"
+     data-text-too-big="{{ 'The image is larger than 2 MB.'|trans }}"
+     data-text-restore="{{ 'Restore default'|trans }}">
     {% for drop in [
         { kind: 'logo', title: 'Logo'|trans, hint: 'For light backgrounds. Wide, up to 1200 × 400.'|trans, url: urls.logo, dark: false },
         { kind: 'logo_dark', title: 'Logo for dark backgrounds'|trans, hint: 'Light colored. The sign-in page and dark mode use it.'|trans, url: urls.logo_dark, dark: true },
         { kind: 'logo_email', title: 'Logo for emails'|trans, hint: 'Every email shows it instead of the logo. Give it its own background so it stays clear when a mail app turns emails dark.'|trans, url: urls.logo_email|default(null), dark: false },
         { kind: 'icon', title: 'Square icon'|trans, hint: 'Browser tab icon. Square, at least 64 × 64.'|trans, url: urls.icon, dark: false },
     ] %}
-        {% set uploaded = drop.url and ('/' ~ constant('ClientFence\\Mod\\Clientfence\\Branding::DIR') ~ '/') in drop.url %}
-        <div>
-            <div class="cf-drop{% if drop.dark %} is-dark{% endif %}{% if drop.kind == 'icon' %} is-icon{% endif %}" data-cf-drop="{{ drop.kind }}" tabindex="0" role="button" aria-label="{{ 'Upload'|trans }}: {{ drop.title }}">
-                <input type="file" accept="image/png,image/jpeg,image/gif,image/webp{% if brand_assets[drop.kind].svg %},image/svg+xml,.svg{% endif %}" hidden>
-                <div class="cf-drop-preview">
-                    <img alt="" data-cf-drop-img{% if drop.url %} src="{{ drop.url }}"{% else %} hidden{% endif %}>
-                    <svg class="icon cf-drop-empty" aria-hidden="true"{% if drop.url %} hidden{% endif %}><use href="#photo" /></svg>
-                </div>
-                <div class="cf-drop-text">
-                    <strong>{{ drop.title }}</strong>
-                    <span>{{ drop.hint }}</span>
-                    <span class="cf-drop-cta">{{ 'Drop an image here or click to choose'|trans }}</span>
-                </div>
-                <div class="cf-drop-bar" aria-hidden="true"><span></span></div>
+        {% set asset = brand_assets[drop.kind] %}
+        {% set is_default = stored[asset.param]|default('') in ['', asset.default] %}
+        {% set id = 'cf-drop-' ~ drop.kind %}
+        <div class="cf-drop{% if drop.dark %} is-dark{% endif %}{% if drop.kind == 'icon' %} is-icon{% endif %}" data-cf-drop="{{ drop.kind }}"
+             data-text-not-image="{{ asset.svg ? 'Upload a PNG, JPEG, GIF, WebP or SVG image.'|trans : 'Upload a PNG, JPEG, GIF or WebP image.'|trans }}"
+             data-text-restore-body="{{ '“:image” goes back to the default image.'|trans({':image': drop.title}) }}">
+            <input type="file" id="{{ id }}-file" accept="image/png,image/jpeg,image/gif,image/webp{% if asset.svg %},image/svg+xml,.svg{% endif %}" hidden>
+            <div class="cf-drop-preview">
+                <img alt="" data-cf-drop-img{% if drop.url %} src="{{ drop.url }}"{% else %} hidden{% endif %}>
+                <svg class="icon cf-drop-empty" aria-hidden="true"{% if drop.url %} hidden{% endif %}><use href="#photo" /></svg>
             </div>
-            <div data-cf-drop-restore{% if not uploaded %} hidden{% endif %}>
-                <button class="btn btn-sm btn-link px-0" type="button" aria-label="{{ 'Restore default for :image'|trans({':image': drop.title}) }}">{{ 'Restore default'|trans }}</button>
+            <div class="cf-drop-text">
+                <div class="cf-drop-title">
+                    <strong id="{{ id }}-title">{{ drop.title }}</strong>
+                    <span class="badge bg-secondary-lt" data-cf-drop-default{% if not is_default %} hidden{% endif %}>{{ 'Default'|trans }}</span>
+                </div>
+                <span>{{ drop.hint }}</span>
+                <span class="cf-drop-rules">{{ asset.svg ? 'PNG, JPEG, GIF, WebP or SVG, up to 2 MB.'|trans : 'PNG, JPEG, GIF or WebP, up to 2 MB.'|trans }}</span>
+                <span class="cf-drop-msg" data-cf-drop-msg aria-live="polite"></span>
             </div>
+            <div class="cf-drop-actions">
+                <button class="btn btn-sm btn-outline-primary" type="button" id="{{ id }}-upload" data-cf-drop-upload aria-labelledby="{{ id }}-upload {{ id }}-title">
+                    {{ 'Upload'|trans }}
+                </button>
+                <button class="btn btn-sm btn-ghost-secondary" type="button" data-cf-drop-restore aria-label="{{ 'Restore default for :image'|trans({':image': drop.title}) }}"{% if is_default %} disabled{% endif %}>
+                    {{ 'Restore default'|trans }}
+                </button>
+            </div>
+            <div class="cf-drop-bar" aria-hidden="true"><span></span></div>
         </div>
     {% endfor %}
 </div>
-<p class="form-hint mt-2">{{ 'PNG, JPEG, GIF or WebP, up to 2 MB. These formats are scaled down and saved as PNG. The logo and the logo for dark backgrounds also accept SVG up to 2 MB.'|trans }}</p>
+<p class="form-hint mt-2">{{ 'Drag an image onto its box or use Upload. PNG, JPEG, GIF and WebP images are scaled down and saved as PNG.'|trans }}</p>

@@ -63,11 +63,14 @@
 				<div class="clientfence-setting-hint">{{ 'The large heading on the store page (empty uses “Store”) and one short line of plain text under it.'|trans }}</div>
 			</div>
 			<div class="clientfence-setting-control">
-				<input class="form-control mb-2" id="store_title" name="store_title" maxlength="80" value="{{ store.store_title|default('') }}" placeholder="{{ 'Store'|trans }}" aria-label="{{ 'Store title'|trans }}">
-				<textarea class="form-control mb-3" id="store_subtitle" name="store_subtitle" rows="2" maxlength="200" aria-label="{{ 'Store subtitle'|trans }}">{{ store.store_subtitle|default('') }}</textarea>
 				{# The title and subtitle in other languages (forum #181, i18n::text()). #}
-				{{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'store_title', label: 'Store title'|trans, maxlength: 80 }, { key: 'store_subtitle', label: 'Store subtitle'|trans, textarea: true, rows: 2, maxlength: 200 }], values: store }) }}
-				<div class="clientfence-store-preview">
+				{% embed 'mod_system_text_versions.html.twig' with { fields: [{ key: 'store_title', label: 'Store title'|trans, maxlength: 80 }, { key: 'store_subtitle', label: 'Store subtitle'|trans, textarea: true, rows: 2, maxlength: 200 }], values: store } %}
+					{% block cf_field %}
+						<input class="form-control mb-2" id="store_title" dir="auto" name="store_title" maxlength="80" value="{{ store.store_title|default('') }}" placeholder="{{ 'Store'|trans }}" aria-label="{{ 'Store title'|trans }}">
+						<textarea class="form-control" id="store_subtitle" dir="auto" name="store_subtitle" rows="2" maxlength="200" aria-label="{{ 'Store subtitle'|trans }}">{{ store.store_subtitle|default('') }}</textarea>
+					{% endblock %}
+				{% endembed %}
+				<div class="clientfence-store-preview mt-3">
 					<div class="text-secondary small mb-1">{{ 'Preview'|trans }}</div>
 					<div class="h2 mb-1" id="store_title_preview">{{ store.store_title|default('')|trim ?: 'Store'|trans }}</div>
 					<div class="text-secondary" id="store_subtitle_preview">{{ store.store_subtitle|default('') }}</div>

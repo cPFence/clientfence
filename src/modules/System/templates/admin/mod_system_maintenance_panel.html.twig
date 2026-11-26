@@ -16,11 +16,14 @@
                 <span class="form-check-label">{{ 'Maintenance mode is on'|trans }}</span>
             </label>
             <div class="mb-3">
-                <label class="form-label" for="maintenance-message">{{ 'Message to visitors'|trans }}</label>
-                <textarea class="form-control" id="maintenance-message" name="message" rows="4" maxlength="2000" placeholder="{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}">{{ maintenance.message }}</textarea>
-                <small class="form-hint">{{ 'Shown on the maintenance page under its title. Empty shows the standard text.'|trans }}</small>
                 {# The message in other languages, by the visitor's language (forum #181, i18n::text()). #}
-                {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'message', label: 'Message to visitors'|trans, textarea: true, rows: 4, maxlength: 2000 }], values: maintenance }) }}
+                {% embed 'mod_system_text_versions.html.twig' with { fields: [{ key: 'message', label: 'Message to visitors'|trans, textarea: true, rows: 4, maxlength: 2000 }], values: maintenance } %}
+                    {% block cf_label %}<label class="form-label mb-0" for="maintenance-message">{{ 'Message to visitors'|trans }}</label>{% endblock %}
+                    {% block cf_field %}
+                        <textarea class="form-control" id="maintenance-message" dir="auto" name="message" rows="4" maxlength="2000" placeholder="{{ "Our systems are undergoing maintenance. We'll be back soon."|trans }}">{{ maintenance.message }}</textarea>
+                        <small class="form-hint">{{ 'Shown on the maintenance page under its title. Empty shows the standard text.'|trans }}</small>
+                    {% endblock %}
+                {% endembed %}
             </div>
             <div class="mb-3">
                 <label class="form-label" for="maintenance-redirect">{{ 'Redirect address'|trans }}</label>

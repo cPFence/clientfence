@@ -97,10 +97,11 @@
                             <div class="form-text">{{ '0 suspends on the due date.'|trans }}</div>
                         </div>
                         <div class="col-lg-8">
-                            <label class="form-label" for="batch_suspend_reason">{{ 'Auto Suspend Reason'|trans }}</label>
-                            <input class="form-control" id="batch_suspend_reason" type="text" name="batch_suspend_reason" value="{{ params.batch_suspend_reason|default('') }}">
                             {# ClientFence core patch (forum #181): the reasons in other languages, for the client's suspension and cancellation emails (Order Service reasonText()). #}
-                            {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'batch_suspend_reason', label: 'Auto Suspend Reason'|trans }], values: params }) }}
+                            {% embed 'mod_system_text_versions.html.twig' with { fields: [{ key: 'batch_suspend_reason', label: 'Auto Suspend Reason'|trans }], values: params } %}
+                                {% block cf_label %}<label class="form-label mb-0" for="batch_suspend_reason">{{ 'Auto Suspend Reason'|trans }}</label>{% endblock %}
+                                {% block cf_field %}<input class="form-control" id="batch_suspend_reason" dir="auto" type="text" name="batch_suspend_reason" value="{{ params.batch_suspend_reason|default('') }}">{% endblock %}
+                            {% endembed %}
                         </div>
                         <div class="col-lg-6">
                             <label class="form-label" for="batch_cancel_suspended">{{ 'Auto Cancellation Policy'|trans }}</label>
@@ -117,14 +118,16 @@
                             </div>
                         </div>
                         <div class="col-lg-8">
-                            <label class="form-label" for="batch_cancel_suspended_reason">{{ 'Required Suspension Reason'|trans }}</label>
-                            <input class="form-control" id="batch_cancel_suspended_reason" type="text" name="batch_cancel_suspended_reason" value="{{ params.batch_cancel_suspended_reason|default('') }}">
-                            {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'batch_cancel_suspended_reason', label: 'Required Suspension Reason'|trans }], values: params }) }}
+                            {% embed 'mod_system_text_versions.html.twig' with { fields: [{ key: 'batch_cancel_suspended_reason', label: 'Required Suspension Reason'|trans }], values: params } %}
+                                {% block cf_label %}<label class="form-label mb-0" for="batch_cancel_suspended_reason">{{ 'Required Suspension Reason'|trans }}</label>{% endblock %}
+                                {% block cf_field %}<input class="form-control" id="batch_cancel_suspended_reason" dir="auto" type="text" name="batch_cancel_suspended_reason" value="{{ params.batch_cancel_suspended_reason|default('') }}">{% endblock %}
+                            {% endembed %}
                         </div>
                         <div class="col-12">
-                            <label class="form-label" for="suspend_reason_list">{{ 'Suspension Reasons'|trans }}</label>
-                            <textarea class="form-control" id="suspend_reason_list" name="suspend_reason_list" rows="3">{{ params.suspend_reason_list|default('') }}</textarea>
-                            {{ include('mod_system_text_versions.html.twig', { fields: [{ key: 'suspend_reason_list', label: 'Suspension Reasons'|trans, textarea: true, rows: 3, hint: 'One reason per line, in the same order as the default ones.'|trans }], values: params }) }}
+                            {% embed 'mod_system_text_versions.html.twig' with { fields: [{ key: 'suspend_reason_list', label: 'Suspension Reasons'|trans, textarea: true, rows: 3, hint: 'One reason per line, in the same order as the default ones.'|trans }], values: params } %}
+                                {% block cf_label %}<label class="form-label mb-0" for="suspend_reason_list">{{ 'Suspension Reasons'|trans }}</label>{% endblock %}
+                                {% block cf_field %}<textarea class="form-control" id="suspend_reason_list" dir="auto" name="suspend_reason_list" rows="3">{{ params.suspend_reason_list|default('') }}</textarea>{% endblock %}
+                            {% endembed %}
                         </div>
                         {# ClientFence core patch: cancellation requests accepted by the daily cron (Order/CancelRequests.php). #}
                         <div class="col-lg-4">

@@ -2786,6 +2786,10 @@ msgstr ""
 msgid "After file is uploaded in place, reload this page."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_order_form.html.twig
+msgid "After the order, set these nameservers at your domain registrar."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_signin_panel.html.twig
 msgid "After the right password, a 6-digit PIN goes to the email of the login, and signing in needs it. It works once, for 10 minutes. Clients who sign in with an authenticator app or with Google are not asked. Staff who set up an authenticator app on their Profile page can enter its code instead. \"Trust this browser for 30 days\" skips the PIN on a known browser until the password changes."
 msgstr ""
@@ -3720,6 +3724,10 @@ msgstr ""
 
 #: src/modules/Widgets/templates/admin/widgets/mod_widgets_error.html.twig
 msgid "An Error Occurred While Rendering This Widget."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "An SPF policy that starts with v=spf1."
 msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
@@ -5812,10 +5820,6 @@ msgstr ""
 
 #: src/modules/Servicednshosting/Service.php
 msgid "Choose a DNS provider."
-msgstr ""
-
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
-msgid "Choose a PNG, JPEG, GIF or WebP image."
 msgstr ""
 
 #: src/modules/Servicehosting/Panel/Enhance/Panel.php
@@ -8518,7 +8522,7 @@ msgstr ""
 msgid "Cyprus"
 msgstr ""
 
-#: src/modules/Servicednshosting/manifest.json src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+#: src/modules/Servicednshosting/manifest.json
 msgid "DNS hosting"
 msgstr ""
 
@@ -8558,8 +8562,16 @@ msgstr ""
 msgid "DNS provider"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNS record deleted."
+msgstr ""
+
 #: src/modules/Servicednshosting/Provider/Desec.php src/modules/Servicednshosting/Provider/Hetzner.php src/modules/Servicednshosting/Provider/PowerDNS.php …
 msgid "DNS record not found. Refresh the page and try again."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNS record saved."
 msgstr ""
 
 #: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
@@ -8588,6 +8600,10 @@ msgstr ""
 
 #: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
 msgid "DNSSEC is enabled."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "DNSSEC signs the zone so resolvers can check that its answers are genuine."
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig src/modules/Currency/templates/admin/mod_currency_settings.html.twig
@@ -8938,7 +8954,7 @@ msgstr ""
 msgid "Deep navy with a hint of your color"
 msgstr ""
 
-#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig …
+#: src/modules/Client/templates/admin/mod_client_settings_google.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig …
 msgid "Default"
 msgstr ""
 
@@ -9106,6 +9122,10 @@ msgstr ""
 msgid "Delete staff members"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Delete the :type record :name"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Delete the Plan"
 msgstr ""
@@ -9116,6 +9136,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
 msgid "Delete the files after the decision"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Delete this DNS record?"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
@@ -9260,6 +9284,10 @@ msgstr ""
 
 #: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
 msgid "Disable DNSSEC"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Disable DNSSEC?"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -9850,16 +9878,16 @@ msgstr ""
 msgid "Drag a card, or use its arrows."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "Drag an image onto its box or use Upload. PNG, JPEG, GIF and WebP images are scaled down and saved as PNG."
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Drop Down"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings.html.twig
 msgid "Drop Down only: the choices, separated by commas."
-msgstr ""
-
-#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
-msgid "Drop an image here or click to choose"
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -9990,6 +10018,10 @@ msgstr ""
 msgid "Edit Currency Information"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Edit DNS record"
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
 msgid "Edit Field"
 msgstr ""
@@ -10030,10 +10062,6 @@ msgstr ""
 msgid "Edit destination: :name"
 msgstr ""
 
-#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
-msgid "Edit or delete record"
-msgstr ""
-
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
 msgid "Edit profile"
 msgstr ""
@@ -10048,6 +10076,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
 msgid "Edit that template to change the order form for"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Edit the :type record :name"
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_manage.html.twig
@@ -10795,7 +10827,7 @@ msgid "Enter a valid Cloudflare account ID."
 msgstr ""
 
 #: src/modules/Servicednshosting/Service.php
-msgid "Enter a valid IP address for a :type record."
+msgid "Enter a valid IP address for the :type record."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
@@ -12126,6 +12158,10 @@ msgstr ""
 msgid "For"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "For a delegated subdomain: key tag, algorithm, digest type and digest."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "For a partial refund. A refund of the whole invoice always reverses it."
 msgstr ""
@@ -13332,6 +13368,10 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
 msgid "Hosting Settings Updated"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "Hosting account"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/email/mod_servicehosting_canceled.html.twig
@@ -15102,7 +15142,7 @@ msgstr ""
 msgid "Language not found"
 msgstr ""
 
-#: src/modules/Email/templates/admin/mod_email_template.html.twig
+#: src/modules/Email/templates/admin/mod_email_template.html.twig src/modules/System/templates/admin/mod_system_text_versions.html.twig
 msgid "Language versions"
 msgstr ""
 
@@ -15960,10 +16000,6 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "MRR"
-msgstr ""
-
-#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
-msgid "MX priority"
 msgstr ""
 
 #: src/library/Payment/Adapter/Eway.php
@@ -17294,7 +17330,11 @@ msgstr ""
 msgid "Nameserver 4"
 msgstr ""
 
-#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig …
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Nameserver :number"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_order_form.html.twig src/modules/Servicedomain/templates/admin/mod_servicedomain_index.html.twig …
 msgid "Nameservers"
 msgstr ""
 
@@ -18280,6 +18320,10 @@ msgstr ""
 
 #: src/modules/Index/templates/client/mod_index_dashboard.html.twig src/themes/palisade/html/mod_index_dashboard.html.twig
 msgid "No recent support tickets"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "No records match your search."
 msgstr ""
 
 #: src/modules/Redirect/templates/admin/mod_redirect_settings.html.twig
@@ -19974,10 +20018,6 @@ msgstr ""
 msgid "Other countries, and addresses whose country is not known, are refused. Addresses on the staff IP address list (System > Settings > Sign-in security) always pass."
 msgstr ""
 
-#: src/modules/System/templates/admin/mod_system_text_versions.html.twig
-msgid "Other languages"
-msgstr ""
-
 #: src/library/Registrar/Adapter/Opensrs.php src/library/Registrar/Adapter/Realtimeregister.php
 msgid "Other non-UK organisation"
 msgstr ""
@@ -20203,7 +20243,11 @@ msgid "PIN sent to"
 msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
-msgid "PNG, JPEG, GIF or WebP, up to 2 MB. These formats are scaled down and saved as PNG. The logo and the logo for dark backgrounds also accept SVG up to 2 MB."
+msgid "PNG, JPEG, GIF or WebP, up to 2 MB."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "PNG, JPEG, GIF, WebP or SVG, up to 2 MB."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Invoice/InvoicePdf.php src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig …
@@ -22030,7 +22074,7 @@ msgstr ""
 msgid "Priorities"
 msgstr ""
 
-#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Staff/templates/email/mod_staff_ticket_assigned.html.twig …
+#: src/modules/Activity/templates/admin/mod_activity_index.html.twig src/modules/Product/templates/admin/mod_product_index.html.twig src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig …
 msgid "Priority"
 msgstr ""
 
@@ -22770,7 +22814,7 @@ msgstr ""
 msgid "Read now"
 msgstr ""
 
-#: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig
+#: src/modules/Formbuilder/templates/admin/mod_formbuilder_field.html.twig src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
 msgid "Read only"
 msgstr ""
 
@@ -24070,6 +24114,10 @@ msgstr ""
 msgid "Restoring maintenance mode settings and reopening the installation."
 msgstr ""
 
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "Restoring…"
+msgstr ""
+
 #: src/modules/Product/templates/admin/mod_product_promos.html.twig
 msgid "Restrict the promotion to specific products, billing periods, or client groups, or leave each list empty to apply globally."
 msgstr ""
@@ -24650,7 +24698,7 @@ msgstr ""
 msgid "Save your custom plugin in"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig src/modules/Serviceapikey/templates/client/mod_serviceapikey_manage.html.twig …
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/Serviceapikey/templates/admin/mod_serviceapikey_manage.html.twig …
 msgid "Saved"
 msgstr ""
 
@@ -24836,6 +24884,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/partial_clientfence_palette.html.twig
 msgid "Search failed"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Search records"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -25914,6 +25966,10 @@ msgstr ""
 msgid "Show Support Link"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Show all"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Show all (:count)"
 msgstr ""
@@ -25964,6 +26020,10 @@ msgstr ""
 
 #: src/modules/Custompages/templates/admin/mod_custompages_page.html.twig
 msgid "Show in the footer"
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Show less"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig src/modules/Client/templates/admin/mod_client_settings.html.twig
@@ -27114,6 +27174,10 @@ msgstr ""
 msgid "Sync with registrars"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "Sync with the control panel?"
+msgstr ""
+
 #: src/modules/Email/templates/admin/mod_email_settings.html.twig
 msgid "Syntax Error"
 msgstr ""
@@ -27578,6 +27642,10 @@ msgstr ""
 msgid "Text shown to clients"
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "Text such as a site verification code, an SPF policy or a DKIM key."
+msgstr ""
+
 #: src/modules/Formbuilder/templates/admin/mod_formbuilder_settings.html.twig
 msgid "Textarea"
 msgstr ""
@@ -27886,6 +27954,14 @@ msgstr ""
 msgid "The DNS provider returned an unsuccessful or unreadable response."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "The DNS records show here while the order is active or suspended."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The DNS zone could not be loaded."
+msgstr ""
+
 #: src/modules/Servicednshosting/templates/email/mod_servicednshosting_canceled.html.twig
 msgid "The DNS zone for :domain has been removed."
 msgstr ""
@@ -27960,6 +28036,14 @@ msgstr ""
 
 #: src/library/Server/Manager/Enhance.php
 msgid "The IP address of an Enhance website is set on the panel."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The IPv4 address this name points to."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The IPv6 address this name points to."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Ovh.php
@@ -28312,6 +28396,10 @@ msgstr ""
 
 #: src/modules/Invoice/PaymentReversal.php
 msgid "The client has spent the credit this payment added, so it cannot be reversed. Refund this invoice by hand."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "The client manages these records in the client area."
 msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_option.html.twig
@@ -28687,6 +28775,14 @@ msgstr ""
 msgid "The help desk the receipt tickets open in."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The host name of the mail server. A lower priority number is tried first."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The host name this name is an alias of."
+msgstr ""
+
 #: src/library/Server/Manager/Enhance.php
 msgid "The hosting account has no client email."
 msgstr ""
@@ -28715,7 +28811,7 @@ msgstr ""
 msgid "The image could not be saved: check that :dir is writable."
 msgstr ""
 
-#: src/modules/Clientfence/Branding.php src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig src/modules/System/templates/admin/mod_system_settings.html.twig
+#: src/modules/Clientfence/Branding.php src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
 msgid "The image is larger than 2 MB."
 msgstr ""
 
@@ -29299,6 +29395,10 @@ msgstr ""
 msgid "The provided phone number does not appear to be valid."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_config.html.twig
+msgid "The provider that hosts the zones of this product, and its API access. Existing zones on the same provider use these settings too."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_quote.html.twig
 msgid "The quote is in the client's currency."
 msgstr ""
@@ -29317,6 +29417,10 @@ msgstr ""
 
 #: src/modules/Invoice/Receipts.php src/themes/palisade/html/mod_invoice_invoice.html.twig
 msgid "The receipt must be smaller than 5 MB."
+msgstr ""
+
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig
+msgid "The record is removed from the zone. This cannot be undone."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
@@ -29633,6 +29737,10 @@ msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_users_page.html.twig
 msgid "The user no longer has access to the account."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_commands.html.twig
+msgid "The username and IP address saved for this account are updated where the control panel shows different ones."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namecheap.php
@@ -31459,7 +31567,7 @@ msgstr ""
 msgid "Trusted proxies"
 msgstr ""
 
-#: src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
+#: src/modules/Servicednshosting/templates/client/mod_servicednshosting_manage.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account.html.twig src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "Try again"
 msgstr ""
 
@@ -32435,8 +32543,12 @@ msgstr ""
 msgid "Upload New File for This Order"
 msgstr ""
 
-#: src/modules/Clientfence/Branding.php
+#: src/modules/Clientfence/Branding.php src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
 msgid "Upload a PNG, JPEG, GIF or WebP image."
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "Upload a PNG, JPEG, GIF, WebP or SVG image."
 msgstr ""
 
 #: src/modules/Client/templates/client/mod_client_identity_page.html.twig
@@ -32471,7 +32583,7 @@ msgstr ""
 msgid "Upload the receipt here, or send it from Support. We confirm the payment and mark the invoice paid."
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_setup.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
 msgid "Uploading…"
 msgstr ""
 
@@ -34963,6 +35075,10 @@ msgstr ""
 msgid "Your software sends the key, its domain, install path and version to this address. The answer has \"valid\": true when the licence passes."
 msgstr ""
 
+#: src/modules/Servicednshosting/templates/admin/mod_servicednshosting_manage.html.twig
+msgid "Your staff role cannot view DNS records."
+msgstr ""
+
 #: src/modules/Support/templates/email/mod_support_ticket_staff_close.html.twig
 msgid "Your ticket %subject% has now been closed. We hope we were able to help."
 msgstr ""
@@ -35641,4 +35757,8 @@ msgstr ""
 
 #: src/modules/Embed/templates/client/mod_embed_domainchecker.html.twig
 msgid "yourdomain"
+msgstr ""
+
+#: src/modules/Clientfence/templates/admin/mod_clientfence_brand_drops.html.twig
+msgid "“:image” goes back to the default image."
 msgstr ""

@@ -1346,6 +1346,8 @@ a.bf-file-name:hover .icon { color: inherit; }
 [dir="rtl"] .cf-dom > .cf-inv-hero { background: radial-gradient(460px 180px at 100% 0%, color-mix(in srgb, var(--bf-teal) 14%, transparent), transparent 70%); }
 .cf-dom .cf-facts dd { overflow-wrap: anywhere; }
 .cf-dom .cf-inv-chips .badge { white-space: normal; text-align: start; }
+/* A DNS zone's records (Servicednshosting): the value keeps a readable width when a phone scrolls the table. */
+.cf-dns-value { min-width: 14rem; }
 
 /* Domain TLDs: prices in even figures, the allowed operations as chips. */
 .cf-tld-table td { font-variant-numeric: tabular-nums; }
@@ -1920,3 +1922,5 @@ button.bf-health-count:hover { translate: 0 -2px; box-shadow: 0 10px 22px -14px 
 }
 .cf-update-welcome-icon .icon { width: 32px; height: 32px; stroke-width: 2.5; }
 @media (prefers-reduced-motion: reduce) { .cf-update-welcome { animation: none; } }
+/* Menus built from optional groups (the order page's More): no divider twice in a row or at the end. */
+.dropdown-divider + .dropdown-divider, .dropdown-menu > .dropdown-divider:last-child { display: none; }

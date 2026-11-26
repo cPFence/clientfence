@@ -471,7 +471,7 @@ class Service implements InjectionAwareInterface
         } elseif (in_array($type, ['A', 'AAAA'], true)) {
             $value = trim($value);
             if (!filter_var($value, FILTER_VALIDATE_IP, $type === 'A' ? FILTER_FLAG_IPV4 : FILTER_FLAG_IPV6)) {
-                throw new InformationException('Enter a valid IP address for a :type record.', [':type' => $type]);
+                throw new InformationException('Enter a valid IP address for the :type record.', [':type' => $type]);
             }
             $value = inet_ntop(inet_pton($value));
         } elseif (in_array($type, ['TXT', 'SPF'], true)) {

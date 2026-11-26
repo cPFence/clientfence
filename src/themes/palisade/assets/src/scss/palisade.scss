@@ -5159,11 +5159,20 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
   @include media-breakpoint-down(md) { .bf-seg-item { flex-basis: calc(50% - 3px); } }
 }
 .cf-dc-panel { padding: 1rem; border: 1px solid var(--bf-line); border-radius: 14px; background: linear-gradient(160deg, rgba(var(--pal-accent-rgb), .07), transparent 60%); }
-.cf-dc-input { max-width: 360px; }
-.cf-dc-input-wide { max-width: 440px; }
+// Wide enough for a long translated placeholder beside the widest TLD select.
+.cf-dc-input { max-width: 480px; }
 .cf-dc-input > .cf-dc-tld { flex: 0 0 auto; width: auto; min-width: 5.5rem; max-width: 7rem; }
 // A TLD select is sized to its longest TLD (.example.com hid under the arrow at 7rem); the own domain's text field keeps 7rem.
 .cf-dc-input > select.cf-dc-tld { max-width: 11rem; }
+// Phones: the name gets the full row, as on the domain checker, and the TLD sits under it, so a long translated
+// placeholder (Arabic) is not cut beside a wide TLD list.
+@include media-breakpoint-down(sm) {
+  .cf-dc-input:has(> select.cf-dc-tld) {
+    flex-wrap: wrap;
+    > .form-control { flex: 1 0 100%; border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0 !important; }
+    > select.cf-dc-tld { flex: 1 0 100%; max-width: none; margin: -1px 0 0 !important; border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius) !important; }
+  }
+}
 .cf-dc-code { max-width: 260px; }
 
 // Cookie notice: frosted glass with a brand glow, rising in when it opens.
@@ -5245,3 +5254,66 @@ main .row > :nth-child(n+5) > :is(.card, .stat-card) { animation-delay: 200ms; }
 // A form around a scrollable modal's body and footer: Bootstrap scrolls only a .modal-body inside the flex
 // .modal-content, so the form carries that flex column (forum #173: a long Upgrade list hid Continue).
 .modal-dialog-scrollable .modal-content > form { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; }
+
+// ---- DNS hosting zone (Servicednshosting mod_servicednshosting_manage): the records table with a monospace value
+// that wraps (a long one clamped to two lines until opened), quieter read-only rows, and on a phone one card per
+// record: name, type and buttons on the first line, the value under them, then TTL and priority.
+.cf-dns-chip { padding: .1875rem .5rem; font-size: .75rem; }
+.cf-dns-head {
+  justify-content: space-between;
+  > h2 { display: inline-flex; align-items: center; gap: .5rem; }
+}
+.cf-dns-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.cf-dns-search { width: 12rem; max-width: 100%; }
+.cf-dns-badge {
+  display: inline-block; min-width: 3.25rem; padding: .1875rem .5rem; border-radius: 6px;
+  background: rgba(var(--bs-primary-rgb), .1); color: var(--bs-primary-text-emphasis);
+  font: 600 .75rem/1.3 var(--bs-font-monospace); text-align: center;
+}
+.cf-dns-table {
+  td { vertical-align: top; }
+  .cf-dns-name { max-width: 14rem; font-weight: 600; overflow-wrap: break-word; }
+  .cf-dns-val { width: 100%; min-width: 10rem; }
+  .cf-dns-ttl, .cf-dns-prio { white-space: nowrap; color: var(--bs-secondary-color); }
+  .cf-dns-actions { white-space: nowrap; text-align: end; .btn + .btn { margin-inline-start: .25rem; } }
+  .cf-dns-ro {
+    td, .cf-dns-name { color: var(--bs-secondary-color); font-weight: 400; }
+    .cf-dns-badge { background: var(--bf-seg-bg); color: var(--bf-ink-2); }
+  }
+}
+.cf-dns-value {
+  display: block; color: inherit; font-size: .8125rem; white-space: pre-wrap; overflow-wrap: anywhere;
+  &.is-clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+}
+.cf-dns-more { display: block; margin-top: .25rem; font-size: .8125rem; }
+.cf-dns-lock { display: inline-flex; padding: .25rem; color: var(--bs-secondary-color); }
+.cf-dns-summary, .cf-dns-ds code {
+  display: block; padding: .5rem .75rem; border-radius: 8px; background: var(--bf-seg-bg); color: var(--bf-ink);
+  font-size: .8125rem; overflow-wrap: anywhere;
+}
+.cf-dns-ds { display: grid; gap: .5rem; li { display: flex; align-items: center; gap: .375rem; } code { flex: 1 1 auto; min-width: 0; } }
+.cf-dns-suffix { max-width: 50%; overflow: hidden; text-overflow: ellipsis; font-size: .875rem; }
+// A left-to-right input group (a record name and its domain, a mailbox and its domain) on a right-to-left page.
+// The RTL file is this file mirrored, so the rule is written mirrored to keep the left-to-right corners and overlap
+// there; the LTR file never matches it. !important: Bootstrap's input-group selectors are more specific.
+[dir="rtl"] .input-group[dir="ltr"] {
+  > :not(:last-child) { border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0 !important; }
+  > :not(:first-child) { margin-left: 0 !important; margin-right: calc(-1 * var(--bs-border-width)) !important; border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius) !important; }
+  > :not(:first-child):not(:last-child) { border-radius: 0 !important; }
+}
+@include media-breakpoint-up(sm) {
+  .cf-dns-table { th:first-child, td:first-child { padding-inline-start: 1.25rem; } th:last-child, td:last-child { padding-inline-end: 1.25rem; } }
+}
+@include media-breakpoint-down(sm) {
+  .cf-dns-head { > h2 { flex: 1 1 auto; } }
+  .cf-dns-tools { flex: 1 1 100%; .cf-dns-search { flex: 1 1 auto; width: auto; } }
+  .table-stack.cf-dns-table {
+    tr:not([hidden]) { display: flex; flex-wrap: wrap; align-items: center; gap: .375rem .75rem; padding: .75rem 1rem; }
+    td { display: block; padding: 0; text-align: start; &[data-label]::before { content: none; } &:empty { display: none; } }
+    .cf-dns-val { order: 1; flex: 1 1 100%; min-width: 0; }
+    .cf-dns-ttl, .cf-dns-prio { order: 2; font-size: .8125rem;
+      &[data-label]::before { content: attr(data-label) " "; font-weight: 500; } }
+    .cf-dns-actions { margin-inline-start: auto; }
+    td.empty-state { flex: 1 1 100%; text-align: center; }
+  }
+}

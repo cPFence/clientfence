@@ -55,8 +55,12 @@
                     });
                     // ClientFence core patch (forum #180): a Markdown description gets the default one's editor in its own language and direction, started when shown (a hidden pane has no width for the toolbar).
                     form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-editor=""]').forEach(function (field) {
-                        field.dataset.cfEditor = 'on';
-                        ClientFence.editor.create(field, { language: { ui: 'en', content: field.lang } }).catch(function (error) {
+                        // Marked as started only once it is: a failed start is tried again on the next show.
+                        field.dataset.cfEditor = 'starting';
+                        ClientFence.editor.create(field, { language: { ui: 'en', content: field.lang } }).then(function () {
+                            field.dataset.cfEditor = 'on';
+                        }).catch(function (error) {
+                            field.dataset.cfEditor = '';
                             console.error('Editor initialization error:', error);
                         });
                     });
@@ -76,7 +80,7 @@
                     add.selectedOptions[0].remove();
                     // A new language starts as a copy of the default texts (each field's hint).
                     form.querySelectorAll('[data-cf-text-pane="' + lang + '"] [data-cf-field]').forEach(function (field) {
-                        if (field.value === '') {
+                        if (field.value.trim() === '') {
                             fill(field, field.placeholder);
                         }
                     });

@@ -97,7 +97,7 @@
         {% if can_subdomain %}
             <div data-domain-pane="subdomain"{% if default_action != 'subdomain' %} hidden{% endif %}>
                 <label class="form-label" for="cf-dc-subdomain">{{ 'Choose your free subdomain'|trans }}</label>
-                <div class="input-group cf-dc-input cf-dc-input-wide">
+                <div class="input-group cf-dc-input">
                     <input class="form-control" type="text" dir="ltr" id="cf-dc-subdomain" name="domain[subdomain_sld]" autocomplete="off"
                            value="{{ request.subdomain_sld }}"
                            placeholder="{{ 'Subdomain'|trans }}">

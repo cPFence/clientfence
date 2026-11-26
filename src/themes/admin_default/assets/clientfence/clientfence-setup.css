@@ -203,8 +203,9 @@
 .cf-drop {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
+  gap: .75rem 1rem;
   padding: .875rem 1rem;
   border: 1.5px dashed var(--tblr-border-color, #cfd6df);
   border-radius: 12px;
@@ -213,15 +214,20 @@
   transition: border-color .15s, background-color .15s;
 }
 
-.cf-drop:hover, .cf-drop:focus-visible, .cf-drop.is-over {
+.cf-drop:hover, .cf-drop.is-over {
   border-color: var(--cf-accent);
   background: rgba(var(--cf-accent-rgb), .05);
-  outline: none;
 }
 
+.cf-drop.is-over { border-style: solid; }
+.cf-drop.is-invalid { border-color: var(--tblr-danger); }
+.cf-drop.is-busy { cursor: progress; }
+
+/* Each logo shows on the background it is made for, in the light and the dark admin theme. */
 .cf-drop-preview {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: none;
   width: 8.5rem;
   height: 3.75rem;
@@ -235,10 +241,14 @@
 .cf-drop.is-icon .cf-drop-preview { width: 3.75rem; }
 .cf-drop-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .cf-drop-empty { width: 1.5rem; height: 1.5rem; color: var(--tblr-secondary, #8b95a1); }
-.cf-drop-text { display: grid; gap: .125rem; min-width: 0; font-size: .8125rem; }
-.cf-drop-text strong { font-size: .875rem; }
-.cf-drop-text span { color: var(--tblr-secondary, #667382); }
-.cf-drop-cta { color: var(--cf-accent) !important; font-weight: 500; }
+.cf-drop-text { display: grid; gap: .125rem; flex: 1 1 14rem; min-width: 0; font-size: .8125rem; }
+.cf-drop-title { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.cf-drop-title strong { font-size: .875rem; }
+.cf-drop-text > span { color: var(--tblr-secondary, #667382); }
+.cf-drop-text > .cf-drop-msg { color: var(--tblr-body-color); font-weight: 500; }
+.cf-drop-text > .cf-drop-msg.text-danger { color: var(--tblr-danger); }
+.cf-drop-msg:empty { display: none; }
+.cf-drop-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-inline-start: auto; }
 
 .cf-drop-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; display: none; }
 .cf-drop.is-busy .cf-drop-bar { display: block; }

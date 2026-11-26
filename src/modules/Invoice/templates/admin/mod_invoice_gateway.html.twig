@@ -173,18 +173,19 @@
                                         {% endfor %}
                                     </div>
                                 {% elseif element[0] == 'textarea' %}
-                                    <label class="form-label" for="gateway-config-{{ name }}">{{ element[1].label }}{% if is_set %} <span class="badge text-bg-success">{{ 'Configured'|trans }}</span>{% endif %}</label>
-                                    {% if element[1].description is defined and element[1].description %}<div class="form-text mb-2">{{ element[1].description|markdown_to_html }}</div>{% endif %}
-                                    <textarea class="form-control" id="gateway-config-{{ name }}" name="config[{{ name }}]" rows="8"
+                                    {# ClientFence core patch (forum #181): a text clients read (payment instructions) in other languages (i18n::text()). #}
+                                    {% embed 'mod_system_text_versions.html.twig' with { fields: element[1].translatable|default(false) ? [{ key: name, label: element[1].label, textarea: true, rows: 8 }] : [], values: gateway.config, name_format: 'config[%s]' } %}
+                                        {% block cf_label %}<label class="form-label mb-0" for="gateway-config-{{ name }}">{{ element[1].label }}{% if is_set %} <span class="badge text-bg-success">{{ 'Configured'|trans }}</span>{% endif %}</label>{% endblock %}
+                                        {% block cf_intro %}{% if element[1].description is defined and element[1].description %}<div class="form-text mt-0 mb-2">{{ element[1].description|markdown_to_html }}</div>{% endif %}{% endblock %}
+                                        {% block cf_field %}
+                                    <textarea class="form-control" id="gateway-config-{{ name }}" name="config[{{ name }}]" rows="8" dir="auto"
                                         {% if field_required and not is_set %} required{% endif %}
                                         {% if is_set %} placeholder="{{ 'Leave blank to keep the saved credential.'|trans }}"{% endif %}
                                         {% if not is_set and element[1].required_when is defined and element[1].required_when.enabled is defined %} data-required-when-enabled="{{ element[1].required_when.enabled ? 'true' : 'false' }}"{% endif %}
                                         {% if not is_set and element[1].required_when is defined and element[1].required_when.test_mode is defined %} data-required-when-test-mode="{{ element[1].required_when.test_mode ? 'true' : 'false' }}"{% endif %}>{{ gateway.config[name]|default('') }}</textarea>
                                     {% if is_set %}<div class="form-text">{{ 'Leave blank to keep the saved credential.'|trans }}</div>{% endif %}
-                                    {# ClientFence core patch (forum #181): a text clients read (payment instructions) in other languages (i18n::text()). #}
-                                    {% if element[1].translatable|default(false) %}
-                                        {{ include('mod_system_text_versions.html.twig', { fields: [{ key: name, label: element[1].label, textarea: true, rows: 8 }], values: gateway.config, name: 'config[%s]' }) }}
-                                    {% endif %}
+                                        {% endblock %}
+                                    {% endembed %}
                                 {% else %}
                                     <label class="form-label" for="gateway-config-{{ name }}">{{ element[1].label }}{% if is_set %} <span class="badge text-bg-success">{{ 'Configured'|trans }}</span>{% endif %}</label>
                                     {% if element[1].description is defined and element[1].description %}<div class="form-text mb-2">{{ element[1].description|markdown_to_html }}</div>{% endif %}

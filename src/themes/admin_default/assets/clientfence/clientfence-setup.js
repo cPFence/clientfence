@@ -10,70 +10,110 @@ const post = (endpoint, data) => new Promise((resolve, reject) => {
   api.post(endpoint, data, resolve, reject, false);
 });
 
-// Logo upload zones ([data-cf-drop], mod_clientfence_brand_drops.html.twig) inside `scope`, whose
-// data-text-* hold the messages; each upload saves its setting through clientfence/setup_brand_asset.
+// Logo upload zones ([data-cf-drop], mod_clientfence_brand_drops.html.twig) inside `scope`; the
+// messages are data-text-* on the zones. Each upload saves its setting through
+// clientfence/setup_brand_asset, Restore default (after a confirmation) through
+// clientfence/setup_brand_asset_restore. Progress and errors show inside the zone.
 function bindDrops(scope, uploaded = () => {}) {
-  const text = (name) => scope.dataset[name] || '';
-  scope.querySelectorAll('[data-cf-drop]').forEach((drop) => {
+  const drops = scope.querySelector('.cf-drops');
+  if (!drops) return;
+  const text = (name) => drops.dataset[name] || '';
+  drops.querySelectorAll('[data-cf-drop]').forEach((drop) => {
     const input = drop.querySelector('input[type="file"]');
     const img = drop.querySelector('[data-cf-drop-img]');
     const empty = drop.querySelector('.cf-drop-empty');
-    const restore = drop.parentElement.querySelector('[data-cf-drop-restore]');
-    const restoreButton = restore.querySelector('button');
+    const badge = drop.querySelector('[data-cf-drop-default]');
+    const msg = drop.querySelector('[data-cf-drop-msg]');
+    const uploadButton = drop.querySelector('[data-cf-drop-upload]');
+    const restoreButton = drop.querySelector('[data-cf-drop-restore]');
     const kind = drop.dataset.cfDrop;
     const accepted = input.accept.split(',');
+    let isDefault = restoreButton.disabled;
+
+    const say = (message = '', error = false) => {
+      msg.textContent = message;
+      msg.classList.toggle('text-danger', error);
+      drop.classList.toggle('is-invalid', error);
+    };
+    const setDefault = (value) => {
+      isDefault = value;
+      badge.hidden = !value;
+      restoreButton.disabled = value;
+    };
 
     async function save(endpoint, data, isUpload) {
       if (drop.classList.contains('is-busy')) return;
       drop.classList.add('is-busy');
       drop.setAttribute('aria-busy', 'true');
+      uploadButton.disabled = true;
       restoreButton.disabled = true;
+      say(text(isUpload ? 'textUploading' : 'textRestoring'));
       try {
         const result = await post(endpoint, data);
         if (result.url) img.src = result.url;
         else img.removeAttribute('src');
         img.hidden = !result.url;
-        empty.toggleAttribute('hidden', Boolean(result.url));
-        restore.hidden = !isUpload;
-        if (!isUpload) drop.focus();
+        empty.toggleAttribute('hidden', Boolean(result.url)); // an SVG has no .hidden property
+        isDefault = !isUpload;
+        say();
         uploaded(kind, result.url);
         notify(text('textSaved'), 'success');
       } catch (e) {
-        notify(e.message || String(e));
+        say(e.message || String(e), true);
       } finally {
         drop.classList.remove('is-busy');
         drop.removeAttribute('aria-busy');
-        restoreButton.disabled = false;
+        uploadButton.disabled = false;
+        setDefault(isDefault);
+        if (!isUpload) uploadButton.focus();
       }
     }
 
-    async function upload(file) {
+    function upload(file) {
       if (!file) return;
-      if (!accepted.includes('image/svg+xml') && !accepted.includes(file.type)) { notify(text('textNotImage')); return; }
-      if (file.size > 2 * 1024 * 1024) { notify(text('textTooBig')); return; }
+      const svg = file.type === 'image/svg+xml' || /\.svg$/i.test(file.name);
+      // No type from the browser (a file without an extension): the server reads the format from the file itself.
+      if ((svg || file.type) && !accepted.includes(svg ? 'image/svg+xml' : file.type)) { say(drop.dataset.textNotImage, true); return; }
+      if (file.size > 2 * 1024 * 1024) { say(text('textTooBig'), true); return; }
       const data = new FormData();
       data.append('kind', kind);
       data.append('file', file);
-      await save('clientfence/setup_brand_asset', data, true);
-      input.value = '';
+      save('clientfence/setup_brand_asset', data, true).finally(() => { input.value = ''; });
     }
 
-    restoreButton.addEventListener('click', () => save('clientfence/setup_brand_asset_restore', { kind }, false));
-    drop.addEventListener('click', () => input.click());
-    drop.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); }
+    function restore() {
+      const go = () => save('clientfence/setup_brand_asset_restore', { kind }, false);
+      if (typeof window.Modals?.create !== 'function') { if (window.confirm(drop.dataset.textRestoreBody)) go(); return; }
+      // The modal puts its texts into HTML.
+      const html = (value) => { const el = document.createElement('span'); el.textContent = value; return el.innerHTML; };
+      window.Modals.create({
+        type: 'small-confirm',
+        title: html(text('textRestore')),
+        content: html(drop.dataset.textRestoreBody),
+        confirmButton: html(text('textRestore')),
+        confirmButtonColor: 'danger',
+        confirmCallback: go,
+      });
+    }
+
+    uploadButton.addEventListener('click', () => input.click());
+    restoreButton.addEventListener('click', restore);
+    // A click elsewhere on the zone opens the file picker too (the buttons are the keyboard way); never on the
+    // buttons' area (a disabled button passes its clicks through) or while saving.
+    drop.addEventListener('click', (event) => {
+      if (!drop.classList.contains('is-busy') && !event.target.closest('.cf-drop-actions, input')) input.click();
     });
-    input.addEventListener('click', (event) => event.stopPropagation());
     input.addEventListener('change', () => upload(input.files[0]));
     ['dragenter', 'dragover'].forEach((name) => drop.addEventListener(name, (event) => {
       event.preventDefault();
       drop.classList.add('is-over');
     }));
-    ['dragleave', 'dragend'].forEach((name) => drop.addEventListener(name, () => drop.classList.remove('is-over')));
+    drop.addEventListener('dragleave', (event) => { if (!drop.contains(event.relatedTarget)) drop.classList.remove('is-over'); });
+    drop.addEventListener('dragend', () => drop.classList.remove('is-over'));
     drop.addEventListener('drop', (event) => {
       event.preventDefault();
       drop.classList.remove('is-over');
-      upload(event.dataTransfer?.files?.[0]);
+      if (!drop.classList.contains('is-busy')) upload(event.dataTransfer?.files?.[0]);
     });
   });
   // A file dropped beside a drop zone would open in the tab and leave the page (text drags still work).

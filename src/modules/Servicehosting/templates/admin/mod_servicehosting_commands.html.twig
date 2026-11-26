@@ -10,14 +10,25 @@
     {% endif %}
 {% elseif part == 'more' %}
     {# The plan list needs "manage plans"; without it the item is left out (the page crashed for those staff). #}
-    {% if has_permission('servicehosting', 'manage_plans') %}
+    {% set can_package = has_permission('servicehosting', 'manage_plans') %}
+    {# Dashmox has no password change in its API (Server_Manager_Dashmox). #}
+    {% set can_password = not server or server.manager != 'Dashmox' %}
+    {# Only for panels that can read the account back (DirectAdmin, Plesk, CyberPanel and OpenPanel refuse; HestiaCP, Dashmox and Custom change nothing). #}
+    {% set can_sync = server and server.manager in ['Whm', 'CWP', 'Enhance', 'Novapanel'] %}
+    {# The control panel commands come first under their own heading; the order's own items follow the divider. Nothing at all when none applies, so an empty More menu is not shown. #}
+    {% if can_package or can_password or can_sync %}
+    <h6 class="dropdown-header">{{ 'Hosting account'|trans }}</h6>
+    {% if can_package %}
     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePackageModal">{{ 'Change Package'|trans }}</button>
     {% endif %}
+    {% if can_password %}
     <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">{{ 'Change Password'|trans }}</button>
-    {# Only for panels that can read the account back (DirectAdmin, Plesk, CyberPanel and OpenPanel refuse; HestiaCP, Dashmox and Custom change nothing). #}
-    {% if server and server.manager in ['Whm', 'CWP', 'Enhance', 'Novapanel'] %}
+    {% endif %}
+    {% if can_sync %}
     <a class="dropdown-item" href="{{ 'servicehosting/sync'|api_url(query: { 'order_id': order.id }) }}"
-        {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, message: 'Account Synced'|trans}) }}>{{ 'Sync'|trans }}</a>
+        {{ fb_api_link({modal: {type: 'confirm', title: 'Sync with the control panel?'|trans, content: 'The username and IP address saved for this account are updated where the control panel shows different ones.'|trans, button: 'Sync'|trans}, message: 'Account Synced'|trans, reload: true}) }}>{{ 'Sync'|trans }}</a>
+    {% endif %}
+    <div class="dropdown-divider"></div>
     {% endif %}
 {% else %}
     {% if has_permission('servicehosting', 'manage_plans') %}
@@ -47,7 +58,7 @@
     <div class="modal modal-blur fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form method="post" action="{{ 'servicehosting/change_password'|api_url }}" {{ fb_api_form({message: 'Account Password Changed'|trans}) }}>
+                <form method="post" action="{{ 'servicehosting/change_password'|api_url }}" {{ fb_api_form({message: 'Account Password Changed'|trans, reload: true}) }}>
                     <div class="modal-header">
                         <h5 class="modal-title" id="changePasswordModalLabel">{{ 'Change Password'|trans }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>

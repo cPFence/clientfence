@@ -1,89 +1,170 @@
-{# ClientFence: language versions of staff-entered texts that clients see (forum #181, i18n::text()), under their default
-   fields: a button for each language with a version, "Add language" for the other languages turned on, and for each
-   language one field per text, named as the default one with the language added (company_tos_de_de). Gets `fields`
-   (each: key, label, and optionally textarea, rows, maxlength, hint, editor for a Markdown editor), `values` (the saved texts
-   by key) and optionally `name` (the field name with %s for the key, such as config[%s]). A blank version shows the
-   default text. Shown only when a language other than the default one is turned on. #}
-{% set cf_langs = guest.extension_languages(true)|filter(l => l.locale != default_locale) %}
-{% if cf_langs is not empty %}
-    {% set cf_filled = cf_langs|filter(l => fields|filter(f => values[f.key ~ '_' ~ l.locale|lower]|default('')|trim)|length > 0)|map(l => l.locale) %}
-    {% set cf_box = 'cf-text-versions-' ~ random() %}
-    <div class="mt-2" id="{{ cf_box }}">
-        <div class="d-flex flex-wrap align-items-center gap-2" role="tablist" aria-label="{{ 'Other languages'|trans }}">
-            <span class="text-secondary small">{{ 'Other languages'|trans }}</span>
-            {% for l in cf_langs|filter(l => l.locale in cf_filled) %}
-                <button class="btn btn-sm btn-outline-secondary" type="button" role="tab" aria-selected="false" data-cf-lang="{{ l.locale }}">{{ l.title }}</button>
-            {% endfor %}
-            {% if cf_filled|length < cf_langs|length %}
-                <select class="form-select form-select-sm w-auto" data-cf-add-lang aria-label="{{ 'Add language'|trans }}">
+{# ClientFence: a staff-entered text that clients see, with its language versions (forum #181, i18n::text()), laid out as
+   the product and email template translations: next to the label a bar with Default, a tab for each language that has
+   a version and "Add language" for the other languages turned on; a tab shows that language's fields in place of the
+   default ones, with their room and editor. Used with embed: block cf_label (the label or heading), cf_intro (optional:
+   under it, for every language) and cf_field (the default fields and their hints). Gets `fields` (each: key, label, and
+   optionally textarea, rows, maxlength, hint, editor for a Markdown editor), `values` (the saved texts by key) and
+   optionally `name_format` (the field name with %s for the key, such as config[%s]). A version is named as its default
+   field with the language added (company_tos_de_de); blank shows the default text. With no other language turned on or
+   no `fields`, only the label and the default fields show. #}
+{% set cf_names = {} %}
+{% for l in guest.extension_languages(true) %}
+    {% set cf_names = cf_names|merge({(l.locale): l.title}) %}
+{% endfor %}
+{% set cf_langs = fields is empty ? {} : cf_names|filter((title, locale) => locale != default_locale) %}
+{% set cf_filled = cf_langs|keys|filter(l => fields|filter(f => values[f.key ~ '_' ~ l|lower]|default('')|trim)|length > 0) %}
+{% set cf_box = 'cf-text-versions-' ~ random() %}
+<div id="{{ cf_box }}" data-cf-versions>
+    {# The label row: none for a text without a label of its own here and with no other language turned on. #}
+    {% if cf_langs is not empty or block('cf_label')|trim is not empty %}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+        {% block cf_label %}{% endblock %}
+        {% if cf_langs is not empty %}
+            <div class="d-flex flex-wrap align-items-center gap-2 ms-auto" role="tablist" aria-label="{{ 'Language versions'|trans }}">
+                <button class="btn btn-sm btn-primary" type="button" role="tab" id="{{ cf_box }}-tab" aria-controls="{{ cf_box }}-pane" aria-selected="true" data-cf-version="">{{ 'Default'|trans }} <span class="ms-1 opacity-75">{{ cf_names[default_locale] ?? default_locale }}</span></button>
+                {% for locale, title in cf_langs %}
+                    <button class="btn btn-sm btn-outline-secondary" type="button" role="tab" id="{{ cf_box }}-tab-{{ locale }}" aria-controls="{{ cf_box }}-pane-{{ locale }}" aria-selected="false" data-cf-version="{{ locale }}"{% if locale not in cf_filled %} hidden{% endif %}>{{ title }}</button>
+                {% endfor %}
+                <select class="form-select form-select-sm w-auto" data-cf-version-add aria-label="{{ 'Add language'|trans }}"{% if cf_filled|length == cf_langs|length %} hidden{% endif %}>
                     <option value="">+ {{ 'Add language'|trans }}</option>
-                    {% for l in cf_langs|filter(l => l.locale not in cf_filled) %}
-                        <option value="{{ l.locale }}">{{ l.title }}</option>
+                    {% for locale, title in cf_langs|filter((title, locale) => locale not in cf_filled) %}
+                        <option value="{{ locale }}">{{ title }}</option>
                     {% endfor %}
                 </select>
-            {% endif %}
-        </div>
-        {% for l in cf_langs %}
-            <div class="mt-2" role="tabpanel" data-cf-lang-pane="{{ l.locale }}" hidden>
-                {% for f in fields %}
-                    {% set key = f.key ~ '_' ~ l.locale|lower %}
-                    <label class="form-label" for="{{ cf_box }}-{{ key }}">{{ f.label }} <span class="badge bg-blue-lt ms-1">{{ l.title }}</span></label>
-                    {% if f.textarea|default(false) %}
-                        <textarea class="form-control" id="{{ cf_box }}-{{ key }}" name="{{ name|default('%s')|format(key) }}" rows="{{ f.rows|default(4) }}"{% if f.maxlength is defined %} maxlength="{{ f.maxlength }}"{% endif %} placeholder="{{ values[f.key]|default('') }}" lang="{{ l.locale[:2] }}"{% if l.locale is rtl %} dir="rtl"{% endif %}{% if f.editor|default(false) %} data-cf-editor{% endif %}>{{ values[key]|default('') }}</textarea>
-                    {% else %}
-                        <input class="form-control" type="text" id="{{ cf_box }}-{{ key }}" name="{{ name|default('%s')|format(key) }}" value="{{ values[key]|default('') }}"{% if f.maxlength is defined %} maxlength="{{ f.maxlength }}"{% endif %} placeholder="{{ values[f.key]|default('') }}" lang="{{ l.locale[:2] }}"{% if l.locale is rtl %} dir="rtl"{% endif %}>
-                    {% endif %}
-                    <div class="form-hint mb-2">{% if f.hint is defined %}{{ f.hint }} {% endif %}{{ 'Leave blank to use the default'|trans }}</div>
-                {% endfor %}
             </div>
-        {% endfor %}
+        {% endif %}
     </div>
+    {% endif %}
+    {% block cf_intro %}{% endblock %}
+    <div{% if cf_langs is not empty %} id="{{ cf_box }}-pane" role="tabpanel" aria-labelledby="{{ cf_box }}-tab"{% endif %} data-cf-version-pane="">
+        {% block cf_field %}{% endblock %}
+    </div>
+    {% for locale, title in cf_langs %}
+        {% set rtl = locale is rtl %}
+        <div id="{{ cf_box }}-pane-{{ locale }}" role="tabpanel" aria-labelledby="{{ cf_box }}-tab-{{ locale }}" data-cf-version-pane="{{ locale }}" hidden>
+            {% for f in fields %}
+                {% set key = f.key ~ '_' ~ locale|lower %}
+                {% set attributes %}id="{{ cf_box }}-{{ key }}" name="{{ name_format|default('%s')|format(key) }}" aria-label="{{ f.label }}" lang="{{ locale[:2] }}" dir="{{ rtl ? 'rtl' : 'ltr' }}" data-cf-default="{{ name_format|default('%s')|format(f.key) }}"{% if f.maxlength is defined %} maxlength="{{ f.maxlength }}"{% endif %}{% endset %}
+                {% if f.textarea|default(false) %}
+                    <textarea class="form-control{% if not loop.last %} mb-2{% endif %}" rows="{{ f.rows|default(4) }}" {{ attributes }}{% if f.editor|default(false) %} data-cf-editor{% else %} placeholder="{{ values[f.key]|default('') }}"{% endif %}>{{ values[key]|default('') }}</textarea>
+                {% else %}
+                    <input class="form-control{% if not loop.last %} mb-2{% endif %}" type="text" value="{{ values[key]|default('') }}" placeholder="{{ values[f.key]|default('') }}" {{ attributes }}>
+                {% endif %}
+            {% endfor %}
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mt-2">
+                <small class="form-hint mt-0">{% for f in fields|filter(f => f.hint is defined) %}{{ f.hint }} {% endfor %}{{ 'Leave blank to use the default'|trans }}</small>
+                <button class="btn btn-sm btn-outline-danger ms-auto" type="button" data-cf-version-remove>{{ 'Remove'|trans }}</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% if cf_langs is not empty %}
     <script nonce="{{ csp_nonce }}">
-        (function (box) {
-            const add = box.querySelector('[data-cf-add-lang]');
-            // One language open at a time; its button again closes it.
-            const show = function (lang) {
-                box.querySelectorAll('[data-cf-lang]').forEach(function (button) {
-                    const on = button.dataset.cfLang === lang;
-                    button.classList.toggle('btn-primary', on);
-                    button.classList.toggle('btn-outline-secondary', !on);
-                    button.setAttribute('aria-selected', on ? 'true' : 'false');
+        // One set of handlers for every text on the page.
+        (function () {
+            if (window.cfTextVersions) {
+                return;
+            }
+            window.cfTextVersions = true;
+            // A field with an editor is set through it: the editor writes its own text back into the field.
+            const fill = function (field, value) {
+                if (field.editor) {
+                    // Leave the Source view first: it copies its own text back over the new value on save.
+                    const raw = field.editor.raw;
+                    const source = raw && raw.plugins.has('SourceEditing') ? raw.plugins.get('SourceEditing') : null;
+                    if (source && source.isSourceEditingMode) {
+                        source.isSourceEditingMode = false;
+                    }
+                    field.editor.setData(value);
+                } else {
+                    field.value = value;
+                }
+            };
+            // A field's current text: through its editor, with the Source view's latest edits.
+            const read = function (field) {
+                if (!field.editor) {
+                    return field.value;
+                }
+                const raw = field.editor.raw;
+                const source = raw && raw.plugins.has('SourceEditing') ? raw.plugins.get('SourceEditing') : null;
+                if (source && source.isSourceEditingMode) {
+                    source.updateEditorData();
+                }
+                return field.editor.getData();
+            };
+            const show = function (box, lang) {
+                box.querySelectorAll('[data-cf-version]').forEach(function (tab) {
+                    const on = tab.dataset.cfVersion === lang;
+                    tab.classList.toggle('btn-primary', on);
+                    tab.classList.toggle('btn-outline-secondary', !on);
+                    tab.setAttribute('aria-selected', on ? 'true' : 'false');
                 });
-                box.querySelectorAll('[data-cf-lang-pane]').forEach(function (pane) {
-                    pane.hidden = pane.dataset.cfLangPane !== lang;
+                box.querySelectorAll('[data-cf-version-pane]').forEach(function (pane) {
+                    pane.hidden = pane.dataset.cfVersionPane !== lang;
                 });
+                // The label row's label points at the field on show: the default one's, or this language's first one.
+                const label = box.firstElementChild.querySelector('label[for]');
+                if (label) {
+                    label.dataset.cfFor ??= label.htmlFor;
+                    const field = lang === '' ? null : box.querySelector('[data-cf-version-pane="' + lang + '"] [data-cf-default]');
+                    label.htmlFor = field ? field.id : label.dataset.cfFor;
+                }
                 // A Markdown text gets the editor in its own language and direction when shown (a hidden pane has no width for the toolbar).
-                box.querySelectorAll('[data-cf-lang-pane="' + lang + '"] [data-cf-editor=""]').forEach(function (field) {
-                    field.dataset.cfEditor = 'on';
-                    ClientFence.editor.create(field, { language: { ui: 'en', content: field.lang } }).catch(function (error) {
+                box.querySelectorAll('[data-cf-version-pane="' + lang + '"] [data-cf-editor=""]').forEach(function (field) {
+                    // Marked as started only once it is: a failed start is tried again on the next show.
+                    field.dataset.cfEditor = 'starting';
+                    ClientFence.editor.create(field, { language: { ui: 'en', content: field.lang } }).then(function () {
+                        field.dataset.cfEditor = 'on';
+                    }).catch(function (error) {
+                        field.dataset.cfEditor = '';
                         console.error('Editor initialization error:', error);
                     });
                 });
             };
-            box.addEventListener('click', function (e) {
-                const button = e.target.closest('[data-cf-lang]');
-                if (button) {
-                    show(button.getAttribute('aria-selected') === 'true' ? '' : button.dataset.cfLang);
-                }
-            });
-            add?.addEventListener('change', function () {
-                const option = add.selectedOptions[0];
-                if (add.value === '') {
+            document.addEventListener('click', function (e) {
+                const tab = e.target.closest('[data-cf-version]');
+                if (tab) {
+                    show(tab.closest('[data-cf-versions]'), tab.dataset.cfVersion);
                     return;
                 }
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'btn btn-sm btn-outline-secondary';
-                button.setAttribute('role', 'tab');
-                button.dataset.cfLang = add.value;
-                button.textContent = option.textContent;
-                add.before(button);
-                show(add.value);
-                option.remove();
+                // Removing empties the language's fields: saved blank, clients get the default text.
+                const remove = e.target.closest('[data-cf-version-remove]');
+                if (remove) {
+                    const box = remove.closest('[data-cf-versions]');
+                    const pane = remove.closest('[data-cf-version-pane]');
+                    const lang = pane.dataset.cfVersionPane;
+                    const add = box.querySelector('[data-cf-version-add]');
+                    const tab = box.querySelector('[data-cf-version="' + lang + '"]');
+                    pane.querySelectorAll('[data-cf-default]').forEach(function (field) {
+                        fill(field, '');
+                    });
+                    tab.hidden = true;
+                    add.add(new Option(tab.textContent.trim(), lang));
+                    add.hidden = false;
+                    show(box, '');
+                }
+            });
+            // A new language starts as a copy of the default text, to translate.
+            document.addEventListener('change', function (e) {
+                const add = e.target.closest('[data-cf-version-add]');
+                if (!add || add.value === '') {
+                    return;
+                }
+                const box = add.closest('[data-cf-versions]');
+                const lang = add.value;
+                box.querySelector('[data-cf-version="' + lang + '"]').hidden = false;
+                box.querySelectorAll('[data-cf-version-pane="' + lang + '"] [data-cf-default]').forEach(function (field) {
+                    const source = box.querySelector('[data-cf-version-pane=""] [name="' + CSS.escape(field.dataset.cfDefault) + '"]');
+                    // Blank as the tabs count it: spaces only.
+                    if (field.value.trim() === '' && source) {
+                        fill(field, read(source));
+                    }
+                });
+                add.selectedOptions[0].remove();
                 add.value = '';
                 add.hidden = add.options.length < 2;
+                show(box, lang);
             });
-        // By id, not by position: a proxy can insert its own script before this one.
-        })(document.getElementById('{{ cf_box }}'));
+        })();
     </script>
 {% endif %}
