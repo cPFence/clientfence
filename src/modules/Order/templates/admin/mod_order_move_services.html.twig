@@ -82,11 +82,11 @@
 
 {% if preview %}
     {% set movable = preview.rows|filter(r => r.reason is null) %}
-    <div class="card" data-cf-move-services data-moved-text="{{ 'Moved'|trans }}">
+    <div class="card" data-cf-move-services data-moved-text="{{ 'Moved'|trans }}" data-done-text="{{ 'Services moved: %moved%.'|trans }}" data-failed-text="{{ 'Services moved: %moved%. Could not move: %failed%.'|trans }}">
         <div class="card-header">
             <div>
                 <h3 class="card-title">{{ 'Preview'|trans }}</h3>
-                <p class="card-subtitle">{{ '%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet.'|trans({ '%total%': preview.total, '%count%': preview.rows|length, '%movable%': preview.movable }) }}</p>
+                <p class="card-subtitle" data-cf-move-summary>{{ '%total% services match. This page lists %count% of them: %movable% can move. Nothing has changed yet.'|trans({ '%total%': preview.total, '%count%': preview.rows|length, '%movable%': preview.movable }) }}</p>
             </div>
         </div>
         <div class="table-responsive">

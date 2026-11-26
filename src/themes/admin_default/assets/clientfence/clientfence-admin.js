@@ -1354,7 +1354,7 @@ if (bulkPrices) {
   };
 }
 
-// Move services (Order/ProductMove.php): each service's result goes into its row; the move button goes.
+// Move services (Order/ProductMove.php): each service's result goes into its row, the counts into the subtitle; the move button goes.
 const moveServices = document.querySelector('[data-cf-move-services]');
 if (moveServices) {
   window.clientfenceServicesMoved = (result) => {
@@ -1365,6 +1365,10 @@ if (moveServices) {
       cell.closest('tr')?.classList.toggle('text-danger', !row.moved);
     }
     moveServices.querySelector('form')?.remove();
+    const moved = Number(result?.moved ?? 0);
+    const failed = (result?.results ?? []).length - moved;
+    const summary = moveServices.querySelector('[data-cf-move-summary]');
+    if (summary) summary.textContent = (failed > 0 ? moveServices.dataset.failedText : moveServices.dataset.doneText).replace('%moved%', String(moved)).replace('%failed%', String(failed));
   };
 }
 
