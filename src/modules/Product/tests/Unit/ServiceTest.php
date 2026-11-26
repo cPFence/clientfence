@@ -303,6 +303,27 @@ test('to api array', function (): void {
     expect($result)->toBeArray();
 });
 
+test('a paused add-on is hidden from the store and visible to staff', function (): void {
+    $product = productTestCreateProductEntity(1)->setType(Service::HOSTING)->setProductPaymentId(1)->setAddons('[2]');
+    $addon = productTestCreateProductEntity(2)->setType(Service::CUSTOM)->setProductPaymentId(2)->setIsAddon(true);
+    $productRepo = Mockery::mock(ProductRepository::class);
+    $productRepo->shouldReceive('findAddonsByIds')->andReturn([$addon]);
+    $paymentRepo = Mockery::mock(ProductPaymentRepository::class);
+    $paymentRepo->shouldReceive('find')->andReturn((new ProductPayment())->setType(ProductPayment::FREE));
+    $custom = Mockery::mock();
+    $custom->shouldReceive('orderable')->once()->andReturn(false);
+
+    $di = container();
+    $di['em'] = productTestCreateEntityManagerWithRepositories($productRepo, $paymentRepo);
+    $di['request_cache'] = new ArrayObject(['module_manifests' => ['servicecustom' => ['service' => ['orderable' => true]]]]);
+    $di['mod_service'] = $di->protect(moduleService(['servicecustom' => $custom]));
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->toApiArray($product)['addons'])->toBe([])
+        ->and(array_column($service->toApiArray($product, true, createEntity(ClientFence\Mod\Staff\Entity\Admin::class))['addons'], 'id'))->toBe([2]);
+});
+
 test('a product type of one unit per order offers no quantity selection', function (): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('getStartingFromPrice');

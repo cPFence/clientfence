@@ -143,6 +143,29 @@ test('only switched-off extension service modules are listed as switched-off pro
     'mixed-case product type' => ['ExAmPlE'],
 ]);
 
+test('a service module can take its product type off the store', function (?bool $orderable, bool $switchedOff): void {
+    $di = moduleHooksContainer([
+        'serviceexample' => ['service' => ['orderable' => true]],
+        'serviceother' => ['service' => []],
+    ], ['serviceexample', 'serviceother']);
+    $extension = $di['mod_service']('extension');
+    $service = Mockery::mock();
+    $service->shouldReceive('orderable')->once()->andReturnUsing(
+        static fn (): bool => $orderable ?? throw new RuntimeException(),
+    );
+    $di['mod_service'] = $di->protect(static fn (string $module): object => match ($module) {
+        'extension' => $extension,
+        'serviceexample' => $service,
+    });
+
+    expect(ServiceTypes::switchedOff($di))->toBe($switchedOff ? ['example'] : [])
+        ->and(ServiceTypes::isSwitchedOff($di, 'example'))->toBe($switchedOff);
+})->with([
+    'allows orders' => [true, false],
+    'pauses orders' => [false, true],
+    'throws' => [null, true],
+]);
+
 test('any switched-on module declares its hooks at the manifest root; a switched-off one does not count', function (): void {
     $policy = ['policy' => 'fixed_window', 'limit' => 5, 'interval' => '1 minute'];
     $hooks = static fn (string $id): array => [

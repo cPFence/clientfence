@@ -1275,6 +1275,10 @@ class Service implements InjectionAwareInterface
     {
         $addons = [];
         foreach ($this->getProductAddons($model, $isAdmin) as $addon) {
+            // ClientFence core patch: the store offers no add-on its cart would refuse (a switched-off or paused type).
+            if (!$isAdmin && \ClientFence\ServiceTypes::isSwitchedOff($this->di, $addon->getType())) {
+                continue;
+            }
             $d = $this->toAddonArray($addon, true, $isAdmin);
             $addons[] = $d;
         }

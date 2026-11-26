@@ -14,6 +14,10 @@ namespace ClientFence;
  *   is `service_<type>` with a `client_id` column: deleting a client deletes the service's row there, and moving a service
  *   to another client (Order\ClientMove) updates its `client_id`;
  * - "single_unit": true — one unit per order (no quantity);
+ * - "orderable": true — calls orderable(): bool on the switched-on module's service once per request. False or a throw
+ *   makes the type unavailable in the store and at checkout. Existing orders still renew, suspend, cancel and show on
+ *   the service page.
+ *   Add New Order bypasses this check. Modules can refuse staff orders in their own order validation.
  * - "order_config": false — staff cannot edit the order's raw configuration;
  * - "changeable": true — its services renew at the order's price and can move to another product (upgrades, staff
  *   moves, bulk prices); the module's action_change_package($order), if it has one, then applies the new product. It runs
@@ -190,12 +194,26 @@ final class ServiceTypes
         )));
     }
 
-    /** @return list<string> the product types whose service module is switched off */
+    /** @return list<string> the product types unavailable in the store and at checkout */
     public static function switchedOff(\Pimple\Container $di): array
     {
         return RequestCache::remember($di, 'service_type_switched_off', static fn (): array => array_values(array_filter(
             self::types($di),
-            static fn (string $type): bool => !self::switchedOn($di, 'service' . $type),
+            static function (string $type) use ($di): bool {
+                $module = 'service' . $type;
+                if (!self::switchedOn($di, $module)) {
+                    return true;
+                }
+                if ((self::manifests($di)[$module]['service']['orderable'] ?? false) !== true) {
+                    return false;
+                }
+
+                try {
+                    return !$di['mod_service']($module)->orderable();
+                } catch (\Throwable) {
+                    return true;
+                }
+            },
         )));
     }
 
@@ -287,6 +305,7 @@ final class ServiceTypes
             'service.lifecycle' => 'is_string',
             'service.entity' => 'is_string',
             'service.single_unit' => 'is_bool',
+            'service.orderable' => 'is_bool',
             'service.order_config' => 'is_bool',
             'service.changeable' => 'is_bool',
             'service.import' => 'is_bool',
