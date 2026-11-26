@@ -25,6 +25,7 @@
 - Changing an order's billing cycle in Edit Order stops its gateway subscription, as Recalculate on Save does.
 - Email templates a release adds are listed under Email Templates right after the update.
 - Staff ticket emails go only to staff who may view tickets.
+- Country and network lookups (sign-in history, the staff sign-in country rule, IP Lookup and Antispam hosting networks) use current data again; installs still refresh it every week, and the earlier source had stopped updating.
 - Security updates: Symfony 7.4.23 and Twig 3.31.1.
 
 ### Fixed
