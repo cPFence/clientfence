@@ -115,6 +115,15 @@ final class Privacy
         if ($includeStaffData) {
             $data['notes'] = Notes::getList($di, $clientId);
             $data['files'] = Files::getList($di, $clientId);
+        } else {
+            // Provisioning passwords and staff-entered import values are private.
+            foreach ($data['orders'] as $i => $order) {
+                $config = json_decode($order['config'] ?? '');
+                if ($config instanceof \stdClass) {
+                    unset($config->password, $config->_import_fields);
+                    $data['orders'][$i]['config'] = json_encode($config);
+                }
+            }
         }
 
         return $data;

@@ -31,6 +31,11 @@ namespace ClientFence;
  *   with "lifecycle": "built-in", else activate($order, $service)), and the order config then has "import" set (Order\Service::getConfig($order)['import']): the module links the existing
  *   service instead of creating it, as hosting and domains do. Without it the core records the service without calling
  *   the module's activation;
+ * - "import_fields": [{"key", "label", "hint"}] — with "import": true, the text inputs staff fill in to identify the
+ *   existing service when they tick "Already set up" (one per field; label and the optional hint are translated). The
+ *   values, as typed, are in the order config under "_import_fields" (getConfig($order)['_import_fields'][$key]; keys
+ *   [a-z][a-z0-9_]*, each once); clients never send or see them (Product\Service::prepareCartProductConfig(), toApiArray()).
+ *   A module whose attachOrderConfig() keeps only listed keys must keep "import" and "_import_fields" too;
  * - "icon": an icon of the client theme's sprite for its services in the cart, the services list and the service page.
  *
  * At the manifest root, any module (a service module or not) declares its hooks:
@@ -89,6 +94,10 @@ final class ServiceTypes
         // A switched-off module, or one that cannot run on this PHP (Module::cannotRun()), could not apply a product change.
         if (array_key_exists('changeable', $declared) && (!self::switchedOn($di, $module) || $di['mod']($module)->cannotRun() !== null)) {
             unset($declared['changeable']);
+        }
+        // A malformed list (the manifest edited after the check) would break staff Add New Order.
+        if (array_key_exists('import_fields', $declared) && !self::validImportFields($declared)) {
+            unset($declared['import_fields']);
         }
 
         return $declared;
@@ -268,6 +277,7 @@ final class ServiceTypes
             'service.changeable' => 'is_bool',
             'service.import' => 'is_bool',
             'service.icon' => 'is_string',
+            'service.import_fields' => static fn (mixed $v): bool => self::validImportFields(['import_fields' => $v] + $manifest['service']),
         ];
         foreach ($rules as $path => $valid) {
             [$key, $sub] = explode('.', $path) + [1 => null];
@@ -342,6 +352,25 @@ final class ServiceTypes
     private static function lower(mixed $map): array
     {
         return is_array($map) ? array_change_key_case($map) : [];
+    }
+
+    /** A list of {key, label, hint?} with distinct keys (a letter first: never a number or a JS prototype name), in a "service" that declares "import": true. */
+    private static function validImportFields(array $service): bool
+    {
+        $fields = $service['import_fields'] ?? null;
+        if (($service['import'] ?? null) !== true || !is_array($fields) || !array_is_list($fields)) {
+            return false;
+        }
+        $keys = [];
+        foreach ($fields as $field) {
+            if (!is_array($field) || !is_string($field['key'] ?? null) || preg_match('/^[a-z][a-z0-9_]*$/D', $field['key']) !== 1 || isset($keys[$field['key']])
+                || !is_string($field['label'] ?? null) || (array_key_exists('hint', $field) && !is_string($field['hint']))) {
+                return false;
+            }
+            $keys[$field['key']] = true;
+        }
+
+        return true;
     }
 
     /** What Symfony's RateLimiterFactory accepts (an unknown policy, limit or interval would throw there). */

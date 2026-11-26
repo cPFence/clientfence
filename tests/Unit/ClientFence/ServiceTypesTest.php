@@ -91,6 +91,20 @@ test('only a type that declares changeable as true joins upgrades and bulk price
         ->and(ServiceTypes::changeable(container()))->toBe([]);
 });
 
+test('a malformed import_fields list is left out of the declaration, so Add New Order never reads it', function (): void {
+    $di = container();
+    $fields = [['key' => 'account_id', 'label' => 'Account ID']];
+    $di['request_cache'] = new ArrayObject(['module_manifests' => [
+        'servicecustom' => ['service' => ['import' => true, 'import_fields' => $fields]],
+        'servicelicense' => ['service' => ['import' => true, 'import_fields' => [['key' => 'Bad key', 'label' => 'ID']]]],
+        'servicedownloadable' => ['service' => ['import_fields' => $fields]],
+    ]]);
+
+    expect(ServiceTypes::declared($di, 'custom')['import_fields'] ?? null)->toBe($fields)
+        ->and(ServiceTypes::declared($di, 'license'))->toBe(['import' => true])
+        ->and(ServiceTypes::declared($di, 'downloadable'))->toBe([]);
+});
+
 /** The extension service of `$on`: the extension modules that are switched on (core modules always are). */
 function moduleSwitch(array $on): object
 {

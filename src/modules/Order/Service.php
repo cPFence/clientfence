@@ -824,7 +824,8 @@ class Service implements InjectionAwareInterface
         $data['config'] = json_decode($this->orderConfig($model) ?? '', true) ?? [];
         // ClientFence core patch: order responses must not expose provisioning passwords to clients.
         if (!$identity instanceof Admin && !$identity instanceof \Model_Admin) {
-            unset($data['config']['password']);
+            // ClientFence core patch: nor what staff entered for "Already set up" (ServiceTypes import_fields).
+            unset($data['config']['password'], $data['config']['_import_fields']);
         }
         $data['total'] = $this->getTotal($model);
         $data['discount'] ??= 0;
@@ -929,7 +930,8 @@ class Service implements InjectionAwareInterface
             $data = $order;
             $data['config'] = json_decode($order['config'] ?? '', true) ?? [];
             if (!$identity instanceof Admin && !$identity instanceof \Model_Admin) {
-                unset($data['config']['password']);
+                // ClientFence core patch: nor what staff entered for "Already set up" (ServiceTypes import_fields).
+                unset($data['config']['password'], $data['config']['_import_fields']);
             }
             $data['total'] = $this->calculateTotal($order['price'], $order['quantity']);
             $data['title'] = $order['title'];

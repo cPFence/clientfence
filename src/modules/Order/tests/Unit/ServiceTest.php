@@ -146,8 +146,8 @@ test('batch order serialization does not expose admin-only client details', func
     }
 });
 
-test('order serialization exposes provisioning passwords only to staff', function (string $who): void {
-    $config = ['password' => 'hosting-secret', 'domain' => 'example.test'];
+test('order serialization exposes provisioning passwords and "Already set up" values only to staff', function (string $who): void {
+    $config = ['password' => 'hosting-secret', 'domain' => 'example.test', 'import_fields' => 'form answer', '_import_fields' => ['api_key' => 'staff-entered']];
     $row = [
         'id' => 11, 'client_id' => 7, 'product_id' => 3, 'title' => 'Hosting',
         'config' => json_encode($config), 'price' => 10, 'quantity' => 1,
@@ -189,7 +189,7 @@ test('order serialization exposes provisioning passwords only to staff', functio
 
     $service = new Service();
     $service->setDi($di);
-    $expected = $who === 'client' ? ['domain' => 'example.test'] : $config;
+    $expected = $who === 'client' ? ['domain' => 'example.test', 'import_fields' => 'form answer'] : $config;
 
     expect($service->toApiArray($order, true, $identity)['config'])->toBe($expected)
         ->and($service->getBatchForApi([11], $identity)[0]['config'])->toBe($expected);

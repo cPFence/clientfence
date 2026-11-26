@@ -131,6 +131,15 @@ test('the export holds the client\'s data and no secrets or staff notes', functi
         ->and($json)->not->toContain('bob@client.test');
 });
 
+test('client privacy exports remove private order config keys', function (): void {
+    $db = privacyDb();
+    $db->update('client_order', ['config' => '{"password":"secret","_import_fields":{"account_id":"private"},"import_fields":"form answer","domain":"example.test","details":{}}'], ['id' => 1]);
+
+    $data = Privacy::export(privacyDi($db), 7);
+
+    expect($data['orders'][0]['config'])->toBe('{"import_fields":"form answer","domain":"example.test","details":{}}');
+});
+
 test('the export has the sign-in details and the authorized user, not the session id', function (): void {
     $db = privacyDb();
     $db->insert('client_user', ['id' => 3, 'email' => 'helper@client.test']);

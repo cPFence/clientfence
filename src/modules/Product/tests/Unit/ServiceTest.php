@@ -2936,15 +2936,21 @@ test('prepareCartProductConfig keeps "Already set up" and "Start date" for staff
     $service = new Service();
     $product = productTestCreateProductEntity(1)->setType('custom')->setConfig('{}');
     $di = container();
+    $di['request_cache'] = new ArrayObject(['module_manifests' => [
+        'servicecustom' => ['service' => ['import' => true, 'import_fields' => [['key' => 'account_id', 'label' => 'Account ID']]]],
+    ]]);
     $di['mod_service'] = $di->protect(fn (string $serviceName): object => match ($serviceName) {
         'servicecustom' => new stdClass(),
         default => throw new RuntimeException('Unexpected service request ' . $serviceName),
     });
     $service->setDi($di);
 
-    $result = $service->prepareCartProductConfig($product, ['period' => '1M', 'import' => 1, '_start_date' => '2025-03-10'], $staff);
+    $importFields = ['account_id' => 'a1'];
+    $result = $service->prepareCartProductConfig($product, ['period' => '1M', 'import' => 1, 'import_fields' => 'form answer', '_import_fields' => $importFields, '_start_date' => '2025-03-10'], $staff);
 
     expect(isset($result['import']))->toBe($staff)
+        ->and($result['_import_fields'] ?? null)->toBe($staff ? $importFields : null)
+        ->and($result['import_fields'])->toBe('form answer')
         ->and(isset($result['_start_date']))->toBe($staff)
         ->and($result['period'])->toBe('1M');
 })->with(['staff order' => [true], 'client cart' => [false]]);

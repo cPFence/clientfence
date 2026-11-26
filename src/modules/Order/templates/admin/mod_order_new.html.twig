@@ -24,7 +24,10 @@
     {% endif %}
     {# ClientFence core patch: no quantity for a product type of one unit per order (ServiceTypes). #}
     {# ClientFence core patch: "Already set up" runs the activation of a type that declares import (ServiceTypes), so its label says it links (hosting has its own). #}
-    {% set products = products|merge([{ 'id': p.id, 'title': p.title, 'type': p.type, 'periods': cycles, 'quantity': p.allow_quantity_select and not (service_type(p.type).single_unit ?? false), 'imports': p.type != 'hosting' and (service_type(p.type).import ?? false) is same as(true) }]) %}
+    {# ClientFence core patch: "Already set up" asks for the fields a type declares in import_fields (ServiceTypes) to identify the existing service. #}
+    {% set imports = p.type != 'hosting' and (service_type(p.type).import ?? false) is same as(true) %}
+    {% set import_fields = imports ? (service_type(p.type).import_fields ?? [])|map(f => { 'key': f.key, 'label': f.label|trans, 'hint': f.hint is defined ? f.hint|trans : '' }) : [] %}
+    {% set products = products|merge([{ 'id': p.id, 'title': p.title, 'type': p.type, 'periods': cycles, 'quantity': p.allow_quantity_select and not (service_type(p.type).single_unit ?? false), 'imports': imports, 'import_fields': import_fields }]) %}
 {% endfor %}
 {% set tlds = [] %}
 {% for t in guest.serviceDomain_tlds %}
@@ -194,7 +197,7 @@
     function addProduct(id) {
         const p = product(id);
         if (!p) return;
-        state.products.push({ key: ++uid, productId: p.id, period: p.periods[0]?.code || '', qty: 1, domain: '', price: '', import: false, username: '', password: '', start: TODAY });
+        state.products.push({ key: ++uid, productId: p.id, period: p.periods[0]?.code || '', qty: 1, domain: '', price: '', import: false, username: '', password: '', fields: {}, start: TODAY });
         render();
     }
     function addDomain(data = {}) {
@@ -252,8 +255,11 @@
                         <input class="form-control" type="text" inputmode="decimal" id="o${it.key}" data-f="price" value="${esc(it.price)}">
                         <small class="form-hint">${esc(text.priceHint)}</small></div>
                     ${startHtml(it)}
-                    <div class="col-12"><label class="form-check mb-0"><input class="form-check-input" type="checkbox" data-f="import"${it.import ? ' checked' : ''}>
+                    <div class="col-12"><label class="form-check mb-0"><input class="form-check-input" type="checkbox" id="i${it.key}" data-f="import"${it.import ? ' checked' : ''}>
                         <span class="form-check-label">${esc(p.type === 'hosting' ? text.import : (p.imports ? text.link : text.setUp))}</span></label></div>
+                    ${it.import ? p.import_fields.map((f) => `<div class="col-md-6"><label class="form-label" for="x${it.key}-${esc(f.key)}">${esc(f.label)}</label>
+                        <input class="form-control" type="text" id="x${it.key}-${esc(f.key)}" data-field="${esc(f.key)}" value="${esc(Object.hasOwn(it.fields, f.key) ? it.fields[f.key] : '')}" autocomplete="off">
+                        ${f.hint ? `<small class="form-hint">${esc(f.hint)}</small>` : ''}</div>`).join('') : ''}
                 </div></div>`;
         }).join('') : `<p class="text-secondary text-center mb-0">${esc(text.noProducts)}</p>`;
 
@@ -307,6 +313,8 @@
         const items = state.products.map((it) => {
             const p = product(it.productId);
             const item = { product_id: p.id, period: it.period || null, quantity: Math.max(1, parseInt(it.qty, 10) || 1), price: it.price.trim(), config: { _start_date: it.start, import: it.import ? 1 : 0 } };
+            // Under their own key, so a declared name never meets the cart's keys; sent as typed (a credential may hold spaces).
+            if (it.import && p.import_fields.length) item.config._import_fields = Object.fromEntries(p.import_fields.map((f) => [f.key, Object.hasOwn(it.fields, f.key) ? it.fields[f.key] : '']));
             if (p.type === 'hosting') {
                 const linked = state.domains.find((d) => d.linkedTo === it.key);
                 // A subdomain is an own domain too: split at the TLD (shop.example + .com), not at the first dot.
@@ -395,11 +403,13 @@
         if (f === 'productId') {
             const p = product(it.productId);
             if (!p.periods.some((c) => c.code === it.period)) it.period = p.periods[0]?.code || '';
+            // A value entered for one product's type is never sent for another's.
+            it.fields = {};
             if (p.type !== 'hosting') state.domains.forEach((d) => { if (d.linkedTo === key) d.linkedTo = null; });
         }
         if (f === 'domain') state.domains.forEach((d) => { if (d.linkedTo === key) d.name = it.domain; });
-        // Selects and domain names change the cards; other typing only needs a new quote and keeps the focus.
-        if (e.target.tagName === 'SELECT' || f === 'domain' || f === 'name') {
+        // Selects, domain names and "Already set up" change the cards; other typing only needs a new quote and keeps the focus.
+        if (e.target.tagName === 'SELECT' || f === 'domain' || f === 'name' || f === 'import') {
             const id = e.target.id, pos = e.target.selectionStart;
             render();
             const el = $(id);

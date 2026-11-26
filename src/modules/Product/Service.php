@@ -422,7 +422,7 @@ class Service implements InjectionAwareInterface
 
         // ClientFence core patch: staff Add New Order keys ("Already set up", "Start date") never come from a client's cart; no form field name starts with _.
         if (!$staff) {
-            unset($config['import'], $config['_start_date']);
+            unset($config['import'], $config['_start_date'], $config['_import_fields']);
         }
 
         // Strip client-supplied keys the product-type service hasn't declared
