@@ -72,9 +72,10 @@ class Reader
      */
     public function updateDefaultDatabases(): bool
     {
+        // ClientFence core patch: sapics ip-location-db publishes these daily (PDDL); the earlier source stopped updating.
         $databases = [
-            self::getCountryDatabase() => ['country', 'https://github.com/HostByBelle/IP-Geolocation-DB/releases/latest/download/cc0-both-country.mmdb'],
-            self::getAsnDatabase() => ['asn', 'https://github.com/HostByBelle/IP-Geolocation-DB/releases/latest/download/pddl-asn-both.mmdb'],
+            self::getCountryDatabase() => ['country', 'https://github.com/sapics/ip-location-db/releases/download/latest/user-country.mmdb'],
+            self::getAsnDatabase() => ['asn', 'https://github.com/sapics/ip-location-db/releases/download/latest/iptoasn-asn.mmdb'],
         ];
 
         foreach ($databases as $path => [$kind, $url]) {

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Refreshes the bundled GeoIP databases (src/library/ClientFence/GeoIP/Databases) from HostByBelle's
-# IP-Geolocation-DB (CC0 country, PDDL ASN; a new build about every day), so a release ships a
-# current copy. Installs then update them every 7 days themselves (System cron, GeoIP\Reader).
+# Refreshes the bundled GeoIP databases (src/library/ClientFence/GeoIP/Databases) from sapics
+# ip-location-db (PDDL country "user-country", PDDL ASN "iptoasn-asn", a new build every day),
+# so a release ships a current copy. Installs update them every 7 days (System cron, GeoIP\Reader).
 #
 #   tools/update-geoip.sh               download both, check them, put them in place
 #   tools/update-geoip.sh --check DAYS  only check the bundled ones: usable and built at most DAYS
@@ -13,7 +13,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 DB="$ROOT/src/library/ClientFence/GeoIP/Databases"
-BASE=https://github.com/HostByBelle/IP-Geolocation-DB/releases/latest/download
+BASE=https://github.com/sapics/ip-location-db/releases/download/latest
 MAX_DAYS=""
 case ${1:-} in
   "") ;;
@@ -54,8 +54,8 @@ fi
 work=$(mktemp -d)
 trap 'rm -rf -- "$work"' EXIT
 chmod 755 "$work"
-curl -fsSL --retry 3 -o "$work/CC0-Country.mmdb" "$BASE/cc0-both-country.mmdb"
-curl -fsSL --retry 3 -o "$work/PDDL-ASN.mmdb" "$BASE/pddl-asn-both.mmdb"
+curl -fsSL --retry 3 -o "$work/CC0-Country.mmdb" "$BASE/user-country.mmdb"
+curl -fsSL --retry 3 -o "$work/PDDL-ASN.mmdb" "$BASE/iptoasn-asn.mmdb"
 chmod 644 "$work"/*.mmdb
 check "$work"
 cp "$work/CC0-Country.mmdb" "$work/PDDL-ASN.mmdb" "$DB/"

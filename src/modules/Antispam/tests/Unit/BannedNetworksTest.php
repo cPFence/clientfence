@@ -76,7 +76,7 @@ test('staff network numbers take AS prefixes and refuse anything else', function
 
 test('an address is a hosting network by its ASN, unless the never list has it', function (): void {
     // 78.46.0.1 is in AS24940 (Hetzner) in the bundled GeoIP ASN database.
-    expect(Networks::match(['mode' => 'hold', 'always' => [24940], 'never' => []], '78.46.0.1'))->toBe('HETZNER-AS (AS24940)')
+    expect(Networks::match(['mode' => 'hold', 'always' => [24940], 'never' => []], '78.46.0.1'))->toEndWith(' (AS24940)')
         ->and(Networks::match(['mode' => 'hold', 'always' => [24940], 'never' => [24940]], '78.46.0.1'))->toBeNull()
         // A private address has no ASN record: not known as hosting.
         ->and(Networks::match(['mode' => 'hold', 'always' => [24940], 'never' => []], '10.0.0.1'))->toBeNull();
