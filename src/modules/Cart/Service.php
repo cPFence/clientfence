@@ -412,6 +412,29 @@ class Service implements InjectionAwareInterface
             }
         }
 
+        // ClientFence core patch: reject overlapping DNS hosting zones before checkout.
+        if ($product->getType() === \ClientFence\Mod\Product\Service::DNS && is_string($data['domain_name'] ?? null)) {
+            $incomingZone = rtrim(trim($data['domain_name']), '.');
+            // Stored zones are ASCII (Servicednshosting normalizeDomain), so a Unicode name is compared in that form.
+            $incomingZone = strtolower((string) (idn_to_ascii($incomingZone, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46) ?: $incomingZone));
+            if ($incomingZone !== '') {
+                foreach ($this->findCartProducts($cart) as $item) {
+                    $itemConfig = json_decode($this->cartProductConfig($item) ?? '', true);
+                    if (!is_string($itemConfig['domain_name'] ?? null)) {
+                        continue;
+                    }
+
+                    $zone = strtolower(rtrim(trim($itemConfig['domain_name']), '.'));
+                    if ($zone === $incomingZone || str_ends_with($zone, '.' . $incomingZone) || str_ends_with($incomingZone, '.' . $zone)) {
+                        $existingProduct = $this->getProductService()->getProductRepository()->find((int) $this->cartProductProductId($item));
+                        if ($existingProduct?->getType() === \ClientFence\Mod\Product\Service::DNS) {
+                            throw new \ClientFence\InformationException('This domain is already in the cart.');
+                        }
+                    }
+                }
+            }
+        }
+
         $list = [];
         $list[] = [
             'product' => $product,

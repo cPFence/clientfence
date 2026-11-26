@@ -1889,6 +1889,51 @@ test('addItem rejects duplicate domain transfer', function (): void {
         ->toThrow(ClientFence\InformationException::class, 'This domain is already in the cart.');
 });
 
+test('addItem rejects overlapping DNS hosting zones and accepts a different zone', function (): void {
+    $cartModel = createEntity(Cart::class, ['id' => 2]);
+    $productModel = createProductEntity(id: 7, type: ProductService::DNS);
+    $existingCartProduct = createEntity(CartProduct::class, [
+        'product_id' => 8,
+        'config' => json_encode(['domain_name' => ' Example.COM. ']),
+    ]);
+    $idnCartProduct = createEntity(CartProduct::class, [
+        'product_id' => 9,
+        'config' => json_encode(['domain_name' => 'xn--strae-oqa.de']),
+    ]);
+
+    $cartProductRepo = Mockery::mock(CartProductRepository::class);
+    $cartProductRepo->shouldReceive('findByCartId')->with(2)->andReturn([$existingCartProduct, $idnCartProduct]);
+    $productRepo = Mockery::mock(\ClientFence\Mod\Product\Repository\ProductRepository::class);
+    $productRepo->shouldReceive('find')->with(8)->andReturn(createProductEntity(id: 8, type: ProductService::DNS));
+    $productRepo->shouldReceive('find')->with(9)->andReturn(createProductEntity(id: 9, type: ProductService::DNS));
+
+    $emMock = Mockery::mock(Doctrine\ORM\EntityManagerInterface::class);
+    $emMock->shouldReceive('getRepository')->with(CartProduct::class)->andReturn($cartProductRepo);
+    $emMock->shouldReceive('persist')->once()->with(Mockery::type(CartProduct::class));
+    $emMock->shouldReceive('flush')->once();
+
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('getProductRepository')->andReturn($productRepo);
+    $productService->shouldReceive('getProductModuleService')->with($productModel)->andReturn(new ClientFence\Mod\Servicednshosting\Service());
+    $productService->shouldReceive('isRecurrentProductPricing')->with($productModel)->andReturn(false);
+    $productService->shouldReceive('isStockAvailable')->with($productModel, 1)->andReturn(true);
+    $productService->shouldReceive('prepareCartProductConfig')->with($productModel, ['domain_name' => 'example.net'], false)
+        ->andReturn(['domain_name' => 'example.net']);
+
+    $di = container();
+    $di['em'] = $emMock;
+    $di['logger'] = new \ClientFence\Log();
+    $di['mod_service'] = $di->protect(fn ($name) => $productService);
+    $service = new Service();
+    $service->setDi($di);
+
+    foreach (['example.com', ' WWW.Example.com. ', 'straße.de'] as $zone) {
+        expect(fn () => $service->addItem($cartModel, $productModel, ['domain_name' => $zone]))
+            ->toThrow(ClientFence\InformationException::class, 'This domain is already in the cart.');
+    }
+    expect($service->addItem($cartModel, $productModel, ['domain_name' => 'example.net']))->toBeTrue();
+});
+
 test('addItem rejects duplicate domain nested', function (): void {
     $cartModel = new Cart();
     $cartReflection = new ReflectionProperty($cartModel, 'id');
