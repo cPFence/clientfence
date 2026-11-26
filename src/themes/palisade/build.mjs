@@ -3,6 +3,7 @@
 //   css/palisade.rtl.css   the same, mirrored for Arabic
 //   fonts/geist-*.woff2    Geist under fixed names, for the embeds
 //   js/palisade.js         client script (+ lazily loaded chunks)
+//   js/lib/*.js            the store helpers for extension modules (import map in partials/head.html.twig)
 //   html/partials/asset_version.html.twig  short hash of the build, appended as ?v= to asset URLs
 //   symbol/icons-sprite.svg  Bootstrap Icons listed in icon-manifest.json (read by FOSSBilling's svg_sprite())
 import { createHash } from 'node:crypto';
@@ -48,7 +49,12 @@ await rm(join(out, 'css/iti.css'));
 await cp(join(src, 'fonts'), join(out, 'fonts'), { recursive: true, filter: (path) => !path.includes('jakarta') });
 
 await esbuild.build({
-  entryPoints: { palisade: join(src, 'js/palisade.js') },
+  // The lib entries share the theme's chunks, so a module's import gets the same helper instances.
+  entryPoints: {
+    palisade: join(src, 'js/palisade.js'),
+    'lib/store-utils': join(src, 'js/lib/store-utils.js'),
+    'lib/product-options': join(src, 'js/lib/product-options.js'),
+  },
   bundle: true,
   minify: true,
   format: 'esm',
