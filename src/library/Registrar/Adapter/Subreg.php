@@ -11,7 +11,7 @@ declare(strict_types=1);
  *
  * Uses the Subreg SOAP API (non-WSDL, needs the PHP soap extension): Login gives a session token (ssid) that every
  * other call carries; registrations, transfers, renewals and changes are Make_Order orders. Test mode sends every call
- * to the Subreg OT&E system (demoreg.net), never to the live registry. Privacy protection is not supported.
+ * to the Subreg OT&E system (demoreg.net), never to the live registry. Supports WHOIS privacy and EPP-code email requests.
  */
 class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
@@ -38,13 +38,13 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public static function getUnsupportedActions(): array
     {
-        return ['enablePrivacyProtection', 'disablePrivacyProtection'];
+        return [];
     }
 
     public static function getConfig(): array
     {
         return [
-            'label' => __trans('Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported.'),
+            'label' => __trans('Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Supports WHOIS privacy protection and emailing the EPP transfer code to the domain contact.'),
             'form' => [
                 'login' => ['text', [
                     'label' => __trans('Username'),
@@ -174,14 +174,22 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
         return true;
     }
 
+    /**
+     * Subreg may redact authid in Info_Domain. SendAuthID_Domain requests that Subreg
+     * email the actual transfer code to the domain's registered contact.
+     *
+     * ClientFence expects getEpp() to return a string, so return a confirmation message
+     * after the Make_Order request succeeds; do not return the redacted authid value.
+     */
     public function getEpp(Registrar_Domain $domain): string
     {
-        $code = trim((string) ($this->info($domain)['authid'] ?? ''));
-        if ($code === '') {
-            throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
-        }
+        $this->order($domain, 'SendAuthID_Domain', [
+            'params' => [
+                'whmcs' => 1,
+            ],
+        ]);
 
-        return $code;
+        return __trans('Subreg has been asked to email the transfer code to the domain\'s registered contact.');
     }
 
     public function lock(Registrar_Domain $domain): bool
@@ -196,12 +204,27 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public function enablePrivacyProtection(Registrar_Domain $domain): bool
     {
-        throw new Registrar_Exception(':registrar does not support this action.', [':registrar' => 'Subreg']);
+        $this->setWhoisPrivacy($domain, true);
+
+        return true;
     }
 
     public function disablePrivacyProtection(Registrar_Domain $domain): bool
     {
-        throw new Registrar_Exception(':registrar does not support this action.', [':registrar' => 'Subreg']);
+        $this->setWhoisPrivacy($domain, false);
+
+        return true;
+    }
+
+    /** Subreg's WHMCS-compatible Modify_Domain structure for WHOIS privacy. */
+    private function setWhoisPrivacy(Registrar_Domain $domain, bool $enabled): void
+    {
+        $this->order($domain, 'Modify_Domain', [
+            'params' => [
+                'whoisproxy' => $enabled ? 1 : 0,
+                'whmcs' => 1,
+            ],
+        ]);
     }
 
     public function deleteDomain(Registrar_Domain $domain): bool
