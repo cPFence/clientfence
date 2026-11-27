@@ -33484,3 +33484,16 @@ msgstr "Der Registrar hat den Transfercode per E-Mail an den Ansprechpartner der
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar bietet keinen Datenschutz für Domains mit der Endung :tld an."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Neue Bestellungen für Produkte mit einer Servergruppe werden einem Server dieser Gruppe zugewiesen. Inaktive und volle Server werden übersprungen. Übersprungen werden auch Server, zu denen der Hosting-Tarif des Produkts nicht passt. Ein von einem Server geladener Tarif gehört zu diesem Server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Ein Konto pro Zeile: Domain und Benutzername, getrennt durch ein Leerzeichen, einen Tabulator, ein Komma oder einen Doppelpunkt. cPanel: Fügen Sie /etc/trueuserdomains unverändert ein. Fügen Sie bei DirectAdmin den Inhalt von /etc/virtual/domainowners unverändert ein. Lassen Sie das Feld für Enhance leer. Enhance wird direkt abgefragt."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Der Dienst kann nur auf ein anderes wiederkehrendes Produkt desselben Typs verschoben werden. Bei Hosting ist dieselbe Servergruppe erforderlich. Ohne Gruppe muss es derselbe Server sein. Der Hosting-Tarif muss zum Server passen und die Reseller-Einstellung muss gleich bleiben."

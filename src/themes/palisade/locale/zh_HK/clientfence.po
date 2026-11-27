@@ -36461,3 +36461,16 @@ msgstr "註冊商已透過電郵將轉移碼寄給域名聯絡人。"
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar 不為以 :tld 結尾的域名提供私隱保護。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "設有伺服器群組的產品，其新訂單會分配至群組內的一部伺服器。系統會略過停用或已滿的伺服器。系統也會略過與產品的寄存計劃不相容的伺服器。從伺服器載入的計劃屬於該伺服器。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "每行一個帳戶，域名與用戶名稱以空格、定位字元、逗號或冒號分隔。cPanel：請原樣貼上 /etc/trueuserdomains 的內容。使用 DirectAdmin 時，請原樣貼上 /etc/virtual/domainowners 的內容。使用 Enhance 時請留空，系統會直接查詢。"
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "服務只可轉到同類型的另一定期產品。寄存產品必須使用同一伺服器群組。若未設群組，則必須使用同一部伺服器。寄存計劃必須與伺服器相容，轉售商設定也須維持一致。"

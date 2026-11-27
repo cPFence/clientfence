@@ -33788,3 +33788,16 @@ msgstr "Registrátor poslal kód převodu e-mailem kontaktní osobě domény."
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar nenabízí ochranu soukromí pro domény s koncovkou :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nové objednávky produktů přiřazených ke skupině serverů se umístí na některý z jejích serverů. Neaktivní a plné servery se přeskočí. Přeskočí se také servery, které nejsou kompatibilní s hostingovým tarifem produktu. Tarif načtený ze serveru patří k tomuto serveru."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Jeden účet na řádek: doména a uživatelské jméno oddělené mezerou, tabulátorem, čárkou nebo dvojtečkou. cPanel: vložte obsah /etc/trueuserdomains beze změn. Pro DirectAdmin vložte obsah /etc/virtual/domainowners beze změn. Pro Enhance ponechte pole prázdné, údaje se načtou přímo."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Službu lze přesunout pouze na jiný opakující se produkt stejného typu. U hostingu je nutná stejná skupina serverů, nebo stejný server, pokud není nastavena skupina. Hostingový tarif musí být kompatibilní se serverem a nastavení reselleru musí zůstat stejné."

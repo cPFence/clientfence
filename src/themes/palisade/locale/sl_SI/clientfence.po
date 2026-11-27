@@ -36485,3 +36485,16 @@ msgstr "Registrar je kodo za prenos poslal po e-pošti kontaktu domene."
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar ne ponuja zaščite zasebnosti za domene s končnico :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nova naročila izdelkov, dodeljenih skupini strežnikov, se namestijo na enega od strežnikov v skupini. Neaktivni in polni strežniki se preskočijo. Preskočijo se tudi strežniki, ki niso združljivi s paketom gostovanja izdelka. Paket, naložen iz strežnika, pripada temu strežniku."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "En račun na vrstico: domeno in uporabniško ime ločite s presledkom, tabulatorjem, vejico ali dvopičjem. cPanel: prilepite vsebino /etc/trueuserdomains brez sprememb. Za DirectAdmin prilepite vsebino /etc/virtual/domainowners brez sprememb. Za Enhance pustite polje prazno, saj se podatki pridobijo neposredno."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Storitev se lahko premakne samo na drug ponavljajoči se izdelek iste vrste. Pri gostovanju je zahtevana ista skupina strežnikov ali isti strežnik, če skupine ni. Paket gostovanja mora biti združljiv s strežnikom, nastavitev preprodajalca pa mora ostati enaka."

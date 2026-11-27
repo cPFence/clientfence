@@ -34169,3 +34169,16 @@ msgstr "Rejestrator wysłał kod transferu na adres e-mail kontaktu domeny."
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar nie oferuje ochrony prywatności dla domen z końcówką :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nowe zamówienia produktów przypisanych do grupy serwerów trafiają na jeden z serwerów w grupie. Serwery nieaktywne i zapełnione są pomijane. Pomijane są również serwery niezgodne z planem hostingowym produktu. Plan wczytany z serwera należy do tego serwera."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Jedno konto na wiersz. Domenę i nazwę użytkownika należy oddzielić spacją, tabulatorem, przecinkiem lub dwukropkiem. W przypadku cPanel należy wkleić zawartość /etc/trueuserdomains bez zmian. W przypadku DirectAdmin należy wkleić zawartość /etc/virtual/domainowners bez zmian. W przypadku Enhance pole należy pozostawić puste, ponieważ dane są pobierane bezpośrednio z panelu."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Usługę można przenieść tylko na inny produkt cykliczny tego samego typu. W przypadku hostingu wymagana jest ta sama grupa serwerów, a jeśli nie ma grupy, ten sam serwer. Plan hostingowy musi być zgodny z serwerem, a ustawienie resellera musi pozostać takie samo."

@@ -33061,3 +33061,16 @@ msgstr "Il registrar ha inviato via email il codice di trasferimento al contatto
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar non offre la protezione della privacy per i domini con estensione :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "I nuovi ordini di prodotti assegnati a un gruppo di server vengono collocati su uno dei suoi server. I server inattivi e quelli pieni vengono ignorati. Vengono ignorati anche i server incompatibili con il piano di hosting del prodotto. Un piano caricato da un server appartiene a quel server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Un account per riga: dominio e nome utente separati da uno spazio, una tabulazione, una virgola o due punti. cPanel: incolli /etc/trueuserdomains così com’è. Per DirectAdmin, incolli il contenuto di /etc/virtual/domainowners così com’è. Per Enhance lasci il campo vuoto, perché il pannello viene interrogato direttamente."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Il servizio può passare solo a un altro prodotto ricorrente dello stesso tipo. Per l’hosting è necessario lo stesso gruppo di server o, in assenza di un gruppo, lo stesso server. Il piano di hosting deve essere compatibile con il server e l’impostazione reseller deve restare la stessa."

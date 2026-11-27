@@ -34485,3 +34485,16 @@ msgstr "Регистраторът изпрати кода за прехвърл
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar не предлага защита на поверителността за домейни с разширение :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Новите поръчки на продукти, свързани с група сървъри, се разполагат на един от сървърите в нея. Неактивните и запълнените сървъри се пропускат. Пропускат се и сървърите, които не са съвместими с хостинг плана на продукта. План, зареден от сървър, принадлежи на този сървър."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "По един акаунт на ред: домейн и потребителско име, разделени с интервал, табулация, запетая или двоеточие. cPanel: поставете съдържанието на /etc/trueuserdomains без промени. За DirectAdmin поставете съдържанието на /etc/virtual/domainowners без промени. За Enhance оставете полето празно, тъй като панелът се запитва директно."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Услугата може да се премести само към друг периодичен продукт от същия тип. За хостинг се изисква същата група сървъри или същият сървър, ако няма група. Хостинг планът трябва да е съвместим със сървъра, а настройката за реселър да се запази."

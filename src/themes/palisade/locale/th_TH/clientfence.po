@@ -31820,3 +31820,16 @@ msgstr "ผู้รับจดทะเบียนได้ส่งรหั
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar ไม่มีบริการปกป้องความเป็นส่วนตัวสำหรับโดเมนที่ลงท้ายด้วย :tld"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "คำสั่งซื้อใหม่สำหรับสินค้าที่กำหนดกลุ่มเซิร์ฟเวอร์ไว้จะถูกจัดให้กับเซิร์ฟเวอร์เครื่องหนึ่งในกลุ่ม ระบบจะข้ามเซิร์ฟเวอร์ที่ไม่ได้ใช้งานหรือเต็มแล้ว ระบบจะข้ามเซิร์ฟเวอร์ที่ไม่รองรับแพ็กเกจโฮสติ้งของสินค้าด้วย แพ็กเกจที่โหลดจากเซิร์ฟเวอร์จะเป็นของเซิร์ฟเวอร์นั้น"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "หนึ่งบัญชีต่อบรรทัด: คั่นโดเมนและชื่อผู้ใช้ด้วยช่องว่าง แท็บ จุลภาค หรือทวิภาค cPanel: วางเนื้อหาของ /etc/trueuserdomains ตามเดิม หากใช้ DirectAdmin ให้วางเนื้อหาของ /etc/virtual/domainowners ตามเดิม หากใช้ Enhance ให้เว้นว่าง ระบบจะสอบถามโดยตรง"
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "ย้ายบริการได้เฉพาะไปยังสินค้าอื่นประเภทเดียวกันที่เรียกเก็บเงินเป็นรอบ สำหรับโฮสติ้ง ต้องอยู่ในกลุ่มเซิร์ฟเวอร์เดิม หรืออยู่บนเซิร์ฟเวอร์เดิมหากไม่มีกลุ่ม แพ็กเกจโฮสติ้งต้องใช้กับเซิร์ฟเวอร์นั้นได้ และการตั้งค่าสำหรับตัวแทนจำหน่ายต้องเหมือนเดิม"

@@ -36469,3 +36469,16 @@ msgstr "Registraren har sendt overførselskoden på e-mail til domænets kontakt
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar tilbyder ikke WHOIS-beskyttelse for domæner med endelsen :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nye ordrer på produkter med en servergruppe placeres på en server i gruppen. Inaktive og fyldte servere springes over. Servere, der ikke understøtter produktets hostingplan, springes også over. En plan, der er hentet fra en server, hører til den server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Én konto pr. linje: domæne og brugernavn adskilt af mellemrum, tabulator, komma eller kolon. cPanel: indsæt indholdet af /etc/trueuserdomains uændret. For DirectAdmin indsættes indholdet af /etc/virtual/domainowners uændret. Lad feltet stå tomt for Enhance, som forespørges direkte."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Tjenesten kan kun flyttes til et andet tilbagevendende produkt af samme type. Ved hosting skal servergruppen være den samme. Hvis der ikke er en gruppe, skal serveren være den samme. Hostingplanen skal passe til serveren, og forhandlerindstillingen skal være den samme."

@@ -31960,3 +31960,16 @@ msgstr "Регистратор отправил код переноса по э�
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar не предлагает защиту конфиденциальности для доменов в зоне :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Новые заказы продуктов, привязанных к группе серверов, размещаются на одном из серверов группы. Неактивные и заполненные серверы пропускаются. Серверы, несовместимые с тарифом хостинга продукта, тоже пропускаются. Тариф, загруженный с сервера, относится к этому серверу."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Один аккаунт на строку: домен и имя пользователя через пробел, символ табуляции, запятую или двоеточие. cPanel: вставьте содержимое /etc/trueuserdomains без изменений. Для DirectAdmin вставьте содержимое /etc/virtual/domainowners без изменений. Для Enhance оставьте поле пустым: данные запрашиваются напрямую."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Услугу можно перенести только на другой периодический продукт того же типа. Для хостинга нужна та же группа серверов или, если группы нет, тот же сервер. Тариф хостинга должен подходить для сервера, а режим реселлера должен оставаться прежним."

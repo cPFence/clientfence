@@ -33497,3 +33497,16 @@ msgstr "De registrator heeft de overdrachtscode per e-mail naar de contactpersoo
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar biedt geen privacybescherming voor domeinen met de extensie :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nieuwe bestellingen voor producten die aan een servergroep zijn gekoppeld, worden op een server uit die groep geplaatst. Inactieve en volle servers worden overgeslagen. Servers die niet compatibel zijn met het hostingpakket van het product, worden ook overgeslagen. Een pakket dat van een server is geladen, hoort bij die server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Eén account per regel: domein en gebruikersnaam, gescheiden door een spatie, tab, komma of dubbele punt. cPanel: plak /etc/trueuserdomains ongewijzigd. Plak voor DirectAdmin de inhoud van /etc/virtual/domainowners ongewijzigd. Laat het veld leeg voor Enhance, dat rechtstreeks wordt bevraagd."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "De dienst kan alleen naar een ander terugkerend product van hetzelfde type worden verplaatst. Voor hosting is dezelfde servergroep vereist, of dezelfde server als er geen groep is ingesteld. Het hostingpakket moet compatibel zijn met de server en de resellerinstelling moet gelijk blijven."

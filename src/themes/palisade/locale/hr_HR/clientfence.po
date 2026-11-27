@@ -36477,3 +36477,16 @@ msgstr "Registrar je e-poštom poslao kod za prijenos kontaktu domene."
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar ne nudi zaštitu privatnosti za domene s nastavkom :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nove narudžbe proizvoda dodijeljenih grupi poslužitelja smještaju se na jedan od poslužitelja u grupi. Neaktivni i popunjeni poslužitelji se preskaču. Preskaču se i poslužitelji koji nisu kompatibilni s hosting paketom proizvoda. Paket učitan s poslužitelja pripada tom poslužitelju."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Jedan račun po retku: domena i korisničko ime odvojeni razmakom, tabulatorom, zarezom ili dvotočkom. cPanel: zalijepite sadržaj datoteke /etc/trueuserdomains bez izmjena. Za DirectAdmin zalijepite sadržaj datoteke /etc/virtual/domainowners bez izmjena. Za Enhance ostavite polje prazno jer se podaci dohvaćaju izravno iz panela."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Usluga se može premjestiti samo na drugi ponavljajući proizvod iste vrste. Za hosting je potrebna ista grupa poslužitelja ili, ako nema grupe, isti poslužitelj. Hosting paket mora biti kompatibilan s poslužiteljem, a postavka za preprodavače mora ostati ista."

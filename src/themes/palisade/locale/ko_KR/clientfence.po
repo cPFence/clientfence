@@ -36461,3 +36461,16 @@ msgstr "등록 대행업체가 도메인 연락처에 이전 코드를 이메일
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar에서는 :tld 도메인의 개인정보 보호 서비스를 제공하지 않습니다."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "서버 그룹이 지정된 상품의 신규 주문은 그룹 내 서버에 배정됩니다. 비활성 서버와 계정 한도에 도달한 서버는 건너뜁니다. 상품의 호스팅 요금제와 호환되지 않는 서버도 건너뜁니다. 서버에서 불러온 요금제는 해당 서버에 속합니다."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "한 줄에 한 계정씩 입력하세요. 도메인과 사용자 이름은 공백, 탭, 쉼표 또는 콜론으로 구분하세요. cPanel은 /etc/trueuserdomains 내용을 그대로 붙여넣으세요. DirectAdmin은 /etc/virtual/domainowners 내용을 그대로 붙여넣으세요. Enhance는 직접 조회하므로 비워 두세요."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "서비스는 같은 유형의 다른 정기 상품으로만 옮길 수 있습니다. 호스팅은 같은 서버 그룹에 있어야 하며, 그룹이 없으면 같은 서버에 있어야 합니다. 호스팅 요금제는 서버와 호환되어야 하고 리셀러 여부도 현재와 같아야 합니다."

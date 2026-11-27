@@ -31760,3 +31760,16 @@ msgstr "Kayıt operatörü transfer kodunu alan adının iletişim kişisine e-p
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar, :tld uzantılı alan adları için gizlilik koruması sunmaz."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Sunucu grubuna atanmış ürünlerin yeni siparişleri, gruptaki bir sunucuya yerleştirilir. Etkin olmayan ve dolu sunucular atlanır. Ürünün barındırma planıyla uyumlu olmayan sunucular da atlanır. Bir sunucudan yüklenen plan o sunucuya aittir."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Her satıra bir hesap: alan adını ve kullanıcı adını boşluk, sekme, virgül veya iki nokta üst üste işaretiyle ayırın. cPanel: /etc/trueuserdomains dosyasının içeriğini olduğu gibi yapıştırın. DirectAdmin için /etc/virtual/domainowners dosyasının içeriğini olduğu gibi yapıştırın. Enhance doğrudan sorgulanır, bu nedenle alanı boş bırakın."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Hizmet yalnızca aynı türde başka bir tekrarlanan ürüne taşınabilir. Barındırma için aynı sunucu grubu, grup yoksa aynı sunucu gerekir. Barındırma planı sunucuyla uyumlu olmalı ve bayi ayarı aynı kalmalıdır."

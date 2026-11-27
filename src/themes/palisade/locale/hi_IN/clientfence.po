@@ -36469,3 +36469,16 @@ msgstr "रजिस्ट्रार ने ट्रांसफ़र को
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar :tld वाले डोमेन के लिए प्राइवेसी सुरक्षा नहीं देता।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "सर्वर समूह से जुड़े उत्पादों के नए ऑर्डर समूह के किसी एक सर्वर पर रखे जाते हैं। निष्क्रिय और भरे हुए सर्वर छोड़ दिए जाते हैं। जिन सर्वरों के साथ उत्पाद का होस्टिंग प्लान संगत नहीं है, उन्हें भी छोड़ दिया जाता है। किसी सर्वर से लोड किया गया प्लान उसी सर्वर का होता है।"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "हर पंक्ति में एक खाता: डोमेन और यूज़रनेम को स्पेस, टैब, कॉमा या कोलन से अलग करें। cPanel: /etc/trueuserdomains की सामग्री ज्यों की त्यों पेस्ट करें। DirectAdmin के लिए /etc/virtual/domainowners की सामग्री ज्यों की त्यों पेस्ट करें। Enhance के लिए फ़ील्ड खाली छोड़ें, क्योंकि जानकारी सीधे पैनल से ली जाती है।"
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "सेवा केवल उसी प्रकार के किसी अन्य आवर्ती उत्पाद पर ले जाई जा सकती है। होस्टिंग के लिए सर्वर समूह वही होना चाहिए। समूह न होने पर सर्वर वही होना चाहिए। होस्टिंग प्लान सर्वर के साथ संगत होना चाहिए और रीसेलर सेटिंग पहले जैसी होनी चाहिए।"

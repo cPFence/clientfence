@@ -78,7 +78,7 @@
             <div class="col-md-8">
                 <label class="form-label" for="move-accounts">{{ 'Account list of this server'|trans }}</label>
                 <textarea class="form-control" id="move-accounts" name="accounts" rows="6" dir="ltr" spellcheck="false" autocomplete="off" aria-describedby="move-accounts-hint">{{ filters.accounts|default('') }}</textarea>
-                <div class="form-hint" id="move-accounts-hint">{{ 'One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly.'|trans }}</div>
+                <div class="form-hint" id="move-accounts-hint">{{ 'One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly.'|trans }}</div>
             </div>
             <div class="col-md-4">
                 <div class="form-label">{{ 'Order status'|trans }}</div>

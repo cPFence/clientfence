@@ -36469,3 +36469,16 @@ msgstr "Registraren har sendt overføringskoden på e-post til domenets kontakt.
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar tilbyr ikke personvernbeskyttelse for domener med endelsen :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nye ordrer for produkter med en servergruppe plasseres på en server i gruppen. Inaktive og fulle servere hoppes over. Servere som ikke er kompatible med produktets hostingplan, hoppes også over. En plan som er hentet fra en server, tilhører den serveren."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Én konto per linje: domene og brukernavn skilt med mellomrom, tabulator, komma eller kolon. cPanel: lim inn innholdet i /etc/trueuserdomains uendret. Bruker du DirectAdmin, lim inn innholdet i /etc/virtual/domainowners uendret. La feltet stå tomt for Enhance, som forespørres direkte."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Tjenesten kan bare flyttes til et annet gjentakende produkt av samme type. For hosting kreves samme servergruppe, eller samme server hvis det ikke er noen gruppe. Hostingplanen må passe til serveren, og forhandlerinnstillingen må være den samme."

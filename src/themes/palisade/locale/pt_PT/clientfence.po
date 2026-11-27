@@ -34679,3 +34679,16 @@ msgstr "O registador enviou por e-mail o código de transferência ao contacto d
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar não oferece proteção de privacidade para domínios com a extensão :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "As novas encomendas de produtos associados a um grupo de servidores são atribuídas a um servidor desse grupo. Os servidores inativos e cheios são ignorados. Os servidores incompatíveis com o plano de alojamento do produto também são ignorados. Um plano carregado a partir de um servidor pertence a esse servidor."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Uma conta por linha: domínio e nome de utilizador, separados por um espaço, uma tabulação, uma vírgula ou dois pontos. cPanel: cole /etc/trueuserdomains sem alterações. Para o DirectAdmin, cole o conteúdo de /etc/virtual/domainowners sem alterações. Deixe em branco para o Enhance, que é consultado diretamente."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "O serviço só pode mudar para outro produto recorrente do mesmo tipo. Para alojamento, é necessário usar o mesmo grupo de servidores ou, se não houver grupo, o mesmo servidor. O plano de alojamento tem de ser compatível com o servidor e a configuração de revenda tem de permanecer igual."

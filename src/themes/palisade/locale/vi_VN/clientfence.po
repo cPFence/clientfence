@@ -34000,3 +34000,16 @@ msgstr "Nhà đăng ký đã gửi mã chuyển qua email cho người liên h�
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar không cung cấp dịch vụ bảo vệ quyền riêng tư cho tên miền có đuôi :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Đơn hàng mới của sản phẩm được gán nhóm máy chủ sẽ vào một máy chủ trong nhóm đó. Hệ thống bỏ qua máy chủ đã tắt hoặc đã đầy. Hệ thống cũng bỏ qua các máy chủ không tương thích với gói hosting của sản phẩm. Gói được tải từ máy chủ nào thì thuộc về máy chủ đó."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Mỗi dòng một tài khoản: tên miền và tên đăng nhập, cách nhau bằng dấu cách, tab, dấu phẩy hoặc dấu hai chấm. cPanel: dán nguyên nội dung /etc/trueuserdomains. Với DirectAdmin, hãy dán nguyên nội dung /etc/virtual/domainowners. Với Enhance, hãy để trống vì hệ thống sẽ truy vấn trực tiếp."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Dịch vụ chỉ có thể chuyển sang một sản phẩm định kỳ khác cùng loại. Với hosting, phải dùng cùng nhóm máy chủ hoặc cùng máy chủ nếu không có nhóm. Gói hosting phải tương thích với máy chủ và thiết lập hosting đại lý phải giữ nguyên."

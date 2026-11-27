@@ -33995,3 +33995,16 @@ msgstr "A regisztrátor e-mailben elküldte az átviteli kódot a domain kapcsol
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr "A(z) :registrar nem kínál adatvédelmet a(z) :tld végződésű domainekhez."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "A szervercsoporthoz rendelt termékek új megrendelései a csoport valamelyik szerverére kerülnek. Az inaktív és a megtelt szervereket a rendszer kihagyja. A rendszer azokat a szervereket is kihagyja, amelyekkel a termék tárhelycsomagja nem kompatibilis. A szerverről betöltött csomag ahhoz a szerverhez tartozik."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Soronként egy fiók: a domaint és a felhasználónevet szóköz, tabulátor, vessző vagy kettőspont választja el. cPanel: illessze be a /etc/trueuserdomains tartalmát változtatás nélkül. DirectAdmin esetén illessze be a /etc/virtual/domainowners tartalmát változtatás nélkül. Enhance esetén hagyja üresen, mert a rendszer közvetlenül lekérdezi az adatokat."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "A szolgáltatás csak másik, azonos típusú, ismétlődő termékre helyezhető át. Tárhely esetén ugyanaz a szervercsoport szükséges, vagy ha nincs csoport, ugyanaz a szerver. A tárhelycsomagnak kompatibilisnek kell lennie a szerverrel, a viszonteladói beállításnak pedig változatlannak kell maradnia."

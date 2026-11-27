@@ -33290,3 +33290,16 @@ msgstr "El registrador ha enviado por correo electrónico el código de transfer
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar no ofrece protección de privacidad para los dominios con la extensión :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Los nuevos pedidos de productos asignados a un grupo de servidores se colocan en uno de sus servidores. Se omiten los servidores inactivos y los que están llenos. También se omiten los servidores que no son compatibles con el plan de alojamiento del producto. Un plan cargado desde un servidor pertenece a ese servidor."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Una cuenta por línea: dominio y nombre de usuario separados por un espacio, un tabulador, una coma o dos puntos. cPanel: pegue /etc/trueuserdomains tal cual. Para DirectAdmin, pegue el contenido de /etc/virtual/domainowners tal cual. Déjelo vacío para Enhance, que se consulta directamente."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "El servicio solo puede pasar a otro producto recurrente del mismo tipo. Para el alojamiento, se requiere el mismo grupo de servidores o, si no hay grupo, el mismo servidor. El plan de alojamiento debe ser compatible con el servidor y el ajuste de revendedor debe mantenerse."

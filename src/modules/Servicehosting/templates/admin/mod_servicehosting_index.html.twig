@@ -193,7 +193,7 @@
                     <div class="tab-pane fade" id="tab-groups" role="tabpanel">
                         <div class="card-body border-bottom py-3">
                             <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
-                                <p class="text-secondary mb-0">{{ 'New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped.'|trans }}</p>
+                                <p class="text-secondary mb-0">{{ 'New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product\'s hosting plan does not fit (a plan loaded from a server belongs to that server).'|trans }}</p>
                                 {% if can_manage_groups %}
                                 <button class="btn btn-primary ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#serverGroup0Modal">
                                     <svg class="icon">

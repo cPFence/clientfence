@@ -33524,3 +33524,16 @@ msgstr "Registratorul a trimis codul de transfer prin e-mail contactului domeniu
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar nu oferă protecția confidențialității pentru domeniile cu extensia :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Comenzile noi pentru produsele asociate unui grup de servere sunt plasate pe un server din grup. Serverele inactive și cele pline sunt omise. Sunt omise și serverele incompatibile cu planul de hosting al produsului. Un plan încărcat de pe un server aparține acelui server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Un cont pe linie: domeniu și nume de utilizator separate prin spațiu, tabulator, virgulă sau două puncte. cPanel: lipiți conținutul fișierului /etc/trueuserdomains ca atare. Pentru DirectAdmin, lipiți conținutul fișierului /etc/virtual/domainowners ca atare. Lăsați câmpul gol pentru Enhance, care este interogat direct."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Serviciul poate fi mutat doar la un alt produs recurent de același tip. Pentru hosting este necesar același grup de servere sau, dacă nu există un grup, același server. Planul de hosting trebuie să fie compatibil cu serverul, iar setarea de revânzare trebuie să rămână aceeași."

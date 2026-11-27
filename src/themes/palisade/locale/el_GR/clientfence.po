@@ -34094,3 +34094,16 @@ msgstr "Ο καταχωρητής έστειλε με email τον κωδικό 
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr "Το :registrar δεν προσφέρει προστασία απορρήτου για ονόματα χώρου με κατάληξη :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Οι νέες παραγγελίες προϊόντων που έχουν αντιστοιχιστεί σε ομάδα διακομιστών τοποθετούνται σε έναν διακομιστή της ομάδας. Οι ανενεργοί και οι γεμάτοι διακομιστές παραλείπονται. Παραλείπονται επίσης οι διακομιστές που δεν είναι συμβατοί με το πακέτο φιλοξενίας του προϊόντος. Ένα πακέτο που φορτώθηκε από διακομιστή ανήκει σε αυτόν."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Ένας λογαριασμός ανά γραμμή: τομέας και όνομα χρήστη, χωρισμένα με κενό, χαρακτήρα στηλοθέτη, κόμμα ή άνω και κάτω τελεία. cPanel: επικολλήστε τα περιεχόμενα του /etc/trueuserdomains χωρίς αλλαγές. Για το DirectAdmin, επικολλήστε τα περιεχόμενα του /etc/virtual/domainowners χωρίς αλλαγές. Για το Enhance, αφήστε το πεδίο κενό, καθώς τα στοιχεία ζητούνται απευθείας."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Η υπηρεσία μπορεί να μετακινηθεί μόνο σε άλλο επαναλαμβανόμενο προϊόν του ίδιου τύπου. Για τη φιλοξενία απαιτείται η ίδια ομάδα διακομιστών ή, αν δεν υπάρχει ομάδα, ο ίδιος διακομιστής. Το πακέτο φιλοξενίας πρέπει να είναι συμβατό με τον διακομιστή και η ρύθμιση μεταπωλητή να παραμείνει ίδια."

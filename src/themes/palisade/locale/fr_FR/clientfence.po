@@ -33442,3 +33442,16 @@ msgstr "Le bureau d’enregistrement a envoyé le code de transfert par e-mail a
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar ne propose pas de protection de la confidentialité pour les domaines en :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Les nouvelles commandes de produits associés à un groupe de serveurs sont attribuées à un serveur de ce groupe. Les serveurs inactifs ou pleins sont ignorés. Les serveurs incompatibles avec le forfait d’hébergement du produit sont également ignorés. Un forfait chargé depuis un serveur est propre à ce serveur."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Un compte par ligne : domaine et nom d’utilisateur séparés par une espace, une tabulation, une virgule ou deux-points. cPanel : collez /etc/trueuserdomains tel quel. Pour DirectAdmin, collez le contenu de /etc/virtual/domainowners tel quel. Pour Enhance, laissez le champ vide : le panneau est interrogé directement."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Le service ne peut être transféré que vers un autre produit récurrent du même type. Pour l’hébergement, le groupe de serveurs doit être le même. En l’absence de groupe, le serveur doit être le même. Le forfait d’hébergement doit être compatible avec le serveur et le paramètre revendeur doit rester identique."

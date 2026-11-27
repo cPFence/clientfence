@@ -36477,3 +36477,16 @@ msgstr "Registrátor poslal kód prevodu e-mailom kontaktnej osobe domény."
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar neponúka ochranu súkromia pre domény s koncovkou :tld."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Nové objednávky produktov zaradených do skupiny serverov sa umiestnia na jeden zo serverov skupiny. Neaktívne a plné servery sa preskočia. Preskočia sa aj servery, ktoré nie sú kompatibilné s hostingovým balíkom produktu. Balík načítaný zo servera patrí k danému serveru."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Jeden účet na riadok: doménu a používateľské meno oddeľte medzerou, tabulátorom, čiarkou alebo dvojbodkou. cPanel: vložte obsah /etc/trueuserdomains bez zmien. Pri DirectAdmin vložte obsah /etc/virtual/domainowners bez zmien. Pri Enhance nechajte pole prázdne, údaje sa načítajú priamo."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Službu možno presunúť len na iný opakovaný produkt rovnakého typu. Pri hostingu sa vyžaduje rovnaká skupina serverov alebo rovnaký server, ak skupina nie je nastavená. Hostingový balík musí byť kompatibilný so serverom a nastavenie predajcu musí zostať rovnaké."

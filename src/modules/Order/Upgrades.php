@@ -1552,7 +1552,7 @@ final class Upgrades
     public static function staffMoveRefusal(\Pimple\Container $di, \Model_ClientOrder $order, int $productId): ?string
     {
         if (!isset(self::moveTargets($di, $order)[$productId])) {
-            return __trans('The service can move only to another recurring product of the same type (hosting: on the same server, and reseller or not as now).');
+            return __trans('The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now).');
         }
         $period = (string) $order->period;
         if (self::optionsFor($di, $productId, (int) $order->product_id, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once') === null) {
@@ -1579,7 +1579,7 @@ final class Upgrades
         $db = self::db($di);
         $order = $di['db']->getExistingModelById('ClientOrder', $orderId, 'Order not found');
         if (!isset(self::moveTargets($di, $order)[$productId])) {
-            throw new InformationException('The service can move only to another recurring product of the same type (hosting: on the same server, and reseller or not as now).');
+            throw new InformationException('The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now).');
         }
         $from = self::catalog($di, (int) $order->product_id, false, (string) $order->currency);
         $to = self::catalog($di, $productId, false, (string) $order->currency);

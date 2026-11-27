@@ -34426,3 +34426,16 @@ msgstr "Rekisterinpitäjä lähetti siirtokoodin sähköpostilla verkkotunnuksen
 #: src/library/Registrar/Adapter/Subreg.php
 msgid ":registrar does not offer privacy protection for :tld domains."
 msgstr ":registrar ei tarjoa yksityisyyden suojaa :tld-päätteisille verkkotunnuksille."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped, and so are servers the product's hosting plan does not fit (a plan loaded from a server belongs to that server)."
+msgstr "Palvelinryhmään liitettyjen tuotteiden uudet tilaukset sijoitetaan jollekin ryhmän palvelimista. Passiiviset ja täydet palvelimet ohitetaan. Myös palvelimet, joiden kanssa tuotteen webhotellipaketti ei ole yhteensopiva, ohitetaan. Palvelimelta ladattu paketti kuuluu kyseiselle palvelimelle."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. DirectAdmin: paste /etc/virtual/domainowners as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Yksi tili rivillä: erota verkkotunnus ja käyttäjätunnus välilyönnillä, sarkaimella, pilkulla tai kaksoispisteellä. cPanel: liitä tiedoston /etc/trueuserdomains sisältö sellaisenaan. Jos käytössä on DirectAdmin, liitä tiedoston /etc/virtual/domainowners sisältö sellaisenaan. Jätä kenttä tyhjäksi, jos käytössä on Enhance, jolta tiedot kysytään suoraan."
+
+#: src/modules/Order/Upgrades.php
+msgid "The service can move only to another recurring product of the same type (hosting: the same server group, or the same server without a group, a plan that fits its server, and reseller or not as now)."
+msgstr "Palvelun voi siirtää vain toiseen toistuvaan samantyyppiseen tuotteeseen. Webhotellissa vaaditaan sama palvelinryhmä tai ryhmän puuttuessa sama palvelin. Webhotellipaketin on sovittava palvelimelle ja jälleenmyyjäasetuksen on pysyttävä samana."
