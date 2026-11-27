@@ -33977,3 +33977,21 @@ msgstr "Adjon meg egy értéket a szerver szervercsoporthoz adásához. Ha nem s
 #: src/modules/Servicehosting/Service.php
 msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
 msgstr "A(z) :name szerver a(z) :group szervercsoport tagja. Tartsa meg a maximális fiókszámot, vagy előbb távolítsa el a szervert a csoportból."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Domain transfer code is: :code"
+msgstr "A domain átviteli kódja: :code"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry."
+msgstr "Domaineket regisztrál és kezel az Ön Subreg.CZ fiókján keresztül a Subreg API segítségével (a PHP SOAP bővítmény szükséges). A tesztmód minden hívást az éles nyilvántartás helyett a Subreg OT&E tesztrendszerre (demoreg.net) küld."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+msgid "The registrar has emailed the transfer code to the domain contact."
+msgstr "A regisztrátor e-mailben elküldte az átviteli kódot a domain kapcsolattartójának."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar does not offer privacy protection for :tld domains."
+msgstr "A(z) :registrar nem kínál adatvédelmet a(z) :tld végződésű domainekhez."

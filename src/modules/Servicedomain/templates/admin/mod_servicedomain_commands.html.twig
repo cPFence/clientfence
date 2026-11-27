@@ -86,9 +86,11 @@
         });
 
         document.getElementById('cmd-get-epp').addEventListener('click', function(event) {
-            ClientFence.api.admin.post('servicedomain/get_transfer_code', { order_id: {{ order.id}} },
+            ClientFence.api.admin.post('servicedomain/get_transfer_code', { order_id: {{ order.id}}, details: 1 },
                 done((result) => {
-                    ClientFence.message("{{ 'Domain transfer code is: '|trans }}" + result);
+                    ClientFence.message(result.emailed
+                        ? {{ 'The registrar has emailed the transfer code to the domain contact.'|trans|json_encode|raw }}
+                        : {{ 'Domain transfer code is: :code'|trans|json_encode|raw }}.replace(':code', () => result.code));
                 }));
         });
 

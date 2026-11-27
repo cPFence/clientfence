@@ -124,6 +124,10 @@ test('domain details come from getDomainInfo', function (): void {
         ->and([$details->getNs1(), $details->getNs2()])->toBe(['ns1.example.net', 'ns2.example.net']);
 });
 
+test('reports that the transfer code was emailed', function (): void {
+    expect(namesiloAdapter([])->getEpp(namesiloDomain('.com')))->toBe(Registrar_AdapterAbstract::EPP_EMAILED);
+});
+
 test('test mode uses the sandbox with its own key; a cancel sends nothing', function (): void {
     $adapter = namesiloAdapter([]);
     $adapter->enableTestMode();

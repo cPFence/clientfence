@@ -143,7 +143,7 @@ test('synchronizes domain with registrar', function (): void {
     expect($result)->toBeTrue();
 });
 
-test('gets transfer code', function (): void {
+test('gets transfer code', function (array $data): void {
     $clientApi = apiEndpoint(new Client());
     $api = apiEndpoint(new Client());
     $model = new Model_ServiceDomain();
@@ -157,15 +157,18 @@ test('gets transfer code', function (): void {
     $serviceMock = Mockery::mock(Service::class);
     $serviceMock->shouldReceive('getTransferCode')
         ->atLeast()->once()
+        ->with($model, false)
         ->andReturn(true);
 
     $clientApiMock->setService($serviceMock);
 
-    $data = [];
     $result = $clientApiMock->get_transfer_code($data);
 
     expect($result)->toBeTrue();
-});
+})->with([
+    'details omitted' => [[]],
+    'details sent as "false"' => [['details' => 'false']],
+]);
 
 test('locks domain', function (): void {
     $clientApi = apiEndpoint(new Client());

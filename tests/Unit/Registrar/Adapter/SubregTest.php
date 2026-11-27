@@ -156,9 +156,18 @@ test('domain details without an expiry throw instead of keeping the stored one',
     expect(fn () => $adapter->getDomainDetails(subregDomain()))->toThrow(Registrar_Exception::class, 'did not report an expiry date');
 });
 
-test('the transfer code is the authid; none is a clear error', function (): void {
-    expect(subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => ['authid' => 'rjI?5sjb']]])->getEpp(subregDomain()))->toBe('rjI?5sjb')
-        ->and(fn () => subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => []]])->getEpp(subregDomain()))->toThrow(Registrar_Exception::class, 'Please contact support to receive it');
+test('returns the transfer code from Info_Domain', function (): void {
+    $adapter = subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => ['authid' => 'rjI?5sjb']]]);
+
+    expect($adapter->getEpp(subregDomain()))->toBe('rjI?5sjb')
+        ->and(subregOrders($adapter))->toBe([]);
+});
+
+test('orders the transfer code email when Info_Domain has no code', function (): void {
+    $adapter = subregAdapter(['Info_Domain' => ['status' => 'ok', 'data' => []]]);
+
+    expect($adapter->getEpp(subregDomain()))->toBe(Registrar_AdapterAbstract::EPP_EMAILED)
+        ->and(subregOrders($adapter))->toBe([['SendAuthID_Domain', ['params' => ['whmcs' => 1]]]]);
 });
 
 test('lock and unlock send the client statuses with clientTransferProhibited added or removed, never ok or server statuses', function (): void {
@@ -235,12 +244,26 @@ test('a refused login stops before the command', function (): void {
         ->and(array_column($adapter->calls, 1))->toBe(['Login']);
 });
 
-test('privacy is not supported', function (): void {
+test('enabling and disabling privacy send Modify_Domain orders', function (): void {
     $adapter = subregAdapter();
 
-    expect(fn () => $adapter->enablePrivacyProtection(subregDomain()))->toThrow(Registrar_Exception::class, 'does not support')
-        ->and(fn () => $adapter->disablePrivacyProtection(subregDomain()))->toThrow(Registrar_Exception::class, 'does not support')
-        ->and($adapter->calls)->toBe([]);
+    expect($adapter->enablePrivacyProtection(subregDomain()))->toBeTrue()
+        ->and($adapter->disablePrivacyProtection(subregDomain()))->toBeTrue()
+        ->and(subregOrders($adapter))->toBe([
+            ['Modify_Domain', ['params' => ['whoisproxy' => 1, 'whmcs' => 1]]],
+            ['Modify_Domain', ['params' => ['whoisproxy' => 0, 'whmcs' => 1]]],
+        ]);
+});
+
+test('enabling privacy on an unsupported TLD throws before sending an order', function (string $tld): void {
+    $adapter = subregAdapter();
+
+    expect(fn () => $adapter->enablePrivacyProtection(subregDomain($tld)))->toThrow(Registrar_Exception::class, "Subreg does not offer privacy protection for {$tld} domains.")
+        ->and(subregOrders($adapter))->toBe([]);
+})->with(['.cz']);
+
+test('reports an empty list of unsupported actions', function (): void {
+    expect(Registrar_Adapter_Subreg::getUnsupportedActions())->toBe([]);
 });
 
 test('without the soap extension the adapter says so', function (): void {

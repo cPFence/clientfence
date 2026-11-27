@@ -36451,3 +36451,21 @@ msgstr "সার্ভারটি কোনো সার্ভার গ্র
 #: src/modules/Servicehosting/Service.php
 msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
 msgstr ":name সার্ভারটি :group সার্ভার গ্রুপে আছে। সর্বোচ্চ অ্যাকাউন্ট সংখ্যা নির্ধারিত রাখুন, অথবা আগে সার্ভারটি গ্রুপ থেকে সরান।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Domain transfer code is: :code"
+msgstr "ডোমেইন ট্রান্সফার কোড হলো: :code"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry."
+msgstr "আপনার Subreg.CZ অ্যাকাউন্টের মাধ্যমে Subreg API ব্যবহার করে ডোমেইন নিবন্ধন ও পরিচালনা করে (PHP SOAP এক্সটেনশন প্রয়োজন)। টেস্ট মোড প্রতিটি অনুরোধ লাইভ রেজিস্ট্রির বদলে Subreg OT&E টেস্ট সিস্টেমে (demoreg.net) পাঠায়।"
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+msgid "The registrar has emailed the transfer code to the domain contact."
+msgstr "রেজিস্ট্রার ট্রান্সফার কোডটি ডোমেইনের যোগাযোগকারীর কাছে ইমেইল করেছে।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar does not offer privacy protection for :tld domains."
+msgstr ":registrar :tld ডোমেইনের জন্য প্রাইভেসি সুরক্ষা দেয় না।"

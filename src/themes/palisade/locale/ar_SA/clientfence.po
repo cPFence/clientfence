@@ -871,7 +871,6 @@ msgid "yourdomain"
 msgstr "yourdomain"
 
 # Hosting page: Domain tab (mod_servicehosting_manage.html.twig).
-
 msgid "Registered on"
 msgstr "تاريخ التسجيل"
 
@@ -892,7 +891,6 @@ msgstr "النطاق :domain مسجّل لدى مسجّل نطاقات آخر، 
 
 # Hosting accounts (Servicehosting templates mod_servicehosting_accounts, mod_servicehosting_account
 # and mod_servicehosting_account_usage).
-
 msgid "View account"
 msgstr "عرض الحساب"
 
@@ -961,7 +959,6 @@ msgstr "قيد الإعداد"
 
 # Email tab (Servicehosting templates mod_servicehosting_account and mod_servicehosting_account_email,
 # and the email calls of the client API).
-
 msgid "Email accounts"
 msgstr "حسابات البريد"
 
@@ -1182,7 +1179,6 @@ msgid "Mail app settings are not available for this address."
 msgstr "إعدادات تطبيق البريد غير متاحة لهذا العنوان."
 
 # Domains tab (Servicehosting templates mod_servicehosting_account and mod_servicehosting_account_domains).
-
 msgid "Domains"
 msgstr "النطاقات"
 
@@ -1256,7 +1252,6 @@ msgid "Changes at your DNS provider can take up to a day to show everywhere."
 msgstr "قد تستغرق التغييرات لدى مزوّد DNS حتى يوم كامل لتظهر في كل مكان."
 
 # Help desk names (stored in the database, translated in the ticket templates).
-
 msgid "Technical support"
 msgstr "الدعم الفني"
 
@@ -1267,7 +1262,6 @@ msgid "Payment confirmation"
 msgstr "تأكيد الدفع"
 
 # Payment method names (stored in the database, translated on the invoice page).
-
 msgid "E-wallet (Vodafone Cash and others)"
 msgstr "المحفظة الإلكترونية (فودافون كاش وغيرها)"
 
@@ -1284,7 +1278,6 @@ msgid "International bank transfer (USD)"
 msgstr "تحويل بنكي دولي (بالدولار الأمريكي)"
 
 # Wallet: confirmation before "Add Funds" creates the invoice (mod_client_balance).
-
 msgid "Are you sure you want to create an invoice for :amount? Once it is paid, the amount is added to your account balance."
 msgstr "هل أنت متأكد من إنشاء فاتورة بمبلغ :amount؟ بعد دفعها يُضاف المبلغ إلى رصيد حسابك."
 
@@ -1295,7 +1288,6 @@ msgid "Enter an amount greater than zero."
 msgstr "أدخل مبلغًا أكبر من صفر."
 
 # Form check messages (partials/i18n.html.twig): used instead of the browser's own.
-
 msgid "Please fill out this field."
 msgstr "يُرجى ملء هذا الحقل."
 
@@ -1339,7 +1331,6 @@ msgid "Please enter a valid value."
 msgstr "يُرجى إدخال قيمة صحيحة."
 
 # Toasts from FOSSBilling's api.js and the theme script (partials/i18n.html.twig).
-
 msgid "Form Updated"
 msgstr "تم الحفظ"
 
@@ -1362,7 +1353,6 @@ msgid "An unexpected error occurred"
 msgstr "حدث خطأ غير متوقع"
 
 # Words that were hard-coded in English in the theme templates.
-
 msgid "Your comment"
 msgstr "تعليقك"
 
@@ -1371,7 +1361,6 @@ msgstr "في :date"
 
 # Error messages clients can see (FOSSBilling client and guest API, payments, registrar and
 # server adapters). Admin-only messages are not translated.
-
 msgid "An unexpected error occurred. Please try again later."
 msgstr "حدث خطأ غير متوقع. يُرجى المحاولة لاحقًا."
 
@@ -1551,7 +1540,6 @@ msgstr "لم يُعثر على موقع :domain: الخاص بـ :email: على 
 
 # Toasts that were hard-coded in English (theme templates, and module templates through
 # partials/i18n.html.twig).
-
 msgid "Posted reply"
 msgstr "تم إرسال الرد"
 
@@ -1577,7 +1565,6 @@ msgid "Email resent"
 msgstr "تمت إعادة إرسال البريد"
 
 # Hosting password rule (Enhance) and the ClientFence hosting panel's error messages.
-
 msgid "At least 10 characters, with lowercase and uppercase letters, numbers and special characters."
 msgstr "10 أحرف على الأقل، تتضمن أحرفًا صغيرة وكبيرة وأرقامًا ورموزًا خاصة."
 
@@ -1622,7 +1609,6 @@ msgstr "الموقع"
 
 # Store, checkout and payment pages (mod_order_index, mod_order_product, mod_invoice_invoice,
 # mod_client_balance, mod_invoice_thankyou and their partials).
-
 msgid "Billed monthly"
 msgstr "يُدفع شهريًا"
 
@@ -2319,7 +2305,6 @@ msgstr "اختر مجموعة العملاء المسموح لها بالطلب.
 
 # Authorized users (ClientFence Users.php: top bar, no-access page, password reset page and
 # the error messages of the user calls).
-
 msgid "Account: :name"
 msgstr "الحساب: :name"
 
@@ -2379,7 +2364,6 @@ msgstr "تغيير البريد الإلكتروني للحساب متاح لم�
 
 # Authorized users, step 2 (ClientFence: Users page, invitation page, user profile, ticket
 # authors and the error messages of these calls).
-
 msgid "Users"
 msgstr "المستخدمون"
 
@@ -33266,3 +33250,21 @@ msgstr "يلزم تحديده لإضافة الخادم إلى مجموعة خو
 #: src/modules/Servicehosting/Service.php
 msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
 msgstr "الخادم :name ضمن مجموعة الخوادم :group. أبقِ الحد الأقصى لعدد الحسابات محددًا، أو أزل الخادم من المجموعة أولًا."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Domain transfer code is: :code"
+msgstr "رمز نقل النطاق هو: :code"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry."
+msgstr "يسجّل النطاقات ويديرها عبر حسابك في Subreg.CZ من خلال Subreg API (يتطلب امتداد PHP SOAP). يرسل وضع الاختبار كل طلب إلى نظام اختبار Subreg OT&E (demoreg.net) بدلاً من السجل الفعلي."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+msgid "The registrar has emailed the transfer code to the domain contact."
+msgstr "أرسل المسجّل رمز النقل بالبريد الإلكتروني إلى جهة اتصال النطاق."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar does not offer privacy protection for :tld domains."
+msgstr "لا يوفّر :registrar حماية الخصوصية للنطاقات ذات الامتداد :tld."

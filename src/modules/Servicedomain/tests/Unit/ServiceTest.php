@@ -1253,6 +1253,27 @@ test('gets transfer code', function (): void {
     expect($result)->toBe($epp);
 });
 
+test('returns the transfer code result in the requested format', function (string $epp, bool $details, string|array $expected): void {
+    $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');
+    $registrarAdapterMock->shouldReceive('getEpp')
+        ->once()
+        ->andReturn($epp);
+
+    $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $serviceMock->shouldReceive('_getD')
+        ->once()
+        ->andReturn([new Registrar_Domain(), $registrarAdapterMock]);
+
+    $serviceDomainModel = new Model_ServiceDomain();
+    $serviceDomainModel->loadBean(new Tests\Helpers\DummyBean());
+
+    expect($serviceMock->getTransferCode($serviceDomainModel, $details))->toBe($expected);
+})->with([
+    'emailed message' => [Registrar_AdapterAbstract::EPP_EMAILED, false, 'The registrar has emailed the transfer code to the domain contact.'],
+    'emailed details' => [Registrar_AdapterAbstract::EPP_EMAILED, true, ['code' => '', 'emailed' => true]],
+    'transfer code details' => ['EPPCODE', true, ['code' => 'EPPCODE', 'emailed' => false]],
+]);
+
 test('throws when the registrar returns an empty transfer code', function (): void {
     $registrarAdapterMock = Mockery::mock('Registrar_Adapter_Custom');
     $registrarAdapterMock->shouldReceive('getEpp')

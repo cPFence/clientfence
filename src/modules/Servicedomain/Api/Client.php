@@ -89,13 +89,15 @@ class Client extends \ClientFence\Api\AbstractApi
     /**
      * Retrieve domain transfer code.
      *
-     * @return string - transfer code
+     * @optional bool $details - return ['code', 'emailed'] instead of the code
+     *
+     * @return string|array{code: string, emailed: bool}
      */
     public function get_transfer_code($data)
     {
         $s = $this->_getService($data);
 
-        return $this->getService()->getTransferCode($s);
+        return $this->getService()->getTransferCode($s, filter_var($data['details'] ?? false, FILTER_VALIDATE_BOOLEAN));
     }
 
     /**

@@ -36443,3 +36443,21 @@ msgstr "서버를 서버 그룹에 추가하려면 이 값을 설정해야 합�
 #: src/modules/Servicehosting/Service.php
 msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
 msgstr "서버 :name은(는) 서버 그룹 :group에 속해 있습니다. 최대 계정 수 설정을 유지하거나 먼저 서버를 그룹에서 제거하세요."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Domain transfer code is: :code"
+msgstr "도메인 이전 코드: :code"
+
+#: src/library/Registrar/Adapter/Subreg.php
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry."
+msgstr "Subreg.CZ 계정으로 Subreg API를 통해 도메인을 등록하고 관리합니다(PHP SOAP 확장이 필요합니다). 테스트 모드에서는 모든 호출을 실제 레지스트리 대신 Subreg OT&E 테스트 시스템(demoreg.net)으로 보냅니다."
+
+#: src/modules/Servicedomain/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+msgid "The registrar has emailed the transfer code to the domain contact."
+msgstr "등록 대행업체가 도메인 연락처에 이전 코드를 이메일로 보냈습니다."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar does not offer privacy protection for :tld domains."
+msgstr ":registrar에서는 :tld 도메인의 개인정보 보호 서비스를 제공하지 않습니다."

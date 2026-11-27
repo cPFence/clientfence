@@ -898,7 +898,11 @@ msgstr ""
 msgid ":registrar does not offer a :years-year transfer for :tld."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php src/library/Registrar/Adapter/Subreg.php
+#: src/library/Registrar/Adapter/Subreg.php
+msgid ":registrar does not offer privacy protection for :tld domains."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Ovh.php src/library/Registrar/Adapter/Porkbun.php
 msgid ":registrar does not support this action."
 msgstr ""
 
@@ -9774,8 +9778,12 @@ msgstr ""
 msgid "Domain transfer code"
 msgstr ""
 
-#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/themes/palisade/html/partials/i18n.html.twig
+#: src/themes/palisade/html/partials/i18n.html.twig
 msgid "Domain transfer code is: "
+msgstr ""
+
+#: src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Domain transfer code is: :code"
 msgstr ""
 
 #: src/modules/Clientfence/Notifications.php
@@ -23403,7 +23411,7 @@ msgid "Registered or transferred with this order (see Domains)."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Subreg.php
-msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported."
+msgid "Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Synergywholesale.php
@@ -29619,12 +29627,8 @@ msgstr ""
 msgid "The registrar did not accept the domain request."
 msgstr ""
 
-#: src/library/Registrar/Adapter/Namesilo.php src/library/Registrar/Adapter/Opensrs.php
-msgid "The registrar has emailed the transfer code to the domain's administrative contact."
-msgstr ""
-
-#: src/library/Registrar/Adapter/Centralnicreseller.php
-msgid "The registrar has emailed the transfer code to the domain's registrant."
+#: src/modules/Servicedomain/Service.php src/modules/Servicedomain/templates/admin/mod_servicedomain_commands.html.twig src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig …
+msgid "The registrar has emailed the transfer code to the domain contact."
 msgstr ""
 
 #: src/library/Registrar/Adapter/Email.php

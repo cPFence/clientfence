@@ -161,7 +161,7 @@ test('the transfer code: StatusDomain AUTH, SetAuthCode for .de, the registrant 
     expect($adapter->getEpp(centralnicresellerDomain('.com')))->toBe('Xy7-code')
         ->and($adapter->getEpp(centralnicresellerDomain('.de')))->toBe('de-new')
         ->and(centralnicresellerCommands())->toBe(['StatusDomain', 'SetAuthCode'])
-        ->and(centralnicresellerAdapter([])->getEpp(centralnicresellerDomain('.com')))->toContain('emailed');
+        ->and(centralnicresellerAdapter([])->getEpp(centralnicresellerDomain('.com')))->toBe(Registrar_AdapterAbstract::EPP_EMAILED);
 });
 
 test('availability: available, taken, premium and a failed lookup', function (): void {

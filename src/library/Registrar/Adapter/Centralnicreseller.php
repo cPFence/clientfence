@@ -209,7 +209,7 @@ class Registrar_Adapter_Centralnicreseller extends Registrar_AdapterAbstract imp
         }
 
         if (!isset($r['PROPERTY']['AUTH'][0])) {
-            return __trans('The registrar has emailed the transfer code to the domain\'s registrant.');
+            return self::EPP_EMAILED;
         }
         if ($r['PROPERTY']['AUTH'][0] === '') {
             throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');

@@ -196,7 +196,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
         $this->request('retrieveAuthCode', ['domain' => $domain->getName()]);
 
         // NameSilo does not return the code: it emails it to the domain's administrative contact.
-        return __trans('The registrar has emailed the transfer code to the domain\'s administrative contact.');
+        return self::EPP_EMAILED;
     }
 
     public function registerDomain(Registrar_Domain $domain): bool

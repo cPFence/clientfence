@@ -281,7 +281,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
         $this->request('send_authcode', ['domain_name' => $domain->getName()]);
 
         // OpenSRS does not return the code here: it emails it to the domain's administrative contact.
-        return __trans('The registrar has emailed the transfer code to the domain\'s administrative contact.');
+        return self::EPP_EMAILED;
     }
 
     public function registerDomain(Registrar_Domain $domain): bool

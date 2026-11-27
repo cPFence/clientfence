@@ -11,13 +11,15 @@ declare(strict_types=1);
  *
  * Uses the Subreg SOAP API (non-WSDL, needs the PHP soap extension): Login gives a session token (ssid) that every
  * other call carries; registrations, transfers, renewals and changes are Make_Order orders. Test mode sends every call
- * to the Subreg OT&E system (demoreg.net), never to the live registry. Privacy protection is not supported.
+ * to the Subreg OT&E system (demoreg.net), never to the live registry.
  */
 class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
     private const URL = 'https://soap.subreg.cz/cmd.php';
     private const TEST_URL = 'https://soap.demoreg.net/cmd.php';
     private const LOCK = 'clientTransferProhibited';
+    // Subreg lists these WHOIS protection exclusions at https://subreg.cz/en/.
+    private const PRIVACY_UNSUPPORTED_TLDS = ['.cz', '.eu'];
 
     public $config = [
         'login' => null,
@@ -38,13 +40,13 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public static function getUnsupportedActions(): array
     {
-        return ['enablePrivacyProtection', 'disablePrivacyProtection'];
+        return [];
     }
 
     public static function getConfig(): array
     {
         return [
-            'label' => __trans('Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry. Privacy protection is not supported.'),
+            'label' => __trans('Registers and manages domains through your Subreg.CZ account over the Subreg API (needs the PHP soap extension). Test mode sends every call to the Subreg OT&E test system (demoreg.net) instead of the live registry.'),
             'form' => [
                 'login' => ['text', [
                     'label' => __trans('Username'),
@@ -177,11 +179,14 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
     public function getEpp(Registrar_Domain $domain): string
     {
         $code = trim((string) ($this->info($domain)['authid'] ?? ''));
-        if ($code === '') {
-            throw new Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
+        if ($code !== '') {
+            return $code;
         }
 
-        return $code;
+        // Subreg's WHMCS module provides the undocumented SendAuthID_Domain order and whoisproxy parameter.
+        $this->order($domain, 'SendAuthID_Domain', ['params' => ['whmcs' => 1]]);
+
+        return self::EPP_EMAILED;
     }
 
     public function lock(Registrar_Domain $domain): bool
@@ -196,12 +201,12 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
 
     public function enablePrivacyProtection(Registrar_Domain $domain): bool
     {
-        throw new Registrar_Exception(':registrar does not support this action.', [':registrar' => 'Subreg']);
+        return $this->setPrivacyProtection($domain, true);
     }
 
     public function disablePrivacyProtection(Registrar_Domain $domain): bool
     {
-        throw new Registrar_Exception(':registrar does not support this action.', [':registrar' => 'Subreg']);
+        return $this->setPrivacyProtection($domain, false);
     }
 
     public function deleteDomain(Registrar_Domain $domain): bool
@@ -340,6 +345,17 @@ class Registrar_Adapter_Subreg extends Registrar_AdapterAbstract implements Regi
         // Only client* statuses: "ok" and the registry's server* statuses cannot be set by a registrar.
         $statuses = array_values(array_filter(array_map('strval', (array) ($this->info($domain)['status'] ?? [])), static fn (string $s): bool => str_starts_with($s, 'client') && $s !== self::LOCK));
         $this->order($domain, 'Modify_Domain', ['statuses' => $locked ? [...$statuses, self::LOCK] : $statuses]);
+
+        return true;
+    }
+
+    private function setPrivacyProtection(Registrar_Domain $domain, bool $enabled): bool
+    {
+        if (in_array(strtolower($domain->getTld()), self::PRIVACY_UNSUPPORTED_TLDS, true)) {
+            throw new Registrar_Exception(':registrar does not offer privacy protection for :tld domains.', [':registrar' => 'Subreg', ':tld' => $domain->getTld()]);
+        }
+
+        $this->order($domain, 'Modify_Domain', ['params' => ['whoisproxy' => (int) $enabled, 'whmcs' => 1]]);
 
         return true;
     }

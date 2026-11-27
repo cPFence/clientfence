@@ -770,12 +770,13 @@ class Service implements \ClientFence\InjectionAwareInterface
         return true;
     }
 
-    public function getTransferCode(\Model_ServiceDomain $model)
+    /** @return string|array{code: string, emailed: bool} */
+    public function getTransferCode(\Model_ServiceDomain $model, bool $details = false)
     {
         // @adapterAction
         [$domain, $adapter] = $this->_getD($model);
         if ($this->requested($model, $adapter, 'transfer_code')) {
-            return '';
+            return $details ? ['code' => '', 'emailed' => false] : '';
         }
 
         $code = $adapter->getEpp($domain);
@@ -784,7 +785,12 @@ class Service implements \ClientFence\InjectionAwareInterface
             throw new \Registrar_Exception('The transfer code could not be retrieved automatically. Please contact support to receive it.');
         }
 
-        return $code;
+        $emailed = $code === \Registrar_AdapterAbstract::EPP_EMAILED;
+        if ($details) {
+            return ['code' => $emailed ? '' : $code, 'emailed' => $emailed];
+        }
+
+        return $emailed ? __trans('The registrar has emailed the transfer code to the domain contact.') : $code;
     }
 
     public function lock(\Model_ServiceDomain $model): bool

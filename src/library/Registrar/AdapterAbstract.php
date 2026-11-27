@@ -10,6 +10,9 @@ declare(strict_types=1);
  */
 abstract class Registrar_AdapterAbstract
 {
+    // getEpp() returns this when the registrar delivers the code to the domain contact only by email.
+    public const EPP_EMAILED = "\0emailed";
+
     protected $_log;
 
     /**
@@ -163,7 +166,7 @@ abstract class Registrar_AdapterAbstract
      *
      * @param Registrar_Domain $domain domain object containing the details of the domain
      *
-     * @return string the domain transfer code
+     * @return string the domain transfer code or self::EPP_EMAILED when it was emailed
      *
      * @throws Registrar_Exception if there was an error while retrieving the domain transfer code
      */

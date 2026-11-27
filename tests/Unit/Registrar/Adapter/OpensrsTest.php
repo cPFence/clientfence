@@ -211,7 +211,7 @@ test('domain details come from all_info, status and whois_privacy_state; the tra
         ->and($details->getLocked())->toBeTrue()
         ->and($details->getPrivacyEnabled())->toBeTrue()
         ->and([$details->getNs1(), $details->getNs2()])->toBe(['ns1.example.net', 'ns2.example.net'])
-        ->and($adapter->getEpp(opensrsDomain()))->toContain('emailed')
+        ->and($adapter->getEpp(opensrsDomain()))->toBe(Registrar_AdapterAbstract::EPP_EMAILED)
         ->and(end($GLOBALS['opensrs_calls'])[1])->toBe(['domain_name' => 'example.com']);
 });
 
