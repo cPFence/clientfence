@@ -1439,6 +1439,43 @@ test('a service keeps the options its new product also has, priced for the new c
         ->and($di['events'][0]['params']['options_changed'])->toBeTrue();
 });
 
+test('client quotes and staff moves keep an extra with the same option code at the new price', function (string $code, int $chosen, float $price, array $lines, bool $keepSharedGroup = false, bool $requiredQuantity = false): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $o = upgradesWithOptions($di);
+    $db->update('product_option', ['code' => 'extra'], ['id' => $o['backups']]);
+    $group = Options::saveGroup($di, ['title' => 'Pro extras']);
+    Options::saveOption($di, ['group_id' => $group, 'title' => 'Legacy backups', 'type' => 'yesno', 'code' => $code, 'hidden' => true, 'values' => [['m_price' => '7']]]);
+    $extra = Options::saveOption($di, ['group_id' => $group, 'title' => 'Backups', 'type' => 'yesno', 'code' => $code, 'values' => [['m_price' => '7']]]);
+    $groups = $keepSharedGroup ? Options::productGroups($di, 2) : [];
+    Options::setProductGroups($di, 2, [...$groups, $group]);
+    $choice = $keepSharedGroup ? [$o['ram'] => $o['4gb'], $o['backups'] => 1] : [];
+    $choice[$extra] = $chosen;
+    if ($requiredQuantity) {
+        $source = Options::saveOption($di, ['group_id' => Options::productGroups($di, 1)[0], 'title' => 'Seats', 'type' => 'quantity', 'code' => 'seats', 'values' => [['m_price' => '2']]]);
+        $target = Options::saveOption($di, ['group_id' => $group, 'title' => 'Seats', 'type' => 'quantity', 'code' => 'seats', 'qty_min' => 1, 'values' => [['m_price' => '2']]]);
+        $config = json_decode((string) upgradesOrder($di, 1)->config, true);
+        $config['options'][$source] = 0;
+        $db->update('client_order', ['config' => json_encode($config)], ['id' => 1]);
+        $choice[$target] = 1;
+    }
+
+    $listed = [];
+    foreach (Upgrades::options($di, upgradesOrder($di, 1), UPGRADES_NOW)['options'] as $entry) {
+        $listed[$entry['product_id'] . '/' . $entry['period']] = [$entry['price'], $entry['options']];
+    }
+    expect($listed['2/1M'])->toBe([$price, $choice]);
+
+    Upgrades::staffMove($di, 1, 2, true, false);
+    expect(upgradesOrderOptions($db, 1))->toBe(['options' => $choice, 'lines' => $lines])
+        ->and($db->fetchOne('SELECT price FROM client_order WHERE id = 1'))->toBe($price);
+})->with([
+    'same code' => ['extra', 1, 52.0, ['Backups=7']],
+    'different code' => ['other', 0, 45.0, []],
+    'same code with a shared option' => ['extra', 0, 53.0, ['RAM=5', 'Backups=3'], true],
+    'quantity below the new minimum uses the default' => ['other', 0, 47.0, ['Seats=2'], false, true],
+]);
+
 test('options change quotes include invoice tax rounded to cents', function (?float $rate, float $optionPrice, float $net, float $total): void {
     $db = upgradesDb();
     $di = upgradesContainer($db, [], ['tax_rate' => $rate]);

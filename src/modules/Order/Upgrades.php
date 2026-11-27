@@ -235,8 +235,8 @@ final class Upgrades
                     continue;
                 }
                 // The options the new product also has are kept, priced for the new cycle.
-                $target = self::optionsFor($di, $productId, $own['choice'], $period);
-                $here = $productId === (int) $order->product_id ? $target : self::optionsFor($di, (int) $order->product_id, $own['choice'], $period);
+                $target = self::optionsFor($di, $productId, $from['id'], $own['choice'], $period);
+                $here = $productId === $from['id'] ? $target : self::optionsFor($di, $from['id'], $from['id'], $own['choice'], $period);
                 if ($target === null) {
                     continue;
                 }
@@ -1165,13 +1165,32 @@ final class Upgrades
      *
      * @return array{choice: array<int, int>, lines: list<array<string, mixed>>, price: float}|null
      */
-    private static function optionsFor(\Pimple\Container $di, int $productId, array $choice, string $period): ?array
+    private static function optionsFor(\Pimple\Container $di, int $productId, int $fromProductId, array $choice, string $period): ?array
     {
-        $offered = array_map('intval', array_column(Options::forProduct($di, $productId, true), 'id'));
+        $offered = array_column(Options::forProduct($di, $productId, true), null, 'id');
         if ($offered === []) {
             return ['choice' => [], 'lines' => [], 'price' => 0.0];
         }
-        $kept = array_intersect_key($choice, array_flip($offered));
+        $kept = array_intersect_key($choice, $offered);
+        if ($fromProductId !== $productId && $choice !== []) {
+            // ClientFence core patch: separate product groups can sell the same extra under different option IDs.
+            $byCode = [];
+            foreach (Options::forProduct($di, $fromProductId, true) as $option) {
+                if (isset($choice[$option['id']])) {
+                    $byCode[$option['code']][$option['type']] = $choice[$option['id']];
+                }
+            }
+            $keptCodes = array_column(array_intersect_key($offered, $kept), 'code');
+            $byCode = array_diff_key($byCode, array_flip($keptCodes));
+            foreach (array_diff_key($offered, $kept) as $id => $option) {
+                $value = $byCode[$option['code']][$option['type']] ?? null;
+                if (!$option['hidden'] && $option['code'] !== '' && in_array($option['type'], ['yesno', 'quantity'], true) && $value !== null
+                    && ($option['type'] !== 'quantity' || ($value >= $option['qty_min'] && $value <= ($option['qty_max'] ?: Options::MAX_QUANTITY)))) {
+                    $kept[$id] = $value;
+                    unset($byCode[$option['code']]);
+                }
+            }
+        }
         try {
             $resolved = Options::resolve($di, $productId, $kept, $period, $kept);
         } catch (InformationException) {
@@ -1536,7 +1555,7 @@ final class Upgrades
             return __trans('The service can move only to another recurring product of the same type (hosting: on the same server, and reseller or not as now).');
         }
         $period = (string) $order->period;
-        if (self::optionsFor($di, $productId, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once') === null) {
+        if (self::optionsFor($di, $productId, (int) $order->product_id, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once') === null) {
             return __trans('The options of this service do not fit the new product. Change them first.');
         }
         $stock = self::db($di)->fetchAssociative('SELECT stock_control, quantity_in_stock FROM product WHERE id = ?', [$productId]);
@@ -1565,7 +1584,7 @@ final class Upgrades
         $from = self::catalog($di, (int) $order->product_id, false, (string) $order->currency);
         $to = self::catalog($di, $productId, false, (string) $order->currency);
         $period = (string) $order->period;
-        $options = self::optionsFor($di, $productId, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once');
+        $options = self::optionsFor($di, $productId, (int) $order->product_id, self::orderOptions($order)['choice'], $period !== '' ? $period : 'once');
         if ($options === null) {
             throw new InformationException('The options of this service do not fit the new product. Change them first.');
         }
