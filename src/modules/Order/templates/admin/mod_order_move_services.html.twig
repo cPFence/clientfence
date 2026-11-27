@@ -24,7 +24,7 @@
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Move services to another product'|trans }}</h3>
-            <p class="card-subtitle">{{ "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."|trans }}</p>
+            <p class="card-subtitle">{{ "For services that came in under a custom product. Normally, a move to a hosting product links each service to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."|trans }}</p>
         </div>
     </div>
     <div class="card-body">
@@ -70,6 +70,11 @@
                 {% endfor %}
             </div>
         </div>
+        <label class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" name="move_unlinked" value="1"{% if filters.move_unlinked|default('') == '1' %} checked{% endif %}>
+            <span class="form-check-label">{{ 'I understand: move without checking or linking the server account'|trans }}</span>
+        </label>
+        <div class="form-hint">{{ 'For moves from a custom product to a hosting product only. The account and login will be unverified; hosting actions and renewals will fail until the services are linked. Once the server is available, turn off this option and choose the hosting product as both source and destination to link them. Local checks still apply.'|trans }}</div>
     </div>
     <div class="card-footer text-end">
         <button class="btn btn-primary" type="submit">{{ 'Preview'|trans }}</button>
@@ -110,6 +115,7 @@
                         <td class="small" data-cf-move-result="{{ row.id }}">
                             {% if row.reason is not null %}{{ row.reason }}
                             {% elseif row.link %}{{ 'Organization %org%, subscription %id%'|trans({ '%org%': row.link.org, '%id%': row.link.subscription }) }}
+                            {% elseif filters.move_unlinked|default('') == '1' %}{{ 'Moves unlinked; account not verified'|trans }}
                             {% else %}{{ 'Moves without a server account'|trans }}{% endif %}
                         </td>
                     </tr>
@@ -127,6 +133,7 @@
                 <form method="post" action="{{ 'order/move_services'|api_url }}" {{ fb_api_form({ callback: 'clientfenceServicesMoved' }) }}>
                     <input type="hidden" name="from_product_id" value="{{ filters.from_product_id }}">
                     <input type="hidden" name="to_product_id" value="{{ filters.to_product_id }}">
+                    {% if filters.move_unlinked|default('') == '1' %}<input type="hidden" name="move_unlinked" value="1">{% endif %}
                     {% for row in movable %}<input type="hidden" name="order_ids[]" value="{{ row.id }}">{% endfor %}
                     <button class="btn btn-primary" type="submit">{% if filters.from_product_id == filters.to_product_id %}{{ 'Link %count% services'|trans({ '%count%': movable|length }) }}{% else %}{{ 'Move %count% services'|trans({ '%count%': movable|length }) }}{% endif %}</button>
                 </form>

@@ -98,6 +98,7 @@ beforeEach(function (): void {
         public array $created = [];
         /** @var array<int, list<string>> the websites of each subscription (default: the account's own) */
         public array $websites = [];
+        public bool $offline = false;
         /** Runs after the check, before the move's transaction (a change made meanwhile). */
         public ?Closure $onSync = null;
 
@@ -107,6 +108,10 @@ beforeEach(function (): void {
 
         public function linkAccount(Server_Account $account): array
         {
+            if ($this->offline) {
+                throw new RuntimeException('Server offline');
+            }
+
             return match ($account->getDomain()) {
                 'site.example' => ['org' => 'O1', 'subscription' => 71],
                 'broken.example' => ['org' => 'O5', 'subscription' => 75],
@@ -242,6 +247,47 @@ test('a hosting service without a login is linked in place, so its renewals and 
         ->and($this->connection->fetchOne('SELECT product_id FROM client_order WHERE id = 6'))->toBe(3)
         ->and($this->adapter->created)->toBe([])
         ->and(fn () => ProductMove::preview($this->di, ['from_product_id' => 3, 'to_product_id' => 2, 'statuses' => ['active']]))->toThrow(ClientFence\InformationException::class);
+});
+
+test('an explicit offline move leaves the account unlinked until it can be verified', function (): void {
+    $this->adapter->offline = true;
+    $filters = ['from_product_id' => 1, 'to_product_id' => 2, 'statuses' => ['active']];
+    expect(array_column(ProductMove::preview($this->di, $filters)['rows'], null, 'id')[1]['reason'])->toBe('Server offline');
+
+    $rows = array_column(ProductMove::preview($this->di, $filters + ['move_unlinked' => '1'])['rows'], null, 'id');
+    expect($rows[1]['reason'])->toBeNull()
+        ->and($rows[1]['link'])->toBeNull()
+        ->and($rows[2]['reason'])->toBe('Several services of this product have this domain.');
+
+    $result = ProductMove::move($this->di, ['from_product_id' => 1, 'to_product_id' => 2, 'order_ids' => [1, 2], 'move_unlinked' => '1']);
+    $order = $this->di['db']->getExistingModelById('ClientOrder', 1);
+    $service = $this->di['mod_service']('order')->getOrderService($order);
+    expect($result['moved'])->toBe(1)
+        ->and($result['results'][1]['moved'])->toBeFalse()
+        ->and($order->product_id)->toBe(2)
+        ->and($order->service_type)->toBe('hosting')
+        ->and($service->username)->toBeNull()
+        ->and($service->panel_subscription_id)->toBeNull()
+        ->and($this->adapter->created)->toBe([])
+        ->and(fn () => $this->di['mod_service']('servicehosting')->action_activate($order))->toThrow(ClientFence\InformationException::class, 'Link it before using hosting actions.')
+        ->and(fn () => $this->di['mod_service']('servicehosting')->action_renew($order))->toThrow(ClientFence\InformationException::class, 'Link it before using hosting actions.')
+        ->and(fn () => $this->di['mod_service']('servicehosting')->action_suspend($order))->toThrow(ClientFence\InformationException::class, 'Link it before using hosting actions.')
+        ->and(fn () => $this->di['mod_service']('servicehosting')->action_cancel($order))->toThrow(ClientFence\InformationException::class, 'Link it before using hosting actions.');
+
+    $this->adapter->offline = false;
+    expect(ProductMove::move($this->di, ['from_product_id' => 2, 'to_product_id' => 2, 'order_ids' => [1]])['moved'])->toBe(1);
+    $order = $this->di['db']->getExistingModelById('ClientOrder', 1);
+    $service = $this->di['mod_service']('order')->getOrderService($order);
+    expect($service->username)->toBe('ann@example.test')
+        ->and((int) $service->panel_subscription_id)->toBe(71)
+        ->and($this->di['mod_service']('order')->getConfig($order))->not->toHaveKey('clientfence_move_unlinked');
+});
+
+test('offline override must be explicit and cannot pretend to link in place', function (): void {
+    $this->adapter->offline = true;
+    $data = ['from_product_id' => 1, 'to_product_id' => 2, 'order_ids' => [1]];
+    expect(ProductMove::move($this->di, $data + ['move_unlinked' => 'false'])['results'][0]['note'])->toBe('Server offline')
+        ->and(fn () => ProductMove::move($this->di, ['from_product_id' => 3, 'to_product_id' => 3, 'order_ids' => [6], 'move_unlinked' => '1']))->toThrow(ClientFence\InformationException::class, 'The unlinked move option is only for moves');
 });
 
 test('a client whose email is not confirmed is never linked to the panel account found by that email', function (): void {

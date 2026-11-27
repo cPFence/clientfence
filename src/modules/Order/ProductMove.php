@@ -8,6 +8,7 @@ use ClientFence\InformationException;
 use ClientFence\Mod\Product\Entity\Product;
 use ClientFence\Mod\Servicehosting\Panel\Enhance\Panel;
 use ClientFence\Mod\Servicehosting\Service as HostingService;
+use ClientFence\Tools;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\DBAL\Connection;
 
@@ -79,6 +80,7 @@ final class ProductMove
     {
         $db = self::db($di);
         [$from, $to] = self::products($db, $data);
+        $offline = Tools::normalizeBoolean($data['move_unlinked'] ?? false);
         $statuses = array_values(array_intersect(self::STATUSES, array_map('strval', (array) ($data['statuses'] ?? []))));
         if ($statuses === []) {
             throw new InformationException('Choose at least one order status.');
@@ -94,7 +96,7 @@ final class ProductMove
         $domains = self::domains($db, $from['id']);
         $rows = [];
         foreach (array_slice($orders, 0, self::LIMIT) as $order) {
-            $found = self::check($di, $order, $from, $to, $domains);
+            $found = self::check($di, $order, $from, $to, $domains, $offline);
             $rows[] = [
                 'id' => (int) $order['id'],
                 'title' => (string) $order['title'],
@@ -121,6 +123,7 @@ final class ProductMove
     {
         $db = self::db($di);
         [$from, $to] = self::products($db, $data);
+        $offline = Tools::normalizeBoolean($data['move_unlinked'] ?? false);
         $ids = array_values(array_unique(array_filter(array_map('intval', (array) ($data['order_ids'] ?? [])), static fn (int $id): bool => $id > 0)));
         if ($ids === [] || count($ids) > self::LIMIT) {
             throw new InformationException('Choose between 1 and :max services to move.', [':max' => self::LIMIT]);
@@ -133,7 +136,7 @@ final class ProductMove
                 if ($order === false || (int) $order['product_id'] !== $from['id'] || !in_array($order['status'], self::STATUSES, true)) {
                     throw new InformationException('This service is no longer on :product.', [':product' => $from['title']]);
                 }
-                $found = self::check($di, $order, $from, $to, $domains);
+                $found = self::check($di, $order, $from, $to, $domains, $offline);
                 if ($found['reason'] !== null) {
                     $results[] = ['id' => $id, 'moved' => false, 'note' => $found['reason']];
 
@@ -163,7 +166,7 @@ final class ProductMove
      *
      * @return array{reason: ?string, domain?: string, link?: array{org: string, subscription: int}, adapter?: object, account?: \Server_Account, server_id?: int, plan_id?: int}
      */
-    private static function check(\Pimple\Container $di, array $order, array $from, array $to, array $domains): array
+    private static function check(\Pimple\Container $di, array $order, array $from, array $to, array $domains, bool $offline): array
     {
         $inPlace = $from['id'] === $to['id'];
         if ($inPlace) {
@@ -208,6 +211,17 @@ final class ProductMove
         );
         if ($taken !== false) {
             return ['reason' => __trans('Order #:id is already a hosting service for this domain.', [':id' => $taken]), 'domain' => $domain];
+        }
+
+        if ($offline && !$inPlace) {
+            try {
+                $di['db']->getExistingModelById('ServiceHostingServer', $serverId, 'Server not found');
+                $di['db']->getExistingModelById('ServiceHostingHp', $planId, 'Hosting plan not found');
+            } catch (\ClientFence\Exception $e) {
+                return ['reason' => $e->getMessage(), 'domain' => $domain];
+            }
+
+            return ['reason' => null, 'domain' => $domain, 'server_id' => $serverId, 'plan_id' => $planId];
         }
 
         try {
@@ -262,12 +276,13 @@ final class ProductMove
      * The order becomes a hosting order of $to whose service is the found account: the hosting module's "already set
      * up" activation (Add New Order), so nothing is created on the server. The custom service row goes last.
      *
-     * @param array{domain: string, link: array{org: string, subscription: int}, adapter: object, account: \Server_Account, server_id: int, plan_id: int} $found
+     * @param array{domain: string, link?: array{org: string, subscription: int}, adapter?: object, account?: \Server_Account, server_id: int, plan_id: int} $found
      */
     private static function link(\Pimple\Container $di, int $orderId, array $matched, array $from, array $to, array $found): void
     {
         $domain = $found['domain'];
-        $login = self::login($found);
+        $linked = isset($found['link']);
+        $login = $linked ? self::login($found) : '';
         $hosting = $di['mod_service']('servicehosting');
         [$sld, $tld] = self::split($domain);
         // Only the hosting keys of the product (as Upgrades::hostingConfig()): the order keeps its own billing settings
@@ -279,11 +294,14 @@ final class ProductMove
             'tld' => $tld,
             'import' => true,
             'username' => $login,
+            'clientfence_move_unlinked' => !$linked,
         ];
-        $note = sprintf('Moved by staff from %s to %s, linked to the existing account %s on the server', $from['title'], $to['title'], $domain);
+        $note = $linked
+            ? sprintf('Moved by staff from %s to %s, linked to the existing account %s on the server', $from['title'], $to['title'], $domain)
+            : sprintf('Moved by staff from %s to %s without verifying or linking the account %s on the server', $from['title'], $to['title'], $domain);
 
         $db = self::db($di);
-        $release = self::lock($db, $found['link']);
+        $release = $linked ? self::lock($db, $found['link']) : static function (): void {};
         $db->beginTransaction();
         try {
             self::recheck($db, $matched, $found, 0);
@@ -295,14 +313,18 @@ final class ProductMove
             $order->title = mb_substr($hosting->getCartProductTitle($di['em']->find(Product::class, $to['id']), $config) ?? $to['title'], 0, 255);
             $order->config = json_encode($config);
             $service = $hosting->action_create($order);
-            $service->panel_org_id = $found['link']['org'];
-            $service->panel_subscription_id = $found['link']['subscription'];
-            $di['db']->store($service);
+            if ($linked) {
+                $service->panel_org_id = $found['link']['org'];
+                $service->panel_subscription_id = $found['link']['subscription'];
+                $di['db']->store($service);
+            }
             $order->service_type = 'hosting';
             $order->service_id = $service->id;
             $order->updated_at = date('Y-m-d H:i:s');
             $di['db']->store($order);
-            $hosting->action_activate($order);
+            if ($linked) {
+                $hosting->action_activate($order);
+            }
             $db->delete('service_custom', ['id' => $customId]);
             $di['mod_service']('order')->saveStatusChange($order, $note);
             $db->commit();
@@ -341,6 +363,12 @@ final class ProductMove
                     'service_hosting_server_id' => $found['server_id'], 'service_hosting_hp_id' => $found['plan_id'], 'sld' => $sld, 'tld' => $tld,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ], ['id' => (int) $order->service_id]);
+                $config = json_decode((string) $order->config, true);
+                if (is_array($config) && !empty($config['clientfence_move_unlinked'])) {
+                    unset($config['clientfence_move_unlinked']);
+                    $order->config = json_encode($config);
+                    $di['db']->store($order);
+                }
                 $di['mod_service']('order')->saveStatusChange($order, $note);
             });
         } finally {
@@ -364,9 +392,11 @@ final class ProductMove
                 throw new InformationException('This service changed while it was being moved. Preview it again.');
             }
         }
-        $linked = $db->fetchOne('SELECT id FROM service_hosting WHERE panel_org_id = ? AND panel_subscription_id = ? AND id <> ?', [$found['link']['org'], $found['link']['subscription'], $serviceId]);
-        if ($linked !== false) {
-            throw new InformationException('This account is already linked to hosting service #:id.', [':id' => $linked]);
+        if (isset($found['link'])) {
+            $linked = $db->fetchOne('SELECT id FROM service_hosting WHERE panel_org_id = ? AND panel_subscription_id = ? AND id <> ?', [$found['link']['org'], $found['link']['subscription'], $serviceId]);
+            if ($linked !== false) {
+                throw new InformationException('This account is already linked to hosting service #:id.', [':id' => $linked]);
+            }
         }
     }
 
@@ -476,6 +506,9 @@ final class ProductMove
         // A hosting product goes only to itself: its services are linked in place.
         if ($to === null || ($from['type'] === 'hosting') !== ($to['id'] === $from['id'])) {
             throw new InformationException('Choose another custom product, or a hosting product with a server and hosting plan, to move the services to. To link the services of a hosting product to their accounts, choose that product in both.');
+        }
+        if (Tools::normalizeBoolean($data['move_unlinked'] ?? false) && ($from['type'] !== 'custom' || $to['type'] !== 'hosting')) {
+            throw new InformationException('The unlinked move option is only for moves from a custom product to a hosting product. Turn it off to link services.');
         }
 
         return [$from, $to];

@@ -1010,6 +1010,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional int $to_product_id - a hosting or custom product (required)
      * @optional array $statuses - order statuses (required)
      * @optional int $after - list the orders after this order ID
+     * @optional bool $move_unlinked - move to hosting without checking or linking the server account
      */
     public function move_services_preview($data): array
     {
@@ -1020,6 +1021,8 @@ class Admin extends \ClientFence\Api\AbstractApi
 
     /**
      * ClientFence: moves the previewed services (`order_ids`), each checked again; one result per service.
+     *
+     * @optional bool $move_unlinked - move to hosting without checking or linking the server account
      */
     #[RequiredParams(['order_ids' => 'Preview the services first'])]
     public function move_services($data): array

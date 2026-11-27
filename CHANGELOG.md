@@ -12,7 +12,7 @@
 - The staff "New reply from client" email shows the client's reply.
 - **Language versions of the texts clients see:** invoice notes, company signature and legal texts, the email signature, store title, maintenance message, bank transfer instructions, suspension and cancellation reasons, and escalation replies.
 - **Import Products step:** before an import from Upmind, Blesta, Clientexec, Paymenter or FOSSBilling, choose for each source product whether it stays custom or becomes a hosting product on a chosen server and plan.
-- **Orders > Move services:** move the services of one product to another product in bulk.
+- **Orders > Move services:** move the services of one product to another product in bulk. An explicit override moves custom services to hosting without checking or linking the server account; link them later when the server is available.
 - **Failed staff sign-in email:** the Super Administrators get an email at once when a staff sign-in fails, as WHMCS.
 - The domain checker, contact and sign-in embeds take the client area's look: brand colours, font, buttons and fields, in light and dark mode.
 - **Registrars:** Update and Test Connection on the registrar settings page, showing how long the registrar took or its error.

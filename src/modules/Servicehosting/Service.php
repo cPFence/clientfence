@@ -238,6 +238,7 @@ class Service implements InjectionAwareInterface
 
         // Retrieve the order's configuration
         $config = $orderService->getConfig($order);
+        $this->assertMoveLinked($order);
 
         // Retrieve the server manager for the order
         $serverManager = $this->_getServerManagerForOrder($model);
@@ -324,6 +325,7 @@ class Service implements InjectionAwareInterface
      */
     public function action_renew(\Model_ClientOrder $order): bool
     {
+        $this->assertMoveLinked($order);
         // move expiration period to future
         $orderService = $this->di['mod_service']('order');
         $model = $orderService->getOrderService($order);
@@ -399,6 +401,7 @@ class Service implements InjectionAwareInterface
         if (!$model instanceof \RedBeanPHP\SimpleModel) {
             throw new Exception('Order :id has no active service', [':id' => $order->id]);
         }
+        $this->assertMoveLinked($order);
         // ClientFence core patch: an order whose activation never created the account (still pending or
         // failed setup, no username: see action_activate) has nothing on the server to cancel. Asking
         // the server failed ("No website ... was found"), so such an order could not be deleted.
@@ -424,6 +427,7 @@ class Service implements InjectionAwareInterface
      */
     public function action_uncancel(\Model_ClientOrder $order): bool
     {
+        $this->assertMoveLinked($order);
         $this->action_create($order, true);
         $orderService = $this->di['mod_service']('order');
         $model = $orderService->getOrderService($order);
@@ -693,6 +697,10 @@ class Service implements InjectionAwareInterface
 
     public function _getAM(\RedBeanPHP\SimpleModel $model, ?\Model_ServiceHostingHp $hp = null, bool $link = true): array
     {
+        $order = $this->di['mod_service']('order')->getServiceOrder($model);
+        if ($order instanceof \Model_ClientOrder) {
+            $this->assertMoveLinked($order);
+        }
         if (!$hp instanceof \Model_ServiceHostingHp) {
             $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $model->service_hosting_hp_id, 'Hosting plan not found');
         }
@@ -742,8 +750,6 @@ class Service implements InjectionAwareInterface
             ->setNs4($server->ns4)
             ->setIp($model->ip);
 
-        $orderService = $this->di['mod_service']('order');
-        $order = $orderService->getServiceOrder($model);
         if ($order instanceof \Model_ClientOrder) {
             $adapter = $this->getServerManagerWithLog($server, $order);
         } else {
@@ -771,6 +777,14 @@ class Service implements InjectionAwareInterface
         }
 
         return [$adapter, $server_account, $linkError];
+    }
+
+    private function assertMoveLinked(\Model_ClientOrder $order): void
+    {
+        $config = json_decode((string) $order->config, true);
+        if (!empty($config['clientfence_move_unlinked'])) {
+            throw new InformationException('This service was moved without linking its server account. Link it before using hosting actions.');
+        }
     }
 
     /**
