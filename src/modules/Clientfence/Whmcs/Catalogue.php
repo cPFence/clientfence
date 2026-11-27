@@ -21,8 +21,8 @@ use Doctrine\DBAL\Connection;
  * price stays as it was.
  *
  * Products: a server module ClientFence has (cPanel, DirectAdmin, Plesk, CWP, Hestia, Enhance)
- * makes a hosting product on the first server of its WHMCS server group (no group: WHMCS's default
- * server of its module, else the first imported one), with a hosting plan
+ * makes a hosting product with its WHMCS server group when possible, or on its group's first server
+ * (no group: WHMCS's default server of its module, else the first imported one), with a hosting plan
  * named after the WHMCS package; WHMCS's Licensing makes a licence product; any other module a
  * custom product (a warning names the module). Staff may choose otherwise for each product on the
  * plan's Products list (Import::saveProducts()): a custom product, or hosting on a server the import
@@ -342,6 +342,7 @@ final class Catalogue
         // Exactly that name: MySQL's collation compares without case, so the match is made here.
         $existing = $package === '' ? [] : array_keys(array_filter($this->db->fetchAllKeyValue('SELECT id, name FROM service_hosting_hp WHERE name = ? ORDER BY id', [$package]), static fn ($name): bool => $name === $package));
         $planId = $existing === [] ? null : (int) $existing[0];
+        $config = [];
         if (($choice['server'] ?? '') === 'custom') {
             return ['custom', []];
         }
@@ -369,11 +370,56 @@ final class Catalogue
 
                 return $id !== null && $this->db->fetchOne('SELECT manager FROM service_hosting_server WHERE id = ?', [$id]) === $manager;
             });
-            $servers = array_map(fn (int $id): int => (int) $this->map->get('server', $id), self::pickServers($imported, self::groupRows($this->source), $groupId, $module, $manager));
+            $picked = self::pickServers($imported, self::groupRows($this->source), $groupId, $module, $manager);
+            $servers = array_map(fn (int $id): int => (int) $this->map->get('server', $id), $picked);
             if (count($servers) > 1) {
-                $this->warn($groupId > 0
-                    ? sprintf('Product "%s": its WHMCS server group has %d servers; ClientFence places new accounts on the first one.', $title, count($servers))
-                    : sprintf('Product "%s" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its %d servers.', $title, count($servers)));
+                // A WHMCS group can contain servers for multiple managers.
+                $groupKey = $groupId . ':' . $manager;
+                $serverGroupId = $this->map->get('servergroup', $groupKey);
+                $group = $serverGroupId === null && $groupId > 0 && $this->source->hasTable('tblservergroups')
+                    ? ($this->source->rows('SELECT name, filltype FROM tblservergroups WHERE id = ?', [$groupId])[0] ?? null)
+                    : null;
+                if ($group !== null) {
+                    $members = [];
+                    $default = [];
+                    foreach ($servers as $index => $memberId) {
+                        $server = $this->db->fetchAssociative('SELECT name, max_accounts FROM service_hosting_server WHERE id = ?', [$memberId]);
+                        $sourceServer = $imported[$picked[$index]];
+                        $disabled = (int) ($sourceServer['disabled'] ?? 0);
+                        if ($disabled === 1) {
+                            $this->warn(sprintf('Product "%s": server %s is disabled in WHMCS, so it is not in the ClientFence server group.', $title, $server['name']));
+
+                            continue;
+                        }
+                        if ((int) $server['max_accounts'] <= 0) {
+                            $this->warn(sprintf('Product "%s": server %s of its WHMCS server group has no maximum number of accounts, so it is not in the ClientFence server group; set one and add it.', $title, $server['name']));
+
+                            continue;
+                        }
+                        $members[$memberId] = $memberId;
+                        if ($default === [] && (int) ($sourceServer['active'] ?? 0) === 1 && $disabled === 0) {
+                            $default = [$memberId => $memberId];
+                        }
+                    }
+                    if (count($members) > 1) {
+                        $this->db->insert('service_hosting_server_group', [
+                            'name' => self::cut($group['name'], 255),
+                            // WHMCS filltype: 1 adds to the least full server, 2 fills the active server first.
+                            'fill_type' => (int) $group['filltype'] === 2 ? 'fill' : 'least',
+                            'servers' => json_encode(array_values($default + $members)),
+                            'created_at' => $this->now, 'updated_at' => $this->now,
+                        ]);
+                        $serverGroupId = (int) $this->db->lastInsertId();
+                        $this->map->put('servergroup', $groupKey, $serverGroupId);
+                    }
+                }
+                if ($serverGroupId !== null) {
+                    $config['server_group_id'] = $serverGroupId;
+                } else {
+                    $this->warn($groupId > 0
+                        ? sprintf('Product "%s": its WHMCS server group has %d servers; ClientFence places new accounts on the first one.', $title, count($servers))
+                        : sprintf('Product "%s" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its %d servers.', $title, count($servers)));
+                }
             }
             $serverId = $servers[0] ?? null;
             if ($serverId === null) {
@@ -395,7 +441,7 @@ final class Catalogue
             $planId = (int) $this->db->lastInsertId();
             $this->map->put('hostingplan', $planKey, $planId);
         }
-        $config = ['server_id' => $serverId, 'hosting_plan_id' => $planId, 'reseller' => strtolower((string) ($row['type'] ?? '')) === 'reselleraccount'];
+        $config += ['server_id' => $serverId, 'hosting_plan_id' => $planId, 'reseller' => strtolower((string) ($row['type'] ?? '')) === 'reselleraccount'];
         $free = strtolower(trim((string) ($row['freedomain'] ?? '')));
         if ($free !== '') {
             $tlds = array_values(array_filter(array_map(static fn (string $t): string => '.' . ltrim(strtolower(trim($t)), '.'), explode(',', (string) ($row['freedomaintlds'] ?? ''))), static fn (string $t): bool => $t !== '.'));

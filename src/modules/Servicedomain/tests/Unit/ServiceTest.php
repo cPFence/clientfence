@@ -544,7 +544,7 @@ test('creates a transfer service with one year despite client-supplied registrat
         ->and($result->period)->toBe(1);
 });
 
-test('a domain ordered with hosting gets the hosting server nameservers', function (): void {
+test('a domain ordered with hosting uses the nameservers shared by its hosting servers', function (?bool $shared): void {
     $service = new Service();
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());
@@ -565,15 +565,25 @@ test('a domain ordered with hosting gets the hosting server nameservers', functi
         ->andReturn($data);
 
     $systemServiceMock = Mockery::mock(SystemService::class);
-    $systemServiceMock->shouldNotReceive('getNameservers');
     $dbalMock = Mockery::mock(Doctrine\DBAL\Connection::class);
-    // The hosting order has no service yet (manual setup): the server it was ordered for.
+    $nameservers = ['ns1' => 'ns1.server-a.test', 'ns2' => 'ns2.server-a.test', 'ns3' => null, 'ns4' => 'ns4.server-a.test'];
     $dbalMock->shouldReceive('fetchAssociative')->once()
         ->with(Mockery::pattern('/FROM client_order o/'), ['c9_1', 1, 7])
-        ->andReturn(['config' => '{"server_id":"4"}', 'service_hosting_server_id' => null]);
-    $dbalMock->shouldReceive('fetchAssociative')->once()
-        ->with(Mockery::pattern('/FROM service_hosting_server/'), [4])
-        ->andReturn(['ns1' => 'ns1.server-a.test', 'ns2' => 'ns2.server-a.test', 'ns3' => null, 'ns4' => null]);
+        ->andReturn(['config' => $shared === null ? '{"server_id":"4"}' : '{"server_id":"4","server_group_id":3}', 'service_hosting_server_id' => null]);
+    if ($shared === null) {
+        $dbalMock->shouldReceive('fetchAssociative')->once()
+            ->with(Mockery::pattern('/FROM service_hosting_server/'), [4])
+            ->andReturn($nameservers);
+    } else {
+        $dbalMock->expects('fetchOne')->with(Mockery::pattern('/FROM service_hosting_server_group/'), [3])->andReturn('[4,5]');
+        $dbalMock->expects('fetchAllAssociative')->with(Mockery::pattern('/FROM service_hosting_server /'), [[4, 5]], [Doctrine\DBAL\ArrayParameterType::INTEGER])
+            ->andReturn([$nameservers, ['ns1' => ' NS1.server-a.test ', 'ns2' => 'ns2.server-a.test', 'ns3' => '', 'ns4' => $shared ? 'NS4.server-a.test' : 'ns4.server-b.test']]);
+    }
+    if ($shared === false) {
+        $systemServiceMock->expects('getNameservers')->andReturn(['nameserver_1' => 'ns1.default.test', 'nameserver_2' => 'ns2.default.test', 'nameserver_3' => '', 'nameserver_4' => '']);
+    } else {
+        $systemServiceMock->shouldNotReceive('getNameservers');
+    }
 
     $serviceMock = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
     $serviceMock->shouldReceive('tldFindOneByTld')
@@ -631,8 +641,10 @@ test('a domain ordered with hosting gets the hosting server nameservers', functi
     $order->group_id = 'c9_1';
 
     $result = $serviceMock->action_create($order);
-    expect([$result->ns1, $result->ns2, $result->ns3])->toBe(['ns1.server-a.test', 'ns2.server-a.test', '']);
-});
+    expect([$result->ns1, $result->ns2, $result->ns3, $result->ns4])->toBe($shared === false
+        ? ['ns1.default.test', 'ns2.default.test', '', '']
+        : ['ns1.server-a.test', 'ns2.server-a.test', '', 'ns4.server-a.test']);
+})->with(['single server' => [null], 'group with different nameservers' => [false], 'group with matching nameservers' => [true]]);
 
 test('throws exception when creating action with missing nameservers', function (): void {
     $service = new Service();

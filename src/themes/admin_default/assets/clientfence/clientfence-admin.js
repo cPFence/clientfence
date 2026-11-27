@@ -1354,6 +1354,42 @@ if (bulkPrices) {
   };
 }
 
+// Move services (Order/ProductMove.php): the server select offers the servers of the chosen hosting product only.
+const moveForm = document.querySelector('[data-cf-move-form]');
+if (moveForm) {
+  const to = moveForm.querySelector('[name="to_product_id"]');
+  const server = moveForm.querySelector('[name="server_id"]');
+  const showServers = () => {
+    const chosen = server.selectedOptions[0];
+    let first = null;
+    let same = null;
+    for (const option of server.options) {
+      const off = option.dataset.cfMoveProduct !== to.value;
+      option.hidden = off;
+      option.disabled = off;
+      if (!off && !first) first = option;
+      if (!off && !same && option.value === chosen?.value) same = option;
+    }
+    // Another product of the same server group keeps the chosen server, so a pasted account list stays with it.
+    if (first && (!chosen || chosen.disabled)) (same || first).selected = true;
+    server.disabled = !first;
+  };
+  to.addEventListener('change', showServers);
+  // Back/forward restores the chosen product after this script ran.
+  window.addEventListener('pageshow', showServers);
+  showServers();
+}
+
+// Hosting service Server and Username form: another server empties the username, the saved server puts it back.
+const accountForm = document.querySelector('[data-cf-account-form]');
+const accountServer = accountForm?.querySelector('#service-server-id');
+if (accountServer) {
+  const username = accountForm.querySelector('#service-username');
+  accountServer.addEventListener('change', () => {
+    username.value = accountServer.value === accountForm.dataset.cfSavedServer ? username.dataset.cfSavedUsername : '';
+  });
+}
+
 // Move services (Order/ProductMove.php): each service's result goes into its row, the counts into the subtitle; the move button goes.
 const moveServices = document.querySelector('[data-cf-move-services]');
 if (moveServices) {

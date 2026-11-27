@@ -33066,3 +33066,209 @@ msgstr "Servicios movidos: %moved%. No se pudieron mover: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Aún hay pedidos de este tipo de producto. Elimínelos antes de desinstalar el módulo."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Añadir al servidor con menos cuentas"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Seleccione al menos un servidor para el grupo."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Eliminar el grupo de servidores"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Editar grupo de servidores"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Introduzca primero el nombre de usuario de esta cuenta de alojamiento (en la sección «Servidor y nombre de usuario» de la pestaña «Gestión del servicio»)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Regla de asignación"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Llenar primero el servidor del producto y después usar el que tenga menos cuentas"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Para servicios añadidos mediante un producto personalizado. Al moverlos a un producto de alojamiento, cada servicio se vincula a su cuenta existente en el servidor del producto, localizada por el dominio. Si el servidor no permite buscar cuentas, el servicio se mueve sin datos de acceso y el personal introduce el nombre de usuario en el servicio. No se crea nada en el servidor. El pedido conserva el precio, el periodo de facturación, la fecha de vencimiento, las facturas y el estado."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Tipo de asignación no válido para el grupo de servidores."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Se moverá sin datos de acceso: introduzca el nombre de usuario en el servicio"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Nuevo grupo de servidores"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Opcional. Los pedidos nuevos se asignan a un servidor de este grupo. El servidor indicado arriba es el primero según la regla de asignación y se usa para las importaciones y para mover servicios."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "En los productos con un grupo de servidores, cada pedido nuevo se asigna a un servidor del grupo. Se omiten los servidores inactivos y los que están llenos."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Los datos solo se guardan en ClientFence. No cambia nada en el servidor. Use esta opción para cuentas existentes, por ejemplo, después de importar o mover un servicio."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Grupo de servidores"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Grupos de servidores"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Servidor y nombre de usuario"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "No se ha indicado el ID del grupo de servidores"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "El producto :product usa el grupo de servidores."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "El nombre del grupo de servidores es obligatorio."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "No se ha encontrado el grupo de servidores"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Este plan de alojamiento pertenece a otro servidor."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Este servidor no permite buscar cuentas: introduzca el nombre de usuario en el servicio."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, nombre de usuario %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Lista de cuentas de este servidor"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Añadir al servidor menos ocupado (según la proporción de su capacidad utilizada)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Elija el servidor del producto o un servidor de su grupo."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Indique una posición para cada servidor del grupo, con 1 para el primero. Deje el campo vacío para excluir un servidor."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Indique una posición positiva para cada servidor."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Introduzca el nombre de usuario de la cuenta en el nuevo servidor."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Llenar los servidores por orden: usar el primero que tenga sitio"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Para un producto de hosting: su servidor o un servidor de su grupo de servidores."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Para servicios importados con un producto personalizado. En Enhance, cada servicio se localiza en el servidor por su dominio. En otros paneles, pegue la lista de cuentas del servidor. Cada servicio cuyo dominio figure en la lista se mueve con ese servidor y nombre de usuario. No se crea nada en el servidor. El pedido conserva su precio, periodo de facturación, fecha de vencimiento, facturas y estado."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Los nuevos pedidos de productos asignados a un grupo de servidores se colocan en uno de sus servidores. Se omiten los servidores inactivos y los que están llenos."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "No figura en la lista de cuentas de este servidor."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Una cuenta por línea: dominio y nombre de usuario separados por un espacio, un tabulador, una coma o dos puntos. cPanel: pegue /etc/trueuserdomains tal cual. Déjelo vacío para Enhance, que se consulta directamente."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Opcional. Los nuevos pedidos se colocan en un servidor de este grupo. El servidor seleccionado arriba se usa para importar y mover servicios."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Pegue la lista de cuentas de este servidor."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "El servidor :name no tiene un número máximo de cuentas. Fije uno para añadirlo a un grupo."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Servidor donde están las cuentas"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Fije un número máximo de cuentas para este servidor para añadirlo a un grupo."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Este dominio aparece dos veces en la lista de cuentas."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "El nombre de usuario :username ya se usa en el pedido n.º :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Solo cuando mueva esta cuenta a un servidor con otro panel de control."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Plan de alojamiento no encontrado"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Este nombre de usuario tiene más de un dominio en la lista de cuentas."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Número máximo de cuentas"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "El número máximo de cuentas debe ser un número entero igual o superior a 1. Deje el campo vacío si no quiere fijar un límite."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Es obligatorio para añadir el servidor a un grupo de servidores. Deje el campo vacío si no quiere fijar un límite."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "El servidor :name pertenece al grupo de servidores :group. Mantenga un número máximo de cuentas o retire primero el servidor del grupo."

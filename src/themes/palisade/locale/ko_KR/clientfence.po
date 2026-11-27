@@ -36237,3 +36237,209 @@ msgstr "이동한 서비스: %moved%. 이동하지 못한 서비스: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "이 상품 유형의 주문이 아직 남아 있습니다. 모듈을 제거하기 전에 해당 주문을 삭제하세요."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "계정이 가장 적은 서버에 추가"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "그룹에 넣을 서버를 하나 이상 선택하세요."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "서버 그룹 삭제"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "서버 그룹 편집"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "먼저 이 호스팅 계정의 사용자 이름을 입력하세요(‘서비스 관리’ 탭의 ‘서버 및 사용자 이름’ 섹션)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "배치 규칙"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "상품의 서버를 먼저 채운 뒤 계정이 가장 적은 서버에 추가"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "사용자 지정 상품으로 추가한 서비스에 사용합니다. 호스팅 상품으로 이동하면 각 서비스는 상품의 서버에 이미 있는 계정에 연결됩니다. 계정은 도메인으로 찾습니다. 서버에서 계정을 조회할 수 없으면 로그인 정보 없이 서비스를 이동하고, 담당자가 서비스에 사용자 이름을 입력합니다. 서버에는 아무것도 생성되지 않습니다. 주문의 가격, 청구 주기, 결제 기한, 청구서 및 상태는 그대로 유지됩니다."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "서버 그룹의 배치 유형이 올바르지 않습니다."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "로그인 정보 없이 이동: 서비스에 사용자 이름을 입력하세요"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "새 서버 그룹"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "선택 사항입니다. 새 주문은 이 그룹의 서버 중 하나에 배치됩니다. 위에서 지정한 서버는 배치 규칙의 첫 번째 서버이며, 가져오기 및 이동에도 사용됩니다."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "서버 그룹을 지정한 상품의 새 주문은 그룹 내 서버 중 하나에 배치됩니다. 비활성 서버와 용량이 찬 서버는 건너뜁니다."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "ClientFence에만 저장되며 서버에서는 아무것도 변경되지 않습니다. 가져오기나 이동 후 기존 계정에 사용하세요."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "서버 그룹"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "서버 그룹"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "서버 및 사용자 이름"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "서버 그룹 ID가 전달되지 않았습니다"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr ":product 상품에서 이 서버 그룹을 사용 중입니다."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "서버 그룹 이름을 입력해야 합니다."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "서버 그룹을 찾을 수 없습니다"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "이 호스팅 요금제는 다른 서버에 속해 있습니다."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "이 서버에서는 계정을 조회할 수 없습니다. 서비스에 사용자 이름을 입력하세요."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, 사용자 이름 %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "이 서버의 계정 목록"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "계정 한도 대비 사용률이 가장 낮은 서버에 추가"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "상품의 서버 또는 상품이 속한 서버 그룹의 서버를 선택하세요."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "그룹 내 각 서버의 위치를 입력하세요. 첫 번째 서버에는 1을 입력하세요. 서버를 제외하려면 비워 두세요."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "각 서버의 위치에 양수를 입력하세요."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "새 서버에 있는 계정의 사용자 이름을 입력하세요."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "서버를 순서대로 채우기: 여유가 있는 첫 번째 서버 사용"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "호스팅 상품의 경우 상품의 서버 또는 해당 서버 그룹의 서버를 선택하세요."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "사용자 지정 상품으로 가져온 서비스에 적용됩니다. Enhance에서는 도메인으로 서버에서 각 서비스를 찾습니다. 다른 제어판에서는 서버의 계정 목록을 붙여넣으세요. 도메인이 목록에 있는 서비스는 해당 서버와 사용자 이름을 사용해 이동합니다. 서버에는 아무것도 생성되지 않습니다. 주문의 가격, 청구 주기, 결제 기한, 청구서, 상태는 그대로 유지됩니다."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "서버 그룹이 지정된 상품의 신규 주문은 그룹 내 서버에 배정됩니다. 비활성 서버와 계정 한도에 도달한 서버는 건너뜁니다."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "이 서버의 계정 목록에 없습니다."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "한 줄에 한 계정씩 입력하세요. 도메인과 사용자 이름은 공백, 탭, 쉼표 또는 콜론으로 구분하세요. cPanel은 /etc/trueuserdomains 내용을 그대로 붙여넣으세요. Enhance는 직접 조회하므로 비워 두세요."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "선택 사항입니다. 신규 주문은 이 그룹의 서버에 배정됩니다. 위에서 선택한 서버는 가져오기와 이동에 사용됩니다."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "이 서버의 계정 목록을 붙여넣으세요."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "서버 :name에 최대 계정 수가 설정되어 있지 않습니다. 그룹에 추가하려면 최대 계정 수를 설정하세요."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "계정이 있는 서버"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "이 서버를 그룹에 추가하려면 최대 계정 수를 설정하세요."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "이 도메인이 계정 목록에 두 번 나옵니다."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "사용자 이름 :username은 이미 주문 #:id에서 사용 중입니다."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "이 계정을 다른 제어판을 사용하는 서버로 이동할 때만 사용합니다."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "호스팅 요금제를 찾을 수 없습니다"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "계정 목록에서 이 사용자 이름에 둘 이상의 도메인이 연결되어 있습니다."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "최대 계정 수"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "최대 계정 수는 1 이상의 정수여야 합니다. 제한을 두지 않으려면 비워 두세요."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "서버를 서버 그룹에 추가하려면 이 값을 설정해야 합니다. 제한을 두지 않으려면 비워 두세요."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "서버 :name은(는) 서버 그룹 :group에 속해 있습니다. 최대 계정 수 설정을 유지하거나 먼저 서버를 그룹에서 제거하세요."

@@ -31871,3 +31871,209 @@ msgstr "Ko'chirilgan xizmatlar: %moved%. Ko'chirib bo'lmadi: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Bu mahsulot turiga oid buyurtmalar hali ham bor. Modulni olib tashlashdan oldin ularni o'chiring."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Hisoblari eng kam bo‘lgan serverga qo‘shing"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Guruh uchun kamida bitta server tanlang."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Server guruhini o‘chirish"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Server guruhini tahrirlash"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Avval bu xosting hisobining foydalanuvchi nomini kiriting («Xizmatlarni boshqarish» varag‘idagi «Server va foydalanuvchi nomi» bo‘limida)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Taqsimlash qoidasi"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Avval mahsulot serverini to‘ldiring, keyin hisoblari eng kam bo‘lgan serverdan foydalaning"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Maxsus mahsulot orqali qo‘shilgan xizmatlar uchun. Hosting mahsulotiga ko‘chirilganda har bir xizmat mahsulot serveridagi mavjud hisobiga bog‘lanadi. Hisob domen bo‘yicha topiladi. Agar server hisoblarni qidirishni qo‘llab-quvvatlamasa, xizmat kirish ma’lumotlarisiz ko‘chiriladi va xodimlar foydalanuvchi nomini xizmatning o‘zida kiritadi. Serverda hech narsa yaratilmaydi. Buyurtmaning narxi, hisob-kitob davri, to‘lov muddati, hisob-fakturalari va holati saqlanadi."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Server guruhining taqsimlash turi noto‘g‘ri."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Kirish ma’lumotlarisiz ko‘chiriladi: foydalanuvchi nomini xizmatning o‘zida kiriting"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Yangi server guruhi"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Ixtiyoriy. Yangi buyurtmalar shu guruh serverlaridan biriga joylashtiriladi. Yuqorida ko‘rsatilgan server taqsimlash qoidasida birinchi bo‘lib, import va ko‘chirish uchun ham ishlatiladi."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Server guruhi tanlangan mahsulotning har bir yangi buyurtmasi guruh serverlaridan biriga joylashtiriladi. Faol bo‘lmagan va to‘lgan serverlar o‘tkazib yuboriladi."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Ma’lumotlar faqat ClientFence’da saqlanadi. Serverda hech narsa o‘zgarmaydi. Mavjud hisoblar uchun, masalan, import yoki ko‘chirishdan keyin foydalaning."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Server guruhi"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Server guruhlari"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Server va foydalanuvchi nomi"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "Server guruhi identifikatori uzatilmadi"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Server guruhidan :product mahsuloti foydalanmoqda."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Server guruhi nomi majburiy."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Server guruhi topilmadi"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Bu hosting tarifi boshqa serverga tegishli."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Bu server hisoblarni qidirishni qo‘llab-quvvatlamaydi. Foydalanuvchi nomini xizmatning o‘zida kiriting."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, foydalanuvchi nomi %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Bu serverdagi akkauntlar ro‘yxati"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Bandlik darajasi eng past serverga qo‘shish (akkauntlar limitining ishlatilgan ulushi bo‘yicha)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Mahsulot serverini yoki uning guruhidagi serverlardan birini tanlang."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Guruhdagi har bir serverning o‘rnini kiriting, birinchisiga 1 qo‘ying. Serverni guruhga kiritmaslik uchun maydonni bo‘sh qoldiring."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Har bir serverning o‘rniga musbat son kiriting."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Yangi serverdagi akkauntning foydalanuvchi nomini kiriting."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Serverlarni navbat bilan to‘ldirish: bo‘sh joyi bor birinchi serverdan foydalanish"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Xosting mahsuloti uchun: mahsulot serveri yoki uning server guruhidagi serverlardan biri."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Maxsus mahsulot ostida import qilingan xizmatlar uchun. Enhance panelida har bir xizmat serverda domeni bo‘yicha topiladi. Boshqa panellarda serverdagi akkauntlar ro‘yxatini joylang. Domeni ro‘yxatda bo‘lgan har bir xizmat shu server va tegishli foydalanuvchi nomi bilan ko‘chiriladi. Serverda hech narsa yaratilmaydi. Buyurtmaning narxi, hisob-kitob davri, to‘lov muddati, hisob-fakturalari va holati saqlanadi."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Server guruhiga biriktirilgan mahsulotlarning yangi buyurtmalari guruhdagi serverlardan biriga joylanadi. Faol bo‘lmagan va to‘lgan serverlar o‘tkazib yuboriladi."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Bu serverdagi akkauntlar ro‘yxatida yo‘q."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Har qatorga bitta akkaunt: domen va foydalanuvchi nomini bo‘sh joy, tabulyatsiya belgisi, vergul yoki ikki nuqta bilan ajrating. cPanel: /etc/trueuserdomains fayli mazmunini o‘zgartirmasdan joylang. Enhance uchun bo‘sh qoldiring, ma’lumot bevosita paneldan so‘raladi."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Ixtiyoriy. Yangi buyurtmalar shu guruhdagi serverlardan biriga joylanadi. Yuqorida tanlangan server import va ko‘chirish uchun ishlatiladi."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Bu serverdagi akkauntlar ro‘yxatini joylang."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr ":name serveri uchun akkauntlarning maksimal soni belgilanmagan. Serverni guruhga qo‘shish uchun limitni belgilang."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Akkauntlar joylashgan server"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Bu serverni guruhga qo‘shish uchun akkauntlarning maksimal sonini belgilang."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Bu domen akkauntlar ro‘yxatida ikki marta uchraydi."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr ":username foydalanuvchi nomi allaqachon #:id buyurtmasida ishlatilgan."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Faqat bu hisobni boshqa boshqaruv paneliga ega serverga ko'chirganda."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Hosting tarifi topilmadi"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Akkauntlar ro‘yxatida bu foydalanuvchi nomiga bir nechta domen mos keladi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Akkauntlarning maksimal soni"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Akkauntlarning maksimal soni 1 yoki undan katta butun son bo‘lishi kerak. Limit kerak bo‘lmasa, maydonni bo‘sh qoldiring."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Serverni server guruhiga qo‘shish uchun bu limitni belgilang. Limit kerak bo‘lmasa, maydonni bo‘sh qoldiring."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr ":name serveri :group server guruhida. Akkauntlar limitini saqlang yoki avval serverni guruhdan chiqaring."

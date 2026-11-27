@@ -146,6 +146,10 @@ msgstr ""
 msgid "%registrar% now charges %count% of your TLDs in another currency. The sync stopped following them: get the price list and apply them once to set their prices again."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr ""
+
 #: src/modules/Support/templates/admin/mod_support_canned_category.html.twig src/modules/Support/templates/admin/mod_support_canned_responses.html.twig src/modules/Support/templates/admin/mod_support_kb_article.html.twig …
 msgid "%time% ago"
 msgstr ""
@@ -1962,6 +1966,10 @@ msgstr ""
 msgid "Account details"
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr ""
+
 #: src/modules/Client/Users.php
 msgid "Account not found."
 msgstr ""
@@ -2432,6 +2440,10 @@ msgstr ""
 
 #: src/modules/Order/templates/client/mod_order_addons.html.twig src/themes/palisade/html/mod_order_product.html.twig src/themes/palisade/html/partials/order_configure.html.twig
 msgid "Add to cart"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
 msgstr ""
 
 #: src/modules/Support/templates/admin/mod_support_network_issue.html.twig
@@ -6026,6 +6038,10 @@ msgstr ""
 msgid "Choose at least one product."
 msgstr ""
 
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr ""
+
 #: src/modules/Invoice/MassPay.php
 msgid "Choose at least two unpaid invoices to pay together."
 msgstr ""
@@ -6188,6 +6204,10 @@ msgstr ""
 
 #: src/modules/Order/ProductMove.php
 msgid "Choose the product to move the services from."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
 msgstr ""
 
 #: src/modules/Invoice/Receipts.php src/themes/palisade/html/mod_invoice_invoice.html.twig
@@ -9134,6 +9154,10 @@ msgstr ""
 msgid "Delete the Server"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr ""
+
 #: src/modules/Client/templates/admin/mod_client_settings_id_documents.html.twig
 msgid "Delete the files after the decision"
 msgstr ""
@@ -10058,6 +10082,10 @@ msgstr ""
 msgid "Edit Server Details"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_chat_alerts_panel.html.twig
 msgid "Edit destination: :name"
 msgstr ""
@@ -10782,6 +10810,14 @@ msgstr ""
 msgid "Enter a port from 1 to 65535."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr ""
+
 #: src/modules/Product/CurrencyPrices.php
 msgid "Enter a price of 0 or more, or leave it blank to convert at the rate."
 msgstr ""
@@ -11152,6 +11188,14 @@ msgstr ""
 
 #: src/modules/Invoice/Quotes.php
 msgid "Enter the subject of the quote."
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
 msgstr ""
 
 #: src/modules/Clientfence/Backups.php
@@ -11994,12 +12038,20 @@ msgstr ""
 msgid "Filesystem"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr ""
+
 #: src/library/Payment/Adapter/PayPalAutoPay.php
 msgid "Fill in the client's email at PayPal:"
 msgstr ""
 
 #: src/themes/palisade/html/mod_order_product.html.twig
 msgid "Fill in your account details to continue"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_summary_cards.html.twig
@@ -12162,6 +12214,10 @@ msgstr ""
 msgid "For a delegated subdomain: key tag, algorithm, digest type and digest."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr ""
+
 #: src/modules/Invoice/templates/admin/mod_invoice_invoice.html.twig
 msgid "For a partial refund. A refund of the whole invoice always reverses it."
 msgstr ""
@@ -12199,7 +12255,7 @@ msgid "For renewal or any change to this domain, open a support ticket."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_move_services.html.twig
-msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
 msgstr ""
 
 #: src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -13434,6 +13490,10 @@ msgstr ""
 msgid "Hosting plan name was not passed"
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Hosting plan of :product"
 msgstr ""
@@ -14452,6 +14512,10 @@ msgstr ""
 
 #: src/modules/Api/Controller/Client.php
 msgid "Invalid request. Make sure request origin is :from"
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
 msgstr ""
 
 #: src/modules/Servicehosting/Service.php
@@ -16726,6 +16790,14 @@ msgstr ""
 msgid "Maximum Subdomains"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr ""
+
 #: src/modules/Serviceapikey/Service.php
 msgid "Maximum number of iterations reached while generating API key"
 msgstr ""
@@ -17354,6 +17426,10 @@ msgstr ""
 msgid "Need help? Email"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr ""
+
 #: src/modules/Clientfence/templates/admin/mod_clientfence_health_panel.html.twig src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "Needs attention"
 msgstr ""
@@ -17582,6 +17658,10 @@ msgstr ""
 msgid "New Server"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr ""
+
 #: src/modules/Staff/templates/admin/mod_staff_settings.html.twig
 msgid "New Staff Member"
 msgstr ""
@@ -17700,6 +17780,10 @@ msgstr ""
 
 #: src/themes/admin_default/html_custom/mod_index_dashboard.html.twig
 msgid "New orders"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
@@ -18618,6 +18702,10 @@ msgstr ""
 msgid "Not in DNS"
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr ""
+
 #: src/modules/Client/templates/admin/widgets/mod_client_users_pane.html.twig
 msgid "Not linked"
 msgstr ""
@@ -19074,6 +19162,10 @@ msgstr ""
 msgid "One account for your services, invoices and support tickets."
 msgstr ""
 
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr ""
+
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_account_email.html.twig
 msgid "One address per line. Mail to this account is also sent there."
 msgstr ""
@@ -19438,6 +19530,10 @@ msgstr ""
 msgid "Only when not zero"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr ""
+
 #: src/themes/admin_default/html/error.html.twig
 msgid "Oops... You just found an error page"
 msgstr ""
@@ -19688,6 +19784,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Optional. Empty: the top of the zone."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_maintenance_panel.html.twig
@@ -20612,6 +20712,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_backups_panel.html.twig
 msgid "Paste the Application (client) ID and the secret here and select Save."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
 msgstr ""
 
 #: src/modules/System/templates/admin/mod_system_update.html.twig
@@ -21786,7 +21890,7 @@ msgstr ""
 msgid "Portuguese tax number (NIF)"
 msgstr ""
 
-#: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig
+#: src/modules/Cookieconsent/templates/admin/mod_cookieconsent_index.html.twig src/modules/Product/templates/admin/mod_product_option.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Position"
 msgstr ""
 
@@ -24750,6 +24854,10 @@ msgstr ""
 msgid "Saved cards, two-factor sign-in, coupons, package add-ons, ticket attachments and refunds: the warnings name what was found."
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr ""
+
 #: src/modules/Invoice/templates/client/mod_invoice_payment_methods.html.twig
 msgid "Saved payment methods are not available."
 msgstr ""
@@ -25034,7 +25142,7 @@ msgstr ""
 msgid "Select Send a test file, then Save & turn on."
 msgstr ""
 
-#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
 msgid "Select Server"
 msgstr ""
 
@@ -25418,8 +25526,16 @@ msgstr ""
 msgid "Served to visitors: :list."
 msgstr ""
 
-#: src/modules/Clientfence/Health.php src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_settings_plans.html.twig …
+#: src/modules/Clientfence/Health.php src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig …
 msgid "Server"
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
@@ -25428,6 +25544,14 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server Details"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig src/themes/palisade/html/mod_servicehosting_manage.html.twig
@@ -25494,6 +25618,10 @@ msgstr ""
 msgid "Server access and secrets"
 msgstr ""
 
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr ""
+
 #: src/modules/Servicehosting/templates/email/mod_servicehosting_activated.html.twig
 msgid "Server and nameservers"
 msgstr ""
@@ -25504,6 +25632,22 @@ msgstr ""
 
 #: src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
 msgid "Server connected"
+msgstr ""
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
 msgstr ""
 
 #: src/modules/Servicehosting/Service.php
@@ -25530,15 +25674,19 @@ msgstr ""
 msgid "Server name was not passed"
 msgstr ""
 
-#: src/modules/Servicehosting/Panel/Panels.php
+#: src/modules/Order/ProductMove.php src/modules/Servicehosting/Panel/Panels.php src/modules/Servicehosting/ServerGroups.php
 msgid "Server not found"
+msgstr ""
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Namecheap.php
 msgid "Server's Public IP Address"
 msgstr ""
 
-#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+#: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
 msgid "Servers"
 msgstr ""
 
@@ -25688,6 +25836,10 @@ msgstr ""
 
 #: src/modules/Product/templates/admin/mod_product_currency_prices.html.twig
 msgid "Set a fixed price in a currency, or leave it blank to convert the default currency price at the rate (shown in grey). A fixed price stays the same when the rate changes. New orders get it; existing services keep their own price."
+msgstr ""
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
 msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_manage.html.twig
@@ -29543,10 +29695,6 @@ msgstr ""
 msgid "The server has no plans."
 msgstr ""
 
-#: src/modules/Order/ProductMove.php
-msgid "The server manager of this server cannot look accounts up: link these services by hand."
-msgstr ""
-
 #: src/modules/Order/ClientMove.php
 msgid "The service already belongs to this client."
 msgstr ""
@@ -30171,6 +30319,10 @@ msgstr ""
 msgid "This domain is already in the cart."
 msgstr ""
 
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr ""
+
 #: src/modules/Client/Api/Admin.php src/modules/Profile/Service.php
 msgid "This email address is already registered."
 msgstr ""
@@ -30251,7 +30403,11 @@ msgstr ""
 msgid "This hosting order cannot be checked."
 msgstr ""
 
-#: src/modules/Servicehosting/Service.php
+#: src/modules/Order/ProductMove.php src/modules/Order/Upgrades.php src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr ""
+
+#: src/modules/Servicehosting/ServerGroups.php src/modules/Servicehosting/Service.php
 msgid "This hosting plan cannot be ordered right now. Please contact us."
 msgstr ""
 
@@ -30809,6 +30965,10 @@ msgstr ""
 
 #: src/modules/Client/Users.php
 msgid "This user is switched off: switch the user on first."
+msgstr ""
+
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
 msgstr ""
 
 #: src/themes/palisade/html/partials/ip_seats.html.twig
@@ -32837,6 +32997,10 @@ msgstr ""
 
 #: src/library/Registrar/Adapter/Centralnicreseller.php src/library/Registrar/Adapter/Inwx.php src/library/Registrar/Adapter/Openprovider.php …
 msgid "Username"
+msgstr ""
+
+#: src/modules/Servicehosting/Service.php
+msgid "Username :username is already used by order #:id."
 msgstr ""
 
 #: src/modules/Servicehosting/templates/client/mod_servicehosting_manage.html.twig

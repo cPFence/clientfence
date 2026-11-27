@@ -1,7 +1,8 @@
 {% extends request.ajax ? 'layout_blank.html.twig' : 'layout_default.html.twig' %}
-{# ClientFence: Orders > Move services (Order/ProductMove.php). The form is sent by GET with `preview` (the controller
-   lists a page of the services, or `error`); moving posts the movable order ids, and clientfence-admin.js writes each
-   service's result into its row. `filters` is the query. #}
+{# ClientFence: Orders > Move services (Order/ProductMove.php). The form is posted with `preview` (the controller
+   lists a page of the services, or `error`; a server's account list is too long for a URL); moving posts the movable
+   order ids, and clientfence-admin.js writes each service's result into its row and lists the servers of the chosen
+   product. `filters` is the posted form. #}
 
 {% set active_menu = 'order' %}
 {% set options = admin.order_move_services_options %}
@@ -19,12 +20,12 @@
 {% block meta_title %}{{ 'Move services'|trans }}{% endblock %}
 
 {% block content %}
-<form method="get" action="{{ 'order/move-services'|url }}" class="card mb-3">
+<form method="post" action="{{ 'order/move-services'|url }}" class="card mb-3" id="move-form" data-cf-move-form>
     <input type="hidden" name="preview" value="1">
     <div class="card-header">
         <div>
             <h3 class="card-title">{{ 'Move services to another product'|trans }}</h3>
-            <p class="card-subtitle">{{ "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."|trans }}</p>
+            <p class="card-subtitle">{{ 'For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status.'|trans }}</p>
         </div>
     </div>
     <div class="card-body">
@@ -59,6 +60,25 @@
                     {% endfor %}
                 </select>
                 <div class="form-hint">{{ 'Hosting products are listed once their server and hosting plan are set. To link the services of a hosting product to their accounts, choose the same product.'|trans }}</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="move-server">{{ 'Server the accounts are on'|trans }}</label>
+                {% set chosen_target = options.targets|filter(p => p.id ~ '' == filters.to_product_id|default('') and p.servers is not empty)|first %}
+                {# Rendered enabled so Back restores the choice; clientfence-admin.js keeps only the chosen product's servers. #}
+                <select class="form-select" id="move-server" name="server_id" aria-describedby="move-server-hint">
+                    {% for product in options.targets|filter(p => p.servers is not empty) %}
+                        {% for server in product.servers %}
+                            {% set shown = chosen_target and chosen_target.id == product.id %}
+                            <option value="{{ server.id }}" data-cf-move-product="{{ product.id }}"{% if shown and server.id ~ '' == filters.server_id|default('') %} selected{% endif %}>{{ server.name }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+                <div class="form-hint" id="move-server-hint">{{ "For a hosting product: its server or a server of its server group."|trans }}</div>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label" for="move-accounts">{{ 'Account list of this server'|trans }}</label>
+                <textarea class="form-control" id="move-accounts" name="accounts" rows="6" dir="ltr" spellcheck="false" autocomplete="off" aria-describedby="move-accounts-hint">{{ filters.accounts|default('') }}</textarea>
+                <div class="form-hint" id="move-accounts-hint">{{ 'One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly.'|trans }}</div>
             </div>
             <div class="col-md-4">
                 <div class="form-label">{{ 'Order status'|trans }}</div>
@@ -110,6 +130,7 @@
                         <td class="small" data-cf-move-result="{{ row.id }}">
                             {% if row.reason is not null %}{{ row.reason }}
                             {% elseif row.link %}{{ 'Organization %org%, subscription %id%'|trans({ '%org%': row.link.org, '%id%': row.link.subscription }) }}
+                            {% elseif row.account %}{{ '%server%, username %username%'|trans({ '%server%': row.account.server, '%username%': row.account.username }) }}
                             {% else %}{{ 'Moves without a server account'|trans }}{% endif %}
                         </td>
                     </tr>
@@ -121,12 +142,15 @@
         </div>
         <div class="card-footer d-flex flex-wrap gap-3 align-items-center justify-content-between">
             {% if preview.next %}
-                <a class="btn" href="{{ 'order/move-services'|url(filters|merge({ 'after': preview.next })) }}">{{ 'Next page'|trans }}</a>
+                <button class="btn" type="submit" form="move-form" name="after" value="{{ preview.next }}">{{ 'Next page'|trans }}</button>
             {% else %}<span></span>{% endif %}
             {% if can_manage and movable is not empty %}
                 <form method="post" action="{{ 'order/move_services'|api_url }}" {{ fb_api_form({ callback: 'clientfenceServicesMoved' }) }}>
                     <input type="hidden" name="from_product_id" value="{{ filters.from_product_id }}">
                     <input type="hidden" name="to_product_id" value="{{ filters.to_product_id }}">
+                    {% if filters.server_id is defined %}<input type="hidden" name="server_id" value="{{ filters.server_id }}">{% endif %}
+                    {# A textarea keeps the line breaks of the list. #}
+                    <textarea name="accounts" hidden>{{ filters.accounts|default('') }}</textarea>
                     {% for row in movable %}<input type="hidden" name="order_ids[]" value="{{ row.id }}">{% endfor %}
                     <button class="btn btn-primary" type="submit">{% if filters.from_product_id == filters.to_product_id %}{{ 'Link %count% services'|trans({ '%count%': movable|length }) }}{% else %}{{ 'Move %count% services'|trans({ '%count%': movable|length }) }}{% endif %}</button>
                 </form>

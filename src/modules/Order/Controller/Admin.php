@@ -81,6 +81,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
         // ClientFence: bulk price update, with its preview (BulkPrices.php).
         $app->get('/order/bulk-prices', 'get_bulk_prices', [], static::class);
         $app->get('/order/move-services', 'get_move_services', [], static::class);
+        // ClientFence: a server's account list is too long for a URL, so the preview form posts (it changes nothing).
+        $app->post('/order/move-services', 'get_move_services', [], static::class);
         // ClientFence core patch: Add New Order is one page for a client's products and domains (WHMCS).
         $app->get('/order/new', 'get_new', [], static::class);
     }
@@ -112,7 +114,8 @@ class Admin implements \ClientFence\InjectionAwareInterface
     public function get_move_services(\ClientFence\App $app): string
     {
         $this->di['is_admin_logged'];
-        $query = $this->di['request']->query->all();
+        $request = $this->di['request'];
+        $query = $request->isMethod('POST') ? $request->request->all() : $request->query->all();
         $set = ['filters' => $query, 'preview' => null, 'error' => null];
         if (!empty($query['preview'])) {
             try {

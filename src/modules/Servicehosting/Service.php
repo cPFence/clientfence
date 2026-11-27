@@ -134,15 +134,20 @@ class Service implements InjectionAwareInterface
     private function assertServerTakesAccounts(\Model_ServiceHostingServer $server): void
     {
         if ((string) $server->active === '0'
-            || ((int) $server->max_accounts > 0 && (int) $this->di['dbal']->fetchOne("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [$server->id]) >= (int) $server->max_accounts)
+            || ((int) $server->max_accounts > 0 && self::countServerAccounts($this->di, (int) $server->id) >= (int) $server->max_accounts)
         ) {
             throw new InformationException('This hosting plan cannot be ordered right now. Please contact us.');
         }
     }
 
+    public static function countServerAccounts(\Pimple\Container $di, int $serverId): int
+    {
+        return (int) $di['dbal']->fetchOne("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [$serverId]);
+    }
+
     /**
      * Defense-in-depth check for client-facing ordering paths: the merged
-     * order config must not carry admin-controlled values (server_id,
+     * order config must not carry admin-controlled values (server_id, server_group_id,
      * hosting_plan_id, reseller) that differ from the product configuration.
      * This catches regressions in the client-settable-keys filter or future
      * code paths that merge untrusted input into order config.
@@ -151,7 +156,7 @@ class Service implements InjectionAwareInterface
     {
         $productConfig = json_decode((string) $product->getConfig(), true) ?? [];
 
-        foreach (['server_id', 'hosting_plan_id'] as $key) {
+        foreach (['server_id', 'server_group_id', 'hosting_plan_id'] as $key) {
             if ((int) ($data[$key] ?? 0) !== (int) ($productConfig[$key] ?? 0)) {
                 throw new InformationException('The requested configuration does not match the selected product.', null, 705);
             }
@@ -197,20 +202,33 @@ class Service implements InjectionAwareInterface
         $c = $orderService->getConfig($order);
         $this->validateOrderData($c);
 
-        $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $c['server_id'], 'Server from order configuration was not found');
-
         // ClientFence core patch: an account that is already set up (import) is not a new account on the server; an
-        // uncancel ($newAccount) creates one whatever the order says.
-        if ($newAccount || empty($c['import'])) {
-            $this->assertServerTakesAccounts($server);
+        // explicit request to create one still needs an available slot.
+        $createsAccount = $newAccount || empty($c['import']);
+        // An order can outlive its server group.
+        $group = $createsAccount && !empty($c['server_group_id'])
+            ? $this->di['dbal']->fetchAssociative('SELECT fill_type, servers FROM service_hosting_server_group WHERE id = ?', [(int) $c['server_group_id']])
+            : false;
+        if ($group !== false) {
+            $group['servers'] = json_decode($group['servers'], true);
+            $planId = (int) $c['hosting_plan_id'];
+            $server = ServerGroups::pick($this->di, $group, $planId);
+        } else {
+            $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $c['server_id'], 'Server from order configuration was not found');
+            if ($createsAccount) {
+                $this->assertServerTakesAccounts($server);
+            }
+            $plan = $this->di['db']->getExistingModelById('ServiceHostingHp', $c['hosting_plan_id'], 'Hosting plan from order configuration was not found');
+            if (!self::planFitsServer($plan->config, (int) $server->id)) {
+                throw new InformationException('This hosting plan belongs to another server.');
+            }
+            $planId = $plan->id;
         }
-
-        $hp = $this->di['db']->getExistingModelById('ServiceHostingHp', $c['hosting_plan_id'], 'Hosting plan from order configuration was not found');
 
         $model = $this->di['db']->dispense('ServiceHosting');
         $model->client_id = $order->client_id;
         $model->service_hosting_server_id = $server->id;
-        $model->service_hosting_hp_id = $hp->id;
+        $model->service_hosting_hp_id = $planId;
         $model->sld = $c['sld'];
         $model->tld = $c['tld'];
         $model->ip = $server->ip;
@@ -262,9 +280,12 @@ class Service implements InjectionAwareInterface
         // Generate a username for the service
         if ($alreadyProvisioned) {
             $username = $model->username;
-        } elseif (isset($config['username']) && !empty($config['username'])) {
+        } elseif (isset($config['username']) && (string) $config['username'] !== '') {
             $username = $config['username'];
         } else {
+            if (!empty($config['import']) && !method_exists($serverManager, 'linkAccount')) {
+                throw new InformationException('Enter the username of this hosting account first (Server and Username on its hosting tab).');
+            }
             $username = $serverManager->generateUsername($model->sld . $model->tld);
         }
 
@@ -424,9 +445,12 @@ class Service implements InjectionAwareInterface
      */
     public function action_uncancel(\Model_ClientOrder $order): bool
     {
-        $this->action_create($order, true);
         $orderService = $this->di['mod_service']('order');
+        $c = $orderService->getConfig($order);
+        $this->validateOrderData($c);
         $model = $orderService->getOrderService($order);
+        $server = $this->di['db']->getExistingModelById('ServiceHostingServer', $model->service_hosting_server_id, 'Server not found');
+        $this->assertServerTakesAccounts($server);
 
         // Retrieve the server manager for the order
         $serverManager = $this->_getServerManagerForOrder($model);
@@ -1048,10 +1072,53 @@ class Service implements InjectionAwareInterface
         return $ascii === false ? $name : strtolower($ascii);
     }
 
+    public static function assertUsernameAvailable(\Doctrine\DBAL\Connection $db, int $serverId, string $username, int $serviceId): void
+    {
+        $used = $db->fetchOne(
+            "SELECT co.id FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id
+             WHERE sh.service_hosting_server_id = ? AND sh.username = ? AND co.status <> 'canceled' AND sh.id <> ?",
+            [$serverId, $username, $serviceId],
+        );
+        if ($used !== false) {
+            throw new InformationException('Username :username is already used by order #:id.', [':username' => $username, ':id' => $used]);
+        }
+    }
+
     public function update(\Model_ServiceHosting $model, array $data): bool
     {
-        if (isset($data['username']) && !empty($data['username'])) {
-            $model->username = $data['username'];
+        $db = $this->di['db'];
+        $username = (string) ($data['username'] ?? '');
+        $serverId = (int) ($data['server_id'] ?? $model->service_hosting_server_id);
+        $server = null;
+        if ($serverId !== (int) $model->service_hosting_server_id) {
+            $server = $db->getExistingModelById('ServiceHostingServer', $serverId, 'Server not found');
+            $plan = $db->load('ServiceHostingHp', (int) $model->service_hosting_hp_id);
+            if (!self::planFitsServer($plan?->config, $serverId)) {
+                throw new InformationException('This hosting plan belongs to another server.');
+            }
+            if ($server->manager !== 'Enhance' && trim($username) === '') {
+                throw new InformationException('Enter the username of the account on the new server.');
+            }
+            if ($username === '') {
+                $username = (string) $model->username;
+            }
+        }
+        if ($username !== '') {
+            // Enhance subscriptions can share the customer's login.
+            if (($server ?? $db->load('ServiceHostingServer', $serverId))?->manager !== 'Enhance') {
+                self::assertUsernameAvailable($this->di['dbal'], $serverId, $username, (int) $model->id);
+            }
+            $model->username = $username;
+        }
+
+        if ($server !== null) {
+            $previous = $db->load('ServiceHostingServer', (int) $model->service_hosting_server_id);
+            if ($previous !== null && $model->ip === $previous->ip) {
+                $model->ip = $server->ip;
+            }
+            $model->service_hosting_server_id = $serverId;
+            $model->panel_org_id = null;
+            $model->panel_subscription_id = null;
         }
 
         if (isset($data['ip']) && !empty($data['ip'])) {
@@ -1060,7 +1127,7 @@ class Service implements InjectionAwareInterface
 
         $model->updated_at = date('Y-m-d H:i:s');
 
-        $this->di['db']->store($model);
+        $db->store($model);
 
         $this->di['logger']->info('Updated hosting account %s without sending actions to server', $model->id);
 
@@ -1236,6 +1303,21 @@ class Service implements InjectionAwareInterface
         return [$sql, $params];
     }
 
+    private static function normalizeMaxAccounts(mixed $value): ?int
+    {
+        $value = is_string($value) ? trim($value) : $value;
+        if ($value === '') {
+            return null;
+        }
+
+        $limit = is_int($value) || is_string($value) ? filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) : false;
+        if ($limit === false) {
+            throw new InformationException('Maximum number of accounts must be a whole number of 1 or more, or empty for no limit.');
+        }
+
+        return $limit;
+    }
+
     public function createServer($name, $ip, $manager, $data)
     {
         if (!in_array($manager, $this->_getServerManagers(), true)) {
@@ -1254,7 +1336,7 @@ class Service implements InjectionAwareInterface
 
         $model->active = $data['active'] ?? 1;
         $model->status_url = $data['status_url'] ?? null;
-        $model->max_accounts = $data['max_accounts'] ?? null;
+        $model->max_accounts = array_key_exists('max_accounts', $data) ? self::normalizeMaxAccounts($data['max_accounts']) : null;
 
         $model->ns1 = $data['ns1'] ?? null;
         $model->ns2 = $data['ns2'] ?? null;
@@ -1387,6 +1469,19 @@ class Service implements InjectionAwareInterface
 
     public function updateServer(\Model_ServiceHostingServer $model, array $data): bool
     {
+        if (array_key_exists('max_accounts', $data)) {
+            $maxAccounts = self::normalizeMaxAccounts($data['max_accounts']);
+            if ($maxAccounts === null) {
+                // Group selection skips servers without a limit.
+                foreach (ServerGroups::list($this->di) as $group) {
+                    if (in_array((int) $model->id, $group['servers'], true)) {
+                        throw new InformationException('Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first.', [':name' => $model->name, ':group' => $group['name']]);
+                    }
+                }
+            }
+            $model->max_accounts = $maxAccounts;
+        }
+
         $model->name = $data['name'] ?? $model->name;
         $model->ip = $data['ip'] ?? $model->ip;
         $model->hostname = $data['hostname'] ?? $model->hostname;
@@ -1398,7 +1493,6 @@ class Service implements InjectionAwareInterface
 
         $model->active = $data['active'] ?? $model->active;
         $model->status_url = $data['status_url'] ?? $model->status_url;
-        $model->max_accounts = $data['max_accounts'] ?? $model->max_accounts;
         $model->ns1 = $data['ns1'] ?? $model->ns1;
         $model->ns2 = $data['ns2'] ?? $model->ns2;
         $model->ns3 = $data['ns3'] ?? $model->ns3;
@@ -1510,14 +1604,21 @@ class Service implements InjectionAwareInterface
         $result = [];
         foreach ($rows as $record) {
             // ClientFence core patch: with a server, plans made from another server are left out (Panel/Plans.php keeps it).
-            $madeOn = json_decode((string) ($record['config'] ?? ''), true)['server_id'] ?? null;
-            if ($serverId !== null && $madeOn !== null && (string) $madeOn !== (string) $serverId) {
+            if ($serverId !== null && !self::planFitsServer($record['config'] ?? null, $serverId)) {
                 continue;
             }
             $result[$record['id']] = $record['name'];
         }
 
         return $result;
+    }
+
+    // ClientFence core patch: a plan made from a panel server (Panel/Plans.php keeps its id) fits only that server.
+    public static function planFitsServer(?string $config, int $serverId): bool
+    {
+        $madeOn = json_decode((string) $config, true)['server_id'] ?? null;
+
+        return $madeOn === null || (string) $madeOn === (string) $serverId;
     }
 
     /**

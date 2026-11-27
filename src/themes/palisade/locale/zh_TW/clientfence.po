@@ -34276,3 +34276,209 @@ msgstr "已轉移的服務：%moved%。轉移失敗：%failed%。"
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "此產品類型仍有訂單。請先刪除這些訂單，再解除安裝模組。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "新增至帳號最少的伺服器"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "請為此群組選擇至少一台伺服器。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "刪除伺服器群組"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "編輯伺服器群組"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "請先在「服務管理」分頁的「伺服器與使用者名稱」區段輸入此主機帳號的使用者名稱。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "分配規則"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "優先填滿產品的伺服器，再使用帳號最少的伺服器"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "適用於透過自訂產品新增的服務。轉移至主機代管產品時，每項服務都會連結至產品伺服器上的既有帳號，帳號會依網域查找。如果伺服器不支援查找帳號，服務將不帶登入資訊轉移，由工作人員在服務中輸入使用者名稱。伺服器上不會建立任何項目。訂單的價格、計費週期、到期日、帳單及狀態維持不變。"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "伺服器群組的分配類型無效。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "不帶登入資訊轉移：請在服務中輸入使用者名稱"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "新增伺服器群組"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "選填。新訂單會分配給此群組中的一台伺服器。上方指定的伺服器在分配規則中列為第一順位，也用於匯入及轉移。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "若產品已設定伺服器群組，每筆新訂單會分配給群組中的一台伺服器。系統會略過未啟用和已滿的伺服器。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "資料只會儲存在 ClientFence，伺服器不會有任何變更。適用於既有帳號，例如匯入或轉移後。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "伺服器群組"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "伺服器群組"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "伺服器與使用者名稱"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "未傳入伺服器群組 ID"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "產品 :product 正在使用此伺服器群組。"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "必須輸入伺服器群組名稱。"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "找不到伺服器群組"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "此主機方案屬於另一台伺服器。"
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "此伺服器不支援查找帳號，請在服務中輸入使用者名稱。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%，使用者名稱 %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "此伺服器的帳號清單"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "加入使用率最低的伺服器（依現有帳號數占上限的比例計算）"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "請選擇產品的伺服器或其伺服器群組中的一台伺服器。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "請為群組中的每台伺服器輸入位置，第一台填 1。留空可排除該伺服器。"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "請為每台伺服器輸入大於 0 的位置。"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "請輸入帳號在新伺服器上的使用者名稱。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "依序填滿伺服器：使用第一台仍有空位的伺服器"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "若為主機產品，請選擇產品的伺服器或其伺服器群組中的一台伺服器。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "適用於以自訂產品匯入的服務。在 Enhance 上，系統會依網域在伺服器上尋找各項服務。使用其他控制台時，請貼上伺服器的帳號清單。網域列於清單中的服務會使用該伺服器及對應的使用者名稱轉移。系統不會在伺服器上建立任何項目。訂單會保留原有的價格、計費週期、到期日、發票和狀態。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "設有伺服器群組的產品，其新訂單會分配至群組中的一台伺服器。系統會略過停用或已滿的伺服器。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "不在此伺服器的帳號清單中。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "每行一個帳號，網域與使用者名稱以空格、定位字元、逗號或冒號分隔。cPanel：請原樣貼上 /etc/trueuserdomains 的內容。使用 Enhance 時請留空，系統會直接查詢。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "選填。新訂單會分配至此群組中的一台伺服器。上方選取的伺服器用於匯入和轉移。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "請貼上此伺服器的帳號清單。"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "伺服器 :name 尚未設定帳號數量上限。請先設定上限，再將它加入群組。"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "帳號所在的伺服器"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "請先設定此伺服器的帳號數量上限，再將它加入群組。"
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "此網域在帳號清單中出現了兩次。"
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "訂單 #:id 已使用使用者名稱 :username。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "僅在將此帳號轉移到使用其他控制面板的伺服器時使用。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "找不到主機方案"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "此使用者名稱在帳號清單中對應多個網域。"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "帳號數量上限"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "帳號數量上限必須是大於或等於 1 的整數。若不限制帳號數量，請留空。"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "若要將伺服器加入伺服器群組，必須設定此上限。若不限制帳號數量，請留空。"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "伺服器 :name 屬於伺服器群組 :group。請保留帳號數量上限，或先將伺服器移出群組。"

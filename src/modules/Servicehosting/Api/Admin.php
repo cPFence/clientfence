@@ -13,6 +13,7 @@ namespace ClientFence\Mod\Servicehosting\Api;
 
 use ClientFence\Mod\Servicehosting\Panel\Panels;
 use ClientFence\Mod\Servicehosting\Panel\Plans;
+use ClientFence\Mod\Servicehosting\ServerGroups;
 use ClientFence\PaginationOptions;
 use ClientFence\Tools;
 use ClientFence\Validation\Api\RequiredParams;
@@ -126,6 +127,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      *
      * @optional string $username - Hosting account username
      * @optional string $ip - Hosting account ip
+     * @optional int $server_id - Hosting account server
      */
     public function update($data): bool
     {
@@ -159,6 +161,53 @@ class Admin extends \ClientFence\Api\AbstractApi
         $this->checkPermissions('servicehosting', 'view_servers');
 
         return $this->getService()->getServerPairs();
+    }
+
+    /**
+     * Get server groups with their server IDs.
+     */
+    public function server_group_get_list($data): array
+    {
+        $this->checkPermissions('servicehosting', 'view_servers');
+
+        return ServerGroups::list($this->getDi());
+    }
+
+    /**
+     * Get server group ID and name pairs.
+     */
+    public function server_group_get_pairs($data): array
+    {
+        $this->checkPermissions('servicehosting', 'view_servers');
+
+        return array_column(ServerGroups::list($this->getDi()), 'name', 'id');
+    }
+
+    /**
+     * Save a server group and return its ID.
+     *
+     * @optional int $id - Existing group ID
+     * @optional string $fill_type - least or fill
+     * @optional string $name - Group name (required)
+     * @optional array $servers - server ID => position (1 first); an empty position leaves the server out (required)
+     */
+    public function server_group_save($data): int
+    {
+        $this->checkPermissions('servicehosting', 'manage_servers');
+
+        return ServerGroups::save($this->getDi(), $data);
+    }
+
+    /**
+     * Delete a server group.
+     */
+    #[RequiredParams(['id' => 'Server group ID was not passed'])]
+    public function server_group_delete($data): bool
+    {
+        $this->checkPermissions('servicehosting', 'manage_servers');
+        ServerGroups::delete($this->getDi(), (int) $data['id']);
+
+        return true;
     }
 
     /**

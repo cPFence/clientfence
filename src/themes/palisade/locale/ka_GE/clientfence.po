@@ -36245,3 +36245,209 @@ msgstr "გადატანილი სერვისები: %moved%. გ
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "ამ ტიპის პროდუქტზე შეკვეთები ჯერ კიდევ არსებობს. წაშალეთ ისინი მოდულის დეინსტალაციამდე."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "დამატება ყველაზე ნაკლები ანგარიშის მქონე სერვერზე"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "ჯგუფისთვის აირჩიეთ სულ მცირე ერთი სერვერი."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "სერვერების ჯგუფის წაშლა"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "სერვერების ჯგუფის რედაქტირება"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "ჯერ შეიყვანეთ ამ ჰოსტინგის ანგარიშის მომხმარებლის სახელი (ჩანართში „სერვისის მართვა“, განყოფილებაში „სერვერი და მომხმარებლის სახელი“)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "განაწილების წესი"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "ჯერ შეავსეთ პროდუქტის სერვერი, შემდეგ გამოიყენეთ ყველაზე ნაკლები ანგარიშის მქონე სერვერი"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "მორგებული პროდუქტის მეშვეობით დამატებული სერვისებისთვის. ჰოსტინგის პროდუქტზე გადატანისას თითოეული სერვისი უკავშირდება პროდუქტის სერვერზე უკვე არსებულ ანგარიშს, რომელსაც სისტემა დომენის მიხედვით პოულობს. თუ სერვერს ანგარიშების ძიება არ შეუძლია, სერვისი შესვლის მონაცემების გარეშე გადადის და თანამშრომლები მომხმარებლის სახელს სერვისში უთითებენ. სერვერზე არაფერი იქმნება. შეკვეთის ფასი, ანგარიშსწორების პერიოდი, გადახდის ვადა, ინვოისები და სტატუსი უცვლელი რჩება."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "სერვერების ჯგუფის განაწილების ტიპი არასწორია."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "გადატანა შესვლის მონაცემების გარეშე: შეიყვანეთ მომხმარებლის სახელი სერვისში"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "სერვერების ახალი ჯგუფი"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "არასავალდებულოა. ახალი შეკვეთები ამ ჯგუფის ერთ-ერთ სერვერზე ნაწილდება. ზემოთ მითითებული სერვერი განაწილების წესში პირველია და გამოიყენება იმპორტისა და გადატანისთვის."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "სერვერების ჯგუფთან დაკავშირებული პროდუქტის ყოველი ახალი შეკვეთა ჯგუფის ერთ-ერთ სერვერზე ნაწილდება. არააქტიური და შევსებული სერვერები გამოტოვებულია."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "მონაცემები მხოლოდ ClientFence-ში ინახება. სერვერზე არაფერი იცვლება. გამოიყენეთ არსებული ანგარიშებისთვის, მაგალითად, იმპორტის ან გადატანის შემდეგ."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "სერვერების ჯგუფი"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "სერვერების ჯგუფები"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "სერვერი და მომხმარებლის სახელი"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "სერვერების ჯგუფის ID არ არის გადაცემული"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "სერვერების ჯგუფს იყენებს პროდუქტი :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "სერვერების ჯგუფის სახელი სავალდებულოა."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "სერვერების ჯგუფი ვერ მოიძებნა"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "ეს ჰოსტინგის გეგმა სხვა სერვერს ეკუთვნის."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "ამ სერვერს ანგარიშების ძიება არ შეუძლია. შეიყვანეთ მომხმარებლის სახელი სერვისში."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, მომხმარებლის სახელი %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "ამ სერვერზე არსებული ანგარიშების სია"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "დამატება ყველაზე ნაკლებად შევსებულ სერვერზე (ანგარიშების ლიმიტის გამოყენებული წილის მიხედვით)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "აირჩიეთ პროდუქტის სერვერი ან სერვერი მისი ჯგუფიდან."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "შეიყვანეთ ჯგუფში თითოეული სერვერის პოზიცია. პირველი სერვერისთვის მიუთითეთ 1. სერვერის გამოსატოვებლად ველი ცარიელი დატოვეთ."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "თითოეული სერვერის პოზიციისთვის შეიყვანეთ ნულზე დიდი რიცხვი."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "შეიყვანეთ ახალ სერვერზე არსებული ანგარიშის მომხმარებლის სახელი."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "სერვერების რიგით შევსება: პირველი სერვერის გამოყენება, რომელზეც ადგილი დარჩა"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "ჰოსტინგის პროდუქტისთვის: პროდუქტის სერვერი ან სერვერი მისი ჯგუფიდან."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "მორგებული პროდუქტის ფარგლებში იმპორტირებული სერვისებისთვის. Enhance-ში თითოეული სერვისი სერვერზე მისი დომენით მოიძებნება. სხვა მართვის პანელებისთვის ჩასვით სერვერის ანგარიშების სია. თითოეული სერვისი, რომლის დომენიც სიაშია, გადატანილი იქნება ამ სერვერისა და შესაბამისი მომხმარებლის სახელის მითითებით. სერვერზე არაფერი იქმნება. შეკვეთის ფასი, დარიცხვის პერიოდი, გადახდის ვადა, ინვოისები და სტატუსი შენარჩუნდება."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "სერვერების ჯგუფზე მიბმული პროდუქტების ახალი შეკვეთები ჯგუფის ერთ-ერთ სერვერზე განთავსდება. არააქტიური და შევსებული სერვერები გამოტოვებული იქნება."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "ამ სერვერის ანგარიშების სიაში არ არის."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "თითო ანგარიშზე ერთი ხაზი: დომენი და მომხმარებლის სახელი გამოყავით გამოტოვების ნიშნით, ტაბულაციით, მძიმით ან ორწერტილით. cPanel: ჩასვით /etc/trueuserdomains ფაილის შიგთავსი უცვლელად. Enhance-ისთვის ველი ცარიელი დატოვეთ, რადგან მონაცემები პირდაპირ პანელიდან მოითხოვება."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "არასავალდებულო. ახალი შეკვეთები ამ ჯგუფის ერთ-ერთ სერვერზე განთავსდება. ზემოთ არჩეული სერვერი გამოიყენება იმპორტისა და გადატანისთვის."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "ჩასვით ამ სერვერის ანგარიშების სია."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "სერვერისთვის :name ანგარიშების მაქსიმალური რაოდენობა დადგენილი არ არის. მიუთითეთ ეს რაოდენობა სერვერის ჯგუფში დასამატებლად."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "სერვერი, რომელზეც ანგარიშებია"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "მიუთითეთ ამ სერვერზე ანგარიშების მაქსიმალური რაოდენობა, რომ სერვერი ჯგუფში დაამატოთ."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "ეს დომენი ანგარიშების სიაში ორჯერ არის მითითებული."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "მომხმარებლის სახელი :username უკვე გამოიყენება შეკვეთაში № :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "მხოლოდ ამ ანგარიშის სხვა მართვის პანელის მქონე სერვერზე გადატანისას."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "ჰოსტინგის გეგმა ვერ მოიძებნა"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "ანგარიშების სიაში ამ მომხმარებლის სახელს ერთზე მეტი დომენი შეესაბამება."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "ანგარიშების მაქსიმალური რაოდენობა"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "ანგარიშების მაქსიმალური რაოდენობა უნდა იყოს 1 ან მეტი მთელი რიცხვი. თუ შეზღუდვა არ გსურთ, ველი ცარიელი დატოვეთ."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "ეს მნიშვნელობა საჭიროა სერვერის სერვერების ჯგუფში დასამატებლად. თუ შეზღუდვა არ გსურთ, ველი ცარიელი დატოვეთ."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "სერვერი :name სერვერების ჯგუფშია (:group). დატოვეთ ანგარიშების მაქსიმალური რაოდენობა მითითებული ან ჯერ ამოიღეთ სერვერი ჯგუფიდან."

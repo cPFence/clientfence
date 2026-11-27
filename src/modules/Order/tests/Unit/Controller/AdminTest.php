@@ -20,6 +20,7 @@ test('register configures routes', function (): void {
     $controller = new Admin();
     $boxAppMock = Mockery::mock('ClientFence\App');
     $boxAppMock->shouldReceive('get')->atLeast()->once();
+    $boxAppMock->shouldReceive('post')->once();
 
     $controller->register($boxAppMock);
 });

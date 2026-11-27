@@ -31596,3 +31596,209 @@ msgstr "บริการที่ย้ายสำเร็จ: %moved% ย�
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "ยังมีคำสั่งซื้อสำหรับผลิตภัณฑ์ประเภทนี้ โปรดลบคำสั่งซื้อเหล่านี้ก่อนถอนการติดตั้งโมดูล"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "เพิ่มไปยังเซิร์ฟเวอร์ที่มีบัญชีน้อยที่สุด"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "เลือกเซิร์ฟเวอร์อย่างน้อยหนึ่งเครื่องสำหรับกลุ่มนี้"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "ลบกลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "แก้ไขกลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "กรอกชื่อผู้ใช้ของบัญชีโฮสติ้งนี้ก่อน (ในส่วน “เซิร์ฟเวอร์และชื่อผู้ใช้” บนแท็บ “การจัดการบริการ”)"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "กฎการจัดสรร"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "ใช้เซิร์ฟเวอร์ของผลิตภัณฑ์จนเต็มก่อน แล้วจึงใช้เซิร์ฟเวอร์ที่มีบัญชีน้อยที่สุด"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "สำหรับบริการที่เพิ่มผ่านสินค้าแบบกำหนดเอง เมื่อย้ายไปยังผลิตภัณฑ์โฮสติ้ง แต่ละบริการจะเชื่อมกับบัญชีเดิมบนเซิร์ฟเวอร์ของผลิตภัณฑ์ โดยค้นหาบัญชีจากโดเมน หากเซิร์ฟเวอร์ค้นหาบัญชีไม่ได้ ระบบจะย้ายบริการโดยไม่มีข้อมูลเข้าสู่ระบบ และเจ้าหน้าที่จะกรอกชื่อผู้ใช้ในบริการ ไม่มีการสร้างอะไรบนเซิร์ฟเวอร์ ราคา รอบการเรียกเก็บเงิน วันครบกำหนด ใบแจ้งหนี้ และสถานะของคำสั่งซื้อจะคงเดิม"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "ประเภทกฎการจัดสรรของกลุ่มเซิร์ฟเวอร์ไม่ถูกต้อง"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "ย้ายโดยไม่มีข้อมูลเข้าสู่ระบบ: กรอกชื่อผู้ใช้ในบริการ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "กลุ่มเซิร์ฟเวอร์ใหม่"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "ไม่บังคับ คำสั่งซื้อใหม่จะถูกจัดสรรไปยังเซิร์ฟเวอร์หนึ่งเครื่องในกลุ่มนี้ เซิร์ฟเวอร์ที่ระบุไว้ด้านบนอยู่ลำดับแรกตามกฎการจัดสรร และใช้สำหรับการนำเข้าและการย้าย"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "สำหรับผลิตภัณฑ์ที่กำหนดกลุ่มเซิร์ฟเวอร์ คำสั่งซื้อใหม่แต่ละรายการจะถูกจัดสรรไปยังเซิร์ฟเวอร์หนึ่งเครื่องในกลุ่ม ระบบจะข้ามเซิร์ฟเวอร์ที่ไม่ได้เปิดใช้งานหรือเต็มแล้ว"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "บันทึกใน ClientFence เท่านั้น ไม่มีการเปลี่ยนแปลงบนเซิร์ฟเวอร์ ใช้กับบัญชีที่มีอยู่แล้ว เช่น หลังจากนำเข้าหรือย้ายบริการ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "กลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "กลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "เซิร์ฟเวอร์และชื่อผู้ใช้"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "ไม่ได้ระบุ ID กลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "ผลิตภัณฑ์ :product ใช้กลุ่มเซิร์ฟเวอร์นี้อยู่"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "ต้องระบุชื่อกลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "ไม่พบกลุ่มเซิร์ฟเวอร์"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "แพ็กเกจโฮสติ้งนี้อยู่บนเซิร์ฟเวอร์อื่น"
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "เซิร์ฟเวอร์นี้ค้นหาบัญชีไม่ได้: กรอกชื่อผู้ใช้ในบริการ"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, ชื่อผู้ใช้ %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "รายการบัญชีของเซิร์ฟเวอร์นี้"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "เพิ่มไปยังเซิร์ฟเวอร์ที่มีสัดส่วนบัญชีต่อจำนวนสูงสุดต่ำที่สุด"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "เลือกเซิร์ฟเวอร์ของสินค้าหรือเซิร์ฟเวอร์ในกลุ่มของสินค้านั้น"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "ระบุลำดับของเซิร์ฟเวอร์แต่ละเครื่องในกลุ่ม โดยให้เครื่องแรกเป็น 1 เว้นว่างเพื่อไม่รวมเซิร์ฟเวอร์นั้นในกลุ่ม"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "ระบุลำดับที่มากกว่า 0 สำหรับเซิร์ฟเวอร์แต่ละเครื่อง"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "ระบุชื่อผู้ใช้ของบัญชีบนเซิร์ฟเวอร์ใหม่"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "เติมเซิร์ฟเวอร์ตามลำดับ: ใช้เซิร์ฟเวอร์เครื่องแรกที่ยังไม่เต็ม"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "สำหรับสินค้าโฮสติ้ง: ใช้เซิร์ฟเวอร์ของสินค้าหรือเซิร์ฟเวอร์ในกลุ่มของสินค้านั้น"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "สำหรับบริการที่นำเข้าภายใต้สินค้าแบบกำหนดเอง หากใช้ Enhance ระบบจะค้นหาบริการแต่ละรายการบนเซิร์ฟเวอร์ด้วยโดเมน สำหรับแผงควบคุมอื่น ให้วางรายการบัญชีของเซิร์ฟเวอร์ ระบบจะย้ายบริการที่มีโดเมนอยู่ในรายการโดยใช้เซิร์ฟเวอร์และชื่อผู้ใช้ที่ตรงกัน ระบบจะไม่สร้างอะไรบนเซิร์ฟเวอร์ คำสั่งซื้อจะคงราคา รอบการเรียกเก็บเงิน วันครบกำหนด ใบแจ้งหนี้ และสถานะเดิม"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "คำสั่งซื้อใหม่สำหรับสินค้าที่กำหนดกลุ่มเซิร์ฟเวอร์ไว้จะถูกจัดให้กับเซิร์ฟเวอร์เครื่องหนึ่งในกลุ่ม ระบบจะข้ามเซิร์ฟเวอร์ที่ไม่ได้ใช้งานหรือเต็มแล้ว"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "ไม่พบในรายการบัญชีของเซิร์ฟเวอร์นี้"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "หนึ่งบัญชีต่อบรรทัด: คั่นโดเมนและชื่อผู้ใช้ด้วยช่องว่าง แท็บ จุลภาค หรือทวิภาค cPanel: วางเนื้อหาของ /etc/trueuserdomains ตามเดิม หากใช้ Enhance ให้เว้นว่าง ระบบจะสอบถามโดยตรง"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "ไม่บังคับ คำสั่งซื้อใหม่จะถูกจัดให้กับเซิร์ฟเวอร์เครื่องหนึ่งในกลุ่มนี้ เซิร์ฟเวอร์ที่เลือกไว้ด้านบนใช้สำหรับการนำเข้าและการย้าย"
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "วางรายการบัญชีของเซิร์ฟเวอร์นี้"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "ยังไม่ได้กำหนดจำนวนบัญชีสูงสุดสำหรับเซิร์ฟเวอร์ :name โปรดกำหนดค่านี้เพื่อเพิ่มเซิร์ฟเวอร์เข้ากลุ่ม"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "เซิร์ฟเวอร์ที่มีบัญชีอยู่"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "กำหนดจำนวนบัญชีสูงสุดของเซิร์ฟเวอร์นี้เพื่อเพิ่มเข้ากลุ่ม"
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "โดเมนนี้ปรากฏสองครั้งในรายการบัญชี"
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "คำสั่งซื้อ #:id ใช้ชื่อผู้ใช้ :username อยู่แล้ว"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "ใช้เฉพาะเมื่อย้ายบัญชีนี้ไปยังเซิร์ฟเวอร์ที่ใช้แผงควบคุมอื่น"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "ไม่พบแพ็กเกจโฮสติ้ง"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "ชื่อผู้ใช้นี้มีมากกว่าหนึ่งโดเมนในรายการบัญชี"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "จำนวนบัญชีสูงสุด"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "จำนวนบัญชีสูงสุดต้องเป็นจำนวนเต็มตั้งแต่ 1 ขึ้นไป เว้นช่องนี้ว่างไว้หากไม่ต้องการจำกัด"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "ต้องกำหนดค่านี้เพื่อเพิ่มเซิร์ฟเวอร์เข้ากลุ่มเซิร์ฟเวอร์ เว้นช่องนี้ว่างไว้หากไม่ต้องการจำกัด"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "เซิร์ฟเวอร์ :name อยู่ในกลุ่มเซิร์ฟเวอร์ :group โปรดคงจำนวนบัญชีสูงสุดไว้ หรือนำเซิร์ฟเวอร์ออกจากกลุ่มก่อน"

@@ -36253,3 +36253,209 @@ msgstr "Premještene usluge: %moved%. Nije bilo moguće premjestiti: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Još postoje narudžbe za ovu vrstu proizvoda. Izbrišite ih prije deinstalacije modula."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Dodaj na poslužitelj s najmanje računa"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Odaberite barem jedan poslužitelj za grupu."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Izbriši grupu poslužitelja"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Uredi grupu poslužitelja"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Najprije unesite korisničko ime ovog hosting računa (u odjeljku „Poslužitelj i korisničko ime” na kartici „Upravljanje uslugom”)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Pravilo raspodjele"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Najprije popuni poslužitelj proizvoda, zatim upotrijebi poslužitelj s najmanje računa"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Za usluge dodane putem prilagođenog proizvoda. Pri premještanju na hosting proizvod svaka se usluga povezuje sa svojim postojećim računom na poslužitelju proizvoda. Račun se pronalazi prema domeni. Ako poslužitelj ne podržava pretraživanje računa, usluga se premješta bez podataka za prijavu, a osoblje unosi korisničko ime u uslugu. Na poslužitelju se ništa ne stvara. Narudžba zadržava cijenu, obračunsko razdoblje, datum dospijeća, račune i status."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Nevažeća vrsta raspodjele za grupu poslužitelja."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Premještanje bez podataka za prijavu: unesite korisničko ime u uslugu"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Nova grupa poslužitelja"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Neobavezno. Nove narudžbe raspoređuju se na jedan od poslužitelja u grupi. Gore navedeni poslužitelj prvi je prema pravilu raspodjele i upotrebljava se za uvoz i premještanje."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Kod proizvoda kojima je dodijeljena grupa poslužitelja svaka se nova narudžba raspoređuje na jedan od poslužitelja u grupi. Neaktivni i popunjeni poslužitelji se preskaču."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Podaci se spremaju samo u ClientFence. Na poslužitelju se ništa ne mijenja. Koristite za postojeće račune, primjerice nakon uvoza ili premještanja."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Grupa poslužitelja"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Grupe poslužitelja"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Poslužitelj i korisničko ime"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "ID grupe poslužitelja nije proslijeđen"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Grupu poslužitelja koristi proizvod :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Naziv grupe poslužitelja je obavezan."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Grupa poslužitelja nije pronađena"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Ovaj hosting paket pripada drugom poslužitelju."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Ovaj poslužitelj ne podržava pretraživanje računa: unesite korisničko ime u uslugu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, korisničko ime %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Popis računa na ovom poslužitelju"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Dodavanje na najmanje popunjen poslužitelj (prema udjelu iskorištenog ograničenja računa)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Odaberite poslužitelj proizvoda ili poslužitelj iz njegove grupe."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Unesite položaj za svaki poslužitelj u grupi, počevši od 1. Ostavite polje prazno da izostavite poslužitelj."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Unesite pozitivan broj za položaj svakog poslužitelja."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Unesite korisničko ime računa na novom poslužitelju."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Popunjavanje poslužitelja redom: koristi se prvi poslužitelj sa slobodnim mjestom"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Za hosting proizvod: njegov poslužitelj ili poslužitelj iz njegove grupe."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Za usluge uvezene pod prilagođenim proizvodom. U panelu Enhance svaka se usluga pronalazi na poslužitelju prema domeni. Za druge upravljačke ploče zalijepite popis računa poslužitelja. Svaka usluga čija je domena na popisu premješta se uz taj poslužitelj i odgovarajuće korisničko ime. Na poslužitelju se ništa ne stvara. Narudžba zadržava cijenu, obračunsko razdoblje, datum dospijeća, račune i status."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Nove narudžbe proizvoda dodijeljenih grupi poslužitelja smještaju se na jedan od poslužitelja u grupi. Neaktivni i popunjeni poslužitelji se preskaču."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Nije na popisu računa ovog poslužitelja."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Jedan račun po retku: domena i korisničko ime odvojeni razmakom, tabulatorom, zarezom ili dvotočkom. cPanel: zalijepite sadržaj datoteke /etc/trueuserdomains bez izmjena. Za Enhance ostavite polje prazno jer se podaci dohvaćaju izravno iz panela."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Neobavezno. Nove narudžbe smještaju se na poslužitelj iz ove grupe. Gore odabrani poslužitelj koristi se za uvoz i premještanje."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Zalijepite popis računa ovog poslužitelja."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Za poslužitelj :name nije postavljen najveći broj računa. Postavite ga da biste poslužitelj dodali u grupu."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Poslužitelj na kojem se nalaze računi"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Postavite najveći broj računa na ovom poslužitelju da biste ga dodali u grupu."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Ova se domena pojavljuje dvaput na popisu računa."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Korisničko ime :username već koristi narudžba br. :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Samo kada premještate ovaj račun na poslužitelj s drugom upravljačkom pločom."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Hosting paket nije pronađen"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Na popisu računa uz ovo korisničko ime navedeno je više domena."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Najveći broj računa"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Najveći broj računa mora biti cijeli broj od najmanje 1. Ostavite polje prazno ako ne želite ograničenje."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Obavezno za dodavanje poslužitelja u grupu poslužitelja. Ostavite polje prazno ako ne želite ograničenje."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Poslužitelj :name nalazi se u grupi poslužitelja :group. Zadržite postavljen najveći broj računa ili najprije uklonite poslužitelj iz grupe."

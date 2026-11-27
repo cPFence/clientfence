@@ -291,14 +291,34 @@ class Service implements \ClientFence\InjectionAwareInterface
         if ((string) $order->group_id === '') {
             return null;
         }
-        // Its service's server, else the server its order was placed for (manual setup, or a setup that failed early).
         $hosting = $this->di['dbal']->fetchAssociative(
             'SELECT o.config, h.service_hosting_server_id FROM client_order o LEFT JOIN service_hosting h ON h.id = o.service_id'
             . " WHERE o.group_id = ? AND o.client_id = ? AND o.service_type = 'hosting' AND o.id <> ? ORDER BY o.id LIMIT 1",
             [(string) $order->group_id, (int) $order->client_id, (int) $order->id],
         );
-        $serverId = $hosting === false ? 0 : (int) ($hosting['service_hosting_server_id'] ?? json_decode((string) $hosting['config'], true)['server_id'] ?? 0);
-        $row = $serverId > 0 ? $this->di['dbal']->fetchAssociative('SELECT ns1, ns2, ns3, ns4 FROM service_hosting_server WHERE id = ?', [$serverId]) : false;
+        if ($hosting === false) {
+            return null;
+        }
+        $serverId = $hosting['service_hosting_server_id'];
+        $config = $serverId === null ? json_decode((string) $hosting['config'], true) : [];
+        if (empty($config['server_group_id'])) {
+            $serverId = (int) ($serverId ?? $config['server_id'] ?? 0);
+            $row = $serverId > 0 ? $this->di['dbal']->fetchAssociative('SELECT ns1, ns2, ns3, ns4 FROM service_hosting_server WHERE id = ?', [$serverId]) : false;
+        } else {
+            $ids = json_decode((string) $this->di['dbal']->fetchOne('SELECT servers FROM service_hosting_server_group WHERE id = ?', [(int) $config['server_group_id']]), true) ?? [];
+            $rows = $this->di['dbal']->fetchAllAssociative('SELECT ns1, ns2, ns3, ns4 FROM service_hosting_server WHERE id IN (?) ORDER BY id', [$ids], [\Doctrine\DBAL\ArrayParameterType::INTEGER]);
+            if ($rows === [] || count($rows) !== count($ids)) {
+                return null;
+            }
+            $row = array_shift($rows);
+            foreach ($rows as $member) {
+                foreach ($member as $key => $value) {
+                    if (strcasecmp(trim((string) $value), trim((string) $row[$key])) !== 0) {
+                        return null;
+                    }
+                }
+            }
+        }
         if ($row === false || trim((string) $row['ns1']) === '') {
             return null;
         }

@@ -34202,3 +34202,209 @@ msgstr "Siirretyt palvelut: %moved%. Siirto epäonnistui: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Tällä tuotetyypillä on vielä tilauksia. Poista ne ennen moduulin asennuksen poistamista."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Lisää palvelimelle, jolla on vähiten tilejä"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Valitse ryhmään vähintään yksi palvelin."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Poista palvelinryhmä"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Muokkaa palvelinryhmää"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Anna ensin tämän webhotellitilin käyttäjätunnus Palvelun hallinta -välilehden Palvelin ja käyttäjätunnus -osiossa."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Jakosääntö"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Täytä ensin tuotteen palvelin ja käytä sitten palvelinta, jolla on vähiten tilejä"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Mukautetun tuotteen kautta lisätyille palveluille. Kun palvelu siirretään webhotellituotteeseen, se yhdistetään tuotteen palvelimella jo olevaan tiliinsä verkkotunnuksen perusteella. Jos palvelin ei tue tilihakua, palvelu siirretään ilman kirjautumistietoja ja henkilökunta lisää käyttäjätunnuksen palvelun tietoihin. Palvelimelle ei luoda mitään. Tilauksen hinta, laskutusjakso, eräpäivä, laskut ja tila säilyvät."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Virheellinen palvelinryhmän jakotapa."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Siirretään ilman kirjautumistietoja: anna käyttäjätunnus palvelun tiedoissa"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Uusi palvelinryhmä"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Valinnainen. Uudet tilaukset sijoitetaan jollekin ryhmän palvelimista. Yllä määritetty palvelin on jakosäännössä ensimmäisenä, ja sitä käytetään myös tuonneissa ja siirroissa."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Kun tuotteella on palvelinryhmä, jokainen uusi tilaus sijoitetaan jollekin ryhmän palvelimista. Käytöstä poistetut ja täynnä olevat palvelimet ohitetaan."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Tiedot tallennetaan vain ClientFenceen. Palvelimella ei muutu mitään. Käytä tätä olemassa oleville tileille esimerkiksi tuonnin tai siirron jälkeen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Palvelinryhmä"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Palvelinryhmät"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Palvelin ja käyttäjätunnus"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "Palvelinryhmän tunnistetta ei annettu"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Tuote :product käyttää palvelinryhmää."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Palvelinryhmän nimi on pakollinen."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Palvelinryhmää ei löytynyt"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Tämä webhotellipaketti kuuluu toiselle palvelimelle."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Tämä palvelin ei tue tilihakua. Anna käyttäjätunnus palvelun tiedoissa."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, käyttäjätunnus %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Tämän palvelimen tililuettelo"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Lisää vähiten täynnä olevalle palvelimelle (tilien osuus palvelimen tilirajasta)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Valitse tuotteen palvelin tai palvelin sen palvelinryhmästä."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Anna ryhmän kullekin palvelimelle järjestysnumero. Ensimmäisen numero on 1. Jätä kenttä tyhjäksi, jos haluat jättää palvelimen ryhmän ulkopuolelle."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Anna jokaiselle palvelimelle positiivinen järjestysnumero."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Anna tilin käyttäjätunnus uudella palvelimella."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Täytä palvelimet järjestyksessä: käytä ensimmäistä palvelinta, jolla on tilaa"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Hosting-tuotteelle: tuotteen palvelin tai palvelin sen palvelinryhmästä."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Koskee mukautetun tuotteen alle tuotuja palveluja. Enhance löytää kunkin palvelun palvelimelta verkkotunnuksen perusteella. Kun käytät muuta hallintapaneelia, liitä palvelimen tililuettelo. Kukin palvelu, jonka verkkotunnus on luettelossa, siirretään käyttäen kyseistä palvelinta ja käyttäjätunnusta. Palvelimelle ei luoda mitään. Tilauksen hinta, laskutusjakso, eräpäivä, laskut ja tila säilyvät."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Palvelinryhmään liitettyjen tuotteiden uudet tilaukset sijoitetaan jollekin ryhmän palvelimista. Passiiviset ja täydet palvelimet ohitetaan."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Ei tämän palvelimen tililuettelossa."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Yksi tili rivillä: erota verkkotunnus ja käyttäjätunnus välilyönnillä, sarkaimella, pilkulla tai kaksoispisteellä. cPanel: liitä tiedoston /etc/trueuserdomains sisältö sellaisenaan. Jätä kenttä tyhjäksi, jos käytössä on Enhance, jolta tiedot kysytään suoraan."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Valinnainen. Uudet tilaukset sijoitetaan tämän ryhmän palvelimelle. Yllä valittua palvelinta käytetään tuontiin ja siirtoihin."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Liitä tämän palvelimen tililuettelo."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Palvelimelle :name ei ole asetettu tilirajaa. Aseta raja, jotta voit lisätä palvelimen ryhmään."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Palvelin, jolla tilit ovat"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Aseta palvelimelle tiliraja, jotta voit lisätä sen ryhmään."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Tämä verkkotunnus esiintyy tililuettelossa kahdesti."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Käyttäjätunnus :username on jo tilauksen #:id käytössä."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Vain kun siirrät tämän tilin palvelimelle, jossa on eri hallintapaneeli."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Webhotellipakettia ei löytynyt"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Tällä käyttäjätunnuksella on tililuettelossa useampi kuin yksi verkkotunnus."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Tiliraja"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Tilirajan on oltava kokonaisluku, joka on vähintään 1. Jätä kenttä tyhjäksi, jos et halua asettaa rajaa."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Tiliraja tarvitaan, jotta palvelimen voi lisätä palvelinryhmään. Jätä kenttä tyhjäksi, jos et halua asettaa rajaa."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Palvelin :name kuuluu palvelinryhmään :group. Pidä tiliraja voimassa tai poista palvelin ensin ryhmästä."

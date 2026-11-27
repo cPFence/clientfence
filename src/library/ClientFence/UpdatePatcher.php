@@ -593,6 +593,7 @@ class UpdatePatcher implements InjectionAwareInterface
             133 => 'patch133',
             134 => 'patch134',
             135 => 'patch135',
+            136 => 'patch136',
         ];
         ksort($patches, SORT_NATURAL);
 
@@ -2794,6 +2795,22 @@ class UpdatePatcher implements InjectionAwareInterface
     // 134: no longer used.
     private function patch134(): void
     {
+    }
+
+    private function patch136(): void
+    {
+        // ClientFence core patch: server groups, one hosting product on several servers as WHMCS (Servicehosting/ServerGroups.php).
+        if (!$this->tableExists('service_hosting_server_group')) {
+            $this->executeSql("CREATE TABLE `service_hosting_server_group` (
+                `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                `name` varchar(255) NOT NULL,
+                `fill_type` varchar(16) NOT NULL DEFAULT 'least',
+                `servers` text,
+                `created_at` datetime DEFAULT NULL,
+                `updated_at` datetime DEFAULT NULL,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        }
     }
 
     private function patch135(): void

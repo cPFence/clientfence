@@ -33870,3 +33870,209 @@ msgstr "Υπηρεσίες που μεταφέρθηκαν: %moved%. Αποτυ�
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Υπάρχουν ακόμα παραγγελίες για αυτόν τον τύπο προϊόντος. Διαγράψτε τις πριν απεγκαταστήσετε την ενότητα."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Προσθήκη στον διακομιστή με τους λιγότερους λογαριασμούς"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Επιλέξτε τουλάχιστον έναν διακομιστή για την ομάδα."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Διαγραφή της ομάδας διακομιστών"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Επεξεργασία ομάδας διακομιστών"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Εισαγάγετε πρώτα το όνομα χρήστη αυτού του λογαριασμού φιλοξενίας (στην ενότητα «Διακομιστής και όνομα χρήστη» της καρτέλας «Διαχείριση υπηρεσίας»)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Κανόνας κατανομής"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Γεμίστε πρώτα τον διακομιστή του προϊόντος και μετά χρησιμοποιήστε εκείνον με τους λιγότερους λογαριασμούς"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Για υπηρεσίες που προστέθηκαν μέσω προσαρμοσμένου προϊόντος. Κατά τη μεταφορά σε προϊόν φιλοξενίας, κάθε υπηρεσία συνδέεται με τον υπάρχοντα λογαριασμό της στον διακομιστή του προϊόντος. Ο λογαριασμός εντοπίζεται από το όνομα τομέα. Εάν ο διακομιστής δεν υποστηρίζει αναζήτηση λογαριασμών, η υπηρεσία μεταφέρεται χωρίς στοιχεία σύνδεσης και το προσωπικό εισάγει το όνομα χρήστη στην υπηρεσία. Δεν δημιουργείται τίποτα στον διακομιστή. Η παραγγελία διατηρεί την τιμή, την περίοδο χρέωσης, την ημερομηνία λήξης, τα τιμολόγια και την κατάστασή της."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Μη έγκυρος τύπος κατανομής για την ομάδα διακομιστών."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Μεταφορά χωρίς στοιχεία σύνδεσης: εισαγάγετε το όνομα χρήστη στην υπηρεσία"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Νέα ομάδα διακομιστών"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Προαιρετικό. Οι νέες παραγγελίες τοποθετούνται σε έναν διακομιστή της ομάδας. Ο παραπάνω διακομιστής χρησιμοποιείται πρώτος σύμφωνα με τον κανόνα κατανομής και χρησιμοποιείται επίσης για εισαγωγές και μεταφορές."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Για προϊόντα με ομάδα διακομιστών, κάθε νέα παραγγελία τοποθετείται σε έναν από τους διακομιστές της ομάδας. Οι ανενεργοί και οι γεμάτοι διακομιστές παραλείπονται."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Τα στοιχεία αποθηκεύονται μόνο στο ClientFence. Δεν αλλάζει τίποτα στον διακομιστή. Χρησιμοποιήστε αυτή τη ρύθμιση για υπάρχοντες λογαριασμούς, π.χ. μετά από εισαγωγή ή μεταφορά."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Ομάδα διακομιστών"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Ομάδες διακομιστών"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Διακομιστής και όνομα χρήστη"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "Δεν δόθηκε το αναγνωριστικό της ομάδας διακομιστών"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Το προϊόν :product χρησιμοποιεί την ομάδα διακομιστών."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Απαιτείται όνομα για την ομάδα διακομιστών."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Η ομάδα διακομιστών δεν βρέθηκε"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Αυτό το πακέτο φιλοξενίας ανήκει σε άλλον διακομιστή."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Αυτός ο διακομιστής δεν υποστηρίζει αναζήτηση λογαριασμών: εισαγάγετε το όνομα χρήστη στην υπηρεσία."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, όνομα χρήστη %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Λίστα λογαριασμών αυτού του διακομιστή"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Προσθήκη στον λιγότερο γεμάτο διακομιστή (με βάση το ποσοστό χρήσης του ορίου λογαριασμών)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Επιλέξτε τον διακομιστή του προϊόντος ή έναν διακομιστή από την ομάδα του."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Εισαγάγετε τη θέση κάθε διακομιστή της ομάδας, με 1 για τον πρώτο. Αφήστε το πεδίο κενό για να εξαιρέσετε έναν διακομιστή."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Εισαγάγετε έναν θετικό αριθμό για τη θέση κάθε διακομιστή."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Εισαγάγετε το όνομα χρήστη του λογαριασμού στον νέο διακομιστή."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Συμπλήρωση διακομιστών με τη σειρά: χρήση του πρώτου με διαθέσιμο χώρο"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Για προϊόν hosting: ο διακομιστής του προϊόντος ή ένας διακομιστής από την ομάδα του."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Για υπηρεσίες που εισήχθησαν σε προσαρμοσμένο προϊόν. Στο Enhance, κάθε υπηρεσία εντοπίζεται στον διακομιστή με βάση τον τομέα της. Για άλλους πίνακες ελέγχου, επικολλήστε τη λίστα λογαριασμών του διακομιστή. Κάθε υπηρεσία της οποίας ο τομέας υπάρχει στη λίστα μεταφέρεται με τον συγκεκριμένο διακομιστή και το αντίστοιχο όνομα χρήστη. Δεν δημιουργείται τίποτα στον διακομιστή. Η παραγγελία διατηρεί την τιμή, την περίοδο χρέωσης, την ημερομηνία λήξης, τα τιμολόγια και την κατάστασή της."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Οι νέες παραγγελίες προϊόντων που έχουν αντιστοιχιστεί σε ομάδα διακομιστών τοποθετούνται σε έναν διακομιστή της ομάδας. Οι ανενεργοί και οι γεμάτοι διακομιστές παραλείπονται."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Δεν υπάρχει στη λίστα λογαριασμών αυτού του διακομιστή."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Ένας λογαριασμός ανά γραμμή: τομέας και όνομα χρήστη, χωρισμένα με κενό, χαρακτήρα στηλοθέτη, κόμμα ή άνω και κάτω τελεία. cPanel: επικολλήστε τα περιεχόμενα του /etc/trueuserdomains χωρίς αλλαγές. Για το Enhance, αφήστε το πεδίο κενό, καθώς τα στοιχεία ζητούνται απευθείας."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Προαιρετικό. Οι νέες παραγγελίες τοποθετούνται σε έναν διακομιστή αυτής της ομάδας. Ο διακομιστής που επιλέχθηκε παραπάνω χρησιμοποιείται για εισαγωγές και μεταφορές."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Επικολλήστε τη λίστα λογαριασμών αυτού του διακομιστή."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Ο διακομιστής :name δεν έχει μέγιστο αριθμό λογαριασμών. Ορίστε έναν για να τον προσθέσετε σε ομάδα."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Διακομιστής όπου βρίσκονται οι λογαριασμοί"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Ορίστε μέγιστο αριθμό λογαριασμών για αυτόν τον διακομιστή, ώστε να τον προσθέσετε σε ομάδα."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Αυτός ο τομέας εμφανίζεται δύο φορές στη λίστα λογαριασμών."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Το όνομα χρήστη :username χρησιμοποιείται ήδη από την παραγγελία #:id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Μόνο όταν μεταφέρετε αυτόν τον λογαριασμό σε διακομιστή με διαφορετικό πάνελ ελέγχου."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Το πακέτο φιλοξενίας δεν βρέθηκε"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Σε αυτό το όνομα χρήστη αντιστοιχούν περισσότεροι από ένας τομείς στη λίστα λογαριασμών."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Μέγιστος αριθμός λογαριασμών"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Ο μέγιστος αριθμός λογαριασμών πρέπει να είναι ακέραιος αριθμός τουλάχιστον 1. Αφήστε το πεδίο κενό αν δεν θέλετε όριο."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Απαιτείται για να προσθέσετε τον διακομιστή σε ομάδα διακομιστών. Αφήστε το πεδίο κενό αν δεν θέλετε όριο."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Ο διακομιστής :name ανήκει στην ομάδα διακομιστών :group. Διατηρήστε έναν μέγιστο αριθμό λογαριασμών ή αφαιρέστε πρώτα τον διακομιστή από την ομάδα."

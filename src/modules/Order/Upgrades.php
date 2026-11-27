@@ -214,7 +214,7 @@ final class Upgrades
         }
         foreach (array_unique(array_merge([(int) $order->product_id], $targets)) as $productId) {
             $to = $productId === (int) $order->product_id ? ($from['on_sale'] ? $from : null) : self::catalog($di, $productId, true, (string) $order->currency);
-            if ($to === null || !self::compatible($from, $to)) {
+            if ($to === null || !self::compatible($from, $to) || !self::hostingPlanFitsOrderServer($db, $order, $to)) {
                 continue;
             }
             // ClientFence core patch: a licence cannot move to a plan whose "Servers (IP addresses)" its IP list does not fit (IpSeats).
@@ -559,6 +559,10 @@ final class Upgrades
                 if ($to === null) {
                     throw new InformationException('The new product no longer exists.');
                 }
+                $hostingChange = $order->service_type === 'hosting' && !$optionsOnly;
+                if ($hostingChange && !self::hostingPlanFitsOrderServer($db, $order, $to)) {
+                    throw new InformationException('This hosting plan belongs to another server.');
+                }
                 $quantity = max(1, (int) ($order->quantity ?? 1));
                 $productChanged = (int) $up['to_product_id'] !== (int) $up['from_product_id'];
                 // ClientFence core patch: the licence's IPs, counted again under this lock (IP changes take it too), must fit the new plan.
@@ -583,7 +587,7 @@ final class Upgrades
                     $renewalNote .= self::cancelSubscriptions($di, $order);
                 }
 
-                if ($order->service_type === 'hosting' && !$optionsOnly) {
+                if ($hostingChange) {
                     self::moveHosting($di, $order, $to);
                 }
 
@@ -911,8 +915,7 @@ final class Upgrades
     }
 
     /**
-     * Same kind of product (and both add-ons or neither); hosting stays on its server and keeps
-     * reseller or not.
+     * Same kind of product (and both add-ons or neither), with matching hosting placement and reseller setting.
      *
      * @param array<string, mixed> $from
      * @param array<string, mixed> $to
@@ -923,12 +926,31 @@ final class Upgrades
             return false;
         }
         if ($from['type'] === 'hosting') {
-            return (int) ($from['config']['server_id'] ?? 0) === (int) ($to['config']['server_id'] ?? 0)
+            $groupId = (int) ($from['config']['server_group_id'] ?? 0);
+
+            return $groupId === (int) ($to['config']['server_group_id'] ?? 0)
+                && ($groupId !== 0 || (int) ($from['config']['server_id'] ?? 0) === (int) ($to['config']['server_id'] ?? 0))
                 && (int) ($to['config']['hosting_plan_id'] ?? 0) > 0
                 && (bool) ($from['config']['reseller'] ?? false) === (bool) ($to['config']['reseller'] ?? false);
         }
 
         return true;
+    }
+
+    private static function hostingPlanFitsOrderServer(Connection $db, \Model_ClientOrder $order, array $to): bool
+    {
+        if ($order->service_type !== 'hosting') {
+            return true;
+        }
+
+        $row = $db->fetchAssociative(
+            'SELECT sh.service_hosting_server_id, hp.id AS plan_id, hp.config FROM service_hosting sh'
+            . ' LEFT JOIN service_hosting_hp hp ON hp.id = ? WHERE sh.id = ?',
+            [(int) ($to['config']['hosting_plan_id'] ?? 0), (int) $order->service_id],
+        );
+
+        return $row === false || ($row['plan_id'] !== null
+            && \ClientFence\Mod\Servicehosting\Service::planFitsServer($row['config'], (int) $row['service_hosting_server_id']));
     }
 
     /**
@@ -1416,6 +1438,11 @@ final class Upgrades
                     $config[$key] = $to['config'][$key];
                 }
             }
+            if (empty($to['config']['server_group_id'])) {
+                unset($config['server_group_id']);
+            } else {
+                $config['server_group_id'] = $to['config']['server_group_id'];
+            }
         }
 
         return $config;
@@ -1436,7 +1463,7 @@ final class Upgrades
         $targets = [];
         foreach ($db->fetchFirstColumn('SELECT id FROM product WHERE type = ? AND id <> ? ORDER BY title', [$from['type'], (int) $order->product_id]) as $id) {
             $to = self::catalog($di, (int) $id, false);
-            if ($to !== null && self::compatible($from, $to)) {
+            if ($to !== null && self::compatible($from, $to) && self::hostingPlanFitsOrderServer($db, $order, $to)) {
                 $targets[(int) $id] = $to['title'];
             }
         }
@@ -1667,6 +1694,9 @@ final class Upgrades
         $service = $di['mod_service']('order')->getOrderService($order);
         if (!$service instanceof \Model_ServiceHosting) {
             throw new InformationException('The hosting account of this service was not found.');
+        }
+        if (!\ClientFence\Mod\Servicehosting\Service::planFitsServer($hp->config, (int) $service->service_hosting_server_id)) {
+            throw new InformationException('This hosting plan belongs to another server.');
         }
         $di['mod_service']('servicehosting')->changeAccountPlan($order, $service, $hp);
     }

@@ -33300,3 +33300,209 @@ msgstr "Servicii mutate: %moved%. Mutări eșuate: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Încă există comenzi pentru acest tip de produs. Ștergeți-le înainte de a dezinstala modulul."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Adaugă pe serverul cu cele mai puține conturi"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Alegeți cel puțin un server pentru grup."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Șterge grupul de servere"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Editează grupul de servere"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Introduceți mai întâi numele de utilizator al acestui cont de hosting (în secțiunea „Server și nume de utilizator” din fila „Gestionarea serviciului”)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Regulă de alocare"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Umple mai întâi serverul produsului, apoi folosește serverul cu cele mai puține conturi"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Pentru serviciile adăugate printr-un produs personalizat. La mutarea la un produs de hosting, fiecare serviciu este asociat cu contul său existent pe serverul produsului, găsit după domeniu. Dacă serverul nu permite căutarea conturilor, serviciul este mutat fără date de autentificare, iar personalul introduce numele de utilizator în serviciu. Pe server nu se creează nimic. Comanda își păstrează prețul, perioada de facturare, data scadenței, facturile și starea."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Tip de alocare nevalid pentru grupul de servere."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Mutare fără date de autentificare: introduceți numele de utilizator în serviciu"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Grup de servere nou"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Opțional. Comenzile noi sunt alocate unui server din acest grup. Serverul indicat mai sus este primul conform regulii de alocare și este folosit pentru importuri și mutări."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Pentru produsele cu un grup de servere, fiecare comandă nouă este alocată unuia dintre serverele grupului. Serverele inactive sau pline sunt omise."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Datele se salvează doar în ClientFence. Pe server nu se schimbă nimic. Folosiți această opțiune pentru conturile existente, de exemplu după un import sau o mutare."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Grup de servere"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Grupuri de servere"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Server și nume de utilizator"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "ID-ul grupului de servere nu a fost transmis"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Grupul de servere este folosit de produsul :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Numele grupului de servere este obligatoriu."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Grupul de servere nu a fost găsit"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Acest plan de hosting aparține altui server."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Acest server nu permite căutarea conturilor. Introduceți numele de utilizator în serviciu."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, nume de utilizator %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Lista conturilor de pe acest server"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Adăugare pe serverul cu cel mai mic grad de ocupare (proporția din limita de conturi utilizată)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Alegeți serverul produsului sau un server din grupul acestuia."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Introduceți poziția fiecărui server din grup, cu 1 pentru primul. Lăsați câmpul gol pentru a exclude un server."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Introduceți o poziție pozitivă pentru fiecare server."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Introduceți numele de utilizator al contului de pe noul server."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Umplerea serverelor în ordine: se folosește primul server cu loc disponibil"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Pentru un produs de hosting: serverul produsului sau un server din grupul său."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Pentru serviciile importate sub un produs personalizat. În Enhance, fiecare serviciu este găsit pe server după domeniul său. Pentru alte panouri, lipiți lista de conturi a serverului. Fiecare serviciu al cărui domeniu apare în listă este mutat folosind acel server și numele de utilizator corespunzător. Nu se creează nimic pe server. Comanda își păstrează prețul, perioada de facturare, data scadentă, facturile și starea."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Comenzile noi pentru produsele asociate unui grup de servere sunt plasate pe un server din grup. Serverele inactive și cele pline sunt omise."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Nu apare în lista de conturi a acestui server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Un cont pe linie: domeniu și nume de utilizator separate prin spațiu, tabulator, virgulă sau două puncte. cPanel: lipiți conținutul fișierului /etc/trueuserdomains ca atare. Lăsați câmpul gol pentru Enhance, care este interogat direct."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Opțional. Comenzile noi sunt plasate pe un server din acest grup. Serverul ales mai sus este folosit pentru importuri și mutări."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Lipiți lista conturilor de pe acest server."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Serverul :name nu are un număr maxim de conturi stabilit. Stabiliți unul pentru a adăuga serverul într-un grup."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Serverul pe care se află conturile"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Stabiliți un număr maxim de conturi pe acest server pentru a-l adăuga într-un grup."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Acest domeniu apare de două ori în lista de conturi."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Numele de utilizator :username este deja folosit de comanda nr. :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Doar când mutați acest cont pe un server cu alt panou de control."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Planul de hosting nu a fost găsit"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Acest nume de utilizator are mai mult de un domeniu în lista de conturi."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Număr maxim de conturi"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Numărul maxim de conturi trebuie să fie un număr întreg de cel puțin 1. Lăsați câmpul gol dacă nu doriți o limită."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Este obligatoriu pentru a adăuga serverul într-un grup de servere. Lăsați câmpul gol dacă nu doriți o limită."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Serverul :name face parte din grupul de servere :group. Păstrați un număr maxim de conturi sau eliminați mai întâi serverul din grup."

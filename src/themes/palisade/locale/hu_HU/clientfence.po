@@ -33771,3 +33771,209 @@ msgstr "Áthelyezett szolgáltatások: %moved%. Sikertelen áthelyezések: %fail
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Ehhez a terméktípushoz még vannak megrendelések. Törölje őket a modul eltávolítása előtt."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Hozzáadás a legkevesebb fiókot kiszolgáló szerverhez"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Válasszon legalább egy szervert a csoporthoz."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Szervercsoport törlése"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Szervercsoport szerkesztése"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Először adja meg a tárhelyfiók felhasználónevét (a Szolgáltatáskezelés lap „Szerver és felhasználónév” részében)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Elosztási szabály"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Először a termék szerverének feltöltése, majd kiosztás a legkevesebb fiókot kiszolgáló szerverre"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Egyedi termékhez felvett szolgáltatásokhoz. Tárhelytermékre áthelyezéskor minden szolgáltatás a termék szerverén már meglévő fiókjához kapcsolódik. A rendszer a fiókot a domain alapján keresi meg. Ha a szerver nem támogatja a fiókkeresést, a szolgáltatás bejelentkezési adatok nélkül kerül át, és a munkatársak a szolgáltatásnál adják meg a felhasználónevet. A szerveren nem jön létre semmi. A megrendelés ára, számlázási időszaka, esedékessége, számlái és állapota megmarad."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Érvénytelen szervercsoport-elosztási mód."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Áthelyezés bejelentkezési adatok nélkül: adja meg a felhasználónevet a szolgáltatásnál"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Új szervercsoport"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Opcionális. Az új megrendelések a csoport egyik szerverére kerülnek. A fent megadott szerver az első az elosztási szabály szerint, és az importálás és áthelyezés is ezt használja."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Szervercsoporthoz rendelt termék esetén minden új megrendelés a csoport egyik szerverére kerül. Az inaktív és megtelt szervereket a rendszer kihagyja."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Az adatok csak a ClientFence-ben kerülnek mentésre. A szerveren semmi sem változik. Meglévő fiókoknál használja, például importálás vagy áthelyezés után."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Szervercsoport"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Szervercsoportok"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Szerver és felhasználónév"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "A szervercsoport azonosítója nincs megadva"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "A(z) :product termék használja a szervercsoportot."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "A szervercsoport nevét meg kell adni."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "A szervercsoport nem található"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Ez a tárhelycsomag másik szerverhez tartozik."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Ez a szerver nem támogatja a fiókkeresést. Adja meg a felhasználónevet a szolgáltatásnál."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, felhasználónév: %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "A szerver fióklistája"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Hozzáadás a legkevésbé telített szerverhez (a fióklimit kihasználtsága alapján)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Válassza ki a termék szerverét vagy a szervercsoport egyik szerverét."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Adja meg a csoport minden szerverének pozícióját. Az elsőhöz írjon 1-et. Ha egy szervert ki szeretne hagyni, hagyja üresen a mezőt."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Adjon meg minden szerverhez pozitív pozíciót."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Adja meg az új szerveren lévő fiók felhasználónevét."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Szerverek feltöltése sorrendben: az első szabad kapacitással rendelkező szerver használata"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Tárhelytermék esetén: a termék szervere vagy szerver a termék szervercsoportjából."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Az egyedi termék alá importált szolgáltatásokhoz. Az Enhance a domain alapján keresi meg a szolgáltatásokat a szerveren. Más vezérlőpultoknál illessze be a szerver fióklistáját. A listán szereplő domainhez tartozó szolgáltatások ezzel a szerverrel és a megfelelő felhasználónévvel kerülnek át. A szerveren nem jön létre semmi. A megrendelés ára, számlázási időszaka, fizetési határideje, számlái és állapota megmaradnak."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "A szervercsoporthoz rendelt termékek új megrendelései a csoport valamelyik szerverére kerülnek. Az inaktív és a megtelt szervereket a rendszer kihagyja."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Nem szerepel a szerver fióklistáján."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Soronként egy fiók: a domaint és a felhasználónevet szóköz, tabulátor, vessző vagy kettőspont választja el. cPanel: illessze be a /etc/trueuserdomains tartalmát változtatás nélkül. Enhance esetén hagyja üresen, mert a rendszer közvetlenül lekérdezi az adatokat."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Opcionális. Az új megrendelések a csoport valamelyik szerverére kerülnek. A fent kiválasztott szerver importálásra és áthelyezésre szolgál."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Illessze be a szerver fióklistáját."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "A(z) :name szerverhez nincs beállítva maximális fiókszám. Állítsa be, hogy a szervert hozzáadhassa egy csoporthoz."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "A fiókokat tároló szerver"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "A szerver csoporthoz adásához állítsa be a maximális fiókszámot."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Ez a domain kétszer szerepel a fióklistán."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "A(z) :username felhasználónevet már a(z) #:id megrendelés használja."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Csak akkor, ha ezt a fiókot másik vezérlőpulttal működő szerverre helyezi át."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "A tárhelycsomag nem található"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Ehhez a felhasználónévhez több domain tartozik a fióklistán."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Maximális fiókszám"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "A maximális fiókszámnak legalább 1 értékű egész számnak kell lennie. Ha nem szeretne korlátot beállítani, hagyja üresen a mezőt."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Adjon meg egy értéket a szerver szervercsoporthoz adásához. Ha nem szeretne korlátot beállítani, hagyja üresen a mezőt."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "A(z) :name szerver a(z) :group szervercsoport tagja. Tartsa meg a maximális fiókszámot, vagy előbb távolítsa el a szervert a csoportból."

@@ -43,6 +43,9 @@ function upgradesDb(): Connection
         'CREATE TABLE client (id INTEGER PRIMARY KEY, currency TEXT, lang TEXT)',
         'CREATE TABLE client_order (id INTEGER PRIMARY KEY, client_id INTEGER, product_id INTEGER, service_id INTEGER, service_type TEXT, title TEXT, status TEXT, period TEXT, price REAL, quantity INTEGER DEFAULT 1,'
             . ' discount REAL, currency TEXT, expires_at TEXT, unpaid_invoice_id INTEGER, config TEXT, updated_at TEXT)',
+        'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, service_hosting_server_id INTEGER, username TEXT)',
+        'CREATE TABLE service_hosting_hp (id INTEGER PRIMARY KEY, config TEXT)',
+        'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, manager TEXT)',
         'CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, status TEXT, hash TEXT, serie TEXT, nr TEXT, updated_at TEXT, taxrate REAL, tax_adjust REAL DEFAULT 0, refund REAL DEFAULT 0, paid_at TEXT, created_at TEXT)',
         'CREATE TABLE invoice_item (id INTEGER PRIMARY KEY, invoice_id INTEGER, type TEXT, task TEXT, rel_id TEXT, title TEXT, price REAL, quantity INTEGER, unit TEXT, period TEXT, taxed INTEGER)',
         'CREATE TABLE subscription (id INTEGER PRIMARY KEY, rel_type TEXT, rel_id INTEGER, status TEXT, sid TEXT, pay_gateway_id INTEGER)',
@@ -84,6 +87,11 @@ function upgradesDb(): Connection
     $product(21, 'Host M', ['a' => 200], ['type' => 'hosting', 'config' => ['server_id' => 1, 'hosting_plan_id' => 8]]);
     $product(22, 'Host X', ['a' => 400], ['type' => 'hosting', 'config' => ['server_id' => 2, 'hosting_plan_id' => 9]]);
     $product(23, 'Host R', ['a' => 300], ['type' => 'hosting', 'config' => ['server_id' => 1, 'hosting_plan_id' => 10, 'reseller' => true]]);
+    foreach ([7, 8, 9, 10] as $planId) {
+        $db->insert('service_hosting_hp', ['id' => $planId]);
+    }
+    $db->insert('service_hosting_server', ['id' => 1, 'manager' => 'Custom']);
+    $db->insert('service_hosting', ['id' => 105, 'service_hosting_server_id' => 1, 'username' => 'example']);
 
     $db->insert('currency', ['code' => 'USD', 'conversion_rate' => 1]);
     $db->insert('currency', ['code' => 'EUR', 'conversion_rate' => 0.9]);
@@ -121,7 +129,7 @@ final class UpgradesTestDb
 
     public function load(string $type, int $id): ?object
     {
-        $table = ['ClientOrder' => 'client_order', 'Client' => 'client', 'Invoice' => 'invoice', 'InvoiceItem' => 'invoice_item', 'PayGateway' => 'pay_gateway'][$type];
+        $table = ['ClientOrder' => 'client_order', 'Client' => 'client', 'Invoice' => 'invoice', 'InvoiceItem' => 'invoice_item', 'PayGateway' => 'pay_gateway', 'ServiceHosting' => 'service_hosting', 'ServiceHostingHp' => 'service_hosting_hp'][$type];
         $row = $this->db->fetchAssociative("SELECT * FROM {$table} WHERE id = ?", [$id]);
         if ($row === false) {
             return null;
@@ -151,14 +159,6 @@ final class UpgradesTestDb
 
     public function getExistingModelById(string $type, int $id, string $message = ''): object
     {
-        if ($type === 'ServiceHostingHp') {
-            $hp = new Model_ServiceHostingHp();
-            $hp->loadBean(new Tests\Helpers\DummyBean());
-            $hp->id = $id;
-
-            return $hp;
-        }
-
         return $this->load($type, $id) ?? throw new InformationException($message);
     }
 
@@ -314,11 +314,7 @@ function upgradesContainer(Connection $db, array $orderConfig = [], array $fail 
 
             public function getOrderService(Model_ClientOrder $order): Model_ServiceHosting
             {
-                $service = new Model_ServiceHosting();
-                $service->loadBean(new Tests\Helpers\DummyBean());
-                $service->id = (int) $order->service_id;
-
-                return $service;
+                return $this->di['db']->load('ServiceHosting', (int) $order->service_id);
             }
         },
         'servicehosting' => new class($facade, $fail['panel'] ?? null) {
@@ -561,12 +557,60 @@ test('a retired product moves to its listed products but not to its own cycles',
     expect(Upgrades::options($di, upgradesOrder($di, 6), UPGRADES_NOW))->toMatchArray(['available' => false, 'reason' => 'There is nothing to change this service to.']);
 });
 
-test('hosting moves only within its server and reseller kind', function (): void {
+test('hosting moves only within its server, server group and reseller kind', function (): void {
     $di = upgradesContainer(upgradesDb());
     // 365 days, 77 left: credit 100 × 77 / 365 = 21.10, Host M for the days left 42.19.
     expect(upgradesOptionTable($di, 5))->toBe(['21/1Y' => ['upgrade', 21.1, 42.19, 21.09, '2027-01-01 00:00:00']])
         ->and(Upgrades::compatible(['type' => 'hosting', 'is_addon' => false, 'config' => ['server_id' => 1]], ['type' => 'hosting', 'is_addon' => false, 'config' => ['server_id' => 1]]))->toBeFalse()
+        ->and(Upgrades::compatible(
+            ['type' => 'hosting', 'is_addon' => false, 'config' => ['server_id' => 1, 'hosting_plan_id' => 1, 'server_group_id' => 1]],
+            ['type' => 'hosting', 'is_addon' => false, 'config' => ['server_id' => 1, 'hosting_plan_id' => 1, 'server_group_id' => 2]],
+        ))->toBeFalse()
         ->and(Upgrades::compatible(['type' => 'custom', 'is_addon' => true, 'config' => []], ['type' => 'custom', 'is_addon' => false, 'config' => []]))->toBeFalse();
+});
+
+test('hosting moves check the service server against the plan', function (int $planServerId, bool $fits, int $targetServerId = 1): void {
+    $db = upgradesDb();
+    foreach ([20 => 7, 21 => 8] as $productId => $planId) {
+        $db->update('product', ['config' => json_encode(['server_id' => $productId === 21 ? $targetServerId : 1, 'server_group_id' => 4, 'hosting_plan_id' => $planId])], ['id' => $productId]);
+    }
+    $db->insert('service_hosting_server', ['id' => 2, 'manager' => 'Custom']);
+    $db->update('service_hosting', ['service_hosting_server_id' => 2, 'username' => null], ['id' => 105]);
+    $db->update('service_hosting_hp', ['config' => json_encode(['server_id' => $planServerId])], ['id' => 8]);
+    $di = upgradesContainer($db);
+    $order = upgradesOrder($di, 5);
+
+    expect(in_array(21, array_column(Upgrades::options($di, $order, UPGRADES_NOW)['options'], 'product_id'), true))->toBe($fits)
+        ->and(isset(Upgrades::moveTargets($di, $order)[21]))->toBe($fits);
+})->with([
+    'plan bound to another server' => [1, false],
+    'plan fits a service without a username' => [2, true],
+    'same group with different default servers' => [2, true, 2],
+]);
+
+test('a pending hosting order without a service row can move to a different plan', function (): void {
+    $db = upgradesDb();
+    $db->update('client_order', ['service_id' => null, 'status' => 'pending_setup'], ['id' => 5]);
+    $db->update('service_hosting_hp', ['config' => '{"server_id":1}'], ['id' => 8]);
+    $di = upgradesContainer($db);
+
+    expect(Upgrades::moveTargets($di, upgradesOrder($di, 5)))->toHaveKey(21);
+});
+
+test('changing a pending hosting order uses the target product server group', function (): void {
+    $db = upgradesDb();
+    $db->update('client_order', ['service_id' => null, 'status' => 'pending_setup', 'config' => '{"server_group_id":9}'], ['id' => 5]);
+    $di = upgradesContainer($db);
+
+    foreach ([21 => ['server_group_id' => 4], 20 => []] as $targetId => $group) {
+        foreach ([20 => 7, 21 => 8] as $productId => $planId) {
+            $db->update('product', ['config' => json_encode(['server_id' => 1, 'hosting_plan_id' => $planId] + $group)], ['id' => $productId]);
+        }
+        Upgrades::staffMove($di, 5, $targetId, false, false);
+
+        $config = json_decode($db->fetchOne('SELECT config FROM client_order WHERE id = 5'), true);
+        expect(array_intersect_key($config, ['server_group_id' => true]))->toBe($group);
+    }
 });
 
 /**
@@ -1096,6 +1140,21 @@ test('a hosting upgrade paid at expiry fails for staff without changing the plan
         ->and($di['db']->planChanges)->toBe([])
         ->and($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE))->toBe(['status' => 'failed', 'error' => 'The service changed after this upgrade was priced (it has expired). Change it by hand and settle the amount with the client.'])
         ->and($db->fetchAssociative('SELECT client_order_id, action, status FROM ' . ActionFailures::TABLE))->toBe(['client_order_id' => 5, 'action' => 'upgrade', 'status' => 'open']);
+});
+
+test('a paid hosting upgrade refuses a plan bound to another server before canceling subscriptions', function (): void {
+    $db = upgradesDb();
+    $di = upgradesContainer($db);
+    $di['services']['invoice_subscription']->shouldNotReceive('cancelForOrder');
+    $result = Upgrades::request($di, upgradesOrder($di, 5), 21, '1Y', UPGRADES_NOW);
+    $db->update('service_hosting_hp', ['config' => '{"server_id":2}'], ['id' => 8]);
+    upgradesPay($db, $result['id']);
+
+    Upgrades::onPaid($di, $result['id'], UPGRADES_NOW);
+
+    expect($db->fetchAssociative('SELECT status, error FROM ' . Upgrades::TABLE))
+        ->toBe(['status' => 'failed', 'error' => 'This hosting plan belongs to another server.'])
+        ->and($di['db']->planChanges)->toBe([]);
 });
 
 test('a failed subscription cancellation leaves the hosting panel plan unchanged', function (): void {

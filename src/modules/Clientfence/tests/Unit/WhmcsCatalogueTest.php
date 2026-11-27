@@ -122,6 +122,7 @@ function whmcsCatalogueTarget(): Connection
         'CREATE TABLE product (id INTEGER PRIMARY KEY AUTOINCREMENT, product_category_id INTEGER, product_payment_id INTEGER, form_id INTEGER, title TEXT, slug TEXT UNIQUE, description TEXT, unit TEXT, active INTEGER, status TEXT, hidden INTEGER, is_addon INTEGER, setup TEXT, addons TEXT, icon_url TEXT, allow_quantity_select INTEGER, stock_control INTEGER, quantity_in_stock INTEGER, plugin TEXT, plugin_config TEXT, upgrades TEXT, priority INTEGER, config TEXT, created_at TEXT, updated_at TEXT, type TEXT)',
         "CREATE TABLE product_payment (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, once_price REAL DEFAULT 0, once_setup_price REAL DEFAULT 0, {$payment})",
         'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, ip TEXT, hostname TEXT, assigned_ips TEXT, status_url TEXT, active INTEGER, max_accounts INTEGER, ns1 TEXT, ns2 TEXT, ns3 TEXT, ns4 TEXT, manager TEXT, username TEXT, password TEXT, accesshash TEXT, password_length INTEGER, port TEXT, config TEXT, secure INTEGER, created_at TEXT, updated_at TEXT)',
+        'CREATE TABLE service_hosting_server_group (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, fill_type TEXT, servers TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE service_hosting_hp (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, quota TEXT, bandwidth TEXT, max_ftp TEXT, max_sql TEXT, max_pop TEXT, max_sub TEXT, max_park TEXT, max_addon TEXT, config TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE form (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, style TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE form_field (id INTEGER PRIMARY KEY AUTOINCREMENT, form_id INTEGER, name TEXT, label TEXT, hide_label INTEGER, description TEXT, type TEXT, default_value TEXT, required INTEGER, hidden INTEGER, readonly INTEGER, is_unique INTEGER, prefix TEXT, suffix TEXT, options TEXT, show_initial TEXT, show_middle TEXT, show_prefix TEXT, show_suffix TEXT, text_size INTEGER, created_at TEXT, updated_at TEXT)',
@@ -383,6 +384,62 @@ test('a product without a WHMCS server group is hosting on its module\'s default
     expect($warnings)->toContain('Product "Plesk plan" has no WHMCS server group and its module has no default server in WHMCS; ClientFence places new accounts on the first of its 2 servers.')
         ->toContain('Product "DA plan" (directadmin) has no WHMCS server group and no imported server of its module: it is a custom product')
         ->not->toContain('Product "Enhance plan" has no WHMCS server group');
+});
+
+test('products in the same WHMCS server group share an imported group', function (int $fillType, string $expectedFillType): void {
+    $source = whmcsCatalogueSource();
+    $source->update('tblservergroups', ['filltype' => $fillType], ['id' => 1]);
+    $source->update('tblservers', ['active' => 0], ['id' => 1]);
+    $source->insert('tblservers', ['id' => 3, 'name' => 'cp2', 'type' => 'cpanel', 'active' => 1, 'maxaccounts' => 100]);
+    $source->insert('tblservers', ['id' => 4, 'name' => 'cp3', 'type' => 'cpanel', 'active' => 0]);
+    $source->insert('tblservers', ['id' => 5, 'name' => 'cp4', 'type' => 'cpanel', 'maxaccounts' => 100, 'disabled' => 1]);
+    $source->insert('tblservergroupsrel', ['groupid' => 1, 'serverid' => 3]);
+    $source->insert('tblservergroupsrel', ['groupid' => 1, 'serverid' => 4]);
+    $source->insert('tblservergroupsrel', ['groupid' => 1, 'serverid' => 5]);
+    $source->insert('tblproducts', ['id' => 5, 'type' => 'hostingaccount', 'gid' => 1, 'name' => 'Plus', 'paytype' => 'free', 'servertype' => 'cpanel', 'servergroup' => 1]);
+
+    $target = whmcsCatalogueTarget();
+    $catalogue = whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+    $groups = $target->fetchAllAssociative('SELECT * FROM service_hosting_server_group');
+    $servers = $target->fetchAllKeyValue('SELECT name, id FROM service_hosting_server');
+
+    expect($groups)->toHaveCount(1);
+    $config = ['server_group_id' => (int) $groups[0]['id'], 'server_id' => (int) $servers['cp1']];
+    expect($groups[0])->toMatchArray(['name' => 'cPanel', 'fill_type' => $expectedFillType])
+        ->and(json_decode((string) $groups[0]['servers'], true))->toBe([(int) $servers['cp2'], (int) $servers['cp1']])
+        ->and((new Map($target))->get('servergroup', '1:Whm'))->toBe($config['server_group_id'])
+        ->and(json_decode((string) whmcsProductByTitle($target, 'Starter')['config'], true))->toMatchArray($config)
+        ->and(json_decode((string) whmcsProductByTitle($target, 'Plus')['config'], true))->toMatchArray($config);
+
+    expect(implode("\n", $catalogue->warnings()))
+        ->toContain('Product "Starter": server cp3 of its WHMCS server group has no maximum number of accounts, so it is not in the ClientFence server group; set one and add it.')
+        ->not->toContain('ClientFence places new accounts on the first one.');
+    expect(array_filter($catalogue->warnings(), fn (string $warning): bool => str_contains($warning, 'server cp3 of its WHMCS server group has no maximum number of accounts')))->toHaveCount(1);
+    $disabledWarnings = array_filter($catalogue->warnings(), fn (string $warning): bool => str_contains($warning, 'server cp4 is disabled in WHMCS'));
+    expect(array_values($disabledWarnings))->toBe(['Product "Starter": server cp4 is disabled in WHMCS, so it is not in the ClientFence server group.']);
+})->with([
+    'least full' => [1, 'least'],
+    'fill in order' => [2, 'fill'],
+]);
+
+test('products in a mixed WHMCS server group use groups for their own managers', function (): void {
+    $source = whmcsCatalogueSource();
+    foreach ([[3, 'cp2', 'cpanel'], [4, 'da1', 'directadmin'], [5, 'da2', 'directadmin']] as [$id, $name, $type]) {
+        $source->insert('tblservers', ['id' => $id, 'name' => $name, 'type' => $type, 'maxaccounts' => 100]);
+        $source->insert('tblservergroupsrel', ['groupid' => 1, 'serverid' => $id]);
+    }
+    $source->insert('tblproducts', ['id' => 5, 'type' => 'hostingaccount', 'gid' => 1, 'name' => 'DA plan', 'paytype' => 'free', 'servertype' => 'directadmin', 'servergroup' => 1]);
+
+    $target = whmcsCatalogueTarget();
+    whmcsCatalogueAll($source, $target, Cipher::withKey(WHMCS_CATALOGUE_KEY));
+    $groups = $target->fetchAllKeyValue('SELECT id, servers FROM service_hosting_server_group');
+    $servers = $target->fetchAllKeyValue('SELECT name, id FROM service_hosting_server');
+    $cpConfig = json_decode((string) whmcsProductByTitle($target, 'Starter')['config'], true);
+    $daConfig = json_decode((string) whmcsProductByTitle($target, 'DA plan')['config'], true);
+
+    expect($groups)->toHaveCount(2)
+        ->and(json_decode((string) $groups[$cpConfig['server_group_id']], true))->toEqualCanonicalizing([(int) $servers['cp1'], (int) $servers['cp2']])
+        ->and(json_decode((string) $groups[$daConfig['server_group_id']], true))->toEqualCanonicalizing([(int) $servers['da1'], (int) $servers['da2']]);
 });
 
 test('WHMCS custom field types map to order form fields', function (): void {

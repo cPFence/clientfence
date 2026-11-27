@@ -33273,3 +33273,209 @@ msgstr "Verplaatste services: %moved%. Verplaatsen mislukt: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Er zijn nog bestellingen voor dit producttype. Verwijder deze voordat u de module verwijdert."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Toevoegen aan de server met de minste accounts"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Kies minstens één server voor de groep."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Servergroep verwijderen"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Servergroep bewerken"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Voer eerst de gebruikersnaam van dit hostingaccount in (onder ‘Server en gebruikersnaam’ op het tabblad ‘Dienstbeheer’)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Toewijzingsregel"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Eerst de server van het product vullen, daarna de server met de minste accounts gebruiken"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Voor services die via een aangepast product zijn toegevoegd. Bij verplaatsing naar een hostingproduct wordt elke service gekoppeld aan het bestaande account op de server van het product. Het account wordt opgezocht op domeinnaam. Kan de server geen accounts opzoeken, dan wordt de service zonder inloggegevens verplaatst en voert een medewerker de gebruikersnaam in bij de service. Op de server wordt niets aangemaakt. De bestelling behoudt de prijs, factureringsperiode, vervaldatum, facturen en status."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Ongeldig toewijzingstype voor de servergroep."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Wordt verplaatst zonder inloggegevens: voer de gebruikersnaam in bij de service"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Nieuwe servergroep"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Optioneel. Nieuwe bestellingen worden op een server in deze groep geplaatst. De hierboven ingestelde server komt als eerste aan bod in de toewijzingsregel en wordt gebruikt voor importeren en verplaatsen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Bij producten met een servergroep wordt elke nieuwe bestelling op een van de servers in de groep geplaatst. Inactieve en volle servers worden overgeslagen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "De gegevens worden alleen opgeslagen in ClientFence. Op de server verandert er niets. Gebruik dit voor bestaande accounts, bijvoorbeeld na importeren of verplaatsen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Servergroep"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Servergroepen"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Server en gebruikersnaam"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "De ID van de servergroep is niet doorgegeven"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "De servergroep wordt gebruikt door het product :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "De naam van de servergroep is verplicht."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Servergroep niet gevonden"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Dit hostingpakket hoort bij een andere server."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Deze server kan geen accounts opzoeken. Voer de gebruikersnaam in bij de service."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, gebruikersnaam %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Accountlijst van deze server"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Toevoegen aan de minst volle server (op basis van het gebruikte aandeel van het accountmaximum)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Kies de server van het product of een server uit de servergroep van het product."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Geef voor elke server in de groep een positie op. Gebruik 1 voor de eerste server. Laat het veld leeg om een server uit te sluiten."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Voer voor elke server een positieve positie in."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Voer de gebruikersnaam van het account op de nieuwe server in."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Servers op volgorde vullen: gebruik de eerste server die ruimte heeft"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Voor een hostingproduct: de server van het product of een server uit de bijbehorende servergroep."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Voor services die onder een aangepast product zijn geïmporteerd. Bij Enhance wordt elke service op de server aan de hand van het domein gevonden. Plak bij andere panelen de accountlijst van de server. Elke service waarvan het domein in de lijst staat, wordt verplaatst met die server en gebruikersnaam. Er wordt niets op de server aangemaakt. De bestelling behoudt de prijs, factureringsperiode, vervaldatum, facturen en status."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Nieuwe bestellingen voor producten die aan een servergroep zijn gekoppeld, worden op een server uit die groep geplaatst. Inactieve en volle servers worden overgeslagen."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Staat niet in de accountlijst van deze server."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Eén account per regel: domein en gebruikersnaam, gescheiden door een spatie, tab, komma of dubbele punt. cPanel: plak /etc/trueuserdomains ongewijzigd. Laat het veld leeg voor Enhance, dat rechtstreeks wordt bevraagd."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Optioneel. Nieuwe bestellingen worden op een server uit deze groep geplaatst. De hierboven geselecteerde server wordt gebruikt voor import en verplaatsingen."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Plak de accountlijst van deze server."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Voor server :name is geen maximumaantal accounts ingesteld. Stel een maximum in om de server aan een groep toe te voegen."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Server waarop de accounts staan"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Stel een maximumaantal accounts voor deze server in om hem aan een groep toe te voegen."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Dit domein staat twee keer in de accountlijst."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Gebruikersnaam :username wordt al gebruikt door bestelling #:id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Alleen wanneer u dit account naar een server met een ander controlepaneel verplaatst."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Hostingpakket niet gevonden"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Deze gebruikersnaam heeft meer dan één domein in de accountlijst."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Maximumaantal accounts"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Het maximumaantal accounts moet een geheel getal van minstens 1 zijn. Laat het veld leeg als u geen maximum wilt instellen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Vereist om de server aan een servergroep toe te voegen. Laat het veld leeg als u geen maximum wilt instellen."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Server :name maakt deel uit van servergroep :group. Behoud het maximumaantal accounts of verwijder de server eerst uit de groep."

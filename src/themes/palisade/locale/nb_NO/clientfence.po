@@ -36245,3 +36245,209 @@ msgstr "Flyttede tjenester: %moved%. Kunne ikke flyttes: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Det finnes fortsatt ordrer for denne produkttypen. Slett dem før avinstallering av modulen."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Legg til på serveren med færrest kontoer"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Velg minst én server for gruppen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Slett servergruppen"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Rediger servergruppe"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Angi først brukernavnet til denne hostingkontoen (under «Server og brukernavn» på fanen «Tjenesteadministrasjon»)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Fordelingsregel"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Fyll produktets server først, og bruk deretter serveren med færrest kontoer"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "For tjenester som ble lagt til med et tilpasset produkt. Når en tjeneste flyttes til et hostingprodukt, kobles den til den eksisterende kontoen på produktets server. Kontoen finnes ved hjelp av domenet. Hvis serveren ikke kan slå opp kontoer, flyttes tjenesten uten innloggingsopplysninger, og de ansatte angir brukernavnet på tjenesten. Ingenting opprettes på serveren. Ordren beholder pris, faktureringsperiode, forfallsdato, fakturaer og status."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Ugyldig type fordelingsregel for servergruppen."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Flyttes uten innloggingsopplysninger: angi brukernavnet på tjenesten"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Ny servergruppe"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Valgfritt. Nye ordrer plasseres på en server i denne gruppen. Serveren ovenfor er den første i fordelingsregelen og brukes ved import og flytting."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "For produkter med en servergruppe plasseres hver ny ordre på en av serverne i gruppen. Inaktive og fulle servere hoppes over."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Lagres bare i ClientFence. Ingenting endres på serveren. Bruk dette for eksisterende kontoer, for eksempel etter import eller flytting."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Servergruppe"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Servergrupper"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Server og brukernavn"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "Servergruppens ID ble ikke oppgitt"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Servergruppen brukes av produktet :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Servergruppen må ha et navn."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Fant ikke servergruppen"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Denne hostingplanen tilhører en annen server."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Denne serveren kan ikke slå opp kontoer. Angi brukernavnet på tjenesten."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, brukernavn %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Kontoliste for denne serveren"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Legg til på serveren med lavest fyllingsgrad (andel av kontogrensen som er brukt)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Velg produktets server eller en server i produktets servergruppe."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Angi plasseringen til hver server i gruppen, med 1 først. La feltet stå tomt for å utelate serveren."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Angi en plassering større enn 0 for hver server."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Skriv inn brukernavnet til kontoen på den nye serveren."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Fyll serverne i rekkefølge: bruk den første serveren med ledig plass"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "For et hostingprodukt: produktets server eller en server i produktets servergruppe."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "For tjenester som ble importert under et tilpasset produkt. Med Enhance finner systemet hver tjeneste på serveren ved hjelp av domenet. Lim inn serverens kontoliste for andre paneler. Hver tjeneste med et domene i listen flyttes med den aktuelle serveren og det tilhørende brukernavnet. Ingenting opprettes på serveren. Ordren beholder prisen, faktureringsperioden, forfallsdatoen, fakturaene og statusen."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Nye ordrer for produkter med en servergruppe plasseres på en server i gruppen. Inaktive og fulle servere hoppes over."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Finnes ikke i kontolisten for denne serveren."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Én konto per linje: domene og brukernavn skilt med mellomrom, tabulator, komma eller kolon. cPanel: lim inn innholdet i /etc/trueuserdomains uendret. La feltet stå tomt for Enhance, som forespørres direkte."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Valgfritt. Nye ordrer plasseres på en server i denne gruppen. Serveren som er valgt ovenfor, brukes til import og flytting."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Lim inn kontolisten for denne serveren."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Server :name har ingen kontogrense. Angi en grense for å legge serveren til i en gruppe."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Serveren der kontoene ligger"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Angi en kontogrense for denne serveren for å legge den til i en gruppe."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Dette domenet står to ganger i kontolisten."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Brukernavnet :username brukes allerede av ordre #:id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Kun ved flytting av denne kontoen til en server med et annet kontrollpanel."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Hostingplan ikke funnet"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Dette brukernavnet har mer enn ett domene i kontolisten."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Kontogrense"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Kontogrensen må være et heltall på minst 1. La feltet stå tomt hvis du ikke vil sette en grense."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "En kontogrense er påkrevd for å legge serveren til i en servergruppe. La feltet stå tomt hvis du ikke vil sette en grense."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Serveren :name er i servergruppen :group. Behold en kontogrense, eller fjern serveren fra gruppen først."

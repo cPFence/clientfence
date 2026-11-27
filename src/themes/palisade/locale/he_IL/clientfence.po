@@ -37434,3 +37434,209 @@ msgstr "שירותים שהועברו: %moved%. ההעברה נכשלה: %failed
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "עדיין יש הזמנות לסוג מוצר זה. מחקו אותן לפני הסרת המודול."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "הוספה לשרת עם מספר החשבונות הקטן ביותר"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "יש לבחור לפחות שרת אחד לקבוצה."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "מחיקת קבוצת השרתים"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "עריכת קבוצת שרתים"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "יש להזין תחילה את שם המשתמש של חשבון האחסון הזה (בסעיף ״שרת ושם משתמש״ בלשונית ״ניהול השירות״)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "כלל הקצאה"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "מילוי שרת המוצר עד לתפוסה מלאה, ואז שימוש בשרת עם מספר החשבונות הקטן ביותר"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "לשירותים שנוספו במסגרת מוצר מותאם. בהעברה למוצר אחסון, כל שירות מקושר לחשבון הקיים שלו בשרת המוצר. החשבון מאותר לפי הדומיין. אם השרת אינו תומך בחיפוש חשבונות, השירות מועבר ללא פרטי התחברות והצוות מזין את שם המשתמש בשירות. שום דבר לא נוצר בשרת. המחיר, תקופת החיוב, מועד התשלום, החשבוניות והסטטוס של ההזמנה נשמרים."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "סוג הקצאה לא תקין לקבוצת השרתים."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "העברה ללא פרטי התחברות: יש להזין את שם המשתמש בשירות"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "קבוצת שרתים חדשה"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "רשות. הזמנות חדשות יוקצו לשרת בקבוצה זו. השרת שמופיע למעלה הוא הראשון לפי כלל ההקצאה, ומשמש גם לייבוא ולהעברה."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "במוצרים המשויכים לקבוצת שרתים, כל הזמנה חדשה מוקצית לאחד משרתי הקבוצה. מדלגים על שרתים לא פעילים ועל שרתים מלאים."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "הנתונים נשמרים רק ב-ClientFence, ואין שינוי בשרת. אפשר להשתמש בהגדרה זו עבור חשבונות קיימים, למשל אחרי ייבוא או העברה."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "קבוצת שרתים"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "קבוצות שרתים"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "שרת ושם משתמש"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "לא נמסר מזהה קבוצת השרתים"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "המוצר :product משתמש בקבוצת השרתים."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "יש להזין שם לקבוצת השרתים."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "קבוצת השרתים לא נמצאה"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "תוכנית אחסון זו שייכת לשרת אחר."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "שרת זה אינו תומך בחיפוש חשבונות: יש להזין את שם המשתמש בשירות."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, שם משתמש %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "רשימת החשבונות בשרת זה"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "הוספה לשרת הכי פחות מלא (לפי שיעור הניצול של מכסת החשבונות)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "בחרו בשרת של המוצר או בשרת מקבוצת השרתים שלו."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "הזינו מיקום לכל שרת בקבוצה, החל מ־1. השאירו את השדה ריק כדי לא לכלול שרת בקבוצה."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "הזינו מספר חיובי למיקום של כל שרת."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "הזינו את שם המשתמש של החשבון בשרת החדש."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "מילוי השרתים לפי הסדר: שימוש בשרת הראשון שיש בו מקום"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "למוצר אחסון: השרת של המוצר או שרת מקבוצת השרתים שלו."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "לשירותים שיובאו תחת מוצר מותאם. ב־Enhance כל שירות נמצא בשרת לפי הדומיין שלו. בלוחות בקרה אחרים, הדביקו את רשימת החשבונות של השרת. כל שירות שהדומיין שלו מופיע ברשימה מועבר עם השרת ושם המשתמש המתאים. לא נוצר דבר בשרת. המחיר, תקופת החיוב, מועד התשלום, החשבוניות והסטטוס של ההזמנה נשמרים."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "הזמנות חדשות למוצרים המשויכים לקבוצת שרתים מוקצות לאחד משרתי הקבוצה. המערכת מדלגת על שרתים לא פעילים ושרתים מלאים."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "לא מופיע ברשימת החשבונות בשרת זה."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "חשבון אחד בכל שורה: הפרידו בין הדומיין לשם המשתמש ברווח, בטאב, בפסיק או בנקודתיים. cPanel: הדביקו את תוכן /etc/trueuserdomains כפי שהוא. עבור Enhance השאירו את השדה ריק, כי הנתונים נשלפים ישירות."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "אופציונלי. הזמנות חדשות מוקצות לשרת בקבוצה זו. השרת שנבחר למעלה משמש לייבוא ולהעברה."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "הדביקו את רשימת החשבונות בשרת זה."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "לשרת :name לא הוגדר מספר חשבונות מרבי. הגדירו מכסה כדי להוסיף אותו לקבוצה."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "השרת שבו נמצאים החשבונות"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "הגדירו מספר חשבונות מרבי לשרת זה כדי להוסיף אותו לקבוצה."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "דומיין זה מופיע פעמיים ברשימת החשבונות."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "שם המשתמש :username כבר בשימוש בהזמנה מס׳ :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "רק בעת העברת חשבון זה לשרת עם לוח בקרה אחר."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "תוכנית האחסון לא נמצאה"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "לשם משתמש זה משויך יותר מדומיין אחד ברשימת החשבונות."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "מספר חשבונות מרבי"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "מספר החשבונות המרבי חייב להיות מספר שלם של 1 לפחות. השאירו את השדה ריק כדי שלא תהיה הגבלה."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "חובה להגדיר מספר מרבי כדי להוסיף את השרת לקבוצת שרתים. השאירו את השדה ריק כדי שלא תהיה הגבלה."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "השרת :name נמצא בקבוצת השרתים :group. השאירו מספר חשבונות מרבי מוגדר או הסירו תחילה את השרת מהקבוצה."

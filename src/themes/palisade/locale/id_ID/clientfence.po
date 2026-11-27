@@ -33926,3 +33926,209 @@ msgstr "Layanan yang dipindahkan: %moved%. Gagal dipindahkan: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Masih ada pesanan untuk jenis produk ini. Hapus pesanan tersebut sebelum mencopot modul."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Tambahkan ke server dengan akun paling sedikit"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Pilih setidaknya satu server untuk grup ini."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Hapus grup server"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Edit grup server"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Masukkan dulu nama pengguna akun hosting ini (di bagian “Server dan nama pengguna” pada tab “Manajemen Layanan”)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Aturan penempatan"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Isi server produk sampai penuh, lalu gunakan server dengan akun paling sedikit"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Untuk layanan yang ditambahkan lewat produk kustom. Saat dipindahkan ke produk hosting, setiap layanan ditautkan ke akun yang sudah ada di server produk. Akun dicari berdasarkan domain. Jika server tidak mendukung pencarian akun, layanan dipindahkan tanpa data login dan staf memasukkan nama pengguna pada layanan. Tidak ada yang dibuat di server. Harga, periode penagihan, tanggal jatuh tempo, faktur, dan status pesanan tetap sama."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Jenis penempatan untuk grup server tidak valid."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Dipindahkan tanpa data login: masukkan nama pengguna pada layanan"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Grup server baru"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Opsional. Pesanan baru ditempatkan di salah satu server dalam grup ini. Server yang dipilih di atas adalah server pertama menurut aturan penempatan dan digunakan untuk impor dan pemindahan."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Untuk produk yang menggunakan grup server, setiap pesanan baru ditempatkan di salah satu server dalam grup. Server yang tidak aktif atau sudah penuh dilewati."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Data hanya disimpan di ClientFence. Tidak ada perubahan di server. Gunakan untuk akun yang sudah ada, misalnya setelah impor atau pemindahan."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Grup server"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Grup server"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Server dan nama pengguna"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "ID grup server belum diberikan"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Grup server digunakan oleh produk :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Nama grup server wajib diisi."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Grup server tidak ditemukan"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Paket hosting ini berada di server lain."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Server ini tidak mendukung pencarian akun: masukkan nama pengguna pada layanan."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, nama pengguna %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Daftar akun di server ini"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Tambahkan ke server dengan tingkat keterisian terendah (berdasarkan persentase batas akun yang terpakai)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Pilih server produk atau salah satu server dalam grupnya."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Masukkan posisi tiap server dalam grup, mulai dari 1. Kosongkan kolom untuk mengecualikan server."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Masukkan posisi lebih dari 0 untuk tiap server."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Masukkan nama pengguna akun di server baru."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Isi server secara berurutan: gunakan server pertama yang masih punya tempat"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Untuk produk hosting: gunakan server produk atau salah satu server dalam grupnya."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Untuk layanan yang diimpor dengan produk kustom. Di Enhance, setiap layanan ditemukan di server berdasarkan domainnya. Untuk panel lain, tempel daftar akun server. Setiap layanan yang domainnya ada di daftar dipindahkan dengan server dan nama pengguna tersebut. Tidak ada yang dibuat di server. Pesanan tetap menggunakan harga, periode penagihan, tanggal jatuh tempo, faktur, dan status yang sama."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Pesanan baru untuk produk yang ditetapkan ke grup server ditempatkan di salah satu server dalam grup tersebut. Server yang tidak aktif atau sudah penuh dilewati."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Tidak ada di daftar akun server ini."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Satu akun per baris: domain dan nama pengguna, dipisahkan dengan spasi, tab, koma, atau titik dua. cPanel: tempel isi /etc/trueuserdomains apa adanya. Kosongkan untuk Enhance, yang akan dikueri langsung."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Opsional. Pesanan baru ditempatkan di salah satu server dalam grup ini. Server yang dipilih di atas digunakan untuk impor dan pemindahan."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Tempel daftar akun server ini."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Server :name belum memiliki batas jumlah akun. Tetapkan batas agar server bisa ditambahkan ke grup."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Server tempat akun berada"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Tetapkan batas jumlah akun di server ini untuk menambahkannya ke grup."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Domain ini muncul dua kali di daftar akun."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Nama pengguna :username sudah digunakan oleh pesanan #:id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Hanya saat memindahkan akun ini ke server dengan panel kontrol lain."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Paket hosting tidak ditemukan"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Nama pengguna ini memiliki lebih dari satu domain di daftar akun."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Batas jumlah akun"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Batas jumlah akun harus berupa bilangan bulat minimal 1. Kosongkan kolom jika tidak ingin menetapkan batas."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Batas ini diperlukan untuk menambahkan server ke grup server. Kosongkan kolom jika tidak ingin menetapkan batas."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Server :name berada dalam grup server :group. Pertahankan batas jumlah akun atau keluarkan server dari grup terlebih dahulu."

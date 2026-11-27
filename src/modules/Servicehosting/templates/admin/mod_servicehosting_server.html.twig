@@ -127,6 +127,11 @@
                         <input class="form-control" type="number" name="passwordLength" min="1" max="100" value="{{ server.passwordLength }}" placeholder="{{ 'Length of generated passwords when creating user accounts. Defaults to 10'|trans }}">
                     </div>
                     <div class="col-lg-6">
+                        <label class="form-label" for="server-max-accounts">{{ 'Maximum number of accounts'|trans }}</label>
+                        <input class="form-control" id="server-max-accounts" type="number" name="max_accounts" min="1" step="1" value="{{ server.max_accounts }}">
+                        <div class="form-text">{{ 'Needed to add the server to a server group. Leave empty for no limit.'|trans }}</div>
+                    </div>
+                    <div class="col-lg-6">
                         <label class="form-label">{{ 'Use Secure Connection'|trans }}</label>
                         <div class="d-flex flex-wrap gap-3 pt-1">
                             <label class="form-check">

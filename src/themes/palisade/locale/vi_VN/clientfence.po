@@ -33776,3 +33776,209 @@ msgstr "Dịch vụ đã chuyển: %moved%. Không chuyển được: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Vẫn còn đơn hàng cho loại sản phẩm này. Hãy xóa các đơn hàng đó trước khi gỡ cài đặt mô-đun."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Thêm vào máy chủ có ít tài khoản nhất"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Chọn ít nhất một máy chủ cho nhóm."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Xóa nhóm máy chủ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Chỉnh sửa nhóm máy chủ"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Trước hết, hãy nhập tên đăng nhập của tài khoản hosting này (trong mục “Máy chủ và tên đăng nhập” trên thẻ “Quản lý dịch vụ”)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Quy tắc phân bổ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Dùng máy chủ của sản phẩm đến khi đầy, sau đó dùng máy chủ có ít tài khoản nhất"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Dành cho các dịch vụ được thêm qua sản phẩm tùy chỉnh. Khi chuyển sang sản phẩm hosting, mỗi dịch vụ được liên kết với tài khoản hiện có trên máy chủ của sản phẩm. Tài khoản được tìm theo tên miền. Nếu máy chủ không hỗ trợ tra cứu tài khoản, dịch vụ được chuyển mà không kèm thông tin đăng nhập và nhân viên nhập tên đăng nhập trong dịch vụ. Không có gì được tạo trên máy chủ. Đơn hàng giữ nguyên giá, kỳ thanh toán, ngày đến hạn, hóa đơn và trạng thái."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Kiểu phân bổ của nhóm máy chủ không hợp lệ."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Chuyển không kèm thông tin đăng nhập: hãy nhập tên đăng nhập trong dịch vụ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Nhóm máy chủ mới"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Không bắt buộc. Đơn hàng mới được phân bổ vào một máy chủ trong nhóm này. Máy chủ chỉ định ở trên đứng đầu theo quy tắc phân bổ và được dùng khi nhập hoặc chuyển dịch vụ."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "Với sản phẩm đã chọn nhóm máy chủ, mỗi đơn hàng mới được phân bổ vào một máy chủ trong nhóm. Hệ thống bỏ qua các máy chủ không hoạt động hoặc đã đầy."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Dữ liệu chỉ được lưu trong ClientFence. Không có gì thay đổi trên máy chủ. Dùng cho tài khoản hiện có, chẳng hạn sau khi nhập hoặc chuyển dịch vụ."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Nhóm máy chủ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Các nhóm máy chủ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Máy chủ và tên đăng nhập"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "Chưa truyền ID nhóm máy chủ"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Sản phẩm :product đang sử dụng nhóm máy chủ này."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Bắt buộc nhập tên nhóm máy chủ."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Không tìm thấy nhóm máy chủ"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Gói hosting này thuộc máy chủ khác."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Máy chủ này không hỗ trợ tra cứu tài khoản. Hãy nhập tên đăng nhập trong dịch vụ."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, tên đăng nhập %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Danh sách tài khoản của máy chủ này"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Thêm vào máy chủ có tỷ lệ sử dụng thấp nhất (số tài khoản hiện có so với giới hạn)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Chọn máy chủ của sản phẩm hoặc một máy chủ trong nhóm của sản phẩm."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Nhập vị trí cho từng máy chủ trong nhóm, bắt đầu từ 1. Để trống để loại máy chủ khỏi nhóm."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Nhập vị trí lớn hơn 0 cho từng máy chủ."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Nhập tên đăng nhập của tài khoản trên máy chủ mới."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Lấp đầy máy chủ theo thứ tự: dùng máy chủ đầu tiên còn chỗ"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Với sản phẩm hosting: chọn máy chủ của sản phẩm hoặc một máy chủ trong nhóm của sản phẩm."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Dành cho dịch vụ được nhập vào dưới một sản phẩm tùy chỉnh. Với Enhance, hệ thống tìm từng dịch vụ trên máy chủ theo tên miền. Với bảng điều khiển khác, hãy dán danh sách tài khoản của máy chủ. Mỗi dịch vụ có tên miền trong danh sách sẽ được chuyển với máy chủ và tên đăng nhập tương ứng. Không có mục nào được tạo trên máy chủ. Đơn hàng giữ nguyên giá, kỳ thanh toán, ngày đến hạn, hóa đơn và trạng thái."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Đơn hàng mới của sản phẩm được gán nhóm máy chủ sẽ vào một máy chủ trong nhóm đó. Hệ thống bỏ qua máy chủ đã tắt hoặc đã đầy."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Không có trong danh sách tài khoản của máy chủ này."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Mỗi dòng một tài khoản: tên miền và tên đăng nhập, cách nhau bằng dấu cách, tab, dấu phẩy hoặc dấu hai chấm. cPanel: dán nguyên nội dung /etc/trueuserdomains. Với Enhance, hãy để trống vì hệ thống sẽ truy vấn trực tiếp."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Không bắt buộc. Đơn hàng mới sẽ vào một máy chủ trong nhóm này. Máy chủ được chọn ở trên dùng để nhập và chuyển dịch vụ."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Dán danh sách tài khoản của máy chủ này."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Máy chủ :name chưa có giới hạn số tài khoản. Hãy đặt giới hạn để thêm máy chủ vào nhóm."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Máy chủ chứa các tài khoản"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Đặt giới hạn số tài khoản cho máy chủ này để thêm vào nhóm."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Tên miền này xuất hiện hai lần trong danh sách tài khoản."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Tên đăng nhập :username đã được đơn hàng #:id sử dụng."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Chỉ khi chuyển tài khoản này sang máy chủ dùng bảng điều khiển khác."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Không tìm thấy gói hosting"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "Tên đăng nhập này có nhiều hơn một tên miền trong danh sách tài khoản."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Giới hạn số tài khoản"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Giới hạn số tài khoản phải là số nguyên từ 1 trở lên. Hãy để trống trường này nếu không muốn đặt giới hạn."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Cần đặt giới hạn để thêm máy chủ vào nhóm máy chủ. Hãy để trống trường này nếu không muốn đặt giới hạn."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Máy chủ :name thuộc nhóm máy chủ :group. Hãy giữ giới hạn số tài khoản hoặc đưa máy chủ ra khỏi nhóm trước."

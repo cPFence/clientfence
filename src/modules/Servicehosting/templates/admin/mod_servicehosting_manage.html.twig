@@ -82,8 +82,48 @@
     </div>
     {% endif %}
 
+    {# ClientFence core patch: staff set the server and login of an account that already exists, in ClientFence only (servicehosting/update). The Enhance login is in the Enhance Link section. #}
+    {% set is_enhance = server and server.manager == 'Enhance' %}
+    {% set can_pick_server = has_permission('servicehosting', 'view_servers') %}
+    {% set show_account_form = has_permission('servicehosting', 'manage_accounts') and (can_pick_server or not is_enhance) %}
+    {% if show_account_form %}
     <div class="mb-5">
-        <div class="mb-3 cf-section-head{% if not (server and server.manager == 'Enhance') %} border-0 pt-0{% endif %}">
+        <div class="mb-3 cf-section-head{% if not is_enhance %} border-0 pt-0{% endif %}">
+            <h3 class="card-title mb-1">{{ 'Server and Username'|trans }}</h3>
+            <p class="text-secondary mb-0">{{ 'Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move.'|trans }}</p>
+        </div>
+
+        {# A new server empties the username (clientfence-admin.js): the account may have another username there. #}
+        <form method="post" action="{{ 'servicehosting/update'|api_url }}" {{ fb_api_form({reload: true}) }}{% if not is_enhance %} data-cf-account-form data-cf-saved-server="{{ server.id|default('') }}"{% endif %}>
+            <div class="row g-3">
+                {% if can_pick_server %}
+                <div class="col-lg-6">
+                    <label class="form-label" for="service-server-id">{{ 'Server'|trans }}</label>
+                    {{ mf.selectbox('server_id', admin.servicehosting_server_get_pairs, server.id|default(''), 1, 'Select Server'|trans, 'service-server-id') }}
+                </div>
+                {% endif %}
+                {# On Enhance the login is set under Enhance Link; here the field is only for a move to another panel. #}
+                <div class="col-lg-6">
+                    <label class="form-label" for="service-username">{{ 'Username'|trans }}</label>
+                    {% if is_enhance %}
+                    <input class="form-control" id="service-username" type="text" name="username" value="">
+                    <div class="form-text">{{ 'Only when you move this account to a server with another panel.'|trans }}</div>
+                    {% else %}
+                    <input class="form-control" id="service-username" type="text" name="username" value="{{ service.username }}" data-cf-saved-username="{{ service.username }}" required>
+                    {% endif %}
+                </div>
+            </div>
+
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="mb-5">
+        <div class="mb-3 cf-section-head{% if not is_enhance and not show_account_form %} border-0 pt-0{% endif %}">
             <h3 class="card-title mb-1">{{ 'Change IP'|trans }}</h3>
             <p class="text-secondary mb-0">{{ 'Update the primary IP address assigned to the hosting account.'|trans }}</p>
         </div>

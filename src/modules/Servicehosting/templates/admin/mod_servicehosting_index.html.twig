@@ -43,6 +43,14 @@
                             <a class="nav-link" href="#tab-plans" data-bs-toggle="tab">{{ 'Hosting Plans'|trans }}</a>
                         </li>
                         {% endif %}
+                        {# ClientFence core patch: server groups place new orders on one of their servers (ServerGroups.php). #}
+                        {% set can_groups = has_permission('servicehosting', 'view_servers') %}
+                        {% set can_manage_groups = has_permission('servicehosting', 'manage_servers') %}
+                        {% if can_groups %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tab-groups" data-bs-toggle="tab">{{ 'Server Groups'|trans }}</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
                 <div class="tab-content border-top">
@@ -174,6 +182,80 @@
                         {{ include('mod_servicehosting_settings_plans.html.twig', { panels: hosting_panels }) }}
                     </div>
                     {% endif %}
+
+                    {% if can_groups %}
+                    {% set server_pairs = admin.servicehosting_server_get_pairs %}
+                    {% set server_groups = admin.servicehosting_server_group_get_list %}
+                    {% set fill_rules = {
+                        'least': 'Add to the least full server (by share of its maximum accounts)'|trans,
+                        'fill': 'Fill the servers in order: the first one that is not full'|trans,
+                    } %}
+                    <div class="tab-pane fade" id="tab-groups" role="tabpanel">
+                        <div class="card-body border-bottom py-3">
+                            <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+                                <p class="text-secondary mb-0">{{ 'New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped.'|trans }}</p>
+                                {% if can_manage_groups %}
+                                <button class="btn btn-primary ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#serverGroup0Modal">
+                                    <svg class="icon">
+                                        <use href="#plus" />
+                                    </svg>
+                                    {{ 'New Server Group'|trans }}
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table card-table table-vcenter table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'Name'|trans }}</th>
+                                        <th>{{ 'Fill Rule'|trans }}</th>
+                                        <th>{{ 'Servers'|trans }}</th>
+                                        <th class="w-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for group in server_groups %}
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            <span class="d-inline-flex align-items-center gap-2 fw-semibold">
+                                                <span class="cf-avatar cf-avatar-sm cf-tile" aria-hidden="true"><svg class="icon"><use href="#server" /></svg></span>
+                                                <span>{{ group.name }}</span>
+                                            </span>
+                                        </td>
+                                        <td>{{ fill_rules[group.fill_type]|default(group.fill_type) }}</td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% for id in group.servers %}<span class="bf-chip">{{ server_pairs[id]|default('#' ~ id) }}</span>{% endfor %}
+                                            </div>
+                                        </td>
+                                        <td class="text-nowrap">
+                                            {% if can_manage_groups %}
+                                            <a class="btn btn-icon" href="#" data-bs-toggle="modal" data-bs-target="#serverGroup{{ group.id }}Modal" title="{{ 'Edit Server Group'|trans }}">
+                                                <svg class="icon">
+                                                    <use href="#edit" />
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-icon" href="{{ 'servicehosting/server_group_delete'|api_url(query: { 'id': group.id }) }}"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'Delete the Server Group'|trans }}"
+                                                {{ fb_api_link({modal: {type: 'confirm', title: 'Are you sure?'|trans}, redirect: 'servicehosting#tab-groups'|url}) }}>
+                                                <svg class="icon">
+                                                    <use href="#trash" />
+                                                </svg>
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td class="text-muted" colspan="4">{{ 'The list is empty'|trans }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -279,6 +361,11 @@
                                     <input class="form-control" id="new-server-password-length" type="number" name="passwordLength" min="1" max="100" value="" placeholder="{{ 'Length of generated passwords when creating user accounts. Defaults to 10'|trans }}">
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label" for="new-server-max-accounts">{{ 'Maximum number of accounts'|trans }}</label>
+                                    <input class="form-control" id="new-server-max-accounts" type="number" name="max_accounts" min="1" step="1" value="">
+                                    <div class="form-text">{{ 'Needed to add the server to a server group. Leave empty for no limit.'|trans }}</div>
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">{{ 'Use Secure Connection'|trans }}</label>
                                     <div class="d-flex flex-wrap gap-3 pt-2">
                                         <label class="form-check form-check-inline mb-0">
@@ -361,6 +448,64 @@
                 </form>
             </div>
         </div>
+
+        {# ClientFence core patch: one modal per server group, id 0 is the new group (as the reply modals of a ticket). #}
+        {% if can_groups and can_manage_groups %}
+        {% for group in [{ 'id': 0, 'name': '', 'fill_type': 'least', 'servers': [] }]|merge(server_groups) %}
+        {% set gid = 'serverGroup' ~ group.id %}
+        <div class="modal modal-blur fade" id="{{ gid }}Modal" tabindex="-1" aria-labelledby="{{ gid }}ModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down modal-lg">
+                <form class="modal-content fb-modal-form" method="post" action="{{ 'servicehosting/server_group_save'|api_url }}" {{ fb_api_form({redirect: 'servicehosting#tab-groups'|url}) }}>
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="{{ gid }}ModalLabel">{{ group.id ? 'Edit Server Group'|trans : 'New Server Group'|trans }}</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if group.id %}<input type="hidden" name="id" value="{{ group.id }}">{% endif %}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label" for="{{ gid }}-name">{{ 'Name'|trans }}</label>
+                                <input class="form-control" id="{{ gid }}-name" type="text" name="name" value="{{ group.name }}" required>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-label">{{ 'Fill Rule'|trans }}</div>
+                                {% for value, label in fill_rules %}
+                                <label class="form-check">
+                                    <input class="form-check-input" type="radio" name="fill_type" value="{{ value }}"{% if group.fill_type == value %} checked{% endif %}>
+                                    <span class="form-check-label">{{ label }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12">
+                                <div class="form-label">{{ 'Servers'|trans }}</div>
+                                <div class="form-hint mb-2">{{ 'Enter a position for each server of the group, 1 first. Leave it empty to keep a server out.'|trans }}</div>
+                                {% for server in servers.list %}
+                                {% set at = group.servers|filter(v => v == server.id)|keys %}
+                                {% set can_join = server.max_accounts|default(0) > 0 %}
+                                <div class="row g-2 align-items-center mb-2">
+                                    <label class="col col-form-label text-break" for="{{ gid }}-server-{{ server.id }}">{% if can_join %}{{ server.name }}{% else %}<a href='{{ "servicehosting/server/#{server.id}"|url }}'>{{ server.name }}</a>{% endif %}</label>
+                                    <div class="col-auto">
+                                        <input class="form-control cf-input-position" id="{{ gid }}-server-{{ server.id }}" type="number" min="1" step="1" inputmode="numeric" name="servers[{{ server.id }}]" value="{{ at is empty ? '' : at|first + 1 }}" placeholder="{{ 'Position'|trans }}"{% if not can_join %} disabled aria-describedby="{{ gid }}-server-{{ server.id }}-note"{% endif %}>
+                                    </div>
+                                    {% if not can_join %}
+                                    <div class="col-12 form-hint mt-0" id="{{ gid }}-server-{{ server.id }}-note">{{ 'Set a maximum number of accounts on this server to add it to a group.'|trans }}</div>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <div class="text-secondary">{{ 'The list is empty'|trans }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'Cancel'|trans }}</button>
+                        <button class="btn btn-primary" type="submit">{{ 'Save'|trans }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
 

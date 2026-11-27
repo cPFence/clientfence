@@ -21,6 +21,17 @@
                     <input type="text" class="form-control" value="{{ config.server_id|default('') ? '#' ~ config.server_id : '' }}" disabled>
                     {% endif %}
                 </div>
+                {# ClientFence core patch: new orders of this product go on a server of the group (ServerGroups.php). #}
+                <div class="col-lg-6">
+                    <label class="form-label">{{ 'Server Group'|trans }}</label>
+                    {% if has_permission('servicehosting', 'view_servers') %}
+                    {{ mf.selectbox('config[server_group_id]', admin.servicehosting_server_group_get_pairs, config.server_group_id|default(''), 0, 'None'|trans) }}
+                    {% else %}
+                    <input type="hidden" name="config[server_group_id]" value="{{ config.server_group_id|default('') }}">
+                    <input type="text" class="form-control" value="{{ config.server_group_id|default('') ? '#' ~ config.server_group_id : '' }}" disabled>
+                    {% endif %}
+                    <div class="form-text">{{ 'Optional. New orders go on a server of this group. The Server above is used for imports and moves.'|trans }}</div>
+                </div>
                 <div class="col-lg-6">
                     <label class="form-label">{{ 'Hosting Plan'|trans }}</label>
                     {% if has_permission('servicehosting', 'manage_plans') %}

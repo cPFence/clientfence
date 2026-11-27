@@ -179,6 +179,73 @@ test('action create', function (): void {
     expect($servhostingModel->tld)->toBe($confArr['tld']);
 });
 
+test('action create uses the product server if the group is missing', function (bool $groupExists, int $serverId): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $plan = new Model_ServiceHostingHp();
+    $plan->loadBean(new Tests\Helpers\DummyBean());
+    $plan->id = 3;
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $server->id = $serverId;
+    $server->max_accounts = 1;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+
+    $di = container();
+    $db = $di['db'] = Mockery::mock(ClientFence\Database::class);
+    $db->expects('getCell')->andReturn(0);
+    $db->expects('getExistingModelById')->with('ServiceHostingHp', 3, Mockery::any())->andReturn($plan);
+    if ($groupExists) {
+        $db->expects('load')->with('ServiceHostingServer', $serverId)->andReturn($server);
+    } else {
+        $db->expects('getExistingModelById')->with('ServiceHostingServer', $serverId, Mockery::any())->andReturn($server);
+    }
+    $db->expects('dispense')->with('ServiceHosting')->andReturn($model);
+    $db->expects('store')->with($model);
+    $di['dbal']->expects('fetchAssociative')->with('SELECT fill_type, servers FROM service_hosting_server_group WHERE id = ?', [4])
+        ->andReturn($groupExists ? ['fill_type' => 'least', 'servers' => '[2]'] : false);
+    $di['dbal']->expects('fetchOne')->with(Mockery::any(), [$serverId])->andReturn(0);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->expects('getConfig')->with($order)->andReturn(['server_id' => 1, 'server_group_id' => 4, 'hosting_plan_id' => 3, 'sld' => 'site', 'tld' => '.example']);
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->action_create($order)->service_hosting_server_id)->toBe($serverId);
+})->with([
+    'group exists' => [true, 2],
+    'group missing' => [false, 1],
+]);
+
+test('action create refuses a plan bound to another server after its group is deleted', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $server->id = 1;
+    $server->active = 1;
+    $plan = new Model_ServiceHostingHp();
+    $plan->loadBean(new Tests\Helpers\DummyBean());
+    $plan->id = 3;
+    $plan->config = '{"server_id":2}';
+
+    $di = container();
+    $db = $di['db'] = Mockery::mock(ClientFence\Database::class);
+    $db->expects('getCell')->andReturn(0);
+    $db->expects('getExistingModelById')->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
+    $db->expects('getExistingModelById')->with('ServiceHostingHp', 3, Mockery::any())->andReturn($plan);
+    $db->shouldNotReceive('store');
+    $di['dbal']->expects('fetchAssociative')->with('SELECT fill_type, servers FROM service_hosting_server_group WHERE id = ?', [4])->andReturn(false);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->expects('getConfig')->with($order)->andReturn(['server_id' => 1, 'server_group_id' => 4, 'hosting_plan_id' => 3, 'sld' => 'site', 'tld' => '.example']);
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->action_create($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan belongs to another server.');
+});
+
 test('action create refuses an inactive or full server', function (int $active, int $maxAccounts): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
@@ -251,23 +318,28 @@ test('action create stores an already set up account on an inactive or full serv
 ]);
 
 // ClientFence: an uncancel creates a new account on the server, so the server's limits apply to an "already set up" order too.
-test('uncancel of an already set up order refuses a full server', function (): void {
+test('uncancel of an already set up order refuses an inactive or full service server without creating a row', function (int $active): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->service_hosting_server_id = 2;
     $server = new Model_ServiceHostingServer();
     $server->loadBean(new Tests\Helpers\DummyBean());
-    $server->id = 1;
-    $server->active = 1;
+    $server->id = 2;
+    $server->active = $active;
     $server->max_accounts = 2;
 
     $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderService->shouldReceive('getConfig')->once()->with($order)->andReturn(['server_id' => 1, 'hosting_plan_id' => 2, 'sld' => 'site', 'tld' => 'test', 'import' => true]);
+    $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($model);
     $db = Mockery::mock(ClientFence\Database::class);
     $db->shouldReceive('getCell')->once()->andReturn(0);
-    $db->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
+    $db->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 2, 'Server not found')->andReturn($server);
     $db->shouldNotReceive('dispense');
+    $db->shouldNotReceive('store');
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $dbal->shouldReceive('fetchOne')->once()->andReturn(2);
+    $dbal->shouldReceive('fetchOne')->times($active)->with(Mockery::any(), [2])->andReturn(2);
 
     $di = container();
     $di['db'] = $db;
@@ -277,7 +349,7 @@ test('uncancel of an already set up order refuses a full server', function (): v
     $service->setDi($di);
 
     expect(fn () => $service->action_uncancel($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
-});
+})->with(['inactive server' => 0, 'full server' => 1]);
 
 test('action renew', function (): void {
     $service = new Service();
@@ -344,6 +416,34 @@ test('action renew order without active service', function (): void {
     $service->setDi($di);
     expect(fn (): bool => $service->action_renew($orderModel))
         ->toThrow(ClientFence\Exception::class, sprintf('Order %d has no active service', $orderModel->id));
+});
+
+test('action activate requires a username for imports on managers without account lookup', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->service_hosting_server_id = 1;
+    $model->sld = 'site';
+    $model->tld = '.example';
+    $server = new Model_ServiceHostingServer();
+
+    $di = container();
+    $db = $di['db'] = Mockery::mock(ClientFence\Database::class);
+    $db->expects('getExistingModelById')->with('ServiceHostingServer', 1, 'Server not found')->andReturn($server);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->expects('getOrderService')->with($order)->andReturn($model);
+    $orderService->expects('getConfig')->with($order)->andReturn(['import' => true]);
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+    $manager = Mockery::mock(Server_Manager_Custom::class);
+    $manager->expects('getPasswordLength')->andReturn(12);
+    $manager->shouldNotReceive('generateUsername');
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->expects('getServerManager')->with($server)->andReturn($manager);
+    $service->setDi($di);
+
+    expect(fn () => $service->action_activate($order))
+        ->toThrow(ClientFence\InformationException::class, 'Enter the username of this hosting account first (Server and Username on its hosting tab).');
 });
 
 test('action activate stores the created panel subscription id', function (): void {
@@ -575,6 +675,7 @@ test('action cancel', function (): void {
 
     $model = new Model_ServiceHosting();
     $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->username = 'example';
 
     $orderServiceMock = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderServiceMock->shouldReceive('getOrderService')->atLeast()->once()->andReturn($model);
@@ -595,6 +696,43 @@ test('action cancel', function (): void {
     $serviceMock->setDi($di);
     $result = $serviceMock->action_cancel($orderModel);
     expect($result)->toBeTrue();
+});
+
+test('suspend and cancel reach the manager for a service without a username', function (): void {
+    $order = new Model_ClientOrder();
+    $order->loadBean(new Tests\Helpers\DummyBean());
+    $order->status = Model_ClientOrder::STATUS_ACTIVE;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->sld = 'site';
+    $model->tld = '.example';
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->email_approved = 1;
+    $plan = new Model_ServiceHostingHp();
+    $plan->loadBean(new Tests\Helpers\DummyBean());
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+
+    $manager = Mockery::mock(Server_Manager_Custom::class);
+    $manager->expects('suspendAccount')->with(Mockery::type(Server_Account::class))->andReturn(true);
+    $manager->expects('cancelAccount')->with(Mockery::type(Server_Account::class))->andReturn(true);
+    $di = container();
+    $db = $di['db'] = Mockery::mock(ClientFence\Database::class);
+    $db->shouldReceive('getExistingModelById')->with('ServiceHostingHp', Mockery::any(), Mockery::any())->andReturn($plan);
+    $db->shouldReceive('getExistingModelById')->with('ServiceHostingServer', Mockery::any(), Mockery::any())->andReturn($server);
+    $db->shouldReceive('getExistingModelById')->with('Client', Mockery::any(), Mockery::any())->andReturn($client);
+    $db->shouldReceive('store')->twice()->with($model);
+    $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
+    $orderService->shouldReceive('getOrderService')->with($order)->andReturn($model);
+    $orderService->shouldReceive('getServiceOrder')->with($model)->andReturnNull();
+    $di['mod_service'] = $di->protect(fn () => $orderService);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getServerManager')->with($server)->andReturn($manager);
+    $service->setDi($di);
+
+    expect($service->action_suspend($order))->toBeTrue()
+        ->and($service->action_cancel($order))->toBeTrue();
 });
 
 test('action cancel keeps the panel account id the server manager looked up', function (): void {
@@ -993,16 +1131,104 @@ test('update', function (): void {
     $model->loadBean(new Tests\Helpers\DummyBean());
 
     $dbMock = Mockery::mock('ClientFence\Database');
+    $dbMock->expects('load')->with('ServiceHostingServer', 0)->andReturn(null);
     $dbMock->shouldReceive('store')->atLeast()->once();
 
     $di = container();
     $di['db'] = $dbMock;
     $di['logger'] = new \ClientFence\Log();
+    $di['dbal']->expects('fetchOne')->andReturn(false);
     $service->setDi($di);
 
     $result = $service->update($model, $data);
     expect($result)->toBeTrue();
 });
+
+test('updating a username refuses one already used on the server', function (): void {
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->id = 4;
+    $model->service_hosting_server_id = 2;
+    $di = container();
+    $di['dbal']->expects('fetchOne')->with(Mockery::type('string'), [2, 'taken', 4])->andReturn(7);
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->update($model, ['username' => 'taken']))
+        ->toThrow(ClientFence\InformationException::class, 'Username taken is already used by order #7.');
+});
+
+test('updating an Enhance login skips the username uniqueness check', function (): void {
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->id = 4;
+    $model->service_hosting_server_id = 2;
+    $server = new Model_ServiceHostingServer();
+    $server->loadBean(new Tests\Helpers\DummyBean());
+    $server->manager = 'Enhance';
+    $di = container();
+    $di['db']->expects('load')->with('ServiceHostingServer', 2)->andReturn($server);
+    $di['db']->expects('store')->with($model);
+    $di['dbal']->shouldNotReceive('fetchOne');
+    $di['logger'] = new \ClientFence\Log();
+    $service = new Service();
+    $service->setDi($di);
+
+    expect($service->update($model, ['username' => 'customer@example.test']))->toBeTrue()
+        ->and($model->username)->toBe('customer@example.test');
+});
+
+test('updating the server requires a suitable plan and the new account username', function (?string $planServer, ?string $username, ?string $reason): void {
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->service_hosting_server_id = 1;
+    $model->service_hosting_hp_id = 3;
+    $model->username = 'old-user';
+    $model->ip = '192.0.2.1';
+    $model->panel_org_id = 'O1';
+    $model->panel_subscription_id = 71;
+    $old = new Model_ServiceHostingServer();
+    $old->loadBean(new Tests\Helpers\DummyBean());
+    $old->ip = $model->ip;
+    $new = new Model_ServiceHostingServer();
+    $new->loadBean(new Tests\Helpers\DummyBean());
+    $new->ip = '192.0.2.2';
+    $new->manager = 'Custom';
+    $plan = new Model_ServiceHostingHp();
+    $plan->loadBean(new Tests\Helpers\DummyBean());
+    $plan->config = json_encode(['server_id' => $planServer]);
+
+    $di = container();
+    $db = $di['db'] = Mockery::mock(ClientFence\Database::class);
+    $db->expects('getExistingModelById')->with('ServiceHostingServer', 2, 'Server not found')->andReturn($new);
+    $db->expects('load')->with('ServiceHostingHp', 3)->andReturn($plan);
+    $di['logger'] = new ClientFence\Log();
+    $service = new Service();
+    $service->setDi($di);
+
+    $data = ['server_id' => 2] + ($username === null ? [] : ['username' => $username]);
+    if ($reason !== null) {
+        expect(fn () => $service->update($model, $data))->toThrow(ClientFence\InformationException::class, $reason)
+            ->and($model->username)->toBe('old-user')
+            ->and($model->service_hosting_server_id)->toBe(1);
+
+        return;
+    }
+
+    $di['dbal']->expects('fetchOne')->andReturn(false);
+    $db->expects('load')->with('ServiceHostingServer', 1)->andReturn($old);
+    $db->expects('store')->with($model);
+    expect($service->update($model, $data))->toBeTrue()
+        ->and($model->service_hosting_server_id)->toBe(2)
+        ->and($model->username)->toBe($username)
+        ->and($model->ip)->toBe('192.0.2.2')
+        ->and($model->panel_org_id)->toBeNull()
+        ->and($model->panel_subscription_id)->toBeNull();
+})->with([
+    'unbound plan with a username' => [null, 'new-user', null],
+    'plan bound to the old server' => ['1', 'new-user', 'This hosting plan belongs to another server.'],
+    'missing username' => [null, null, 'Enter the username of the account on the new server.'],
+]);
 
 test('get server managers', function (): void {
     $service = new Service();
@@ -1082,10 +1308,11 @@ test('create server', function (): void {
     $name = 'newSuperFastServer';
     $ip = '1.1.1.1';
     $manager = 'Custom';
-    $data = [];
+    $data = ['max_accounts' => '  '];
     $result = $service->createServer($name, $ip, $manager, $data);
     expect($result)->toBeInt();
     expect($result)->toBe($newId);
+    expect($hostingServerModel->max_accounts)->toBeNull();
 });
 
 test('delete server', function (): void {
@@ -1113,6 +1340,7 @@ test('update server', function (): void {
         'hostname' => 'unknownStar',
         'active' => 1,
         'status_url' => 'na',
+        'max_accounts' => '',
         'ns1' => 'ns1.testserver.eu',
         'ns2' => 'ns2.testserver.eu',
         'ns3' => 'ns3.testserver.eu',
@@ -1127,6 +1355,7 @@ test('update server', function (): void {
 
     $hostingServerModel = new Model_ServiceHostingServer();
     $hostingServerModel->loadBean(new Tests\Helpers\DummyBean());
+    $hostingServerModel->max_accounts = 10;
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('store')->atLeast()->once();
@@ -1140,10 +1369,39 @@ test('update server', function (): void {
 
     $result = $service->updateServer($hostingServerModel, $data);
     expect($result)->toBeTrue()
+        ->and($hostingServerModel->max_accounts)->toBeNull()
         // ClientFence: the password and API key are stored encrypted (ServerSecrets.php).
         ->and($hostingServerModel->password)->toBe('cfsecret:enc(' . base64_encode('hardToGuess') . ')')
         ->and($hostingServerModel->accesshash)->toBe('cfsecret:enc(' . base64_encode('secret') . ')')
         ->and($hostingServerModel->username)->toBe('testingJohn');
+});
+
+test('update server refuses an invalid maximum account count', function (string $value): void {
+    $model = new Model_ServiceHostingServer();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $di = container();
+    $di['db']->shouldNotReceive('store');
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->updateServer($model, ['max_accounts' => $value]))
+        ->toThrow(ClientFence\InformationException::class, 'Maximum number of accounts must be a whole number of 1 or more, or empty for no limit.');
+})->with(['zero' => '0', 'text' => 'abc']);
+
+test('update server refuses to clear the account limit for a group member', function (): void {
+    $model = new Model_ServiceHostingServer();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->id = '7';
+    $model->name = 'Web 7';
+    $model->max_accounts = 10;
+    $di = container();
+    $di['dbal']->expects('fetchAllAssociative')->andReturn([['name' => 'Primary', 'servers' => '[2,7]']]);
+    $di['db']->shouldNotReceive('store');
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->updateServer($model, ['max_accounts' => '']))
+        ->toThrow(ClientFence\InformationException::class, 'Server Web 7 is in server group Primary. Keep a maximum number of accounts, or take it out of the group first.');
 });
 
 test('get server manager', function (): void {
@@ -1765,6 +2023,7 @@ test('validateOrderData rejects admin-controlled values differing from product c
 })->with([
     ['hosting_plan_id', 999],
     ['server_id', 42],
+    ['server_group_id', 42],
     ['reseller', true],
 ]);
 
@@ -1969,6 +2228,7 @@ test('_getAM trusts the client email by confirmation or a stored hosting login o
     $model->loadBean(new Tests\Helpers\DummyBean());
     $model->id = 4;
     $model->client_id = 9;
+    $model->username = 'example';
     $model->panel_subscription_id = '7';
     $model->panel_org_id = 'B';
 

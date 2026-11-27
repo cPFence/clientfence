@@ -33564,3 +33564,209 @@ msgstr "Přesunuté služby: %moved%. Nepodařilo se přesunout: %failed%."
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "Pro tento typ produktu stále existují objednávky. Před odinstalováním modulu je smažte."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "Přidat na server s nejméně účty"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "Vyberte alespoň jeden server pro skupinu."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "Odstranit skupinu serverů"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "Upravit skupinu serverů"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "Nejprve zadejte uživatelské jméno tohoto hostingového účtu (v části „Server a uživatelské jméno“ na kartě „Správa služby“)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "Pravidlo zaplňování"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "Nejprve zaplnit server produktu, poté přidávat na server s nejméně účty"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Pro služby přidané pod vlastním produktem. Při přesunu na hostingový produkt se každá služba propojí se svým stávajícím účtem na serveru produktu, který se vyhledá podle domény. Pokud server neumí vyhledat účty, služba se přesune bez přihlašovacích údajů a obsluha zadá uživatelské jméno u služby. Na serveru se nic nevytváří. Objednávka si zachová cenu, fakturační období, datum splatnosti, faktury a stav."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "Neplatný typ zaplňování skupiny serverů."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "Přesun bez přihlašovacích údajů: zadejte uživatelské jméno u služby"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "Nová skupina serverů"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "Volitelné. Nové objednávky se umisťují na jeden ze serverů v této skupině. Server uvedený výše je první podle pravidla zaplňování a používá se při importu a přesunu."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "U produktů se skupinou serverů se každá nová objednávka umístí na jeden ze serverů v této skupině. Neaktivní a zaplněné servery se přeskakují."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "Údaje se uloží pouze v ClientFence, na serveru se nic nezmění. Použijte pro stávající účty, například po importu nebo přesunu."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "Skupina serverů"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "Skupiny serverů"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "Server a uživatelské jméno"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "ID skupiny serverů nebylo předáno"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "Skupinu serverů používá produkt :product."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "Název skupiny serverů je povinný."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "Skupina serverů nebyla nalezena"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "Tento hostingový tarif patří k jinému serveru."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "Tento server neumí vyhledat účty: zadejte uživatelské jméno u služby."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, uživatelské jméno %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "Seznam účtů na tomto serveru"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "Přidat na nejméně zaplněný server (podle využitého podílu limitu účtů)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "Vyberte server produktu nebo server z jeho skupiny."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "Zadejte pozici každého serveru ve skupině, počínaje 1. Chcete-li server vynechat, nechte pole prázdné."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "Zadejte kladnou pozici pro každý server."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "Zadejte uživatelské jméno účtu na novém serveru."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "Zaplnit servery postupně: použít první server s volnou kapacitou"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "Pro hostingový produkt: jeho server nebo server z jeho skupiny serverů."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "Pro služby importované pod vlastním produktem. V Enhance se každá služba na serveru najde podle domény. U ostatních panelů vložte seznam účtů serveru. Každá služba s doménou v seznamu se přesune s tímto serverem a příslušným uživatelským jménem. Na serveru se nic nevytváří. Objednávka si zachová cenu, fakturační období, datum splatnosti, faktury i stav."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "Nové objednávky produktů přiřazených ke skupině serverů se umístí na některý z jejích serverů. Neaktivní a plné servery se přeskočí."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "Není v seznamu účtů tohoto serveru."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "Jeden účet na řádek: doména a uživatelské jméno oddělené mezerou, tabulátorem, čárkou nebo dvojtečkou. cPanel: vložte obsah /etc/trueuserdomains beze změn. Pro Enhance ponechte pole prázdné, údaje se načtou přímo."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "Volitelné. Nové objednávky se umístí na server z této skupiny. Server vybraný výše slouží k importu a přesunům."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "Vložte seznam účtů tohoto serveru."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "Server :name nemá nastavený maximální počet účtů. Nastavte jej, abyste server mohli přidat do skupiny."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "Server, na kterém jsou účty"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "Nastavte maximální počet účtů na tomto serveru, abyste ho mohli přidat do skupiny."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "Tato doména je v seznamu účtů dvakrát."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "Uživatelské jméno :username již používá objednávka č. :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "Pouze při přesunu tohoto účtu na server s jiným ovládacím panelem."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "Hostingový tarif nenalezen"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "U tohoto uživatelského jména je v seznamu účtů uvedena více než jedna doména."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "Maximální počet účtů"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "Maximální počet účtů musí být celé číslo alespoň 1. Pokud nechcete nastavit limit, nechte pole prázdné."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "Tento údaj je nutný pro přidání serveru do skupiny serverů. Pokud nechcete nastavit limit, nechte pole prázdné."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "Server :name je ve skupině serverů :group. Ponechte nastavený maximální počet účtů nebo server nejprve odeberte ze skupiny."

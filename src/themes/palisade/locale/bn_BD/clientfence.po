@@ -36245,3 +36245,209 @@ msgstr "সরানো হয়েছে এমন সার্ভিস: %mov
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "এই ধরনের প্রোডাক্টের অর্ডার এখনও আছে। মডিউল আনইনস্টল করার আগে সেগুলো মুছুন।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "সবচেয়ে কম অ্যাকাউন্ট আছে এমন সার্ভারে যোগ করুন"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "গ্রুপের জন্য অন্তত একটি সার্ভার বেছে নিন।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "সার্ভার গ্রুপ মুছুন"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "সার্ভার গ্রুপ সম্পাদনা করুন"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "প্রথমে এই হোস্টিং অ্যাকাউন্টের ইউজারনেম লিখুন (‘সার্ভিস ব্যবস্থাপনা’ ট্যাবের ‘সার্ভার ও ইউজারনেম’ অংশে)।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "সার্ভার পূরণের নিয়ম"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "প্রোডাক্টের সার্ভার পূর্ণ হওয়া পর্যন্ত তাতে যোগ করুন, তারপর সবচেয়ে কম অ্যাকাউন্ট আছে এমন সার্ভারে যোগ করুন"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "কাস্টম প্রোডাক্টের অধীনে যোগ করা সার্ভিসের জন্য। হোস্টিং প্রোডাক্টে সরালে প্রতিটি সার্ভিসকে প্রোডাক্টের সার্ভারে ডোমেইন দিয়ে খুঁজে পাওয়া বিদ্যমান অ্যাকাউন্টের সঙ্গে যুক্ত করা হয়। সার্ভারে অ্যাকাউন্ট খোঁজার সুবিধা না থাকলে সার্ভিসটি লগইন তথ্য ছাড়াই সরানো হয় এবং কর্মীরা সার্ভিসে ইউজারনেম লিখে দেন। সার্ভারে কিছু তৈরি হয় না। অর্ডারের দাম, বিলিং মেয়াদ, পরিশোধের তারিখ, ইনভয়েস ও স্ট্যাটাস অপরিবর্তিত থাকে।"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "সার্ভার গ্রুপ পূরণের নিয়মের ধরন সঠিক নয়।"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "লগইন তথ্য ছাড়া সরানো হবে: সার্ভিসে ইউজারনেম লিখুন"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "নতুন সার্ভার গ্রুপ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "ঐচ্ছিক। নতুন অর্ডার এই গ্রুপের কোনো একটি সার্ভারে যাবে। পূরণের নিয়ম অনুযায়ী উপরে নির্বাচিত সার্ভারটি প্রথমে ব্যবহৃত হবে। ইমপোর্ট ও সার্ভিস সরানোর কাজেও এই সার্ভারটি ব্যবহৃত হবে।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "যেসব প্রোডাক্টে সার্ভার গ্রুপ সেট করা আছে, সেগুলোর প্রতিটি নতুন অর্ডার ওই গ্রুপের একটি সার্ভারে যায়। নিষ্ক্রিয় ও পূর্ণ সার্ভার বাদ দেওয়া হয়।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "শুধু ClientFence-এ সংরক্ষিত হয়, সার্ভারে কিছু বদলায় না। বিদ্যমান অ্যাকাউন্টের জন্য ব্যবহার করুন, যেমন ইমপোর্ট বা সার্ভিস সরানোর পরে।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "সার্ভার গ্রুপ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "সার্ভার গ্রুপসমূহ"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "সার্ভার ও ইউজারনেম"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "সার্ভার গ্রুপের আইডি দেওয়া হয়নি"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "সার্ভার গ্রুপটি :product প্রোডাক্টে ব্যবহৃত হচ্ছে।"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "সার্ভার গ্রুপের নাম দিতে হবে।"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "সার্ভার গ্রুপ পাওয়া যায়নি"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "এই হোস্টিং প্ল্যানটি অন্য সার্ভারের।"
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "এই সার্ভারে অ্যাকাউন্ট খোঁজার সুবিধা নেই: সার্ভিসে ইউজারনেম লিখুন।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%, ইউজারনেম %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "এই সার্ভারের অ্যাকাউন্টের তালিকা"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "যে সার্ভারে অ্যাকাউন্ট সীমার সবচেয়ে কম অংশ ব্যবহৃত হয়েছে, সেই সার্ভারে যোগ করুন"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "প্রোডাক্টের সার্ভার বা তার সার্ভার গ্রুপের কোনো সার্ভার বেছে নিন।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "গ্রুপের প্রতিটি সার্ভারের অবস্থান লিখুন। প্রথমটির জন্য ১ লিখুন। কোনো সার্ভার বাদ দিতে ঘরটি খালি রাখুন।"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "প্রতিটি সার্ভারের অবস্থান হিসেবে শূন্যের চেয়ে বড় সংখ্যা লিখুন।"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "নতুন সার্ভারে থাকা অ্যাকাউন্টের ইউজারনেম লিখুন।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "ক্রম অনুযায়ী সার্ভার পূরণ করুন: জায়গা আছে এমন প্রথম সার্ভারটি ব্যবহার করুন"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "হোস্টিং প্রোডাক্টের জন্য: প্রোডাক্টের সার্ভার বা তার সার্ভার গ্রুপের কোনো সার্ভার।"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "কাস্টম প্রোডাক্টের অধীনে ইমপোর্ট করা সার্ভিসের জন্য। Enhance-এ ডোমেইন দিয়ে সার্ভারে প্রতিটি সার্ভিস খুঁজে নেওয়া হয়। অন্য প্যানেলের জন্য সার্ভারের অ্যাকাউন্টের তালিকা পেস্ট করুন। তালিকায় ডোমেইন আছে এমন প্রতিটি সার্ভিস ওই সার্ভার ও সংশ্লিষ্ট ইউজারনেমসহ সরানো হয়। সার্ভারে কিছু তৈরি করা হয় না। অর্ডারের দাম, বিলিংয়ের মেয়াদ, নির্ধারিত তারিখ, ইনভয়েস ও স্ট্যাটাস একই থাকে।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "সার্ভার গ্রুপে বরাদ্দ করা প্রোডাক্টের নতুন অর্ডার গ্রুপের কোনো একটি সার্ভারে যায়। নিষ্ক্রিয় ও পূর্ণ সার্ভার বাদ দেওয়া হয়।"
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "এই সার্ভারের অ্যাকাউন্টের তালিকায় নেই।"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "প্রতি লাইনে একটি অ্যাকাউন্ট: ডোমেইন ও ইউজারনেম স্পেস, ট্যাব, কমা বা কোলন দিয়ে আলাদা করুন। cPanel: /etc/trueuserdomains ফাইলের বিষয়বস্তু অপরিবর্তিত রেখে পেস্ট করুন। Enhance-এর জন্য ঘর খালি রাখুন, কারণ তথ্য সরাসরি প্যানেল থেকে নেওয়া হয়।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "ঐচ্ছিক। নতুন অর্ডার এই গ্রুপের কোনো সার্ভারে যায়। ওপরে বেছে নেওয়া সার্ভারটি ইমপোর্ট ও সার্ভিস সরানোর কাজে ব্যবহৃত হয়।"
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "এই সার্ভারের অ্যাকাউন্টের তালিকা পেস্ট করুন।"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr ":name সার্ভারের সর্বোচ্চ অ্যাকাউন্ট সংখ্যা নির্ধারণ করা নেই। সার্ভারটি গ্রুপে যোগ করতে এই সীমা নির্ধারণ করুন।"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "যে সার্ভারে অ্যাকাউন্টগুলো আছে"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "এই সার্ভারটি গ্রুপে যোগ করতে এর সর্বোচ্চ অ্যাকাউন্ট সংখ্যা নির্ধারণ করুন।"
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "এই ডোমেইনটি অ্যাকাউন্টের তালিকায় দুইবার আছে।"
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "ইউজারনেম :username ইতিমধ্যে #:id নম্বর অর্ডারে ব্যবহৃত হচ্ছে।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "শুধু এই অ্যাকাউন্টটি অন্য কন্ট্রোল প্যানেলযুক্ত সার্ভারে সরানোর সময়।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "হোস্টিং প্ল্যান পাওয়া যায়নি"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "অ্যাকাউন্টের তালিকায় এই ইউজারনেমের সঙ্গে একাধিক ডোমেইন যুক্ত আছে।"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "সর্বোচ্চ অ্যাকাউন্ট সংখ্যা"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "সর্বোচ্চ অ্যাকাউন্ট সংখ্যা ১ বা তার বেশি পূর্ণসংখ্যা হতে হবে। সীমা না রাখতে ঘরটি খালি রাখুন।"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "সার্ভারটি কোনো সার্ভার গ্রুপে যোগ করতে এই সীমা নির্ধারণ করতে হবে। সীমা না রাখতে ঘরটি খালি রাখুন।"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr ":name সার্ভারটি :group সার্ভার গ্রুপে আছে। সর্বোচ্চ অ্যাকাউন্ট সংখ্যা নির্ধারিত রাখুন, অথবা আগে সার্ভারটি গ্রুপ থেকে সরান।"

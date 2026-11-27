@@ -61,6 +61,7 @@ beforeEach(function (): void {
         'CREATE TABLE service_custom (id INTEGER PRIMARY KEY, client_id INTEGER, plugin TEXT, plugin_config TEXT, config TEXT, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE service_hosting (id INTEGER PRIMARY KEY, client_id INTEGER, service_hosting_server_id INTEGER, service_hosting_hp_id INTEGER, sld TEXT, tld TEXT, ip TEXT, username TEXT, pass TEXT, reseller INTEGER, panel_org_id TEXT, panel_subscription_id INTEGER, created_at TEXT, updated_at TEXT)',
         'CREATE TABLE service_hosting_server (id INTEGER PRIMARY KEY, name TEXT, ip TEXT, hostname TEXT, manager TEXT, active INTEGER, max_accounts INTEGER, ns1 TEXT, ns2 TEXT, ns3 TEXT, ns4 TEXT, config TEXT)',
+        'CREATE TABLE service_hosting_server_group (id INTEGER PRIMARY KEY, servers TEXT)',
         'CREATE TABLE service_hosting_hp (id INTEGER PRIMARY KEY, name TEXT, config TEXT)',
         'CREATE TABLE product_payment (id INTEGER PRIMARY KEY, type TEXT, w_price REAL DEFAULT 0, m_price REAL DEFAULT 0, q_price REAL DEFAULT 0, b_price REAL DEFAULT 0, a_price REAL DEFAULT 0, bia_price REAL DEFAULT 0, tria_price REAL DEFAULT 0,'
             . ' w_enabled INTEGER DEFAULT 0, m_enabled INTEGER DEFAULT 0, q_enabled INTEGER DEFAULT 0, b_enabled INTEGER DEFAULT 0, a_enabled INTEGER DEFAULT 0, bia_enabled INTEGER DEFAULT 0, tria_enabled INTEGER DEFAULT 0)',
@@ -71,9 +72,11 @@ beforeEach(function (): void {
     $db->insert('product', ['id' => 1, 'title' => 'Imported', 'type' => 'custom', 'status' => 'enabled', 'is_addon' => 0, 'config' => '{}', 'product_payment_id' => 1]);
     // A custom product to move to, out of stock.
     $db->insert('product', ['id' => 4, 'title' => 'Other', 'type' => 'custom', 'status' => 'enabled', 'is_addon' => 0, 'config' => '{}', 'product_payment_id' => 1, 'stock_control' => 1, 'quantity_in_stock' => 0]);
-    $db->insert('product', ['id' => 2, 'title' => 'Web Pro', 'type' => 'hosting', 'status' => 'enabled', 'is_addon' => 0, 'config' => '{"server_id":1,"hosting_plan_id":1,"reseller":false}']);
+    $db->insert('product', ['id' => 2, 'title' => 'Web Pro', 'type' => 'hosting', 'status' => 'enabled', 'is_addon' => 0, 'config' => '{"server_id":1,"server_group_id":1,"hosting_plan_id":1,"reseller":false}']);
     $db->insert('client', ['id' => 5, 'email' => 'ann@example.test', 'first_name' => 'Ann', 'last_name' => 'Lee', 'email_approved' => 1]);
     $db->insert('service_hosting_server', ['id' => 1, 'name' => 'Web 1', 'ip' => '192.0.2.1', 'manager' => 'Enhance', 'active' => 1, 'max_accounts' => 0]);
+    $db->insert('service_hosting_server', ['id' => 2, 'name' => 'Web 2', 'ip' => '192.0.2.2', 'manager' => 'Custom', 'active' => 1, 'max_accounts' => 10]);
+    $db->insert('service_hosting_server_group', ['id' => 1, 'servers' => '[2]']);
     $db->insert('service_hosting_hp', ['id' => 1, 'name' => 'Pro']);
     foreach ([1 => 'site.example', 2 => 'dup.example', 3 => 'dup.example', 4 => 'missing.example', 5 => 'broken.example'] as $id => $domain) {
         $config = '{"product_id":1,"type":"custom","period":"1M","quantity":1,"whmcs_service_id":' . (10 + $id) . '}';
@@ -136,7 +139,7 @@ beforeEach(function (): void {
         }
     };
     $hosting = Mockery::mock(ClientFence\Mod\Servicehosting\Service::class)->makePartial();
-    $hosting->shouldReceive('getServerManager')->andReturn($this->adapter);
+    $hosting->shouldReceive('getServerManager')->andReturnUsing(fn () => $this->adapter);
     $hosting->shouldReceive('getServerPackage')->andReturn(new Server_Package());
     // The activation of order 5 fails after its hosting row and order were stored: the whole move of it rolls back.
     $hosting->shouldReceive('action_activate')->with(Mockery::on(fn ($order): bool => (int) $order->id === 5))->andThrow(new RuntimeException('Activation failed'));
@@ -226,6 +229,120 @@ test('the move links a custom order to its existing account, keeps its terms and
         ->and($this->connection->fetchOne("SELECT COUNT(*) FROM service_hosting WHERE sld = 'broken'"))->toBe(0);
 });
 
+test('a custom service activates as already set up with the chosen server and listed username', function (): void {
+    $this->adapter = Mockery::mock();
+    $this->adapter->expects('getPasswordLength')->andReturn(12);
+    $this->adapter->shouldNotReceive('createAccount');
+    $this->connection->update('client', ['email_approved' => 0], ['id' => 5]);
+    $this->connection->update('service_hosting', ['username' => 'other@example.test'], ['id' => 7]);
+    $target = ['from_product_id' => 1, 'to_product_id' => 2, 'server_id' => 2, 'accounts' => 'site.example: site-user'];
+
+    $rows = array_column(ProductMove::preview($this->di, $target + ['statuses' => ['active']])['rows'], null, 'id');
+    expect($rows[1])->toMatchArray(['account' => ['server' => 'Web 2', 'username' => 'site-user'], 'link' => null, 'reason' => null]);
+
+    $result = ProductMove::move($this->di, $target + ['order_ids' => [1]]);
+    expect($result['moved'])->toBe(1);
+
+    $order = $this->connection->fetchAssociative('SELECT * FROM client_order WHERE id = 1');
+    $service = $this->connection->fetchAssociative('SELECT * FROM service_hosting WHERE id = ?', [$order['service_id']]);
+    expect($order)->toMatchArray(['product_id' => 2, 'service_type' => 'hosting', 'title' => 'Web Pro for site.example', 'status' => 'active'])
+        ->and(json_decode($order['config'], true))->toMatchArray(['product_id' => 2, 'server_id' => 2, 'hosting_plan_id' => 1, 'import' => true, 'username' => 'site-user'])
+        ->and($service)->toMatchArray(['service_hosting_server_id' => 2, 'username' => 'site-user', 'panel_org_id' => null, 'panel_subscription_id' => null])
+        ->and($this->connection->fetchOne('SELECT COUNT(*) FROM service_custom WHERE id = 1'))->toBe(0)
+        ->and($this->connection->fetchOne('SELECT notes FROM client_order_status WHERE client_order_id = 1 ORDER BY id DESC'))
+        ->toBe('Moved by staff from Imported to Web Pro, account site-user on server Web 2');
+});
+
+test('a list match fills the hosting account in place and clears panel IDs only when the server changes', function (int $previous, ?int $panelId): void {
+    $this->adapter = Mockery::mock();
+    $this->connection->update('product', ['config' => '{"server_id":1,"server_group_id":1,"hosting_plan_id":1}'], ['id' => 3]);
+    $this->connection->insert('service_hosting_hp', ['id' => 2, 'name' => 'Imported']);
+    $this->connection->update('service_hosting', [
+        'service_hosting_server_id' => $previous, 'service_hosting_hp_id' => 2, 'sld' => 'bücher',
+        'panel_org_id' => 'O6', 'panel_subscription_id' => 76, 'ip' => "192.0.2.$previous",
+    ], ['id' => 6]);
+
+    $result = ProductMove::move($this->di, ['from_product_id' => 3, 'to_product_id' => 3, 'server_id' => 2, 'accounts' => 'xn--bcher-kva.example hosted-user', 'order_ids' => [6]]);
+
+    expect($result['moved'])->toBe(1)
+        ->and($this->connection->fetchAssociative('SELECT service_hosting_server_id, service_hosting_hp_id, username, sld, tld, panel_org_id, panel_subscription_id, ip FROM service_hosting WHERE id = 6'))
+        ->toBe(['service_hosting_server_id' => 2, 'service_hosting_hp_id' => 2, 'username' => 'hosted-user', 'sld' => 'xn--bcher-kva', 'tld' => '.example', 'panel_org_id' => $panelId === null ? null : 'O6', 'panel_subscription_id' => $panelId, 'ip' => '192.0.2.2']);
+})->with(['same server' => [2, 76], 'different server' => [1, null]]);
+
+test('account lists parse common separators and refuse duplicate domains', function (): void {
+    $this->adapter = Mockery::mock();
+    foreach ([2 => 'tab.example', 3 => 'comma.example', 4 => 'xn--bcher-kva.example'] as $id => $domain) {
+        $this->connection->update('client_order_status', ['notes' => "Imported from WHMCS (Service #{$id} ({$domain}), status Active)"], ['client_order_id' => $id]);
+    }
+    $list = "site.example site-user\n\n tab.example\tshared-user\r\ncomma.example,SHARED-USER\nbücher.example: colon-user\nbroken.example first\nBROKEN.EXAMPLE: second";
+    $rows = ProductMove::preview($this->di, ['from_product_id' => 1, 'to_product_id' => 2, 'server_id' => 2, 'accounts' => $list, 'statuses' => ['active']])['rows'];
+
+    expect(array_map(fn (array $row) => $row['account']['username'] ?? null, $rows))->toBe(['site-user', null, null, 'colon-user', null])
+        ->and($rows[1]['reason'])->toBe('This username has more than one domain in the account list.')
+        ->and($rows[2]['reason'])->toBe('This username has more than one domain in the account list.')
+        ->and($rows[4]['reason'])->toBe('This domain is twice in the account list.');
+});
+
+test('a listed username already used on the chosen server is refused', function (): void {
+    $this->adapter = Mockery::mock();
+    $this->connection->update('service_hosting', ['service_hosting_server_id' => 2, 'username' => 'site-user'], ['id' => 7]);
+    $target = ['from_product_id' => 1, 'to_product_id' => 2, 'server_id' => 2, 'accounts' => 'site.example site-user'];
+    $rows = ProductMove::preview($this->di, $target + ['statuses' => ['active']])['rows'];
+
+    expect($rows[0]['reason'])->toBe('Username site-user is already used by order #7.')
+        ->and(ProductMove::move($this->di, $target + ['order_ids' => [1]])['moved'])->toBe(0);
+});
+
+test('preview and move refuse an invalid destination server', function (int $serverId, ?int $planServer, string $reason): void {
+    $this->connection->update('service_hosting_hp', ['config' => json_encode(['server_id' => $planServer])], ['id' => 1]);
+    $target = ['from_product_id' => 1, 'to_product_id' => 2, 'server_id' => $serverId];
+
+    expect(fn () => ProductMove::preview($this->di, $target + ['statuses' => ['active']]))->toThrow(ClientFence\InformationException::class, $reason)
+        ->and(fn () => ProductMove::move($this->di, $target + ['order_ids' => [1]]))->toThrow(ClientFence\InformationException::class, $reason);
+})->with([
+    'outside the group' => [3, null, "Choose the product's server or a server of its group."],
+    'plan bound to another server' => [2, 1, 'This hosting plan belongs to another server.'],
+]);
+
+test('preview reports a deleted server still listed in the group', function (): void {
+    $this->connection->delete('service_hosting_server', ['id' => 2]);
+    $target = ['from_product_id' => 1, 'to_product_id' => 2, 'server_id' => 2, 'statuses' => ['active']];
+
+    expect(fn () => ProductMove::preview($this->di, $target))->toThrow(ClientFence\InformationException::class, 'Server not found');
+});
+
+test('preview reports a deleted hosting plan as an information error', function (): void {
+    $this->connection->delete('service_hosting_hp', ['id' => 1]);
+    $target = ['from_product_id' => 1, 'to_product_id' => 2, 'statuses' => ['active']];
+
+    expect(fn () => ProductMove::preview($this->di, $target))->toThrow(ClientFence\InformationException::class, 'Hosting plan not found');
+});
+
+test('preview reports a server manager configuration error', function (): void {
+    $di = $this->di;
+    $di['mod_service'] = $di->protect(fn ($mod, $sub = '') => $di['mod']($mod)->getService($sub));
+    $this->connection->update('service_hosting_server', ['manager' => 'Directadmin', 'hostname' => 'panel.example'], ['id' => 1]);
+
+    expect(fn () => ProductMove::preview($di, ['from_product_id' => 1, 'to_product_id' => 2, 'statuses' => ['active']]))
+        ->toThrow(ClientFence\InformationException::class, 'The "DirectAdmin" server manager is not fully configured. Please configure the username');
+});
+
+test('an account list allows 250 services per request', function (): void {
+    $this->adapter = Mockery::mock();
+    foreach (range(8, 253) as $id) {
+        $this->connection->insert('client_order', ['id' => $id, 'product_id' => 1, 'client_id' => 5, 'status' => 'active', 'service_type' => 'custom']);
+    }
+    $target = ['from_product_id' => 1, 'to_product_id' => 2, 'server_id' => 2, 'accounts' => 'other.example other-user'];
+    $preview = ProductMove::preview($this->di, $target + ['statuses' => ['active']]);
+    $ids = array_column($preview['rows'], 'id');
+
+    expect($ids)->toHaveCount(250)
+        ->and($preview['next'])->toBe(252)
+        ->and(ProductMove::move($this->di, $target + ['order_ids' => $ids])['results'])->toHaveCount(250)
+        ->and(fn () => ProductMove::move($this->di, $target + ['order_ids' => [...$ids, 253]]))
+        ->toThrow(ClientFence\InformationException::class, 'Choose between 1 and 250 services to move.');
+});
+
 test('a hosting service without a login is linked in place, so its renewals and panel actions work', function (): void {
     $preview = ProductMove::preview($this->di, ['from_product_id' => 3, 'to_product_id' => 3, 'statuses' => ['active']]);
     expect(array_column($preview['rows'], 'id'))->toBe([6])
@@ -242,6 +359,19 @@ test('a hosting service without a login is linked in place, so its renewals and 
         ->and($this->connection->fetchOne('SELECT product_id FROM client_order WHERE id = 6'))->toBe(3)
         ->and($this->adapter->created)->toBe([])
         ->and(fn () => ProductMove::preview($this->di, ['from_product_id' => 3, 'to_product_id' => 2, 'statuses' => ['active']]))->toThrow(ClientFence\InformationException::class);
+});
+
+test('link in place looks up an account on its saved server', function (): void {
+    $di = $this->di;
+    $di['mod_service'] = $di->protect(fn ($mod, $sub = '') => $di['mod']($mod)->getService($sub));
+    $di['server_manager'] = $di->protect(fn (string $manager, array $config) => $manager === 'Enhance' ? $this->adapter : new Server_Manager_Custom($config));
+    $this->connection->update('product', ['config' => '{"server_id":2,"hosting_plan_id":1}'], ['id' => 3]);
+    $this->connection->update('service_hosting', ['service_hosting_server_id' => 1], ['id' => 6]);
+    $target = ['from_product_id' => 3, 'to_product_id' => 3, 'server_id' => 2, 'accounts' => 'hosted.example listed-user', 'order_ids' => [6]];
+
+    expect(ProductMove::move($di, $target)['moved'])->toBe(1)
+        ->and($this->connection->fetchAssociative('SELECT service_hosting_server_id, username, panel_subscription_id FROM service_hosting WHERE id = 6'))
+        ->toBe(['service_hosting_server_id' => 1, 'username' => 'ann@example.test', 'panel_subscription_id' => 76]);
 });
 
 test('a client whose email is not confirmed is never linked to the panel account found by that email', function (): void {

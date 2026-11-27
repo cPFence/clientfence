@@ -33060,3 +33060,209 @@ msgstr "الخدمات المنقولة: %moved%. تعذّر نقلها: %failed
 #: src/modules/Extension/Service.php
 msgid "Orders of this product type still exist. Delete them before uninstalling the module."
 msgstr "لا تزال هناك طلبات لنوع المنتج هذا. احذفها قبل إلغاء تثبيت الوحدة."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server"
+msgstr "أضف إلى الخادم الذي يضم أقل عدد من الحسابات"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Choose at least one server for the group."
+msgstr "اختر خادمًا واحدًا على الأقل للمجموعة."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Delete the Server Group"
+msgstr "حذف مجموعة الخوادم"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Edit Server Group"
+msgstr "تعديل مجموعة الخوادم"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of this hosting account first (Server and Username on its hosting tab)."
+msgstr "أدخل إسم المستخدم لحساب الاستضافة هذا أولًا (في قسم «الخادم وإسم المستخدم» ضمن تبويب «إدارة الخدمة»)."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill Rule"
+msgstr "قاعدة التعبئة"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the product's server until it is full, then the least full server"
+msgstr "املأ خادم المنتج أولًا، ثم أضف إلى الخادم الذي يضم أقل عدد من الحسابات"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. Moved to a hosting product, each service is linked to its existing account on the product's server, found by its domain; servers that cannot look accounts up get the service without a login, and staff enter the username on the service. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "للخدمات التي أُضيفت ضمن منتج مخصص. عند النقل إلى منتج استضافة، تُربط كل خدمة بحسابها الحالي على خادم المنتج بالبحث عنه باستخدام النطاق. إذا كان الخادم لا يدعم البحث عن الحسابات، تُنقل الخدمة دون بيانات دخول ويُدخل الموظفون إسم المستخدم في الخدمة. لا يُنشأ شيء على الخادم. يحتفظ الطلب بسعره ودورة فوترته وتاريخ استحقاقه وفواتيره وحالته."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Invalid server group fill type."
+msgstr "نوع قاعدة تعبئة مجموعة الخوادم غير صالح."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Moves without a login: enter the username on the service"
+msgstr "النقل دون بيانات دخول: أدخل إسم المستخدم في الخدمة"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New Server Group"
+msgstr "مجموعة خوادم جديدة"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group; the Server above is the first one for the fill rule and the one used by imports and moves."
+msgstr "اختياري. تُوضع الطلبات الجديدة على أحد خوادم هذه المجموعة. الخادم المحدد أعلاه هو أول خادم في قاعدة التعبئة، وهو المستخدم لعمليات الاستيراد والنقل."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Products set to a server group place each new order on one of its servers. Inactive and full servers are skipped."
+msgstr "تضع المنتجات المرتبطة بمجموعة خوادم كل طلب جديد على أحد خوادمها. تُتخطى الخوادم غير النشطة والممتلئة."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Saved in ClientFence only, nothing changes on the server. Use it for accounts that already exist, for example after an import or a move."
+msgstr "تُحفظ البيانات في ClientFence فقط، ولا يتغير شيء على الخادم. استخدم هذا القسم للحسابات الموجودة، مثلًا بعد الاستيراد أو النقل."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Server Group"
+msgstr "مجموعة الخوادم"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Server Groups"
+msgstr "مجموعات الخوادم"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Server and Username"
+msgstr "الخادم وإسم المستخدم"
+
+#: src/modules/Servicehosting/Api/Admin.php
+msgid "Server group ID was not passed"
+msgstr "لم يُمرَّر معرّف مجموعة الخوادم"
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group is used by product :product."
+msgstr "المنتج :product يستخدم مجموعة الخوادم."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group name is required."
+msgstr "اسم مجموعة الخوادم مطلوب."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server group not found"
+msgstr "لم يتم العثور على مجموعة الخوادم"
+
+#: src/modules/Servicehosting/Service.php
+msgid "This hosting plan belongs to another server."
+msgstr "خطة الاستضافة هذه تابعة لخادم آخر."
+
+#: src/modules/Order/ProductMove.php
+msgid "This server cannot look accounts up: enter the username on the service."
+msgstr "هذا الخادم لا يدعم البحث عن الحسابات: أدخل إسم المستخدم في الخدمة."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "%server%, username %username%"
+msgstr "%server%، إسم المستخدم %username%"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Account list of this server"
+msgstr "قائمة الحسابات على هذا الخادم"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Add to the least full server (by share of its maximum accounts)"
+msgstr "الإضافة إلى الخادم الأقل امتلاءً (حسب نسبة الحسابات الحالية إلى الحد الأقصى)"
+
+#: src/modules/Order/ProductMove.php
+msgid "Choose the product's server or a server of its group."
+msgstr "اختر خادم المنتج أو أحد خوادم مجموعته."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Enter a position for each server of the group, 1 first. Leave it empty to keep a server out."
+msgstr "أدخل ترتيب كل خادم في المجموعة، بدءًا من 1. اترك الحقل فارغًا لاستبعاد الخادم."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Enter a positive position for each server."
+msgstr "أدخل رقم ترتيب أكبر من صفر لكل خادم."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Enter the username of the account on the new server."
+msgstr "أدخل إسم مستخدم الحساب على الخادم الجديد."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Fill the servers in order: the first one that is not full"
+msgstr "ملء الخوادم بالترتيب: استخدام أول خادم فيه مكان شاغر"
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For a hosting product: its server or a server of its server group."
+msgstr "لمنتج استضافة: استخدم خادم المنتج أو أحد خوادم مجموعته."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "For services that came in under a custom product. On Enhance each service is found on the server by its domain. On other panels, paste the account list of the server: each service whose domain is in the list moves with that server and username. Nothing is created on the server. The order keeps its price, billing period, due date, invoices and status."
+msgstr "للخدمات المستوردة ضمن منتج مخصص. في Enhance، يعثر النظام على كل خدمة على الخادم حسب نطاقها. في اللوحات الأخرى، ألصق قائمة حسابات الخادم. تُنقل كل خدمة يرد نطاقها في القائمة باستخدام ذلك الخادم وإسم المستخدم المقابل. لا يُنشأ أي شيء على الخادم. يحتفظ الطلب بالسعر وفترة الفوترة وتاريخ الاستحقاق والفواتير والحالة."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "New orders of products set to a server group go on one of its servers. Inactive and full servers are skipped."
+msgstr "تُوضع الطلبات الجديدة للمنتجات المرتبطة بمجموعة خوادم على أحد خوادم المجموعة. يتم تجاوز الخوادم غير النشطة والممتلئة."
+
+#: src/modules/Order/ProductMove.php
+msgid "Not in the account list of this server."
+msgstr "غير موجود في قائمة حسابات هذا الخادم."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "One account per line: domain and username, separated by a space, tab, comma or colon. cPanel: paste /etc/trueuserdomains as it is. Leave empty for Enhance, which is asked directly."
+msgstr "حساب واحد في كل سطر: النطاق وإسم المستخدم، ويفصل بينهما مسافة أو علامة تبويب أو فاصلة أو نقطتان رأسيتان. cPanel: ألصق محتوى /etc/trueuserdomains كما هو. اترك الحقل فارغًا مع Enhance، إذ تُطلب البيانات منه مباشرةً."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_config.html.twig
+msgid "Optional. New orders go on a server of this group. The Server above is used for imports and moves."
+msgstr "اختياري. تُوضع الطلبات الجديدة على أحد خوادم هذه المجموعة. يُستخدم الخادم المحدد أعلاه للاستيراد والنقل."
+
+#: src/modules/Order/ProductMove.php
+msgid "Paste the account list of this server."
+msgstr "ألصق قائمة حسابات هذا الخادم."
+
+#: src/modules/Servicehosting/ServerGroups.php
+msgid "Server :name has no maximum number of accounts. Set one to add it to a group."
+msgstr "لم يُحدد الحد الأقصى لعدد الحسابات على الخادم :name. حدده لإضافة الخادم إلى مجموعة."
+
+#: src/modules/Order/templates/admin/mod_order_move_services.html.twig
+msgid "Server the accounts are on"
+msgstr "الخادم الذي توجد عليه الحسابات"
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig
+msgid "Set a maximum number of accounts on this server to add it to a group."
+msgstr "حدد الحد الأقصى لعدد الحسابات على هذا الخادم لإضافته إلى مجموعة."
+
+#: src/modules/Order/ProductMove.php
+msgid "This domain is twice in the account list."
+msgstr "يظهر هذا النطاق مرتين في قائمة الحسابات."
+
+#: src/modules/Order/ProductMove.php
+msgid "Username :username is already used by order #:id."
+msgstr "إسم المستخدم :username مستخدم بالفعل في الطلب رقم :id."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_manage.html.twig
+msgid "Only when you move this account to a server with another panel."
+msgstr "فقط عند نقل هذا الحساب إلى خادم بلوحة تحكم استضافة أخرى."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "Hosting plan not found"
+msgstr "خطة الاستضافة غير موجودة"
+
+# To translate (tools/locales.py starter).
+#: src/modules/Order/ProductMove.php
+msgid "This username has more than one domain in the account list."
+msgstr "يرتبط إسم المستخدم هذا بأكثر من نطاق في قائمة الحسابات."
+
+# To translate (tools/locales.py starter).
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Maximum number of accounts"
+msgstr "الحد الأقصى لعدد الحسابات"
+
+#: src/modules/Servicehosting/Service.php
+msgid "Maximum number of accounts must be a whole number of 1 or more, or empty for no limit."
+msgstr "أدخل عددًا صحيحًا لا يقل عن 1 للحد الأقصى لعدد الحسابات، أو اترك الحقل فارغًا إذا لم ترغب في وضع حد."
+
+#: src/modules/Servicehosting/templates/admin/mod_servicehosting_index.html.twig src/modules/Servicehosting/templates/admin/mod_servicehosting_server.html.twig
+msgid "Needed to add the server to a server group. Leave empty for no limit."
+msgstr "يلزم تحديده لإضافة الخادم إلى مجموعة خوادم. اترك الحقل فارغًا إذا لم ترغب في وضع حد."
+
+#: src/modules/Servicehosting/Service.php
+msgid "Server :name is in server group :group. Keep a maximum number of accounts, or take it out of the group first."
+msgstr "الخادم :name ضمن مجموعة الخوادم :group. أبقِ الحد الأقصى لعدد الحسابات محددًا، أو أزل الخادم من المجموعة أولًا."
