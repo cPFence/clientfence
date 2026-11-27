@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.0.64 (2026-11-27)
+
+Server groups as in WHMCS: one hosting product on several servers. Guide: [Server groups](https://clientfence.com/docs/hosting-and-domains/server-groups/).
+
+### Added
+
+- **Server groups:** a hosting product can use a group of servers. New accounts go to the least full server, or fill the servers in the group's order, and skip inactive and full ones. Servers get a maximum number of accounts. The WHMCS import brings its server groups across.
+- **Server and username of a hosting service:** staff can set which server and username an existing account uses, saved in ClientFence only (for imported or moved accounts).
+- **Orders > Move services by account list:** for panels that cannot look accounts up, paste the server's account list (one "domain username" per line; cPanel's /etc/trueuserdomains as it is). Each listed service is linked to that server and username; nothing is created on the server.
+- **Subreg:** WHOIS privacy on and off (Subreg does not offer it for .cz and .eu), and Get EPP Code shows the code or has Subreg email it to the domain contact ([#82](https://github.com/cPFence/clientfence/issues/82)).
+
+### Changed
+
+- NameSilo, OpenSRS and CentralNic Reseller: the domain page says the transfer code was emailed to the domain contact, instead of showing that sentence as the code.
+- Upgrades and downgrades keep a yes/no or quantity option the client chose when the new product has its own option with the same code, at the new product's price.
+
+### Fixed
+
+- Products of a service module switched off in Extensions no longer show in the store, cart, checkout or add-on offers, and their product page opens again (it showed an error).
+- Extensions no longer uninstalls a service module while orders of it exist (after a new install, an old order could open another client's service).
+
 ## 1.0.63 (2026-11-25)
 
 ### Added
