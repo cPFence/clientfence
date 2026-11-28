@@ -198,6 +198,7 @@ test('action create uses the product server if the group is missing', function (
     $db->expects('getExistingModelById')->with('ServiceHostingHp', 3, Mockery::any())->andReturn($plan);
     if ($groupExists) {
         $db->expects('load')->with('ServiceHostingServer', $serverId)->andReturn($server);
+        $di['dbal']->expects('fetchOne')->with(Mockery::any(), [$serverId])->andReturn(0);
     } else {
         $db->expects('getExistingModelById')->with('ServiceHostingServer', $serverId, Mockery::any())->andReturn($server);
     }
@@ -205,7 +206,6 @@ test('action create uses the product server if the group is missing', function (
     $db->expects('store')->with($model);
     $di['dbal']->expects('fetchAssociative')->with('SELECT fill_type, servers FROM service_hosting_server_group WHERE id = ?', [4])
         ->andReturn($groupExists ? ['fill_type' => 'least', 'servers' => '[2]'] : false);
-    $di['dbal']->expects('fetchOne')->with(Mockery::any(), [$serverId])->andReturn(0);
     $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderService->expects('getConfig')->with($order)->andReturn(['server_id' => 1, 'server_group_id' => 4, 'hosting_plan_id' => 3, 'sld' => 'site', 'tld' => '.example']);
     $di['mod_service'] = $di->protect(fn () => $orderService);
@@ -246,23 +246,30 @@ test('action create refuses a plan bound to another server after its group is de
     expect(fn () => $service->action_create($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan belongs to another server.');
 });
 
-test('action create refuses an inactive or full server', function (int $active, int $maxAccounts): void {
+test('action create accepts a full active direct server and refuses an inactive one', function (int $active): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $server = new Model_ServiceHostingServer();
     $server->loadBean(new Tests\Helpers\DummyBean());
     $server->id = 1;
     $server->active = $active;
-    $server->max_accounts = $maxAccounts;
+    $server->max_accounts = 2;
+    $plan = new Model_ServiceHostingHp();
+    $plan->loadBean(new Tests\Helpers\DummyBean());
+    $plan->id = 2;
+    $model = new Model_ServiceHosting();
+    $model->loadBean(new Tests\Helpers\DummyBean());
 
     $orderService = Mockery::mock(ClientFence\Mod\Order\Service::class);
     $orderService->shouldReceive('getConfig')->once()->with($order)->andReturn(['server_id' => 1, 'hosting_plan_id' => 2, 'sld' => 'site', 'tld' => 'test']);
     $db = Mockery::mock(ClientFence\Database::class);
     $db->shouldReceive('getCell')->once()->andReturn(0);
     $db->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 1, Mockery::any())->andReturn($server);
-    $db->shouldNotReceive('dispense');
+    $db->shouldReceive('getExistingModelById')->with('ServiceHostingHp', 2, Mockery::any())->andReturn($plan);
+    $db->shouldReceive('dispense')->times($active)->with('ServiceHosting')->andReturn($model);
+    $db->shouldReceive('store')->times($active)->with($model);
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $dbal->shouldReceive('fetchOne')->times($active)->with("SELECT COUNT(*) FROM service_hosting sh JOIN client_order co ON co.service_type = 'hosting' AND co.service_id = sh.id WHERE sh.service_hosting_server_id = ? AND co.status <> 'canceled'", [1])->andReturn(2);
+    $dbal->shouldReceive('fetchOne')->with(Mockery::any(), [1])->andReturn(2);
 
     $di = container();
     $di['db'] = $db;
@@ -271,11 +278,12 @@ test('action create refuses an inactive or full server', function (int $active, 
     $service = new Service();
     $service->setDi($di);
 
-    expect(fn () => $service->action_create($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
-})->with([
-    'inactive server' => [0, 0],
-    'full server' => [1, 2],
-]);
+    if ($active === 0) {
+        expect(fn () => $service->action_create($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
+    } else {
+        expect($service->action_create($order)->service_hosting_server_id)->toBe(1);
+    }
+})->with(['inactive server' => 0, 'full active server' => 1]);
 
 // ClientFence: "already set up" (Add New Order, Orders > Move services) links an existing account: a full or switched-off server takes it.
 test('action create stores an already set up account on an inactive or full server', function (int $active, int $maxAccounts): void {
@@ -317,8 +325,7 @@ test('action create stores an already set up account on an inactive or full serv
     'full server' => [1, 2],
 ]);
 
-// ClientFence: an uncancel creates a new account on the server, so the server's limits apply to an "already set up" order too.
-test('uncancel of an already set up order refuses an inactive or full service server without creating a row', function (int $active): void {
+test('uncancel of an already set up order accepts a full active server and refuses an inactive one', function (int $active): void {
     $order = new Model_ClientOrder();
     $order->loadBean(new Tests\Helpers\DummyBean());
     $model = new Model_ServiceHosting();
@@ -335,21 +342,30 @@ test('uncancel of an already set up order refuses an inactive or full service se
     $orderService->shouldReceive('getOrderService')->once()->with($order)->andReturn($model);
     $db = Mockery::mock(ClientFence\Database::class);
     $db->shouldReceive('getCell')->once()->andReturn(0);
-    $db->shouldReceive('getExistingModelById')->once()->with('ServiceHostingServer', 2, 'Server not found')->andReturn($server);
+    $db->shouldReceive('getExistingModelById')->with('ServiceHostingServer', 2, 'Server not found')->andReturn($server);
     $db->shouldNotReceive('dispense');
-    $db->shouldNotReceive('store');
+    $db->shouldReceive('store')->times($active)->with($model);
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
-    $dbal->shouldReceive('fetchOne')->times($active)->with(Mockery::any(), [2])->andReturn(2);
+    $dbal->shouldReceive('fetchOne')->with(Mockery::any(), [2])->andReturn(2);
 
     $di = container();
     $di['db'] = $db;
     $di['dbal'] = $dbal;
     $di['mod_service'] = $di->protect(fn () => $orderService);
-    $service = new Service();
+    $manager = Mockery::mock(Server_Manager_Custom::class);
+    $manager->shouldReceive('getPasswordLength')->andReturn(12);
+    $manager->shouldReceive('createAccount')->times($active)->andReturn(true);
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('getServerManager')->with($server)->andReturn($manager);
+    $service->shouldReceive('_getAM')->with($model, null, false)->andReturn([$manager, new Server_Account()]);
     $service->setDi($di);
 
-    expect(fn () => $service->action_uncancel($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
-})->with(['inactive server' => 0, 'full server' => 1]);
+    if ($active === 0) {
+        expect(fn () => $service->action_uncancel($order))->toThrow(ClientFence\InformationException::class, 'This hosting plan cannot be ordered right now. Please contact us.');
+    } else {
+        expect($service->action_uncancel($order))->toBeTrue();
+    }
+})->with(['inactive server' => 0, 'full active server' => 1]);
 
 test('action renew', function (): void {
     $service = new Service();

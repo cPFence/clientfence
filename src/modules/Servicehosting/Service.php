@@ -130,12 +130,10 @@ class Service implements InjectionAwareInterface
         }
     }
 
-    // ClientFence core patch: a disabled or full server takes no new accounts (cancelled ones do not count; an unset flag is active).
+    // ClientFence core patch: a disabled server takes no new accounts. The maximum applies only to server groups (ServerGroups::pick()).
     private function assertServerTakesAccounts(\Model_ServiceHostingServer $server): void
     {
-        if ((string) $server->active === '0'
-            || ((int) $server->max_accounts > 0 && self::countServerAccounts($this->di, (int) $server->id) >= (int) $server->max_accounts)
-        ) {
+        if ((string) $server->active === '0') {
             throw new InformationException('This hosting plan cannot be ordered right now. Please contact us.');
         }
     }
