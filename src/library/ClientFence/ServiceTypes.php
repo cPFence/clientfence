@@ -53,9 +53,13 @@ namespace ClientFence;
  *   core's own pages win, and of two modules that declare one page the first by module name keeps it;
  * - "store_calls": {"guest": {"method": "list"}} — guest and client calls a closed store answers instead of running
  *   (Clientfence\Service::storeGate(): "page", "list", "not_found", anything else refused; the core's list wins);
- * - "usage": true — every renewal invoice calls the module's bill_usage($invoice, $order) (Invoice\Service), which bills
+ * - "usage": true — each new renewal contribution calls bill_usage($invoice, $order, $context) (Invoice\Service), which bills
  *   usage with Invoice\Service::addUsageLine($invoice, $order, $title, $price). Its contract:
  *   - it is called for the orders of every product type, so the module checks the order's type itself;
+ *   - existing two-argument callbacks still work. The context holds `period` (normalized ending cycle or null),
+ *     `period_start` and `period_end` (nominal half-open bounds in Unix seconds or null), and `observed_cutoff` (Unix
+ *     seconds, the earlier of issue time and period end, or issue time if the end is unknown). Consider readings
+ *     strictly before the cutoff. The nominal start is a fallback where metering history is unavailable;
  *   - it runs under the order's renewal lock (the cron, staff renew and the client's Renew Now): no provider API calls,
  *     no waiting;
  *   - prices are in the invoice's currency, one line per charge (quantity 1);

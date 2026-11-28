@@ -3934,11 +3934,11 @@ test('pays invoice with credits', function (): void {
     expect($result)->toBeBool()->toBeTrue();
 });
 
-test('returns existing invoice when generating for order with unpaid invoice', function (): void {
+test('reuses an unpaid renewal invoice without invoking the usage provider', function (): void {
     $service = new Service();
     $clientOrder = new Model_ClientOrder();
     $clientOrder->loadBean(new Tests\Helpers\DummyBean());
-    $clientOrder->unpaid_invoice_id = 2;
+    $clientOrder->id = 21;
 
     $invoiceModel = new Model_Invoice();
     $invoiceModel->loadBean(new Tests\Helpers\DummyBean());
@@ -3946,15 +3946,19 @@ test('returns existing invoice when generating for order with unpaid invoice', f
 
     $dbMock = Mockery::mock('ClientFence\Database');
     $dbMock->shouldReceive('load')
-        ->atLeast()->once()
+        ->once()->with('Invoice', 2)
         ->andReturn($invoiceModel);
 
     $di = container();
     $di['db'] = $dbMock;
+    $di['dbal']->shouldReceive('fetchAssociative')->once()->with('SELECT * FROM client_order WHERE id = ?', [21])
+        ->andReturn(['unpaid_invoice_id' => 2]);
+    $di['request_cache'] = new ArrayObject(['module_hooks' => ['serviceexample' => ['usage' => true]]]);
+    $di['mod_service'] = $di->protect(static fn (string $name) => throw new RuntimeException("Unexpected service: {$name}"));
 
     $service->setDi($di);
     $result = $service->generateForOrder($clientOrder);
-    expect($result)->toBeInstanceOf(Model_Invoice::class);
+    expect($result)->toBe($invoiceModel);
 });
 
 test('clears stale paid invoice reference when generating for order', function (): void {
@@ -4063,14 +4067,15 @@ test('generates invoice for order', function (): void {
     expect($result)->toBeInstanceOf(Model_Invoice::class);
 });
 
-test('generates invoice for active order using the order price, not the product price', function (): void {
+test('uses the order price and skips usage for activation or a provider without the hook', function (bool $activate): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
     $serviceMock->shouldReceive('setInvoiceDefaults')
         ->once();
 
     $orderModel = new Model_ClientOrder();
     $orderModel->loadBean(new Tests\Helpers\DummyBean());
-    $orderModel->status = Model_ClientOrder::STATUS_ACTIVE;
+    $orderModel->id = 21;
+    $orderModel->status = $activate ? Model_ClientOrder::STATUS_PENDING_SETUP : Model_ClientOrder::STATUS_ACTIVE;
     $orderModel->product_id = 5;
     $orderModel->currency = 'USD';
     $orderModel->price = 25;
@@ -4088,7 +4093,7 @@ test('generates invoice for active order using the order price, not the product 
     $productService = Mockery::mock(ProductService::class);
     $productService->shouldReceive('findProductById')
         ->with(5)
-        ->once()
+        ->times($activate ? 0 : 1)
         ->andReturn($product);
     $productService->shouldReceive('getProductRenewalLineConfig')
         ->never();
@@ -4105,23 +4110,27 @@ test('generates invoice for active order using the order price, not the product 
 
     $invoiceItemServiceMock = Mockery::mock(ServiceInvoiceItem::class);
     $invoiceItemServiceMock->shouldReceive('generateFromOrder')
-        ->with($invoiceModel, $orderModel, Model_InvoiceItem::TASK_RENEW, 25, Mockery::on(fn ($line): bool => $line['price'] === 25 && $line['quantity'] === 1))
+        ->with($invoiceModel, $orderModel, $activate ? Model_InvoiceItem::TASK_ACTIVATE : Model_InvoiceItem::TASK_RENEW, 25, ['price' => 25, 'quantity' => 1])
         ->once();
 
     $di = container();
     $di['db'] = $dbMock;
-    $di['mod_service'] = $di->protect(function (string $module) use ($productService, $invoiceItemServiceMock): Mockery\MockInterface {
-        if ($module === 'Product') {
-            return $productService;
-        }
-
-        return $invoiceItemServiceMock;
-    });
+    $di['request_cache'] = new ArrayObject(['site.providers' => [], 'module_hooks' => ['serviceexample' => $activate ? ['usage' => true] : ['client_pages' => []]]]);
+    $di['dbal']->shouldReceive('fetchAssociative')->times($activate ? 1 : 0)->with('SELECT * FROM client_order WHERE id = ?', [21])
+        ->andReturn(['unpaid_invoice_id' => null]);
+    $provider = Mockery::mock();
+    $provider->shouldNotReceive('bill_usage');
+    $subscriptions = Mockery::mock(ServiceSubscription::class);
+    $subscriptions->shouldNotReceive('hasGatewaySubscriptionForOrder');
+    $di['mod_service'] = $di->protect(moduleService([
+        'product' => $productService, 'invoice:invoiceitem' => $invoiceItemServiceMock,
+        'invoice:subscription' => $subscriptions, 'serviceexample' => $provider,
+    ]));
 
     $serviceMock->setDi($di);
     $result = $serviceMock->generateForOrder($orderModel);
     expect($result)->toBeInstanceOf(Model_Invoice::class);
-});
+})->with(['renewal without a usage hook' => [false], 'activation with a usage hook' => [true]]);
 
 test('a domain renewal is billed at the TLD price, or free while its hosting gives it free', function (bool $free, float $price): void {
     $serviceMock = Mockery::mock(Service::class)->makePartial();
@@ -4247,6 +4256,8 @@ test('a renewal bills the usage of a module that declares "usage", as usage line
     $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($orderModel)->andReturn(false);
     // All or nothing: the line added before the failure is removed (the invoice had no line above 0 before the module).
     $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->shouldReceive('fetchAssociative')->once()->with('SELECT * FROM client_order WHERE id = ?', [21])
+        ->andReturn(['unpaid_invoice_id' => null, 'client_id' => $orderModel->client_id]);
     $dbal->shouldReceive('executeStatement')->times($fail === null ? 0 : 1)->with("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage' AND id > ?", [77, '21', 0]);
     $dbal->shouldIgnoreMissing();
     $di['dbal'] = $dbal;
@@ -4272,6 +4283,112 @@ test('a renewal bills the usage of a module that declares "usage", as usage line
     'module fails' => ['panel down'],
     'module has a PHP error' => ['Division by zero'],
 ]);
+
+test('renewal usage uses the order refreshed under lock and the observed part of its ending period', function (string $period, ?string $expiry, ?string $start, ?string $end, ?string $activatedAt = null, int $prorataDay = 0, bool $stored = false): void {
+    $di = container();
+    $di['request_cache'] = new ArrayObject(['site.providers' => [], 'module_hooks' => ['serviceexample' => ['usage' => true]]]);
+
+    $order = new Model_ClientOrder();
+    $bean = new Tests\Helpers\DummyBean();
+    $bean->importRow([
+        'id' => 21, 'client_id' => 5, 'product_id' => 3, 'status' => Model_ClientOrder::STATUS_ACTIVE,
+        'price' => 10, 'quantity' => 1, 'currency' => 'EUR', 'title' => 'Stored title', 'period' => '1Y',
+        'expires_at' => '2023-01-01 12:00:00', 'activated_at' => null, 'config' => null, 'unpaid_invoice_id' => null,
+    ]);
+    $order->loadBean($bean);
+    $order->title = 'Edited title';
+    if ($stored) {
+        // Saved since it was loaded: RedBean keeps the load-time history but nothing is unsaved.
+        $order->price = 20;
+        $bean->setMeta('changed', false);
+    }
+    $current = array_replace($bean->getProperties(), [
+        'title' => 'Stored title', 'price' => 25, 'period' => $period, 'expires_at' => $expiry,
+        'activated_at' => $activatedAt, 'config' => json_encode(['prorata_day' => $prorataDay]),
+    ]);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, ?)', ['fb:renewal:order:21', 10])->ordered()->andReturn(1);
+    $dbal->shouldReceive('fetchAssociative')->once()->with('SELECT * FROM client_order WHERE id = ?', [21])->ordered()->andReturn($current);
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT COALESCE(MAX(id), 0) FROM invoice_item WHERE invoice_id = ?', [77])->ordered()->andReturn(0);
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT RELEASE_LOCK(?)', ['fb:renewal:order:21'])->ordered()->andReturn(1);
+    $di['dbal'] = $dbal;
+
+    $invoice = new Model_Invoice();
+    $invoice->loadBean(new Tests\Helpers\DummyBean());
+    $invoice->id = 77;
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $di['db']->shouldReceive('getExistingModelById')->with('Client', 5, 'Client not found')->andReturn($client);
+    $di['db']->shouldReceive('dispense')->with('Invoice')->andReturn($invoice);
+    $items = Mockery::mock(ServiceInvoiceItem::class);
+    $orderService = new OrderService();
+    $orderService->setDi($di);
+    $items->shouldReceive('generateFromOrder')->once()->with($invoice, $order, Model_InvoiceItem::TASK_RENEW, 25, ['price' => 25, 'quantity' => 1])
+        ->andReturnUsing(fn () => $orderService->setUnpaidInvoice($order, $invoice));
+    $productService = Mockery::mock(ProductService::class);
+    $productService->shouldReceive('findProductById')->with(3)->andReturn((new Product())->setType('example'));
+    $subscriptions = Mockery::mock(ServiceSubscription::class);
+    $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->once()->with($order)->andReturn(false);
+    $context = null;
+    $provider = Mockery::mock();
+    $provider->shouldReceive('bill_usage')->once()->with($invoice, $order, Mockery::type('array'))
+        ->andReturnUsing(function (Model_Invoice $invoice, Model_ClientOrder $order, array $snapshot) use (&$context): void {
+            $context = $snapshot;
+        });
+    $di['mod_service'] = $di->protect(moduleService([
+        'order' => $orderService, 'product' => $productService, 'invoice:invoiceitem' => $items,
+        'invoice:subscription' => $subscriptions, 'serviceexample' => $provider,
+    ]));
+    $service = Mockery::mock(Service::class)->makePartial();
+    $service->shouldReceive('setInvoiceDefaults')->once();
+    $service->setDi($di);
+
+    $before = time();
+    expect($service->generateForOrder($order, 2))->toBe($invoice)
+        ->and($order->title)->toBe($stored ? 'Stored title' : 'Edited title')
+        ->and($order->unpaid_invoice_id)->toBe(77);
+    $after = time();
+    $nominalEnd = $end === null ? null : strtotime($end);
+    expect($context)->toMatchArray([
+        'period' => strtoupper(ltrim($period, '0')),
+        'period_start' => $start === null ? null : strtotime($start),
+        'period_end' => $nominalEnd,
+    ])->and($context['observed_cutoff'])->toBeGreaterThanOrEqual(min($before, $nominalEnd ?? $before))
+        ->toBeLessThanOrEqual(min($after, $nominalEnd ?? $after));
+})->with([
+    'early monthly invoice leaves the tail' => [
+        '1M', date('Y-m-01 00:00:00', strtotime('first day of next month')), date('Y-m-01 00:00:00'),
+        date('Y-m-01 00:00:00', strtotime('first day of next month')),
+    ],
+    'overdue weekly invoice stops at expiry' => ['02w', '2024-06-21 12:00:00', '2024-06-07 12:00:00', '2024-06-21 12:00:00'],
+    'prorata through a short month' => ['1M', '2024-02-29 12:00:00', '2024-01-31 12:00:00', '2024-02-29 12:00:00', '2024-01-15 12:00:00', 31],
+    'first prorata period starts at activation' => ['1M', '2024-02-15 12:00:00', '2024-02-01 12:00:00', '2024-02-15 12:00:00', '2024-02-01 12:00:00', 15],
+    'inverted period leaves only the known end' => ['1M', '2024-02-15 12:00:00', null, '2024-02-15 12:00:00', '2024-02-16 12:00:00'],
+    'invalid expiry leaves no nominal bounds' => ['1M', '2024-02-31 12:00:00', null, null],
+    'a model stored since loading takes the current row' => ['1M', '2024-02-15 12:00:00', '2024-01-15 12:00:00', '2024-02-15 12:00:00', null, 0, true],
+]);
+
+test('renewal with usage refuses an order moved to another client while it waited for the lock', function (): void {
+    $di = container();
+    $di['request_cache'] = new ArrayObject(['site.providers' => [], 'module_hooks' => ['serviceexample' => ['usage' => true]]]);
+    $order = new Model_ClientOrder();
+    $bean = new Tests\Helpers\DummyBean();
+    $bean->importRow(['id' => 21, 'client_id' => 5, 'unpaid_invoice_id' => null]);
+    $order->loadBean($bean);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
+    $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\MySQLPlatform());
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT GET_LOCK(?, ?)', ['fb:renewal:order:21', 10])->andReturn(1);
+    $dbal->shouldReceive('fetchAssociative')->once()->with('SELECT * FROM client_order WHERE id = ?', [21])
+        ->andReturn(['id' => 21, 'client_id' => 6, 'unpaid_invoice_id' => null]);
+    $dbal->shouldReceive('fetchOne')->once()->with('SELECT RELEASE_LOCK(?)', ['fb:renewal:order:21'])->andReturn(1);
+    $di['dbal'] = $dbal;
+    $service = new Service();
+    $service->setDi($di);
+
+    expect(fn () => $service->generateForOrder($order))->toThrow(ClientFence\InformationException::class, 'Order not found')
+        ->and($order->client_id)->toBe(5);
+});
 
 test('every switched-on module that declares usage bills it in name order; a failing one loses only its own lines; a subscription-paid order gets none', function (bool $subscription): void {
     $dbal = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
@@ -4325,7 +4442,7 @@ test('every switched-on module that declares usage bills it in name order; a fai
     $service = new Service();
     $service->setDi($di);
 
-    (new ReflectionMethod($service, 'addUsageLines'))->invoke($service, $invoice, $order);
+    (new ReflectionMethod($service, 'addUsageLines'))->invoke($service, $invoice, $order, '');
 
     expect($dbal->fetchFirstColumn('SELECT title FROM invoice_item ORDER BY id'))->toBe($subscription ? ['Renewal'] : ['Renewal', 'alpha 1', 'alpha 2', 'gamma 1', 'gamma 2'])
         ->and(array_map(static fn (object $m): int => $m->calls, $modules))->toBe($subscription ? ['alpha' => 0, 'beta' => 0, 'gamma' => 0, 'zeta' => 0] : ['alpha' => 1, 'beta' => 1, 'gamma' => 1, 'zeta' => 0])
@@ -4625,8 +4742,8 @@ test('does not invoice or charge an order renewed since the expiring-order selec
         ->and($locked)->toBeFalse();
 });
 
-test('renews a client\'s orders due on the same day on one invoice, and leaves a subscription order its own', function (): void {
-    $orderService = Mockery::mock(OrderService::class);
+test('groups renewals with a separate usage snapshot for each order and invoices a subscribed order separately', function (): void {
+    $orderService = Mockery::mock(OrderService::class)->makePartial();
     $due = date('Y-m-d', strtotime('+5 days'));
     $orderService->shouldReceive('getSoonExpiringActiveOrders')->with([])->andReturn([
         ['id' => 1, 'client_id' => 7, 'currency' => 'USD', 'expires_at' => $due . ' 10:00:00'],
@@ -4635,40 +4752,61 @@ test('renews a client\'s orders due on the same day on one invoice, and leaves a
     ]);
     $orderService->shouldReceive('getSoonExpiringActiveOrders')->andReturnUsing(fn (array $f): array => [['id' => $f['id']]]);
     $orders = [];
-    foreach ([1, 2, 3] as $id) {
+    foreach ([1 => ['1W', '10:00:00'], 2 => ['3M', '18:00:00'], 3 => ['1M', '12:00:00']] as $id => [$period, $hour]) {
         $orders[$id] = new Model_ClientOrder();
         $orders[$id]->loadBean(new Tests\Helpers\DummyBean());
         $orders[$id]->id = $id;
+        $orders[$id]->client_id = 7;
+        $orders[$id]->currency = 'USD';
+        $orders[$id]->status = Model_ClientOrder::STATUS_ACTIVE;
+        $orders[$id]->product_id = 5;
+        $orders[$id]->period = $period;
+        $orders[$id]->expires_at = $due . ' ' . $hour;
     }
     $subscriptions = Mockery::mock(ServiceSubscription::class);
     $subscriptions->shouldReceive('hasGatewaySubscriptionForOrder')->andReturnUsing(fn (Model_ClientOrder $o): bool => $o->id === 3);
     $di = container();
-    $di['mod_service'] = $di->protect(fn (string $name, string $sub = ''): object => $sub === 'Subscription' ? $subscriptions : $orderService);
+    $di['request_cache'] = new ArrayObject(['site.providers' => [], 'module_hooks' => ['serviceexample' => ['usage' => true]]]);
     $di['logger'] = new Tests\Helpers\TestLogger();
-    $di['db']->shouldReceive('getExistingModelById')->andReturnUsing(fn (string $type, int $id): Model_ClientOrder => $orders[$id]);
+    $di['db']->shouldReceive('getExistingModelById')->with('ClientOrder', Mockery::type('int'))->andReturnUsing(fn (string $type, int $id): Model_ClientOrder => $orders[$id]);
+    $client = new Model_Client();
+    $client->loadBean(new Tests\Helpers\DummyBean());
+    $client->id = 7;
+    $di['db']->shouldReceive('getExistingModelById')->with('Client', 7, 'Client not found')->andReturn($client);
     $di['db']->shouldReceive('load')->andReturnNull();
-    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class)->shouldIgnoreMissing();
     $dbal->shouldReceive('getDatabasePlatform')->andReturn(new Doctrine\DBAL\Platforms\SQLitePlatform());
     $dbal->shouldReceive('fetchOne')->andReturn(false);
     $di['dbal'] = $dbal;
+    $orderService->setDi($di);
 
     $invoice = new Model_Invoice();
     $invoice->loadBean(new Tests\Helpers\DummyBean());
     $invoice->id = 40;
-    $calls = [];
+    $di['db']->shouldReceive('dispense')->once()->with('Invoice')->andReturn($invoice);
+    $products = Mockery::mock(ProductService::class);
+    $products->shouldReceive('findProductById')->with(5)->andReturn((new Product())->setType('example'));
+    $items = Mockery::mock(ServiceInvoiceItem::class);
+    $items->shouldReceive('generateFromOrder')->twice()->with($invoice, Mockery::type(Model_ClientOrder::class), Model_InvoiceItem::TASK_RENEW, Mockery::any(), Mockery::type('array'));
+    $snapshots = [];
+    $provider = Mockery::mock();
+    $provider->shouldReceive('bill_usage')->twice()->with($invoice, Mockery::type(Model_ClientOrder::class), Mockery::type('array'))
+        ->andReturnUsing(function (Model_Invoice $invoice, Model_ClientOrder $order, array $context) use (&$snapshots): void {
+            $snapshots[$order->id] = [$context['period'], $context['period_end']];
+        });
+    $di['mod_service'] = $di->protect(moduleService([
+        'order' => $orderService, 'product' => $products, 'invoice:invoiceitem' => $items,
+        'invoice:subscription' => $subscriptions, 'serviceexample' => $provider,
+    ]));
     $service = Mockery::mock(Service::class)->makePartial()->shouldAllowMockingProtectedMethods();
-    $service->shouldReceive('generateForOrderLocked')->andReturnUsing(function (Model_ClientOrder $o, $days, ?Model_Invoice $into, bool $finish) use (&$calls, $invoice): Model_Invoice {
-        $calls[] = [$o->id, $into?->id, $finish];
-
-        return $invoice;
-    });
-    $service->shouldReceive('finishRenewalInvoice')->once();
+    $service->shouldReceive('setInvoiceDefaults')->once();
+    $service->shouldReceive('finishRenewalInvoice')->once()->with($invoice, $orders[1]);
     $service->shouldReceive('generateForOrder')->once()->with($orders[3])->andReturn($invoice);
     $service->shouldReceive('approveInvoice')->twice();
     $service->setDi($di);
 
     expect($service->generateInvoicesForExpiringOrders())->toBeTrue()
-        ->and($calls)->toBe([[1, null, false], [2, 40, false]]);
+        ->and($snapshots)->toBe([1 => ['1W', strtotime($due . ' 10:00:00')], 2 => ['3M', strtotime($due . ' 18:00:00')]]);
 });
 
 test('renews each order of a client with Separate Invoices on its own invoice', function (): void {

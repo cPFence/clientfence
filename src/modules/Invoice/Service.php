@@ -2946,9 +2946,27 @@ class Service implements InjectionAwareInterface
         // ClientFence core patch: one renewal invoice per order. Under the order's lock the unpaid invoice is
         // read again: "Renew Now" clicked twice made two invoices, each paid from credit.
         return Tools::withLock($this->di, 'fb:renewal:order:' . (int) $order->id, function () use ($order, $due_days) {
-            $unpaid = $this->di['dbal']->fetchOne('SELECT unpaid_invoice_id FROM client_order WHERE id = ?', [$order->id]);
-            if ($unpaid) {
-                $order->unpaid_invoice_id = (int) $unpaid;
+            if (\ClientFence\ServiceTypes::usage($this->di) !== []) {
+                // ClientFence core patch: renewal usage and pricing need the order as it stands after waiting for its lock.
+                $current = $this->di['dbal']->fetchAssociative('SELECT * FROM client_order WHERE id = ?', [$order->id]);
+                // An order moved to another client while this waited is not renewed for the caller that checked the old one.
+                if ($current === false || (int) $current['client_id'] !== (int) $order->client_id) {
+                    throw new InformationException('Order not found');
+                }
+                $bean = $order->unbox();
+                // A stored model keeps its load-time history, so only a model with unsaved changes keeps edited fields.
+                $edited = (bool) $bean->getMeta('changed');
+                foreach ($current as $field => $value) {
+                    if ($field === 'unpaid_invoice_id' || !$edited || $bean->old($field) === $order->{$field}) {
+                        $order->{$field} = $value;
+                    }
+                }
+                $bean->setMeta('sys.orig', $current);
+            } else {
+                $unpaid = $this->di['dbal']->fetchOne('SELECT unpaid_invoice_id FROM client_order WHERE id = ?', [$order->id]);
+                if ($unpaid) {
+                    $order->unpaid_invoice_id = (int) $unpaid;
+                }
             }
 
             return $this->generateForOrderLocked($order, $due_days);
@@ -3055,6 +3073,7 @@ class Service implements InjectionAwareInterface
             $orderService->unsetUnpaidInvoice($order);
         }
 
+        $endingPeriod = (string) $order->period;
         $price = $order->price;
         $line = [
             'price' => $order->price,
@@ -3114,7 +3133,7 @@ class Service implements InjectionAwareInterface
             : \Model_InvoiceItem::TASK_RENEW;
         $invoiceItemService->generateFromOrder($proforma, $order, $task, $price, $line);
         if ($task === \Model_InvoiceItem::TASK_RENEW) {
-            $this->addUsageLines($proforma, $order);
+            $this->addUsageLines($proforma, $order, $endingPeriod);
         }
         if ($finish) {
             $this->finishRenewalInvoice($proforma, $order, $due_days);
@@ -3128,16 +3147,48 @@ class Service implements InjectionAwareInterface
      * addUsageLine() (ServiceTypes, with the module's contract), in module-name order. A module that fails loses only the
      * lines it added in that call, logged. A gateway subscription pays a fixed amount, so its orders get no usage.
      */
-    private function addUsageLines(\Model_Invoice $invoice, \Model_ClientOrder $order): void
+    private function addUsageLines(\Model_Invoice $invoice, \Model_ClientOrder $order, string $endingPeriod): void
     {
         $modules = \ClientFence\ServiceTypes::usage($this->di);
         if ($modules === [] || $this->di['mod_service']('Invoice', 'Subscription')->hasGatewaySubscriptionForOrder($order)) {
             return;
         }
+
+        // ClientFence core patch: usage after an early invoice's cutoff stays available for the next invoice.
+        $issuedAt = time();
+        $expiry = $order->expires_at;
+        $timestamp = strtotime((string) $expiry);
+        $end = $timestamp !== false && date('Y-m-d H:i:s', $timestamp) === $expiry ? $timestamp : null;
+        try {
+            $period = $endingPeriod ? $this->di['period']($endingPeriod)->getCode() : null;
+        } catch (\ClientFence\Exception) {
+            $period = null;
+        }
+        $start = null;
+        if ($end !== null && $period !== null) {
+            $orderService = $this->di['mod_service']('Order');
+            $anchor = $orderService->orderActivatedAt($order);
+            $anchorTime = strtotime((string) $anchor);
+            if ($anchorTime === false || date('Y-m-d H:i:s', $anchorTime) !== $anchor) {
+                $anchor = null;
+            }
+            $start = $orderService->periodEnd($period, $end, $anchor, -1, $orderService->prorataDay($order));
+            $activated = strtotime((string) $order->activated_at);
+            if ($activated !== false && date('Y-m-d H:i:s', $activated) === $order->activated_at) {
+                $start = max($start, $activated);
+            }
+            $start = $start < $end ? $start : null;
+        }
+        $context = [
+            'period' => $period,
+            'period_start' => $start,
+            'period_end' => $end,
+            'observed_cutoff' => min($issuedAt, $end ?? $issuedAt),
+        ];
         foreach ($modules as $module) {
             $last = (int) $this->di['dbal']->fetchOne('SELECT COALESCE(MAX(id), 0) FROM invoice_item WHERE invoice_id = ?', [(int) $invoice->id]);
             try {
-                $this->di['mod_service']($module)->bill_usage($invoice, $order);
+                $this->di['mod_service']($module)->bill_usage($invoice, $order, $context);
             } catch (\Throwable $e) {
                 // All or nothing per module: a line it added before it failed goes too.
                 $this->di['dbal']->executeStatement("DELETE FROM invoice_item WHERE invoice_id = ? AND rel_id = ? AND unit = 'usage' AND id > ?", [(int) $invoice->id, (string) $order->id, $last]);
