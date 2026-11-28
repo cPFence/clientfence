@@ -153,6 +153,34 @@ class SupportTicketMessageRepository extends EntityRepository
     }
 
     /**
+     * ClientFence core patch: reply time follows message creation even when staff edit the ticket.
+     *
+     * @param list<int> $ticketIds
+     *
+     * @return array<int, string>
+     */
+    public function lastMessageAtByTicketIds(array $ticketIds): array
+    {
+        if (empty($ticketIds)) {
+            return [];
+        }
+
+        return $this->getEntityManager()->getConnection()->fetchAllKeyValue(
+            'SELECT m.support_ticket_id, m.created_at
+             FROM support_ticket_message m
+             INNER JOIN (
+                 SELECT MAX(id) AS id
+                 FROM support_ticket_message
+                 WHERE support_ticket_id IN (:ids)
+                 GROUP BY support_ticket_id
+             ) latest ON latest.id = m.id
+             WHERE m.created_at IS NOT NULL',
+            ['ids' => $ticketIds],
+            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+        );
+    }
+
+    /**
      * Return the lowest message id for each supplied ticket id.
      *
      * Used by the batch ticket fetcher to pull a single "first message" per

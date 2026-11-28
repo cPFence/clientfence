@@ -42,7 +42,7 @@
                             <th>{{ 'Ticket'|trans }}</th>
                             <th>{{ 'Client'|trans }}</th>
                             <th>{{ 'Helpdesk'|trans }}</th>
-                            <th>{{ 'Updated'|trans }}</th>
+                            <th>{{ 'Last Reply'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,7 @@
                             <td><a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'><bdi>#{{ ticket.id }}</bdi> - <bdi>{{ ticket.subject|truncate(50) }}</bdi> ({{ ticket.replies }})</a></td>
                             <td>{{ ticket.author.name|default('-') }}</td>
                             <td>{{ ticket.helpdesk.name|default('-') }}</td>
-                            <td class="text-muted">{{ ticket.updated_at|timeago }} {{ 'ago'|trans }}</td>
+                            <td class="text-muted">{% if ticket.last_reply_at %}<span title="{{ ticket.last_reply_at|format_datetime }}">{{ ':time ago'|trans({ ':time': ticket.last_reply_at|timeago }) }}</span>{% endif %}</td>
                         </tr>
                     {% else %}
                         <tr>

@@ -551,6 +551,9 @@ class Service implements \ClientFence\InjectionAwareInterface
         // ClientFence core patch: the priority as WHMCS's Low, Medium or High, for staff and clients (TicketPriority).
         $data['priority_level'] = TicketPriority::level($model->getPriority());
         $data['replies'] = $known['replies'] ?? $this->messageGetRepliesCount($model);
+        if (array_key_exists('last_reply_at', $known)) {
+            $data['last_reply_at'] = $known['last_reply_at'] ?? null;
+        }
         $data['first'] = $firstSupportTicketMessage instanceof SupportTicketMessage ? $this->messageToApiArray($firstSupportTicketMessage, true, $identity) : null;
         $data['helpdesk'] = $helpdesk instanceof Helpdesk ? $helpdesk->toApiArray($identity) : null;
         // ClientFence core patch: help desk greeting for the staff reply box (ClientFence).
@@ -615,6 +618,7 @@ class Service implements \ClientFence\InjectionAwareInterface
     {
         $ids = array_map(static fn (SupportTicket $ticket): int => (int) $ticket->getId(), $tickets);
         $replies = $this->getSupportTicketMessageRepository()->countRepliesByTicketIds($ids);
+        $lastReplyAt = $this->getSupportTicketMessageRepository()->lastMessageAtByTicketIds($ids);
         $first = $this->getSupportTicketMessageRepository()->findFirstByTicketIds($ids);
         $assignees = TicketAssign::assignees($this->di, $ids);
         $notes = [];
@@ -625,7 +629,7 @@ class Service implements \ClientFence\InjectionAwareInterface
         $list = [];
         foreach ($tickets as $ticket) {
             $id = (int) $ticket->getId();
-            $known = ['replies' => $replies[$id] ?? 0, 'first' => $first[$id] ?? null, 'assigned_to' => $assignees[$id] ?? null, 'notes' => $notes[$id] ?? []];
+            $known = ['replies' => $replies[$id] ?? 0, 'first' => $first[$id] ?? null, 'assigned_to' => $assignees[$id] ?? null, 'notes' => $notes[$id] ?? [], 'last_reply_at' => $lastReplyAt[$id] ?? null];
             if (!$ticket->isGuestTicket() && $ticket->getClientId() !== null) {
                 $known['client'] = $clients[$ticket->getClientId()] ??= $this->getClientApiArrayForTicket($ticket, $identity);
             }

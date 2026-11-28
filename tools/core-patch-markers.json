@@ -908,6 +908,14 @@
         "done": "ClientFence core patch: the \"With Selected\" bar above and below the list, as WHMCS (TicketBulk)."
     },
     {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: the columns in the WHMCS order (Helpdesk, Subject, Author, Status)."
+    },
+    {
+        "file": "modules/Support/templates/admin/mod_support_tickets.html.twig",
+        "done": "ClientFence core patch: the notes icon says what it opens; the time is the last reply (last_reply_at), the exact date on hover."
+    },
+    {
         "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
         "done": "ClientFence core patch: merge other tickets into this one, as WHMCS (Support/TicketMerge.php, clientfence-admin.js)."
     },
@@ -2050,6 +2058,10 @@
     {
         "file": "modules/Support/Repository/SupportTicketMessageRepository.php",
         "done": "ClientFence core patch: findFirstByTicketId() for many tickets"
+    },
+    {
+        "file": "modules/Support/Repository/SupportTicketMessageRepository.php",
+        "done": "ClientFence core patch: reply time follows message creation even when staff edit the ticket."
     },
     {
         "file": "modules/Support/Service.php",

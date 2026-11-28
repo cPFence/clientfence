@@ -255,16 +255,17 @@
             <div class="table-responsive">
             {# ClientFence core patch: initials avatars instead of the drawn identicons (CF-135 redesign). #}
             <table class="table card-table table-vcenter table-striped sortable">
+                {# ClientFence core patch: the columns in the WHMCS order (Helpdesk, Subject, Author, Status). #}
                 <thead>
                     <tr>
                         <th class="w-1 no-sort">
                             <input class="form-check-input m-0 align-middle batch-delete-master-checkbox" type="checkbox">
                         </th>
-                        <th>{{ 'Author'|trans }}</th>
+                        <th>{{ 'Helpdesk'|trans }}</th>
                         <th>{{ 'Subject'|trans }}</th>
+                        <th>{{ 'Author'|trans }}</th>
                         <th>{{ 'Status'|trans }}</th>
                         <th>{{ 'Priority'|trans }}</th>
-                        <th>{{ 'Helpdesk'|trans }}</th>
                         <th>{{ 'Assigned To'|trans }}</th>
                         <th class="w-1 no-sort"></th>
                     </tr>
@@ -276,6 +277,25 @@
                         {% set bf_initials = ticket.author.name|default('')|split(' ')|slice(0, 2)|map(w => w|first)|join|upper %}
                         <td>
                             <input class="form-check-input m-0 align-middle batch-delete-checkbox" type="checkbox" data-item-id="{{ ticket.id }}">
+                        </td>
+                        <td>{{ ticket.helpdesk.name|default('-') }}</td>
+                        <td>
+                            <div>
+                                {% if ticket.id in bf_pins %}<svg class="icon bf-pin" aria-label="{{ 'Pinned'|trans }}"><title>{{ 'Pinned'|trans }}</title><use href="#pinned" /></svg>{% endif %}
+                                <a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>#{{ ticket.id }} - <bdi>{{ ticket.subject|truncate(50) }}</bdi> ({{ ticket.replies }})</a>
+                            </div>
+                            {# ClientFence core patch: the notes icon says what it opens; the time is the last reply (last_reply_at), the exact date on hover. #}
+                            {% if ticket.notes is defined and ticket.notes|length %}
+                                {% set bf_notes_label = 'Staff notes (:count): click to read'|trans({ ':count': ticket.notes|length }) %}
+                                <a href="#" rel="{{ ticket.id }}" title="{{ bf_notes_label }}" aria-label="{{ bf_notes_label }}" class="show-notes">
+                                    <svg class="icon" aria-hidden="true">
+                                        <use href="#note" />
+                                    </svg>
+                                </a>
+                            {% endif %}
+                            {% if ticket.last_reply_at %}
+                                <span class="text-muted" title="{{ ticket.last_reply_at|format_datetime }}">{{ 'Last reply :time ago'|trans({ ':time': ticket.last_reply_at|timeago }) }}</span>
+                            {% endif %}
                         </td>
                         <td>
                             {% if ticket.author.role|default('') == 'client' %}
@@ -303,23 +323,8 @@
                                 </div>
                             {% endif %}
                         </td>
-                        <td>
-                            <div>
-                                {% if ticket.id in bf_pins %}<svg class="icon bf-pin" aria-label="{{ 'Pinned'|trans }}"><title>{{ 'Pinned'|trans }}</title><use href="#pinned" /></svg>{% endif %}
-                                <a href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>#{{ ticket.id }} - <bdi>{{ ticket.subject|truncate(50) }}</bdi> ({{ ticket.replies }})</a>
-                            </div>
-                            {% if ticket.notes is defined and ticket.notes|length %}
-                                <a href="#" rel="{{ ticket.id }}" title="{{ ticket.notes|length }}" class="show-notes">
-                                    <svg class="icon">
-                                        <use href="#note" />
-                                    </svg>
-                                </a>
-                            {% endif %}
-                            <span class="text-muted">{{ ticket.updated_at|timeago }} {{ 'ago'|trans }}</span>
-                        </td>
                         <td>{{ mf.status_badge(ticket.status, 'ticket') }}</td>
                         <td>{{ include('mod_support_ticket_priority.html.twig', { level: ticket.priority_level|default('medium') }) }}</td>
-                        <td>{{ ticket.helpdesk.name|default('-') }}</td>
                         <td>{{ ticket.assigned_to.name|default('-') }}</td>
                         <td class="text-nowrap">
                             <a class="btn btn-icon" href='{{ "support/ticket/#{ticket.id}"|url }}#reply-box'>
