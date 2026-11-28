@@ -75,9 +75,10 @@
                                     <div class="text-secondary"><bdi>#{{ ticket.id }}</bdi> · {{ ticket.messages|length }} {{ 'message(s)'|trans }}</div>
                                 </div>
                                 <div class="cf-inv-chips">
-                                    {{ mf.status_badge(ticket.status, 'ticket') }}
+                                    {# ClientFence core patch: the status and priority chips at a larger size (cf-status-lg cf-status-md). #}
+                                    <span class="cf-status-lg cf-status-md">{{ mf.status_badge(ticket.status, 'ticket') }}</span>
                                     {# ClientFence core patch: priority as WHMCS and the assignee (Support/TicketPriority.php, TicketAssign.php). #}
-                                    {{ include('mod_support_ticket_priority.html.twig', { level: ticket.priority_level|default('medium') }) }}
+                                    <span class="cf-status-lg cf-status-md">{{ include('mod_support_ticket_priority.html.twig', { level: ticket.priority_level|default('medium') }) }}</span>
                                 </div>
                             </div>
                             <div class="cf-inv-client">

@@ -70,6 +70,7 @@
                                 </div>
                                 <div class="cf-inv-chips">
                                     {# ClientFence core patch: a draft (not yet issued) says Draft, not Unpaid. #}
+                                    {# ClientFence core patch: the invoice status chip at a larger size (cf-status-lg). #}
                                     <span class="cf-status-lg">{% if invoice.status == 'unpaid' and not invoice.approved %}{{ mf.text_badge('Draft'|trans, 'text-bg-secondary') }}{% else %}{{ mf.status_badge(invoice.status, 'invoice') }}{% endif %}</span>
                                     {% if overdue %}<span class="badge bg-red-lt">{{ 'Overdue'|trans }} · {{ invoice.due_at|timeago }}</span>{% endif %}
                                     {# ClientFence core patch: a bank debit still clearing (Invoice/PendingPayments.php). #}

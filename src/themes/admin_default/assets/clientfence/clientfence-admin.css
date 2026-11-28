@@ -1088,10 +1088,12 @@ a.bf-file-name:hover .icon { color: inherit; }
 .cf-inv-figure { font-family: var(--bf-font-h); font-size: 32px; font-weight: 800; line-height: 1.1; letter-spacing: -.01em; }
 .cf-tone-bad { color: var(--bf-bad); } .cf-tone-warn { color: var(--bf-warn); } .cf-tone-ok { color: var(--bf-ok); } .cf-tone-muted { color: var(--bf-ink); }
 .cf-inv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-/* The invoice status chip (Paid, Unpaid...) in the invoice header: larger, same colours; a long one wraps. */
+/* The status chip in the invoice header (Paid, Unpaid...) and the status and priority chips in the staff ticket header: larger, same colours; a long one wraps. */
 .cf-status-lg > .badge { max-width: 100%; padding: 6px 14px; font-size: 18px; line-height: 1.3; white-space: normal; overflow-wrap: anywhere; }
 .cf-status-lg ~ .badge { align-self: center; } /* the small chips beside it keep their height */
 @media (max-width: 575.98px) { .cf-status-lg > .badge { font-size: 16px; } }
+.cf-status-lg.cf-status-md > .badge { padding: 5px 12px; font-size: 16px; } /* the staff ticket header: a step smaller */
+@media (max-width: 575.98px) { .cf-status-lg.cf-status-md > .badge { font-size: 14px; } }
 .cf-inv-note { padding: 0 20px 14px; }
 .cf-inv-client { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-top: 1px solid var(--bf-line); }
 .cf-inv-who { display: flex; flex-direction: column; min-width: 0; }
