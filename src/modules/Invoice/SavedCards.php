@@ -316,7 +316,9 @@ final class SavedCards
             $card = (string) ($adapter->savedCard((int) $invoice->client_id)['card'] ?? '');
 
             try {
-                $paymentId = $adapter->chargeSavedCard($invoice, $byStaff ? 'staff_' . time() : 'attempt_' . ($attempt + 1));
+                $charge = static fn (): string => $adapter->chargeSavedCard($invoice, $byStaff ? 'staff_' . time() : 'attempt_' . ($attempt + 1));
+                // The client's own Pay now stays where the payer is; cron and staff charge on the invoice's site (ClientFence\Site::on()).
+                $paymentId = $byClient ? $charge() : \ClientFence\Site::on($di, 'invoice', (int) $invoice->id, $charge);
             } catch (\Throwable $e) {
                 $error = $e instanceof InformationException ? $e->getMessage() : __trans('The payment service did not answer. Please try again later.');
                 $db->executeStatement('UPDATE invoice_card_charge SET last_error = ? WHERE invoice_id = ?', [mb_substr($error, 0, 255), (int) $invoice->id]);

@@ -152,7 +152,8 @@ class Payment_Adapter_PayTabs implements ClientFence\InjectionAwareInterface
      */
     public function checkout(Model_Invoice $invoice, bool $save): string
     {
-        $back = ClientFence\Site::current($this->di)->url . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => (int) $invoice->id]);
+        // PayTabs' callback is a server notice: the portal URL, like every payment notice (ServicePayGateway::getCallbackUrl()).
+        $back = SYSTEM_URL . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => (int) $invoice->id]);
         $cart = $this->cart($invoice, ($save ? 'save' : 'pay') . time());
 
         return $this->startPage($cart + [

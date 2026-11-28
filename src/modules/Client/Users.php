@@ -316,18 +316,28 @@ final class Users
 
     /**
      * An active user's sign-in (after the password, or Google sign-in): {user_id, client_id,
-     * version} for the active account the user used last, or null.
+     * version} for the active account the user used last that this site lets in
+     * (ClientFence\Site::admitsClient()), or null.
      */
     public static function loginFor(\Pimple\Container $di, int $userId): ?array
     {
         $db = $di['em']->getConnection();
         $version = $db->fetchOne('SELECT session_version FROM client_user WHERE id = ? AND status = ?', [$userId, 'active']);
-        $clientId = $version === false ? false : $db->fetchOne(
+        $accounts = $version === false ? [] : $db->fetchFirstColumn(
             'SELECT l.client_id FROM client_user_account l JOIN client c ON c.id = l.client_id
              WHERE l.user_id = ? AND c.status IN (?, ?)
-             ORDER BY l.last_login_at IS NULL, l.last_login_at DESC, l.id LIMIT 1',
+             ORDER BY l.last_login_at IS NULL, l.last_login_at DESC, l.id',
             [$userId, ...\Model_Client::OPEN]
         );
+        // The last used account may be another site's: the newest one this site lets in.
+        $clientId = false;
+        foreach ($accounts as $account) {
+            if (\ClientFence\Site::admitsClient($di, (int) $account, 'choose')) {
+                $clientId = $account;
+
+                break;
+            }
+        }
         if ($clientId === false) {
             return null;
         }
@@ -378,6 +388,10 @@ final class Users
             throw new InformationException('Account not found.', null, 404);
         }
         TwoFactor::refusePasswordOnly($di, $clientId, 'user', (int) $context['user_id']);
+        // A site module may refuse that account on this site (ClientFence\Site::admitsClient()).
+        if (!\ClientFence\Site::admitsClient($di, $clientId, 'switch')) {
+            throw new InformationException('Account not found.', null, 404);
+        }
         $session = $di['session'];
         $session->regenerateId();
         $session->set('client_id', $clientId);
@@ -403,6 +417,8 @@ final class Users
              WHERE l.user_id = ? ORDER BY c.company, c.first_name, c.last_name, c.id',
             [...\Model_Client::OPEN, $context['user_id']]
         );
+        // Only the accounts this site lets in can be switched to here (switchTo()); the others are used on their own site.
+        $accounts = array_filter($accounts, static fn (array $c): bool => (int) $c['id'] === $context['client_id'] || \ClientFence\Site::admitsClient($di, (int) $c['id'], 'choose'));
         $name = static fn (array $c): string => trim((string) $c['company']) !== '' ? trim((string) $c['company']) : trim($c['first_name'] . ' ' . $c['last_name']);
         $list = array_map(static fn (array $c): array => ['id' => (int) $c['id'], 'name' => $name($c), 'current' => (int) $c['id'] === $context['client_id']], $accounts);
         $current = array_values(array_filter($list, static fn (array $a): bool => $a['current']))[0] ?? ['id' => $context['client_id'], 'name' => ''];
@@ -928,7 +944,8 @@ final class Users
 
     private static function sendInvite(\Pimple\Container $di, array $client, string $email, string $token): void
     {
-        $di['mod_service']('email')->sendTemplate([
+        // To a plain address: built on the account's site, so its link opens there (ClientFence\Site::forRecord()).
+        \ClientFence\Site::within($di, \ClientFence\Site::forRecord($di, 'client', (int) $client['id']), static fn () => $di['mod_service']('email')->sendTemplate([
             'code' => 'mod_client_user_invite',
             'to' => $email,
             // An existing user's language, else the account's.
@@ -938,7 +955,7 @@ final class Users
             'days' => self::INVITE_DAYS,
             // Sent at once, as WHMCS does (the queue retries a failure).
             'send_now' => true,
-        ]);
+        ]));
     }
 
     private static function accountName(array $client): string
@@ -995,9 +1012,14 @@ final class Users
         if ($invite === null) {
             throw new InformationException('This invitation has expired or was already used.');
         }
+        // Before anything is made or the invitation used: a site that does not let the account in keeps it for its own site.
+        if (!\ClientFence\Site::admitsClient($di, (int) $invite['client_id'], 'choose')) {
+            throw new InformationException('Open this invitation from the link in its email.');
+        }
         $db = $di['em']->getConnection();
         $user = $db->fetchAssociative('SELECT id, pass, status FROM client_user WHERE email = ?', [$invite['email']]);
         $now = date('Y-m-d H:i:s');
+        [$userId, $first] = [0, ''];
         if ($user !== false) {
             $di['rate_limiter']->consumeOrThrow('api_login', $ip);
             if ($user['status'] !== 'active' || !is_string($data['password'] ?? null) || !$di['password']->verify($data['password'], (string) $user['pass'])) {
@@ -1014,6 +1036,13 @@ final class Users
             }
             $di['validator']->passwordsMatch(['password' => $data['password'] ?? null, 'password_confirm' => $data['password_confirm'] ?? null]);
             $di['validator']->isPasswordStrong($data['password'] ?? null);
+        }
+        // The site's final word before anything is made or the invitation used, so a refusal leaves it usable; with
+        // two-factor sign-in it comes after the code (TwoFactor::verify()).
+        if (($user === false || !TwoFactor::isOn($di, 'user', (int) $user['id'])) && !\ClientFence\Site::admitsClient($di, (int) $invite['client_id'], 'sign-in')) {
+            throw new InformationException('Please check your login details.', [], 401);
+        }
+        if ($user === false) {
             $db->insert('client_user', [
                 'email' => (string) $invite['email'],
                 'first_name' => $first,

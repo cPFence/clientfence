@@ -201,6 +201,58 @@ test('a staff charge does not count as a try and emails nobody', function (): vo
         ->and($world->emails)->toBe([]);
 });
 
+test('a saved method charged by cron or staff is on the invoice\'s site; the client\'s own Pay now stays where the client is', function (): void {
+    $world = savedCardsWorld();
+    $db = $world->db;
+    $db->executeStatement('ALTER TABLE invoice ADD COLUMN site TEXT');
+    $db->executeStatement('ALTER TABLE client ADD COLUMN site TEXT');
+    $db->update('client', ['site' => 'shop/a'], ['id' => 7]);
+    $db->insert('invoice', ['id' => 20, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'site' => 'shop/b']);
+    $db->insert('invoice', ['id' => 21, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'site' => 'shop/b']);
+    $db->insert('invoice', ['id' => 22, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 1, 'due_at' => date('Y-m-d 00:00:00'), 'site' => 'shop/b']);
+    $di = $world->di;
+    // The module "shop" serves sites A and B.
+    $sites = new class {
+        public function siteByKey(string $key): ?ClientFence\Site
+        {
+            return new ClientFence\Site("https://{$key}.example.test/", "{$key}.example.test", $key);
+        }
+    };
+    $extension = Mockery::mock();
+    $extension->allows('getConfig')->andReturn([]);
+    $extension->allows('getCoreAndActiveModules')->andReturn(['shop']);
+    $services = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $mod, string $sub = ''): object => match (strtolower($mod)) {
+        'extension' => $extension,
+        'shop' => $sites,
+        default => $services($mod, $sub),
+    });
+    $modules = $di['mod'];
+    $shop = Mockery::mock(ClientFence\Module::class);
+    $shop->allows('hasManifest')->andReturn(true);
+    $shop->allows('getManifest')->andReturn(['sites' => true]);
+    $shop->allows('cannotRun')->andReturn(null);
+    $di['mod'] = $di->protect(fn (string $name): object => $name === 'shop' ? $shop : $modules($name));
+    $charged = [];
+    $stripe = Mockery::mock(Payment_Adapter_Stripe::class);
+    $stripe->allows('gatewayId')->andReturn(1);
+    $stripe->allows('savedCard')->andReturn(['card' => 'Visa •••• 4242 (12/2030)']);
+    $stripe->allows('chargeSavedCard')->andReturnUsing(function (Model_Invoice $invoice) use ($di, &$charged): string {
+        $charged[] = ClientFence\Site::current($di)->url;
+
+        return 'pi_' . $invoice->id;
+    });
+
+    // Cron (the primary site); then, in a request on A, staff charging and the client's own Pay now.
+    SavedCards::charge($di, $di['db']->load('Invoice', 20), $stripe, false);
+    $di['site'] = new ClientFence\Site('https://a.example.test/', 'a.example.test', 'shop/a');
+    SavedCards::charge($di, $di['db']->load('Invoice', 21), $stripe, true);
+    SavedCards::charge($di, $di['db']->load('Invoice', 22), $stripe, true, true);
+
+    expect($charged)->toBe(['https://b.example.test/', 'https://b.example.test/', 'https://a.example.test/'])
+        ->and(ClientFence\Site::current($di)->key)->toBe('shop/a');
+});
+
 test('a draft invoice is never charged, by staff either', function (): void {
     $world = savedCardsWorld();
     $world->db->insert('invoice', ['id' => 7, 'client_id' => 7, 'status' => 'unpaid', 'approved' => 0, 'due_at' => date('Y-m-d 00:00:00'), 'gateway_id' => null]);

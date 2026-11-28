@@ -10073,7 +10073,7 @@
     },
     {
         "file": "modules/Invoice/ServicePayGateway.php",
-        "done": "ClientFence core patch: an invoice's payment notice goes to the request's site (ClientFence\\Site); the gateway's own address shown to staff stays on the portal URL."
+        "done": "ClientFence core patch: payment notices go to the portal URL, which keeps working while a site module is switched off; the payer's way back stays on the payer's site."
     },
     {
         "file": "modules/Invoice/ServicePayGateway.php",
@@ -10550,5 +10550,21 @@
     {
         "file": "modules/Support/templates/admin/mod_support_ticket.html.twig",
         "done": "ClientFence core patch: the status and priority chips at a larger size (cf-status-lg cf-status-md)."
+    },
+    {
+        "file": "modules/Invoice/ServicePayGateway.php",
+        "done": "ClientFence core patch: where ipn.php sends the payer back"
+    },
+    {
+        "file": "ipn.php",
+        "done": "ClientFence core patch: back only to the invoice the address names and its hash matches, on the site the payer came back to."
+    },
+    {
+        "file": "modules/Client/Api/Guest.php",
+        "done": "ClientFence core patch: a site module may refuse the client on this site, before the session starts (ClientFence\\Site::admitsClient())."
+    },
+    {
+        "file": "modules/Client/Api/Admin.php",
+        "done": "ClientFence core patch: staff may choose the new client's site (ClientFence\\Site::onKey())."
     }
 ]

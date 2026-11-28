@@ -829,3 +829,188 @@ test('links made for an email before it is built: a client\'s on the client\'s s
         ->and($emailService->renderHtmlInLayout('<p>Backup</p>', 'staff'))->toBe(SYSTEM_URL)
         ->and($emailService->renderHtmlInLayout('<p>Hello</p>'))->toBe('https://b.example.test/');
 });
+
+/** A site module's service that offers the optional capability "seriesFor" (answering `$answer`), or not. */
+function capableSites(?string $answer, bool $offers = true): object
+{
+    return $offers
+        ? new class($answer) {
+            public function __construct(public readonly ?string $answer)
+            {
+            }
+
+            public function seriesFor(): ?string
+            {
+                return $this->answer;
+            }
+        }
+        : new class {
+        };
+}
+
+test('without a site module no capability is asked: the core keeps its own behaviour', function (): void {
+    $di = siteDi([], ['client' => capableSites('client')]);
+
+    expect(Site::capability($di, null, 'seriesFor'))->toBeNull()
+        ->and(Site::capability($di, 'client/b', 'seriesFor'))->toBeNull()
+        ->and($di['logger']->calls)->toBe([]);
+});
+
+test('a stored key is answered by the module it names, only when it has the method; a switched-off module\'s key gets the core\'s behaviour', function (): void {
+    $alpha = capableSites('alpha');
+    $di = siteDi(['alpha' => $alpha, 'beta' => capableSites(null, false)], ['client' => capableSites('client')]);
+
+    expect(Site::capability($di, 'alpha/b', 'seriesFor'))->toBe($alpha)
+        // The module that owns the key, never another one that has the method.
+        ->and(Site::capability($di, 'beta/b', 'seriesFor'))->toBeNull()
+        // Switched off, or a module that serves no sites: no answer, while the record keeps its key.
+        ->and(Site::capability($di, 'gone/b', 'seriesFor'))->toBeNull()
+        ->and(Site::capability($di, 'client/b', 'seriesFor'))->toBeNull()
+        ->and(Site::capability($di, 'alpha/b', 'otherDecision'))->toBeNull()
+        ->and($di['logger']->calls)->toBe([]);
+});
+
+test('the primary site and an old record without a key are answered by the one site module with the method; with two, by none', function (): void {
+    $alpha = capableSites('alpha');
+    $one = siteDi(['alpha' => $alpha, 'beta' => capableSites(null, false)]);
+    $two = siteDi(['alpha' => $alpha, 'beta' => capableSites('beta')]);
+
+    expect(Site::capability($one, null, 'seriesFor'))->toBe($alpha)
+        ->and($one['logger']->calls)->toBe([])
+        ->and(Site::capability($two, null, 'seriesFor'))->toBeNull()
+        ->and(array_column(array_column($two['logger']->calls, 'params'), 0))->toBe(['More than one site module answers seriesFor for the primary site: none is asked'])
+        // A key still names its own module.
+        ->and(Site::capability($two, 'beta/b', 'seriesFor')?->seriesFor())->toBe('beta');
+});
+
+test('a module that cannot run here is an error for its own key, never the core\'s behaviour; for the primary site it is left out', function (): void {
+    $beta = capableSites('beta');
+    $di = siteDi(['alpha' => capableSites('alpha'), 'beta' => $beta]);
+    $mod = $di['mod'];
+    $di['mod'] = $di->protect(function (string $name) use ($mod): object {
+        if ($name !== 'alpha') {
+            return $mod($name);
+        }
+        $module = Mockery::mock(ClientFence\Module::class);
+        $module->allows('hasManifest')->andReturn(true);
+        $module->allows('getManifest')->andReturn(['sites' => true]);
+        $module->allows('cannotRun')->andReturn(['needs PHP :version', [':version' => '9.0']]);
+
+        return $module;
+    });
+
+    expect(fn () => Site::capability($di, 'alpha/b', 'seriesFor'))->toThrow(ClientFence\SiteUnavailableException::class, 'needs PHP 9.0')
+        ->and(Site::capability($di, null, 'seriesFor'))->toBe($beta)
+        ->and(array_column(array_column($di['logger']->calls, 'params'), 0))->toBe(['The alpha module cannot answer seriesFor: needs PHP 9.0']);
+});
+
+test('staff can make a client on a site they choose; a key no switched-on module serves now is refused before anything is made', function (): void {
+    $di = recordSiteDi();
+    $em = siteEntityManager($di);
+    $made = 0;
+    $make = static function () use ($em, &$made): int {
+        $client = (new ClientFence\Mod\Client\Entity\Client())->setEmail('staff' . ++$made . '@example.test');
+        $em->persist($client);
+        $em->flush();
+
+        return (int) $client->getId();
+    };
+    $site = static fn (int $id): mixed => $di['dbal']->fetchOne('SELECT site FROM client WHERE id = ?', [$id]);
+    $refused = static fn (Pimple\Container $di, string $key): Closure => static fn (): mixed => Site::onKey($di, $key, static fn (): never => throw new LogicException('made'));
+
+    // Staff on the primary site choose C; staff working in a request on B choose nothing.
+    $onC = Site::onKey($di, 'shop/c', $make);
+    $di['site'] = siteB();
+    $chosenNone = [Site::onKey($di, null, $make), Site::onKey($di, '', $make)];
+
+    expect([$site($onC), $site($chosenNone[0]), $site($chosenNone[1])])->toBe(['shop/c', 'shop/b', 'shop/b'])
+        ->and(Site::current($di))->toEqual(siteB())
+        // A switched-off module's key, a site its module does not serve, and any key without a site module.
+        ->and($refused($di, 'gone/c'))->toThrow(ClientFence\InformationException::class, 'This site is not available.')
+        ->and($refused($di, 'shop/zz'))->toThrow(ClientFence\InformationException::class, 'This site is not available.')
+        ->and($refused(siteDi([]), 'shop/b'))->toThrow(ClientFence\InformationException::class, 'This site is not available.')
+        ->and($made)->toBe(3);
+});
+
+test('an old row without a site of its own follows its client\'s current site; a stored key stays, also while its module is switched off', function (): void {
+    $di = recordSiteDi();
+    $db = $di['dbal'];
+    $db->insert('client', ['id' => 7, 'site' => 'shop/b']);
+    $db->insert('client', ['id' => 8]);
+    // Order #6 is older than sites; invoice #5 was made on B; invoice #9 on a site whose module is now switched off.
+    $db->insert('client_order', ['id' => 6, 'client_id' => 7]);
+    $db->insert('invoice', ['id' => 5, 'client_id' => 7, 'site' => 'shop/b']);
+    $db->insert('invoice', ['id' => 9, 'client_id' => 7, 'site' => 'gone/b']);
+    $db->insert('support_ticket', ['id' => 4, 'client_id' => 8]);
+    $before = [Site::forRecord($di, 'order', 6)->key, Site::forRecord($di, 'invoice', 5)->key];
+    // The client's home site changes (a site module moves the client to C).
+    $db->update('client', ['site' => 'shop/c'], ['id' => 7]);
+
+    expect($before)->toBe(['shop/b', 'shop/b'])
+        ->and([Site::forRecord($di, 'order', 6)->key, Site::forRecord($di, 'invoice', 5)->key])->toBe(['shop/c', 'shop/b'])
+        // The switched-off module's key is kept as stored: its records are on the primary site, and no module decides for them.
+        ->and([Site::storedKey($di, 'invoice', 9), Site::forRecord($di, 'invoice', 9)->key, Site::capability($di, 'gone/b', 'siteByKey')])->toBe(['gone/b', null, null])
+        // A client and its records from before sites are on the primary site.
+        ->and([Site::storedKey($di, 'ticket', 4), Site::forRecord($di, 'ticket', 4)])->toEqual([null, Site::primary()]);
+});
+
+/** A site module whose clientSiteAccess() answers `$answer` (or throws it) and keeps what it was asked. */
+function siteAccessPolicy(mixed $answer): object
+{
+    return new class($answer) {
+        public array $asked = [];
+
+        public function __construct(public mixed $answer)
+        {
+        }
+
+        public function clientSiteAccess(int $clientId, Site $site, string $operation): ?bool
+        {
+            $this->asked[] = [$clientId, $site->key, $operation];
+
+            return $this->answer instanceof Throwable ? throw $this->answer : $this->answer;
+        }
+    };
+}
+
+test('a client may start a session on a site as its module answers, asked again every time; a failure refuses; nothing is asked without a site module', function (): void {
+    $policy = siteAccessPolicy(true);
+    $di = siteDi(['shop' => $policy]);
+    $di['site'] = servedShop();
+    $answers = [];
+    foreach ([true, false, null, new RuntimeException('the database is down')] as $answer) {
+        $policy->answer = $answer;
+        $answers[] = Site::admitsClient($di, 7, 'sign-in');
+    }
+    // On the primary site the one site module with the method answers.
+    unset($di['site']);
+    $policy->answer = false;
+    $answers[] = Site::admitsClient($di, 7, 'switch');
+    $none = siteAccessPolicy(false);
+
+    expect($answers)->toBe([true, false, true, false, false])
+        ->and($policy->asked)->toBe([...array_fill(0, 4, [7, 'shop/shop', 'sign-in']), [7, null, 'switch']])
+        ->and(array_column(array_column($di['logger']->calls, 'params'), 0))->toBe(['Client #7 was refused on shop.example.test: the database is down'])
+        ->and(Site::admitsClient(siteDi([], ['shop' => $none]), 7, 'sign-in'))->toBeTrue()
+        ->and($none->asked)->toBe([]);
+});
+
+test('only a public method offers a capability: a module\'s private helper of the same name does not hide another module\'s answer', function (): void {
+    $alpha = capableSites('alpha');
+    $helper = new class {
+        public function check(): ?string
+        {
+            return $this->seriesFor();
+        }
+
+        private function seriesFor(): ?string
+        {
+            return 'helper';
+        }
+    };
+    $di = siteDi(['alpha' => $alpha, 'beta' => $helper]);
+
+    expect(Site::capability($di, null, 'seriesFor'))->toBe($alpha)
+        ->and(Site::capability($di, 'beta/b', 'seriesFor'))->toBeNull()
+        ->and($di['logger']->calls)->toBe([]);
+});

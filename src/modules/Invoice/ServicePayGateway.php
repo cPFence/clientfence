@@ -705,8 +705,22 @@ class ServicePayGateway implements InjectionAwareInterface
             $p['invoice_id'] = $model->id;
         }
 
-        // ClientFence core patch: an invoice's payment notice goes to the request's site (ClientFence\Site); the gateway's own address shown to staff stays on the portal URL.
-        return ($model instanceof \Model_Invoice ? \ClientFence\Site::current($this->di)->url : SYSTEM_URL) . 'ipn.php?' . http_build_query($p);
+        // ClientFence core patch: payment notices go to the portal URL, which keeps working while a site module is switched off; the payer's way back stays on the payer's site.
+        return SYSTEM_URL . 'ipn.php?' . http_build_query($p);
+    }
+
+    /**
+     * ClientFence core patch: where ipn.php sends the payer back: the page of invoice `$invoiceId` on the site the payer
+     * came back to when `$hash` is that invoice's, else null (the notice's own answer is shown).
+     */
+    public function invoiceReturnUrl(?int $invoiceId, string $hash): ?string
+    {
+        $stored = $invoiceId === null ? false : $this->di['dbal']->fetchOne('SELECT hash FROM invoice WHERE id = ?', [$invoiceId]);
+        if (!is_string($stored) || $stored === '' || !hash_equals($stored, $hash)) {
+            return null;
+        }
+
+        return $this->di['url']->link('invoice/' . $stored);
     }
 
     /**

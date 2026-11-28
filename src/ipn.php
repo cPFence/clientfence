@@ -106,9 +106,11 @@ try {
 // redirect to invoice if gateways requires
 if ($request->query->has('redirect') && $request->query->has('invoice_hash')) {
     $invoiceHash = $request->query->get('invoice_hash');
-    $hash = preg_replace('/[^a-zA-Z0-9]/', '', is_string($invoiceHash) ? $invoiceHash : '');
-    $url = $di['url']->link('invoice/' . $hash);
-    emitResponse((new ResponseFactory())->redirect($url));
+    // ClientFence core patch: back only to the invoice the address names and its hash matches, on the site the payer came back to.
+    $url = $di['mod_service']('Invoice', 'PayGateway')->invoiceReturnUrl($invoiceID ?: null, is_string($invoiceHash) ? $invoiceHash : '');
+    if ($url !== null) {
+        emitResponse((new ResponseFactory())->redirect($url));
+    }
 }
 
 emitResponse($response);

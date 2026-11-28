@@ -301,6 +301,11 @@ class Guest extends \ClientFence\Api\AbstractApi
                 return ['clientfence_twofactor' => true];
             }
 
+            // ClientFence core patch: a site module may refuse the client on this site, before the session starts (ClientFence\Site::admitsClient()).
+            if (!\ClientFence\Site::admitsClient($this->getDi(), (int) $client->getId(), 'sign-in')) {
+                throw new \ClientFence\InformationException('Please check your login details.', [], 401);
+            }
+
             $this->getDi()['events_manager']->fire(['event' => 'onAfterClientLogin', 'params' => ['id' => $client->getId(), 'ip' => $this->ip]]);
 
             $oldSession = $this->getDi()['session']->getId();

@@ -41,12 +41,15 @@ use Symfony\Component\HttpFoundation\Response;
  * upgrade or option change) on the order's, and renewals put together on one invoice only with orders of the same site;
  * a refund invoice or credit note (a part refund, a downgrade's credit) on the invoice it is for; an accepted quote's
  * invoice on the quote's; a Mass Pay invoice on the site of the invoices it pays, which must all be on one site. Other
- * invoices (checkout, Add funds, staff's free-form invoice) are on the current site, else the client's. The import
+ * invoices (checkout, Add funds, staff's free-form invoice) are on the current site, else the client's. Staff may
+ * choose a new client's site (onKey(), the `site` of Client\Api\Admin::create()). The import
  * (Clientfence\Whmcs) writes none. The core changes a stored site in one place only: staff moving a service to another
  * client (Order\ClientMove) give the service and its add-ons the new client's site; its invoices, tickets and quotes
  * stay the old client's, with their sites.
  * - forRecord($di, $type, $id): the site of a record ('client', 'order', 'invoice', 'quote', 'ticket'): its own key,
- *   else its client's, through byKey();
+ *   else its client's, through byKey(). A row without a key of its own (made before sites, or for a client on the
+ *   primary site) follows its client's site as it is when asked: a module that moves a client to another site moves
+ *   those rows too, and keeps one where it is only by writing its key first;
  * - byKey($di, $key): a stored key back to its Site: the module the key names (switched on, "sites": true, able to run)
  *   answers siteByKey(string $key): ?\ClientFence\Site for its own identifier (the key without "<module>/"), with the
  *   site of that identifier under the same rules as site() (an http(s) base URL, `host` as in that URL, the same `key`).
@@ -58,11 +61,17 @@ use Symfony\Component\HttpFoundation\Response;
  * The core builds on a record's site: a client's email (the invoice, order, ticket or quote it is about, else its
  * client: Email\Service::sendTemplate(); the staff's Send Email to a client; mass mail) with the links made for it
  * before (confirmation, feedback, network status, affiliate and quote links), the queued row keeping that site, and
- * the invoice, credit note, quote and statement PDFs. Staff emails and the admin links made for them are on the
- * primary site, where staff sign in, as is a cron run, also one started through another site's host. Left on the
- * primary site on purpose: the gateway addresses shown to staff, the IPN addresses of cron charges, the sitemap and
- * the health and web server checks; on the request's site: OAuth callbacks and the staff bell entries. A queued
- * email is sent as it was built.
+ * the invoice, credit note, quote and statement PDFs. A payment is made where the payer is: one a client or guest
+ * starts in a web request (the payment form, Invoice\Service::processInvoice(), with the return, cancel and thank-you
+ * addresses Invoice\ServicePayGateway::getPaymentAdapter() builds for it; the pay pages of Invoice\Controller\Client;
+ * the client's own Pay now with a saved method; the way back through ipn.php, only to the invoice the address names
+ * with its hash) stays on the request's site, so every gateway finishes on the host the payer is signed in on; a
+ * saved method charged by cron or staff (Invoice\SavedCards::charge()) is on the invoice's site. Staff emails and the
+ * admin links made for them are on the primary site, where staff sign in, as is a cron run, also one started through
+ * another site's host. Left on the primary site on purpose: every payment notice address (ipn.php: it keeps working
+ * while a site module is switched off; ServicePayGateway::getCallbackUrl() and the adapters' own), the gateway
+ * addresses shown to staff, the sitemap and the health and web server checks; on the request's site: OAuth callbacks
+ * and the staff bell entries. A queued email is sent as it was built.
  *
  * Events on a new record (params): onAfterNewInvoice (id) for every invoice, credit note and refund invoice made,
  * once its lines are added (a combined renewal invoice may get more lines after it; onAfterInvoiceCreate is the
@@ -77,6 +86,14 @@ use Symfony\Component\HttpFoundation\Response;
  * Which modules serve sites is kept between requests in $di['cache'] (stamp() and forRecord() run for every new record
  * and client email); it is read again after an extension is activated, deactivated, removed or upgraded (all saved
  * through Doctrine: Doctrine\SiteStamp), after a core update (it clears the caches), or when the cache expires.
+ *
+ * Optional capabilities. A site module may offer more than addresses: one public method on its Service per decision,
+ * with a typed answer where null means "no change: the core's own behaviour". The core asks through capability($di,
+ * $key, $method) with the stored key of the record or site the decision is for: the module the key names answers for
+ * its own sites (none while it is switched off: the key itself is kept); a primary or old record (null key) is
+ * answered by the one site module that has the method, by none when two have it. Nothing is asked without a site
+ * module. A module that answers null declines; a module that throws, or that cannot run here for its own key, is an
+ * error the caller must not turn into the core's behaviour where that would apply another site's setting.
  */
 final readonly class Site
 {
@@ -162,6 +179,52 @@ final readonly class Site
             } else {
                 $di['site_on'] = $before;
             }
+        }
+    }
+
+    /**
+     * Runs `$fn` on the site of stored key `$key` that staff chose (the `site` of Client\Api\Admin::create()), so what is
+     * made there takes that key; null or '' runs it as it is. Only for a key from a staff request: a client or a guest is
+     * on the site of the host they use.
+     *
+     * @throws InformationException when no switched-on site module serves `$key` now (also without a site module)
+     */
+    public static function onKey(\Pimple\Container $di, ?string $key, callable $fn): mixed
+    {
+        if ($key === null || $key === '') {
+            return $fn();
+        }
+        $site = self::byKey($di, $key);
+        if ($site->key !== $key) {
+            throw new InformationException('This site is not available.');
+        }
+
+        return self::within($di, $site, $fn);
+    }
+
+    /**
+     * Whether client `$clientId` may start a session on the request's site: asked once the sign-in details are checked,
+     * before the session starts, at every sign-in ('sign-in': password, two-factor code, email PIN, passkey, Google, an
+     * accepted invitation) and an authorized user's account switch ('switch'). 'choose' only asks, before the sign-in is
+     * complete: which of a user's accounts to sign in to and list (Client\Users::loginFor(), sessionView()), and before a
+     * two-factor code or an invitation is used up; a module records nothing for it. The module of the request's site (on
+     * the primary site, the one site module that has it; capability()) answers clientSiteAccess(int $clientId, Site
+     * $site, string $operation): ?bool, false refuses. It is asked every time, never kept: a module may record on
+     * 'sign-in' or 'switch' that the client uses the site (allowing the same record twice, as two sign-ins can run at
+     * once), and a change it makes counts from the next sign-in. It answers 'sign-in' as it answered 'choose' in the same
+     * request, and the same way when asked twice: a code or an invitation may already be used up by then. A module that
+     * fails refuses (logged). Without a site module nothing is asked. Staff signing in as a client are not asked.
+     */
+    public static function admitsClient(\Pimple\Container $di, int $clientId, string $operation): bool
+    {
+        $site = self::ofRequest($di);
+        try {
+            // @phpstan-ignore method.notFound (capability() returns only a service that has the method)
+            return self::capability($di, $site->key, 'clientSiteAccess')?->clientSiteAccess($clientId, $site, $operation) !== false;
+        } catch (\Throwable $e) {
+            $di['logger']->warning(sprintf('Client #%d was refused on %s: %s', $clientId, $site->host, $e->getMessage()));
+
+            return false;
         }
     }
 
@@ -360,6 +423,45 @@ final readonly class Site
                 return $providers ?? [];
             })
             : self::findProviders($di) ?? []);
+    }
+
+    /**
+     * The Service of the site module that offers `$method` for stored key `$key` (null: the primary site or an old
+     * record), or null when none does; see "Optional capabilities" in the class comment.
+     *
+     * @throws SiteUnavailableException when the module `$key` names is switched on but cannot run here
+     */
+    public static function capability(\Pimple\Container $di, ?string $key, string $method): ?object
+    {
+        $modules = self::providers($di);
+        if ($key !== null) {
+            $modules = array_intersect($modules, [explode('/', $key, 2)[0]]);
+        }
+        $offers = [];
+        foreach ($modules as $module) {
+            if (($reason = $di['mod']($module)->cannotRun()) !== null) {
+                if ($key !== null) {
+                    throw new SiteUnavailableException(strtr(...$reason));
+                }
+                // A module that cannot run offers nothing for the primary site; its own hosts get the 503 (resolve()).
+                $di['logger']->warning(sprintf('The %s module cannot answer %s: %s', $module, $method, strtr(...$reason)));
+
+                continue;
+            }
+            $service = $di['mod_service']($module);
+            // Only a public method offers: a private helper of the same name is not the module's answer.
+            if (method_exists($service, $method) && (new \ReflectionMethod($service, $method))->isPublic()) {
+                $offers[] = $service;
+            }
+        }
+        if (count($offers) > 1) {
+            // Two modules deciding the primary site would each apply their own policy: neither does.
+            $di['logger']->warning(sprintf('More than one site module answers %s for the primary site: none is asked', $method));
+
+            return null;
+        }
+
+        return $offers[0] ?? null;
     }
 
     /** Called when an extension is activated, deactivated, removed or upgraded (Doctrine\SiteStamp): the list is read again. */

@@ -542,7 +542,8 @@ class Payment_Adapter_PayPalAutoPay implements ClientFence\InjectionAwareInterfa
 
     private function notifyUrl(int $invoiceId): string
     {
-        return ClientFence\Site::current($this->di)->url . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => $invoiceId]);
+        // A server notice: the portal URL, like every payment notice (ServicePayGateway::getCallbackUrl()).
+        return SYSTEM_URL . 'ipn.php?' . http_build_query(['gateway_id' => $this->gatewayId(), 'invoice_id' => $invoiceId]);
     }
 
     /** PayPal's NVP API: the reply's fields. No answer (or not one PayPal could make) throws Payment_Exception. */

@@ -235,6 +235,7 @@ class Admin extends \ClientFence\Api\AbstractApi
      * @optional string $custom_18 - Custom field 18
      * @optional string $custom_19 - Custom field 19
      * @optional string $custom_20 - Custom field 20
+     * @optional string $site - ClientFence: the stored key of the site the client is on (a site module's); default: the site of this request
      *
      * @return int - client id
      */
@@ -274,7 +275,8 @@ class Admin extends \ClientFence\Api\AbstractApi
         // ClientFence core patch: the custom field answers fit their type and Validation (Client/CustomFields.php).
         $data = \ClientFence\Mod\Client\CustomFields::input($this->getDi()['mod_config']('client'), $data, \ClientFence\Mod\Client\CustomFields::STAFF, [], false, $this->getDi());
         $this->getDi()['events_manager']->fire(['event' => 'onBeforeAdminClientCreate', 'params' => $data]);
-        $id = $service->adminCreateClient($data);
+        // ClientFence core patch: staff may choose the new client's site (ClientFence\Site::onKey()).
+        $id = \ClientFence\Site::onKey($this->getDi(), is_string($data['site'] ?? null) ? $data['site'] : null, fn (): int => $service->adminCreateClient($data));
         $this->getDi()['events_manager']->fire(['event' => 'onAfterAdminClientCreate', 'params' => $data]);
 
         return $id;

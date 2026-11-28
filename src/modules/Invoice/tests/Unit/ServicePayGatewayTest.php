@@ -547,20 +547,122 @@ test('gets payment adapter', function (): void {
     expect($result)->toBeInstanceOf($expected);
 });
 
-test('an invoice\'s payment notice goes to the request\'s site; the gateway address staff see stays on the portal URL', function (): void {
-    $service = new ServicePayGateway();
-    $di = container();
-    $di['site'] = new ClientFence\Site('https://shop.example.test/', 'shop.example.test', 'shop');
-    $service->setDi($di);
-    $gateway = new Model_PayGateway();
-    $gateway->loadBean(new Tests\Helpers\DummyBean());
-    $gateway->id = 3;
-    $invoice = new Model_Invoice();
-    $invoice->loadBean(new Tests\Helpers\DummyBean());
-    $invoice->id = 9;
+/** An adapter that keeps the config it is built with, to read the addresses getPaymentAdapter() gives it. */
+final class PayGatewaySiteAdapter
+{
+    public function __construct(public readonly array $config)
+    {
+    }
+}
 
-    expect($service->getCallbackUrl($gateway, $invoice))->toBe('https://shop.example.test/ipn.php?gateway_id=3&invoice_id=9')
+/**
+ * A request on site A of the module "shop" (sites A and B, "shop/a", "shop/b"). Client #7 is on A; invoice #9 is on B,
+ * #10 has no site of its own (its client's), #11 is on a site whose module is switched off.
+ */
+function payGatewaySites(): Pimple\Container
+{
+    $di = container();
+    $db = Doctrine\DBAL\DriverManager::getConnection(['driver' => 'pdo_sqlite', 'memory' => true]);
+    $db->executeStatement('CREATE TABLE client (id INTEGER PRIMARY KEY, site TEXT)');
+    $db->executeStatement('CREATE TABLE invoice (id INTEGER PRIMARY KEY, client_id INTEGER, site TEXT, hash TEXT)');
+    $db->insert('client', ['id' => 7, 'site' => 'shop/a']);
+    foreach ([9 => 'shop/b', 10 => null, 11 => 'gone/b'] as $id => $key) {
+        $db->insert('invoice', ['id' => $id, 'client_id' => 7, 'site' => $key, 'hash' => 'hash' . $id]);
+    }
+    $di['dbal'] = $db;
+    $sites = new class {
+        public function siteByKey(string $key): ?ClientFence\Site
+        {
+            return in_array($key, ['a', 'b'], true) ? new ClientFence\Site("https://{$key}.example.test/", "{$key}.example.test", $key) : null;
+        }
+    };
+    $extension = Mockery::mock();
+    $extension->allows('getCoreAndActiveModules')->andReturn(['shop']);
+    $services = $di['mod_service'];
+    $di['mod_service'] = $di->protect(fn (string $module, string $sub = ''): object => match (strtolower($module)) {
+        'extension' => $extension,
+        'shop' => $sites,
+        default => $services($module, $sub),
+    });
+    $mod = Mockery::mock(ClientFence\Module::class);
+    $mod->allows('hasManifest')->andReturn(true);
+    $mod->allows('getManifest')->andReturn(['sites' => true]);
+    $mod->allows('cannotRun')->andReturn(null);
+    $di['mod'] = $di->protect(fn (): object => $mod);
+    $di['site'] = new ClientFence\Site('https://a.example.test/', 'a.example.test', 'shop/a');
+    $url = new ClientFence\Url();
+    $url->setDi($di);
+    $di['url'] = $url;
+    $tools = new ClientFence\Tools();
+    $tools->setDi($di);
+    unset($di['tools']);
+    $di['tools'] = $tools;
+
+    return $di;
+}
+
+function payGatewayModel(string $class, int $id): object
+{
+    $model = new $class();
+    $model->loadBean(new Tests\Helpers\DummyBean());
+    $model->id = $id;
+    $model->hash = 'hash' . $id;
+
+    return $model;
+}
+
+test('a payment started in a request is made where the payer is: its addresses on the request\'s site, every notice address on the portal URL', function (): void {
+    $di = payGatewaySites();
+    $service = Mockery::mock(ServicePayGateway::class)->makePartial();
+    $service->allows('getAdapterClassName')->andReturn(PayGatewaySiteAdapter::class);
+    $service->setDi($di);
+    $gateway = payGatewayModel(Model_PayGateway::class, 3);
+    $addresses = static fn (object $adapter): array => array_intersect_key($adapter->config, array_flip(['return_url', 'cancel_url', 'notify_url', 'redirect_url', 'continue_shopping_url', 'thankyou_url', 'invoice_url']));
+
+    // A payer signed in on A paying B's invoice: the gateway brings them back to A.
+    $forB = $addresses($service->getPaymentAdapter($gateway, payGatewayModel(Model_Invoice::class, 9)));
+    $noInvoice = $addresses($service->getPaymentAdapter($gateway));
+
+    expect($forB)->toHaveCount(7)
+        ->and(array_keys(array_filter($forB, static fn (string $url): bool => !str_starts_with($url, 'https://a.example.test/'))))->toBe(['notify_url'])
+        ->and($forB['notify_url'])->toBe(SYSTEM_URL . 'ipn.php?gateway_id=3&invoice_id=9')
+        ->and($forB['redirect_url'])->toBe('https://a.example.test/ipn.php?gateway_id=3&invoice_id=9&invoice_hash=hash9&redirect=1')
+        ->and($forB['invoice_url'])->toBe('https://a.example.test/invoice/hash9')
+        // No invoice: the request's site, and the gateway's one notice address on the portal URL.
+        ->and($noInvoice['return_url'])->toStartWith('https://a.example.test/')
+        ->and($noInvoice['notify_url'])->toBe(SYSTEM_URL . 'ipn.php?gateway_id=3')
         ->and($service->getCallbackUrl($gateway))->toBe(SYSTEM_URL . 'ipn.php?gateway_id=3');
+});
+
+test('ipn.php sends the payer back only to the invoice the address names with its hash, on the site the payer came back to', function (): void {
+    $service = new ServicePayGateway();
+    $service->setDi(payGatewaySites());
+
+    // Back on A: B's invoice opens on A, where the payer is signed in.
+    expect($service->invoiceReturnUrl(9, 'hash9'))->toBe('https://a.example.test/invoice/hash9')
+        ->and($service->invoiceReturnUrl(11, 'hash11'))->toBe('https://a.example.test/invoice/hash11')
+        // Another invoice's hash, no invoice, an unknown invoice or no hash: no redirect.
+        ->and($service->invoiceReturnUrl(9, 'hash10'))->toBeNull()
+        ->and($service->invoiceReturnUrl(null, 'hash9'))->toBeNull()
+        ->and($service->invoiceReturnUrl(404, 'hash9'))->toBeNull()
+        ->and($service->invoiceReturnUrl(9, ''))->toBeNull();
+});
+
+test('without a site module an invoice\'s payment addresses and the way back stay on the portal URL, as before', function (): void {
+    $di = container();
+    $dbal = Mockery::mock(Doctrine\DBAL\Connection::class);
+    $dbal->allows('fetchOne')->with('SELECT hash FROM invoice WHERE id = ?', [9])->andReturn('hash9');
+    $di['dbal'] = $dbal;
+    $url = new ClientFence\Url();
+    $url->setDi($di);
+    $di['url'] = $url;
+    $service = new ServicePayGateway();
+    $service->setDi($di);
+    $gateway = payGatewayModel(Model_PayGateway::class, 3);
+
+    expect($service->getCallbackUrl($gateway, payGatewayModel(Model_Invoice::class, 9)))->toBe(SYSTEM_URL . 'ipn.php?gateway_id=3&invoice_id=9')
+        ->and($service->getCallbackUrl($gateway))->toBe(SYSTEM_URL . 'ipn.php?gateway_id=3')
+        ->and($service->invoiceReturnUrl(9, 'hash9'))->toBe(SYSTEM_URL . 'invoice/hash9');
 });
 
 test('throws exception when payment gateway is not found', function (): void {

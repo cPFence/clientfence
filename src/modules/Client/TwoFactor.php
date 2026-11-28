@@ -265,7 +265,17 @@ final class TwoFactor
      */
     public static function verify(\Pimple\Container $di, mixed $code, string $ip): array
     {
-        $pending = self::accept($di, self::PENDING, $code, $ip);
+        // A site that does not let the account in refuses before the code is used up (a backup code works once).
+        $waiting = $di['session']->get(self::PENDING);
+        if (is_array($waiting) && !\ClientFence\Site::admitsClient($di, (int) ($waiting['client_id'] ?? 0), 'choose')) {
+            throw new InformationException('Please check your login details.', [], 401);
+        }
+        // The site's final word once the code is right, before a backup code is used up: a refusal leaves it usable.
+        $pending = self::accept($di, self::PENDING, $code, $ip, static function (array $pending) use ($di): void {
+            if (!\ClientFence\Site::admitsClient($di, (int) $pending['client_id'], 'sign-in')) {
+                throw new InformationException('Please check your login details.', [], 401);
+            }
+        });
         self::signIn($di, (int) $pending['client_id'], is_array($pending['user'] ?? null) ? $pending['user'] : null, $ip);
 
         return ['backup_used' => $pending['backup_used']];
@@ -316,7 +326,7 @@ final class TwoFactor
      * Checks the code of the sign-in waiting in the session under $key and ends the wait; the
      * waiting sign-in is returned with backup_used.
      */
-    private static function accept(\Pimple\Container $di, string $key, mixed $code, string $ip): array
+    private static function accept(\Pimple\Container $di, string $key, mixed $code, string $ip, ?callable $beforeBackupUsed = null): array
     {
         $session = $di['session'];
         $pending = $session->get($key);
@@ -342,6 +352,9 @@ final class TwoFactor
             if (!$accepted && $step === null) {
                 $backup = self::normalizeBackup($code);
                 if ($backup !== '' && $row['backup_hash'] !== null && $di['password']->verify($backup, (string) $row['backup_hash'])) {
+                    if ($beforeBackupUsed !== null) {
+                        $beforeBackupUsed($pending);
+                    }
                     $accepted = $db->executeStatement('UPDATE client_twofactor SET backup_hash = NULL, updated_at = ? WHERE id = ? AND backup_hash IS NOT NULL', [date('Y-m-d H:i:s'), (int) $row['id']]) === 1;
                     $backupUsed = $accepted;
                 }
@@ -381,6 +394,10 @@ final class TwoFactor
     {
         $client = $di['em']->getRepository(\ClientFence\Mod\Client\Entity\Client::class)->find($clientId);
         if (!$client instanceof \ClientFence\Mod\Client\Entity\Client || !in_array($client->getStatus(), \ClientFence\Mod\Client\Entity\Client::OPEN, true)) {
+            throw new InformationException('Please check your login details.', [], 401);
+        }
+        // A site module may refuse the client on this site, before the session starts (ClientFence\Site::admitsClient()).
+        if (!\ClientFence\Site::admitsClient($di, (int) $client->getId(), 'sign-in')) {
             throw new InformationException('Please check your login details.', [], 401);
         }
         $di['events_manager']->fire(['event' => 'onAfterClientLogin', 'params' => ['id' => $client->getId(), 'ip' => $ip]]);
