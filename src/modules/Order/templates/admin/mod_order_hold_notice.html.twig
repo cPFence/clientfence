@@ -2,13 +2,13 @@
    check's score and limit, a hosting network), decided under Orders > Waiting for review. #}
 {% set hold = order.status == 'pending_setup' ? admin.order_hold_get({ 'id': order.id }) : null %}
 {% if hold %}
-    {% set hold_reasons = { 'network': 'Hosting network'|trans, 'fraud': 'Fraud check'|trans, 'id_document': 'ID document'|trans } %}
+    {% set hold_reasons = { 'network': 'Hosting network'|trans, 'fraud': 'Fraud check'|trans, 'new_client': 'New client'|trans, 'id_document': 'ID document'|trans } %}
     {# ClientFence core patch: the notice as a tinted banner in its colour, matching the order page (CF-135 redesign). #}
     <div class="cf-notice alert alert-warning" role="alert">
         <h4 class="alert-title">{{ 'This order waits for review'|trans }}</h4>
         <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
             <span class="badge bg-warning-lt">{{ hold_reasons[hold.reason]|default(hold.reason) }}</span>
-            {% if hold.note %}<span class="text-break">{{ hold.note|replace({ '[network]': '· ' ~ hold_reasons.network ~ ':', '[fraud]': '· ' ~ hold_reasons.fraud ~ ':', '[id_document]': '· ' ~ hold_reasons.id_document }) }}</span>{% endif %}
+            {% if hold.note %}<span class="text-break">{{ hold.note|replace({ '[network]': '· ' ~ hold_reasons.network ~ ':', '[fraud]': '· ' ~ hold_reasons.fraud ~ ':', '[new_client]': '· ' ~ hold_reasons.new_client, '[id_document]': '· ' ~ hold_reasons.id_document }) }}</span>{% endif %}
             <span class="text-muted small">({{ hold.created_at|format_datetime }})</span>
             <a class="btn btn-sm btn-primary" href="{{ 'order'|url }}#tab-holds">{{ 'Approve or refuse'|trans }}</a>
         </div>

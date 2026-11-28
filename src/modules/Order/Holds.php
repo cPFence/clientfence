@@ -13,8 +13,8 @@ use Doctrine\DBAL\Connection;
 
 /**
  * ClientFence: orders that wait for staff review (WHMCS's Fraud status), shared by the checks that hold an
- * order: hosting networks (CF-119, Antispam/Networks.php), the fraud check (CF-116, FraudCheck.php) and ID documents
- * (CF-124, Client/IdDocuments.php). A checkout held by several checks is one hold: the first check's reason, the
+ * order: hosting networks (CF-119, Antispam/Networks.php), the fraud check (CF-116, FraudCheck.php), new clients
+ * (newClient(), forum #188) and ID documents (CF-124, Client/IdDocuments.php). A checkout held by several checks is one hold: the first check's reason, the
  * others in the note (combine()).
  *
  * A held checkout's orders stay in Pending setup and its invoice stays a draft (clients cannot see or pay
@@ -31,6 +31,7 @@ final class Holds
     public const REASON_NETWORK = 'network';
     public const REASON_FRAUD = 'fraud';
     public const REASON_ID_DOCUMENT = 'id_document';
+    public const REASON_NEW_CLIENT = 'new_client';
 
     public const STATUS_HELD = 'held';
     public const STATUS_APPROVED = 'approved';
@@ -69,6 +70,17 @@ final class Holds
         }
 
         return ['reason' => $holds[0]['reason'], 'note' => $note];
+    }
+
+    /** Orders settings > Order Review: a client without an active order waits for staff review (forum #188). */
+    public static function newClient(\Pimple\Container $di, int $clientId): ?array
+    {
+        if (empty($di['mod_config']('order')['hold_new_clients'])) {
+            return null;
+        }
+
+        return $di['dbal']->fetchOne("SELECT 1 FROM client_order WHERE client_id = ? AND status = 'active' LIMIT 1", [$clientId]) === false
+            ? ['reason' => self::REASON_NEW_CLIENT, 'note' => ''] : null;
     }
 
     /** The order page: the order's hold while it waits, or null. */

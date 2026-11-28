@@ -364,8 +364,8 @@
                                 {% if hold.invoice_id %}<div class="small"><a href="{{ ('invoice/manage/' ~ hold.invoice_id)|url }}">{{ 'Invoice #:id'|trans({ ':id': hold.invoice_id }) }}</a></div>{% endif %}
                             </td>
                             {# ClientFence: a checkout held by several checks names the others in its note as [reason] (Order\Holds::combine()). #}
-                            {% set hold_reasons = { 'network': 'Hosting network'|trans, 'fraud': 'Fraud check'|trans, 'id_document': 'ID document'|trans } %}
-                            <td class="text-wrap">{{ hold_reasons[hold.reason]|default(hold.reason) }}{% if hold.note %}: {{ hold.note|replace({ '[network]': '· ' ~ hold_reasons.network ~ ':', '[fraud]': '· ' ~ hold_reasons.fraud ~ ':', '[id_document]': '· ' ~ hold_reasons.id_document }) }}{% endif %}</td>
+                            {% set hold_reasons = { 'network': 'Hosting network'|trans, 'fraud': 'Fraud check'|trans, 'new_client': 'New client'|trans, 'id_document': 'ID document'|trans } %}
+                            <td class="text-wrap">{{ hold_reasons[hold.reason]|default(hold.reason) }}{% if hold.note %}: {{ hold.note|replace({ '[network]': '· ' ~ hold_reasons.network ~ ':', '[fraud]': '· ' ~ hold_reasons.fraud ~ ':', '[new_client]': '· ' ~ hold_reasons.new_client, '[id_document]': '· ' ~ hold_reasons.id_document }) }}{% endif %}</td>
                             <td class="text-nowrap">
                                 <a class="btn btn-primary btn-sm" {{ fb_api_link({href: 'order/hold_approve'|api_url(query: {id: hold.id}), modal: {type: 'confirm', title: 'Approve the order?'|trans, content: 'The invoice is issued to the client (paid from their credit when it covers it) and setup carries on.'|trans}, reload: true}) }}>{{ 'Approve'|trans }}</a>
                                 <a class="btn btn-secondary btn-sm" {{ fb_api_link({href: 'order/hold_refuse'|api_url(query: {id: hold.id}), modal: {type: 'confirm', title: 'Refuse the order?'|trans, content: 'The orders and their invoice are cancelled.'|trans}, reload: true}) }}>{{ 'Refuse'|trans }}</a>

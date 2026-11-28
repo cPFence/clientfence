@@ -939,6 +939,8 @@ class Service implements InjectionAwareInterface
 
                 return [(float) $ca['total'], (string) $ca['currency']['code']];
             }),
+            // ClientFence core patch: and every order of a client without an active order, when Order Review is on (Order/Holds.php, forum #188).
+            \ClientFence\Mod\Order\Holds::newClient($this->di, $this->clientId($client)),
             \ClientFence\Mod\Client\IdDocuments::hold($this->di, $this->clientId($client)),
         );
 

@@ -200,3 +200,22 @@ test('an approved ID document releases only the checkouts that wait for nothing 
     expect($db->fetchAllKeyValue('SELECT client_order_id, status FROM client_order_hold ORDER BY client_order_id'))->toBe([1 => 'held', 2 => 'held', 3 => 'approved', 4 => 'held'])
         ->and($calls['activateOrder'])->toBe([3]);
 });
+
+test('Order Review holds every checkout of a client without an active order, only when it is on', function (): void {
+    $db = holdsDb();
+    $calls = [];
+    $di = holdsContainer($db, $calls);
+    $config = [];
+    $di['mod_config'] = $di->protect(function (string $module) use (&$config): array {
+        return $config;
+    });
+
+    $off = Holds::newClient($di, 9);
+    $config = ['hold_new_clients' => '1'];
+    $new = Holds::newClient($di, 9);
+    $db->update('client_order', ['status' => 'active'], ['id' => 2]);
+
+    expect($off)->toBeNull()
+        ->and($new)->toBe(['reason' => Holds::REASON_NEW_CLIENT, 'note' => ''])
+        ->and(Holds::newClient($di, 9))->toBeNull();
+});
