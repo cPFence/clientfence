@@ -6,10 +6,11 @@ declare(strict_types=1);
  *
  * Speaks Nominet's EPP (RFC 5730-5733 with Nominet's extensions,
  * https://registrars.nominet.uk/uk-namespace/registration-and-domain-management/registration-systems/epp/epp-commands/)
- * over TLS to epp.nominet.org.uk:700, or the OT&E server ote-epp.nominet.org.uk:700 in test mode, logged in with the
- * tag and its EPP password. .uk transfers have no code: the current registrar moves the domain onto this tag, so a
- * transfer counts as done once domain:info answers for it (getTransferStatus()). Nominet has no price call: the price
- * list is the cost price from the settings, in GBP. .uk registrations ask for the registrant type on the order form.
+ * over TLS with the tag and its EPP password. Until 9 February 2027 it uses epp.nominet.org.uk:700
+ * (OT&E: ote-epp.nominet.org.uk:700), the current registrar moves the domain onto this tag, and .uk registrations
+ * ask for the registrant type. From the cutover it uses uk.epp.nominet.uk:700 (OT&E: ote-uk.epp.nominet.uk:700)
+ * and pulls transfers with a code and one year. A transfer completes once domain:info confirms this tag. The price list uses
+ * the cost price from the settings, in GBP.
  */
 class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Registrar_TldPrices, Registrar_TransferStatus
 {
@@ -19,17 +20,24 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     private const EPP = 'urn:ietf:params:xml:ns:epp-1.0';
     private const DOMAIN = 'urn:ietf:params:xml:ns:domain-1.0';
     private const CONTACT = 'urn:ietf:params:xml:ns:contact-1.0';
+    private const RGP = 'urn:ietf:params:xml:ns:rgp-1.0';
+    private const HOST = 'urn:ietf:params:xml:ns:host-1.0';
     private const CONTACT_EXT = 'http://www.nominet.org.uk/epp/xml/contact-nom-ext-1.0';
     /** The extensions sold through the tag, as Blesta's module lists them. */
     private const TLDS = ['.uk', '.co.uk', '.org.uk', '.me.uk', '.sch.uk', '.wales', '.cymru'];
     // Registrations Nominet refers for manual checking and answers later in its poll queue, which ClientFence does not read.
     private const REFERRED = ['.ltd.uk', '.net.uk', '.plc.uk'];
     private const TRANSFER_LOCK = 'clientTransferProhibited';
+    // RFC 9154 transfer codes: Nominet's new .uk platform needs this extension at login.
+    private const TAC_EXT = 'urn:ietf:params:xml:ns:epp:secure-authinfo-transfer-1.0';
+    // Nominet's .uk platform change on 9 February 2027.
+    private const STANDARD_FROM = 1802131200;
 
     public $config = [
         'username' => null,
         'password' => null,
         'cost_price' => '',
+        'certificate_file' => '',
     ];
 
     /** @var resource|null */
@@ -45,6 +53,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         $this->config['username'] = trim((string) $options['username']);
         $this->config['password'] = (string) $options['password'];
         $this->config['cost_price'] = trim((string) ($options['cost_price'] ?? ''));
+        $this->config['certificate_file'] = trim((string) ($options['certificate_file'] ?? ''));
     }
 
     public function __destruct()
@@ -63,15 +72,25 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         }
     }
 
+    public static function ukStandardised(): bool
+    {
+        return time() >= self::STANDARD_FROM;
+    }
+
     public static function getUnsupportedActions(): array
     {
-        return ['enablePrivacyProtection', 'disablePrivacyProtection', 'getEpp'];
+        $actions = ['enablePrivacyProtection', 'disablePrivacyProtection'];
+        if (!static::ukStandardised()) {
+            $actions[] = 'getEpp';
+        }
+
+        return $actions;
     }
 
     public static function getConfig(): array
     {
         return [
-            'label' => __trans('Manages .uk domains on your Nominet tag through Nominet\'s EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server\'s IP address. Test mode uses Nominet\'s OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in have no transfer code: the current registrar moves the domain to your tag.'),
+            'label' => __trans('Manages .uk domains on your Nominet tag through Nominet\'s EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server\'s IP address. Test mode uses Nominet\'s OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet\'s new .uk platform is used and a transfer needs the domain\'s transfer code and adds one year.'),
             'form' => [
                 'username' => ['text', [
                     'label' => __trans('IPS tag'),
@@ -83,6 +102,11 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
                     'description' => __trans('The EPP password of the tag, from Nominet Online Services.'),
                     'required' => true,
                     'secret' => true,
+                ]],
+                'certificate_file' => ['text', [
+                    'label' => __trans('Client certificate file'),
+                    'description' => __trans('Only if you uploaded a client certificate to Nominet instead of allowing this server\'s IP address: the full path on this server of a PEM file with the certificate and its private key.'),
+                    'required' => false,
                 ]],
                 'cost_price' => ['text', [
                     'label' => __trans('Cost price (GBP)'),
@@ -101,7 +125,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     public static function getDomainFields(string $tld, string $action = 'register'): array
     {
         // A transfer keeps the registrant Nominet already has: only a new .uk registrant account takes these details.
-        if ($action !== 'register' || !str_ends_with(strtolower($tld), '.uk')) {
+        if (static::ukStandardised() || $action !== 'register' || !str_ends_with(strtolower($tld), '.uk')) {
             return [];
         }
 
@@ -144,6 +168,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         if ($add === [] && $remove === []) {
             return true;
         }
+        $this->ensureHosts(array_values($add));
         $this->command('<update><domain:update xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
             . ($add !== [] ? '<domain:add>' . $this->hostObjs($add) . '</domain:add>' : '')
             . ($remove !== [] ? '<domain:rem>' . $this->hostObjs($remove) . '</domain:rem>' : '')
@@ -168,9 +193,17 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        // Nothing to send: the current registrar moves the name onto this tag, and getTransferStatus() sees when it has.
+        $standardised = static::ukStandardised();
+        $code = $standardised ? (string) $domain->getEpp() : '';
+        if ($standardised && trim($code) === '') {
+            throw new Registrar_Exception('A transfer code is required to transfer :domain.', [':domain' => $domain->getName()]);
+        }
+
         if ($this->onOurTag($domain)) {
             $this->getLog()->info(sprintf('%s is already on the Nominet tag %s.', $domain->getName(), $this->config['username']));
+        } elseif ($standardised) {
+            $this->command('<transfer op="request"><domain:transfer xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
+                . '<domain:period unit="y">1</domain:period><domain:authInfo><domain:pw>' . $this->x($code) . '</domain:pw></domain:authInfo></domain:transfer></transfer>');
         } else {
             $this->getLog()->warn(sprintf('%s waits for its current registrar to move it to the Nominet tag %s.', $domain->getName(), $this->config['username']));
         }
@@ -182,7 +215,9 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     {
         return $this->onOurTag($domain)
             ? ['status' => Registrar_TransferStatus::COMPLETED, 'message' => '']
-            : ['status' => Registrar_TransferStatus::PENDING, 'message' => sprintf('Waiting for the current registrar to change the IPS tag of %s to %s.', $domain->getName(), $this->config['username'])];
+            : ['status' => Registrar_TransferStatus::PENDING, 'message' => static::ukStandardised()
+                ? __trans('Waiting for Nominet to complete the transfer of :domain.', [':domain' => $domain->getName()])
+                : sprintf('Waiting for the current registrar to change the IPS tag of %s to %s.', $domain->getName(), $this->config['username'])];
     }
 
     public function getDomainDetails(Registrar_Domain $domain): Registrar_Domain
@@ -211,8 +246,16 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
 
     public function getEpp(Registrar_Domain $domain): string
     {
-        // Nominet keeps no transfer codes (domain:info has no authInfo): a .uk domain moves by a change of tag.
-        throw new Registrar_Exception('.uk domains have no transfer code: to move :domain, give us the IPS tag of the new registrar.', [':domain' => $domain->getName()]);
+        if (!static::ukStandardised()) {
+            throw new Registrar_Exception('.uk domains have no transfer code: to move :domain, give us the IPS tag of the new registrar.', [':domain' => $domain->getName()]);
+        }
+
+        // Nominet wants a lower and upper case letter, a digit and a special character in every code.
+        $code = bin2hex(random_bytes(16)) . 'X-';
+        $this->command('<update><domain:update xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
+            . '<domain:chg><domain:authInfo><domain:pw>' . $code . '</domain:pw></domain:authInfo></domain:chg></domain:update></update>');
+
+        return $code;
     }
 
     public function registerDomain(Registrar_Domain $domain): bool
@@ -220,15 +263,17 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         $contact = $this->contact($domain);
         $nameservers = $this->nameservers($domain);
         $id = 'CF' . strtoupper(bin2hex(random_bytes(6)));
-        // authInfo is required by the EPP schema but unused by Nominet.
         // An individual or sole trader is the registrant in person: Nominet takes the registrant's name from <contact:org>.
         $withOrg = !in_array($domain->getFields()['registrant_type'] ?? '', ['IND', 'FIND', 'STRA'], true);
+        // The standard platform refuses an auth code on contact and domain creation.
+        $standardised = static::ukStandardised();
         $this->command('<create><contact:create xmlns:contact="' . self::CONTACT . '"><contact:id>' . $id . '</contact:id>' . $this->postalInfo($contact, $withOrg)
-            . $this->voiceEmail($contact) . '<contact:authInfo><contact:pw>' . bin2hex(random_bytes(8)) . '</contact:pw></contact:authInfo></contact:create></create>',
+            . $this->voiceEmail($contact) . '<contact:authInfo>' . ($standardised ? '<contact:pw/>' : '<contact:pw>' . bin2hex(random_bytes(8)) . '</contact:pw>') . '</contact:authInfo></contact:create></create>',
             $this->contactExt($domain, 'create'));
+        $this->ensureHosts($nameservers);
         $this->command('<create><domain:create xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
             . '<domain:period unit="y">' . min(10, max(1, (int) $domain->getRegistrationPeriod())) . '</domain:period>' . $this->hostObjs($nameservers)
-            . '<domain:registrant>' . $id . '</domain:registrant><domain:authInfo><domain:pw>' . bin2hex(random_bytes(8)) . '</domain:pw></domain:authInfo></domain:create></create>');
+            . '<domain:registrant>' . $id . '</domain:registrant><domain:authInfo>' . ($standardised ? '<domain:pw/>' : '<domain:pw>' . bin2hex(random_bytes(8)) . '</domain:pw>') . '</domain:authInfo></domain:create></create>');
 
         return true;
     }
@@ -236,12 +281,18 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     public function renewDomain(Registrar_Domain $domain): bool
     {
         // Nominet renews only against the current expiry date it holds.
-        $expires = $this->values($this->info($domain), '//domain:infData/domain:exDate')[0] ?? '';
+        $info = $this->info($domain);
+        $expires = $this->values($info, '//domain:infData/domain:exDate')[0] ?? '';
         if (preg_match('/^\d{4}-\d{2}-\d{2}/', $expires) !== 1) {
             throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'domain:info']);
         }
+        $expires = substr($expires, 0, 10);
+        // The standard platform auto-renews an expired name for a year: a renewal in that period back-dates to the previous expiry, so that year is not bought twice.
+        if (static::ukStandardised() && in_array('autoRenewPeriod', $this->values($info, '//rgp:infData/rgp:rgpStatus/@s'), true)) {
+            $expires = (new DateTimeImmutable($expires))->modify('-1 year')->format('Y-m-d');
+        }
         $this->command('<renew><domain:renew xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
-            . '<domain:curExpDate>' . substr($expires, 0, 10) . '</domain:curExpDate><domain:period unit="y">' . min(10, max(1, (int) $domain->getRegistrationPeriod())) . '</domain:period></domain:renew></renew>');
+            . '<domain:curExpDate>' . $expires . '</domain:curExpDate><domain:period unit="y">' . min(10, max(1, (int) $domain->getRegistrationPeriod())) . '</domain:period></domain:renew></renew>');
 
         return true;
     }
@@ -287,8 +338,9 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         $price = (float) $this->config['cost_price'];
         $list = $tlds === [] ? self::TLDS : array_values(array_intersect(self::TLDS, array_map('strtolower', $tlds)));
 
-        // A .uk transfer costs nothing: the old registrar moves the name to this tag, with no year added (.wales and .cymru are gTLDs).
-        $prices = array_combine($list, array_map(static fn (string $tld): array => ['register' => $price, 'renew' => $price, 'transfer' => str_ends_with($tld, '.uk') ? 0.0 : $price], $list));
+        // A legacy .uk transfer is a free tag change; the standard platform transfers with one year (.wales and .cymru are gTLDs).
+        $free = !static::ukStandardised();
+        $prices = array_combine($list, array_map(static fn (string $tld): array => ['register' => $price, 'renew' => $price, 'transfer' => $free && str_ends_with($tld, '.uk') ? 0.0 : $price], $list));
 
         return ['currency' => 'GBP', 'prices' => $prices, 'remaining' => []];
     }
@@ -300,8 +352,17 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
      */
     protected function connect(): string
     {
-        $host = $this->_testMode ? self::TEST_HOST : self::LIVE_HOST;
+        $host = static::ukStandardised()
+            ? ($this->_testMode ? 'ote-uk.epp.nominet.uk' : 'uk.epp.nominet.uk')
+            : ($this->_testMode ? self::TEST_HOST : self::LIVE_HOST);
         $options = ['ssl' => ['crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT, 'peer_name' => $host]];
+        // A registrar with a certificate uploaded to Nominet signs in with it instead of an allowed IP address.
+        if ($this->config['certificate_file'] !== '') {
+            if (!is_readable($this->config['certificate_file'])) {
+                throw new Registrar_Exception('The Nominet client certificate file cannot be read: :file', [':file' => $this->config['certificate_file']]);
+            }
+            $options['ssl']['local_cert'] = $this->config['certificate_file'];
+        }
         // The same outgoing address as the HTTP clients (Tools::getDefaultInterface()).
         if (defined('BIND_TO') && filter_var(BIND_TO, FILTER_VALIDATE_IP) !== false) {
             $options['socket'] = ['bindto' => (str_contains((string) BIND_TO, ':') ? '[' . BIND_TO . ']' : BIND_TO) . ':0'];
@@ -376,11 +437,14 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
                 throw new Registrar_Exception(':registrar returned an unreadable response for :command', [':registrar' => 'Nominet', ':command' => 'greeting']);
             }
             $tag = $this->config['username'];
+            $extensions = static::ukStandardised()
+                ? '<extURI>' . self::TAC_EXT . '</extURI><extURI>' . self::RGP . '</extURI>'
+                : '<extURI>http://www.nominet.org.uk/epp/xml/std-notifications-1.2</extURI><extURI>' . self::CONTACT_EXT . '</extURI>';
             // EPP needs 3 to 16 characters: Nominet logs 2-character tags in with a leading #.
             $this->send('<login><clID>' . $this->x(strlen($tag) === 2 ? '#' . $tag : $tag) . '</clID><pw>' . $this->x($this->config['password']) . '</pw>'
                 . '<options><version>1.0</version><lang>en</lang></options><svcs><objURI>' . self::DOMAIN . '</objURI><objURI>' . self::CONTACT . '</objURI>'
-                . '<objURI>urn:ietf:params:xml:ns:host-1.0</objURI><svcExtension><extURI>http://www.nominet.org.uk/epp/xml/std-notifications-1.2</extURI>'
-                . '<extURI>' . self::CONTACT_EXT . '</extURI><extURI>urn:ietf:params:xml:ns:secDNS-1.1</extURI></svcExtension></svcs></login>');
+                . '<objURI>urn:ietf:params:xml:ns:host-1.0</objURI><svcExtension>' . $extensions
+                . '<extURI>urn:ietf:params:xml:ns:secDNS-1.1</extURI></svcExtension></svcs></login>');
             $this->loggedIn = true;
         }
 
@@ -390,7 +454,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     private function send(string $body, string $extension = ''): SimpleXMLElement
     {
         // The command's name for logs and errors (login, domain:create, ...); the XML itself is never logged (password, contact data).
-        preg_match('/^<(\w+)>(?:<(\w+:\w+))?/', $body, $m);
+        preg_match('/^<(\w+)(?:\s[^>]*)?>(?:<(\w+:\w+))?/', $body, $m);
         $name = $m[2] ?? $m[1] ?? 'command';
         try {
             $reply = $this->parse($this->exchange('<?xml version="1.0" encoding="UTF-8"?><epp xmlns="' . self::EPP . '"><command>' . $body
@@ -434,7 +498,7 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     /** @return list<string> */
     private function values(SimpleXMLElement $xml, string $path): array
     {
-        foreach (['e' => self::EPP, 'domain' => self::DOMAIN, 'contact' => self::CONTACT] as $prefix => $namespace) {
+        foreach (['e' => self::EPP, 'domain' => self::DOMAIN, 'contact' => self::CONTACT, 'rgp' => self::RGP, 'host' => self::HOST] as $prefix => $namespace) {
             $xml->registerXPathNamespace($prefix, $namespace);
         }
 
@@ -490,6 +554,19 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
         // clientTransferProhibited stops a release (tag change) of the name.
         $this->command('<update><domain:update xmlns:domain="' . self::DOMAIN . '"><domain:name>' . $this->x($domain->getName()) . '</domain:name>'
             . '<domain:' . $op . '><domain:status s="' . self::TRANSFER_LOCK . '"/></domain:' . $op . '></domain:update></update>');
+    }
+
+    /** The standard platform links only name servers that exist as host objects, out-of-zone ones included: create the missing ones. */
+    private function ensureHosts(array $hosts): void
+    {
+        if (!static::ukStandardised() || $hosts === []) {
+            return;
+        }
+        $reply = $this->command('<check><host:check xmlns:host="' . self::HOST . '">'
+            . implode('', array_map(fn (string $host) => '<host:name>' . $this->x($host) . '</host:name>', $hosts)) . '</host:check></check>');
+        foreach ($this->values($reply, '//host:chkData/host:cd/host:name[@avail="1" or @avail="true"]') as $host) {
+            $this->command('<create><host:create xmlns:host="' . self::HOST . '"><host:name>' . $this->x($host) . '</host:name></host:create></create>');
+        }
     }
 
     /** @return list<string> */
@@ -552,6 +629,10 @@ class Registrar_Adapter_Nominet extends Registrar_AdapterAbstract implements Reg
     /** Nominet's registrant account extension (trading name, type, company number) from the order form; none when empty. */
     private function contactExt(Registrar_Domain $domain, string $op): string
     {
+        if (static::ukStandardised()) {
+            return '';
+        }
+
         $fields = $domain->getFields();
         $ext = '';
         // Nominet's schema order: trad-name, type, co-no.

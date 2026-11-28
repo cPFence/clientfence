@@ -288,7 +288,7 @@ class Registrar_Adapter_Ovh extends Registrar_AdapterAbstract implements Registr
         $values = [
             'OWNER_LEGAL_AGE' => 'true',
             'DNS' => implode(';', $hosts),
-            // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+            // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
             'AUTH_INFO' => $action === 'transfer' ? trim((string) $domain->getEpp()) : '',
         ];
         foreach ($wanted as $label) {

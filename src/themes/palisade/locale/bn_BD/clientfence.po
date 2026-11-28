@@ -36500,3 +36500,32 @@ msgstr "আমন্ত্রণের ইমেইলে দেওয়া ল
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "এই সাইটটি উপলভ্য নয়।"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr ":domain ট্রান্সফার করতে একটি ট্রান্সফার কোড আবশ্যক।"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "ক্লায়েন্ট সার্টিফিকেট ফাইল"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Nominet-এর EPP পরিষেবার মাধ্যমে আপনার Nominet ট্যাগে থাকা .uk ডোমেইন পরিচালনা করে। Nominet Online Services-এ ট্যাগের জন্য EPP চালু করুন, EPP পাসওয়ার্ড সেট করুন (অন্তত ১৪ অক্ষর) এবং এই সার্ভারের IP ঠিকানাকে অনুমতি দিন। টেস্ট মোডে EPP পরীক্ষার পরিবেশের তথ্য (Online Services > Tag Settings > EPP Testbed) দিয়ে Nominet-এর OT&E সার্ভার ব্যবহার করা হয়। 9 ফেব্রুয়ারি 2027 পর্যন্ত ইনকামিং ট্রান্সফারে বর্তমান রেজিস্ট্রার ডোমেইনটি আপনার ট্যাগে সরিয়ে দেয়। ওই তারিখ থেকে Nominet-এর নতুন .uk প্ল্যাটফর্ম ব্যবহার করা হয়। তখন ডোমেইনের ট্রান্সফার কোড লাগে এবং নিবন্ধনের মেয়াদ এক বছর বাড়ে।"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "বেশিরভাগ ডোমেইন নামের একটি গোপন কী বা অনুমোদন কোড (EPP কোড) থাকে। .EU-এর মতো কয়েকটি টপ লেভেল ডোমেইন এর ব্যতিক্রম। নতুন রেজিস্ট্রারে ডোমেইন ট্রান্সফারের সময় সাধারণত এই কোড প্রয়োজন হয়।"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "এই সার্ভারের IP ঠিকানাকে অনুমতি দেওয়ার বদলে Nominet-এ ক্লায়েন্ট সার্টিফিকেট আপলোড করে থাকলে, সার্টিফিকেট ও তার প্রাইভেট কী থাকা PEM ফাইলটির এই সার্ভারে সম্পূর্ণ পাথ লিখুন।"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nominet-এর ক্লায়েন্ট সার্টিফিকেট ফাইল পড়া যাচ্ছে না: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Nominet কখন :domain ট্রান্সফার সম্পন্ন করবে, তার অপেক্ষায় রয়েছে।"

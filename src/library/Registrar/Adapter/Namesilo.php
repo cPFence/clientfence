@@ -143,7 +143,7 @@ class Registrar_Adapter_Namesilo extends Registrar_AdapterAbstract implements Re
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+        // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
         $this->ordered($domain, $this->request('transferDomain', ['domain' => $domain->getName()] + array_filter(['auth' => trim((string) $domain->getEpp())]) + ['private' => $domain->getPrivacyEnabled() ? 1 : 0, 'auto_renew' => (int) $this->config['auto_renew']]
             + $this->contact($domain->getContactRegistrar()) + $this->eligibility($domain) + $this->payment()));
 

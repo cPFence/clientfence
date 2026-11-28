@@ -160,7 +160,8 @@ class Service implements \ClientFence\InjectionAwareInterface
                 throw new \ClientFence\InformationException(':domain cannot be transferred!', [':domain' => $domain]);
             }
 
-            if ($tld->require_transfer_code && trim((string) ($data['transfer_code'] ?? '')) === '') {
+            // ClientFence core patch: .uk transfers need a code after the cutover even for older TLD settings.
+            if ($this->transferCodeRequired($tld) && trim((string) ($data['transfer_code'] ?? '')) === '') {
                 throw new \ClientFence\InformationException('A transfer code (EPP/auth code) is required to transfer :domain', [':domain' => $domain]);
             }
 
@@ -1529,8 +1530,14 @@ class Service implements \ClientFence\InjectionAwareInterface
         return true;
     }
 
+    private function transferCodeRequired(\Model_Tld $tld): bool
+    {
+        return (bool) $tld->require_transfer_code || (\Registrar_Adapter_Nominet::ukStandardised() && str_ends_with(strtolower((string) $tld->tld), '.uk'));
+    }
+
     public function tldToApiArray(\Model_Tld $model, $identity = null): array
     {
+        $isAdmin = $identity instanceof \Model_Admin;
         $result = [
             'id' => $model->id,
             'tld' => $model->tld,
@@ -1540,14 +1547,15 @@ class Service implements \ClientFence\InjectionAwareInterface
             'active' => $model->active,
             'allow_register' => $model->allow_register,
             'allow_transfer' => $model->allow_transfer,
-            'require_transfer_code' => (bool) $model->require_transfer_code,
+            // ClientFence core patch: order forms need the current transfer rule and staff edit the saved setting.
+            'require_transfer_code' => $isAdmin ? (bool) $model->require_transfer_code : $this->transferCodeRequired($model),
             'min_years' => $model->min_years,
             'periods' => $this->getTldPeriodsArray($model),
             'domain_fields' => $this->tldDomainFields($model),
             'transfer_fields' => $this->tldDomainFields($model, 'transfer'),
         ];
 
-        if ($identity instanceof \Model_Admin) {
+        if ($isAdmin) {
             $tldRegistrar = $this->di['db']->load('TldRegistrar', $model->tld_registrar_id);
 
             $result['registrar'] = [

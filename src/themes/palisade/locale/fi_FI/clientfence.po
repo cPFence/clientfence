@@ -34457,3 +34457,32 @@ msgstr "Avaa tämä kutsu kutsusähköpostissa olevasta linkistä."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Tämä sivusto ei ole käytettävissä."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "Verkkotunnuksen :domain siirtämiseen tarvitaan siirtokoodi."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Asiakasvarmenteen tiedosto"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Hallinnoi Nominet-tunnisteesi .uk-verkkotunnuksia Nominetin EPP-palvelun kautta. Ota EPP käyttöön tunnisteelle Nominet Online Services -palvelussa, aseta EPP-salasana (vähintään 14 merkkiä) ja salli tämän palvelimen IP-osoite. Testitila käyttää Nominetin OT&E-palvelinta ja EPP-testiympäristön tietoja (Online Services > Tag Settings > EPP Testbed). Saapuvissa siirroissa nykyinen rekisterinpitäjä siirtää verkkotunnuksen tunnisteellesi 9. helmikuuta 2027 asti. Siitä alkaen käytetään Nominetin uutta .uk-alustaa. Siirtoon tarvitaan verkkotunnuksen siirtokoodi, ja siirto pidentää rekisteröintiä vuodella."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "Useimmilla verkkotunnuksilla on salainen avain tai valtuutuskoodi (EPP-koodi). Poikkeuksia ovat muutamat ylätason verkkotunnukset, kuten .EU. Koodia tarvitaan yleensä, kun verkkotunnus siirretään uudelle rekisterinpitäjälle."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Jos olet ladannut asiakasvarmenteen Nominetiin tämän palvelimen IP-osoitteen sallimisen sijaan, anna tällä palvelimella olevan PEM-tiedoston koko polku. Tiedosto sisältää varmenteen ja sen yksityisavaimen."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nominetin asiakasvarmenteen tiedostoa ei voi lukea: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Odotetaan, että Nominet viimeistelee verkkotunnuksen :domain siirron."

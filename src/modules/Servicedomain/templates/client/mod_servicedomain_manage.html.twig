@@ -222,7 +222,7 @@
             <div class="card-body tab-pane" id="transfer-tab-pane" role="tabpanel" tabindex="0">
                 <div class="mb-3">
                     <h5 class="mt-1 mb-1">{{ 'Domain Secret'|trans }}</h5>
-                    <span class="small text-secondary">{{ 'Most domain names (except a few top-level domains like .EU and .UK) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar.'|trans }}</span>
+                    <span class="small text-secondary">{{ 'Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar.'|trans }}</span>
                 </div>
                 <span class="d-inline-block"{% if 'getEpp' in service.unsupported_actions %} tabindex="0" data-bs-toggle="tooltip" title="{{ 'The registrar of this domain does not support this action. Please contact support.'|trans }}"{% endif %}>
                 <button class="btn btn-primary" type="button" id="get-epp"{% if 'getEpp' in service.unsupported_actions %} disabled{% endif %}>{{ 'Get EPP Code'|trans }}</button>

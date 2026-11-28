@@ -36500,3 +36500,32 @@ msgstr "Avage see kutse e-kirjas oleva kutselingi kaudu."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "See sait pole saadaval."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "Domeeni :domain ülekandmiseks on vaja ülekandekoodi."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Kliendisertifikaadi fail"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Haldab teie Nominet-sildiga .uk domeene Nomineti EPP-teenuse kaudu. Lülitage Nominet Online Servicesis sildi jaoks EPP sisse, määrake EPP parool (vähemalt 14 märki) ja lubage selle serveri IP-aadress. Testrežiim kasutab Nomineti OT&E-serverit koos EPP testkeskkonna andmetega (Online Services > Tag Settings > EPP Testbed). Kuni 9. veebruarini 2027 viib senine registripidaja sissetuleva ülekande korral domeeni teie sildi alla. Alates sellest kuupäevast kasutatakse Nomineti uut .uk platvormi. Ülekanne nõuab domeeni ülekandekoodi ja pikendab registreeringut ühe aasta võrra."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "Enamikul domeeninimedel on domeeni salavõti või autoriseerimiskood (EPP-kood). Erandiks on mõned tippdomeenid, nagu .EU. Seda koodi on tavaliselt vaja domeeni ülekandmisel uuele registripidajale."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Kui laadisite serveri IP-aadressi lubamise asemel Nomineti üles kliendisertifikaadi, sisestage selle serveri PEM-faili täielik tee. Fail peab sisaldama sertifikaati ja selle privaatvõtit."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nomineti kliendisertifikaadi faili ei saa lugeda: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Ootame, kuni Nominet lõpetab domeeni :domain ülekande."

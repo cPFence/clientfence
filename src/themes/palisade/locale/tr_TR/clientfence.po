@@ -31791,3 +31791,32 @@ msgstr "Bu daveti, davet e-postasındaki bağlantıdan açın."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Bu site kullanılamıyor."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr ":domain alan adını transfer etmek için transfer kodu gereklidir."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "İstemci sertifikası dosyası"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Nominet etiketinize bağlı .uk alan adlarını Nominet'in EPP hizmeti üzerinden yönetir. Nominet Online Services üzerinden etiket için EPP'yi etkinleştirin, EPP parolasını belirleyin (en az 14 karakter) ve bu sunucunun IP adresine izin verin. Test modu, EPP test ortamı bilgileriyle (Online Services > Tag Settings > EPP Testbed) Nominet'in OT&E sunucusunu kullanır. Gelen transferlerde 9 Şubat 2027'ye kadar mevcut kayıt kuruluşu alan adını etiketinize taşır. Bu tarihten itibaren Nominet'in yeni .uk platformu kullanılır. Transfer için alan adının transfer kodu gerekir ve kayıt süresi bir yıl uzar."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "Çoğu alan adının gizli anahtarı veya yetkilendirme kodu (EPP kodu) vardır. .EU gibi birkaç üst düzey alan adı istisnadır. Bu kod genellikle alan adını yeni bir kayıt kuruluşuna transfer etmek için gerekir."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Bu sunucunun IP adresine izin vermek yerine Nominet'e istemci sertifikası yüklediyseniz sertifikayı ve özel anahtarını içeren PEM dosyasının bu sunucudaki tam yolunu girin."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nominet için istemci sertifikası dosyası okunamıyor: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Nominet'in :domain alan adının transferini tamamlaması bekleniyor."

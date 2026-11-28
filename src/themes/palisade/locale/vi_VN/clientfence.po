@@ -34031,3 +34031,32 @@ msgstr "Vui lòng mở lời mời này qua liên kết trong email mời."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Trang web này không khả dụng."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "Cần mã chuyển để chuyển :domain."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Tệp chứng chỉ máy khách"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Quản lý các tên miền .uk gắn với thẻ Nominet của quý khách qua dịch vụ EPP của Nominet. Trong Nominet Online Services, hãy bật EPP cho thẻ, đặt mật khẩu EPP (ít nhất 14 ký tự) và cho phép địa chỉ IP của máy chủ này. Chế độ thử nghiệm dùng máy chủ OT&E của Nominet cùng thông tin môi trường thử nghiệm EPP (Online Services > Tag Settings > EPP Testbed). Khi chuyển tên miền về trước ngày 9 tháng 2 năm 2027, nhà đăng ký hiện tại chuyển tên miền sang thẻ của quý khách. Từ ngày đó, việc chuyển tên miền dùng nền tảng .uk mới của Nominet, cần mã chuyển của tên miền và gia hạn đăng ký thêm một năm."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "Hầu hết tên miền đều có khóa bí mật hoặc mã ủy quyền (mã EPP), ngoại trừ một số tên miền cấp cao nhất như .EU. Mã này thường được yêu cầu khi chuyển tên miền sang nhà đăng ký mới."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Nếu quý khách đã tải chứng chỉ máy khách lên Nominet thay vì cho phép địa chỉ IP của máy chủ này, hãy nhập đường dẫn đầy đủ trên máy chủ này tới tệp PEM chứa chứng chỉ và khóa riêng của chứng chỉ."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Không thể đọc tệp chứng chỉ máy khách dùng cho Nominet: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Đang chờ Nominet hoàn tất việc chuyển :domain."

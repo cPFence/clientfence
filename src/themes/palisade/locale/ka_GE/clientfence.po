@@ -36500,3 +36500,32 @@ msgstr "გახსენით ეს მოწვევა მოსაწვ
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "ეს საიტი მიუწვდომელია."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "დომენის :domain გადმოსატანად საჭიროა ტრანსფერის კოდი."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "კლიენტის სერტიფიკატის ფაილი"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "მართავს თქვენს Nominet ტეგზე მიბმულ .uk დომენებს Nominet-ის EPP სერვისით. Nominet Online Services-ში ჩართეთ EPP ტეგისთვის, დააყენეთ EPP პაროლი (მინიმუმ 14 სიმბოლო) და დაუშვით ამ სერვერის IP მისამართი. სატესტო რეჟიმი იყენებს Nominet-ის OT&E სერვერს და EPP-ის სატესტო გარემოს მონაცემებს (Online Services > Tag Settings > EPP Testbed). შემომავალი ტრანსფერისას 2027 წლის 9 თებერვლამდე მიმდინარე რეგისტრატორი დომენს თქვენს ტეგზე გადაიტანს. ამ თარიღიდან გამოიყენება Nominet-ის ახალი .uk პლატფორმა. ტრანსფერისთვის საჭიროა დომენის ტრანსფერის კოდი და რეგისტრაციის ვადა ერთი წლით გახანგრძლივდება."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "დომენის სახელების უმეტესობას აქვს საიდუმლო გასაღები ან ავტორიზაციის კოდი (EPP კოდი). გამონაკლისია ზედა დონის რამდენიმე დომენი, მაგალითად .EU. ეს კოდი ჩვეულებრივ საჭიროა დომენის ახალ რეგისტრატორთან გადატანისას."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "თუ ამ სერვერის IP მისამართის დაშვების ნაცვლად Nominet-ში კლიენტის სერტიფიკატი ატვირთეთ, მიუთითეთ ამ სერვერზე PEM ფაილის სრული გზა. ფაილში უნდა იყოს სერტიფიკატი და მისი პირადი გასაღები."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nominet-ის კლიენტის სერტიფიკატის ფაილი ვერ იკითხება: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "ველოდებით, როდის დაასრულებს Nominet დომენის :domain ტრანსფერს."

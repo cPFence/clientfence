@@ -33299,3 +33299,32 @@ msgstr "افتح هذه الدعوة عبر الرابط الوارد في رس�
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "هذا الموقع غير متاح."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "يلزم رمز نقل لنقل :domain."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "ملف شهادة العميل"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "يدير نطاقات .uk على وسم Nominet الخاص بك عبر خدمة EPP من Nominet. في Nominet Online Services، فعّل EPP للوسم، وعيّن كلمة مرور EPP له (14 حرفًا على الأقل)، واسمح بعنوان IP لهذا الخادم. يستخدم وضع الاختبار خادم OT&E من Nominet مع بيانات بيئة اختبار EPP (Online Services > Tag Settings > EPP Testbed). لعمليات النقل الواردة، ينقل المسجّل الحالي النطاق إلى وسمك حتى 9 فبراير 2027. اعتبارًا من ذلك التاريخ، تُستخدم منصة .uk الجديدة من Nominet، ويلزم رمز نقل النطاق وتُضاف سنة إلى مدة تسجيله."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "لمعظم أسماء النطاقات، باستثناء بعض نطاقات المستوى الأعلى مثل .EU، مفتاح سري للنطاق أو رمز تفويض (رمز EPP). يلزم هذا الرمز عادةً عند نقل النطاق إلى مسجّل جديد."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "إذا حمّلت شهادة عميل إلى Nominet بدلًا من السماح بعنوان IP لهذا الخادم، فأدخل المسار الكامل على هذا الخادم لملف PEM الذي يحتوي على الشهادة ومفتاحها الخاص."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "تعذّرت قراءة ملف شهادة عميل Nominet: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "بانتظار أن تُكمل Nominet نقل :domain."

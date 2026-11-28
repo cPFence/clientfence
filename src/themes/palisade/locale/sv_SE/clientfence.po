@@ -36500,3 +36500,32 @@ msgstr "Öppna den här inbjudan via länken i inbjudningsmejlet."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Den här webbplatsen är inte tillgänglig."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "En flyttkod krävs för att flytta :domain."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Fil med klientcertifikat"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Hanterar .uk-domäner under din Nominet-tagg via Nominets EPP-tjänst. Aktivera EPP för taggen i Nominet Online Services, ange ett EPP-lösenord (minst 14 tecken) och tillåt den här serverns IP-adress. Testläget använder Nominets OT&E-server med uppgifterna för EPP-testmiljön (Online Services > Tag Settings > EPP Testbed). Vid inkommande flyttar fram till den 9 februari 2027 flyttar nuvarande registrar domänen till din tagg. Från och med det datumet används Nominets nya .uk-plattform. Flytten kräver domänens flyttkod och förlänger registreringen med ett år."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "De flesta domännamn har en hemlig domännyckel eller auktoriseringskod (EPP-kod). Några toppdomäner, till exempel .EU, är undantagna. Koden behövs vanligtvis när domänen flyttas till en ny registrar."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Om du laddade upp ett klientcertifikat till Nominet i stället för att tillåta den här serverns IP-adress, ange den fullständiga sökvägen på servern till PEM-filen med certifikatet och dess privata nyckel."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Det går inte att läsa filen med klientcertifikatet för Nominet: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Väntar på att Nominet ska slutföra flytten av :domain."

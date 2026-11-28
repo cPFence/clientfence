@@ -34026,3 +34026,32 @@ msgstr "Nyissa meg ezt a meghívót a meghívó e-mailben található hivatkozá
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Ez a webhely nem érhető el."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "A(z) :domain átviteléhez átviteli kód szükséges."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Ügyféltanúsítvány fájlja"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "A Nominet EPP-szolgáltatásán keresztül kezeli az Ön Nominet-címkéjéhez tartozó .uk domaineket. A Nominet Online Services felületén engedélyezze az EPP-t a címkéhez, állítsa be az EPP-jelszót (legalább 14 karakter), és engedélyezze a kiszolgáló IP-címét. A tesztmód a Nominet OT&E-kiszolgálóját használja az EPP tesztkörnyezet adataival (Online Services > Tag Settings > EPP Testbed). Bejövő átvitel esetén 2027. február 9-ig a jelenlegi regisztrátor helyezi át a domaint az Ön címkéjére. Ettől a naptól a Nominet új .uk platformja használatos. Az átvitelhez a domain átviteli kódja szükséges, és a regisztráció egy évvel meghosszabbodik."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "A legtöbb domainnévhez titkos kulcs vagy engedélyezési kód (EPP-kód) tartozik. Kivétel néhány legfelső szintű domain, például a .EU. Új regisztrátorhoz történő átvitelkor általában szükség van erre a kódra."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Ha a kiszolgáló IP-címének engedélyezése helyett ügyféltanúsítványt töltött fel a Nominethez, adja meg a tanúsítványt és a hozzá tartozó privát kulcsot tartalmazó PEM-fájl teljes elérési útját ezen a kiszolgálón."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "A Nominet ügyféltanúsítványának fájlja nem olvasható: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Várakozás arra, hogy a Nominet befejezze a(z) :domain átvitelét."

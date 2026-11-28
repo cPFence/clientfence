@@ -297,8 +297,8 @@ final class PriceSync
                         'active' => 0,
                         'allow_register' => 1,
                         'allow_transfer' => $row['offers_transfer'] ? 1 : 0,
-                        // A free .uk transfer is a tag change with no code (Nominet, Realtime Register); a paid one may need it (Dynadot).
-                        'require_transfer_code' => str_ends_with($tld, '.uk') && $row['cost']['transfer'] === 0.0 ? 0 : 1,
+                        // Before the Nominet cutover, free .uk transfers are tag changes with no code.
+                        'require_transfer_code' => str_ends_with($tld, '.uk') && $row['cost']['transfer'] === 0.0 && !\Registrar_Adapter_Nominet::ukStandardised() ? 0 : 1,
                         'min_years' => 1,
                     ]);
                     ++$done['created'];

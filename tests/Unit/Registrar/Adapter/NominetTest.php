@@ -20,10 +20,16 @@ function nominetInfo(string $clId = 'EXAMPLE-TAG', string $hosts = '<domain:host
  * A Nominet adapter whose EPP session answers each command (login, domain:check, domain:info, ...) from $replies:
  * a reply, or a list of replies used in turn; 1000 without resData otherwise. Commands go to $GLOBALS['nominet_calls'].
  */
-function nominetAdapter(array $replies = [], array $options = ['username' => 'EXAMPLE-TAG', 'password' => 'epp-secret-password-1', 'cost_price' => '3.65']): Registrar_Adapter_Nominet
+function nominetAdapter(array $replies = [], array $options = ['username' => 'EXAMPLE-TAG', 'password' => 'epp-secret-password-1', 'cost_price' => '3.65'], bool $standardised = false): Registrar_Adapter_Nominet
 {
     $adapter = new class($options) extends Registrar_Adapter_Nominet {
+        public static bool $standardised = false;
         public array $replies = [];
+
+        public static function ukStandardised(): bool
+        {
+            return self::$standardised;
+        }
 
         protected function connect(): string
         {
@@ -33,7 +39,7 @@ function nominetAdapter(array $replies = [], array $options = ['username' => 'EX
 
         protected function exchange(string $xml): string
         {
-            preg_match('/<command><(\w+)\/?>(?:<(\w+:\w+))?/', $xml, $m);
+            preg_match('/<command><(\w+)(?:\s[^>]*)?\/?>(?:<(\w+:\w+))?/', $xml, $m);
             $name = ($m[2] ?? '') !== '' ? $m[2] : $m[1];
             $GLOBALS['nominet_calls'][] = [$name, $xml];
             $reply = $this->replies[$name] ?? nominetReply();
@@ -46,6 +52,7 @@ function nominetAdapter(array $replies = [], array $options = ['username' => 'EX
             return $reply;
         }
     };
+    $adapter::$standardised = $standardised;
     $adapter->replies = $replies;
     $adapter->setLog(new Tests\Helpers\TestLogger());
     $GLOBALS['nominet_calls'] = [];
@@ -201,10 +208,12 @@ test('.uk names have no transfer code or privacy service; a cancel sends nothing
 });
 
 test('the order form asks .uk registrations for the registrant type only', function (): void {
-    expect(array_keys(Registrar_Adapter_Nominet::getDomainFields('.co.uk')))->toBe(['registrant_type', 'company_number', 'trading_name'])
-        ->and(Registrar_Adapter_Nominet::getDomainFields('.uk')['registrant_type']['required'])->toBeTrue()
-        ->and(Registrar_Adapter_Nominet::getDomainFields('.co.uk', 'transfer'))->toBe([])
-        ->and(Registrar_Adapter_Nominet::getDomainFields('.wales'))->toBe([]);
+    $adapter = nominetAdapter();
+
+    expect(array_keys($adapter::getDomainFields('.co.uk')))->toBe(['registrant_type', 'company_number', 'trading_name'])
+        ->and($adapter::getDomainFields('.uk')['registrant_type']['required'])->toBeTrue()
+        ->and($adapter::getDomainFields('.co.uk', 'transfer'))->toBe([])
+        ->and($adapter::getDomainFields('.wales'))->toBe([]);
 });
 
 test('an individual or sole trader is registered without the company as org; .ltd.uk, .net.uk and .plc.uk registrations are refused', function (): void {
@@ -236,4 +245,83 @@ test('the price list is the cost price in GBP for every Nominet extension and ac
 test('the IPS tag and EPP password are required', function (): void {
     expect(fn () => new Registrar_Adapter_Nominet(['username' => 'EXAMPLE-TAG']))->toThrow(Registrar_Exception::class)
         ->and(Registrar_Adapter_Nominet::getSecretFields())->toBe(['password']);
+});
+
+test('a standard login advertises the transfer code and secDNS extensions', function (): void {
+    $adapter = nominetAdapter(standardised: true);
+    $adapter->lock(nominetDomain());
+
+    expect(nominetCall('login'))->toContain('<svcExtension><extURI>urn:ietf:params:xml:ns:epp:secure-authinfo-transfer-1.0</extURI>'
+        . '<extURI>urn:ietf:params:xml:ns:rgp-1.0</extURI><extURI>urn:ietf:params:xml:ns:secDNS-1.1</extURI></svcExtension>');
+});
+
+test('a standard registration uses an empty domain password and drops the registrant extension', function (): void {
+    $adapter = nominetAdapter(standardised: true);
+    $adapter->registerDomain(nominetDomain()->setFields(['company_number' => '12345678']));
+
+    expect(nominetCall('domain:create'))->toContain('<domain:authInfo><domain:pw/></domain:authInfo>')
+        ->and(nominetCall('contact:create'))->toContain('<contact:authInfo><contact:pw/></contact:authInfo>')
+        ->and(nominetCall('contact:create'))->toContain('<contact:org>Lee Trading Ltd</contact:org>')->not->toContain('<extension>')
+        ->and($adapter::getDomainFields('.co.uk'))->toBe([]);
+});
+
+test('the standard platform sets and returns a new 34-character transfer code with every character type', function (): void {
+    $adapter = nominetAdapter(standardised: true);
+    $code = $adapter->getEpp(nominetDomain());
+
+    expect($code)->toMatch('/^[0-9a-f]{32}X-$/')
+        ->and(nominetCall('domain:update'))->toContain('<domain:name>example.co.uk</domain:name><domain:chg><domain:authInfo><domain:pw>'
+            . $code . '</domain:pw></domain:authInfo></domain:chg>')
+        ->and($adapter::getUnsupportedActions())->not->toContain('getEpp');
+});
+
+test('a standard transfer requests the domain with its code and one year, and waits for Nominet', function (): void {
+    $adapter = nominetAdapter(['domain:info' => nominetReply('', 2201, 'Authorization error')], standardised: true);
+    $domain = nominetDomain()->setEpp('example-transfer-code');
+
+    expect($adapter->transferDomain($domain))->toBeTrue()
+        ->and(nominetCall('domain:transfer'))->toContain('<transfer op="request"><domain:transfer xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">'
+            . '<domain:name>example.co.uk</domain:name><domain:period unit="y">1</domain:period><domain:authInfo><domain:pw>example-transfer-code</domain:pw></domain:authInfo></domain:transfer></transfer>')
+        ->and($adapter->getTransferStatus($domain))->toBe(['status' => Registrar_TransferStatus::PENDING, 'message' => 'Waiting for Nominet to complete the transfer of example.co.uk.']);
+});
+
+test('a standard transfer without a code is refused before an EPP command', function (): void {
+    $adapter = nominetAdapter(standardised: true);
+
+    expect(fn () => $adapter->transferDomain(nominetDomain()))->toThrow(Registrar_Exception::class, 'A transfer code is required to transfer example.co.uk.')
+        ->and($GLOBALS['nominet_calls'])->toBe([]);
+});
+
+test('a standard renewal in the auto-renew period back-dates a year, so the auto-renewed year is not bought again', function (): void {
+    $grace = str_replace('</resData>', '</resData><extension><rgp:infData xmlns:rgp="urn:ietf:params:xml:ns:rgp-1.0"><rgp:rgpStatus s="autoRenewPeriod"/></rgp:infData></extension>', nominetInfo());
+    $adapter = nominetAdapter(['domain:info' => [$grace, nominetInfo()]], standardised: true);
+    $adapter->renewDomain(nominetDomain());
+    $late = nominetCall('domain:renew');
+    $GLOBALS['nominet_calls'] = [];
+    $adapter->renewDomain(nominetDomain());
+
+    expect($late)->toContain('<domain:curExpDate>2026-01-02</domain:curExpDate><domain:period unit="y">2</domain:period>')
+        ->and(nominetCall('domain:renew'))->toContain('<domain:curExpDate>2027-01-02</domain:curExpDate>');
+});
+
+test('a standard .uk transfer costs one year at the cost price', function (): void {
+    expect(nominetAdapter(standardised: true)->getTldPrices(['.co.uk'])['prices']['.co.uk'])->toBe(['register' => 3.65, 'renew' => 3.65, 'transfer' => 3.65]);
+});
+
+test('a client certificate file that cannot be read is refused before connecting', function (): void {
+    $adapter = new Registrar_Adapter_Nominet(['username' => 'EXAMPLE-TAG', 'password' => 'epp-secret-password-1', 'certificate_file' => '/nonexistent/nominet.pem']);
+    $adapter->setLog(new Tests\Helpers\TestLogger());
+
+    expect(fn () => $adapter->isDomainAvailable(nominetDomain()))->toThrow(Registrar_Exception::class, 'The Nominet client certificate file cannot be read: /nonexistent/nominet.pem');
+});
+
+test('a standard registration creates the name servers the registry does not have yet', function (): void {
+    $check = nominetReply('<host:chkData xmlns:host="urn:ietf:params:xml:ns:host-1.0"><host:cd><host:name avail="0">ns1.example.net</host:name></host:cd>'
+        . '<host:cd><host:name avail="1">ns2.example.net</host:name></host:cd></host:chkData>');
+    $adapter = nominetAdapter(['host:check' => $check], standardised: true);
+    $adapter->registerDomain(nominetDomain());
+    $names = array_column($GLOBALS['nominet_calls'], 0);
+
+    expect(array_slice($names, array_search('host:check', $names, true), 3))->toBe(['host:check', 'host:create', 'domain:create'])
+        ->and(nominetCall('host:create'))->toContain('<host:name>ns2.example.net</host:name>')->not->toContain('ns1.example.net');
 });

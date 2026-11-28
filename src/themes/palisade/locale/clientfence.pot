@@ -1610,6 +1610,10 @@ msgstr ""
 msgid "A transfer code (EPP/auth code) is required to transfer :domain"
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr ""
+
 #: src/library/Registrar/Adapter/Resellerclub.php
 msgid "A valid contact company number is mandatory for registering an .AU domain name"
 msgstr ""
@@ -6528,6 +6532,10 @@ msgstr ""
 
 #: src/modules/Email/templates/layout/footer.html.twig src/themes/admin_default/html_custom/partial_admin_auth_card.html.twig
 msgid "Client area"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
 msgstr ""
 
 #: src/modules/Serviceapikey/templates/admin/mod_serviceapikey_config.html.twig src/modules/Servicelicense/templates/admin/mod_servicelicense_config.html.twig
@@ -16531,7 +16539,7 @@ msgid "Management"
 msgstr ""
 
 #: src/library/Registrar/Adapter/Nominet.php
-msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in have no transfer code: the current registrar moves the domain to your tag."
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
 msgstr ""
 
 #: src/modules/Theme/manifest.json
@@ -17239,7 +17247,7 @@ msgid "More than"
 msgstr ""
 
 #: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
-msgid "Most domain names (except a few top-level domains like .EU and .UK) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
 msgstr ""
 
 #: src/modules/Order/templates/admin/mod_order_manage.html.twig
@@ -19444,6 +19452,10 @@ msgstr ""
 
 #: src/modules/Clientfence/templates/admin/mod_clientfence_whmcs_panel.html.twig
 msgid "Only if Blesta runs on another server: a copy of its support_manager_files folder on this one (Blesta > Settings > System > General > Uploads Directory). Files not found are named in the warnings and show as removed."
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
 msgstr ""
 
 #: src/modules/Clientfence/Whmcs/Csv.php
@@ -28230,6 +28242,10 @@ msgstr ""
 msgid "The IPv6 address this name points to."
 msgstr ""
 
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr ""
+
 #: src/library/Registrar/Adapter/Ovh.php
 msgid "The OVHcloud region of your account."
 msgstr ""
@@ -33509,6 +33525,10 @@ msgstr ""
 
 #: src/modules/Client/templates/admin/mod_client_affiliate_payouts.html.twig src/modules/Invoice/templates/admin/mod_invoice_settings_accounting.html.twig
 msgid "Waiting"
+msgstr ""
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
 msgstr ""
 
 #: src/modules/Servicedomain/templates/admin/mod_servicedomain_manage.html.twig

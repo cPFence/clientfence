@@ -36492,3 +36492,32 @@ msgstr "請透過邀請電郵中的連結開啟此邀請。"
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "此網站無法使用。"
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "轉移 :domain 需要轉移碼。"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "用戶端證書檔案"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "透過 Nominet 的 EPP 服務管理您在 Nominet 標籤下的 .uk 域名。請在 Nominet Online Services 為標籤啟用 EPP、設定 EPP 密碼（最少 14 個字元），並允許此伺服器的 IP 地址。測試模式使用 EPP 測試環境資料（Online Services > Tag Settings > EPP Testbed）連接 Nominet 的 OT&E 伺服器。2027 年 2 月 9 日前，轉入域名時由現有註冊商將域名移至您的標籤。由該日起，轉入將使用 Nominet 的新 .uk 平台，需要域名的轉移碼，註冊有效期會延長一年。"
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "大部分域名都有相關的域名密鑰或授權碼（EPP 代碼），.EU 等少數頂級域名除外。將域名轉移到新註冊商時通常需要此代碼。"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "如果您已將用戶端證書上載至 Nominet，以代替允許此伺服器的 IP 地址，請輸入此伺服器上載有證書及其私鑰的 PEM 檔案的完整路徑。"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "無法讀取用於 Nominet 的用戶端證書檔案：:file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "正在等候 Nominet 完成 :domain 的轉移。"

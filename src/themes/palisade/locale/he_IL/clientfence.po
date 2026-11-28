@@ -37689,3 +37689,32 @@ msgstr "פתחו את ההזמנה להצטרפות דרך הקישור שבהו
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "אתר זה אינו זמין."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "נדרש קוד העברה כדי להעביר את :domain."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "קובץ תעודת לקוח"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "מנהל דומיינים תחת הסיומת .uk המשויכים לתג Nominet שלכם באמצעות שירות EPP של Nominet. הפעילו את EPP עבור התג ב־Nominet Online Services, הגדירו סיסמת EPP (לפחות 14 תווים) ואפשרו גישה מכתובת ה־IP של שרת זה. מצב בדיקה משתמש בשרת OT&E של Nominet עם פרטי סביבת הבדיקה של EPP (Online Services > Tag Settings > EPP Testbed). בהעברות נכנסות עד 9 בפברואר 2027, הרשם הנוכחי מעביר את הדומיין לתג שלכם. מתאריך זה ההעברות מתבצעות בפלטפורמת .uk החדשה של Nominet, דורשות את קוד ההעברה של הדומיין ומאריכות את הרישום בשנה."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "לרוב שמות הדומיינים יש מפתח סודי או קוד הרשאה (קוד EPP). כמה דומיינים ברמה העליונה, כמו .EU, הם יוצאי דופן. בדרך כלל צריך את הקוד כדי להעביר את הדומיין לרשם חדש."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "אם העליתם תעודת לקוח ל־Nominet במקום לאפשר גישה מכתובת ה־IP של שרת זה, הזינו את הנתיב המלא בשרת לקובץ PEM שמכיל את התעודה ואת המפתח הפרטי שלה."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "לא ניתן לקרוא את קובץ תעודת הלקוח עבור Nominet: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "ממתינים להשלמת ההעברה של :domain על ידי Nominet."

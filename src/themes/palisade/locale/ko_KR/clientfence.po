@@ -36492,3 +36492,32 @@ msgstr "초대 이메일에 있는 링크로 이 초대를 여세요."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "이 사이트는 이용할 수 없습니다."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr ":domain을(를) 이전하려면 이전 코드가 필요합니다."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "클라이언트 인증서 파일"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Nominet의 EPP 서비스로 Nominet 태그에 연결된 .uk 도메인을 관리합니다. Nominet Online Services에서 태그의 EPP를 활성화하고 EPP 비밀번호(14자 이상)를 설정한 다음 이 서버의 IP 주소를 허용하세요. 테스트 모드는 EPP 테스트 환경 정보(Online Services > Tag Settings > EPP Testbed)를 사용해 Nominet의 OT&E 서버에 연결합니다. 도메인을 이전해 오는 경우 2027년 2월 9일까지는 현재 등록 대행업체가 도메인을 해당 태그로 옮깁니다. 해당 날짜부터는 Nominet의 새 .uk 플랫폼을 사용합니다. 이전하려면 도메인의 이전 코드가 필요하며 등록 기간이 1년 연장됩니다."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr ".EU 등 일부 최상위 도메인을 제외한 대부분의 도메인 이름에는 도메인 비밀 키 또는 인증 코드(EPP 코드)가 있습니다. 일반적으로 도메인을 새 등록 대행업체로 이전할 때 이 코드가 필요합니다."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "이 서버의 IP 주소를 허용하는 대신 Nominet에 클라이언트 인증서를 업로드했다면, 인증서와 개인 키가 포함된 PEM 파일의 전체 경로를 이 서버 기준으로 입력하세요."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nominet용 클라이언트 인증서 파일을 읽을 수 없습니다. 파일: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Nominet에서 :domain 이전을 완료하기를 기다리는 중입니다."

@@ -189,7 +189,7 @@ class Registrar_Adapter_Realtimeregister extends Registrar_AdapterAbstract imple
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+        // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
         $reply = $this->request('POST', $this->domainPath($domain) . '/transfer', $this->order($domain) + array_filter(['authcode' => trim((string) $domain->getEpp())]));
         if (in_array($reply['status'] ?? '', ['cancelled', 'rejected', 'failed'], true)) {
             throw new Registrar_Exception(':registrar refused the request: :error', [':registrar' => 'Realtime Register', ':error' => 'transfer ' . $reply['status']]);

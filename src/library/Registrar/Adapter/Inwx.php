@@ -109,7 +109,7 @@ class Registrar_Adapter_Inwx extends Registrar_AdapterAbstract implements Regist
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+        // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
         $this->request('domain.transfer', ['domain' => $domain->getName()] + array_filter(['authCode' => trim((string) $domain->getEpp())])
             + ['ns' => $this->nameservers($domain), 'renewalMode' => $this->renewalMode($domain)] + $this->handles($domain) + $this->extData($domain));
 

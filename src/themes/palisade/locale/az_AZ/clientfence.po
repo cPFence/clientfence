@@ -36500,3 +36500,32 @@ msgstr "Bu dəvəti dəvət e-poçtundakı linkdən açın."
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Bu sayt əlçatan deyil."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr ":domain domenini köçürmək üçün transfer kodu tələb olunur."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Müştəri sertifikatı faylı"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Nominet-in EPP xidməti vasitəsilə Nominet teqinizdəki .uk domenlərini idarə edir. Nominet Online Services-də teq üçün EPP-ni aktiv edin, EPP parolunu təyin edin (ən azı 14 simvol) və bu serverin IP ünvanına icazə verin. Test rejimi EPP sınaq mühitinin məlumatları (Online Services > Tag Settings > EPP Testbed) ilə Nominet-in OT&E serverindən istifadə edir. Daxil olan transferlərdə 9 fevral 2027 tarixinədək cari registrator domeni teqinizə köçürür. Həmin tarixdən etibarən Nominet-in yeni .uk platforması istifadə olunur. Transfer üçün domenin transfer kodu tələb olunur və qeydiyyat müddətinə bir il əlavə edilir."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "Əksər domen adlarının (.EU kimi bir neçə yuxarı səviyyəli domen istisna olmaqla) domen gizli açarı və ya avtorizasiya kodu (EPP kodu) var. Bu kod adətən domeni yeni registratora köçürərkən tələb olunur."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Bu serverin IP ünvanına icazə vermək əvəzinə Nominet-ə müştəri sertifikatı yükləmisinizsə, sertifikat və onun məxfi açarı olan PEM faylının bu serverdəki tam yolunu daxil edin."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nominet müştəri sertifikatı faylını oxumaq mümkün olmadı: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Nominet-in :domain domeninin transferini tamamlaması gözlənilir."

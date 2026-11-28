@@ -226,7 +226,7 @@ class Registrar_Adapter_Opensrs extends Registrar_AdapterAbstract implements Reg
     public function transferDomain(Registrar_Domain $domain): bool
     {
         $hosts = $this->hosts($domain);
-        // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+        // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
         $this->order($domain, 'transfer', array_filter(['auth_info' => trim((string) $domain->getEpp())])
             + (count($hosts) >= 2 ? ['custom_transfer_nameservers' => 1, 'nameserver_list' => $this->nameserverList($hosts)] : ['custom_transfer_nameservers' => 0]));
 

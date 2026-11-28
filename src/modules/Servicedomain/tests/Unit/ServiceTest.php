@@ -207,6 +207,40 @@ test('throws exception when a tld requires a transfer code and none is provided'
     'whitespace only' => ['   '],
 ]);
 
+test('a standardised .co.uk transfer requires a code even when the saved flag is off', function (): void {
+    // Isolate the registrar alias from tests that load the real adapter.
+    $script = <<<'PHP'
+<?php
+require 'src/vendor/autoload.php';
+require 'tests/Helpers/Container.php';
+require 'tests/Helpers/DummyBean.php';
+define('DEBUG', false);
+Mockery::mock('alias:ClientFence\Config')->shouldReceive('getProperty')->andReturn(false);
+Mockery::mock('alias:Registrar_Adapter_Nominet')->shouldReceive('ukStandardised')->andReturnTrue();
+
+$tld = new Model_Tld();
+$tld->loadBean(new Tests\Helpers\DummyBean());
+$tld->tld = '.co.uk';
+$tld->active = true;
+$tld->require_transfer_code = 0;
+$service = Mockery::mock(ClientFence\Mod\Servicedomain\Service::class)->makePartial();
+$service->shouldReceive('tldFindOneByTld')->with('.co.uk')->andReturn($tld);
+$service->shouldReceive('canBeTransferred')->with($tld, 'example')->andReturnTrue();
+$service->setDi(Tests\Helpers\container());
+$data = ['action' => 'transfer', 'transfer_sld' => 'example', 'transfer_tld' => '.co.uk'];
+try {
+    $service->validateOrderData($data);
+} catch (ClientFence\InformationException $e) {
+    echo json_encode([$service->tldToApiArray($tld)['require_transfer_code'], $e->getMessage()]);
+}
+Mockery::close();
+PHP;
+    $process = new Symfony\Component\Process\PhpProcess($script, dirname(PATH_ROOT));
+    $process->mustRun();
+
+    expect(json_decode($process->getOutput(), true))->toBe([true, 'A transfer code (EPP/auth code) is required to transfer example.co.uk']);
+});
+
 test('a transfer takes the TLD shortest term', function (?string $periods, ?int $minYears, string $expected): void {
     $tldModel = new Model_Tld();
     $tldModel->loadBean(new Tests\Helpers\DummyBean());

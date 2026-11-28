@@ -102,7 +102,7 @@ class Registrar_Adapter_Openprovider extends Registrar_AdapterAbstract implement
 
     public function transferDomain(Registrar_Domain $domain): bool
     {
-        // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+        // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
         $this->request('POST', '/domains/transfer', ['domain' => $this->name($domain)] + array_filter(['auth_code' => trim((string) $domain->getEpp())]) + [
             'autorenew' => 'off',
             'is_private_whois_enabled' => (bool) $domain->getPrivacyEnabled(),

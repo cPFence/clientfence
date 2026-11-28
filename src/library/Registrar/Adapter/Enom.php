@@ -115,7 +115,7 @@ class Registrar_Adapter_Enom extends Registrar_AdapterAbstract implements Regist
             // No Enom auto-renewal: ClientFence renews on the paid invoice.
             'Renew' => 0,
             'Lock' => 1,
-        // The code is optional: .uk transfers have none (the owner changes the IPS tag instead).
+        // The code is optional: .uk transfers before 9 February 2027 have none (the owner changes the IPS tag instead).
         ] + array_filter(['AuthInfo1' => trim((string) $domain->getEpp())]) + $this->contacts($domain, ['Registrant']) + $this->eligibility($domain));
         $this->getLog()->info(sprintf('Enom transfer order %s for %s: %s', $reply->transferorder->transferorderid ?? '', $domain->getName(), $reply->transferorder->statusdesc ?? ''));
 

@@ -34200,3 +34200,32 @@ msgstr "Otwórz to zaproszenie za pomocą linku w wiadomości e-mail z zaproszen
 #: src/library/ClientFence/Site.php
 msgid "This site is not available."
 msgstr "Ta witryna jest niedostępna."
+
+# To translate (tools/locales.py starter).
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "A transfer code is required to transfer :domain."
+msgstr "Do transferu domeny :domain wymagany jest kod transferu."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Client certificate file"
+msgstr "Plik certyfikatu klienta"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Manages .uk domains on your Nominet tag through Nominet's EPP service. In Nominet Online Services, turn on EPP for the tag, set its EPP password (at least 14 characters) and allow this server's IP address. Test mode uses Nominet's OT&E server with the EPP testbed details (Online Services > Tag Settings > EPP Testbed). Transfers in: until 9 February 2027 the current registrar moves the domain to your tag; from then on Nominet's new .uk platform is used and a transfer needs the domain's transfer code and adds one year."
+msgstr "Zarządza domenami .uk przypisanymi do tagu Nominet przypisanego do konta za pośrednictwem usługi EPP firmy Nominet. W Nominet Online Services należy włączyć EPP dla tagu, ustawić hasło EPP (co najmniej 14 znaków) i zezwolić na dostęp z adresu IP tego serwera. Tryb testowy używa serwera OT&E firmy Nominet z danymi środowiska testowego EPP (Online Services > Tag Settings > EPP Testbed). W przypadku transferów przychodzących do 9 lutego 2027 r. obecny rejestrator przenosi domenę na wskazany tag. Od tej daty transfery odbywają się na nowej platformie .uk firmy Nominet. Transfer wymaga kodu transferu domeny i przedłuża rejestrację o rok."
+
+#: src/modules/Servicedomain/templates/client/mod_servicedomain_manage.html.twig src/themes/palisade/html/mod_servicedomain_manage.html.twig
+msgid "Most domain names (except a few top-level domains like .EU) have a Domain Secret Key/Authorization Code (EPP Code) associated with them. This code is typically required when transferring the domain to a new registrar."
+msgstr "Większość nazw domen ma tajny klucz lub kod autoryzacyjny (kod EPP). Wyjątkiem jest kilka domen najwyższego poziomu, takich jak .EU. Kod jest zazwyczaj potrzebny przy przenoszeniu domeny do nowego rejestratora."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Only if you uploaded a client certificate to Nominet instead of allowing this server's IP address: the full path on this server of a PEM file with the certificate and its private key."
+msgstr "Jeśli zamiast zezwolić na dostęp z adresu IP tego serwera przesłano certyfikat klienta do Nominet, należy podać pełną ścieżkę na tym serwerze do pliku PEM zawierającego certyfikat i jego klucz prywatny."
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "The Nominet client certificate file cannot be read: :file"
+msgstr "Nie można odczytać pliku certyfikatu klienta dla Nominet: :file"
+
+#: src/library/Registrar/Adapter/Nominet.php
+msgid "Waiting for Nominet to complete the transfer of :domain."
+msgstr "Oczekiwanie na zakończenie transferu domeny :domain przez Nominet."

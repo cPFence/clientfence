@@ -256,7 +256,7 @@ test('a free transfer (cost 0) is a transfer at 0, not "no transfers" (GitHub #5
         ->and(priceRow($preview, '.uk')['new']['transfer'])->toBe(0.0)
         ->and(priceRow($preview, '.net')['new']['transfer'])->toBe(0.0)
         ->and(PriceSync::apply($di, 1, ['.uk', '.co.uk'], [], $preview['fingerprint'], 5))->toBe(['created' => 2, 'updated' => 0, 'moved' => 0])
-        ->and($db->fetchAssociative("SELECT price_transfer, allow_transfer, require_transfer_code FROM tld WHERE tld = '.uk'"))->toEqual(['price_transfer' => 0.0, 'allow_transfer' => 1, 'require_transfer_code' => 0])
+        ->and($db->fetchAssociative("SELECT price_transfer, allow_transfer, require_transfer_code FROM tld WHERE tld = '.uk'"))->toEqual(['price_transfer' => 0.0, 'allow_transfer' => 1, 'require_transfer_code' => (int) Registrar_Adapter_Nominet::ukStandardised()])
         ->and($db->fetchOne("SELECT require_transfer_code FROM tld WHERE tld = '.co.uk'"))->toEqual(1);
 });
 
