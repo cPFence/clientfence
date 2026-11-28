@@ -56,8 +56,8 @@ test('a ticket message still reads its Markdown, with raw HTML escaped', functio
         ->toContain('&lt;script&gt;')->not->toContain('<script>');
 });
 
-/** The admin ticket page of a client's ticket, with $overrides on top, for staff with the rights $can gives. */
-function renderAdminTicket(array $overrides = [], ?Closure $can = null): string
+/** The admin ticket page of a client's ticket, with $overrides on top, for staff with the rights $can gives; $widgets fills the widget slots. */
+function renderAdminTicket(array $overrides = [], ?Closure $can = null, ?Closure $widgets = null): string
 {
     return (new StrictTemplateRenderer())->renderTemplate(PATH_MODS . '/Support/templates/admin/mod_support_ticket.html.twig', array_replace_recursive([
         'app_area' => 'admin',
@@ -75,7 +75,7 @@ function renderAdminTicket(array $overrides = [], ?Closure $can = null): string
             'author' => ['id' => 7, 'role' => 'client', 'name' => 'Test Client', 'first_name' => 'Test', 'last_name' => 'Client', 'email' => 'client@example.com'],
             'messages' => [],
         ],
-    ], $overrides), hasPermission: $can);
+    ], $overrides), hasPermission: $can, widgets: $widgets);
 }
 
 test('staff see a reply by the client or its user as a link to the client (with client access) and can edit every reply', function (): void {
@@ -135,4 +135,17 @@ test('staff see the client\'s services on the ticket, each opening in a new tab;
         ->and($guest)->not->toContain('data-ticket-services')
         ->and($links($ordersOnly))->toHaveCount(2)
         ->and($ordersOnly)->not->toContain('client/manage/7#tab-orders');
+});
+
+test('a module\'s reply tools render in the staff reply form with the ticket; staff who only view tickets get none', function (): void {
+    $widgets = static fn (string $slot, array $context = []): string => $slot === 'admin.support.ticket.reply' ? '<button type="button" data-reply-tool="' . $context['ticket']['id'] . '">Tool</button>' : '';
+    $tool = static function (string $html): ?string {
+        $document = new DOMDocument();
+        @$document->loadHTML($html, LIBXML_NONET);
+
+        return (new DOMXPath($document))->query('//*[@id="reply-box"]//form//*[@data-reply-tool]')->item(0)?->getAttribute('data-reply-tool');
+    };
+
+    expect($tool(renderAdminTicket([], static fn (string $module, ?string $permission = null): bool => true, $widgets)))->toBe('1')
+        ->and($tool(renderAdminTicket([], static fn (string $module, ?string $permission = null): bool => $permission !== 'manage_tickets', $widgets)))->toBeNull();
 });

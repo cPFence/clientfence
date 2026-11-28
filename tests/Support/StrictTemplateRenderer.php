@@ -115,13 +115,29 @@ final class StrictTemplateRenderer
     /**
      * @param array<string, mixed> $contextOverrides
      */
-    public function renderTemplate(string $templatePath, array $contextOverrides = [], bool $emailMode = false, ?\Closure $hasPermission = null): string
+    public function renderTemplate(string $templatePath, array $contextOverrides = [], bool $emailMode = false, ?\Closure $hasPermission = null, ?\Closure $widgets = null): string
     {
         $previousLevel = error_reporting();
         error_reporting($this->suppressNoticesAndWarnings($previousLevel));
 
         try {
             $twig = $this->buildEnvironment($emailMode, stringifyUrls: true, hasPermission: $hasPermission);
+            // The output of the widget slots, as render_widgets(slot, context) gives it (the registry needs a live database).
+            // An extension, not addFunction(): its class is part of the compiled template's name, so a page another test
+            // compiled with the real function is not reused.
+            if ($widgets !== null) {
+                $twig->addExtension(new class($widgets) extends \Twig\Extension\AbstractExtension {
+                    public function __construct(private readonly \Closure $widgets)
+                    {
+                    }
+
+                    #[\Override]
+                    public function getFunctions(): array
+                    {
+                        return [new \Twig\TwigFunction('render_widgets', $this->widgets, ['is_safe' => ['html']])];
+                    }
+                });
+            }
             $context = array_replace($this->buildContext($emailMode), $contextOverrides);
 
             try {

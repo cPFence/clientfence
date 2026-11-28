@@ -337,12 +337,14 @@
                     <form method="post" action="{{ 'support/ticket_reply'|api_url }}" {{ fb_api_form({ reload: true }) }}>
                         <div class="card-body">
                             <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-                                <div class="d-flex flex-column gap-1">
+                                <div class="d-flex flex-column gap-1 me-auto">
                                     <h5 class="card-title mb-0">{{ 'Respond as'|trans }} {{ profile.name }}</h5>
                                     <p class="text-secondary mb-0">{{ 'Compose a reply, insert a canned response, and close the ticket when appropriate.'|trans }}</p>
                                 </div>
                                 {# ClientFence: the canned responses fit the reply card on phones. #}
                                 <div class="canned-picker">{{ include('mod_support_canned_selector.html.twig') }}</div>
+                                {# ClientFence core patch: reply tools of switched-on modules (widget slot admin.support.ticket.reply) next to the canned responses (the title's me-auto keeps them together); a full-width item wraps below. #}
+                                {{ render_widgets('admin.support.ticket.reply', { ticket: ticket }) }}
                             </div>
 
                             <textarea class="editor-textarea" id="rt" name="content" rows="10" required>{# ClientFence core patch: help desk greeting in the reply box (ClientFence; empty means none). #}{% if ticket.helpdesk.greeting is defined %}{% if ticket.helpdesk.greeting %}{{ ticket.helpdesk.greeting|replace({ '{name}': ticket.author.first_name|default(ticket.author.name) }) }}
